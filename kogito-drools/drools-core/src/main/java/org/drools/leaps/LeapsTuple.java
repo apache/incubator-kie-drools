@@ -48,8 +48,9 @@ class LeapsTuple
 
     private Activation             activation;
 
-    private final LeapsRule        leapsRule;
+    private final LeapsRule         leapsRule;
 
+    private boolean                 wasFired               = false;
     /**
      * agendaItem parts
      */
@@ -271,5 +272,13 @@ class LeapsTuple
 
     protected void setContext(final PropagationContext context) {
         this.context = context;
+    }
+
+    public boolean isWasFired() {
+        return wasFired;
+    }
+
+    public void setWasFired( boolean wasFired ) {
+        this.wasFired = wasFired;
     }
 }

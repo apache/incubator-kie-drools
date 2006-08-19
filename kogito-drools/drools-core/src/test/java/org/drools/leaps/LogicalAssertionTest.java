@@ -71,7 +71,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                     new ArrayList(),
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList() );
+                                                    new ArrayList()  );
 
         final LeapsFactHandle[] factHandles = new LeapsFactHandle[1];
         PropagationContext context1;
@@ -130,7 +130,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final LeapsRule leapsRule1 = new LeapsRule( rule1,
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList(),
+                                                    new ArrayList(), 
                                                     new ArrayList() );
 
         final LeapsFactHandle[] factHandles = new LeapsFactHandle[1];
@@ -225,7 +225,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final LeapsRule leapsRule1 = new LeapsRule( rule1,
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList(),
+                                                    new ArrayList(), 
                                                     new ArrayList() );
 
         final LeapsFactHandle tuple1FactHandle = (LeapsFactHandle) this.workingMemory.assertObject( "tuple1 object" );
@@ -298,7 +298,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final LeapsRule leapsRule1 = new LeapsRule( rule1,
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList(),
+                                                    new ArrayList(), 
                                                     new ArrayList() );
 
         final LeapsFactHandle tuple1Fact = (LeapsFactHandle) this.workingMemory.assertObject( "tuple1 object" );

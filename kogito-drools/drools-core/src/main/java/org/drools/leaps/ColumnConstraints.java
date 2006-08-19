@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.base.ClassObjectType;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Column;
@@ -34,7 +33,7 @@ import org.drools.spi.Tuple;
  * 
  */
 public class ColumnConstraints implements Serializable {
-    private Class                   classType;
+    private Object                  classType;
 
     private final FieldConstraint[] alphaConstraints;
 
@@ -47,7 +46,7 @@ public class ColumnConstraints implements Serializable {
     public ColumnConstraints(final Column column,
                              final List alpha,
                              final BetaNodeBinder beta) {
-        this.classType = ((ClassObjectType) column.getObjectType()).getClassType();
+        this.classType = LeapsBuilder.getLeapsClassType( column.getObjectType() );
 
         if ( beta != null ) {
             this.beta = beta;
@@ -65,7 +64,7 @@ public class ColumnConstraints implements Serializable {
         }
     }
 
-    protected final Class getClassType() {
+    protected final Object getClassType() {
         return this.classType;
     }
 
@@ -111,5 +110,12 @@ public class ColumnConstraints implements Serializable {
     protected final boolean isAlphaPresent() {
         return this.alphaPresent;
     }
-
+    
+    protected FieldConstraint[] getAlphaContraints() {
+        return this.alphaConstraints;
+    }
+    
+    protected FieldConstraint[] getBetaContraints() {
+        return this.beta.getConstraints( );
+    }
 }

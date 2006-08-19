@@ -127,7 +127,7 @@ public class LeapsRuleBase extends AbstractRuleBase {
                                         InvalidPatternException {
         super.addRule( rule );
 
-        final List rules = Builder.processRule( rule );
+        final List rules = LeapsBuilder.processRule( rule );
 
         this.leapsRules.put( rule,
                              rules );
