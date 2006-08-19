@@ -70,8 +70,7 @@ public class Token
     private Iterator rulesIterator() {
         if (this.rules == null) {
             if (this.dominantFactHandle != null) {
-                this.rules = this.workingMemory.getFactTable( this.dominantFactHandle.getObject( )
-                                                                                     .getClass( ) )
+                this.rules = this.workingMemory.getFactTable( LeapsBuilder.getLeapsClassType( this.dominantFactHandle.getObject( )  ) )
                                                .getRulesIterator( );
             }
         }

@@ -50,7 +50,7 @@ public class IteratorFromPositionToTableStart implements TableIterator {
         this.nextRecord = this.firstRecord;
     }
 
-    protected IteratorFromPositionToTableStart(final TableRecord startRecord,
+    public IteratorFromPositionToTableStart(final TableRecord startRecord,
             final TableRecord currentRecord) {
         this.firstRecord = startRecord;
         this.nextRecord = currentRecord;

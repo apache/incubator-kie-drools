@@ -53,8 +53,8 @@ public class Table implements Serializable {
         this.set = new TreeSet( new RecordComparator(comparator) );
     }
 
-    protected void clear() {
-        this.headRecord = new TableRecord( null );
+    public void clear() {
+        this.headRecord = null;
         this.empty = true;
         this.count = 0;
         this.set.clear( );
@@ -342,5 +342,9 @@ public class Table implements Serializable {
 
     public static TableIterator singleItemIterator( final Object object ) {
         return new IteratorFromPositionToTableStart( new TableRecord( object ) );
+    }
+
+    public static TableIterator emptyIterator() {
+        return new IteratorFromPositionToTableStart( null, null );
     }
 }

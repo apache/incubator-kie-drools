@@ -50,28 +50,28 @@ class LeapsRule implements Serializable {
     final Class[]             existsNotsClasses;
 
     public LeapsRule(final Rule rule,
-                     final ArrayList columns,
-                     final ArrayList notColumns,
-                     final ArrayList existsColumns,
-                     final ArrayList evalConditions) {
+            final ArrayList columns,
+            final ArrayList notColumns,
+            final ArrayList existsColumns,
+            final ArrayList evalConditions) {
         this.rule = rule;
         this.columnConstraints = (ColumnConstraints[]) columns.toArray( new ColumnConstraints[0] );
         this.notColumnConstraints = (ColumnConstraints[]) notColumns.toArray( new ColumnConstraints[0] );
         this.existsColumnConstraints = (ColumnConstraints[]) existsColumns.toArray( new ColumnConstraints[0] );
         this.evalConditions = (EvalCondition[]) evalConditions.toArray( new EvalCondition[0] );
-        this.notColumnsPresent = (this.notColumnConstraints.length != 0);
-        this.existsColumnsPresent = (this.existsColumnConstraints.length != 0);
-        this.evalCoditionsPresent = (this.evalConditions.length != 0);
+        this.notColumnsPresent = ( this.notColumnConstraints.length != 0 );
+        this.existsColumnsPresent = ( this.existsColumnConstraints.length != 0 );
+        this.evalCoditionsPresent = ( this.evalConditions.length != 0 );
 
-        final ArrayList classes = new ArrayList();
-        for ( int i = 0; i < this.notColumnConstraints.length; i++ ) {
-            if ( !classes.contains( this.notColumnConstraints[i].getClassType() ) ) {
-                classes.add( this.notColumnConstraints[i].getClassType() );
+        final ArrayList classes = new ArrayList( );
+        for (int i = 0; i < this.notColumnConstraints.length; i++) {
+            if (!classes.contains( this.notColumnConstraints[i].getClassType( ) )) {
+                classes.add( this.notColumnConstraints[i].getClassType( ) );
             }
         }
-        for ( int i = 0; i < this.existsColumnConstraints.length; i++ ) {
-            if ( !classes.contains( this.existsColumnConstraints[i].getClassType() ) ) {
-                classes.add( this.existsColumnConstraints[i].getClassType() );
+        for (int i = 0; i < this.existsColumnConstraints.length; i++) {
+            if (!classes.contains( this.existsColumnConstraints[i].getClassType( ) )) {
+                classes.add( this.existsColumnConstraints[i].getClassType( ) );
             }
         }
 
@@ -98,11 +98,11 @@ class LeapsRule implements Serializable {
         return this.evalConditions.length;
     }
 
-    Class getColumnClassObjectTypeAtPosition(final int idx) {
-        return this.columnConstraints[idx].getClassType();
+    Object getColumnClassObjectTypeAtPosition( final int idx ) {
+        return this.columnConstraints[idx].getClassType( );
     }
 
-    ColumnConstraints getColumnConstraintsAtPosition(final int idx) {
+    ColumnConstraints getColumnConstraintsAtPosition( final int idx ) {
         return this.columnConstraints[idx];
     }
 
@@ -131,10 +131,10 @@ class LeapsRule implements Serializable {
     }
 
     public int hashCode() {
-        return this.rule.hashCode();
+        return this.rule.hashCode( );
     }
 
-    public boolean equals(final Object that) {
+    public boolean equals( final Object that ) {
         return this == that;
     }
 
@@ -153,7 +153,7 @@ class LeapsRule implements Serializable {
         return this.agendaGroup;
     }
 
-    public void setAgendaGroup(final AgendaGroupImpl agendaGroup) {
+    public void setAgendaGroup( final AgendaGroupImpl agendaGroup ) {
         this.agendaGroup = agendaGroup;
     }
 }

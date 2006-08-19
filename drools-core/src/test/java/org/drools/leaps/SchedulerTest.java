@@ -78,7 +78,7 @@ public class SchedulerTest extends DroolsTestCase {
         final LeapsFactHandle[] factHandlesTuple = new LeapsFactHandle[1];
         factHandlesTuple[0] = tupleFactHandle;
 
-        final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+        final ArrayList leapsRules = (ArrayList) LeapsBuilder.processRule( rule );
         final LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
                                                  (LeapsRule) leapsRules.get( 0 ),
                                                  context );
@@ -137,7 +137,7 @@ public class SchedulerTest extends DroolsTestCase {
                     final LeapsFactHandle tupleFactHandleIn = (LeapsFactHandle) workingMemory.assertObject( "tuple object in" );
                     final LeapsFactHandle[] factHandlesTupleIn = new LeapsFactHandle[1];
                     factHandlesTupleIn[0] = tupleFactHandleIn;
-                    final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+                    final ArrayList leapsRules = (ArrayList) LeapsBuilder.processRule( rule );
                     final LeapsTuple tupleIn = new LeapsTuple( factHandlesTupleIn,
                                                                (LeapsRule) leapsRules.get( 0 ),
                                                                context2 );
@@ -156,7 +156,7 @@ public class SchedulerTest extends DroolsTestCase {
         final LeapsFactHandle[] factHandlesTuple = new LeapsFactHandle[1];
         factHandlesTuple[0] = tupleFactHandle;
 
-        final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+        final ArrayList leapsRules = (ArrayList) LeapsBuilder.processRule( rule );
         final LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
                                                  (LeapsRule) leapsRules.get( 0 ),
                                                  context );

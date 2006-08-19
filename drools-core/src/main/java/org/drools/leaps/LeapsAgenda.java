@@ -55,6 +55,7 @@ public class LeapsAgenda extends DefaultAgenda {
                                                                                     .isEmpty( ) )) {
                 // fire regular rule
                 super.fireActivation( activation );
+                ((LeapsTuple)activation.getTuple( )).setWasFired( true );
                 if (activation.getRule( ).getActivationGroup( ) != null) {
                     this.getActivationGroup( activation.getRule( ).getActivationGroup( ) );
                 }
