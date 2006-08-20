@@ -277,7 +277,7 @@ RuleBase ruleBase = new ReteooRuleBase( conf );</programlisting>
     time (such as a conversation) - and kept updated with new facts. When you
     wish to dispose of WorkingMemory it is best pactice to use the dispose()
     method, so that it removes the reference in the parent Rule Base - however
-    this is a weak reference, so it should eventually me garbage collected
+    this is a weak reference, so it should eventually be garbage collected
     anyway. The term Working Memory Action is used to describe assertions,
     retractions and modifications with the Working Memory.</para>
 
