@@ -1954,6 +1954,21 @@ public abstract class IntegrationCases extends TestCase {
                           leapsRuleBase.getPackages().length );
         }
     }
+    
+    public void testDuplicateRuleNames() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName1.drl" ) ) );
+        
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName2.drl" ) ) );
+        ruleBase.addPackage( builder.getPackage() );
+        
+        // @todo: this is from JBRULES-394 - maybe we should test more stuff here?
+        
+    }    
 
     public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
