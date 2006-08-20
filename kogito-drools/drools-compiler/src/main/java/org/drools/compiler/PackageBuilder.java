@@ -532,7 +532,7 @@ public class PackageBuilder {
     private void loadCompiler() {
         switch ( configuration.getCompiler() ) {
             case PackageBuilderConfiguration.JANINO : {
-                if ( !"1.4".intern().equals( configuration.getJavaLanguageLevel() ) ) throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
+                if ( !"1.4".equals( configuration.getJavaLanguageLevel() ) ) throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
                 compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
                 break;
             }
