@@ -75,7 +75,7 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
         this.template = new String();
-        this.template = "<variable-restriction evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
+        this.template = "<variable-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
     }
 
     public void visitColumnDescr(final ColumnDescr descr) {
@@ -99,12 +99,12 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
         if ( !descr.getRestrictions().isEmpty() ) {
             processFieldConstraint( descr.getRestrictions() );
-        } 
-    }      
-    
+        }
+    }
+
     public void visitEvalDescr(final EvalDescr descr) {
         this.template = new String();
-        this.template = "<eval>" + descr.getText() + "</eval>" + XmlDumper.eol;
+        this.template = "<eval>" + replaceIllegalChars( descr.getText() ) + "</eval>" + XmlDumper.eol;
     }
 
     public void visitExistsDescr(final ExistsDescr descr) {
@@ -124,14 +124,15 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitFunctionDescr(final FunctionDescr functionDescr) {
         this.template = new String();
         final String parameterTemplate = processParameters( functionDescr.getParameterNames(),
-                                                      functionDescr.getParameterTypes() );
+                                                            functionDescr.getParameterTypes() );
 
-        this.template = "<function return-type=\"" + functionDescr.getReturnType() + "\" name=\"" + functionDescr.getName() + "\">" + XmlDumper.eol + parameterTemplate + "<body>" + XmlDumper.eol + functionDescr.getText() + XmlDumper.eol + "</body>" + XmlDumper.eol + "</function>" + XmlDumper.eol;
+        this.template = "<function return-type=\"" + functionDescr.getReturnType() + "\" name=\"" + functionDescr.getName() + "\">" + XmlDumper.eol + parameterTemplate + "<body>" + XmlDumper.eol + replaceIllegalChars( functionDescr.getText() ) + XmlDumper.eol + "</body>"
+                        + XmlDumper.eol + "</function>" + XmlDumper.eol;
     }
 
     public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
         this.template = new String();
-        this.template = "<literal-restriction evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" value=\"" + descr.getText() + "\" />" + XmlDumper.eol;
+        this.template = "<literal-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\" value=\"" + replaceIllegalChars( descr.getText() ) + "\" />" + XmlDumper.eol;
     }
 
     public void visitNotDescr(final NotDescr descr) {
@@ -155,8 +156,8 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitPackageDescr(final PackageDescr packageDescr) {
         final String packageName = packageDescr.getName();
-        final String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + XmlDumper.eol + " <package name=\"" + packageName + "\"  " + XmlDumper.eol + "\txmlns=\"http://drools.org/drools-3.0\" " + XmlDumper.eol + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol
-                           + "\txs:schemaLocation=\"http://drools.org/drools-3.0 drools-3.0.xsd\"> " + XmlDumper.eol;
+        final String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + XmlDumper.eol + " <package name=\"" + packageName + "\"  " + XmlDumper.eol + "\txmlns=\"http://drools.org/drools-3.0\" " + XmlDumper.eol
+                                 + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol + "\txs:schemaLocation=\"http://drools.org/drools-3.0 drools-3.0.xsd\"> " + XmlDumper.eol;
         appendXmlDump( xmlString );
         appendXmlDump( processImportsList( packageDescr.getImports() ) );
         appendXmlDump( processGlobalsMap( packageDescr.getGlobals() ) );
@@ -167,12 +168,12 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitPredicateDescr(final PredicateDescr descr) {
         this.template = new String();
-        this.template = "<predicate field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getDeclaration() + "\" >" + descr.getText() + "</predicate>" + XmlDumper.eol;
+        this.template = "<predicate field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getDeclaration() + "\" >" + replaceIllegalChars( descr.getText() ) + "</predicate>" + XmlDumper.eol;
     }
 
     public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
         this.template = new String();
-        this.template = "<return-value-restriction evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" >" + descr.getText() + "</return-value>" + XmlDumper.eol;
+        this.template = "<return-value-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\" >" + replaceIllegalChars( descr.getText() ) + "</return-value>" + XmlDumper.eol;
     }
 
     public void visitQueryDescr(final QueryDescr descr) {
@@ -196,7 +197,7 @@ public class XmlDumper extends ReflectiveVisitor
                 lhs = "<lhs> </lhs>";
             }
 
-            final String rhs = "<rhs>" + ruleDescr.getConsequence() + "</rhs>" + XmlDumper.eol;
+            final String rhs = "<rhs>" + replaceIllegalChars( ruleDescr.getConsequence() ) + "</rhs>" + XmlDumper.eol;
             rule += attribute;
             rule += lhs;
             rule += rhs;
@@ -206,19 +207,19 @@ public class XmlDumper extends ReflectiveVisitor
 
         return ruleList + XmlDumper.eol;
     }
-    
+
     private String processFieldConstraint(List list) {
         String descrString = "";
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object temp = it.next();
-            descrString += "<field-restrictions name=\"" +((FieldConstraintDescr) temp).getFieldName() + "\"> ";
+            descrString += "<field-restrictions name=\"" + ((FieldConstraintDescr) temp).getFieldName() + "\"> ";
             visit( temp );
-            descrString += "</field-restrictions>"; 
+            descrString += "</field-restrictions>";
             descrString += this.template;
         }
         return descrString.substring( 0,
                                       descrString.length() - 2 );
-    }      
+    }
 
     private String processDescrList(final List descr) {
         String descrString = "";
@@ -292,13 +293,30 @@ public class XmlDumper extends ReflectiveVisitor
     private void appendXmlDump(final String temp) {
         this.xmlDump.append( temp );
     }
-
-    private String getEvaluator(String eval) {
-
-        eval = eval.replaceAll( "<",
-                                "&lt;" );
-        eval = eval.replaceAll( ">",
-                                "&gt;" );
-        return eval;
-    }
+    
+    /**
+     * Replace illegal xml characters with their escaped equivalent
+      * <P>The escaped characters are :
+      * <ul>
+      * <li> <
+      * <li> >
+      * <li> &
+      * </ul>
+      * </p>
+     * @author <a href="mailto:prietor@gmail.com">Author Javier Prieto</a>
+     */
+    private String replaceIllegalChars(String code) {
+        StringBuffer sb = new StringBuffer();
+        int n = code.length();
+        for (int i = 0; i < n; i++) {
+           char c = code.charAt(i);
+           switch (c) {
+              case '<': sb.append("&lt;"); break;
+              case '>': sb.append("&gt;"); break;
+              case '&': sb.append("&amp;"); break;                   
+              default:  sb.append(c); break;
+           }
+        }
+        return sb.toString();
+    }    
 }

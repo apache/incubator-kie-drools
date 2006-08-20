@@ -9,8 +9,12 @@ rule "test MAIN 1"
     when
     	Cheese( )
     then
-		list.add( "MAIN" );
-		drools.setFocus( "agenda group 1" );
+        // lets also make sure that special chars are converted
+        if ( 3 < 4 && 4 > 3 ) {
+			list.add( "MAIN" );
+			drools.setFocus( "agenda group 1" );
+		}
+		
 end 
 
 rule "test group1 1"
@@ -29,7 +33,7 @@ rule "test group3 1"
     when
     	Cheese( )
     then    	
-		list.add( "3 1" );
+		list.add( "3 1" );		
 end 
 
 
