@@ -148,7 +148,7 @@ public class PackageBuilder {
         try {
             xmlReader.read( reader );
         } catch ( final SAXException e ) {
-            throw new DroolsParserException( e.getCause() );
+            throw new DroolsParserException( e.toString(), e.getCause() );
         }
 
         addPackage( xmlReader.getPackageDescr() );
