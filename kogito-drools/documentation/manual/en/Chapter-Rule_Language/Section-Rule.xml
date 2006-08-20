@@ -364,7 +364,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
         maybe null, using == and != as you would expect, and the literal
         "null" keyword, like: Cheese(type != null). Literal Constraints,
         specifically the '==' operator, provide for very fast execution as we
-        can use hasing to improve performance.</para>
+        can use hashing to improve performance.</para>
 
         <figure>
           <title>Literal Constraints</title>
@@ -539,7 +539,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
             </indexterm>Collection contains an object.</para>
 
           <example>
-            <title>Literal Cosntraints with Collections</title>
+            <title>Literal Constraints with Collections</title>
 
             <programlisting>CheeseCounter( cheeses contains "stilton" )
 CheeseCounter( cheeses excludes "chedder" )</programlisting>
@@ -555,7 +555,7 @@ CheeseCounter( cheeses excludes "chedder" )</programlisting>
             </indexterm>Collection does not contains an object.</para>
 
           <example>
-            <title>Literal Cosntraints with Collections</title>
+            <title>Literal Constraints with Collections</title>
 
             <programlisting>CheeseCounter( cheeses excludes "cheddar" )</programlisting>
           </example>
@@ -590,7 +590,7 @@ CheeseCounter( cheeses excludes "chedder" )</programlisting>
         <literal>'contains'</literal>. Valid operators are determined by the
         type of the field being constrained. Bound Variables, specifically the
         '==' and '=!' operators, provide for very fast execution as we can use
-        hasing to improve performance.</para>
+        hashing to improve performance.</para>
 
         <example>
           <title>Bound Field using '==' operator</title>

@@ -266,7 +266,7 @@ end</programlisting>
     ...
 }</programlisting>
 
-    <programlisting>public Class Module {
+    <programlisting>public class Module {
     private String name;
     private String studentName;
     private int score;</programlisting>
@@ -288,7 +288,7 @@ for ( Iterator studentIter = students.iterator(); studentIter.hasNext() {
     }
 }</programlisting>
 
-    <para>Early SQL implementations where not Turing complete as they did not
+    <para>Early SQL implementations were not Turing complete as they did not
     provide quantifiers to asses the structure of data. However modern SQL
     engines allow nesting of SQL which can be combined with keywords like
     'exists' and 'in': The following query would return a set of Students who
