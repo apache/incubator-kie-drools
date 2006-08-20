@@ -4,10 +4,17 @@ import org.drools.Cheese;
 
 global java.util.List list;
 
+function boolean testIllegalChars() {
+    return ( 3 < 4 && 4 > 3 );
+}
+
 rule "test MAIN 1"
 	salience  10
     when
-    	Cheese( )
+    	Cheese( $type : type -> ( 3 < 4 && 4 > 3 ),
+    	        price < ( new Integer( 100 ) ) )
+    	eval( 3 < 4 && 4 > 3 )
+        eval( testIllegalChars() )
     then
         // lets also make sure that special chars are converted
         if ( 3 < 4 && 4 > 3 ) {
