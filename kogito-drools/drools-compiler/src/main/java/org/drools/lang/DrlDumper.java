@@ -324,6 +324,10 @@ public class DrlDumper extends ReflectiveVisitor
 
     private String processParameters(final List parameterNames,
                                      final List parameterTypes) {
+        if ( parameterNames.isEmpty() ) {
+            return "";
+        }
+
         String paramList = "";
         int i = 0;
         for ( final Iterator it = parameterNames.iterator(); it.hasNext(); i++ ) {
