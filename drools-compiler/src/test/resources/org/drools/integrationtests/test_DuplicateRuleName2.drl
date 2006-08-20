@@ -1,0 +1,26 @@
+package Some_other_business_rules;
+#generated from Decision Table
+import org.drools.Cheese;
+import org.drools.Person;
+global java.util.List list;
+#From row number: 17
+rule "Cheese fans_17"
+ 
+ salience 65519
+ when
+  Person(age == 42)
+  Cheese(type=="stilton")
+ then
+  list.add("Old man stilton");
+end
+
+#From row number: 18
+rule "Cheese fans_18"
+ 
+ salience 65518
+ when
+  Person(age == 21)
+  Cheese(type=="cheddar")
+ then
+  list.add("Young man cheddar");
+end 
