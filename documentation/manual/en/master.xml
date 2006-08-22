@@ -48,10 +48,10 @@
 
   <title>Drools Manual</title>
 
-  <part>
+  <part id="Reference_Manual">
     <title>Reference Manual</title>
 
-    <chapter>
+    <chapter id="The_Rule_Engine">
       <title>The Rule Engine</title>
 
       <xi:include href="Chapter-Rule_Engine/Section-What_is_a_Rule_Engine.xml" />
@@ -75,7 +75,7 @@
       <xi:include href="Chapter-Rule_Engine/Section-Event_Model.xml" /-->
     </chapter>
 
-    <chapter>
+    <chapter id="Installation_and_Setup">
       <title>Installation and Setup</title>
 
       <xi:include href="Chapter-Install/Section-Install.xml" />
@@ -89,7 +89,7 @@
       <xi:include href="Chapter-Install/Section-Eclipse.xml" />
     </chapter>
 
-    <chapter>
+    <chapter id="The_Rule_Language">
       <title>The Rule Language</title>
 
       <xi:include href="Chapter-Rule_Language/Section-Overview.xml" />
@@ -115,19 +115,19 @@
       <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" /-->
     </chapter>
 
-    <chapter>
+    <chapter id="Decision_Tables">
       <title>Decision Tables</title>
 
       <xi:include href="Chapter-Decision_Tables/Section-Spreadsheet.xml" />
     </chapter>
 
-    <chapter>
+    <chapter id="The_Rule_Workbench">
       <title>The Rule Workbench (IDE)</title>
 
       <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
     </chapter>
 
-    <chapter>
+    <chapter id="JSR94">
       <title>The Java Rule Engine API</title>
 
       <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
@@ -141,19 +141,19 @@
       <xi:include href="Chapter-JSR94/Section-References.xml" />
     </chapter>
 
-    <chapter>
+    <chapter id="Performance_Tuning">
       <title>Performance tuning</title>
 
       <xi:include href="Chapter-Performance_Tuning/Section-Performance.xml" />
     </chapter>
 
-    <chapter>
+    <chapter id="Examples">
       <title>Examples</title>
 
       <xi:include href="Chapter-Examples/Section-Examples.xml" />
     </chapter>
 
-    <chapter>
+    <chapter id="Deployment_and_Testing">
       <title>Deployment and Testing</title>
 
       <xi:include href="Chapter-Deployment/Section-Deployment.xml" />
@@ -161,7 +161,7 @@
       <xi:include href="Chapter-Deployment/Section-Testing.xml" />
     </chapter>
 
-    <chapter>
+    <chapter id="Papers">
       <title>Papers</title>
 
       <xi:include href="Chapter-Papers/Section-Manners.xml" />
