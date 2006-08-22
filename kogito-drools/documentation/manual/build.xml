@@ -21,10 +21,10 @@
     <property name="docname"               value="drools"/>
 
     <!-- Set DocBook stylesheets. -->
-    <property name="db.style.fopdf"        value="fopdf.xsl"/>
-    <property name="db.style.eclipse"      value="eclipse.xsl"/>
-    <property name="db.style.html"         value="html_chunk.xsl"/>
-    <property name="db.style.htmlsingle"   value="html.xsl"/>
+    <property name="db.style.fopdf"        value="fopdf.xsl" />
+    <property name="db.style.eclipse"      value="eclipse.xsl" />
+    <property name="db.style.html"         value="html_chunk.xsl" />
+    <property name="db.style.htmlsingle"   value="html.xsl" />
 
     <!-- Classpath for the build tools. -->
     <path id="lib.classpath">
@@ -66,7 +66,7 @@
     <target name="lang.all">
         <!-- Compile the documentation for a single language in all formats. -->
         <antcall target="lang.misc"/>
-        <!--antcall target="lang.docpdf"/-->
+        <!--antcall target="lang.docpdf" /-->
         <antcall target="lang.dochtml"/>
         <antcall target="lang.dochtmlsingle"/>        
         <antcall target="lang.doceclipse"/>  
