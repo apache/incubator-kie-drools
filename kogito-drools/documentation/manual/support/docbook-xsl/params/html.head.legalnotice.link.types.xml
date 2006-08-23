@@ -1,0 +1,72 @@
+<refentry id="html.head.legalnotice.link.types">
+<refmeta>
+<refentrytitle>html.head.legalnotice.link.types</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>html.head.legalnotice.link.types</refname>
+<refpurpose>Specifies link types for legalnotice link in html head</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='html.head.legalnotice.link.types.frag'>
+<xsl:param name="html.head.legalnotice.link.types">copyright</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The value of
+<parameter>html.head.legalnotice.link.types</parameter> is a
+space-separated list of link types, as described in <ulink
+url="http://www.w3.org/TR/html401/types.html#type-links" >Section 6.12
+of the HTML 4.01 specification</ulink>. If the value of the
+<parameter>generate.legalnotice.link</parameter> parameter is
+non-zero, then the stylesheet generates (in the
+<literal>head</literal> section of the HTML source) either a single
+HTML <literal>link</literal> element or, if the value of the
+<parameter>html.head.legalnotice.link.multiple</parameter> is
+non-zero, one <literal>link</literal> element for each link type
+specified. Each <literal>link</literal> has the following attributes:
+
+<itemizedlist>
+  <listitem>
+    <para>a <sgmltag class="attribute">rel</sgmltag> attribute whose
+    value is derived from the value of
+    <parameter>html.head.legalnotice.link.types</parameter></para>
+  </listitem>
+  <listitem>
+    <para>an <sgmltag class="attribute">href</sgmltag> attribute whose
+    value is set to the URL of the file containing the
+    <sgmltag>legalnotice</sgmltag></para>
+  </listitem>
+  <listitem>
+    <para>a <sgmltag class="attribute">title</sgmltag> attribute whose
+    value is set to the title of the corresponding
+    <sgmltag>legalnotice</sgmltag> (or a title programatically
+    determined by the stylesheet)</para>
+  </listitem>
+</itemizedlist>
+
+For example:
+
+<screen>  &lt;link rel="license" href="ln-id2524073.html" title="Legal Notice"></screen>
+</para>
+
+<refsect2>
+  <title>About the default value</title>
+  <para>In an ideal world, the default value of
+  <parameter>html.head.legalnotice.link.types</parameter> would
+  probably be “<literal>license</literal>”, since the content of the
+  DocBook <sgmltag>legalnotice</sgmltag> is typically license
+  information, not copyright information. However, the default value
+  is “<literal>copyright</literal>” for pragmatic reasons: because
+  that’s among the set of “recognized link types” listed in <ulink
+  url="http://www.w3.org/TR/html401/types.html#type-links" >Section
+  6.12 of the HTML 4.01 specification</ulink>, and because certain
+  browsers and browser extensions are preconfigured to recognize that
+  value.</para>
+</refsect2>
+
+</refsect1>
+</refentry>

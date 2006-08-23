@@ -1,0 +1,23 @@
+<refentry id="generate.revhistory.link">
+<refmeta>
+<refentrytitle>generate.revhistory.link</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>generate.revhistory.link</refname>
+<refpurpose>Write revhistory to separate chunk and generate link?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='generate.revhistory.link.frag'><xsl:param name="generate.revhistory.link" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If non-zero, the contents of <tag>revhistory</tag> are written
+to a separate HTML file and a link to the file is
+generated. Otherwise, <tag>revhistory</tag> contents are rendered on
+the title page.</para>
+
+</refsect1>
+</refentry>

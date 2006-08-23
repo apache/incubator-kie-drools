@@ -1,0 +1,28 @@
+<refentry id="textdata.default.encoding">
+<refmeta>
+<refentrytitle>textdata.default.encoding</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>textdata.default.encoding</refname>
+<refpurpose>Default encoding of external text files which are included
+using textdata element</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='textdata.default.encoding.frag'>
+<xsl:param name="textdata.default.encoding" select="''"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>Default encoding of external text files which are included using
+textdata element. This value is used only when you do not specify
+encoding by appropriate attribute directly on textdata. Default
+encoding (empty string) is interpreted as system default
+encoding.</para>
+
+</refsect1>
+</refentry>
+

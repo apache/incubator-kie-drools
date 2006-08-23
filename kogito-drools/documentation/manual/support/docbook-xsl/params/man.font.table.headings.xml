@@ -1,0 +1,25 @@
+<refentry id="man.font.table.headings">
+<refmeta>
+<refentrytitle>man.font.table.headings</refentrytitle>
+
+</refmeta>
+<refnamediv>
+<refname>man.font.table.headings</refname>
+<refpurpose>Specifies font for table headings</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.font.table.headings.frag'>
+  <xsl:param name="man.font.table.headings">B</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The <parameter>man.font.table.headings</parameter> parameter
+specifies the font for <sgmltag>table</sgmltag> headings. It should be
+a valid roff font, such as <literal>B</literal> or
+<literal>I</literal>.</para>
+
+</refsect1>
+</refentry>

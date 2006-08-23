@@ -1,0 +1,51 @@
+<refentry id="man.charmap.enabled">
+<refmeta>
+<refentrytitle>man.charmap.enabled</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>man.charmap.enabled</refname>
+<refpurpose>Apply character map before final output?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.charmap.enabled.frag'>
+<xsl:param name="man.charmap.enabled" select="1"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If the value of the <parameter>man.charmap.enabled</parameter>
+parameter is non-zero, a "character map" is used to substitute certain
+Unicode symbols and special characters with appropriate roff/groff
+equivalents, just before writing each man-page file to the
+filesystem. If instead the value of
+<parameter>man.charmap.enabled</parameter> is zero, Unicode characters
+are passed through "as is".</para>
+
+<refsect2>
+<title>Details</title>
+<para>For converting certain Unicode symbols and special characters in
+UTF-8 or UTF-16 encoded XML source to appropriate groff/roff
+equivalents in man-page output, the DocBook XSL Stylesheets
+distribution includes a <ulink
+url="http://docbook.sourceforge.net/snapshot/xsl/manpages/charmap.groff.xsl"
+>roff character map</ulink> that is compliant with the <ulink
+url="http://www.w3.org/TR/xslt20/#character-maps" >XSLT character
+map</ulink> format as detailed in the XSLT 2.0 specification. The map
+contains more than 800 character mappings and can be considered the
+standard roff character map for the distribution.</para>
+
+<para>You can use the <parameter>man.charmap.uri</parameter>
+parameter to specify a URI for the location for an alternate roff
+character map to use in place of the standard roff character map
+provided in the distribution.</para>
+
+<para>You can also use a subset of a character map. For details, see
+the <parameter>man.charmap.use.subset</parameter> and
+<parameter>man.charmap.subset.profile</parameter> parameters.</para>
+
+</refsect2>
+</refsect1>
+</refentry>

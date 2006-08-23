@@ -1,0 +1,19 @@
+<refentry id="itemizedlist.label.width">
+<refnamediv>
+<refname>itemizedlist.label.width</refname>
+<refpurpose>The default width of the label (bullet) in an itemized list.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='itemizedlist.label.width.frag'>
+<xsl:param name="itemizedlist.label.width" select="'1.0em'"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+<para>Specifies the default width of the label (usually a bullet or other
+symbol) in an itemized list. You can override the default value on any
+particular list with the “dbfo” processing instruction using the
+“label-width” pseudoattribute.</para>
+</refsect1>
+</refentry>

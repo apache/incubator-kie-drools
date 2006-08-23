@@ -1,0 +1,111 @@
+<?xml version='1.0'?>
+<!--
+
+  Bakalarska prace: Zvyraznovani syntaxe v XSLT
+  Michal Molhanec 2005
+
+  php-hl.xml - konfigurace zvyraznovace jazyka PHP
+
+-->
+<highlighters>
+
+<highlighter type='multiline-comment'>
+  <start>/*</start>
+  <end>*/</end>
+</highlighter>
+
+<highlighter type='oneline-comment'>
+  //
+</highlighter>
+
+<highlighter type='oneline-comment'>
+  #
+</highlighter>
+
+<highlighter type='string'>
+  <string>"</string>
+  <escape>\</escape>
+</highlighter>
+
+<highlighter type='string'>
+  <string>'</string>
+  <escape>\</escape>
+</highlighter>
+
+<highlighter type='heredoc'>
+  <start>&lt;&lt;&lt;</start>
+</highlighter>
+
+<highlighter type='keywords'>
+  <keyword>and</keyword>
+  <keyword>or</keyword>
+  <keyword>xor</keyword>
+  <keyword>__FILE__</keyword>
+  <keyword>exception</keyword>
+  <keyword>__LINE__</keyword>
+  <keyword>array</keyword>
+  <keyword>as</keyword>
+  <keyword>break</keyword>
+  <keyword>case</keyword>
+  <keyword>class</keyword>
+  <keyword>const</keyword>
+  <keyword>continue</keyword>
+  <keyword>declare</keyword>
+  <keyword>default</keyword>
+  <keyword>die</keyword>
+  <keyword>do</keyword>
+  <keyword>echo</keyword>
+  <keyword>else</keyword>
+  <keyword>elseif</keyword>
+  <keyword>empty</keyword>
+  <keyword>enddeclare</keyword>
+  <keyword>endfor</keyword>
+  <keyword>endforeach</keyword>
+  <keyword>endif</keyword>
+  <keyword>endswitch</keyword>
+  <keyword>endwhile</keyword>
+  <keyword>eval</keyword>
+  <keyword>exit</keyword>
+  <keyword>extends</keyword>
+  <keyword>for</keyword>
+  <keyword>foreach</keyword>
+  <keyword>function</keyword>
+  <keyword>global</keyword>
+  <keyword>if</keyword>
+  <keyword>include</keyword>
+  <keyword>include_once</keyword>
+  <keyword>isset</keyword>
+  <keyword>list</keyword>
+  <keyword>new</keyword>
+  <keyword>print</keyword>
+  <keyword>require</keyword>
+  <keyword>require_once</keyword>
+  <keyword>return</keyword>
+  <keyword>static</keyword>
+  <keyword>switch</keyword>
+  <keyword>unset</keyword>
+  <keyword>use</keyword>
+  <keyword>var</keyword>
+  <keyword>while</keyword>
+  <keyword>__FUNCTION__</keyword>
+  <keyword>__CLASS__</keyword>
+  <keyword>__METHOD__</keyword>
+  <keyword>final</keyword>
+  <keyword>php_user_filter</keyword>
+  <keyword>interface</keyword>
+  <keyword>implements</keyword>
+  <keyword>extends</keyword>
+  <keyword>public</keyword>
+  <keyword>private</keyword>
+  <keyword>protected</keyword>
+  <keyword>abstract</keyword>
+  <keyword>clone</keyword>
+  <keyword>try</keyword>
+  <keyword>catch</keyword>
+  <keyword>throw</keyword>
+  <keyword>cfunction</keyword>
+  <keyword>old_function</keyword>
+  <ignoreCase/>
+</highlighter>
+
+</highlighters>

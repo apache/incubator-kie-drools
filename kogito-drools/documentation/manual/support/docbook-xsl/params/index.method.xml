@@ -1,0 +1,133 @@
+<refentry id="index.method">
+<refmeta>
+<refentrytitle>index.method</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>index.method</refname>
+<refpurpose>Select method used to group index entries in an index</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='index.method.frag'>
+<xsl:param name="index.method" select="'english'"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>This parameter lets you select which method should be
+used to sort and group index entries in an index.
+Indexes in languages that have accented characters typically
+sort together accented words and unaccented words.
+So <quote>&#xC1;</quote> (A acute) would sort together
+with <quote>A</quote>, so both would appear in the <quote>A</quote>
+section of the index.
+</para>
+
+<para>The default indexing method does not sort accented characters this way.
+Words that start with an accented character will instead appear in the
+<quote>Symbols</quote> section of the index.
+As such, the default method is only suitable for
+English and other unaccented languages.
+The other indexing methods require extensions of one type or
+another, which is why there are not used by default.</para>
+
+<para>The three choices for indexing method are:</para>
+<variablelist>
+<varlistentry>
+<term><literal>english</literal></term>
+<listitem>
+<para>
+(default)  Sort and groups words based only on the Latin alphabet.
+Accented words and words in non-Latin alphabets will be
+put in the <quote>Symbols</quote> section of the index.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>kosek</literal></term>
+<listitem>
+<para>
+Sort and groups words based on letter groups configured in
+the DocBook locale file for the given language.
+For example, the French locale file is <filename>common/fr.xml</filename>.
+This method requires support for EXSLT extensions in
+the XSL processor. It also requires support for using 
+user-defined functions in xsl:key (xsltproc does not).
+</para>
+<para>This method is suitable for any language for which you can
+list all the individual characters that should appear
+in each letter group in an index.
+It is probably not practical to use it for ideographic languages
+such as Chinese that have hundreds or thousands of characters.
+</para>
+<para>To use this method, your customization must set this
+parameter and import an additional stylesheet module:</para>
+<programlisting><![CDATA[<xsl:import href="[path-to-stylesheets]/common/autoidx-ng.xsl"/>
+<xsl:param name="index.method">kosek</xsl:param>
+]]>
+</programlisting>
+<para>The stylesheet module defines functions and adds an xsl:key
+used by the method.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>kimber</literal></term>
+<listitem>
+<para>
+This method uses extensions to the Saxon processor to implement
+sophisticated indexing processes.  It uses its own 
+configuration file, which can include information for any number of
+languages.  Each language's configuration can group
+words using either an
+enumerated method similar to the kosek method, or it can
+designate the first character in each group when viewed in sort order.
+The latter configuration is useful for ideographic languages
+such as Chinese, Japanese, and Korean.
+You can also define your own collation algorithms and where you
+want Latin-alphabet words sorted.</para>
+<itemizedlist>
+<listitem>
+<para>For a whitepaper describing the extensions, see:
+<ulink url="http://www.innodata-isogen.com/knowledge_center/white_papers/back_of_book_for_xsl_fo.pdf"/>.
+</para>
+</listitem>
+<listitem>
+<para>To download the extension library, see
+<ulink url="http://www.innodata-isogen.com/knowledge_center/tools_downloads/i18nsupport"/>.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>To use this method, you must:</para>
+
+<orderedlist>
+<listitem>
+<para>Use Saxon as your XSLT processor.
+</para>
+</listitem>
+<listitem>
+<para>Install and configure the Innodata Isogen library, using
+the documentation that comes with it.
+</para>
+</listitem>
+<listitem>
+<para>Set this parameter's value to <quote>kimber</quote>.
+</para>
+</listitem>
+<listitem>
+<para>Import the index extensions stylesheet module
+<filename>common/autoidx-ng.xsl</filename> into your
+customization.
+</para>
+</listitem>
+</orderedlist>
+
+</listitem>
+</varlistentry>
+</variablelist>
+
+</refsect1>
+</refentry>

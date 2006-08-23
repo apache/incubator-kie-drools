@@ -1,0 +1,23 @@
+<refentry id="index.prefer.titleabbrev">
+<refmeta>
+<refentrytitle>index.prefer.titleabbrev</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>index.prefer.titleabbrev</refname>
+<refpurpose>Should be abbreviated titles used as back references</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='index.prefer.titleabbrev.frag'>
+<xsl:param name="index.prefer.titleabbrev" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>FIXME:
+</para>
+
+</refsect1>
+</refentry>

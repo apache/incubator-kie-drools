@@ -1,0 +1,30 @@
+<refentry id="man.links.list.heading">
+<refmeta>
+<refentrytitle>man.links.list.heading</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>man.links.list.heading</refname>
+<refpurpose>Specifies an alternate name for links list</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.links.list.heading.frag'>
+<xsl:param name="man.links.list.heading" select="''"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If the value of the
+<parameter>man.links.are.numbered</parameter> parameter and/or the
+<parameter>man.links.list.enabled</parameter> parameter is non-zero
+(the defaults for both are non-zero), a numbered list of URLs is
+generated near the end of each man page. The default section heading
+for the list of links is the equivalent of the English word
+<literal>REFERENCES</literal> in the current locale. To cause an
+alternate heading to be displayed, set a non-empty value for the
+<parameter>man.links.list.heading</parameter> parameter -- for
+example, <literal>LINKS</literal>.</para>
+</refsect1>
+</refentry>

@@ -1,0 +1,34 @@
+<refentry id="component.label.includes.part.label">
+<refmeta>
+<refentrytitle>component.label.includes.part.label</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>component.label.includes.part.label</refname>
+<refpurpose>Do component labels include the part label?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='component.label.includes.part.label.frag'><xsl:param name="component.label.includes.part.label" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If true (non-zero), number labels for chapters, appendices, and other component
+elements are prefixed with the label of the
+part element that contains them.
+So you might see Chapter II.3 instead of Chapter 3.
+Also, the labels for formal elements such as table and figure will
+include the part label.
+If there is no part element container, then no prefix is generated.
+</para>
+<para>
+This feature is most useful when the
+<literal>label.from.part</literal> parameter is turned on.
+In that case, there would be more than one chapter
+<quote>1</quote>, and the extra part label prefix will identify
+each chapter unambiguously.
+</para>
+
+</refsect1>
+</refentry>

@@ -1,0 +1,32 @@
+<refentry id="body.end.indent">
+<refmeta>
+<refentrytitle>body.end.indent</refentrytitle>
+
+</refmeta>
+<refnamediv>
+<refname>body.end.indent</refname>
+<refpurpose>The end-indent for the body text</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='body.end.indent.frag'>
+<xsl:param name="body.end.indent" select="'0pt'"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>This end-indent property is added to the fo:flow
+for certain page sequences.  Which page-sequences it is 
+applied to is determined by the template named
+<literal>set.flow.properties</literal>.
+By default, that template adds it to the flow
+for page-sequences using the <quote>body</quote>
+master-reference, as well as appendixes and prefaces.
+</para>
+
+<para>See also <parameter>body.start.indent</parameter>.
+</para>
+
+</refsect1>
+</refentry>

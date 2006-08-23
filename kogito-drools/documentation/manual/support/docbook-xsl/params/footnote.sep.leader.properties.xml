@@ -1,0 +1,30 @@
+<refentry id="footnote.sep.leader.properties">
+<refnamediv>
+<refname>footnote.sep.leader.properties</refname>
+<refpurpose>Properties associated with a procedure</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='footnote.sep.leader.properties.frag'>
+<xsl:attribute-set name="footnote.sep.leader.properties">
+  <xsl:attribute name="color">black</xsl:attribute>
+  <xsl:attribute name="leader-pattern">rule</xsl:attribute>
+  <xsl:attribute name="leader-length">1in</xsl:attribute>
+</xsl:attribute-set>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The styling for the rule line that separates the
+footnotes from the body text.
+These are properties applied to the fo:leader used as
+the separator.
+</para>
+<para>If you want to do more than just set properties on
+the leader element, then you can customize the template
+named <literal>footnote.separator</literal> in 
+<filename>fo/pagesetup.xsl</filename>.</para>
+
+</refsect1>
+</refentry>

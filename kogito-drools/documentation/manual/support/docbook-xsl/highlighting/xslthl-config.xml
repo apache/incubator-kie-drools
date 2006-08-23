@@ -1,0 +1,19 @@
+<?xml version='1.0'?>
+<!--
+
+  Bakalarska prace: Zvyraznovani syntaxe v XSLT
+  Michal Molhanec 2005
+
+  xslthl-config.xml - konfigurace zvyraznovacu
+
+-->
+
+<xslthl-config>
+  <highlighter id='java'   file='./java-hl.xml'  />
+  <highlighter id='delphi' file='./delphi-hl.xml'/>
+  <highlighter id='ini'    file='./ini-hl.xml'   />
+  <highlighter id='php'    file='./php-hl.xml'   />
+  <highlighter id='myxml'  file='./myxml-hl.xml' />
+  <highlighter id='m2'     file='./m2-hl.xml'    />
+  <namespace prefix="xslthl" uri="http://xslthl.sf.net" />
+</xslthl-config>

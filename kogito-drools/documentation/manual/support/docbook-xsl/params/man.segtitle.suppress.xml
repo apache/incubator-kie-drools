@@ -1,0 +1,23 @@
+<refentry id="man.segtitle.suppress">
+<refmeta>
+<refentrytitle>man.segtitle.suppress</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>man.segtitle.suppress</refname>
+<refpurpose>Suppress display of segtitle contents?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.segtitle.suppress.frag'>
+<xsl:param name="man.segtitle.suppress" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If the value of <parameter>man.segtitle.suppress</parameter> is
+non-zero, then display of <sgmltag>segtitle</sgmltag> contents is
+suppressed in output.</para>
+
+</refsect1>
+</refentry>

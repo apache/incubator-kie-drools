@@ -1,0 +1,59 @@
+<refentry id="title.margin.left">
+<refmeta>
+<refentrytitle>title.margin.left</refentrytitle>
+<refmiscinfo role="type"></refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>title.margin.left</refname>
+<refpurpose>Adjust the left margin for titles</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='title.margin.left.frag'>
+<xsl:param name="title.margin.left">
+  <xsl:choose>
+    <xsl:when test="$fop.extensions != 0">-4pc</xsl:when>
+    <xsl:when test="$passivetex.extensions != 0">0pt</xsl:when>
+    <xsl:otherwise>0pt</xsl:otherwise>
+  </xsl:choose>
+</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>This parameter provides
+one means of adjusting the left margin for titles.
+The left margin of the body region
+is calculated to include this space,
+and titles are outdented to the left by this amount,
+effectively leaving titles at the left margin
+and the body text indented.
+Currently this method is only used for FOP because
+it cannot properly use the <parameter>body.start.indent</parameter>
+parameter.
+the relative 
+</para>
+<para>
+The default value for FOP is -4pc, which means the
+body text is indented 4 picas relative to
+the titles.
+The default value for other processors is 0pt, and
+the body indent is provided by the <parameter>body.start.indent</parameter>
+parameter.
+</para>
+<para>
+If you set the value to zero, be sure to still include
+a unit indicator such as <literal>0pt</literal>, or
+the FO processor will report errors.
+</para>
+<para>
+This parameter must be set to 0pt if the
+<parameter>passivetex.extensions</parameter>
+parameter is nonzero because PassiveTeX cannot handle
+the math expression with negative values 
+used to calculate the indents.
+</para>
+
+</refsect1>
+</refentry>

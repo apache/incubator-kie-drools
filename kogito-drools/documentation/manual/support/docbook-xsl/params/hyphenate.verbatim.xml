@@ -1,0 +1,42 @@
+<refentry id="hyphenate.verbatim">
+<refmeta>
+<refentrytitle>hyphenate.verbatim</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>hyphenate.verbatim</refname>
+<refpurpose>Should verbatim environments be hyphenated on space characters?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='hyphenate.verbatim.frag'><xsl:param name="hyphenate.verbatim" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If the lines of program listing are too long to fit into one
+line it is quite common to split them at space and indicite by hook
+arrow that code continues on the next line. You can turn on this
+behaviour for <sgmltag>programlisting</sgmltag>,
+<sgmltag>screen</sgmltag> and <sgmltag>synopsis</sgmltag> elements by
+using this parameter.</para>
+
+<para>Note that you must also enable line wrapping for verbatim environments and
+select appropriate hyphenation character (e.g. hook arrow). This can
+be done using <parameter>monospace.verbatim.properties</parameter>
+attribute set:</para>
+
+<programlisting><![CDATA[<xsl:attribute-set name="monospace.verbatim.properties" 
+                   use-attribute-sets="verbatim.properties monospace.properties">
+  <xsl:attribute name="wrap-option">wrap</xsl:attribute>
+  <xsl:attribute name="hyphenation-character">&#x25BA;</xsl:attribute>
+</xsl:attribute-set>]]></programlisting>
+
+<para>For a list of arrows available in Unicode see <ulink
+url="http://www.unicode.org/charts/PDF/U2190.pdf"/> and <ulink
+url="http://www.unicode.org/charts/PDF/U2900.pdf"/> and make sure that
+selected character is available in the font you are using for verbatim
+environments.</para>
+
+</refsect1>
+</refentry>
