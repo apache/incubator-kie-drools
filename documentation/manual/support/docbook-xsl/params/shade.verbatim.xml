@@ -1,0 +1,25 @@
+<refentry id="shade.verbatim">
+<refmeta>
+<refentrytitle>shade.verbatim</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>shade.verbatim</refname>
+<refpurpose>Should verbatim environments be shaded?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='shade.verbatim.frag'><xsl:param name="shade.verbatim" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>In the FO stylesheet, if this parameter is non-zero then the
+<property>shade.verbatim.style</property> properties will be applied
+to verbatim environments.</para>
+
+<para>In the HTML stylesheet, this parameter is now deprecated. Use
+CSS instead.</para>
+
+</refsect1>
+</refentry>

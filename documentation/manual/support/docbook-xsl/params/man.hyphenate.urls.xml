@@ -1,0 +1,41 @@
+<refentry id="man.hyphenate.urls">
+<refmeta>
+<refentrytitle>man.hyphenate.urls</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>man.hyphenate.urls</refname>
+<refpurpose>Hyphenate URLs?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.hyphenate.urls.frag'>
+<xsl:param name="man.hyphenate.urls">0</xsl:param></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If zero (the default), hyphenation is suppressed for output of
+the <tag>ulink</tag> <tag class="attribute">url</tag> attribute.</para>
+
+<note>
+  <para>If hyphenation is already turned off globally (that is, if
+  <parameter>man.hyphenate</parameter> is zero, setting
+  <parameter>man.hyphenate.urls</parameter> is not necessary.</para>
+</note>
+
+<para>If <parameter>man.hyphenate.urls</parameter> is non-zero, URLs
+will not be treated specially and are subject to hyphenation just like
+other words.</para>
+
+<note>
+  <para>If you are thinking about setting a non-zero value for
+  <parameter>man.hyphenate.urls</parameter> in order to make long
+  URLs break across lines, you'd probably be better off
+  experimenting with setting the
+  <parameter>man.break.after.slash</parameter> parameter first. That
+  will cause long URLs to be broken after slashes.</para>
+</note>
+
+</refsect1>
+</refentry>

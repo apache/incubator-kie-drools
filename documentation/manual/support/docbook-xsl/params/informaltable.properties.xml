@@ -1,0 +1,24 @@
+<refentry id="informaltable.properties">
+<refnamediv>
+<refname>informaltable.properties</refname>
+<refpurpose>Properties associated with the block surrounding an informaltable</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='informaltable.properties.frag'>
+<xsl:attribute-set name="informaltable.properties"
+		   use-attribute-sets="informal.object.properties"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>Block styling properties for informaltables. This parameter should really
+have been called <literal>informaltable.block.properties</literal> or something
+like that, but we’re leaving it to avoid backwards-compatibility
+problems.</para>
+
+<para>See also <parameter>table.table.properties</parameter>.</para>
+
+</refsect1>
+</refentry>

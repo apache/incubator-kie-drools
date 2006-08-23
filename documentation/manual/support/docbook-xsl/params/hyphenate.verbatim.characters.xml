@@ -1,0 +1,23 @@
+<refentry id="hyphenate.verbatim.characters">
+<refmeta>
+<refentrytitle>hyphenate.verbatim.characters</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>hyphenate.verbatim.characters</refname>
+<refpurpose>List of characters after which line break can occur in listings</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='hyphenate.verbatim.characters.frag'><xsl:param name="hyphenate.verbatim.characters" select="''"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If you enable <parameter>hyphenate.verbatim</parameter> line
+breaks are allowed only on space characters. If this is not enough for
+your document, you can specify list of additional characters after
+which line break is allowed in this parameter.</para>
+
+</refsect1>
+</refentry>

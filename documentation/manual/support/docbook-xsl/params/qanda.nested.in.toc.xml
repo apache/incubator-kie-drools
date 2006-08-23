@@ -1,0 +1,22 @@
+<refentry id="qanda.nested.in.toc">
+<refmeta>
+<refentrytitle>qanda.nested.in.toc</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>qanda.nested.in.toc</refname>
+<refpurpose>Should nested answer/qandaentry instances appear in TOC?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='qanda.nested.in.toc.frag'><xsl:param name="qanda.nested.in.toc" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If true (non-zero), instances of <sgmltag>qandaentry</sgmltag>
+that are children of <sgmltag>answer</sgmltag> elements are shown in
+the TOC.</para>
+
+</refsect1>
+</refentry>

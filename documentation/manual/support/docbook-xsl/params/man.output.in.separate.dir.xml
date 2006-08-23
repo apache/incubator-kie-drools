@@ -1,0 +1,27 @@
+<refentry id="man.output.in.separate.dir">
+<refmeta>
+<refentrytitle>man.output.in.separate.dir</refentrytitle>
+
+</refmeta>
+<refnamediv>
+<refname>man.output.in.separate.dir</refname>
+<refpurpose>Output man-page files in separate output directory?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.output.in.separate.dir.frag'>
+<xsl:param name="man.output.in.separate.dir" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If the value of <literal>man.output.in.separate.dir</literal>
+parameter is non-zero, man-page files are output in a separate
+directory, specified by the <parameter>man.output.base.dir</parameter>
+parameter; otherwise, if the value of
+<literal>man.output.in.separate.dir</literal> is zero, man-page files
+are not output in a separate directory.</para>
+
+</refsect1>
+</refentry>

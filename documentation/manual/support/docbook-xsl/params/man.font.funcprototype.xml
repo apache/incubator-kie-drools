@@ -1,0 +1,25 @@
+<refentry id="man.font.funcprototype">
+<refmeta>
+<refentrytitle>man.font.funcprototype</refentrytitle>
+
+</refmeta>
+<refnamediv>
+<refname>man.font.funcprototype</refname>
+<refpurpose>Specifies font for funcprototype output</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.font.funcprototype.frag'>
+  <xsl:param name="man.font.funcprototype">BI</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The <parameter>man.font.funcprototype</parameter> parameter
+specifies the font for <sgmltag>funcprototype</sgmltag> output. It
+should be a valid roff font name, such as <literal>BI</literal> or
+<literal>B</literal>.</para>
+
+</refsect1>
+</refentry>

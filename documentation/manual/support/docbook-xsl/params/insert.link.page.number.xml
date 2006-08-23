@@ -1,0 +1,61 @@
+<refentry id="insert.link.page.number">
+<refmeta>
+<refentrytitle>insert.link.page.number</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>insert.link.page.number</refname>
+<refpurpose>Turns page numbers in link elements on and off</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='insert.link.page.number.frag'>
+<xsl:param name="insert.link.page.number">no</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The value of this parameter determines if
+cross references using the <sgmltag>link</sgmltag> element in
+printed output will
+include standard page number citations.
+It has three possible values.
+</para>
+<variablelist>
+<varlistentry>
+<term>no</term>
+<listitem><para>No page number references will be generated.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>yes</term>
+<listitem><para>Page number references will be generated
+for all <sgmltag>link</sgmltag> elements.
+The style of page reference may be changed
+if an <sgmltag class="attribute">xrefstyle</sgmltag>
+attribute is used.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>maybe</term>
+<listitem><para>Page number references will not be generated
+for a <sgmltag>link</sgmltag> element unless 
+it has an
+<sgmltag class="attribute">xrefstyle</sgmltag>
+attribute whose value specifies a page reference.
+</para></listitem>
+</varlistentry>
+</variablelist>
+
+<para>Although the <sgmltag>xrefstyle</sgmltag> attribute
+can be used to turn the page reference on or off, it cannot be
+used to control the formatting of the page number as it
+can in <sgmltag>xref</sgmltag>.
+In <sgmltag>link</sgmltag> it will always format with
+the style established by the
+gentext template with <literal>name="page.citation"</literal>
+in the <literal>l:context name="xref"</literal>.
+</para>
+</refsect1>
+</refentry>

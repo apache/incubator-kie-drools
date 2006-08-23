@@ -1,0 +1,23 @@
+<refentry id="olink.properties">
+<refnamediv>
+<refname>olink.properties</refname>
+<refpurpose>Properties associated with the cross-reference 
+text of an olink.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='olink.properties.frag'>
+<xsl:attribute-set name="olink.properties">
+</xsl:attribute-set>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>This attribute set is used on cross reference text
+from an olink. It is not applied to the
+optional page number or 
+optional title of the external document.</para>
+
+</refsect1>
+</refentry>

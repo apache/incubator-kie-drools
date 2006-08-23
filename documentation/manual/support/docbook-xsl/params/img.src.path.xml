@@ -1,0 +1,31 @@
+<refentry id="img.src.path">
+<refmeta>
+<refentrytitle>img.src.path</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>img.src.path</refname>
+<refpurpose>Path to HTML image files</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='img.src.path.frag'><xsl:param name="img.src.path"></xsl:param></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>Add a path prefix to each HTML
+<sgmltag class="element">img</sgmltag> or FO 
+<sgmltag class="element">fo:external-graphics</sgmltag> element's
+<sgmltag class="attribute">src</sgmltag> attribute.
+This path could relative to the directory where the HTML/FO
+files are created, or it could be an absolute URI.
+The default value is empty.
+Be sure to include a trailing slash if needed.
+</para>
+<para>This prefix is not applied to any filerefs that start
+with "/" or contain "//:".
+</para>
+
+</refsect1>
+</refentry>

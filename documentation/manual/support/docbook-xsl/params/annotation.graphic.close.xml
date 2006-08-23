@@ -1,0 +1,24 @@
+<refentry id="annotation.graphic.close">
+<refmeta>
+<refentrytitle>annotation.graphic.close</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>annotation.graphic.close</refname>
+<refpurpose>Enable annotations?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='annotation.graphic.close.frag'>
+<xsl:param name="annotation.graphic.close"
+   select="'http://docbook.sourceforge.net/release/images/annot-close.png'"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>This image is used on popup annotations as the “x” that the
+user can click to dismiss the popup.</para>
+
+</refsect1>
+</refentry>

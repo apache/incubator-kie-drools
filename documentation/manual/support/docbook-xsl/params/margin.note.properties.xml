@@ -1,0 +1,49 @@
+<refentry id="margin.note.properties">
+<refmeta>
+<refentrytitle>margin.note.properties</refentrytitle>
+<refmiscinfo role="type">attribute set</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>margin.note.properties</refname>
+<refpurpose>Attribute set for margin.note properties</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='margin.note.properties.frag'>
+<xsl:attribute-set name="margin.note.properties">
+  <xsl:attribute name="font-size">90%</xsl:attribute>
+  <xsl:attribute name="text-align">start</xsl:attribute>
+</xsl:attribute-set>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The styling for margin notes.
+By default, margin notes are not implemented for any
+element. A stylesheet customization is needed to make
+use of this attribute-set.</para>
+
+<para>You can use a template named <quote>floater</quote>
+to create the customization.
+That template can create side floats by specifying the
+content and characteristics as template parameters.
+</para>
+
+<para>For example:</para>
+<programlisting><![CDATA[<xsl:template match="para[@role='marginnote']">
+  <xsl:call-template name="floater">
+    <xsl:with-param name="position">
+      <xsl:value-of select="$margin.note.float.type"/>
+    </xsl:with-param>
+    <xsl:with-param name="width">
+      <xsl:value-of select="$margin.note.width"/>
+    </xsl:with-param>
+    <xsl:with-param name="content">
+      <xsl:apply-imports/>
+    </xsl:with-param>
+  </xsl:call-template>
+</xsl:template>]]></programlisting>
+
+</refsect1>
+</refentry>

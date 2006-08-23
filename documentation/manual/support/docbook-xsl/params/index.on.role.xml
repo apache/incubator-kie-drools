@@ -1,0 +1,43 @@
+<refentry id="index.on.role">
+<refmeta>
+<refentrytitle>index.on.role</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>index.on.role</refname>
+<refpurpose>Select indexterms based on role value</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='index.on.role.frag'>
+<xsl:param name="index.on.role" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>
+If non-zero, 
+then an <sgmltag>index</sgmltag> element that has a
+<sgmltag>role</sgmltag> attribute
+value will contain only those <sgmltag>indexterm</sgmltag>
+elements with a matching role value.
+If an <sgmltag>index</sgmltag> has no <sgmltag>role</sgmltag>
+attribute or it is blank, then the index will contain
+all <sgmltag>indexterm</sgmltag>s in the current scope.
+</para>
+<para>
+If <literal>index.on.role</literal> is zero, then the
+<sgmltag>role</sgmltag> attribute has no effect
+on selecting indexterms for an index.
+</para>
+
+<para>If you are using DocBook version 4.3 or later, you should
+use the <sgmltag>type</sgmltag> attribute instead of <sgmltag>role</sgmltag>
+on <sgmltag>indexterm</sgmltag> and <sgmltag>index</sgmltag>,
+and set the <parameter>index.on.type</parameter> to a nonzero
+value.
+</para>
+
+</refsect1>
+</refentry>

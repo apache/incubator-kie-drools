@@ -1,0 +1,18 @@
+<refentry id="informalequation.properties">
+<refnamediv>
+<refname>informalequation.properties</refname>
+<refpurpose>Properties associated with a informalequation</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='informalequation.properties.frag'>
+<xsl:attribute-set name="informalequation.properties" use-attribute-sets="informal.object.properties"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The styling for informalequations.</para>
+
+</refsect1>
+</refentry>

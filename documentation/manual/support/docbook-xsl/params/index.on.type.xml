@@ -1,0 +1,47 @@
+<refentry id="index.on.type">
+<refmeta>
+<refentrytitle>index.on.type</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>index.on.type</refname>
+<refpurpose>Select indexterms based on <sgmltag>type</sgmltag>
+attribute value</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='index.on.type.frag'>
+<xsl:param name="index.on.type" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>
+If non-zero, 
+then an <sgmltag>index</sgmltag> element that has a
+<sgmltag>type</sgmltag> attribute
+value will contain only those <sgmltag>indexterm</sgmltag>
+elements with a matching <sgmltag>type</sgmltag> attribute value.
+If an <sgmltag>index</sgmltag> has no <sgmltag>type</sgmltag>
+attribute or it is blank, then the index will contain
+all <sgmltag>indexterm</sgmltag>s in the current scope.
+</para>
+
+<para>
+If <literal>index.on.type</literal> is zero, then the
+<sgmltag>type</sgmltag> attribute has no effect
+on selecting indexterms for an index.
+</para>
+
+<para>For those using DocBook version 4.2 or earlier,
+the <sgmltag>type</sgmltag> attribute is not available
+for index terms.  However, you can achieve the same
+effect by using the <sgmltag>role</sgmltag> attribute
+in the same manner on <sgmltag>indexterm</sgmltag>
+and <sgmltag>index</sgmltag>, and setting the stylesheet parameter 
+<parameter>index.on.role</parameter> to a nonzero value.
+</para>
+
+</refsect1>
+</refentry>
