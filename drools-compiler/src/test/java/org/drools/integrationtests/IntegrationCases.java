@@ -2729,6 +2729,35 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
+    public void testTwoQuerries() throws Exception {
+        // @see JBRULES-410 More than one Query definition causes an incorrect Rete network to be built.
+        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_TwoQuerries.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final Cheese stilton = new Cheese( "stinky",
+                                     5 );
+        workingMemory.assertObject( stilton );
+        final Person per1 = new Person( "stinker", "smelly feet", 70);
+        final Person per2 = new Person( "skunky", "smelly armpits", 40);
+        
+        workingMemory.assertObject( per1 );
+        workingMemory.assertObject( per2 );
+        
+        QueryResults results = workingMemory.getQueryResults( "find stinky cheeses" );
+        assertEquals( 1,
+                      results.size() );
+        
+        results = workingMemory.getQueryResults( "find pensioners" );
+        assertEquals( 1,
+                      results.size() );        
+    }    
+    
     public void testExistsWithBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( 
