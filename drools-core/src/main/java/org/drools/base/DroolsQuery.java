@@ -28,4 +28,23 @@ public class DroolsQuery {
         return this.name;
     }
 
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        
+        final DroolsQuery other = (DroolsQuery) object;
+        return name.equals(other.name);
+    }       
 }
