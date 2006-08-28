@@ -22,6 +22,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaNodeBinder;
+import org.drools.common.InstanceEqualsConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.FieldConstraint;
 
@@ -114,9 +115,9 @@ public class BetaMemoryFactory {
         final FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
         if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_RIGHT_BETA_MEMORY )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
+                BetaRightMemory innerMemory = null;
                 if ( constraints[i] instanceof VariableConstraint ) {
                     final VariableConstraint bvc = (VariableConstraint) constraints[i];
-                    BetaRightMemory innerMemory = null;
                     ValueType valueType = bvc.getEvaluator().getValueType();
                     if ( valueType == ValueType.BOOLEAN_TYPE ) {
                         if ( valueType == ValueType.BOOLEAN_TYPE ) {
@@ -136,20 +137,22 @@ public class BetaMemoryFactory {
                                                                                bvc.getEvaluator() );
                         }
                     }
-
-                    if ( innerMemory != null ) {
-                        if ( innerMostMemory != null ) {
-                            try {
-                                innerMostMemory.setInnerMemory( innerMemory );
-                                innerMostMemory = innerMemory;
-                            } catch ( final OperationNotSupportedException e ) {
-                                throw new RuntimeException( "BUG: Exception was not supposed to be raised",
-                                                            e );
-                            }
-                        } else {
-                            memory = innerMemory;
-                            innerMostMemory = memory;
+                } else if ( constraints[i] instanceof InstanceEqualsConstraint ) {
+                    final InstanceEqualsConstraint iec = (InstanceEqualsConstraint) constraints[i];
+                    innerMemory = new InstanceEqualConstrRightMemory( iec.getOtherColumn() );
+                }
+                if ( innerMemory != null ) {
+                    if ( innerMostMemory != null ) {
+                        try {
+                            innerMostMemory.setInnerMemory( innerMemory );
+                            innerMostMemory = innerMemory;
+                        } catch ( final OperationNotSupportedException e ) {
+                            throw new RuntimeException( "BUG: Exception was not supposed to be raised",
+                                                        e );
                         }
+                    } else {
+                        memory = innerMemory;
+                        innerMostMemory = memory;
                     }
                 }
             }

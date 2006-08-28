@@ -47,6 +47,10 @@ public class InstanceEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
+    
+    public int getOtherColumn() {
+        return this.otherColumn;
+    }
 
     public boolean isAllowed(final Object object,
                              final Tuple tuple,
