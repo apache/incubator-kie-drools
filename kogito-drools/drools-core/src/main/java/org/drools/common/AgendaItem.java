@@ -45,7 +45,7 @@ public class AgendaItem
     /**
      * 
      */
-    private static final long        serialVersionUID = -4040142320609432740L;
+    private static final long        serialVersionUID = 320L;
 
     /** The tuple. */
     private final Tuple              tuple;

@@ -44,7 +44,7 @@ public class ScheduledAgendaItem extends TimerTask
     /**
      * 
      */
-    private static final long        serialVersionUID = -860479286586425918L;
+    private static final long        serialVersionUID = 320L;
 
     private LinkedListNode           previous;
 

@@ -18,6 +18,7 @@ package org.drools.util;
 
 import java.lang.reflect.Method;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.Visitor;
 
 /**
@@ -45,7 +46,7 @@ public abstract class ReflectiveVisitor
                                (Object[]) null );
             }
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            throw new RuntimeDroolsException(e.toString() + " : " + object, e.getCause());
         }
     }
 
@@ -86,7 +87,7 @@ public abstract class ReflectiveVisitor
             } catch ( final Exception e ) {
                 // Shouldn't happen as long as all Visitors extend this class
                 // and this class continues to implement visitObject(Object).
-                e.printStackTrace();
+                throw new RuntimeDroolsException(e.toString() + " : " + clazz, e.getCause());
             }
         }
         return method;
