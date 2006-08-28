@@ -6,7 +6,6 @@
 	import java.util.Iterator;
 	import java.util.StringTokenizer;
 	import org.drools.lang.descr.*;
-	import org.drools.base.dataproviders.ArgumentValueDescr;
 
 
 import org.antlr.runtime.*;

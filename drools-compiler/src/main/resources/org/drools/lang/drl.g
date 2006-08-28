@@ -6,8 +6,9 @@ grammar RuleParser;
 	import java.util.ArrayList;
 	import java.util.Iterator;
 	import java.util.StringTokenizer;
+	import java.util.Map;
+	import java.util.HashMap;
 	import org.drools.lang.descr.*;
-	import org.drools.base.dataproviders.ArgumentValueDescr;
 }
 
 @parser::members {
@@ -775,20 +776,42 @@ argument_list returns [ArrayList args]
 		)*
 		)?
 	;
-	
+	        	
 argument_value returns [ArgumentValueDescr value]
 	@init {
 		value = null;
-		String text = null;
+		Object text = null;
 	}
-	:	(	t=STRING { text = getString( t );  value=new ArgumentValueDescr(ArgumentValueDescr.STRING, text);} 
-		|	t=INT    { text = t.getText();  value=new ArgumentValueDescr(ArgumentValueDescr.INTEGRAL, text);}
+	:	(	t=STRING { text = getString( t );  value=new ArgumentValueDescr(ArgumentValueDescr.STRING, text); } 
+		|	t=INT    { text = t.getText();  value=new ArgumentValueDescr(ArgumentValueDescr.INTEGRAL, text); }
 		|	t=FLOAT	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.DECIMAL, text); }
 		|	t=BOOL 	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.BOOLEAN, text); }
-		|	t=ID { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text);}	
-		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}	
+		|	t=ID { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text); }	
+		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text); }			
+		|   m=map { value=new ArgumentValueDescr(ArgumentValueDescr.MAP, m.getPairs() }; }
 		)
 	;			
+
+map returns [ArgumentValueDescr.MapPairDescr mapDescr]
+    @init {
+        mapDescr = new ArgumentValueDescr.MapDescr();
+    }	
+    :  '{' 
+           ( key=argument_value '=>' value=argument_value {
+                 if ( key != null ) {
+                     mapDescr.add( new ArgumentValueDescr.MapPairDescr( key, value ) );
+                 }
+             }
+           )
+           
+           ( (EOL)? ',' (EOL)? key=argument_value '=>' value=argument_value {
+                 if ( key != null ) {
+                     mapDescr.add( new ArgumentValueDescr.MapPairDescr( key, value ) );
+                 }
+             }
+           )*           
+       '}'
+    ;
  	
 fact_binding returns [PatternDescr d]
 	@init {
@@ -1284,9 +1307,7 @@ BOOL
 	
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$' | '\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9' | '\u00c0'..'\u00ff')* 
-	;
-	
-		
+	;		    			
 
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */

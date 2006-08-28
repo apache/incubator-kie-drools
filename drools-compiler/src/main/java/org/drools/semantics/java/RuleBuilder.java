@@ -36,12 +36,18 @@ import org.drools.base.FieldFactory;
 import org.drools.base.FieldImpl;
 import org.drools.base.ValueType;
 import org.drools.base.dataproviders.MethodDataProvider;
+import org.drools.base.dataproviders.MethodInvoker;
 import org.drools.base.evaluators.Operator;
+import org.drools.base.resolvers.DeclarationVariable;
+import org.drools.base.resolvers.GlobalVariable;
+import org.drools.base.resolvers.LiteralValue;
+import org.drools.base.resolvers.ValueHandler;
 import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -107,7 +113,7 @@ public class RuleBuilder {
     private RuleDescr                         ruleDescr;
 
     public String                             ruleClass;
-    public List                               methods;
+    public List                               s;
     public Map                                invokers;
 
     private Map                               invokerLookups;
@@ -182,7 +188,7 @@ public class RuleBuilder {
     public synchronized Rule build(final Package pkg,
                                    final RuleDescr ruleDescr) {
         this.pkg = pkg;
-        this.methods = new ArrayList();
+        this.s = new ArrayList();
         this.invokers = new HashMap();
         this.invokerLookups = new HashMap();
         this.declarations = new HashMap();
@@ -202,7 +208,7 @@ public class RuleBuilder {
                        ruleDescr.getAttributes() );
 
         // Build the left hand side
-        // generate invoker, methods
+        // generate invoker, s
         build( ruleDescr );
 
         return this.rule;
@@ -315,8 +321,8 @@ public class RuleBuilder {
             }
         }
 
-        // Build the consequence and generate it's invoker/methods
-        // generate the main rule from the previously generated methods.
+        // Build the consequence and generate it's invoker/s
+        // generate the main rule from the previously generated s.
         if ( !(ruleDescr instanceof QueryDescr) ) {
             // do not build the consequence if we have a query
             buildConsequence( ruleDescr );
@@ -726,8 +732,8 @@ public class RuleBuilder {
     private ReturnValueRestriction buildRestriction(final FieldExtractor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        final String classMethodName = "returnValue" + this.counter++;
-        returnValueRestrictionDescr.setClassMethodName( classMethodName );
+        final String className = "returnValue" + this.counter++;
+        returnValueRestrictionDescr.setClassMethodName( className );
 
         final List[] usedIdentifiers = getUsedIdentifiers( returnValueRestrictionDescr,
                                                            returnValueRestrictionDescr.getText() );
@@ -755,13 +761,13 @@ public class RuleBuilder {
                                      returnValueRestrictionDescr.getText() );
 
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         final String returnValueText = RuleBuilder.functionFixer.fix( returnValueRestrictionDescr.getText() );
         st.setAttribute( "text",
                          returnValueText );
 
-        this.methods.add( st.toString() );
+        this.s.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "returnValueInvoker" );
 
@@ -770,9 +776,9 @@ public class RuleBuilder {
         st.setAttribute( "ruleClassName",
                          ucFirst( this.ruleDescr.getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+                         this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         setStringTemplateAttributes( st,
                                      declarations,
@@ -782,7 +788,7 @@ public class RuleBuilder {
         st.setAttribute( "hashCode",
                          returnValueText.hashCode() );
 
-        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -795,10 +801,10 @@ public class RuleBuilder {
 
     private void build(final Column column,
                        final PredicateDescr predicateDescr) {
-        // generate method
+        // generate 
         // generate Invoker
-        final String classMethodName = "predicate" + this.counter++;
-        predicateDescr.setClassMethodName( classMethodName );
+        final String className = "predicate" + this.counter++;
+        predicateDescr.setClassMethodName( className );
 
         final FieldExtractor extractor = getFieldExtractor( predicateDescr,
                                                             column.getObjectType(),
@@ -847,13 +853,13 @@ public class RuleBuilder {
                                      predicateDescr.getText() );
 
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         final String predicateText = RuleBuilder.functionFixer.fix( predicateDescr.getText() );
         st.setAttribute( "text",
                          predicateText );
 
-        this.methods.add( st.toString() );
+        this.s.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "predicateInvoker" );
 
@@ -862,9 +868,9 @@ public class RuleBuilder {
         st.setAttribute( "ruleClassName",
                          ucFirst( this.ruleDescr.getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+                         this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         st.setAttribute( "declaration",
                          declaration );
@@ -880,7 +886,7 @@ public class RuleBuilder {
         st.setAttribute( "hashCode",
                          predicateText.hashCode() );
 
-        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -891,31 +897,67 @@ public class RuleBuilder {
 
     private From build(FromDescr fromDescr) {
         Column column = build( fromDescr.getReturnedColumn() );
-
+        
         DeclarativeInvokerDescr invokerDescr = fromDescr.getDataSource();
-
+        
         DataProvider dataProvider = null;
-        if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
-            //FieldAccessDescr fieldAccessDescr = ( FieldAccessDescr ) invokerDescr;
-        } else if ( invokerDescr.getClass() == FunctionCallDescr.class ) {
-            //FunctionCallDescr functionCallDescr = ( FunctionCallDescr) invokerDescr;
-        } else if ( invokerDescr.getClass() == MethodAccessDescr.class ) {
-            MethodAccessDescr methodAccessDescr = (MethodAccessDescr) invokerDescr;
-            dataProvider = new MethodDataProvider( methodAccessDescr.getVariableName(),
-                                                   methodAccessDescr.getMethodName(),
-                                                   methodAccessDescr.getArguments(),
-                                                   this.declarations,
-                                                   this.pkg.getGlobals() );
+        
+        if ( invokerDescr.getClass() == MethodAccessDescr.class ) {
+            MethodAccessDescr methodAccessor = ( MethodAccessDescr ) invokerDescr;
+            
+            ValueHandler instanceValueHandler = null;
+            String variableName = methodAccessor.getVariableName();
+            if ( declarations.containsKey( variableName ) ) {
+                instanceValueHandler = new DeclarationVariable( (Declaration) declarations.get( variableName ) );
+            } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
+                instanceValueHandler = new GlobalVariable( variableName, ( Class ) this.pkg.getGlobals().get( variableName ) );
+            } else {
+                throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
+            }
+            
+            List arguments = ( ( MethodAccessDescr ) invokerDescr ).getArguments();
+            List valueHandlers = new ArrayList();
+
+            for ( Iterator iter = arguments.iterator(); iter.hasNext(); ) {
+                ArgumentValueDescr desc = (ArgumentValueDescr) iter.next();
+                if ( desc.getType() == ArgumentValueDescr.VARIABLE ) {
+                    if ( this.declarations.containsKey( desc.getValue() ) ) {
+                        valueHandlers.add( new DeclarationVariable( (Declaration) declarations.get( desc.getValue() ) ) );
+                    } else if ( this.pkg.getGlobals().containsKey( desc.getValue() ) ) {
+                        valueHandlers.add( new GlobalVariable( (String) desc.getValue(), ( Class ) this.pkg.getGlobals().get( variableName ) ) );
+                    } else {
+                        throw new IllegalArgumentException( "Uknown variable: " + desc.getValue() );
+                    }
+                } else {
+                    // handling a literal
+                    valueHandlers.add( new LiteralValue( (String) desc.getValue(), Object.class ) );
+                }
+            }         
+            
+            MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(), instanceValueHandler, ( ValueHandler[] ) valueHandlers.toArray( new ValueHandler[ valueHandlers.size() ] )  );
+            dataProvider = new MethodDataProvider( invoker );
         }
+//        if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
+//            //FieldAccessDescr fieldAccessDescr = ( FieldAccessDescr ) invokerDescr;
+//        } else if ( invokerDescr.getClass() == FunctionCallDescr.class ) {
+//            //FunctionCallDescr functionCallDescr = ( FunctionCallDescr) invokerDescr;
+//        } else if ( invokerDescr.getClass() == AccessDescr.class ) {
+//            AccessDescr AccessDescr = (AccessDescr) invokerDescr;
+//            dataProvider = new DataProvider( AccessDescr.getVariableName(),
+//                                                   AccessDescr.getName(),
+//                                                   AccessDescr.getArguments(),
+//                                                   this.declarations,
+//                                                   this.pkg.getGlobals() );
+//        }
 
         return new From( column,
                          dataProvider );
     }
-
+    
     private EvalCondition build(final EvalDescr evalDescr) {
 
-        final String classMethodName = "eval" + this.counter++;
-        evalDescr.setClassMethodName( classMethodName );
+        final String className = "eval" + this.counter++;
+        evalDescr.setClassMethodName( className );
 
         final List[] usedIdentifiers = getUsedIdentifiers( evalDescr,
                                                            evalDescr.getText() );
@@ -935,13 +977,13 @@ public class RuleBuilder {
                                      evalDescr.getText() );
 
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         final String evalText = RuleBuilder.functionFixer.fix( evalDescr.getText() );
         st.setAttribute( "text",
                          evalText );
 
-        this.methods.add( st.toString() );
+        this.s.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "evalInvoker" );
 
@@ -950,9 +992,9 @@ public class RuleBuilder {
         st.setAttribute( "ruleClassName",
                          ucFirst( this.ruleDescr.getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+                         this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         setStringTemplateAttributes( st,
                                      declarations,
@@ -962,7 +1004,7 @@ public class RuleBuilder {
         st.setAttribute( "hashCode",
                          evalText.hashCode() );
 
-        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -973,14 +1015,14 @@ public class RuleBuilder {
     }
 
     private void buildConsequence(final RuleDescr ruleDescr) {
-        // generate method
+        // generate 
         // generate Invoker
-        final String classMethodName = "consequence";
+        final String className = "consequence";
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "consequenceMethod" );
 
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         final List[] usedIdentifiers = getUsedCIdentifiers( ruleDescr,
                                                             ruleDescr.getConsequence() );
@@ -997,7 +1039,7 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          RuleBuilder.functionFixer.fix( RuleBuilder.knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
 
-        this.methods.add( st.toString() );
+        this.s.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "consequenceInvoker" );
 
@@ -1006,9 +1048,9 @@ public class RuleBuilder {
         st.setAttribute( "ruleClassName",
                          ucFirst( this.ruleDescr.getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+                         ruleDescr.getClassName() + ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
-                         classMethodName );
+                         className );
 
         setStringTemplateAttributes( st,
                                      declarations,
@@ -1033,7 +1075,7 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          ruleDescr.getConsequence() );
 
-        final String invokerClassName = this.pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( className ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -1044,7 +1086,7 @@ public class RuleBuilder {
 
     private void buildRule(final RuleDescr ruleDescr) {
         // If there is no compiled code, return
-        if ( this.methods.isEmpty() ) {
+        if ( this.s.isEmpty() ) {
             this.ruleClass = null;
             return;
         }
@@ -1060,8 +1102,8 @@ public class RuleBuilder {
         buffer.append( "public class " + ucFirst( this.ruleDescr.getClassName() ) + " {" + lineSeparator );
         buffer.append( "    private static final long serialVersionUID  = 7952983928232702826L;" + lineSeparator );
 
-        for ( int i = 0, size = this.methods.size() - 1; i < size; i++ ) {
-            buffer.append( this.methods.get( i ) + lineSeparator );
+        for ( int i = 0, size = this.s.size() - 1; i < size; i++ ) {
+            buffer.append( this.s.get( i ) + lineSeparator );
         }
 
         final String[] lines = buffer.toString().split( lineSeparator );
@@ -1070,7 +1112,7 @@ public class RuleBuilder {
         //To get the error position in the DRL
         //error.getLine() - this.ruleDescr.getConsequenceOffset() + this.ruleDescr.getConsequenceLine()
 
-        buffer.append( this.methods.get( this.methods.size() - 1 ) + lineSeparator );
+        buffer.append( this.s.get( this.s.size() - 1 ) + lineSeparator );
         buffer.append( "}" );
 
         this.ruleClass = buffer.toString();
