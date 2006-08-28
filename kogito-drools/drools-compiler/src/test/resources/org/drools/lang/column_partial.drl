@@ -1,0 +1,10 @@
+#the purpose of this is to see what happens when we have some partially damaged syntax
+#as the IDE uses the parsers AST to work out completion suggestions.
+package test
+
+
+rule simple_rule 
+  when
+    foo3 : Bar(
+#I think the problem is it is not building the column due to not knowing when to finish looking
+#at the lhs.
