@@ -389,4 +389,8 @@ public class LeapsTest extends IntegrationCases {
     public void testLogicalAssertionsWithExists() throws Exception {
         // FIXME
     }
+    
+    public void testTwoQuerries() throws Exception {
+        // FIXME
+    }
 }
