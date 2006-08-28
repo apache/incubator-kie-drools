@@ -29,6 +29,10 @@ public class DeclarationVariable
         return  this.cachedValue;
     }
     
+    public Declaration getDeclaration() {
+        return this.declaration;
+    }
+    
     public void reset() {
         this.cachedValue = ValueHandler.EMPTY;
     }
