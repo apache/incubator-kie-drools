@@ -14,6 +14,10 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
+import org.drools.base.resolvers.DeclarationVariable;
+import org.drools.base.resolvers.GlobalVariable;
+import org.drools.base.resolvers.LiteralValue;
+import org.drools.base.resolvers.ValueHandler;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteTuple;
@@ -28,76 +32,102 @@ import org.drools.spi.PropagationContext;
 
 public class MethodDataProviderTest extends TestCase {
 
-    private PropagationContext context;
+    private PropagationContext  context;
     private ReteooWorkingMemory workingMemory;
-    private Map declarations;
-    private Map globals;
-    
+    private Map                 declarations;
+    private Map                 globals;
+
     protected void setUp() {
         context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
-                                                                       null,
-                                                                       null );
+                                              PropagationContext.ASSERTION,
+                                              null,
+                                              null );
         workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-        
-        declarations = new HashMap();    
+                                                 (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+
+        declarations = new HashMap();
         globals = new HashMap();
     }
-    
+
     public void testWithDeclarationsHelloWorld() throws Exception {
-        
-        Column column = new  Column(0, new ClassObjectType( Cheese.class ) );
-        
-        Extractor ex = new ColumnExtractor(new ClassObjectType(TestVariable.class));
-        Declaration varDec = new Declaration("var", ex, column);
-        declarations.put("var", varDec);
-        
-        
-        column = new  Column(1, new ClassObjectType( Cheese.class ) );
-        ex = new ColumnExtractor(new ClassObjectType(String.class));
-        Declaration var2Dec = new Declaration("var2", ex, column);
-        declarations.put( "var2", var2Dec );
-        
+
+        Column column = new Column( 0,
+                                    new ClassObjectType( Cheese.class ) );
+
+        Extractor ex = new ColumnExtractor( new ClassObjectType( TestVariable.class ) );
+        Declaration varDec = new Declaration( "var",
+                                              ex,
+                                              column );
+        declarations.put( "var",
+                          varDec );
+
+        column = new Column( 1,
+                             new ClassObjectType( Cheese.class ) );
+        ex = new ColumnExtractor( new ClassObjectType( String.class ) );
+        Declaration var2Dec = new Declaration( "var2",
+                                               ex,
+                                               column );
+        declarations.put( "var2",
+                          var2Dec );
+
         List args = new ArrayList();
-        args.add( new ArgumentValueDescr(ArgumentValueDescr.STRING, "boo") );
-        args.add( new ArgumentValueDescr(ArgumentValueDescr.INTEGRAL, "42") );
-        args.add( new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, "var2") );        
-        MethodDataProvider prov = new MethodDataProvider("var", "helloWorld", args, declarations, globals);
-        
+        args.add( new LiteralValue( "boo" ) );
+        args.add( new LiteralValue( "42" ) );
+        args.add( new DeclarationVariable( var2Dec ) );
+
+        MethodInvoker invoker = new MethodInvoker( "helloWorld",
+                                                   TestVariable.class,
+                                                   new DeclarationVariable( varDec ),
+                                                   (ValueHandler[]) args.toArray( new ValueHandler[args.size()] ) );
+
+        MethodDataProvider prov = new MethodDataProvider( invoker );
+
         TestVariable var = new TestVariable();
         FactHandle varHandle = workingMemory.assertObject( var );
         FactHandle var2Handle = workingMemory.assertObject( "hola" );
-        
-        ReteTuple tuple = new ReteTuple(new ReteTuple( (DefaultFactHandle) varHandle ), (DefaultFactHandle) var2Handle );
-        
-        Iterator it = prov.getResults( tuple, workingMemory, context );
-        
+
+        ReteTuple tuple = new ReteTuple( new ReteTuple( (DefaultFactHandle) varHandle ),
+                                         (DefaultFactHandle) var2Handle );
+
+        Iterator it = prov.getResults( tuple,
+                                       workingMemory,
+                                       context );
+
         Object result = it.next();
-        assertEquals("boo42hola", result);
-        
-        
+        assertEquals( "boo42hola",
+                      result );
+
     }
 
     public void testWithGlobals() throws Exception {
-        globals.put( "foo", TestVariable.class );
-        
-        Package pkg = new Package("nothing");        
-        pkg.addGlobal( "foo", TestVariable.class );
+        globals.put( "foo",
+                     TestVariable.class );
+
+        Package pkg = new Package( "nothing" );
+        pkg.addGlobal( "foo",
+                       TestVariable.class );
         RuleBase rb = RuleBaseFactory.newRuleBase();
         rb.addPackage( pkg );
-        
+
         WorkingMemory wm = rb.newWorkingMemory();
 
-        wm.setGlobal( "foo", new TestVariable() );
-        
-        MethodDataProvider prov = new MethodDataProvider("foo", "otherMethod", new ArrayList(), declarations, globals);
+        wm.setGlobal( "foo",
+                      new TestVariable() );
 
-        Iterator it = prov.getResults( null, wm, null );
-        assertTrue(it.hasNext());
-        assertEquals("boo", it.next());
+        MethodInvoker invoker = new MethodInvoker( "otherMethod",
+                                                   TestVariable.class,
+                                                   new GlobalVariable( "foo" ),
+                                                   new ValueHandler[0] );        
+        
+        
+        MethodDataProvider prov = new MethodDataProvider( invoker );
+
+        Iterator it = prov.getResults( null,
+                                       wm,
+                                       null );
+        assertTrue( it.hasNext() );
+        assertEquals( "boo",
+                      it.next() );
     }
-    
-    
 
 }

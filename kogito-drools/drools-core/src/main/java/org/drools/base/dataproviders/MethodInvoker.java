@@ -4,11 +4,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.base.evaluators.DateFactory;
+import org.drools.base.resolvers.DeclarationVariable;
 import org.drools.base.resolvers.LiteralValue;
 import org.drools.base.resolvers.ValueHandler;
 import org.drools.rule.Declaration;
@@ -26,9 +29,8 @@ public class MethodInvoker {
      */
     public MethodInvoker(String methodName,
                          Class clazz,
-                         ValueHandler[] valueHandlers,
-                         Declaration[] requiredDeclarations) {
-        this( methodName, clazz, null, valueHandlers, requiredDeclarations );
+                         ValueHandler[] valueHandlers) {
+        this( methodName, clazz, null, valueHandlers );
         // @todo : defensive errors for referencing non static method
     }
     
@@ -38,11 +40,22 @@ public class MethodInvoker {
     public MethodInvoker(String methodName,
                          Class clazz,
                          ValueHandler instanceValueHandler,
-                         ValueHandler[] valueHandlers,
-                         Declaration[] requiredDeclarations) {
+                         ValueHandler[] valueHandlers) {
         this.instanceValueHandler = instanceValueHandler;
         this.valueHandlers = valueHandlers;
-        this.requiredDeclarations = requiredDeclarations;
+        
+        // determine required declarations
+        List list = new ArrayList(1);        
+        if ( instanceValueHandler != null && instanceValueHandler.getClass() == DeclarationVariable.class ) {
+            list.add( ( (DeclarationVariable) instanceValueHandler ).getDeclaration() ); 
+        }
+        for ( int i = 0, length = valueHandlers.length; i < length; i++ ) {
+            if ( valueHandlers[i].getClass() == DeclarationVariable.class ) {
+                list.add( ( (DeclarationVariable) valueHandlers[i] ).getDeclaration() );    
+            }
+        }
+        
+        this.requiredDeclarations = ( Declaration[] )list.toArray( new Declaration[ list.size() ] );
 
         this.method = configureMethod( clazz,
                                        methodName,

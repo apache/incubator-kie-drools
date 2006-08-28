@@ -28,7 +28,7 @@ public class MethodDataProvider
     public Iterator getResults(Tuple tuple,
                                WorkingMemory wm,
                                PropagationContext ctx) {
-        Object result = this.method;
+        Object result = this.method.invoke( tuple, wm, ctx );
         if ( result instanceof Collection ) {
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {
