@@ -1144,12 +1144,12 @@ lhs_unary returns [PatternDescr d]
 	@init {
 		d = null;
 	}
-	:	(	u=lhs_exist
-		|	u=lhs_not
-		|	u=lhs_eval				
-		|	u=lhs_column (fm=from_statement {fm.setColumn((ColumnDescr) u); u=fm;})?
-		|	'(' opt_eol u=lhs opt_eol ')'
-		) { d = u; }
+	:	(	u=lhs_exist {d = u;}
+		|	u=lhs_not {d = u;}
+		|	u=lhs_eval {d = u;}				
+		|	u=lhs_column {d=u;} (fm=from_statement {fm.setColumn((ColumnDescr) u); d=fm;})?
+		|	'(' opt_eol u=lhs opt_eol ')' {d = u;}
+		) 
 	;
 	
 lhs_exist returns [PatternDescr d]

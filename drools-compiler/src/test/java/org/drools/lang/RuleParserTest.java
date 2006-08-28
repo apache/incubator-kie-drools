@@ -126,6 +126,26 @@ public class RuleParserTest extends TestCase {
         
     }
     
+    public void testPartialAST() throws Exception {
+        parseResource( "column_partial.drl" );
+        
+        parser.compilation_unit();
+        
+        assertTrue(parser.hasErrors());
+        
+        PackageDescr pkg = parser.getPackageDescr();
+        assertEquals(1, pkg.getRules().size());
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        
+        assertNotNull(col);
+        assertEquals("Bar", col.getObjectType());
+        assertEquals("foo3", col.getIdentifier());
+                
+    }
+    
     public void testTemplates() throws Exception {
         
         final RuleParser parser = parseResource( "test_Templates.drl" );

@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g 2006-08-16 15:30:47
+// $ANTLR 3.0ea8 /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g 2006-08-24 14:53:10
 
 	package org.drools.lang;
 	import java.util.List;
@@ -5508,37 +5508,41 @@ public class RuleParser extends Parser {
                     u=lhs_exist();
                     following.pop();
 
+                    d = u;
 
                     }
                     break;
                 case 2 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1148:25: u= lhs_not
                     {
-                    following.push(FOLLOW_lhs_not_in_lhs_unary3148);
+                    following.push(FOLLOW_lhs_not_in_lhs_unary3150);
                     u=lhs_not();
                     following.pop();
 
+                    d = u;
 
                     }
                     break;
                 case 3 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1149:25: u= lhs_eval
                     {
-                    following.push(FOLLOW_lhs_eval_in_lhs_unary3156);
+                    following.push(FOLLOW_lhs_eval_in_lhs_unary3160);
                     u=lhs_eval();
                     following.pop();
 
+                    d = u;
 
                     }
                     break;
                 case 4 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1150:25: u= lhs_column (fm= from_statement )?
                     {
-                    following.push(FOLLOW_lhs_column_in_lhs_unary3168);
+                    following.push(FOLLOW_lhs_column_in_lhs_unary3174);
                     u=lhs_column();
                     following.pop();
 
-                    // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1150:38: (fm= from_statement )?
+                    d=u;
+                    // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1150:45: (fm= from_statement )?
                     int alt68=2;
                     int LA68_0 = input.LA(1);
                     if ( LA68_0==42 ) {
@@ -5549,19 +5553,19 @@ public class RuleParser extends Parser {
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("1150:38: (fm= from_statement )?", 68, 0, input);
+                            new NoViableAltException("1150:45: (fm= from_statement )?", 68, 0, input);
 
                         throw nvae;
                     }
                     switch (alt68) {
                         case 1 :
-                            // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1150:39: fm= from_statement
+                            // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1150:46: fm= from_statement
                             {
-                            following.push(FOLLOW_from_statement_in_lhs_unary3173);
+                            following.push(FOLLOW_from_statement_in_lhs_unary3181);
                             fm=from_statement();
                             following.pop();
 
-                            fm.setColumn((ColumnDescr) u); u=fm;
+                            fm.setColumn((ColumnDescr) u); d=fm;
 
                             }
                             break;
@@ -5574,27 +5578,27 @@ public class RuleParser extends Parser {
                 case 5 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1151:25: '(' opt_eol u= lhs opt_eol ')'
                     {
-                    match(input,23,FOLLOW_23_in_lhs_unary3183); 
-                    following.push(FOLLOW_opt_eol_in_lhs_unary3185);
+                    match(input,23,FOLLOW_23_in_lhs_unary3191); 
+                    following.push(FOLLOW_opt_eol_in_lhs_unary3193);
                     opt_eol();
                     following.pop();
 
-                    following.push(FOLLOW_lhs_in_lhs_unary3189);
+                    following.push(FOLLOW_lhs_in_lhs_unary3197);
                     u=lhs();
                     following.pop();
 
-                    following.push(FOLLOW_opt_eol_in_lhs_unary3191);
+                    following.push(FOLLOW_opt_eol_in_lhs_unary3199);
                     opt_eol();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_lhs_unary3193); 
+                    match(input,25,FOLLOW_25_in_lhs_unary3201); 
+                    d = u;
 
                     }
                     break;
 
             }
 
-             d = u; 
 
             }
 
@@ -5626,7 +5630,7 @@ public class RuleParser extends Parser {
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1159:17: loc= 'exists' ( '(' column= lhs_column ')' | column= lhs_column )
             {
             loc=(Token)input.LT(1);
-            match(input,51,FOLLOW_51_in_lhs_exist3223); 
+            match(input,51,FOLLOW_51_in_lhs_exist3232); 
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1159:30: ( '(' column= lhs_column ')' | column= lhs_column )
             int alt70=2;
             int LA70_0 = input.LA(1);
@@ -5646,19 +5650,19 @@ public class RuleParser extends Parser {
                 case 1 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1159:31: '(' column= lhs_column ')'
                     {
-                    match(input,23,FOLLOW_23_in_lhs_exist3226); 
-                    following.push(FOLLOW_lhs_column_in_lhs_exist3230);
+                    match(input,23,FOLLOW_23_in_lhs_exist3235); 
+                    following.push(FOLLOW_lhs_column_in_lhs_exist3239);
                     column=lhs_column();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_lhs_exist3232); 
+                    match(input,25,FOLLOW_25_in_lhs_exist3241); 
 
                     }
                     break;
                 case 2 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1159:59: column= lhs_column
                     {
-                    following.push(FOLLOW_lhs_column_in_lhs_exist3238);
+                    following.push(FOLLOW_lhs_column_in_lhs_exist3247);
                     column=lhs_column();
                     following.pop();
 
@@ -5703,7 +5707,7 @@ public class RuleParser extends Parser {
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1170:17: loc= 'not' ( '(' column= lhs_column ')' | column= lhs_column )
             {
             loc=(Token)input.LT(1);
-            match(input,52,FOLLOW_52_in_lhs_not3268); 
+            match(input,52,FOLLOW_52_in_lhs_not3277); 
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1170:27: ( '(' column= lhs_column ')' | column= lhs_column )
             int alt71=2;
             int LA71_0 = input.LA(1);
@@ -5723,19 +5727,19 @@ public class RuleParser extends Parser {
                 case 1 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1170:28: '(' column= lhs_column ')'
                     {
-                    match(input,23,FOLLOW_23_in_lhs_not3271); 
-                    following.push(FOLLOW_lhs_column_in_lhs_not3275);
+                    match(input,23,FOLLOW_23_in_lhs_not3280); 
+                    following.push(FOLLOW_lhs_column_in_lhs_not3284);
                     column=lhs_column();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_lhs_not3278); 
+                    match(input,25,FOLLOW_25_in_lhs_not3287); 
 
                     }
                     break;
                 case 2 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1170:57: column= lhs_column
                     {
-                    following.push(FOLLOW_lhs_column_in_lhs_not3284);
+                    following.push(FOLLOW_lhs_column_in_lhs_not3293);
                     column=lhs_column();
                     following.pop();
 
@@ -5780,14 +5784,14 @@ public class RuleParser extends Parser {
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1182:17: ( 'eval' loc= '(' c= paren_chunk2 ')' )
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1182:17: 'eval' loc= '(' c= paren_chunk2 ')'
             {
-            match(input,53,FOLLOW_53_in_lhs_eval3310); 
+            match(input,53,FOLLOW_53_in_lhs_eval3319); 
             loc=(Token)input.LT(1);
-            match(input,23,FOLLOW_23_in_lhs_eval3314); 
-            following.push(FOLLOW_paren_chunk2_in_lhs_eval3322);
+            match(input,23,FOLLOW_23_in_lhs_eval3323); 
+            following.push(FOLLOW_paren_chunk2_in_lhs_eval3331);
             c=paren_chunk2();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_lhs_eval3326); 
+            match(input,25,FOLLOW_25_in_lhs_eval3335); 
              
             			checkTrailingSemicolon( c, offset(loc.getLine()) );
             			d = new EvalDescr( c ); 
@@ -5821,7 +5825,7 @@ public class RuleParser extends Parser {
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1196:17: id= ID ( '.' id= ID )* ( '[' ']' )*
             {
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_dotted_name3358); 
+            match(input,ID,FOLLOW_ID_in_dotted_name3367); 
              name=id.getText(); 
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1196:46: ( '.' id= ID )*
             loop72:
@@ -5837,9 +5841,9 @@ public class RuleParser extends Parser {
             	case 1 :
             	    // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1196:48: '.' id= ID
             	    {
-            	    match(input,18,FOLLOW_18_in_dotted_name3364); 
+            	    match(input,18,FOLLOW_18_in_dotted_name3373); 
             	    id=(Token)input.LT(1);
-            	    match(input,ID,FOLLOW_ID_in_dotted_name3368); 
+            	    match(input,ID,FOLLOW_ID_in_dotted_name3377); 
             	     name = name + "." + id.getText(); 
 
             	    }
@@ -5864,8 +5868,8 @@ public class RuleParser extends Parser {
             	case 1 :
             	    // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1196:101: '[' ']'
             	    {
-            	    match(input,54,FOLLOW_54_in_dotted_name3377); 
-            	    match(input,55,FOLLOW_55_in_dotted_name3379); 
+            	    match(input,54,FOLLOW_54_in_dotted_name3386); 
+            	    match(input,55,FOLLOW_55_in_dotted_name3388); 
             	     name = name + "[]";
 
             	    }
@@ -5905,7 +5909,7 @@ public class RuleParser extends Parser {
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1204:17: id= ID ( '[' ']' )*
             {
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_argument_name3409); 
+            match(input,ID,FOLLOW_ID_in_argument_name3418); 
              name=id.getText(); 
             // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1204:46: ( '[' ']' )*
             loop74:
@@ -5921,8 +5925,8 @@ public class RuleParser extends Parser {
             	case 1 :
             	    // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1204:48: '[' ']'
             	    {
-            	    match(input,54,FOLLOW_54_in_argument_name3415); 
-            	    match(input,55,FOLLOW_55_in_argument_name3417); 
+            	    match(input,54,FOLLOW_54_in_argument_name3424); 
+            	    match(input,55,FOLLOW_55_in_argument_name3426); 
             	     name = name + "[]";
 
             	    }
@@ -6007,7 +6011,7 @@ public class RuleParser extends Parser {
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1212:17: id= ID
                     {
                     id=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_word3445); 
+                    match(input,ID,FOLLOW_ID_in_word3454); 
                      word=id.getText(); 
 
                     }
@@ -6015,7 +6019,7 @@ public class RuleParser extends Parser {
                 case 2 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1213:17: 'import'
                     {
-                    match(input,17,FOLLOW_17_in_word3457); 
+                    match(input,17,FOLLOW_17_in_word3466); 
                      word="import"; 
 
                     }
@@ -6023,7 +6027,7 @@ public class RuleParser extends Parser {
                 case 3 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1214:17: 'use'
                     {
-                    match(input,56,FOLLOW_56_in_word3466); 
+                    match(input,56,FOLLOW_56_in_word3475); 
                      word="use"; 
 
                     }
@@ -6031,7 +6035,7 @@ public class RuleParser extends Parser {
                 case 4 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1215:17: 'rule'
                     {
-                    match(input,31,FOLLOW_31_in_word3478); 
+                    match(input,31,FOLLOW_31_in_word3487); 
                      word="rule"; 
 
                     }
@@ -6039,7 +6043,7 @@ public class RuleParser extends Parser {
                 case 5 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1216:17: 'query'
                     {
-                    match(input,28,FOLLOW_28_in_word3489); 
+                    match(input,28,FOLLOW_28_in_word3498); 
                      word="query"; 
 
                     }
@@ -6047,7 +6051,7 @@ public class RuleParser extends Parser {
                 case 6 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1217:17: 'salience'
                     {
-                    match(input,36,FOLLOW_36_in_word3499); 
+                    match(input,36,FOLLOW_36_in_word3508); 
                      word="salience"; 
 
                     }
@@ -6055,7 +6059,7 @@ public class RuleParser extends Parser {
                 case 7 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1218:17: 'no-loop'
                     {
-                    match(input,37,FOLLOW_37_in_word3507); 
+                    match(input,37,FOLLOW_37_in_word3516); 
                      word="no-loop"; 
 
                     }
@@ -6063,7 +6067,7 @@ public class RuleParser extends Parser {
                 case 8 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1219:17: 'when'
                     {
-                    match(input,32,FOLLOW_32_in_word3515); 
+                    match(input,32,FOLLOW_32_in_word3524); 
                      word="when"; 
 
                     }
@@ -6071,7 +6075,7 @@ public class RuleParser extends Parser {
                 case 9 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1220:17: 'then'
                     {
-                    match(input,34,FOLLOW_34_in_word3526); 
+                    match(input,34,FOLLOW_34_in_word3535); 
                      word="then"; 
 
                     }
@@ -6079,7 +6083,7 @@ public class RuleParser extends Parser {
                 case 10 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1221:17: 'end'
                     {
-                    match(input,29,FOLLOW_29_in_word3537); 
+                    match(input,29,FOLLOW_29_in_word3546); 
                      word="end"; 
 
                     }
@@ -6088,7 +6092,7 @@ public class RuleParser extends Parser {
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1222:17: str= STRING
                     {
                     str=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_word3551); 
+                    match(input,STRING,FOLLOW_STRING_in_word3560); 
                      word=getString(str);
 
                     }
@@ -6159,7 +6163,7 @@ public class RuleParser extends Parser {
                 case 1 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1231:17: '=='
                     {
-                    match(input,57,FOLLOW_57_in_operator3580); 
+                    match(input,57,FOLLOW_57_in_operator3589); 
                     str= "==";
 
                     }
@@ -6167,7 +6171,7 @@ public class RuleParser extends Parser {
                 case 2 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1232:18: '='
                     {
-                    match(input,58,FOLLOW_58_in_operator3587); 
+                    match(input,58,FOLLOW_58_in_operator3596); 
                     str="==";
 
                     }
@@ -6175,7 +6179,7 @@ public class RuleParser extends Parser {
                 case 3 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1233:18: '>'
                     {
-                    match(input,59,FOLLOW_59_in_operator3594); 
+                    match(input,59,FOLLOW_59_in_operator3603); 
                     str=">";
 
                     }
@@ -6183,7 +6187,7 @@ public class RuleParser extends Parser {
                 case 4 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1234:18: '>='
                     {
-                    match(input,60,FOLLOW_60_in_operator3601); 
+                    match(input,60,FOLLOW_60_in_operator3610); 
                     str=">=";
 
                     }
@@ -6191,7 +6195,7 @@ public class RuleParser extends Parser {
                 case 5 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1235:18: '<'
                     {
-                    match(input,61,FOLLOW_61_in_operator3610); 
+                    match(input,61,FOLLOW_61_in_operator3619); 
                     str="<";
 
                     }
@@ -6199,7 +6203,7 @@ public class RuleParser extends Parser {
                 case 6 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1236:18: '<='
                     {
-                    match(input,62,FOLLOW_62_in_operator3617); 
+                    match(input,62,FOLLOW_62_in_operator3626); 
                     str="<=";
 
                     }
@@ -6207,7 +6211,7 @@ public class RuleParser extends Parser {
                 case 7 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1237:18: '!='
                     {
-                    match(input,63,FOLLOW_63_in_operator3624); 
+                    match(input,63,FOLLOW_63_in_operator3633); 
                     str="!=";
 
                     }
@@ -6215,7 +6219,7 @@ public class RuleParser extends Parser {
                 case 8 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1238:18: 'contains'
                     {
-                    match(input,64,FOLLOW_64_in_operator3631); 
+                    match(input,64,FOLLOW_64_in_operator3640); 
                     str="contains";
 
                     }
@@ -6223,7 +6227,7 @@ public class RuleParser extends Parser {
                 case 9 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1239:18: 'matches'
                     {
-                    match(input,65,FOLLOW_65_in_operator3638); 
+                    match(input,65,FOLLOW_65_in_operator3647); 
                     str="matches";
 
                     }
@@ -6231,7 +6235,7 @@ public class RuleParser extends Parser {
                 case 10 :
                     // /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g:1240:18: 'excludes'
                     {
-                    match(input,66,FOLLOW_66_in_operator3645); 
+                    match(input,66,FOLLOW_66_in_operator3654); 
                     str="excludes";
 
                     }
@@ -8806,57 +8810,57 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_opt_eol_in_lhs_and3095 = new BitSet(new long[]{0x0038000000800020L});
     public static final BitSet FOLLOW_lhs_unary_in_lhs_and3102 = new BitSet(new long[]{0x0006000000000002L});
     public static final BitSet FOLLOW_lhs_exist_in_lhs_unary3140 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_not_in_lhs_unary3148 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_eval_in_lhs_unary3156 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_unary3168 = new BitSet(new long[]{0x0000040000000002L});
-    public static final BitSet FOLLOW_from_statement_in_lhs_unary3173 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_lhs_unary3183 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3185 = new BitSet(new long[]{0x0038000000800020L});
-    public static final BitSet FOLLOW_lhs_in_lhs_unary3189 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3191 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_unary3193 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_51_in_lhs_exist3223 = new BitSet(new long[]{0x0000000000800020L});
-    public static final BitSet FOLLOW_23_in_lhs_exist3226 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3230 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_exist3232 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3238 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_lhs_not3268 = new BitSet(new long[]{0x0000000000800020L});
-    public static final BitSet FOLLOW_23_in_lhs_not3271 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_not3275 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_not3278 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_not3284 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_53_in_lhs_eval3310 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_lhs_eval3314 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x0000000000000007L});
-    public static final BitSet FOLLOW_paren_chunk2_in_lhs_eval3322 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_eval3326 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_dotted_name3358 = new BitSet(new long[]{0x0040000000040002L});
-    public static final BitSet FOLLOW_18_in_dotted_name3364 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_dotted_name3368 = new BitSet(new long[]{0x0040000000040002L});
-    public static final BitSet FOLLOW_54_in_dotted_name3377 = new BitSet(new long[]{0x0080000000000000L});
-    public static final BitSet FOLLOW_55_in_dotted_name3379 = new BitSet(new long[]{0x0040000000000002L});
-    public static final BitSet FOLLOW_ID_in_argument_name3409 = new BitSet(new long[]{0x0040000000000002L});
-    public static final BitSet FOLLOW_54_in_argument_name3415 = new BitSet(new long[]{0x0080000000000000L});
-    public static final BitSet FOLLOW_55_in_argument_name3417 = new BitSet(new long[]{0x0040000000000002L});
-    public static final BitSet FOLLOW_ID_in_word3445 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_word3457 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_56_in_word3466 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_31_in_word3478 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_28_in_word3489 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_36_in_word3499 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_37_in_word3507 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_32_in_word3515 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_34_in_word3526 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_29_in_word3537 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_word3551 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_57_in_operator3580 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_58_in_operator3587 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_59_in_operator3594 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_60_in_operator3601 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_61_in_operator3610 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_62_in_operator3617 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_63_in_operator3624 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_operator3631 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_operator3638 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_66_in_operator3645 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_not_in_lhs_unary3150 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_eval_in_lhs_unary3160 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_unary3174 = new BitSet(new long[]{0x0000040000000002L});
+    public static final BitSet FOLLOW_from_statement_in_lhs_unary3181 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_23_in_lhs_unary3191 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3193 = new BitSet(new long[]{0x0038000000800020L});
+    public static final BitSet FOLLOW_lhs_in_lhs_unary3197 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3199 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_unary3201 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_51_in_lhs_exist3232 = new BitSet(new long[]{0x0000000000800020L});
+    public static final BitSet FOLLOW_23_in_lhs_exist3235 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3239 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_exist3241 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3247 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_52_in_lhs_not3277 = new BitSet(new long[]{0x0000000000800020L});
+    public static final BitSet FOLLOW_23_in_lhs_not3280 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_not3284 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_not3287 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_not3293 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_53_in_lhs_eval3319 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_lhs_eval3323 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x0000000000000007L});
+    public static final BitSet FOLLOW_paren_chunk2_in_lhs_eval3331 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_eval3335 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_dotted_name3367 = new BitSet(new long[]{0x0040000000040002L});
+    public static final BitSet FOLLOW_18_in_dotted_name3373 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_dotted_name3377 = new BitSet(new long[]{0x0040000000040002L});
+    public static final BitSet FOLLOW_54_in_dotted_name3386 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_55_in_dotted_name3388 = new BitSet(new long[]{0x0040000000000002L});
+    public static final BitSet FOLLOW_ID_in_argument_name3418 = new BitSet(new long[]{0x0040000000000002L});
+    public static final BitSet FOLLOW_54_in_argument_name3424 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_55_in_argument_name3426 = new BitSet(new long[]{0x0040000000000002L});
+    public static final BitSet FOLLOW_ID_in_word3454 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_word3466 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_56_in_word3475 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_31_in_word3487 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_28_in_word3498 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_36_in_word3508 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_37_in_word3516 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_32_in_word3524 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_34_in_word3535 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_29_in_word3546 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_word3560 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_57_in_operator3589 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_58_in_operator3596 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_59_in_operator3603 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_60_in_operator3610 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_operator3619 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_62_in_operator3626 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_63_in_operator3633 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_operator3640 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_operator3647 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_66_in_operator3654 = new BitSet(new long[]{0x0000000000000002L});
 
 }
