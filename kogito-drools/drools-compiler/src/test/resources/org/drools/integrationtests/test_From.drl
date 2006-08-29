@@ -6,13 +6,31 @@ import org.drools.Cheese;
 import org.drools.Cheesery;
 import java.util.List;
 
-global List list;
+global List list1;
+global List list2;
+global List list3;
 global Cheesery cheesery;
 
-rule "test from"
+rule "test from using a global"
 	when
 		$cheese : Cheese() from cheesery.getCheeses()		
 	then
-	    System.out.println( list );
-		list.add( $cheese );
+		list1.add( $cheese );
+end
+
+
+rule "test from using a declaration"
+	when
+		$ch : Cheesery()
+		$cheese : Cheese() from $ch.getCheeses()		
+	then
+		list2.add( $cheese );
+end
+
+
+rule "test from with filter"
+	when
+		$cheese : Cheese(type == "stilton" ) from cheesery.getCheeses()		
+	then
+		list3.add( $cheese );
 end

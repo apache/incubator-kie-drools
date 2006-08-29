@@ -40,6 +40,7 @@ import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
+import org.drools.FromTestClass;
 import org.drools.IndexedNumber;
 import org.drools.Person;
 import org.drools.PersonInterface;
@@ -800,18 +801,63 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );   
         
         WorkingMemory  workingMemory = ruleBase.newWorkingMemory();
-        List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        List list1 = new ArrayList();
+        workingMemory.setGlobal( "list1", list1 );
+        List list2 = new ArrayList();
+        workingMemory.setGlobal( "list2", list2 );
+        List list3 = new ArrayList();
+        workingMemory.setGlobal( "list3", list3 );        
         
         Cheesery cheesery = new Cheesery();
         Cheese stilton = new Cheese( "stilton", 12);
+        Cheese cheddar = new Cheese( "cheddar", 15);
         cheesery.addCheese( stilton );
+        cheesery.addCheese( cheddar );
         workingMemory.setGlobal( "cheesery", cheesery );
+        workingMemory.assertObject( cheesery );
         
         workingMemory.fireAllRules();
         
-        assertEquals( 1, list.size() );
-    }
+        // from using a global
+        assertEquals( 2, list1.size() );
+        assertEquals( cheddar, list1.get( 0 ) );
+        assertEquals( stilton, list1.get( 1 ) );
+        
+        // from using a declaration
+        assertEquals( 2, list2.size() );
+        assertEquals( cheddar, list2.get( 0 ) );
+        assertEquals( stilton, list2.get( 1 ) );
+        
+        // from using a declaration
+        assertEquals( 1, list3.size() );
+        assertEquals( stilton, list3.get( 0 ) );        
+    } 
+    
+    public void testFromWithParams() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );   
+        
+        WorkingMemory  workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );  
+        workingMemory.setGlobal(  "testObject", new FromTestClass() );
+        
+        Person bob = new Person( "bob" );
+        workingMemory.assertObject( bob );
+        
+        workingMemory.fireAllRules();
+
+        assertEquals( new Integer( 42 ), list.get( 0 ) );
+        assertEquals( "literal", list.get( 1 ) );                        
+        assertSame( bob, list.get( 2 ) );
+        assertSame( list, list.get( 3 ) );
+
+
+    }    
     
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

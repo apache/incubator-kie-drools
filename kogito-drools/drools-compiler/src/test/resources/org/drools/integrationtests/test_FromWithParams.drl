@@ -1,0 +1,15 @@
+package org.drools.test;
+ 
+import org.drools.FromTestClass;
+import org.drools.Person
+
+global FromTestClass testObject;
+global java.util.List list;
+
+rule "test from"
+	when
+		$person : Person()
+		$object : Object() from testObject.toList(list, $person, "literal", 42)		
+	then
+		list.add( $object );
+end
