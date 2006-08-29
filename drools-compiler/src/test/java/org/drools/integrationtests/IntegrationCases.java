@@ -2866,8 +2866,116 @@ public abstract class IntegrationCases extends TestCase {
         cheeseList = workingMemory.getObjects( String.class );
         assertEquals( 2,
                       cheeseList.size() );
+    }
+    
+    public void testLLR() throws Exception {
+
+        //read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
+        final DrlParser parser = new DrlParser();
+        final PackageDescr packageDescr = parser.parse( reader );
+
+        //pre build the package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( packageDescr );
+        final Package pkg = builder.getPackage();
+
+        //add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        //load up the rulebase
+
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
         
+        try {
+            // 1st time           
+            org.drools.Target tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Anna" );
+            tgt.setLat( new Float( 60.26544f ) );
+            tgt.setLon( new Float( 28.952137f ) );
+            tgt.setCourse( new Float( 145.0f ) );
+            tgt.setSpeed( new Float( 12.0f ) );
+            tgt.setTime( new Float( 1.8666667f ) );
+            wm.assertObject( tgt );
+            
+            tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Maria" );
+            tgt.setLat( new Float( 60.236874f ) );
+            tgt.setLon( new Float( 28.992579f ) );
+            tgt.setCourse( new Float( 325.0f ) );
+            tgt.setSpeed( new Float( 8.0f ) );
+            tgt.setTime( new Float( 1.8666667f ) );
+            wm.assertObject( tgt );
+            
+            wm.fireAllRules();
+
+            // 2nd time
+            tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Anna" );
+            tgt.setLat( new Float( 60.265343f ) );
+            tgt.setLon( new Float( 28.952267f ) );
+            tgt.setCourse( new Float( 145.0f ) );
+            tgt.setSpeed( new Float( 12.0f ) );
+            tgt.setTime( new Float( 1.9f ) );
+            wm.assertObject( tgt );
+            
+            tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Maria" );
+            tgt.setLat( new Float( 60.236935f ) );
+            tgt.setLon( new Float( 28.992493f ) );
+            tgt.setCourse( new Float( 325.0f ) );
+            tgt.setSpeed( new Float( 8.0f ) );
+            tgt.setTime( new Float( 1.9f ) );
+            wm.assertObject( tgt );
+            
+            wm.fireAllRules();
+
+            // 3d time
+            tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Anna" );
+            tgt.setLat( new Float( 60.26525f ) );
+            tgt.setLon( new Float( 28.952396f ) );
+            tgt.setCourse( new Float( 145.0f ) );
+            tgt.setSpeed( new Float( 12.0f ) );
+            tgt.setTime( new Float( 1.9333333f ) );
+            wm.assertObject( tgt );
+            
+            tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Maria" );
+            tgt.setLat( new Float( 60.236996f ) );
+            tgt.setLon( new Float( 28.992405f ) );
+            tgt.setCourse( new Float( 325.0f ) );
+            tgt.setSpeed( new Float( 8.0f ) );
+            tgt.setTime( new Float( 1.9333333f ) );
+            wm.assertObject( tgt );
+            
+            wm.fireAllRules();
+
+            // 4th time
+            tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Anna" );
+            tgt.setLat( new Float( 60.265163f ) );
+            tgt.setLon( new Float( 28.952526f ) );
+            tgt.setCourse( new Float( 145.0f ) );
+            tgt.setSpeed( new Float( 12.0f ) );
+            tgt.setTime( new Float( 1.9666667f ) );
+            wm.assertObject( tgt );
+            
+            tgt = new org.drools.Target();
+            tgt.setLabel( "Santa-Maria" );
+            tgt.setLat( new Float( 60.237057f ) );
+            tgt.setLon( new Float( 28.99232f ) );
+            tgt.setCourse( new Float( 325.0f ) );
+            tgt.setSpeed( new Float( 8.0f ) );
+            tgt.setTime( new Float( 1.9666667f ) );
+            wm.assertObject( tgt );
+            
+            wm.fireAllRules();
+        } catch ( RuntimeException e ) {
+            Assert.fail("Test is not supposed to throw any exception");
+        }
         
     }
+    
 
 }

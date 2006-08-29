@@ -109,7 +109,7 @@ class JoinNode extends BetaNode {
                             final PropagationContext context,
                             final ReteooWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
+        
         memory.add( workingMemory,
                     leftTuple );
 
@@ -193,7 +193,7 @@ class JoinNode extends BetaNode {
                               final PropagationContext context,
                               final ReteooWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
+        
         // Remove the FactHandle from memory
         final ObjectMatches objectMatches = memory.remove( workingMemory,
                                                            handle );
@@ -263,6 +263,7 @@ class JoinNode extends BetaNode {
             // indexing is enabled, the loop over right objects may skip some of the
             // previously matched objects
             final Map oldMatches = new HashMap(matches);
+            leftTuple.getTupleMatches().clear();
             
             // ensure the tuple is at the top of the memory
             memory.add( workingMemory,
@@ -282,6 +283,7 @@ class JoinNode extends BetaNode {
                         // ensures tupleMatch will be in the appropriate order
                         objectMatches.remove( tupleMatch );
                         objectMatches.add( tupleMatch );
+                        leftTuple.addTupleMatch( handle, tupleMatch );
                         
                         propagateModifyTuple( tupleMatch,
                                               context,
@@ -316,6 +318,9 @@ class JoinNode extends BetaNode {
                 for(Iterator it = oldMatches.values().iterator(); it.hasNext(); ) {
                     final TupleMatch tupleMatch = (TupleMatch) it.next();
                     tupleMatch.getObjectMatches().remove( tupleMatch );
+                    propagateRetractTuple( tupleMatch,
+                                           context,
+                                           workingMemory );
                 }
             }
         }
