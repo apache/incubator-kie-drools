@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.common.DefaultFactHandle;
+import org.drools.leaps.util.Table;
 
 /**
  * class container for each object asserted / retracted into the system
@@ -51,14 +52,14 @@ public class LeapsFactHandle extends DefaultFactHandle {
         if (this.notTuples == null) {
             this.notTuples = new LinkedList( );
         }
-        this.notTuples.add( new FactHandleTupleAssembly( tuple, index ) );
+        this.notTuples.add( new FactHandleTupleAssembly( FactHandleTupleAssembly.NOT, tuple, index ) );
     }
 
     protected void addExistsTuple( final LeapsTuple tuple, final int index ) {
         if (this.existsTuples == null) {
             this.existsTuples = new LinkedList( );
         }
-        this.existsTuples.add( new FactHandleTupleAssembly( tuple, index ) );
+        this.existsTuples.add( new FactHandleTupleAssembly( FactHandleTupleAssembly.EXISTS, tuple, index ) );
     }
 
     protected Iterator getActivatedTuples() {
@@ -80,5 +81,34 @@ public class LeapsFactHandle extends DefaultFactHandle {
             return this.existsTuples.iterator( );
         }
         return null;
+    }
+    
+    protected void clearActivatedTuples() {
+        this.activatedTuples = null;
+    }
+    
+    protected void clearExistsTuples() {
+        this.existsTuples = null;
+    }
+    
+    protected void clearNotTuples() {
+        this.notTuples = null;
+    }
+    
+    private LinkedList hashes = null;
+    protected void addHash(Table table){
+        if(this.hashes == null){
+            this.hashes = new LinkedList();
+        }
+        this.hashes.add( table );
+    }
+    
+    protected void removeFromHash() {
+        if(this.hashes!= null){
+            for(Iterator it = this.hashes.iterator( ); it.hasNext( );){
+                ((Table)it.next( )).remove( this );
+            }
+            this.hashes.clear( );
+        }
     }
 }

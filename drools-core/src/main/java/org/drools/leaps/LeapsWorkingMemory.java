@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.NoSuchFactObjectException;
 import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
@@ -107,80 +106,56 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
             final FactTable factTable = (FactTable) tables.next( );
             // adding fact to container
             factTable.add( factHandle );
+            // iterate through unsatisfied exists
             for (final Iterator tuples = factTable.getTuplesIterator( ); tuples.hasNext( );) {
                 final LeapsTuple tuple = (LeapsTuple) tuples.next( );
 
-                final ColumnConstraints[] not = tuple.getLeapsRule( )
-                                                     .getNotColumnConstraints( );
-                for (int i = 0, length = not.length; i < length; i++) {
-                    final ColumnConstraints constraint = not[i];
-                    final Object columnClassObject = constraint.getClassType( );
-                    if (!tuple.isBlockingNotFactHandle( i )
-                            && ( ( objectClass.getClass( ) == Class.class
-                                    && columnClassObject.getClass( ) == Class.class && ( (Class) columnClassObject ).isAssignableFrom( (Class) objectClass ) ) || ( objectClass.getClass( ) != Class.class
-                                    && columnClassObject.getClass( ) != Class.class && columnClassObject.equals( objectClass ) ) )
-                            && constraint.isAllowed( factHandle, tuple, this )) {
-                        tuple.setBlockingNotFactHandle( (LeapsFactHandle) factHandle, i );
-                        ( (LeapsFactHandle) factHandle ).addNotTuple( tuple, i );
-                    }
-                }
-                // check exists constraints and activate constraints
-                final ColumnConstraints[] exists = tuple.getLeapsRule( )
-                                                        .getExistsColumnConstraints( );
-                for (int i = 0, length = exists.length; i < length; i++) {
-                    final ColumnConstraints constraint = exists[i];
-                    final Object columnClassObject = constraint.getClassType( );
-                    if (!tuple.isExistsFactHandle( i )
-                            && ( ( objectClass.getClass( ) == Class.class
-                                    && columnClassObject.getClass( ) == Class.class && ( (Class) columnClassObject ).isAssignableFrom( (Class) objectClass ) ) || ( objectClass.getClass( ) != Class.class
-                                    && columnClassObject.getClass( ) != Class.class && columnClassObject.equals( objectClass ) ) )
-                            && constraint.isAllowed( factHandle, tuple, this )) {
-                        tuple.setExistsFactHandle( (LeapsFactHandle) factHandle, i );
-                        ( (LeapsFactHandle) factHandle ).addExistsTuple( tuple, i );
-                    }
-                }
+                TokenEvaluator.evaluateExistsConditions( tuple, tuple.getLeapsRule( ), this );
                 // check and see if we need activate
                 // activate only if tuple was not ready for it before
                 if (tuple.isReadyForActivation( )) {
                     // ready to activate
-                    tuple.setContext( new PropagationContextImpl( nextPropagationIdCounter( ),
-                                                                  PropagationContext.ASSERTION,
-                                                                  tuple.getLeapsRule( )
-                                                                       .getRule( ),
-                                                                  null ) );
                     tuplesToAssert.add( tuple );
                 }
             }
-            for (Iterator tuples = tuplesToAssert.iterator( ); tuples.hasNext( );) {
-                LeapsTuple tuple = (LeapsTuple) tuples.next( );
+            for (final Iterator it = tuplesToAssert.iterator( ); it.hasNext( );) {
+                // ready to activate
+                final LeapsTuple tuple = (LeapsTuple) it.next( );
                 factTable.removeTuple( tuple );
+                tuple.setContext( new PropagationContextImpl( nextPropagationIdCounter( ),
+                                                              PropagationContext.ASSERTION,
+                                                              tuple.getLeapsRule( )
+                                                                   .getRule( ),
+                                                              null ) );
                 this.assertTuple( tuple );
             }
         }
-        // inspect all tuples for exists and not conditions and activate
+        // inspect all tuples for not conditions and activate
         // deactivate agenda items
         Activation[] activations = this.agenda.getActivations( );
         for (int k = 0; k < activations.length; k++) {
             boolean deActivate = false;
             LeapsTuple tuple = (LeapsTuple) activations[k].getTuple( );
             final ColumnConstraints[] not = tuple.getLeapsRule( ).getNotColumnConstraints( );
-            for (int i = 0, length = not.length; i < length; i++) {
+            for (int i = 0, length = not.length; !deActivate && i < length; i++) {
                 final ColumnConstraints constraint = not[i];
                 final Object columnClassObject = constraint.getClassType( );
-                if (!tuple.isBlockingNotFactHandle( i ) 
-                        && ( ( objectClass.getClass( ) == Class.class
-                                && columnClassObject.getClass( ) == Class.class && ( (Class) columnClassObject ).isAssignableFrom( (Class) objectClass ) ) || ( objectClass.getClass( ) != Class.class
-                                && columnClassObject.getClass( ) != Class.class && columnClassObject.equals( objectClass ) ) )
+                if (( ( objectClass.getClass( ) == Class.class
+                        && columnClassObject.getClass( ) == Class.class && ( (Class) columnClassObject ).isAssignableFrom( (Class) objectClass ) ) || ( objectClass.getClass( ) != Class.class
+                        && columnClassObject.getClass( ) != Class.class && columnClassObject.equals( objectClass ) ) )
                         && constraint.isAllowed( factHandle, tuple, this )) {
                     tuple.setBlockingNotFactHandle( (LeapsFactHandle) factHandle, i );
                     ( (LeapsFactHandle) factHandle ).addNotTuple( tuple, i );
-                    if (!deActivate) {
-                        deActivate = true;
-                    }
+                    deActivate = true;
                 }
             }
             // check and see if we need de-activate
             if (deActivate) {
+                tuple.setContext( new PropagationContextImpl( nextPropagationIdCounter( ),
+                                                              PropagationContext.ASSERTION,
+                                                              tuple.getLeapsRule( )
+                                                                   .getRule( ),
+                                                              null ) );
                 if (tuple.getLeapsRule( ).getRule( ) instanceof Query) {
                     // put query results to the working memory
                     // location
@@ -209,8 +184,8 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
          * leaps specific actions
          */
         // remove fact from all relevant fact tables container
-        for (final Iterator it = this.getFactTablesList( LeapsBuilder.getLeapsClassType( factHandle.getObject( ) ) )
-                                     .iterator( ); it.hasNext( );) {
+        final Object objectClass = LeapsBuilder.getLeapsClassType( factHandle.getObject( ) );
+        for (final Iterator it = this.getFactTablesList( objectClass ).iterator( ); it.hasNext( );) {
             ( (FactTable) it.next( ) ).remove( factHandle );
         }
 
@@ -227,51 +202,10 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
                 invalidateActivation( tuple );
             }
         }
-
-        // 1. remove fact for nots and exists tuples
-        final IdentityMap tuplesNotReadyForActivation = new IdentityMap( );
-        FactHandleTupleAssembly assembly;
-        LeapsTuple tuple;
-        Iterator it;
-        it = ( (LeapsFactHandle) factHandle ).getNotTupleAssemblies( );
-        if (it != null) {
-            for (; it.hasNext( );) {
-                assembly = (FactHandleTupleAssembly) it.next( );
-                tuple = assembly.getTuple( );
-                if (!tuple.isReadyForActivation( )) {
-                    tuplesNotReadyForActivation.put( tuple, tuple );
-                }
-                tuple.removeBlockingNotFactHandle( assembly.getIndex( ) );
-
-                TokenEvaluator.evaluateNotCondition( (LeapsFactHandle) factHandle,
-                // TokenEvaluator.evaluateNotCondition( new LeapsFactHandle(
-                // factHandle.getRecency( ) + 1,
-                                                     // new Object( ) ),
-                                                     assembly.getIndex( ),
-                                                     tuple,
-                                                     this );
-            }
-        }
-        it = ( (LeapsFactHandle) factHandle ).getExistsTupleAssemblies( );
-        if (it != null) {
-            for (; it.hasNext( );) {
-                assembly = (FactHandleTupleAssembly) it.next( );
-                tuple = assembly.getTuple( );
-                if (!tuple.isReadyForActivation( )) {
-                    tuplesNotReadyForActivation.put( tuple, tuple );
-                }
-                tuple.removeExistsFactHandle( assembly.getIndex( ) );
-                TokenEvaluator.evaluateExistsCondition( (LeapsFactHandle) factHandle,
-                // TokenEvaluator.evaluateExistsCondition( new LeapsFactHandle(
-                // factHandle.getRecency( ) + 1,
-                                                        // null ),
-                                                        assembly.getIndex( ),
-                                                        tuple,
-                                                        this );
-            }
-        }
-        // 2. assert all tuples that are ready for activation or cancel ones
+        ( (LeapsFactHandle) factHandle ).clearActivatedTuples( );
+        // assert all tuples that are ready for activation or cancel ones
         // that are no longer
+        Iterator it;
         final IteratorChain chain = new IteratorChain( );
         it = ( (LeapsFactHandle) factHandle ).getNotTupleAssemblies( );
         if (it != null) {
@@ -282,22 +216,30 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
             chain.addIterator( it );
         }
         for (; chain.hasNext( );) {
-            tuple = ( (FactHandleTupleAssembly) chain.next( ) ).getTuple( );
+            FactHandleTupleAssembly tupleAssembly = ( (FactHandleTupleAssembly) chain.next( ) );
+            final LeapsTuple tuple = tupleAssembly.getTuple( );
+            if (tupleAssembly.getType( ) == FactHandleTupleAssembly.NOT) {
+                tuple.removeBlockingNotFactHandle( tupleAssembly.getIndex( ) );
+            }
+            else {
+                tuple.removeExistsFactHandle( tupleAssembly.getIndex( ) );
+            }
             // can assert only tuples that were not eligible for activation
             // before retraction
-            if (tuple.isReadyForActivation( )) {
-                // ready to activate
-                tuple.setContext( new PropagationContextImpl( nextPropagationIdCounter( ),
-                                                              PropagationContext.ASSERTION,
-                                                              tuple.getLeapsRule( )
-                                                                   .getRule( ),
-                                                              null ) );
-                this.getFactTable( LeapsBuilder.getLeapsClassType( factHandle.getObject( ) ) )
-                    .removeTuple( tuple );
+            if (!TokenEvaluator.processAfterAllPositiveConstraintOk( tuple,
+                                                                     tuple.getLeapsRule( ),
+                                                                     this )) {
+                // deactivate tuple that was activated inside of
+                // processAfterAllPositive
+                // bad design, need to rethink it
+                invalidateActivation( tuple );
+            }
+            else {
                 this.assertTuple( tuple );
             }
         }
-
+        ( (LeapsFactHandle) factHandle ).clearExistsTuples( );
+        ( (LeapsFactHandle) factHandle ).clearNotTuples( );
         // remove it from stack
         this.removeTokenFromStack( (LeapsFactHandle) factHandle );
     }
@@ -310,21 +252,20 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
      */
     private final void invalidateActivation( final LeapsTuple tuple ) {
         final Activation activation = tuple.getActivation( );
-        if (!tuple.isReadyForActivation( ) && !tuple.isActivationNull( )) {
-            // invalidate agenda agendaItem
+        // tuple can already loose activation if another fact or exists fact was retracted
+        // or not fact added
+        if (activation != null) {
             if (activation.isActivated( )) {
                 activation.remove( );
-                getAgendaEventSupport( ).fireActivationCancelled( activation );
+                this.getAgendaEventSupport( ).fireActivationCancelled( activation );
             }
+
+            this.getTruthMaintenanceSystem( )
+                .removeLogicalDependencies( activation,
+                                            tuple.getContext( ),
+                                            tuple.getLeapsRule( ).getRule( ) );
             //
             tuple.setActivation( null );
-        }
-        if (activation != null) {
-            // remove logical dependency
-            this.tms.removeLogicalDependencies( activation,
-                                                tuple.getContext( ),
-                                                tuple.getLeapsRule( ).getRule( ) );
-
             // remove from rule / activaitons map
             FastMap activations = (FastMap) this.rulesActivationsMap.get( activation.getRule( ) );
             if (activations != null) {
@@ -344,63 +285,67 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
                               final Rule rule,
                               final Activation activation ) throws FactException {
         try {
-            this.getLock( ).lock( );
+            this.lock.lock();
+            final int status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
+            final InternalFactHandle handle = (InternalFactHandle) factHandle;
+            final Object originalObject = handle.getObject();
+
+            if ( handle.getId() == -1 || object == null ) {
+                // the handle is invalid, most likely already  retracted, so return
+                // and we cannot assert a null object
+                return;
+            }
+
+            // set anyway, so that it updates the hashCodes
+            handle.setObject( object );
+
+            // We only need to put objects, if its a new object
+            if ( originalObject != object ) {
+                this.assertMap.put( handle,
+                                    handle );
+            }
+
+            // the hashCode and equality has changed, so we must update the EqualityKey
+            EqualityKey key = handle.getEqualityKey();
+            key.removeFactHandle( handle );
+
+            // If the equality key is now empty, then remove it
+            if ( key.isEmpty() ) {
+                this.tms.remove( key );
+            }
+
+            // now use an  existing  EqualityKey, if it exists, else create a new one
+            key = this.tms.get( object );
+            if ( key == null ) {
+                key = new EqualityKey( handle,
+                                       status );
+                this.tms.put( key );
+            } else {
+                key.addFactHandle( handle );
+            }
+
+            handle.setEqualityKey( key );
+
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
                                                                                       activation );
-
-            final int status = ( (InternalFactHandle) factHandle ).getEqualityKey( )
-                                                                  .getStatus( );
-
-            final Object originalObject = this.assertMap.remove( factHandle );
-            if (originalObject == null) {
-                throw new NoSuchFactObjectException( factHandle );
-            }
-            // 
-            // do subset of retractObject( )
-            //
-            final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            if (handle.getId( ) == -1) {
-                // can't retract an already retracted handle
-                return;
-            }
-            removePropertyChangeListener( handle );
-
             doRetract( handle, propagationContext );
 
-            // Update the equality key, which maintains a list of stated
-            // FactHandles
-            final EqualityKey key = handle.getEqualityKey( );
+            this.handleFactory.increaseFactHandleRecency( handle );
 
-            key.removeFactHandle( handle );
-            handle.setEqualityKey( null );
-
-            // If the equality key is now empty, then remove it
-            if (key.isEmpty( )) {
-                this.tms.remove( key );
-            }
-            // produces NPE otherwise
-            this.handleFactory.destroyFactHandle( handle );
-
-            // 
-            // and now assert
-            //
-            /* check to see if this is a logically asserted object */
-            this.assertObject( object, false, ( status == EqualityKey.STATED ) ? false
-                    : true, rule, activation );
+            doAssertObject( handle, object, propagationContext );
 
             this.workingMemoryEventSupport.fireObjectModified( propagationContext,
-                                                               handle,
-                                                               handle.getObject( ),
+                                                               factHandle,
+                                                               originalObject,
                                                                object );
 
-            if (!this.factQueue.isEmpty( )) {
-                propagateQueuedActions( );
+            if ( !this.factQueue.isEmpty() ) {
+                propagateQueuedActions();
             }
-        }
-        finally {
-            this.getLock( ).unlock( );
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -408,6 +353,8 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
      * ************* leaps section *********************
      */
     private long             idLastFireAllAt = -1;
+    
+    private boolean rulesAddedSinceLastFireAll = false;
 
     /**
      * algorithm stack.
@@ -521,6 +468,8 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
     protected void addLeapsRules( final List rules ) {
         this.getLock( ).lock( );
         try {
+            this.rulesAddedSinceLastFireAll = true;
+            
             ArrayList ruleHandlesList;
             LeapsRule rule;
             LeapsRuleHandle ruleHandle;
@@ -630,6 +579,7 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
         if (!this.firing) {
             try {
                 this.firing = true;
+                
                 boolean nothingToProcess = false;
                 while (!nothingToProcess) {
                     // check for the initial fact
@@ -637,13 +587,16 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
                         LeapsRule rule = ( (LeapsRuleHandle) rulesIt.next( ) ).getLeapsRule( );
                         final PropagationContextImpl context = new PropagationContextImpl( nextPropagationIdCounter( ),
                                                                                            PropagationContext.ASSERTION,
-                                                                                           null,
+                                                                                           null, //rule.getRule( ),
                                                                                            null );
-                        TokenEvaluator.processAfterAllPositiveConstraintOk( new LeapsTuple( new LeapsFactHandle[0],
-                                                                                            rule,
-                                                                                            context ),
-                                                                            rule,
-                                                                            this );
+                        final LeapsTuple tuple = new LeapsTuple( new LeapsFactHandle[0],
+                                                                 rule,
+                                                                 context );
+                        if (TokenEvaluator.processAfterAllPositiveConstraintOk( tuple,
+                                                                                rule,
+                                                                                this )) {
+                            this.assertTuple( tuple );
+                        }
 
                     }
                     this.noPositiveColumnsRules.clear( );
@@ -708,6 +661,7 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
                     }
                 }
                 // mark when method was called last time
+                this.rulesAddedSinceLastFireAll = false;
                 this.idLastFireAllAt = ( (LeapsFactHandleFactory) this.handleFactory ).getNextId( );
                 // set all factTables to be reseeded
                 for (final Iterator it = this.factTables.values( ).iterator( ); it.hasNext( );) {
@@ -722,6 +676,10 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
         }
     }
 
+    protected final boolean isRulesAddedSinceLastFireAll() {
+        return this.rulesAddedSinceLastFireAll;
+    }
+    
     protected final long getIdLastFireAllAt() {
         return this.idLastFireAllAt;
     }

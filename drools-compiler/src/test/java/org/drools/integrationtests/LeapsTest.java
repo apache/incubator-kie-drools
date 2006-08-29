@@ -34,7 +34,6 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.leaps.LeapsRuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.xml.XmlDumper;
@@ -75,6 +74,40 @@ public class LeapsTest extends IntegrationCases {
                       results.size() );
     }
 
+
+    public void testTwoQuerries() throws Exception {
+        // @see JBRULES-410 More than one Query definition causes an incorrect Rete network to be built.
+        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_TwoQuerries.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final Cheese stilton = new Cheese( "stinky",
+                                     5 );
+        workingMemory.assertObject( stilton );
+        final Person per1 = new Person( "stinker", "smelly feet", 70);
+        final Person per2 = new Person( "skunky", "smelly armpits", 40);
+        
+        workingMemory.assertObject( per1 );
+        workingMemory.assertObject( per2 );
+
+        workingMemory.fireAllRules( );
+        
+        QueryResults results = workingMemory.getQueryResults( "find stinky cheeses" );
+        assertEquals( 1,
+                      results.size() );
+        
+        results = workingMemory.getQueryResults( "find pensioners" );
+        assertEquals( 1,
+                      results.size() );        
+    }    
+    
+
+    
     /**
      * leaps does not create activations upfront hence its inability to apply
      * auto-focus predicate in the same way as reteoo does. activations in
@@ -384,13 +417,5 @@ public class LeapsTest extends IntegrationCases {
                       list.get( 0 ) );
         assertEquals( "3 1", 
                       list.get( 1 ) );
-    }
-    
-    public void testLogicalAssertionsWithExists() throws Exception {
-        // FIXME
-    }
-    
-    public void testTwoQuerries() throws Exception {
-        // FIXME
     }
 }

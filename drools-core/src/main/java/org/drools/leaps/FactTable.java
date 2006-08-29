@@ -21,7 +21,6 @@ import java.util.Iterator;
 
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
-import org.drools.leaps.util.IteratorFromPositionToTableStart;
 import org.drools.leaps.util.Table;
 import org.drools.leaps.util.TableIterator;
 import org.drools.spi.PropagationContext;
@@ -196,7 +195,6 @@ class FactTable extends Table {
     protected void removeTuple( final LeapsTuple tuple ) {
         this.tuples.remove( tuple );
     }
-
     
     private final IdentityMap notAndExistsHashedTables;
 
@@ -205,15 +203,16 @@ class FactTable extends Table {
     public void add( Object object ) {
         super.add( object );
         for (Iterator it = this.notAndExistsHashedTables.values( ).iterator( ); it.hasNext( );) {
+            // this will also add link to hash into the leapsfacthandle
             ((HashedTableComponent)it.next( )).add( (LeapsFactHandle)object );
         }
     }
 
     public void remove( Object object ) {
         super.remove( object );
-        for (Iterator it = this.notAndExistsHashedTables.values( ).iterator( ); it.hasNext( );) {
-            ((HashedTableComponent)it.next( )).remove( (LeapsFactHandle)object );
-        }
+        // during modify we need to directly remove facts from participating 
+        // hashes because modify can throw us off
+        ((LeapsFactHandle)object ).removeFromHash();
     }
 
     protected void createHashedSubTable(ColumnConstraints constraint) {

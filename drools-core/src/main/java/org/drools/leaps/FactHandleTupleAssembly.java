@@ -31,9 +31,18 @@ class FactHandleTupleAssembly {
     final LeapsTuple tuple;
 
     final int        index;
+    
+    final int type;
 
-    FactHandleTupleAssembly(final LeapsTuple tuple,
+    public final static int EXISTS = 1;
+    
+    public final static int NOT = 2;
+    
+    
+    FactHandleTupleAssembly(final int type,
+                            final LeapsTuple tuple,
                             final int index) {
+        this.type = type;
         this.tuple = tuple;
         this.index = index;
     }
@@ -44,5 +53,9 @@ class FactHandleTupleAssembly {
 
     protected LeapsTuple getTuple() {
         return this.tuple;
+    }
+
+    public int getType() {
+        return type;
     }
 }

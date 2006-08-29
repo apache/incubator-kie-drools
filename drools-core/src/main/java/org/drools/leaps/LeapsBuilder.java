@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.drools.base.ClassObjectType;
 import org.drools.common.BetaNodeBinder;
-import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.rule.And;
 import org.drools.rule.Column;
