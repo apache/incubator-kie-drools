@@ -64,6 +64,7 @@ public class DefaultRightMemory
     public final void remove(final WorkingMemory workingMemory,
                              final ObjectMatches matches) {
         matches.getOuterList().remove( matches );
+        matches.setOuterList( null );
     }
 
     /**
@@ -86,6 +87,7 @@ public class DefaultRightMemory
     public final void remove(final WorkingMemory workingMemory,
                              final MultiLinkedListNodeWrapper wrapper) {
         wrapper.getOuterList().remove( wrapper );
+        wrapper.setOuterList( null );
     }
 
     /**
