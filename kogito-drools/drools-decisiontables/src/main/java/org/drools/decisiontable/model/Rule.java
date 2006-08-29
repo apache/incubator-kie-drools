@@ -100,13 +100,13 @@ public class Rule extends DRLElement
             out.writeLine( "\tsalience " + this._salience );
         }
         if ( this._activationGroup != null ) {
-            out.writeLine( "\tactivation-group" + this._activationGroup );
+            out.writeLine( "\tactivation-group " + this._activationGroup );
         }
         if ( this._noLoop != null ) {
-            out.writeLine( "\tno-loop" + this._noLoop );
+            out.writeLine( "\tno-loop " + this._noLoop );
         }
         if ( this._duration != null ) {
-            out.writeLine( "\tduration" + this._duration );
+            out.writeLine( "\tduration " + this._duration );
         }
 
         out.writeLine( "\twhen" );
@@ -239,14 +239,6 @@ public class Rule extends DRLElement
         this._noLoop = value;
     }
 
-    public boolean getNoLoop() {
-        String value = "false";
-        if ( this._noLoop.compareTo( "true" ) != 0 ) {
-            value = this._noLoop;
-        }
-        final Boolean b = new Boolean( value );
-        return b.booleanValue();
-    }
 
     /**
      * @return The row in the spreadsheet this represents. 
