@@ -71,12 +71,11 @@ public class MethodDataProviderTest extends TestCase {
                           var2Dec );
 
         List args = new ArrayList();
-        args.add( new LiteralValue( "boo" ) );
-        args.add( new LiteralValue( "42" ) );
+        args.add( new LiteralValue( "boo", String.class ) );
+        args.add( new LiteralValue( "42", Integer.class ) );
         args.add( new DeclarationVariable( var2Dec ) );
 
         MethodInvoker invoker = new MethodInvoker( "helloWorld",
-                                                   TestVariable.class,
                                                    new DeclarationVariable( varDec ),
                                                    (ValueHandler[]) args.toArray( new ValueHandler[args.size()] ) );
 
@@ -115,8 +114,7 @@ public class MethodDataProviderTest extends TestCase {
                       new TestVariable() );
 
         MethodInvoker invoker = new MethodInvoker( "otherMethod",
-                                                   TestVariable.class,
-                                                   new GlobalVariable( "foo" ),
+                                                   new GlobalVariable( "foo", TestVariable.class ),
                                                    new ValueHandler[0] );        
         
         

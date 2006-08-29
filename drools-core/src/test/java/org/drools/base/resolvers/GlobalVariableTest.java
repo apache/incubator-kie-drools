@@ -23,7 +23,7 @@ public class GlobalVariableTest extends TestCase {
         rb.addPackage( pkg );
         WorkingMemory wm = rb.newWorkingMemory();
 
-        GlobalVariable global = new GlobalVariable( "list" );
+        GlobalVariable global = new GlobalVariable( "list", List.class );
 
         Cheese stilton = new Cheese( "stilton",
                                      20 );

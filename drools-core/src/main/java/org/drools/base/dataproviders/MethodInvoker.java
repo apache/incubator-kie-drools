@@ -30,15 +30,27 @@ public class MethodInvoker {
     public MethodInvoker(String methodName,
                          Class clazz,
                          ValueHandler[] valueHandlers) {
-        this( methodName, clazz, null, valueHandlers );
-        // @todo : defensive errors for referencing non static method
+        this.instanceValueHandler = null;
+        this.valueHandlers = valueHandlers;
+        
+        // determine required declarations
+        List list = new ArrayList(1);        
+        for ( int i = 0, length = valueHandlers.length; i < length; i++ ) {
+            if ( valueHandlers[i].getClass() == DeclarationVariable.class ) {
+                list.add( ( (DeclarationVariable) valueHandlers[i] ).getDeclaration() );    
+            }
+        }
+        
+        this.requiredDeclarations = ( Declaration[] )list.toArray( new Declaration[ list.size() ] );
+
+        this.method = configureMethod( clazz,
+                                       methodName,
+                                       valueHandlers.length );
     }
-    
     /**
      * Method invoker for an instance
      */
     public MethodInvoker(String methodName,
-                         Class clazz,
                          ValueHandler instanceValueHandler,
                          ValueHandler[] valueHandlers) {
         this.instanceValueHandler = instanceValueHandler;
@@ -57,7 +69,7 @@ public class MethodInvoker {
         
         this.requiredDeclarations = ( Declaration[] )list.toArray( new Declaration[ list.size() ] );
 
-        this.method = configureMethod( clazz,
+        this.method = configureMethod( this.instanceValueHandler.getExtractToClass(),
                                        methodName,
                                        valueHandlers.length );
     }

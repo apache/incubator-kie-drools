@@ -33,6 +33,10 @@ public class DeclarationVariable
         return this.declaration;
     }
     
+    public Class getExtractToClass() {
+        return this.declaration.getExtractor().getExtractToClass();
+    }
+    
     public void reset() {
         this.cachedValue = ValueHandler.EMPTY;
     }

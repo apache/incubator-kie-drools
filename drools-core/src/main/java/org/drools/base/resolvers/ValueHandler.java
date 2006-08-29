@@ -25,6 +25,8 @@ public interface ValueHandler
      */
     public Object getValue(Tuple tuple,
                            WorkingMemory wm);
+    
+    public Class getExtractToClass() ;
 
     /**
      * NULL the cached value

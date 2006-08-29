@@ -18,7 +18,7 @@ public class LiteralValueTest extends TestCase {
         rb.addPackage( pkg );
         WorkingMemory wm = rb.newWorkingMemory();
 
-        LiteralValue literal = new LiteralValue( "literal" );
+        LiteralValue literal = new LiteralValue( "literal", String.class );
 
         Cheese stilton = new Cheese( "stilton",
                                      20 );

@@ -5,6 +5,7 @@ package org.drools.base.resolvers;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
@@ -42,6 +43,10 @@ public class MapValue
 
         return this.cachedValue;
     }
+    
+    public Class getExtractToClass() {
+        return Map.class;
+    }     
 
     public void reset() {
         this.cachedValue = ValueHandler.EMPTY;
