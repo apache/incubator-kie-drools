@@ -2,6 +2,7 @@ package org.drools.base.dataproviders;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,10 +34,8 @@ public class MethodDataProvider
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {
             return (Iterator) result;
-        } else {
-            List resultAsList = new ArrayList( 1 );
-            resultAsList.add( result );
-            return resultAsList.iterator();
+        } else {            
+            return Collections.singletonList( result ).iterator();
         }        
     }
 

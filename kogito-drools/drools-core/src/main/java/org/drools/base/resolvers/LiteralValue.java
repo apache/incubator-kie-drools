@@ -3,6 +3,8 @@
  */
 package org.drools.base.resolvers;
 
+import java.util.List;
+
 import org.drools.WorkingMemory;
 import org.drools.spi.Tuple;
 
@@ -12,16 +14,23 @@ public class LiteralValue
     
     private static final long serialVersionUID = 320L;
 
-    private String value;    
+    private final String value;   
+    
+    private final Class clazz;
 
-    public LiteralValue(final String value) {
+    public LiteralValue(final String value, final Class clazz) {
         this.value = value;
+        this.clazz = clazz;
     }
 
     public Object getValue(final Tuple tuple,
                            final WorkingMemory wm) {
         return this.value;
     }
+    
+    public Class getExtractToClass() {
+        return this.clazz;
+    }     
     
     public void reset() {
         // N/A

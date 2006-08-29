@@ -12,12 +12,15 @@ public class GlobalVariable
 
     private static final long serialVersionUID = 320L;
 
-    public String             globalName;
+    public final String             globalName;
+    public final Class              clazz;
+    
     
     private Object cachedValue = ValueHandler.EMPTY;
 
-    public GlobalVariable(final String name) {
+    public GlobalVariable(final String name, final Class clazz) {
         this.globalName = name;
+        this.clazz = clazz;
     }
 
     public Object getValue(final Tuple tuple,
@@ -27,6 +30,10 @@ public class GlobalVariable
         }
         return this.cachedValue;
     }
+    
+    public Class getExtractToClass() {
+        return this.clazz;
+    }    
     
     public void reset() {
         this.cachedValue = ValueHandler.EMPTY;

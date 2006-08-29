@@ -20,7 +20,7 @@ public class FactTemplateFieldExtractor
     
     public ValueType getValueType() {
         return this.factTemplate.getFieldTemplate( fieldIndex ).getValueType();
-    }
+    }   
 
     public Object getValue(Object object) {
         return ((Fact) object).getFieldValue( this.fieldIndex );

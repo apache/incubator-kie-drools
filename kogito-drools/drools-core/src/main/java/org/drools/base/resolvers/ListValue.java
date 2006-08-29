@@ -39,6 +39,10 @@ public class ListValue
         return this.cachedValue;
     }
     
+    public Class getExtractToClass() {
+        return List.class;
+    }    
+    
     public void reset() {
         this.cachedValue = ValueHandler.EMPTY;
     }
@@ -66,6 +70,5 @@ public class ListValue
         final ListValue other = (ListValue) object;
         return this.list.equals( other.list );
     }
-    
-    
+      
 }
