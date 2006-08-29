@@ -49,29 +49,21 @@ public class LeapsAgenda extends DefaultAgenda {
                                                   activation.getTuple( ) );
         }
         else {
-            if (activation.getRule( ).getActivationGroup( ) == null
-                    || ( activation.getRule( ).getActivationGroup( ) != null && this.getActivationGroup( activation.getRule( )
-                                                                                                                   .getActivationGroup( ) )
-                                                                                    .isEmpty( ) )) {
-                // fire regular rule
-                super.fireActivation( activation );
-                ((LeapsTuple)activation.getTuple( )).setWasFired( true );
-                if (activation.getRule( ).getActivationGroup( ) != null) {
-                    this.getActivationGroup( activation.getRule( ).getActivationGroup( ) );
-                }
-            }
+            // fire regular rule
+            super.fireActivation( activation );
+            ( (LeapsTuple) activation.getTuple( ) ).setWasFired( true );
         }
     }
-    
+
     /**
-     * to accomodate the difference between rete and leaps in storing 
-     * activations. we pull activations from rule to activations map
-     * we store in working memory to facilitate activations removal 
-     * when rule is removed from the memory
+     * to accomodate the difference between rete and leaps in storing
+     * activations. we pull activations from rule to activations map we store in
+     * working memory to facilitate activations removal when rule is removed
+     * from the memory
      * 
      */
     public Activation[] getActivations() {
-        final List list = this.workingMemory.getActivations();
-        return (Activation[]) list.toArray( new Activation[list.size()] );
+        final List list = this.workingMemory.getActivations( );
+        return (Activation[]) list.toArray( new Activation[list.size( )] );
     }
 }

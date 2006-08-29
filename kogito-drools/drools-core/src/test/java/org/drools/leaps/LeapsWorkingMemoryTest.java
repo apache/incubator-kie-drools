@@ -30,10 +30,10 @@ public class LeapsWorkingMemoryTest extends TestCase {
         assertEquals(1, 
                      tms.getAssertMap().size() );        
         key = tms.get( string );
-        assertNotSame( fd, key.getFactHandle() );
+        assertSame( fd, key.getFactHandle() );
         assertNull( key.getOtherFactHandle() );
         
-        workingMemory.retractObject( key.getFactHandle() );
+        workingMemory.retractObject(fd);
         
         assertEquals(0, 
                      tms.getAssertMap().size() );        

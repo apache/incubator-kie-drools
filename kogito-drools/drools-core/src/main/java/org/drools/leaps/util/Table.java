@@ -86,7 +86,7 @@ public class Table implements Serializable {
 
             }
             catch (final NoSuchElementException nsee) {
-                // means map is empty
+                // means sub map is empty
                 this.headRecord.left = newRecord;
                 newRecord.right = this.headRecord;
                 this.headRecord = newRecord;
@@ -114,9 +114,8 @@ public class Table implements Serializable {
             try {
                 final TableRecord record = (TableRecord) this.set.tailSet( new TableRecord( object ) )
                                                                  .first( );
-
-                if (record != null) {
-                    if (record == this.headRecord) {
+                if (record != null && record.object == object) {
+                    if (record == this.headRecord ) {
                         if (record.right != null) {
                             this.headRecord = record.right;
                             this.headRecord.left = null;
@@ -124,8 +123,8 @@ public class Table implements Serializable {
                         else {
                             // single element in table being valid
                             // table is empty now
-                            this.headRecord = new TableRecord( null );
-                            this.tailRecord = this.headRecord;
+                            this.headRecord = null;
+                            this.tailRecord = null;
                             this.empty = true;
                         }
                     }
@@ -143,11 +142,15 @@ public class Table implements Serializable {
                     record.left = null;
                     record.right = null;
                 }
+                else {
+                    throw new NoSuchElementException();
+                }
                 this.count--;
                 //
                 this.set.remove( record );
             }
             catch (final NoSuchElementException nsee) {
+                throw nsee;
             }
         }
     }

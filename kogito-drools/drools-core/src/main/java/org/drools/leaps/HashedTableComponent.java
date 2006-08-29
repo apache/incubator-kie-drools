@@ -34,16 +34,10 @@ public class HashedTableComponent implements Serializable{
     }
 
     public void add( LeapsFactHandle factHandle ) {
-        Table table = this.getTable( factHandle, true );
+        Table table = this.getTable( factHandle);
         if (table != null) {
             table.add( factHandle );
-        }
-    }
-
-    public void remove( LeapsFactHandle factHandle ) {
-        Table table = this.getTable( factHandle, false );
-        if (table != null) {
-            table.remove( factHandle );
+            factHandle.addHash(table);
         }
     }
 
@@ -115,13 +109,12 @@ public class HashedTableComponent implements Serializable{
         return ret;
     }
 
-    private Table getTable( LeapsFactHandle factHandle, boolean createIfNotThere ) {
+    private Table getTable( LeapsFactHandle factHandle ) {
         Table ret = null;
         Map currentMap = this.buckets;
         if (this.constraints.isAllowedAlpha( factHandle, null, null )) {
             if (this.numberOfVariableConstraints > 0) {
-                for (int i = 0; ( i < this.numberOfVariableConstraints )
-                        && ( currentMap != null ); i++) {
+                for (int i = 0; i < this.numberOfVariableConstraints; i++) {
                     Integer hash = DEFAULT_HASH;
                     if (this.constraints.getBetaContraints( )[i] instanceof VariableConstraint
                             && ( (VariableConstraint) this.constraints.getBetaContraints( )[i] ).getEvaluator( )
@@ -136,7 +129,7 @@ public class HashedTableComponent implements Serializable{
                     if (i != ( this.numberOfVariableConstraints - 1 )) {
                         // we can not have null as a value to the key
                         Map map = (Map) currentMap.get( hash );
-                        if (map == null && createIfNotThere) {
+                        if (map == null) {
                             map = new HashMap( );
                             currentMap.put( hash, map );
                         }
@@ -144,7 +137,7 @@ public class HashedTableComponent implements Serializable{
                     }
                     else {
                         Table table = (Table) currentMap.get( hash );
-                        if (table == null && createIfNotThere) {
+                        if (table == null) {
                             table = new Table( this.comparator );
                             currentMap.put( hash, table );
                         }

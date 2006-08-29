@@ -189,9 +189,11 @@ final class TokenEvaluator {
                         // one check negative conditions and fire consequence
                         if (jj == stopIteratingCount) {
                             if (!skip) {
-                                if (processAfterAllPositiveConstraintOk( token.getTuple( ),
+                                final LeapsTuple tuple = token.getTuple( );
+                                if (processAfterAllPositiveConstraintOk( tuple,
                                                                          leapsRule,
                                                                          workingMemory )) {
+                                    workingMemory.assertTuple( tuple );
                                     return;
                                 }
                             }
@@ -230,25 +232,11 @@ final class TokenEvaluator {
         if (leapsRule.containsExistsColumns( )) {
             TokenEvaluator.evaluateExistsConditions( tuple, leapsRule, workingMemory );
         }
-        if (leapsRule.containsNotColumns( )) {
+        if (tuple.isReadyForActivation( ) && leapsRule.containsNotColumns( )) {
             TokenEvaluator.evaluateNotConditions( tuple, leapsRule, workingMemory );
         }
         // 
-        if (tuple.isReadyForActivation( )) {
-            // let agenda to do its work
-            workingMemory.assertTuple( tuple );
-            return true;
-        }
-        else {
-            // put tuple onto fact tables that might affect activation status
-            // via exists or not conditions
-            final Class[] classes = leapsRule.getExistsNotColumnsClasses( );
-            for (int i = 0, length = classes.length; i < length; i++) {
-                workingMemory.getFactTable( classes[i] ).addTuple( tuple );
-            }
-
-            return false;
-        }
+        return tuple.isReadyForActivation( );
     }
 
     /**
@@ -306,17 +294,15 @@ final class TokenEvaluator {
     final static void evaluateNotConditions( final LeapsTuple tuple,
                                              final LeapsRule rule,
                                              final LeapsWorkingMemory workingMemory ) {
+        // stops if exists
+        boolean done = false;
         final ColumnConstraints[] not = rule.getNotColumnConstraints( );
-        for (int i = 0, length = not.length; i < length; i++) {
+        for (int i = 0, length = not.length; i < length && !done; i++) {
             final ColumnConstraints constraint = not[i];
             // scan table starting at start fact handle
             final TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
                                                              .reverseOrderIterator( tuple, constraint );
-//            .reverseOrderIterator( );
-            // stops if exists
-            boolean done = false;
             while (!done  && tableIterator.hasNext( )) {
-//                while (!done && tableIterator.hasNext( )) {
                 final LeapsFactHandle factHandle = (LeapsFactHandle) tableIterator.next( );
                 // check constraint conditions
                 if (constraint.isAllowed( factHandle, tuple, workingMemory )) {
@@ -329,102 +315,41 @@ final class TokenEvaluator {
     }
 
     /**
-     * To evaluate conditions above the water line that is supplied in the first
-     * argument
-     * 
-     * @param startFactHandle
-     * @param index
-     * @param tuple
-     * @param rule
-     * @param workingMemory
-     */
-    final static void evaluateNotCondition( final LeapsFactHandle startFactHandle,
-                                            final int index,
-                                            final LeapsTuple tuple,
-                                            final LeapsWorkingMemory workingMemory ) {
-        final LeapsRule rule = tuple.getLeapsRule( );
-        // scan table starting at start fact handle
-        final ColumnConstraints constraint = rule.getNotColumnConstraints( )[index];
-        final TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
-                                         .iteratorFromPositionToTableEnd( tuple, constraint, startFactHandle);
-//        .iteratorFromPositionToTableEnd( startFactHandle );
-//            .reverseOrderIterator( );
-        // stops if exists
-        boolean done = false;
-        while (!done && tableIterator.hasNext( )) {
-            final LeapsFactHandle factHandle = (LeapsFactHandle) tableIterator.next( );
-            // check constraint conditions
-            if (constraint.isAllowed( factHandle, tuple, workingMemory )) {
-                tuple.setBlockingNotFactHandle( factHandle, index );
-                factHandle.addNotTuple( tuple, index );
-                done = true;
-            }
-        }
-    }
-
-    /**
      * Check if any of the exists conditions are satisfied
      * 
      * @param tuple
      * @param memory
      * @throws Exception
      */
-    private final static void evaluateExistsConditions( final LeapsTuple tuple,
-                                                        final LeapsRule rule,
-                                                        final LeapsWorkingMemory workingMemory ) {
-        final ColumnConstraints[] exists = rule.getExistsColumnConstraints( );
-        for (int i = 0, length = exists.length; i < length; i++) {
-            final ColumnConstraints constraint = exists[i];
-            // scan table starting at start fact handle
-            final TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
-                                                             .reverseOrderIterator( tuple, constraint );
-//            .reverseOrderIterator( );
-            // stop if exists
-            boolean done = false;
-            while (!done && tableIterator.hasNext( )) {
-                final LeapsFactHandle factHandle = (LeapsFactHandle) tableIterator.next( );
-                // check constraint conditions
-                if (constraint.isAllowed( factHandle,
-                                           tuple,
-                                           workingMemory ) ) {
-                    tuple.setExistsFactHandle( factHandle,
-                                               i );
-                    factHandle.addExistsTuple( tuple,
-                                               i );
-                    done = true;
-                }
-            }
-        }
-    }
-
-    /**
-     * To evaluate conditions above the water line that is supplied in the first
-     * argument
-     * 
-     * @param startFactHandle
-     * @param index
-     * @param tuple
-     * @param rule
-     * @param workingMemory
-     */
-    final static void evaluateExistsCondition( final LeapsFactHandle startFactHandle,
-                                               final int index,
-                                               final LeapsTuple tuple,
-                                               final LeapsWorkingMemory workingMemory ) {
-        final LeapsRule rule = tuple.getLeapsRule( );
-        // scan table starting at start fact handle
-        final ColumnConstraints constraint = rule.getExistsColumnConstraints( )[index];
-        final TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
-                                                         .iteratorFromPositionToTableEnd( startFactHandle );
+    public final static void evaluateExistsConditions( final LeapsTuple tuple,
+                                                       final LeapsRule rule,
+                                                       final LeapsWorkingMemory workingMemory ) {
         // stop if exists
+        boolean notFound = false;
         boolean done = false;
-        while (!done && tableIterator.hasNext( )) {
-            final LeapsFactHandle factHandle = (LeapsFactHandle) tableIterator.next( );
-            // check constraint conditions
-            if (constraint.isAllowed( factHandle, tuple, workingMemory )) {
-                tuple.setExistsFactHandle( factHandle, index );
-                factHandle.addExistsTuple( tuple, index );
-                done = true;
+        final ColumnConstraints[] exists = rule.getExistsColumnConstraints( );
+        for (int i = 0, length = exists.length; !notFound && i < length; i++) {
+            final ColumnConstraints constraint = exists[i];
+            if (!tuple.isExistsFactHandle( i )) {
+                // scan table starting at start fact handle
+                final TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
+                                                                 .reverseOrderIterator( tuple,
+                                                                                        constraint );
+                done = false;
+                while (!done && tableIterator.hasNext( )) {
+                    final LeapsFactHandle factHandle = (LeapsFactHandle) tableIterator.next( );
+                    // check constraint conditions
+                    if (constraint.isAllowed( factHandle, tuple, workingMemory )) {
+                        tuple.setExistsFactHandle( factHandle, i );
+                        factHandle.addExistsTuple( tuple, i );
+                        done = true;
+                    }
+                }
+                if (!done) {
+                    notFound = true;
+                    workingMemory.getFactTable( constraint.getClassType( ) )
+                                 .addTuple( tuple );
+                }
             }
         }
     }

@@ -125,6 +125,7 @@ public class LeapsRuleBase extends AbstractRuleBase {
      */
     public void addRule(final Rule rule) throws FactException,
                                         InvalidPatternException {
+        // checks rule validity
         super.addRule( rule );
 
         final List rules = LeapsBuilder.processRule( rule );
@@ -138,10 +139,7 @@ public class LeapsRuleBase extends AbstractRuleBase {
 
         // Iterate each workingMemory and attempt to fire any rules, that were
         // activated as a result of the new rule addition
-        for ( final Iterator it = this.getWorkingMemories().iterator(); it.hasNext(); ) {
-            final LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) it.next();
-            workingMemory.fireAllRules();
-        }
+        // abstract rule base does it
     }
 
     public void removeRule(final Rule rule) {

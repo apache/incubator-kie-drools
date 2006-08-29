@@ -95,7 +95,9 @@ public class Token
         if ( this.rulesIterator() != null ) {
             // starting with calling rulesIterator() to make sure that we picks
             // rules because fact can be asserted before rules added
-            final long levelId = this.workingMemory.getIdLastFireAllAt( );
+            final long levelId = ( this.workingMemory.isRulesAddedSinceLastFireAll( ) ) ? this.workingMemory.getIdLastFireAllAt( )
+                    : -1;
+            
             if (this.dominantFactHandle == null
                     || this.dominantFactHandle.getRecency( ) >= levelId) {
                 ret = this.rules.hasNext( );
