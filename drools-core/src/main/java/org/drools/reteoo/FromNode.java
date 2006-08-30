@@ -122,10 +122,10 @@ public class FromNode extends TupleSource
             // first purge the network of all future uses of the 'from' facts           
             for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
                 final TupleMatch tupleMatch = (TupleMatch) it.next();
-                workingMemory.getFactHandleFactory().destroyFactHandle( tupleMatch.getObjectMatches().getFactHandle() );
                 propagateRetractTuple( tupleMatch,
                                        context,
                                        workingMemory );
+                workingMemory.getFactHandleFactory().destroyFactHandle( tupleMatch.getObjectMatches().getFactHandle() );
             }      
             
             // now all existing matches must now be cleared and the DataProvider re-processed.
@@ -150,10 +150,10 @@ public class FromNode extends TupleSource
         if ( !matches.isEmpty() ) {
             for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
                 final TupleMatch tupleMatch = (TupleMatch) it.next();
-                workingMemory.getFactHandleFactory().destroyFactHandle( tupleMatch.getObjectMatches().getFactHandle() );
                 propagateRetractTuple( tupleMatch,
                                        context,
                                        workingMemory );
+                workingMemory.getFactHandleFactory().destroyFactHandle( tupleMatch.getObjectMatches().getFactHandle() );
             }
         }
     }
@@ -184,16 +184,18 @@ public class FromNode extends TupleSource
 
     public void remove(BaseNode node,
                        ReteooWorkingMemory[] workingMemories) {
-        getTupleSinks().remove( node );
+        if( !node.isInUse() ) {
+            getTupleSinks().remove( node );
+        }
         removeShare();
 
-        if ( this.sharedCount < 0 ) {
+        if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
-            this.tupleSource.remove( this,
-                                     workingMemories );
         }
+        this.tupleSource.remove( this,
+                                 workingMemories );
     }
 
     public void updateNewNode(ReteooWorkingMemory workingMemory,

@@ -2740,6 +2740,12 @@ public abstract class IntegrationCases extends TestCase {
             builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
             ruleBaseWM.addPackage( builder1.getPackage() );
             workingMemory.fireAllRules();
+            
+            ruleBaseWM.removePackage( packageName );
+            ruleBaseWM.addPackage( builder1.getPackage() );
+            
+            ruleBaseWM.removePackage( packageName );
+            ruleBaseWM.addPackage( builder1.getPackage() );
         } catch ( Exception e ) {
             Assert.fail( "Removing packages should not throw any exception: " + e.getMessage() );
         }

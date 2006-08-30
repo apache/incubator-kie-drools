@@ -202,15 +202,17 @@ class AlphaNode extends ObjectSource
 
     public void remove(final BaseNode node,
                        final ReteooWorkingMemory[] workingMemories) {
-        this.objectSinks.remove( (ObjectSink) node );
+        if( !node.isInUse()) {
+            this.objectSinks.remove( (ObjectSink) node );
+        }
         removeShare();
-        if ( this.sharedCount < 0 ) {
+        if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
-            this.objectSource.remove( this,
-                                      workingMemories );
         }
+        this.objectSource.remove( this,
+                                  workingMemories );
     }
 
     /**
@@ -221,7 +223,7 @@ class AlphaNode extends ObjectSource
     }
 
     public String toString() {
-        return "[AlphaNode constraint=" + this.constraint + "]";
+        return "[AlphaNode("+this.id+") constraint=" + this.constraint + "]";
     }
 
     public int hashCode() {

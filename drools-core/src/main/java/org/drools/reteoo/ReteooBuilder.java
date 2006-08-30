@@ -547,6 +547,13 @@ class ReteooBuilder
 
             node = candidate;
         } else {
+            if( !node.isInUse() ) {
+                if ( this.workingMemories.length == 0 ) {
+                    node.attach();
+                } else {
+                    node.attach( this.workingMemories );
+                }
+            }
             node.addShare();
             this.id--;
         }
@@ -640,6 +647,13 @@ class ReteooBuilder
 
             node = candidate;
         } else {
+            if( !node.isInUse() ) {
+                if ( this.workingMemories.length == 0 ) {
+                    node.attach();
+                } else {
+                    node.attach( this.workingMemories );
+                }
+            }
             node.addShare();
             this.id--;
         }

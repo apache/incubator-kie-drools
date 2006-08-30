@@ -244,15 +244,17 @@ class EvalConditionNode extends TupleSource
 
     public void remove(final BaseNode node,
                        final ReteooWorkingMemory[] workingMemories) {
-        getTupleSinks().remove( node );
+        if( !node.isInUse() ) {
+            getTupleSinks().remove( node );
+        }
         removeShare();
-        if ( this.sharedCount < 0 ) {
+        if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
-            this.tupleSource.remove( this,
-                                     workingMemories );
         }
+        this.tupleSource.remove( this,
+                                 workingMemories );
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
