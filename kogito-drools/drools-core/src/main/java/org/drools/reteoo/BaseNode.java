@@ -122,7 +122,15 @@ abstract class BaseNode
      * @return
      */
     public boolean isShared() {
-        return (this.sharedCount == 0) ? false : true;
+        return this.sharedCount > 0;
+    }
+
+    /**
+     * Returns true in case the current node is in use (is referenced by any other node)
+     * @return
+     */
+    public boolean isInUse() {
+        return this.sharedCount >= 0;
     }
 
     /**
@@ -141,4 +149,7 @@ abstract class BaseNode
         return this.id;
     }
 
+    public String toString() {
+        return "[" + this.getClass().getSimpleName() + "(" + this.id + ")]";
+    }
 }
