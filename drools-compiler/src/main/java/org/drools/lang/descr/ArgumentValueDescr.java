@@ -64,20 +64,20 @@ public class ArgumentValueDescr
             list = new ArrayList();
         }
 
-        public void add(MapPairDescr pair) {
+        public void add(KeyValuePairDescr pair) {
             this.list.add( pair );
         }
 
-        public MapPairDescr[] getMapPairs() {
-            return ( MapPairDescr[] ) this.list.toArray( new MapPairDescr[ this.list.size() ] );
+        public KeyValuePairDescr[] getKeyValuePairs() {
+            return ( KeyValuePairDescr[] ) this.list.toArray( new KeyValuePairDescr[ this.list.size() ] );
         }
     }
 
-    public static class MapPairDescr {
+    public static class KeyValuePairDescr {
         private ArgumentValueDescr key;
         private ArgumentValueDescr value;
 
-        public MapPairDescr(ArgumentValueDescr key,
+        public KeyValuePairDescr(ArgumentValueDescr key,
                             ArgumentValueDescr value) {
             this.key = key;
             this.value = value;

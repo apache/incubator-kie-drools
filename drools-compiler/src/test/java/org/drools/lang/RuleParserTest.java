@@ -56,6 +56,7 @@ import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.lang.descr.ArgumentValueDescr.KeyValuePairDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 
 public class RuleParserTest extends TestCase {
@@ -475,6 +476,71 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Cheese",
                       columnDescr.getObjectType() );
 
+    }
+    
+    public void testArguementList() throws Exception {
+        
+        final RuleDescr rule = parseResource( "argument_list.drl" ).rule();
+        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        MethodAccessDescr meth = (MethodAccessDescr) from.getDataSource();
+        final List argList = meth.getArguments();
+        if (parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
+        assertFalse(parser.hasErrors());
+        
+        assertEquals(6, argList.size());
+        ArgumentValueDescr arg = (ArgumentValueDescr) argList.get( 0 );
+        assertEquals( ArgumentValueDescr.VARIABLE, arg.getType());
+        assertEquals("foo", arg.getValue());
+        
+        arg = (ArgumentValueDescr) argList.get( 1 );
+        assertEquals( ArgumentValueDescr.VARIABLE, arg.getType());
+        assertEquals("bar", arg.getValue());        
+
+        arg = (ArgumentValueDescr) argList.get( 2 );
+        assertEquals( ArgumentValueDescr.INTEGRAL, arg.getType());
+        assertEquals("42", arg.getValue());
+        
+        arg = (ArgumentValueDescr) argList.get( 3 );
+        assertEquals( ArgumentValueDescr.STRING, arg.getType());
+        assertEquals("hello", arg.getValue());
+        
+        arg = (ArgumentValueDescr) argList.get( 4 );
+        assertEquals( ArgumentValueDescr.MAP, arg.getType());
+        
+        ArgumentValueDescr.KeyValuePairDescr[] keyValuePairs = ( ArgumentValueDescr.KeyValuePairDescr[] ) arg.getValue();
+        
+        KeyValuePairDescr pair = keyValuePairs[0];
+        arg = pair.getKey();
+        assertEquals(ArgumentValueDescr.VARIABLE, arg.getType());
+        assertEquals("a", arg.getValue());
+        
+        assertEquals("b", pair.getValue().getValue());
+        assertEquals(ArgumentValueDescr.STRING, pair.getValue().getType());
+        
+        pair = keyValuePairs[1];
+        assertEquals(ArgumentValueDescr.STRING, pair.getKey().getType());
+        assertEquals("something", pair.getKey().getValue());
+        assertEquals(ArgumentValueDescr.INTEGRAL, pair.getValue().getType());
+        assertEquals("42", pair.getValue().getValue());
+        
+        
+        pair = keyValuePairs[2];
+        assertEquals(ArgumentValueDescr.STRING, pair.getKey().getType());
+        assertEquals("a", pair.getKey().getValue());
+        assertEquals(ArgumentValueDescr.VARIABLE, pair.getValue().getType());
+        assertEquals("foo", pair.getValue().getValue());
+        
+        pair = keyValuePairs[3];
+        assertEquals("x", pair.getKey().getValue());
+        assertEquals(ArgumentValueDescr.MAP, pair.getValue().getType());
+        
+        arg = (ArgumentValueDescr) argList.get( 5 );
+        assertEquals("end", arg.getValue() );
+        assertEquals(ArgumentValueDescr.STRING, arg.getType());
+        
+        //assertEquals("42", arg.getValue());           
     }
 
 
