@@ -328,6 +328,15 @@ import_statement
 		}	
 	;
 
+function_import_statement
+	:	'import' 'function' opt_eol name=import_name ';'? opt_eol
+		{
+			if (packageDescr != null) 
+				packageDescr.addFunctionImport( name );
+		}	
+	;
+
+
 import_name returns [String name]
 	@init {
 		name = null;
@@ -503,6 +512,7 @@ rule returns [RuleDescr rule]
 extra_statement
 	:
 	(	import_statement
+	|	function_import_statement
 	|	global
 	|	function
 	)
