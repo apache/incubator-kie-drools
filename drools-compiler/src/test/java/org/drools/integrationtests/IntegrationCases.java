@@ -45,6 +45,7 @@ import org.drools.IndexedNumber;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.Precondition;
+import org.drools.Primitives;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
@@ -701,11 +702,14 @@ public abstract class IntegrationCases extends TestCase {
         final PersonInterface p1 = new Person( null,
                                                "food",
                                                40 );
+        final Primitives p2 = new Primitives();
+        p2.setArrayAttribute( null );
 
         workingMemory.assertObject( p1 );
+        workingMemory.assertObject( p2 );
 
         workingMemory.fireAllRules();
-        assertEquals( 1,
+        assertEquals( 2,
                       foo.size() );
 
     }

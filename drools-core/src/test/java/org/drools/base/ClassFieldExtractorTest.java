@@ -29,9 +29,12 @@ import org.drools.util.asm.TestInterfaceImpl;
 public class ClassFieldExtractorTest extends TestCase {
 
     public void testBasic() throws Exception {
+        Object[] objArray = new Object[1];
+
         final TestBean obj = new TestBean();
         obj.setBlah( false );
         obj.setSomething( "no" );
+        obj.setObjArray( objArray );
 
         final ClassFieldExtractor ext = new ClassFieldExtractor( TestBean.class,
                                                                  "blah" );
@@ -42,6 +45,11 @@ public class ClassFieldExtractorTest extends TestCase {
                                                                   "fooBar" );
         assertEquals( "fooBar",
                       ext2.getValue( obj ) );
+
+        final ClassFieldExtractor ext3 = new ClassFieldExtractor( TestBean.class,
+                                                                  "objArray" );
+        assertEquals( objArray,
+                      ext3.getValue( obj ) );
 
     }
 

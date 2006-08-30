@@ -75,6 +75,9 @@ public class ArrayFactory implements EvaluatorFactory {
 
         public boolean evaluate(final Object object1,
                                 final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return object1.equals( object2 );
         }
 
@@ -102,7 +105,7 @@ public class ArrayFactory implements EvaluatorFactory {
         }
 
         public String toString() {
-            return "Object !=";
+            return "Array !=";
         }
     }
 
