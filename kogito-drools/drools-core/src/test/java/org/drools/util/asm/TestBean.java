@@ -21,6 +21,7 @@ public class TestBean {
     private String  something;
     private int     number;
     private boolean blah;
+    private Object[] objArray;
 
     public boolean isBlah() {
         return this.blah;
@@ -56,6 +57,14 @@ public class TestBean {
 
     public Long getOtherLongField() {
         return new Long( 42424242 );
+    }
+
+    public Object[] getObjArray() {
+        return objArray;
+    }
+
+    public void setObjArray(Object[] objArray) {
+        this.objArray = objArray;
     }
 
 }

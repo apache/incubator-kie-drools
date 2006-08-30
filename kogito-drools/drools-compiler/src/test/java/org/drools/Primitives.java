@@ -28,6 +28,7 @@ public class Primitives {
 
     private float   floatPrimitive;
     private float   doublePrimitive;
+    private Object[] arrayAttribute;
 
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
@@ -91,6 +92,14 @@ public class Primitives {
 
     public void setShortPrimitive(final short shortPrimitive) {
         this.shortPrimitive = shortPrimitive;
+    }
+
+    public Object[] getArrayAttribute() {
+        return arrayAttribute;
+    }
+
+    public void setArrayAttribute(Object[] arrayAttribute) {
+        this.arrayAttribute = arrayAttribute;
     }
 
 }

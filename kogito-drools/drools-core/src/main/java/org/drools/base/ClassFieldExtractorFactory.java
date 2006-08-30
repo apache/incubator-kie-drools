@@ -204,6 +204,7 @@ public class ClassFieldExtractorFactory {
                           2 );
             mv.visitEnd();
         } else {
+            String typeNotation = fieldType.isArray() ? typeName : "L"+typeName+";";
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  "getValue",
                                  "(Ljava/lang/Object;)Ljava/lang/Object;",
@@ -222,12 +223,12 @@ public class ClassFieldExtractorFactory {
                 mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
                                     originalClassName,
                                     getterName,
-                                    "()L" + typeName + ";" );
+                                    "()" + typeNotation );
             } else {
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                                     originalClassName,
                                     getterName,
-                                    "()L" + typeName + ";" );
+                                    "()" + typeNotation );
             }
             mv.visitInsn( Opcodes.ARETURN );
             final Label l1 = new Label();
