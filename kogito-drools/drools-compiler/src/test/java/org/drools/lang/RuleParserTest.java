@@ -980,6 +980,20 @@ public class RuleParserTest extends TestCase {
 
         assertFalse( this.parser.hasErrors() );
     }
+    
+    public void testFunctionImport() throws Exception {
+        final RuleParser parser = parseResource( "test_FunctionImport.drl" );
+        parser.compilation_unit();
+        assertFalse(parser.hasErrors());
+        
+        PackageDescr pkg = parser.getPackageDescr();
+        assertEquals(2, pkg.getFunctionImports().size());
+        
+        assertEquals("abd.def.x", pkg.getFunctionImports().get( 0 ));
+        assertEquals("qed.wah.*", pkg.getFunctionImports().get( 1 ));
+        
+        
+    }
 
     public void testNotExistWithBrackets() throws Exception {
 

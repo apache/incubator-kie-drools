@@ -31,6 +31,7 @@ public class PackageDescr extends PatternDescr {
     private final String      documentation;
 
     private List              imports          = Collections.EMPTY_LIST;
+    private List              functionImports    = Collections.EMPTY_LIST;
     private List              attributes       = Collections.EMPTY_LIST;
     private Map               globals          = Collections.EMPTY_MAP;
     private List              factTemplates    = Collections.EMPTY_LIST;
@@ -65,6 +66,17 @@ public class PackageDescr extends PatternDescr {
 
     public List getImports() {
         return this.imports;
+    }
+    
+    public void addFunctionImport(final String importFunction) {
+        if (this.functionImports == Collections.EMPTY_LIST) {
+            this.functionImports = new ArrayList();
+        }
+        this.functionImports.add( importFunction );
+    }
+        
+    public List getFunctionImports() {
+        return this.functionImports;
     }
 
     public void addGlobal(final String identifier,
