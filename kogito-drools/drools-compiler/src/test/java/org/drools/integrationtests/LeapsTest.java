@@ -418,4 +418,13 @@ public class LeapsTest extends IntegrationCases {
         assertEquals( "3 1", 
                       list.get( 1 ) );
     }
+    
+    public void testBasicFrom() throws Exception {
+    
+    }
+    
+    public void testFromWithParams() throws Exception {
+        
+    }
+    
 }
