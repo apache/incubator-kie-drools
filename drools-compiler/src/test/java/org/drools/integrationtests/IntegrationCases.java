@@ -859,9 +859,20 @@ public abstract class IntegrationCases extends TestCase {
         
         workingMemory.fireAllRules();
         
-        assertEquals( 5, list.size() );
+        assertEquals( 6, list.size() );
 
-        Map map = ( Map ) list.get( 0 );       
+        List array = (List) list.get( 0 );
+        assertEquals(3, array.size());
+        Person p = (Person) array.get( 0 );
+        assertSame(p, bob);
+        
+        assertEquals("42", array.get( 1 ));
+        
+        List nested = (List) array.get( 2 );
+        assertEquals("x", nested.get( 0 ));
+        assertEquals("y", nested.get( 1 ));
+        
+        Map map = ( Map ) list.get( 1 );       
         assertEquals( 2, map.keySet().size() );
         
         assertTrue( map.keySet().contains( bob ) );
@@ -873,10 +884,10 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( nestedMap.keySet().contains( "key2" ) );
         assertEquals( "value2", nestedMap.get( "key2" ) );
                 
-        assertEquals( new Integer( 42 ), list.get( 1 ) );
-        assertEquals( "literal", list.get( 2 ) );                        
-        assertSame( bob, list.get( 3 ) );
-        assertSame( globalObject, list.get( 4 ) );        
+        assertEquals( new Integer( 42 ), list.get( 2 ) );
+        assertEquals( "literal", list.get( 3 ) );                        
+        assertSame( bob, list.get( 4 ) );
+        assertSame( globalObject, list.get( 5 ) );        
     }    
     
     public void testWithInvalidRule() throws Exception {
