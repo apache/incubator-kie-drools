@@ -51,8 +51,11 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.semantics.java.ClassTypeResolver;
 import org.drools.semantics.java.FunctionBuilder;
+import org.drools.semantics.java.FunctionFixer;
 import org.drools.semantics.java.PackageStore;
 import org.drools.semantics.java.RuleBuilder;
+import org.drools.semantics.java.StaticMethodFunctionResolver;
+import org.drools.spi.FunctionResolver;
 import org.drools.spi.TypeResolver;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
@@ -72,7 +75,9 @@ public class PackageBuilder {
     private PackageBuilderConfiguration configuration;
     private Map                         errorHandlers;
     private List                        generatedClassList;
-    private ClassTypeResolver           typeResolver;
+    private TypeResolver                typeResolver;
+    private FunctionFixer               functionFixer;
+    private FunctionResolver            functionResolver;
     private ClassFieldExtractorCache    classFieldExtractorCache;
 
     /**
@@ -91,7 +96,7 @@ public class PackageBuilder {
               null );
     }
 
-    public PackageBuilder(PackageBuilderConfiguration configuration) {
+    public PackageBuilder(final PackageBuilderConfiguration configuration) {
         this( null,
               configuration );
     }
@@ -148,7 +153,8 @@ public class PackageBuilder {
         try {
             xmlReader.read( reader );
         } catch ( final SAXException e ) {
-            throw new DroolsParserException( e.toString(), e.getCause() );
+            throw new DroolsParserException( e.toString(),
+                                             e.getCause() );
         }
 
         addPackage( xmlReader.getPackageDescr() );
@@ -219,10 +225,10 @@ public class PackageBuilder {
     }
 
     private void validateUniqueRuleNames(final PackageDescr packageDescr) {
-        Set names = new HashSet();
-        for ( Iterator iter = packageDescr.getRules().iterator(); iter.hasNext(); ) {
-            RuleDescr rule = (RuleDescr) iter.next();
-            String name = rule.getName();
+        final Set names = new HashSet();
+        for ( final Iterator iter = packageDescr.getRules().iterator(); iter.hasNext(); ) {
+            final RuleDescr rule = (RuleDescr) iter.next();
+            final String name = rule.getName();
             if ( names.contains( name ) ) {
                 this.results.add( new ParserError( "Duplicate rule name: " + name,
                                                    rule.getLine(),
@@ -249,6 +255,10 @@ public class PackageBuilder {
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             pkg.addImport( (String) it.next() );
+        }
+
+        for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
+            pkg.addFunctionImport( (String) it.next() );
         }
 
         final TypeResolver typeResolver = new ClassTypeResolver( imports,
@@ -280,9 +290,9 @@ public class PackageBuilder {
     private void addClassCompileTask(final String className,
                                      final String text,
                                      final MemoryResourceReader src,
-                                     ErrorHandler handler) {
+                                     final ErrorHandler handler) {
 
-        String fileName = className.replace( '.',
+        final String fileName = className.replace( '.',
                                              '/' ) + ".java";
         src.add( fileName,
                  text.getBytes() );
@@ -294,6 +304,8 @@ public class PackageBuilder {
 
     private void addFunction(final FunctionDescr functionDescr) {
         final FunctionBuilder buidler = new FunctionBuilder();
+        this.pkg.addFunction( functionDescr.getName() );
+            
         addClassCompileTask( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
                              buidler.build( this.pkg,
                                             functionDescr ),
@@ -304,16 +316,16 @@ public class PackageBuilder {
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
-        List fields = new ArrayList();
+        final List fields = new ArrayList();
         int index = 0;
         for ( final Iterator it = factTemplateDescr.getFields().iterator(); it.hasNext(); ) {
-            FieldTemplateDescr fieldTemplateDescr = (FieldTemplateDescr) it.next();
+            final FieldTemplateDescr fieldTemplateDescr = (FieldTemplateDescr) it.next();
             FieldTemplate fieldTemplate = null;
             try {
                 fieldTemplate = new FieldTemplateImpl( fieldTemplateDescr.getName(),
                                                        index++,
                                                        getTypeResolver().resolveType( fieldTemplateDescr.getClassType() ) );
-            } catch ( ClassNotFoundException e ) {
+            } catch ( final ClassNotFoundException e ) {
                 this.results.add( new FieldTemplateError( this.pkg,
                                                           fieldTemplateDescr,
                                                           null,
@@ -322,7 +334,7 @@ public class PackageBuilder {
             fields.add( fieldTemplate );
         }
 
-        FactTemplate factTemplate = new FactTemplateImpl( this.pkg,
+        final FactTemplate factTemplate = new FactTemplateImpl( this.pkg,
                                                           factTemplateDescr.getName(),
                                                           (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
     }
@@ -336,7 +348,8 @@ public class PackageBuilder {
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
 
         final RuleBuilder builder = new RuleBuilder( getTypeResolver(),
-                                                     classFieldExtractorCache );
+                                                     getFunctionFixer(),
+                                                     this.classFieldExtractorCache );
 
         builder.build( this.pkg,
                        ruleDescr );
@@ -361,13 +374,29 @@ public class PackageBuilder {
      */
     private TypeResolver getTypeResolver() {
         if ( this.typeResolver == null ) {
-            typeResolver = new ClassTypeResolver( pkg.getImports(),
-                                                  pkg.getPackageCompilationData().getClassLoader() );
+            this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
+                                                       this.pkg.getPackageCompilationData().getClassLoader() );
             // make an automatic import for the current package
-            typeResolver.addImport( pkg.getName() + ".*" );
-            typeResolver.addImport( "java.lang.*" );
+            this.typeResolver.addImport( this.pkg.getName() + ".*" );
+            this.typeResolver.addImport( "java.lang.*" );
         }
         return this.typeResolver;
+    }
+
+    private FunctionResolver getFunctionResolver() {
+        if ( this.functionResolver == null ) {
+            this.functionResolver = new StaticMethodFunctionResolver( this.pkg.getFunctionImports(),
+                                                                      getTypeResolver() );
+        }
+
+        return this.functionResolver;
+    }
+    
+    private FunctionFixer getFunctionFixer() {
+        if ( this.functionFixer == null ) {
+            this.functionFixer = new FunctionFixer(this.pkg, getFunctionResolver() );
+        }
+        return this.functionFixer;
     }
 
     /**
@@ -430,30 +459,30 @@ public class PackageBuilder {
      * code.
      */
     private void compileAll() {
-        String[] classes = new String[this.generatedClassList.size()];
+        final String[] classes = new String[this.generatedClassList.size()];
         this.generatedClassList.toArray( classes );
 
         final CompilationResult result = this.compiler.compile( classes,
-                                                                src,
+                                                                this.src,
                                                                 this.packageStoreWrapper,
                                                                 this.pkg.getPackageCompilationData().getClassLoader() );
 
         //this will sort out the errors based on what class/file they happened in
         if ( result.getErrors().length > 0 ) {
             for ( int i = 0; i < result.getErrors().length; i++ ) {
-                CompilationProblem err = result.getErrors()[i];
+                final CompilationProblem err = result.getErrors()[i];
 
-                ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
+                final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
                 if ( handler instanceof RuleErrorHandler ) {
-                    RuleErrorHandler rh = (RuleErrorHandler) handler;
+                    final RuleErrorHandler rh = (RuleErrorHandler) handler;
 
                 }
                 handler.addError( err );
             }
 
-            Collection errors = this.errorHandlers.values();
-            for ( Iterator iter = errors.iterator(); iter.hasNext(); ) {
-                ErrorHandler handler = (ErrorHandler) iter.next();
+            final Collection errors = this.errorHandlers.values();
+            for ( final Iterator iter = errors.iterator(); iter.hasNext(); ) {
+                final ErrorHandler handler = (ErrorHandler) iter.next();
                 if ( handler.isInError() ) {
                     if ( !(handler instanceof RuleInvokerErrorHandler) ) {
                         this.results.add( handler.getError() );
@@ -530,20 +559,22 @@ public class PackageBuilder {
     }
 
     private void loadCompiler() {
-        switch ( configuration.getCompiler() ) {
+        switch ( this.configuration.getCompiler() ) {
             case PackageBuilderConfiguration.JANINO : {
-                if ( !"1.4".equals( configuration.getJavaLanguageLevel() ) ) throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
-                compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
+                if ( !"1.4".equals( this.configuration.getJavaLanguageLevel() ) ) {
+                    throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
+                }
+                this.compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
                 break;
             }
             case PackageBuilderConfiguration.ECLIPSE :
             default : {
-                EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
+                final EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
                 eclipseSettings.getMap().put( "org.eclipse.jdt.core.compiler.codegen.targetPlatform",
-                                              configuration.getJavaLanguageLevel() );
+                                              this.configuration.getJavaLanguageLevel() );
                 eclipseSettings.getMap().put( "org.eclipse.jdt.core.compiler.source",
-                                              configuration.getJavaLanguageLevel() );
-                compiler = new EclipseJavaCompiler( eclipseSettings );
+                                              this.configuration.getJavaLanguageLevel() );
+                this.compiler = new EclipseJavaCompiler( eclipseSettings );
                 break;
             }
         }
@@ -575,16 +606,16 @@ public class PackageBuilder {
      * that originally spawned the code to be compiled.
      */
     public abstract static class ErrorHandler {
-        private List     errors  = new ArrayList();
+        private final List     errors  = new ArrayList();
         protected String message;
         private boolean  inError = false;
 
         /** This needes to be checked if there is infact an error */
         public boolean isInError() {
-            return inError;
+            return this.inError;
         }
 
-        public void addError(CompilationProblem err) {
+        public void addError(final CompilationProblem err) {
             this.errors.add( err );
             this.inError = true;
         }
@@ -603,11 +634,11 @@ public class PackageBuilder {
          * Its not 1 to 1 with reported errors.
          */
         protected CompilationProblem[] collectCompilerProblems() {
-            if ( errors.size() == 0 ) {
+            if ( this.errors.size() == 0 ) {
                 return null;
             } else {
-                CompilationProblem[] list = new CompilationProblem[errors.size()];
-                errors.toArray( list );
+                final CompilationProblem[] list = new CompilationProblem[this.errors.size()];
+                this.errors.toArray( list );
                 return list;
             }
         }
@@ -618,19 +649,19 @@ public class PackageBuilder {
         private PatternDescr descr;
         private Rule         rule;
 
-        public RuleErrorHandler(PatternDescr ruleDescr,
-                                Rule rule,
-                                String message) {
+        public RuleErrorHandler(final PatternDescr ruleDescr,
+                                final Rule rule,
+                                final String message) {
             this.descr = ruleDescr;
             this.rule = rule;
             this.message = message;
         }
 
         public DroolsError getError() {
-            return new RuleError( rule,
-                                  descr,
+            return new RuleError( this.rule,
+                                  this.descr,
                                   collectCompilerProblems(),
-                                  message );
+                                  this.message );
         }
 
     }
@@ -641,9 +672,9 @@ public class PackageBuilder {
      */
     public static class RuleInvokerErrorHandler extends RuleErrorHandler {
 
-        public RuleInvokerErrorHandler(PatternDescr ruleDescr,
-                                       Rule rule,
-                                       String message) {
+        public RuleInvokerErrorHandler(final PatternDescr ruleDescr,
+                                       final Rule rule,
+                                       final String message) {
             super( ruleDescr,
                    rule,
                    message );
@@ -654,20 +685,20 @@ public class PackageBuilder {
 
         private FunctionDescr descr;
 
-        public FunctionErrorHandler(FunctionDescr functionDescr,
-                                    String message) {
+        public FunctionErrorHandler(final FunctionDescr functionDescr,
+                                    final String message) {
             this.descr = functionDescr;
             this.message = message;
         }
 
         public DroolsError getError() {
-            return new FunctionError( descr,
+            return new FunctionError( this.descr,
                                       collectCompilerProblems(),
-                                      message );
+                                      this.message );
         }
 
     }
 
-    private static JavaCompiler cachedJavaCompiler = null;
+    private static final JavaCompiler cachedJavaCompiler = null;
 
 }

@@ -16,98 +16,103 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.spi.TypeResolver;
+import org.drools.rule.Package;
+
 import junit.framework.TestCase;
 
 public class FunctionFixerTest extends TestCase {
 
-    private static final FunctionFixer fixer = new FunctionFixer();
+    private FunctionFixer fixer;
+    
+    public void setUp() {
+        List list = new ArrayList();
+        list.add( "org.drools.*" );
+        TypeResolver typeResolver = new ClassTypeResolver( list );
+        Package pkg = new Package("testPackage");
+        pkg.addFunction( "addFive" );
+        pkg.addFunction( "foo" );
+        pkg.addFunction( "bar" );
+        
+        list = new ArrayList();
+        list.add( "Func.*" );
+        this.fixer = new FunctionFixer( pkg, new StaticMethodFunctionResolver(list, typeResolver) );
+    }
 
     public void testSimple() {
-        final FunctionFixer fixer = new FunctionFixer();
-        assertEquals( "Func.func()",
+        assertEquals( "org.drools.Func.func()",
                       fixer.fix( "func( )" ) );
     }
 
     public void testSimpleWithPArams() {
-        final FunctionFixer fixer = new FunctionFixer();
-        assertEquals( "Func.func(yyy, iii)",
+        assertEquals( "org.drools.Func.func(yyy, iii)",
                       fixer.fix( "func(yyy, iii)" ) );
     }
 
     public void testMoreComplex() {
-        final FunctionFixer fixer = new FunctionFixer();
-        assertEquals( "xxx Func.func(yyy, iii) yyy",
+        assertEquals( "xxx org.drools.Func.func(yyy, iii) yyy",
                       fixer.fix( "xxx func(yyy, iii) yyy" ) );
     }
 
     public void testLeaveAloneNew() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "new Integer (5)",
                       fixer.fix( "new Integer (5)" ) );
     }
 
     public void testLeaveAloneDrools() {
-        final FunctionFixer fixer = new FunctionFixer();
-        assertEquals( "xxx drools.org(iii) Func.func(yyy, iii) yyy",
+        assertEquals( "xxx drools.org(iii) org.drools.Func.func(yyy, iii) yyy",
                       fixer.fix( "xxx drools.org(iii) func(yyy, iii) yyy" ) );
     }
 
-    public void testWorkWithDotAll() {
-        final FunctionFixer fixer = new FunctionFixer();
+    public void testWorkWithDotAll() {        
         assertEquals( "\n\t\n\tAddFive.addFive(list) ;",
                       fixer.fix( "\n\t\n\taddFive ( list ) ;" ) );
     }
 
     public void testWithDollarSigns() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "\nFoo.foo($list);",
                       fixer.fix( "\nfoo($list);" ) );
     }
 
     public void testReservedWordsInJava() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "\nfor(int i=0; i < 2; i++) { /*do noithing*/ }",
                       fixer.fix( "\nfor(int i=0; i < 2; i++) { /*do noithing*/ }" ) );
     }
 
     public void testMultipleInABracket() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "if (Foo.foo(bar)) { Bar.bar(baz); }",
                       fixer.fix( "if (foo(bar)) { bar(baz); }" ) );
     }
 
     public void testInBrackets() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "if (Foo.foo(bar))",
                       fixer.fix( "if (foo(bar))" ) );
     }
 
     public void testAlreadyAdded() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "Foo.foo(bar)",
                       fixer.fix( "Foo.foo(bar)" ) );
     }
 
     public void testInString() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "\"if (foo(bar))\"",
                       fixer.fix( "\"if (foo(bar))\"" ) );
     }
 
     public void testComplexWithBrackets() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "System.out.println(\"foo(\" + Foo.foo(bar) + Bar.bar(baz)",
                       fixer.fix( "System.out.println(\"foo(\" + foo(bar) + bar(baz)" ) );
     }
     
     public void testXPath() {
-        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "foo.executeXpath(\"//node1/node2/text()\")",
                       fixer.fix("foo.executeXpath(\"//node1/node2/text()\")" ) );
       }
       
       public void testExpressionGrouping() {
-       final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "while((foo = bar.baz()) != null)",
                       fixer.fix( "while((foo = bar.baz()) != null)" ) );
       }     
