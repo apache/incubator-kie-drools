@@ -29,7 +29,6 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
@@ -56,11 +55,9 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.DeclarativeInvokerDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.FieldAccessDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
-import org.drools.lang.descr.FunctionCallDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
@@ -97,7 +94,6 @@ import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.spi.DataProvider;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ObjectType;
@@ -143,16 +139,19 @@ public class RuleBuilder {
                                                                                               AngleBracketTemplateLexer.class );
 
     private static final KnowledgeHelperFixer knowledgeHelperFixer = new KnowledgeHelperFixer();
-    private static final FunctionFixer        functionFixer        = new FunctionFixer();
+    
+    private final FunctionFixer               functionFixer;
 
     // @todo move to an interface so it can work as a decorator
     private final JavaExprAnalyzer            analyzer             = new JavaExprAnalyzer();
     private ClassFieldExtractorCache          classFieldExtractorCache;
 
-    public RuleBuilder(TypeResolver resolver,
-                       ClassFieldExtractorCache cache) {
+    public RuleBuilder(final TypeResolver typeResolver,
+                       final FunctionFixer functionFixer,
+                       final ClassFieldExtractorCache cache) {
         this.classFieldExtractorCache = cache;
-        this.typeResolver = resolver;
+        this.typeResolver = typeResolver;
+        this.functionFixer = functionFixer;
         this.errors = new ArrayList();
     }
 
@@ -410,7 +409,7 @@ public class RuleBuilder {
 
         ObjectType objectType = null;
 
-        FactTemplate factTemplate = this.pkg.getFactTemplate( columnDescr.getObjectType() );
+        final FactTemplate factTemplate = this.pkg.getFactTemplate( columnDescr.getObjectType() );
 
         if ( factTemplate != null ) {
             objectType = new FactTemplateObjectType( factTemplate );
@@ -477,7 +476,7 @@ public class RuleBuilder {
         if ( fieldConstraintDescr.getRestrictions().size() == 1 ) {
             final Object object = fieldConstraintDescr.getRestrictions().get( 0 );
 
-            Restriction restriction = buildRestriction( extractor,
+            final Restriction restriction = buildRestriction( extractor,
                                                         fieldConstraintDescr,
                                                         (RestrictionDescr) object );
             if ( restriction == null ) {
@@ -499,7 +498,7 @@ public class RuleBuilder {
             return;
         }
 
-        List orList = new ArrayList();
+        final List orList = new ArrayList();
         List andList = null;
 
         RestrictionDescr currentRestriction = null;
@@ -509,7 +508,7 @@ public class RuleBuilder {
         List previousList = null;
 
         for ( final Iterator it = fieldConstraintDescr.getRestrictions().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+            final Object object = it.next();
 
             // Process an and/or connective 
             if ( object instanceof RestrictionConnectiveDescr ) {
@@ -550,7 +549,7 @@ public class RuleBuilder {
                                 // Can't have an 'and' connective with one child, so add directly to the or list
                                 orList.add( andList.get( 0 ) );
                             } else {
-                                Restriction restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
+                                final Restriction restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
                                 orList.add( restrictions );
                             }
                             andList = null;
@@ -568,7 +567,7 @@ public class RuleBuilder {
             currentRestriction = (RestrictionDescr) object;
         }
 
-        Restriction restriction = buildRestriction( extractor,
+        final Restriction restriction = buildRestriction( extractor,
                                                     fieldConstraintDescr,
                                                     currentRestriction );
         currentList.add( restriction );
@@ -599,9 +598,9 @@ public class RuleBuilder {
                                                                    restrictions ) );
     }
 
-    private Restriction buildRestriction(FieldExtractor extractor,
-                                         FieldConstraintDescr fieldConstraintDescr,
-                                         RestrictionDescr restrictionDescr) {
+    private Restriction buildRestriction(final FieldExtractor extractor,
+                                         final FieldConstraintDescr fieldConstraintDescr,
+                                         final RestrictionDescr restrictionDescr) {
         Restriction restriction = null;
         if ( restrictionDescr instanceof LiteralRestrictionDescr ) {
             restriction = buildRestriction( extractor,
@@ -765,7 +764,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String returnValueText = RuleBuilder.functionFixer.fix( returnValueRestrictionDescr.getText() );
+        final String returnValueText = this.functionFixer.fix( returnValueRestrictionDescr.getText() );
         st.setAttribute( "text",
                          returnValueText );
 
@@ -857,7 +856,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String predicateText = RuleBuilder.functionFixer.fix( predicateDescr.getText() );
+        final String predicateText = this.functionFixer.fix( predicateDescr.getText() );
         st.setAttribute( "text",
                          predicateText );
 
@@ -897,20 +896,20 @@ public class RuleBuilder {
                                predicateDescr );
     }
 
-    private From build(FromDescr fromDescr) {
-        Column column = build( fromDescr.getReturnedColumn() );
+    private From build(final FromDescr fromDescr) {
+        final Column column = build( fromDescr.getReturnedColumn() );
 
-        DeclarativeInvokerDescr invokerDescr = fromDescr.getDataSource();
+        final DeclarativeInvokerDescr invokerDescr = fromDescr.getDataSource();
 
         DataProvider dataProvider = null;
 
         if ( invokerDescr.getClass() == MethodAccessDescr.class ) {
-            MethodAccessDescr methodAccessor = (MethodAccessDescr) invokerDescr;
+            final MethodAccessDescr methodAccessor = (MethodAccessDescr) invokerDescr;
 
             ValueHandler instanceValueHandler = null;
-            String variableName = methodAccessor.getVariableName();
-            if ( declarations.containsKey( variableName ) ) {
-                instanceValueHandler = new DeclarationVariable( (Declaration) declarations.get( variableName ) );
+            final String variableName = methodAccessor.getVariableName();
+            if ( this.declarations.containsKey( variableName ) ) {
+                instanceValueHandler = new DeclarationVariable( (Declaration) this.declarations.get( variableName ) );
             } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
                 instanceValueHandler = new GlobalVariable( variableName,
                                                            (Class) this.pkg.getGlobals().get( variableName ) );
@@ -918,10 +917,10 @@ public class RuleBuilder {
                 throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
             }
 
-            List arguments = ((MethodAccessDescr) invokerDescr).getArguments();
-            List valueHandlers = new ArrayList();
+            final List arguments = ((MethodAccessDescr) invokerDescr).getArguments();
+            final List valueHandlers = new ArrayList();
 
-            for ( Iterator iter = arguments.iterator(); iter.hasNext(); ) {
+            for ( final Iterator iter = arguments.iterator(); iter.hasNext(); ) {
                 valueHandlers.add( buildValueHandler( (ArgumentValueDescr) iter.next() ) );
                 //                if ( desc.getType() == ArgumentValueDescr.VARIABLE ) {
                 //                    if ( this.declarations.containsKey( desc.getValue() ) ) {
@@ -939,7 +938,7 @@ public class RuleBuilder {
                 //                }
             }
 
-            MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(),
+            final MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(),
                                                        instanceValueHandler,
                                                        (ValueHandler[]) valueHandlers.toArray( new ValueHandler[valueHandlers.size()] ) );
             dataProvider = new MethodDataProvider( invoker );
@@ -961,11 +960,11 @@ public class RuleBuilder {
                          dataProvider );
     }
 
-    private ValueHandler buildValueHandler(ArgumentValueDescr descr) {
+    private ValueHandler buildValueHandler(final ArgumentValueDescr descr) {
         ValueHandler valueHandler = null;
         if ( descr.getType() == ArgumentValueDescr.VARIABLE ) {
             if ( this.declarations.containsKey( descr.getValue() ) ) {
-                valueHandler = new DeclarationVariable( (Declaration) declarations.get( descr.getValue() ) );
+                valueHandler = new DeclarationVariable( (Declaration) this.declarations.get( descr.getValue() ) );
             } else if ( this.pkg.getGlobals().containsKey( descr.getValue() ) ) {
                 valueHandler = new GlobalVariable( (String) descr.getValue(),
                                                    (Class) this.pkg.getGlobals().get( descr.getValue() ) );
@@ -973,22 +972,22 @@ public class RuleBuilder {
                 throw new IllegalArgumentException( "Uknown variable: " + descr.getValue() );
             }
         } else if ( descr.getType() == ArgumentValueDescr.MAP ) {
-            ArgumentValueDescr.KeyValuePairDescr[] pairs = (ArgumentValueDescr.KeyValuePairDescr[]) descr.getValue();
-            List list = new ArrayList( pairs.length );
+            final ArgumentValueDescr.KeyValuePairDescr[] pairs = (ArgumentValueDescr.KeyValuePairDescr[]) descr.getValue();
+            final List list = new ArrayList( pairs.length );
             for ( int i = 0, length = pairs.length; i < length; i++ ) {
                 list.add( new MapValue.KeyValuePair( buildValueHandler( pairs[i].getKey() ),
                                                      buildValueHandler( pairs[i].getValue() ) ) );
             }
 
             valueHandler = new MapValue( (MapValue.KeyValuePair[]) list.toArray( new MapValue.KeyValuePair[pairs.length] ) );
-        } else if (descr.getType() == ArgumentValueDescr.LIST ) {
-          List args = (List) descr.getValue();
-          List handlers = new ArrayList(args.size());
-          for ( Iterator iter = args.iterator(); iter.hasNext(); ) {
-            ArgumentValueDescr arg = (ArgumentValueDescr) iter.next();
-            handlers.add( buildValueHandler( arg ) );
-          }
-          valueHandler = new ListValue(handlers);
+        } else if ( descr.getType() == ArgumentValueDescr.LIST ) {
+            final List args = (List) descr.getValue();
+            final List handlers = new ArrayList( args.size() );
+            for ( final Iterator iter = args.iterator(); iter.hasNext(); ) {
+                final ArgumentValueDescr arg = (ArgumentValueDescr) iter.next();
+                handlers.add( buildValueHandler( arg ) );
+            }
+            valueHandler = new ListValue( handlers );
         } else {
             // handling a literal
             valueHandler = new LiteralValue( (String) descr.getValue(),
@@ -1022,7 +1021,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String evalText = RuleBuilder.functionFixer.fix( evalDescr.getText() );
+        final String evalText = this.functionFixer.fix( evalDescr.getText() );
         st.setAttribute( "text",
                          evalText );
 
@@ -1080,7 +1079,7 @@ public class RuleBuilder {
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      ruleDescr.getConsequence() );
         st.setAttribute( "text",
-                         RuleBuilder.functionFixer.fix( RuleBuilder.knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
+                         this.functionFixer.fix( RuleBuilder.knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
 
         this.methods.add( st.toString() );
 
@@ -1143,7 +1142,7 @@ public class RuleBuilder {
         }
 
         buffer.append( "public class " + ucFirst( this.ruleDescr.getClassName() ) + " {" + lineSeparator );
-        buffer.append( "    private static final long serialVersionUID  = 7952983928232702826L;" + lineSeparator );
+        buffer.append( "    private static final long serialVersionUID  = 320L;" + lineSeparator );
 
         for ( int i = 0, size = this.methods.size() - 1; i < size; i++ ) {
             buffer.append( this.methods.get( i ) + lineSeparator );
@@ -1199,12 +1198,12 @@ public class RuleBuilder {
 
         if ( objectType.getValueType() == ValueType.FACTTEMPLATE_TYPE ) {
             //@todo use extractor cache            
-            FactTemplate factTemplate = ((FactTemplateObjectType) objectType).getFactTemplate();
+            final FactTemplate factTemplate = ((FactTemplateObjectType) objectType).getFactTemplate();
             extractor = new FactTemplateFieldExtractor( factTemplate,
                                                         factTemplate.getFieldTemplateIndex( fieldName ) );
         } else {
             try {
-                extractor = classFieldExtractorCache.getExtractor( ((ClassObjectType) objectType).getClassType(),
+                extractor = this.classFieldExtractorCache.getExtractor( ((ClassObjectType) objectType).getClassType(),
                                                                    fieldName );
             } catch ( final RuntimeDroolsException e ) {
                 this.errors.add( new RuleError( this.rule,

@@ -796,6 +796,28 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
+    
+    public void testImportFunctions() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        Cheese cheese = new Cheese( "stilton", 15 );
+        workingMemory.assertObject( cheese );
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 4, list.size() );
+        
+        assertEquals( "rule1", list.get( 0 ) );
+        assertEquals( "rule2", list.get( 1 ) );
+        assertEquals( "rule3", list.get( 2 ) );
+        assertEquals( "rule4", list.get( 3 ) );        
+    }
 
     
     public void testBasicFrom() throws Exception {

@@ -21,6 +21,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.spi.FunctionResolver;
+import org.drools.rule.Package;
+
 /**
  * This horrific utility adds in the function class name (which is the same as the functions method name)
  * into the RHS guts of a rule. It has to tip toe around method calls, new declarations and other 
@@ -35,9 +38,19 @@ import java.util.regex.Pattern;
  */
 public class FunctionFixer {
 
-    static Pattern   FUNCTION = Pattern.compile( "(\\S*\\s*|\\.\\s*)\\b([\\S&&[^\\.\\(\\)]]+)\\s*\\(([^)]*)\\)",
-                                                 Pattern.DOTALL );
-    static final Set KEYWORDS = getJavaKeywords();
+    static Pattern                 FUNCTION = Pattern.compile( "(\\S*\\s*|\\.\\s*)\\b([\\S&&[^\\.\\(\\)]]+)\\s*\\(([^)]*)\\)",
+                                                               Pattern.DOTALL );
+    static final Set               KEYWORDS = getJavaKeywords();
+
+    private final FunctionResolver resolver;
+
+    private final Package          pkg;
+
+    public FunctionFixer(Package pkg,
+                         FunctionResolver resolver) {
+        this.resolver = resolver;
+        this.pkg = pkg;
+    }
 
     public String fix(final String raw) {
         //return raw;
@@ -59,7 +72,7 @@ public class FunctionFixer {
             // instead of just using matcher.end(), grow the endIndex
             // as necessary to close all '(' in the matched String
             final int endIndex = findEndParenthesis( raw,
-                                               matcher );
+                                                     matcher );
             if ( endIndex < 0 ) {
                 // this means that the first '(' is inside quotes - jump it and try again
                 startIndex = matcher.start( 3 );
@@ -95,13 +108,22 @@ public class FunctionFixer {
                 function = matcher.group( 2 ).trim();
                 // if we have a reserved work, DO NOT TOUCH !
                 // if we have no function name, DO NOT TOUCH !
-                if ( function == null ||
-                        function.length() == 0 ||
-                        FunctionFixer.KEYWORDS.contains( function )  ) {
+                if ( function == null || function.length() == 0 || FunctionFixer.KEYWORDS.contains( function ) ) {
                     function = raw.substring( matcher.start( 2 ),
                                               matcher.start( 3 ) - 1 );
                 } else {
-                    function = ucFirst( function ) + "." + function;
+                    int countParams = 0;
+                    for ( int i = 0, length = params.length(); i < length; i++ ) {
+                        if ( params.charAt( i ) == ',' ) {
+                            countParams++;
+                        }
+                    }
+                    if ( this.pkg.getFunctions().contains( function ) ) {
+                        function = ucFirst( function ) + "." + function;
+                    } else {
+                        function = resolver.resolveFunction( function,
+                                                             countParams + 1 ) + "." + function;
+                    }
                 }
             }
 
