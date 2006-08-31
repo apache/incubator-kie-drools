@@ -28,8 +28,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -837,7 +839,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( stilton, list3.get( 0 ) );        
     } 
     
-    public void testFromWithParams() throws Exception {
+    public void testFromWithParams() throws Exception {       
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -847,20 +849,34 @@ public abstract class IntegrationCases extends TestCase {
         
         WorkingMemory  workingMemory = ruleBase.newWorkingMemory();
         List list = new ArrayList();
+        Object globalObject = new Object();
         workingMemory.setGlobal( "list", list );  
         workingMemory.setGlobal(  "testObject", new FromTestClass() );
+        workingMemory.setGlobal( "globalObject", globalObject );
         
         Person bob = new Person( "bob" );
         workingMemory.assertObject( bob );
         
         workingMemory.fireAllRules();
+        
+        assertEquals( 5, list.size() );
 
-        assertEquals( new Integer( 42 ), list.get( 0 ) );
-        assertEquals( "literal", list.get( 1 ) );                        
-        assertSame( bob, list.get( 2 ) );
-        assertSame( list, list.get( 3 ) );
-
-
+        Map map = ( Map ) list.get( 0 );       
+        assertEquals( 2, map.keySet().size() );
+        
+        assertTrue( map.keySet().contains( bob ) );
+        assertSame( globalObject, map.get( bob ) );
+        
+        assertTrue( map.keySet().contains( "key1" ) );
+        Map nestedMap = ( Map ) map.get( "key1" );
+        assertEquals( 1, nestedMap.keySet().size() );
+        assertTrue( nestedMap.keySet().contains( "key2" ) );
+        assertEquals( "value2", nestedMap.get( "key2" ) );
+                
+        assertEquals( new Integer( 42 ), list.get( 1 ) );
+        assertEquals( "literal", list.get( 2 ) );                        
+        assertSame( bob, list.get( 3 ) );
+        assertSame( globalObject, list.get( 4 ) );        
     }    
     
     public void testWithInvalidRule() throws Exception {
