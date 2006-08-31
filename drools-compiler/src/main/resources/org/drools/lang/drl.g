@@ -799,7 +799,8 @@ argument_value returns [ArgumentValueDescr value]
 		|	t=ID { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text);}	
 		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}	
 		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}			
-		|       m=inline_map {  value=new ArgumentValueDescr(ArgumentValueDescr.MAP, m.getKeyValuePairs() ); }		
+		|       m=inline_map {  value=new ArgumentValueDescr(ArgumentValueDescr.MAP, m.getKeyValuePairs() ); }
+		|       a=inline_array { value = new ArgumentValueDescr(ArgumentValueDescr.LIST, a ); }		
 		)
 	;			
 
@@ -823,7 +824,19 @@ inline_map returns [ArgumentValueDescr.MapDescr mapDescr]
            )*           
        '}'
     ;
- 	
+    
+inline_array returns [List list]
+    @init {
+    	list = new ArrayList();
+    }		    
+    :
+    '[' arg=argument_value { list.add(arg); }
+    
+     	 ( EOL? ',' EOL? arg=argument_value { list.add(arg); } )*
+      ']'
+      
+    
+    ; 	
 fact_binding returns [PatternDescr d]
 	@init {
 		d=null;

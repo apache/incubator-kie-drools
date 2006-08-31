@@ -40,6 +40,7 @@ import org.drools.base.dataproviders.MethodInvoker;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.resolvers.DeclarationVariable;
 import org.drools.base.resolvers.GlobalVariable;
+import org.drools.base.resolvers.ListValue;
 import org.drools.base.resolvers.LiteralValue;
 import org.drools.base.resolvers.MapValue;
 import org.drools.base.resolvers.ValueHandler;
@@ -980,6 +981,14 @@ public class RuleBuilder {
             }
 
             valueHandler = new MapValue( (MapValue.KeyValuePair[]) list.toArray( new MapValue.KeyValuePair[pairs.length] ) );
+        } else if (descr.getType() == ArgumentValueDescr.LIST ) {
+          List args = (List) descr.getValue();
+          List handlers = new ArrayList(args.size());
+          for ( Iterator iter = args.iterator(); iter.hasNext(); ) {
+            ArgumentValueDescr arg = (ArgumentValueDescr) iter.next();
+            handlers.add( buildValueHandler( arg ) );
+          }
+          valueHandler = new ListValue(handlers);
         } else {
             // handling a literal
             valueHandler = new LiteralValue( (String) descr.getValue(),

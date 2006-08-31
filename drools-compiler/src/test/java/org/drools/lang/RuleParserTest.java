@@ -483,13 +483,15 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = parseResource( "argument_list.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
         MethodAccessDescr meth = (MethodAccessDescr) from.getDataSource();
-        final List argList = meth.getArguments();
+        
         if (parser.hasErrors()) {
             System.err.println(parser.getErrorMessages());
         }
         assertFalse(parser.hasErrors());
         
-        assertEquals(6, argList.size());
+        final List argList = meth.getArguments();
+        
+        assertEquals(7, argList.size());
         ArgumentValueDescr arg = (ArgumentValueDescr) argList.get( 0 );
         assertEquals( ArgumentValueDescr.VARIABLE, arg.getType());
         assertEquals("foo", arg.getValue());
@@ -540,7 +542,23 @@ public class RuleParserTest extends TestCase {
         assertEquals("end", arg.getValue() );
         assertEquals(ArgumentValueDescr.STRING, arg.getType());
         
-        //assertEquals("42", arg.getValue());           
+        arg = (ArgumentValueDescr) argList.get( 6 );
+        assertEquals(ArgumentValueDescr.LIST, arg.getType());
+        List array = (List) arg.getValue();
+        assertEquals(3, array.size());
+        
+        arg = (ArgumentValueDescr) array.get( 0 );
+        assertEquals(ArgumentValueDescr.VARIABLE, arg.getType());
+        assertEquals("a", arg.getValue());
+        
+        arg = (ArgumentValueDescr) array.get(1);
+        assertEquals(ArgumentValueDescr.STRING, arg.getType());
+        assertEquals("b", arg.getValue());        
+
+        arg = (ArgumentValueDescr) array.get(2);
+        assertEquals(ArgumentValueDescr.INTEGRAL, arg.getType());
+        assertEquals("42", arg.getValue());        
+      
     }
 
 
