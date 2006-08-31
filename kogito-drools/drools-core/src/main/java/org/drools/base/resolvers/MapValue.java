@@ -52,7 +52,7 @@ public class MapValue
         this.cachedValue = ValueHandler.EMPTY;
     }    
     
-    static class KeyValuePair implements Serializable {
+    public static class KeyValuePair implements Serializable {
         private static final long serialVersionUID = 320L;
         
         private ValueHandler key;
