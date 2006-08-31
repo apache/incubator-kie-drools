@@ -2,12 +2,9 @@ package org.drools.semantics.java;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.xpath.functions.FuncId;
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FunctionResolver;
 import org.drools.spi.TypeResolver;
