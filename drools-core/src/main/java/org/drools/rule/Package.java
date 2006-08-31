@@ -69,15 +69,17 @@ public class Package
     private Map                    rules;
 
     private List                   imports;
+    
+    private List                   functions;
+
+    private List                   functionImports;
 
     private Map                    globals;
-    
+
     private Map                    factTemplates;
 
     // @todo: add attributes to Package
     //private Map                   attributes;
-
-    private TypeResolver           typeResolver;
 
     private PackageCompilationData packageCompilationData;
 
@@ -120,9 +122,11 @@ public class Package
                    final ClassLoader parentClassLoader) {
         this.name = name;
         this.imports = new ArrayList( 1 );
+        this.functionImports = Collections.EMPTY_LIST;
         this.rules = new LinkedHashMap();
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
+        this.functions = Collections.EMPTY_LIST;
         this.packageCompilationData = new PackageCompilationData( parentClassLoader );
     }
 
@@ -135,6 +139,7 @@ public class Package
         stream.writeObject( this.packageCompilationData );
         stream.writeObject( this.name );
         stream.writeObject( this.imports );
+        stream.writeObject( this.functionImports );
         stream.writeObject( this.globals );
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
@@ -157,6 +162,7 @@ public class Package
         this.packageCompilationData = (PackageCompilationData) stream.readObject();
         this.name = (String) stream.readObject();
         this.imports = (List) stream.readObject();
+        this.functionImports = (List) stream.readObject();
         this.globals = (Map) stream.readObject();
 
         // Return the rules stored as a byte[]
@@ -215,6 +221,33 @@ public class Package
         return this.imports;
     }
 
+    public void addFunctionImport(final String functionImport) {
+        if ( this.functionImports == Collections.EMPTY_LIST ) {
+            this.functionImports = new ArrayList( 1 );
+        }
+        this.functionImports.add( functionImport );
+    }
+    
+    public void addFunction(String functionName) {
+        if ( this.functions == Collections.EMPTY_LIST ) {
+            this.functions = new ArrayList( 1 );
+        }
+        
+        this.functions.add( functionName );
+    }    
+    
+    public List getFunctions() {
+        return this.functions;
+    }
+
+    public void removeFunctionImport(final String functionImport) {
+        this.functionImports.remove( functionImport );
+    }
+
+    public List getFunctionImports() {
+        return this.functionImports;
+    }
+
     public void addGlobal(final String identifier,
                           final Class clazz) {
         if ( this.globals == Collections.EMPTY_MAP ) {
@@ -233,18 +266,20 @@ public class Package
     }
 
     public void removeFunction(final String functionName) {
+        this.functions.remove( functionName );
         this.packageCompilationData.remove( this.name + "." + ucFirst( functionName ) );
     }
-    
+
     public FactTemplate getFactTemplate(final String name) {
-        return ( FactTemplate )  this.factTemplates.get( name );
+        return (FactTemplate) this.factTemplates.get( name );
     }
-    
+
     public void addFactTemplate(FactTemplate factTemplate) {
         if ( this.factTemplates == Collections.EMPTY_MAP ) {
             this.factTemplates = new HashMap( 1 );
         }
-        this.factTemplates.put( factTemplate.getName(), factTemplate );
+        this.factTemplates.put( factTemplate.getName(),
+                                factTemplate );
     }
 
     /**
@@ -327,14 +362,6 @@ public class Package
      */
     public Rule[] getRules() {
         return (Rule[]) this.rules.values().toArray( new Rule[this.rules.size()] );
-    }
-
-    public void setTypeSolver(final TypeResolver typeResolver) {
-        this.typeResolver = typeResolver;
-    }
-
-    public TypeResolver getTypeResolver() {
-        return this.typeResolver;
     }
 
     public PackageCompilationData getPackageCompilationData() {
