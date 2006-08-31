@@ -37,7 +37,7 @@ public class LiteralValue
     }    
     
     public String toString() {
-        return "LiteralValue value=" + this.value + "]";
+        return "LiteralValue value=[" + this.value + "]";
     }
 
     public int hashCode() {
