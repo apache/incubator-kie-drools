@@ -34,6 +34,8 @@ public class ArgumentValueDescr
     public static final int   NULL             = 32;
 
     public static final int   MAP              = 64;
+    
+    public static final int   LIST             = 128;
 
     private final int         type;
     private final Object      value;
