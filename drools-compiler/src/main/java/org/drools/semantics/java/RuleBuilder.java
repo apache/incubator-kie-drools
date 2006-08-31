@@ -41,6 +41,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.base.resolvers.DeclarationVariable;
 import org.drools.base.resolvers.GlobalVariable;
 import org.drools.base.resolvers.LiteralValue;
+import org.drools.base.resolvers.MapValue;
 import org.drools.base.resolvers.ValueHandler;
 import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
@@ -113,7 +114,7 @@ public class RuleBuilder {
     private RuleDescr                         ruleDescr;
 
     public String                             ruleClass;
-    public List                               s;
+    public List                               methods;
     public Map                                invokers;
 
     private Map                               invokerLookups;
@@ -188,7 +189,7 @@ public class RuleBuilder {
     public synchronized Rule build(final Package pkg,
                                    final RuleDescr ruleDescr) {
         this.pkg = pkg;
-        this.s = new ArrayList();
+        this.methods = new ArrayList();
         this.invokers = new HashMap();
         this.invokerLookups = new HashMap();
         this.declarations = new HashMap();
@@ -310,9 +311,9 @@ public class RuleBuilder {
                         this.rule.addPattern( eval );
                     }
                 } else if ( object.getClass() == FromDescr.class ) {
-                    final From from = build( (FromDescr) object);
+                    final From from = build( (FromDescr) object );
                     this.rule.addPattern( from );
-                }                
+                }
             } else if ( object.getClass() == ColumnDescr.class ) {
                 final Column column = build( (ColumnDescr) object );
                 if ( column != null ) {
@@ -380,8 +381,8 @@ public class RuleBuilder {
                         ce.addChild( eval );
                     }
                 } else if ( object.getClass() == FromDescr.class ) {
-                    final From from = build( (FromDescr) object);
-                    this.rule.addPattern( from );                    
+                    final From from = build( (FromDescr) object );
+                    this.rule.addPattern( from );
                 }
             } else if ( object.getClass() == ColumnDescr.class ) {
                 if ( decrementOffset && decrementFirst ) {
@@ -767,7 +768,7 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          returnValueText );
 
-        this.s.add( st.toString() );
+        this.methods.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "returnValueInvoker" );
 
@@ -859,7 +860,7 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          predicateText );
 
-        this.s.add( st.toString() );
+        this.methods.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "predicateInvoker" );
 
@@ -897,63 +898,96 @@ public class RuleBuilder {
 
     private From build(FromDescr fromDescr) {
         Column column = build( fromDescr.getReturnedColumn() );
-        
+
         DeclarativeInvokerDescr invokerDescr = fromDescr.getDataSource();
-        
+
         DataProvider dataProvider = null;
-        
+
         if ( invokerDescr.getClass() == MethodAccessDescr.class ) {
-            MethodAccessDescr methodAccessor = ( MethodAccessDescr ) invokerDescr;
-            
+            MethodAccessDescr methodAccessor = (MethodAccessDescr) invokerDescr;
+
             ValueHandler instanceValueHandler = null;
             String variableName = methodAccessor.getVariableName();
             if ( declarations.containsKey( variableName ) ) {
                 instanceValueHandler = new DeclarationVariable( (Declaration) declarations.get( variableName ) );
             } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
-                instanceValueHandler = new GlobalVariable( variableName, ( Class ) this.pkg.getGlobals().get( variableName ) );
+                instanceValueHandler = new GlobalVariable( variableName,
+                                                           (Class) this.pkg.getGlobals().get( variableName ) );
             } else {
                 throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
             }
-            
-            List arguments = ( ( MethodAccessDescr ) invokerDescr ).getArguments();
+
+            List arguments = ((MethodAccessDescr) invokerDescr).getArguments();
             List valueHandlers = new ArrayList();
 
             for ( Iterator iter = arguments.iterator(); iter.hasNext(); ) {
-                ArgumentValueDescr desc = (ArgumentValueDescr) iter.next();
-                if ( desc.getType() == ArgumentValueDescr.VARIABLE ) {
-                    if ( this.declarations.containsKey( desc.getValue() ) ) {
-                        valueHandlers.add( new DeclarationVariable( (Declaration) declarations.get( desc.getValue() ) ) );
-                    } else if ( this.pkg.getGlobals().containsKey( desc.getValue() ) ) {
-                        valueHandlers.add( new GlobalVariable( (String) desc.getValue(), ( Class ) this.pkg.getGlobals().get( variableName ) ) );
-                    } else {
-                        throw new IllegalArgumentException( "Uknown variable: " + desc.getValue() );
-                    }
-                } else {
-                    // handling a literal
-                    valueHandlers.add( new LiteralValue( (String) desc.getValue(), Object.class ) );
-                }
-            }         
-            
-            MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(), instanceValueHandler, ( ValueHandler[] ) valueHandlers.toArray( new ValueHandler[ valueHandlers.size() ] )  );
+                valueHandlers.add( buildValueHandler( (ArgumentValueDescr) iter.next() ) );
+                //                if ( desc.getType() == ArgumentValueDescr.VARIABLE ) {
+                //                    if ( this.declarations.containsKey( desc.getValue() ) ) {
+                //                        valueHandlers.add( new DeclarationVariable( (Declaration) declarations.get( desc.getValue() ) ) );
+                //                    } else if ( this.pkg.getGlobals().containsKey( desc.getValue() ) ) {
+                //                        valueHandlers.add( new GlobalVariable( (String) desc.getValue(), ( Class ) this.pkg.getGlobals().get( desc.getValue() ) ) );
+                //                    } else {
+                //                        throw new IllegalArgumentException( "Uknown variable: " + desc.getValue() );
+                //                    }
+                //                //} else if ( desc.getType() == ArgumentValueDescr.MAP ) {
+                //                    //valueHandlers.add( o )
+                //                } else {
+                //                    // handling a literal
+                //                    valueHandlers.add( new LiteralValue( (String) desc.getValue(), Object.class ) );
+                //                }
+            }
+
+            MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(),
+                                                       instanceValueHandler,
+                                                       (ValueHandler[]) valueHandlers.toArray( new ValueHandler[valueHandlers.size()] ) );
             dataProvider = new MethodDataProvider( invoker );
         }
-//        if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
-//            //FieldAccessDescr fieldAccessDescr = ( FieldAccessDescr ) invokerDescr;
-//        } else if ( invokerDescr.getClass() == FunctionCallDescr.class ) {
-//            //FunctionCallDescr functionCallDescr = ( FunctionCallDescr) invokerDescr;
-//        } else if ( invokerDescr.getClass() == AccessDescr.class ) {
-//            AccessDescr AccessDescr = (AccessDescr) invokerDescr;
-//            dataProvider = new DataProvider( AccessDescr.getVariableName(),
-//                                                   AccessDescr.getName(),
-//                                                   AccessDescr.getArguments(),
-//                                                   this.declarations,
-//                                                   this.pkg.getGlobals() );
-//        }
+        //        if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
+        //            //FieldAccessDescr fieldAccessDescr = ( FieldAccessDescr ) invokerDescr;
+        //        } else if ( invokerDescr.getClass() == FunctionCallDescr.class ) {
+        //            //FunctionCallDescr functionCallDescr = ( FunctionCallDescr) invokerDescr;
+        //        } else if ( invokerDescr.getClass() == AccessDescr.class ) {
+        //            AccessDescr AccessDescr = (AccessDescr) invokerDescr;
+        //            dataProvider = new DataProvider( AccessDescr.getVariableName(),
+        //                                                   AccessDescr.getName(),
+        //                                                   AccessDescr.getArguments(),
+        //                                                   this.declarations,
+        //                                                   this.pkg.getGlobals() );
+        //        }
 
         return new From( column,
                          dataProvider );
     }
-    
+
+    private ValueHandler buildValueHandler(ArgumentValueDescr descr) {
+        ValueHandler valueHandler = null;
+        if ( descr.getType() == ArgumentValueDescr.VARIABLE ) {
+            if ( this.declarations.containsKey( descr.getValue() ) ) {
+                valueHandler = new DeclarationVariable( (Declaration) declarations.get( descr.getValue() ) );
+            } else if ( this.pkg.getGlobals().containsKey( descr.getValue() ) ) {
+                valueHandler = new GlobalVariable( (String) descr.getValue(),
+                                                   (Class) this.pkg.getGlobals().get( descr.getValue() ) );
+            } else {
+                throw new IllegalArgumentException( "Uknown variable: " + descr.getValue() );
+            }
+        } else if ( descr.getType() == ArgumentValueDescr.MAP ) {
+            ArgumentValueDescr.KeyValuePairDescr[] pairs = (ArgumentValueDescr.KeyValuePairDescr[]) descr.getValue();
+            List list = new ArrayList( pairs.length );
+            for ( int i = 0, length = pairs.length; i < length; i++ ) {
+                list.add( new MapValue.KeyValuePair( buildValueHandler( pairs[i].getKey() ),
+                                                     buildValueHandler( pairs[i].getValue() ) ) );
+            }
+
+            valueHandler = new MapValue( (MapValue.KeyValuePair[]) list.toArray( new MapValue.KeyValuePair[pairs.length] ) );
+        } else {
+            // handling a literal
+            valueHandler = new LiteralValue( (String) descr.getValue(),
+                                             Object.class );
+        }
+        return valueHandler;
+    }
+
     private EvalCondition build(final EvalDescr evalDescr) {
 
         final String className = "eval" + this.counter++;
@@ -983,7 +1017,7 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          evalText );
 
-        this.s.add( st.toString() );
+        this.methods.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "evalInvoker" );
 
@@ -1039,7 +1073,7 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          RuleBuilder.functionFixer.fix( RuleBuilder.knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
 
-        this.s.add( st.toString() );
+        this.methods.add( st.toString() );
 
         st = RuleBuilder.invokerGroup.getInstanceOf( "consequenceInvoker" );
 
@@ -1065,7 +1099,7 @@ public class RuleBuilder {
             indexes[i] = list.indexOf( declarations[i] );
             if ( indexes[i] == -1 ) {
                 // some defensive code, this should never happen
-                throw new RuntimeDroolsException( "Unable to find declaration in list while generating the consequence invoker" );                
+                throw new RuntimeDroolsException( "Unable to find declaration in list while generating the consequence invoker" );
             }
         }
 
@@ -1086,7 +1120,7 @@ public class RuleBuilder {
 
     private void buildRule(final RuleDescr ruleDescr) {
         // If there is no compiled code, return
-        if ( this.s.isEmpty() ) {
+        if ( this.methods.isEmpty() ) {
             this.ruleClass = null;
             return;
         }
@@ -1102,8 +1136,8 @@ public class RuleBuilder {
         buffer.append( "public class " + ucFirst( this.ruleDescr.getClassName() ) + " {" + lineSeparator );
         buffer.append( "    private static final long serialVersionUID  = 7952983928232702826L;" + lineSeparator );
 
-        for ( int i = 0, size = this.s.size() - 1; i < size; i++ ) {
-            buffer.append( this.s.get( i ) + lineSeparator );
+        for ( int i = 0, size = this.methods.size() - 1; i < size; i++ ) {
+            buffer.append( this.methods.get( i ) + lineSeparator );
         }
 
         final String[] lines = buffer.toString().split( lineSeparator );
@@ -1112,7 +1146,7 @@ public class RuleBuilder {
         //To get the error position in the DRL
         //error.getLine() - this.ruleDescr.getConsequenceOffset() + this.ruleDescr.getConsequenceLine()
 
-        buffer.append( this.s.get( this.s.size() - 1 ) + lineSeparator );
+        buffer.append( this.methods.get( this.methods.size() - 1 ) + lineSeparator );
         buffer.append( "}" );
 
         this.ruleClass = buffer.toString();
