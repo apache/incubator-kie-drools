@@ -1,0 +1,17 @@
+package la
+
+
+rule simple_rule 
+  when
+  	Baz()
+  then
+  	//woot
+  	first
+  	
+  	#
+  	
+  	/* lala
+  	
+  	*/
+  	second  
+end
