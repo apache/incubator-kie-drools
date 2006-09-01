@@ -272,6 +272,13 @@ grammar RuleParser;
         		this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", offset(line) ) );
         	}
         }
+        
+        private String padConsequenceLine(int diff, String cons) {
+        	for(int i = 0; i < diff; i++) {
+        		cons = cons + '\n';
+        	}
+        	return cons;
+        }
       
 }
 
@@ -487,10 +494,20 @@ rule returns [RuleDescr rule]
 			)
 					
 		)?
-		( opt_eol loc='then' ':'?  opt_eol
-			( options{greedy=false;} : any=.
+		( opt_eol loc='then' ':'?  opt_eol 
+			{int prevLine = loc.getLine()+1; }
+			( options{greedy=false;} : any=. (EOL)*
 				{
+					/*
+					if (prevLine = 0) { prevLine = any.getLine() ;}
+					
+					int lineDif = any.getLine() - prevLine - 1;
+					consequence = padConsequenceLines(lineDif, consequence);
+					*/
+					int diff = any.getLine() - prevLine;
+					consequence = padConsequenceLine(diff, consequence);
 					consequence = consequence + " " + any.getText();
+					prevLine = any.getLine();
 				}
 			)*
 			{

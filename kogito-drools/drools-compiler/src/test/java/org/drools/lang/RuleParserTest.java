@@ -846,6 +846,15 @@ public class RuleParserTest extends TestCase {
                       third.getLine() );
         assertFalse( this.parser.hasErrors() );
     }
+    
+    public void testLineNumberIncludingCommentsInRHS() throws Exception {
+        parseResource( "test_CommentLineNumbersInConsequence.drl" ).compilation_unit();
+        
+        assertFalse(parser.hasErrors());        
+        String rhs = ((RuleDescr) parser.getPackageDescr().getRules().get( 0 )).getConsequence();
+        //System.out.println(rhs);
+        assertEquals("\n first\n\n\n\n\n\n\n second", rhs);
+    }
 
     public void testMultiBindings() throws Exception {
         final RuleDescr rule = parseResource( "multiple_bindings.drl" ).rule();
