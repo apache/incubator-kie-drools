@@ -7,9 +7,9 @@ package <package>;
 
 public class <className> {
     private static final long serialVersionUID  = 320L;
-    
+        
     public static <returnType> <methodName>(<parameterTypes, parameterNames:{ type, name | <type> <name>}; separator=",\n">) throws Exception {
         <text>
-    }
+    }      
 }     
 >>

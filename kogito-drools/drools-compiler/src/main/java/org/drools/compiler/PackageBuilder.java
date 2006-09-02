@@ -47,6 +47,7 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.semantics.java.ClassTypeResolver;
@@ -79,6 +80,7 @@ public class PackageBuilder {
     private FunctionFixer               functionFixer;
     private FunctionResolver            functionResolver;
     private ClassFieldExtractorCache    classFieldExtractorCache;
+    private Map                         lineMappings;
 
     /**
      * Use this when package is starting from scratch. 
@@ -123,6 +125,7 @@ public class PackageBuilder {
 
         if ( pkg != null ) {
             this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
+            this.lineMappings = pkg.getPackageCompilationData().getLineMappings();
         }
     }
 
@@ -241,6 +244,8 @@ public class PackageBuilder {
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
                                          this.configuration.getClassLoader() );
+        this.lineMappings = new HashMap();
+        pkg.getPackageCompilationData().setLineMappings( this.lineMappings );
 
         this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
 
@@ -293,7 +298,7 @@ public class PackageBuilder {
                                      final ErrorHandler handler) {
 
         final String fileName = className.replace( '.',
-                                             '/' ) + ".java";
+                                                   '/' ) + ".java";
         src.add( fileName,
                  text.getBytes() );
 
@@ -305,11 +310,12 @@ public class PackageBuilder {
     private void addFunction(final FunctionDescr functionDescr) {
         final FunctionBuilder buidler = new FunctionBuilder();
         this.pkg.addFunction( functionDescr.getName() );
-            
+
         addClassCompileTask( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
                              buidler.build( this.pkg,
                                             functionDescr,
-                                            getFunctionFixer() ),
+                                            getFunctionFixer(),
+                                            lineMappings ),
                              this.src,
                              new FunctionErrorHandler( functionDescr,
                                                        "Function Compilation error" ) );
@@ -336,8 +342,8 @@ public class PackageBuilder {
         }
 
         final FactTemplate factTemplate = new FactTemplateImpl( this.pkg,
-                                                          factTemplateDescr.getName(),
-                                                          (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
+                                                                factTemplateDescr.getName(),
+                                                                (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
     }
 
     private void addRule(final RuleDescr ruleDescr) {
@@ -367,6 +373,13 @@ public class PackageBuilder {
         }
 
         this.pkg.addRule( rule );
+
+        String name = pkg.getName() + "." + ucFirst( ruleDescr.getClassName() );
+        LineMappings mapping = new LineMappings( name );
+        mapping.setStartLine( ruleDescr.getConsequenceLine() );
+        mapping.setOffset( ruleDescr.getConsequenceOffset() );
+        this.lineMappings.put( name,
+                               mapping );
     }
 
     /**
@@ -392,10 +405,11 @@ public class PackageBuilder {
 
         return this.functionResolver;
     }
-    
+
     private FunctionFixer getFunctionFixer() {
         if ( this.functionFixer == null ) {
-            this.functionFixer = new FunctionFixer(this.pkg, getFunctionResolver() );
+            this.functionFixer = new FunctionFixer( this.pkg,
+                                                    getFunctionResolver() );
         }
         return this.functionFixer;
     }
@@ -476,7 +490,6 @@ public class PackageBuilder {
                 final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
                 if ( handler instanceof RuleErrorHandler ) {
                     final RuleErrorHandler rh = (RuleErrorHandler) handler;
-
                 }
                 handler.addError( err );
             }
@@ -607,9 +620,9 @@ public class PackageBuilder {
      * that originally spawned the code to be compiled.
      */
     public abstract static class ErrorHandler {
-        private final List     errors  = new ArrayList();
-        protected String message;
-        private boolean  inError = false;
+        private final List errors  = new ArrayList();
+        protected String   message;
+        private boolean    inError = false;
 
         /** This needes to be checked if there is infact an error */
         public boolean isInError() {

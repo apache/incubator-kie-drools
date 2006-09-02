@@ -21,12 +21,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Map;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 
 public class FunctionBuilder {
@@ -39,7 +41,8 @@ public class FunctionBuilder {
 
     public String build(final Package pkg,
                         final FunctionDescr functionDescr,
-                        final FunctionFixer fixer) {
+                        final FunctionFixer fixer,
+                        final Map lineMappings) {
         final StringTemplate st = FunctionBuilder.functionGroup.getInstanceOf( "function" );
 
         st.setAttribute( "package",
@@ -84,6 +87,11 @@ public class FunctionBuilder {
             throw new RuntimeDroolsException( "Error determining start offset with function" );
         }
         
+        String name = pkg.getName() + "." + ucFirst( functionDescr.getName() );
+        LineMappings mapping = new LineMappings( name );
+        mapping.setStartLine( functionDescr.getLine() );
+        mapping.setOffset( functionDescr.getOffset() );      
+        lineMappings.put( name, lineMappings );
 
         return text;
 
