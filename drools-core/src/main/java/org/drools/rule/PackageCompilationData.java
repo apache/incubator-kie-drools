@@ -25,6 +25,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,17 +46,19 @@ public class PackageCompilationData
     /**
      * 
      */
-    private static final long            serialVersionUID = -4351259299237235523L;
+    private static final long            serialVersionUID = 320L;
 
     private Map                          invokerLookups;
 
     private Object                       AST;
 
     private Map                          store;
+    
+    private Map                          lineMappings;
 
     private transient PackageClassLoader classLoader;
 
-    private transient ClassLoader        parentClassLoader;
+    private transient ClassLoader        parentClassLoader;   
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it 
@@ -69,6 +72,7 @@ public class PackageCompilationData
         initClassLoader( parentClassLoader );
         this.invokerLookups = new HashMap();
         this.store = new HashMap();
+        this.lineMappings = Collections.EMPTY_MAP;
     }
 
     private void initClassLoader(ClassLoader parentClassLoader) {
@@ -255,6 +259,18 @@ public class PackageCompilationData
 
     public void removeInvoker(final String className) {
         this.invokerLookups.remove( className );
+    }
+    
+    public Map getLineMappings() {
+        return this.lineMappings;
+    }
+    
+    public void setLineMappings(Map lineMappings) {
+        this.lineMappings = lineMappings;
+    }
+    
+    public LineMappings getLineMappings(String className) {
+        return ( LineMappings ) this.lineMappings.get( className );
     }
 
     public Object getAST() {
