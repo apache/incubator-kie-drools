@@ -236,11 +236,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
         final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new Serializable() {
         } ) );
 
-        final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                  PropagationContext.ASSERTION,
-                                                                                  null,
-                                                                                  null );
-
         workingMemory.queueWorkingMemoryAction( workingMemory.new WorkingMemoryReteAssertAction( handle,
                                                                                                  false,
                                                                                                  true,
