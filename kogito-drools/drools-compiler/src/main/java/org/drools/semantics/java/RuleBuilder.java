@@ -139,7 +139,7 @@ public class RuleBuilder {
                                                                                               AngleBracketTemplateLexer.class );
 
     private static final KnowledgeHelperFixer knowledgeHelperFixer = new KnowledgeHelperFixer();
-    
+
     private final FunctionFixer               functionFixer;
 
     // @todo move to an interface so it can work as a decorator
@@ -477,8 +477,8 @@ public class RuleBuilder {
             final Object object = fieldConstraintDescr.getRestrictions().get( 0 );
 
             final Restriction restriction = buildRestriction( extractor,
-                                                        fieldConstraintDescr,
-                                                        (RestrictionDescr) object );
+                                                              fieldConstraintDescr,
+                                                              (RestrictionDescr) object );
             if ( restriction == null ) {
                 // @todo log errors
                 return;
@@ -568,8 +568,8 @@ public class RuleBuilder {
         }
 
         final Restriction restriction = buildRestriction( extractor,
-                                                    fieldConstraintDescr,
-                                                    currentRestriction );
+                                                          fieldConstraintDescr,
+                                                          currentRestriction );
         currentList.add( restriction );
 
         Restriction restrictions = null;
@@ -922,42 +922,17 @@ public class RuleBuilder {
 
             for ( final Iterator iter = arguments.iterator(); iter.hasNext(); ) {
                 valueHandlers.add( buildValueHandler( (ArgumentValueDescr) iter.next() ) );
-                //                if ( desc.getType() == ArgumentValueDescr.VARIABLE ) {
-                //                    if ( this.declarations.containsKey( desc.getValue() ) ) {
-                //                        valueHandlers.add( new DeclarationVariable( (Declaration) declarations.get( desc.getValue() ) ) );
-                //                    } else if ( this.pkg.getGlobals().containsKey( desc.getValue() ) ) {
-                //                        valueHandlers.add( new GlobalVariable( (String) desc.getValue(), ( Class ) this.pkg.getGlobals().get( desc.getValue() ) ) );
-                //                    } else {
-                //                        throw new IllegalArgumentException( "Uknown variable: " + desc.getValue() );
-                //                    }
-                //                //} else if ( desc.getType() == ArgumentValueDescr.MAP ) {
-                //                    //valueHandlers.add( o )
-                //                } else {
-                //                    // handling a literal
-                //                    valueHandlers.add( new LiteralValue( (String) desc.getValue(), Object.class ) );
-                //                }
             }
 
             final MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(),
-                                                       instanceValueHandler,
-                                                       (ValueHandler[]) valueHandlers.toArray( new ValueHandler[valueHandlers.size()] ) );
+                                                             instanceValueHandler,
+                                                             (ValueHandler[]) valueHandlers.toArray( new ValueHandler[valueHandlers.size()] ) );
             dataProvider = new MethodDataProvider( invoker );
         }
-        //        if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
-        //            //FieldAccessDescr fieldAccessDescr = ( FieldAccessDescr ) invokerDescr;
-        //        } else if ( invokerDescr.getClass() == FunctionCallDescr.class ) {
-        //            //FunctionCallDescr functionCallDescr = ( FunctionCallDescr) invokerDescr;
-        //        } else if ( invokerDescr.getClass() == AccessDescr.class ) {
-        //            AccessDescr AccessDescr = (AccessDescr) invokerDescr;
-        //            dataProvider = new DataProvider( AccessDescr.getVariableName(),
-        //                                                   AccessDescr.getName(),
-        //                                                   AccessDescr.getArguments(),
-        //                                                   this.declarations,
-        //                                                   this.pkg.getGlobals() );
-        //        }
 
         return new From( column,
                          dataProvider );
+
     }
 
     private ValueHandler buildValueHandler(final ArgumentValueDescr descr) {
@@ -1150,10 +1125,8 @@ public class RuleBuilder {
 
         final String[] lines = buffer.toString().split( lineSeparator );
 
-        this.ruleDescr.setConsequenceOffset( lines.length + 2 );
-        //To get the error position in the DRL
-        //error.getLine() - this.ruleDescr.getConsequenceOffset() + this.ruleDescr.getConsequenceLine()
-
+        this.ruleDescr.setConsequenceOffset( lines.length + 1 );
+        
         buffer.append( this.methods.get( this.methods.size() - 1 ) + lineSeparator );
         buffer.append( "}" );
 
@@ -1204,7 +1177,7 @@ public class RuleBuilder {
         } else {
             try {
                 extractor = this.classFieldExtractorCache.getExtractor( ((ClassObjectType) objectType).getClassType(),
-                                                                   fieldName );
+                                                                        fieldName );
             } catch ( final RuntimeDroolsException e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 descr,

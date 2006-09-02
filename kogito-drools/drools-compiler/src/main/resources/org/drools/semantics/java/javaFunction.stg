@@ -5,9 +5,8 @@ package <package>;
 
 <imports:{ importEntry | import <importEntry>;<\n>}>   
 
-public class <className>
-{
-    private static final long serialVersionUID  = 7952983928232702826L;
+public class <className> {
+    private static final long serialVersionUID  = 320L;
     
     public static <returnType> <methodName>(<parameterTypes, parameterNames:{ type, name | <type> <name>}; separator=",\n">) throws Exception {
         <text>
