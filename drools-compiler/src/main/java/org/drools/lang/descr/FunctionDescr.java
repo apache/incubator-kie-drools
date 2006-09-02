@@ -20,14 +20,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FunctionDescr {
+public class FunctionDescr extends PatternDescr {
+    private static final long serialVersionUID = 320;
+    
     private final String name;
     private final String returnType;
-
+    
     private List         parameterTypes = Collections.EMPTY_LIST;
     private List         parameterNames = Collections.EMPTY_LIST;
 
     private String       text;
+    
+    private int      offset;
 
     public FunctionDescr(final String name,
                          final String returnType) {
@@ -71,4 +75,15 @@ public class FunctionDescr {
     public String getText() {
         return this.text;
     }
+
+    public int getOffset() {
+        return this.offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    
+    
+    
 }

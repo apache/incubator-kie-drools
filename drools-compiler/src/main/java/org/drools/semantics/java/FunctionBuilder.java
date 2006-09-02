@@ -16,24 +16,30 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
+import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.Package;
 
 public class FunctionBuilder {
     private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( FunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
-                                                                                AngleBracketTemplateLexer.class );
+                                                                                      AngleBracketTemplateLexer.class );
 
     public FunctionBuilder() {
 
     }
 
     public String build(final Package pkg,
-                        final FunctionDescr functionDescr) {
+                        final FunctionDescr functionDescr,
+                        final FunctionFixer fixer) {
         final StringTemplate st = FunctionBuilder.functionGroup.getInstanceOf( "function" );
 
         st.setAttribute( "package",
@@ -57,9 +63,29 @@ public class FunctionBuilder {
                          functionDescr.getParameterNames() );
 
         st.setAttribute( "text",
-                         functionDescr.getText() );
+                         fixer.fix( functionDescr.getText() ) );
+        
+        String text = st.toString();
+        
+        BufferedReader reader = new BufferedReader( new StringReader ( text ) );
+        String line = null;
+        String lineStartsWith = "    public static " + functionDescr.getReturnType( ) + " " + functionDescr.getName();
+        int offset = 0;
+        try {
+            while ( ( line = reader.readLine() ) != null ) {
+                offset++;
+                if ( line.startsWith( lineStartsWith ) ) {
+                    break;
+                }
+            }
+            functionDescr.setOffset( offset );
+        } catch ( IOException e ) {
+            // won't ever happen, it's just reading over a string.
+            throw new RuntimeDroolsException( "Error determining start offset with function" );
+        }
+        
 
-        return st.toString();
+        return text;
 
     }
 

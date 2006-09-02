@@ -308,7 +308,8 @@ public class PackageBuilder {
             
         addClassCompileTask( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
                              buidler.build( this.pkg,
-                                            functionDescr ),
+                                            functionDescr,
+                                            getFunctionFixer() ),
                              this.src,
                              new FunctionErrorHandler( functionDescr,
                                                        "Function Compilation error" ) );
