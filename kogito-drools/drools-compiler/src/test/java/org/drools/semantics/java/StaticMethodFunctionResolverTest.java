@@ -19,7 +19,7 @@ public class StaticMethodFunctionResolverTest extends TestCase {
         list.add( "StaticMethods.*" );
         FunctionResolver functionResolver = new StaticMethodFunctionResolver( list, typeResolver );
         
-        System.out.println( functionResolver.resolveFunction( "getString", 1 ) );
+        System.out.println( functionResolver.resolveFunction( "getString1", 1 ) );
         
         
     }
