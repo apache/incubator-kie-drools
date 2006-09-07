@@ -380,10 +380,11 @@ function
 		FunctionDescr f = null;
 	}
 	:
-		'function' opt_eol (retType=dotted_name)? opt_eol name=ID opt_eol
+		loc='function' opt_eol (retType=dotted_name)? opt_eol name=ID opt_eol
 		{
 			//System.err.println( "function :: " + name.getText() );
 			f = new FunctionDescr( name.getText(), retType );
+			f.setLocation(offset(loc.getLine()), loc.getCharPositionInLine());
 		} 
 		'(' opt_eol
 			(	(paramType=dotted_name)? opt_eol paramName=argument_name opt_eol
@@ -783,6 +784,33 @@ from_source returns [DeclarativeInvokerDescr ds]
 	
 	;	
 	
+accumulate_statement returns [AccumulateDescr d]
+	@init {
+		d = factory.createAccumulate();
+	}
+	:
+	        loc='from' opt_eol 'accumulate' opt_eol 
+		{ 
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+		}	
+		'(' opt_eol column=lhs_column opt_eol ',' opt_eol
+		{
+		        d.setSourceColumn( (ColumnDescr)column );
+		}
+		'init' opt_eol '(' c=paren_chunk2 ')' opt_eol ',' opt_eol
+		{
+		        d.setInitCode( c );
+		}
+		'action' opt_eol '(' c=paren_chunk2 ')' opt_eol ',' opt_eol
+		{
+		        d.setActionCode( c );
+		}
+		'result' opt_eol '(' c=paren_chunk2 ')' opt_eol ')'
+		{
+		        d.setResultCode( c );
+		} 
+	; 		
+ 		
 argument_list returns [ArrayList args]
 	@init {
 		args = new ArrayList();
@@ -1211,7 +1239,9 @@ lhs_unary returns [PatternDescr d]
 	:	(	u=lhs_exist {d = u;}
 		|	u=lhs_not {d = u;}
 		|	u=lhs_eval {d = u;}				
-		|	u=lhs_column {d=u;} (fm=from_statement {fm.setColumn((ColumnDescr) u); d=fm;})?
+		|	u=lhs_column {d=u;} 
+		          ((fm=from_statement {fm.setColumn((ColumnDescr) u); d=fm;}) 
+		          |(ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); d=ac;}) )?
 		|	'(' opt_eol u=lhs opt_eol ')' {d = u;}
 		) 
 	;

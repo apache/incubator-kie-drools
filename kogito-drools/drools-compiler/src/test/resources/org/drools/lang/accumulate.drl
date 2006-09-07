@@ -1,0 +1,8 @@
+rule "AccumulateParserTest"
+when
+     Integer() from accumulate( Person( age > 21 ),
+                                init( int x = 0; ),
+                                action( x++; ),
+                                result( new Integer(x) ) );
+then
+end

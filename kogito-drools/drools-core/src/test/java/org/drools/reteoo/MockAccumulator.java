@@ -19,9 +19,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.rule.Declaration;
+import org.drools.spi.Accumulator;
 
 /**
- * A Mock accumulator object.
+ * A Mock accumulate object.
  * 
  * @author etirelli
  *
@@ -41,6 +43,7 @@ public class MockAccumulator
      */
     public Object accumulate(ReteTuple leftTuple,
                              List matchingObjects,
+                             Declaration[] declarations,
                              WorkingMemory workingMemory) {
         this.leftTuple = leftTuple;
         this.matchingObjects = matchingObjects;

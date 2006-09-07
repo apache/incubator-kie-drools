@@ -35,6 +35,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
+import org.drools.rule.Accumulate;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -323,6 +324,10 @@ class ReteooBuilder
             } else if ( object.getClass() == From.class ) {
                 attachFrom( this.tupleSource,
                             (From) object );
+            } else if ( object.getClass() == Accumulate.class ) {
+                attachAccumulate( this.tupleSource,
+                                  and,
+                                  (Accumulate) object );
             } else if ( this.objectSource != null ) {
                 this.tupleSource = attachNode( new JoinNode( this.id++,
                                                              this.tupleSource,
@@ -335,7 +340,7 @@ class ReteooBuilder
     public BaseNode[] getTerminalNodes(final Rule rule) {
         return (BaseNode[]) this.rules.remove( rule );
     }
-    
+
     private void attachQuery(final String queryName) {
         // incrementing offset adjustment, since we are adding a new ObjectNodeType as our
         // first column
@@ -352,7 +357,6 @@ class ReteooBuilder
         final FieldValue field = FieldFactory.getFieldValue( queryName,
                                                              ValueType.STRING_TYPE );
 
-
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
                                                                     field );
@@ -364,7 +368,7 @@ class ReteooBuilder
 
         this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                  alphaNodeSource ) );
-    }    
+    }
 
     private BetaNodeBinder attachColumn(final Column column,
                                         final GroupElement parent,
@@ -547,7 +551,7 @@ class ReteooBuilder
 
             node = candidate;
         } else {
-            if( !node.isInUse() ) {
+            if ( !node.isInUse() ) {
                 if ( this.workingMemories.length == 0 ) {
                     node.attach();
                 } else {
@@ -579,7 +583,7 @@ class ReteooBuilder
             this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                      objectSource ) );
         }
-        
+
         // Adjusting offset in case a previous Initial-Fact was added to the network
         column.adjustOffset( this.currentOffsetAdjustment );
 
@@ -632,6 +636,82 @@ class ReteooBuilder
 
     }
 
+    private void attachAccumulate(final TupleSource tupleSource,
+                                  final And parent,
+                                  final Accumulate accumulate) {
+        // If a tupleSource does not exist then we need to adapt an
+        // InitialFact into a a TupleSource using LeftInputAdapterNode
+        if ( this.tupleSource == null ) {
+            // adjusting offset as all tuples will now contain initial-fact at index 0
+            this.currentOffsetAdjustment = 1;
+
+            final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
+                                                                                 this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
+                                                                                 new ClassObjectType( InitialFact.class ),
+                                                                                 this.rete ) );
+
+            this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
+                                                                     auxObjectSource ) );
+        }
+
+        final Column sourceColumn = accumulate.getSourceColumn();
+        final BetaNodeBinder sourceBinder = attachColumn(sourceColumn,
+                                                   parent,
+                                                   true);
+
+        Column column = accumulate.getResultColumn();
+        // Adjusting offset in case a previous Initial-Fact was added to the network
+        column.adjustOffset( this.currentOffsetAdjustment );
+
+        final List constraints = column.getConstraints();
+
+        // Check if the Column is bound
+        if ( column.getDeclaration() != null ) {
+            final Declaration declaration = column.getDeclaration();
+            // Add the declaration the map of previously bound declarations
+            this.declarations.put( declaration.getIdentifier(),
+                                   declaration );
+        }
+
+        final List predicateConstraints = new ArrayList();
+        final List alphaNodeConstraints = new ArrayList();
+
+        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
+            // Check if its a declaration
+            if ( object instanceof Declaration ) {
+                final Declaration declaration = (Declaration) object;
+                // Add the declaration the map of previously bound declarations
+                this.declarations.put( declaration.getIdentifier(),
+                                       declaration );
+                continue;
+            }
+
+            final FieldConstraint fieldConstraint = (FieldConstraint) object;
+            if ( fieldConstraint instanceof LiteralConstraint ) {
+                alphaNodeConstraints.add( fieldConstraint );
+            } else {
+                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
+                predicateConstraints.add( fieldConstraint );
+            }
+        }
+
+        BetaNodeBinder resultsBinder = null;
+        if ( !predicateConstraints.isEmpty() ) {
+            resultsBinder = new BetaNodeBinder( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+        } else {
+            resultsBinder = new BetaNodeBinder();
+        }
+
+        this.tupleSource = attachNode( new AccumulateNode( id++,
+                                                           this.tupleSource,
+                                                           this.objectSource,
+                                                           (FieldConstraint[]) alphaNodeConstraints.toArray( new FieldConstraint[alphaNodeConstraints.size()] ),
+                                                           sourceBinder,
+                                                           resultsBinder,
+                                                           accumulate) );
+    }
+
     private ObjectSource attachNode(final ObjectSource candidate) {
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
 
@@ -647,7 +727,7 @@ class ReteooBuilder
 
             node = candidate;
         } else {
-            if( !node.isInUse() ) {
+            if ( !node.isInUse() ) {
                 if ( this.workingMemories.length == 0 ) {
                     node.attach();
                 } else {

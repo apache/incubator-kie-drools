@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.spi;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Declaration;
 
 /**
  * Accumulator
@@ -29,8 +30,13 @@ import org.drools.WorkingMemory;
  *
  * @version $Id$
  */
-public interface Accumulator extends Serializable {
+public interface Accumulator
+    extends
+    Invoker {
 
-    public Object accumulate(ReteTuple leftTuple, List matchingObjects, WorkingMemory workingMemory);
+    public Object accumulate(ReteTuple leftTuple,
+                             List matchingObjects,
+                             Declaration[] declarations,
+                             WorkingMemory workingMemory) throws Exception;
 
 }

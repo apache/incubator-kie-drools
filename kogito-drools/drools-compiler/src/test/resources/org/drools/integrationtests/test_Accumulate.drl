@@ -1,0 +1,16 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List results;
+
+rule "AccumulateTest"
+    when
+    	$totalAmount : Integer() from accumulate( $cheese : Cheese( ),
+                                                  init( int total = 0; ),
+    	                                          action( total += $cheese.getPrice(); ),
+                                                  result( new Integer( total ) ) );
+    then
+        //System.out.println("Total amount = "+$totalAmount );
+        results.add($totalAmount);
+end  

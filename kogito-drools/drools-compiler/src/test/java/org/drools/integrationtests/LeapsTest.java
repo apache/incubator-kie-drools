@@ -427,4 +427,8 @@ public class LeapsTest extends IntegrationCases {
         
     }
     
+    public void testAccumulate() throws Exception {
+        // FIXME
+    }
+    
 }

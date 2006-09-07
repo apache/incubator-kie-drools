@@ -23,6 +23,9 @@ import java.util.Map;
 
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.rule.Accumulate;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListObjectWrapper;
@@ -38,10 +41,11 @@ import org.drools.util.LinkedListObjectWrapper;
  */
 public class AccumulateNode extends BetaNode {
 
-    private static final long serialVersionUID = -4081578178269297948L;
+    private static final long       serialVersionUID = -4081578178269297948L;
 
-    // MENTAL NOTE: it MUST be stateless
-    private final Accumulator accumulator;
+    private final Accumulate        accumulate;
+    private final FieldConstraint[] constraints;
+    private final BetaNodeBinder    resultsBinder;
 
     /**
      * Construct.
@@ -54,32 +58,30 @@ public class AccumulateNode extends BetaNode {
     AccumulateNode(final int id,
                    final TupleSource leftInput,
                    final ObjectSource rightInput,
-                   final Accumulator accumulator) {
+                   final Accumulate accumulate) {
         this( id,
               leftInput,
               rightInput,
-              accumulator,
-              new BetaNodeBinder() );
+              new FieldConstraint[0],
+              new BetaNodeBinder(),
+              new BetaNodeBinder(),
+              accumulate );
     }
 
-    /**
-     * Construct.
-     * 
-     * @param leftInput
-     *            The left input <code>TupleSource</code>.
-     * @param rightInput
-     *            The right input <code>TupleSource</code>.
-     */
-    AccumulateNode(final int id,
-                   final TupleSource leftInput,
-                   final ObjectSource rightInput,
-                   final Accumulator accumulator,
-                   final BetaNodeBinder joinNodeBinder) {
+    public AccumulateNode(final int id,
+                          final TupleSource leftInput,
+                          final ObjectSource rightInput,
+                          final FieldConstraint[] constraints,
+                          final BetaNodeBinder sourceBinder,
+                          final BetaNodeBinder resultsBinder,
+                          final Accumulate accumulate) {
         super( id,
                leftInput,
                rightInput,
-               joinNodeBinder );
-        this.accumulator = accumulator;
+               sourceBinder );
+        this.resultsBinder = resultsBinder;
+        this.constraints = constraints;
+        this.accumulate = accumulate;
     }
 
     /**
@@ -110,7 +112,7 @@ public class AccumulateNode extends BetaNode {
         memory.add( workingMemory,
                     leftTuple );
 
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        //final BetaNodeBinder binder = getJoinNodeBinder();
 
         List matchingObjects = new ArrayList();
         for ( final Iterator it = memory.rightObjectIterator( workingMemory,
@@ -118,31 +120,43 @@ public class AccumulateNode extends BetaNode {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
             final DefaultFactHandle handle = objectMatches.getFactHandle();
 
-            if ( attemptJoin( leftTuple, 
-                              handle, 
-                              objectMatches, 
-                              binder, 
-                              workingMemory ) != null ) {
+            if ( attemptJoin( leftTuple,
+                              handle,
+                              objectMatches,
+                              this.resultsBinder,
+                              workingMemory )  != null) {
                 matchingObjects.add( handle.getObject() );
             }
         }
 
-        Object result = this.accumulator.accumulate( leftTuple,
-                                                     matchingObjects,
-                                                     workingMemory );
+        Object result = this.accumulate.accumulate( leftTuple,
+                                                    matchingObjects,
+                                                    workingMemory );
 
-        DefaultFactHandle handle = new CalculatedObjectHandle( result );
+        // First alpha node filters
+        boolean isAllowed = true;
+        for ( int i = 0, length = this.constraints.length; i < length; i++ ) {
+            if ( !this.constraints[i].isAllowed( result, leftTuple, workingMemory ) ) {
+                isAllowed = false;
+                break;
+            }
+        }
+        if( isAllowed ) {
+            DefaultFactHandle handle = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( result );
 
-        propagateAssertTuple( leftTuple,
-                              handle,
-                              context,
-                              workingMemory );
+            if( this.resultsBinder.isAllowed( handle, leftTuple, workingMemory )) {
+                propagateAssertTuple( leftTuple,
+                                      handle,
+                                      context,
+                                      workingMemory );
+            }
+        }
     }
 
     /**
      * @inheritDoc
      * 
-     * As the accumulate node will always propagate the tuple,
+     * As the accumulate node will propagate the tuple,
      * but will recalculate the accumulated result object every time,
      * a modify is really a retract + assert. 
      * 
@@ -150,9 +164,13 @@ public class AccumulateNode extends BetaNode {
     public void modifyTuple(ReteTuple leftTuple,
                             PropagationContext context,
                             ReteooWorkingMemory workingMemory) {
-        
-        this.retractTuple( leftTuple, context, workingMemory );
-        this.assertTuple( leftTuple, context, workingMemory );
+
+        this.retractTuple( leftTuple,
+                           context,
+                           workingMemory );
+        this.assertTuple( leftTuple,
+                          context,
+                          workingMemory );
 
     }
 
@@ -176,12 +194,20 @@ public class AccumulateNode extends BetaNode {
             for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
                 final TupleMatch tupleMatch = (TupleMatch) it.next();
                 tupleMatch.getObjectMatches().remove( tupleMatch );
+                it.remove();
             }
         }
+        
+        // Need to store the accumulate result object for later disposal
+        InternalFactHandle[] handles = ((ReteTuple)((LinkedListObjectWrapper)leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
+        InternalFactHandle lastHandle = handles[handles.length-1];
         
         propagateRetractTuple( leftTuple,
                                context,
                                workingMemory );
+        
+        // Destroying the acumulate result object 
+        workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
     }
 
     /**
@@ -206,11 +232,9 @@ public class AccumulateNode extends BetaNode {
                                                             handle ); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
 
-            if ( attemptJoin( leftTuple, 
-                              handle, 
-                              objectMatches, 
-                              binder, 
-                              workingMemory ) != null ) {
+            if ( binder.isAllowed( handle,
+                                   leftTuple,
+                                   workingMemory ) ) {
                 this.modifyTuple( leftTuple,
                                   context,
                                   workingMemory );
@@ -306,6 +330,10 @@ public class AccumulateNode extends BetaNode {
                                                                                          workingMemory );
         }
         this.attachingNewNode = false;
+    }
+
+    public String toString() {
+        return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
     }
 
 }
