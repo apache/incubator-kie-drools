@@ -29,6 +29,10 @@ public class ColumnDescr extends PatternDescr {
     private String identifier;
     private List   descrs = Collections.EMPTY_LIST;
 
+    public ColumnDescr() {
+        this(null, null);
+    }
+    
     public ColumnDescr(final String objectType) {
         this( objectType,
               null );
@@ -51,6 +55,10 @@ public class ColumnDescr extends PatternDescr {
         this.identifier = identifier;
     }
 
+    public void setObjectType(final String objectType) {
+        this.objectType = objectType;    
+    }
+    
     public String getObjectType() {
         return this.objectType;
     }

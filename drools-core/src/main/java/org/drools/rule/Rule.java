@@ -296,8 +296,10 @@ public class Rule
     public void addPattern(final ConditionalElement ce) {
         if ( ce instanceof GroupElement ) {
             addDeclarations( (GroupElement) ce );
-        } else  if ( ce.getClass() == From.class ) {
-            addDeclarations( ((From) ce ).getColumn());
+        } else if ( ce.getClass() == From.class ) {
+            addDeclarations( ((From) ce).getColumn() );
+        } else if ( ce.getClass() == Accumulate.class ) {
+            addDeclarations( ((Accumulate) ce).getResultColumn() );
         }
         this.lhsRoot.addChild( ce );
     }

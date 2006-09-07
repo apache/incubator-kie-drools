@@ -18,6 +18,17 @@ public static boolean <methodName>(<declarationTypes, declarations:{ type, declr
 }
 >>
 
+accumulateMethod(declarations, declarationTypes, globals, globalTypes, methodName, columnType, columnDeclaration, resultType, initCode, actionCode, resultCode) ::= <<
+public static <resultType> <methodName>(java.util.List matchingObjects<if(declarations)>, <endif><declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+    <initCode>
+    for( java.util.Iterator it = matchingObjects.iterator(); it.hasNext(); ) {
+      <columnType> <columnDeclaration.identifier> = (<columnType>) it.next();
+      <actionCode>
+    }
+    return ( <resultCode> );
+}
+>>
+
 consequenceMethod(declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
 public static void <methodName>(org.drools.spi.KnowledgeHelper drools<if(declarations)>,<endif> <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>, org.drools.FactHandle <declr.identifier>__Handle__}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
     <text>

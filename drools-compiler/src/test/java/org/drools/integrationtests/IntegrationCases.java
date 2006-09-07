@@ -3082,5 +3082,34 @@ public abstract class IntegrationCases extends TestCase {
         
     }
     
+    public void testAccumulate() throws Exception {
+
+        //read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
+        final DrlParser parser = new DrlParser();
+        final PackageDescr packageDescr = parser.parse( reader );
+
+        //pre build the package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( packageDescr );
+        final Package pkg = builder.getPackage();
+
+        //add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        //load up the rulebase
+
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        List results = new ArrayList();
+        
+        wm.setGlobal( "results", results );
+        
+        wm.assertObject( new Cheese("stilton", 10) );
+        wm.assertObject( new Cheese("brie", 5) );
+        
+        wm.fireAllRules();
+        
+        Assert.assertTrue( results.contains( new Integer(15) ) );
+    }
 
 }

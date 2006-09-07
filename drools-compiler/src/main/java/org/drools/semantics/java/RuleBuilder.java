@@ -47,6 +47,7 @@ import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -70,6 +71,7 @@ import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.rule.Accumulate;
 import org.drools.rule.And;
 import org.drools.rule.AndCompositeRestriction;
 import org.drools.rule.Column;
@@ -313,6 +315,9 @@ public class RuleBuilder {
                 } else if ( object.getClass() == FromDescr.class ) {
                     final From from = build( (FromDescr) object );
                     this.rule.addPattern( from );
+                } else if ( object.getClass() == AccumulateDescr.class ) {
+                    final Accumulate accumulate = build( (AccumulateDescr) object );
+                    this.rule.addPattern( accumulate );
                 }
             } else if ( object.getClass() == ColumnDescr.class ) {
                 final Column column = build( (ColumnDescr) object );
@@ -383,6 +388,9 @@ public class RuleBuilder {
                 } else if ( object.getClass() == FromDescr.class ) {
                     final From from = build( (FromDescr) object );
                     this.rule.addPattern( from );
+                } else if ( object.getClass() == AccumulateDescr.class ) {
+                    final Accumulate accumulate = build( (AccumulateDescr) object );
+                    this.rule.addPattern( accumulate );
                 }
             } else if ( object.getClass() == ColumnDescr.class ) {
                 if ( decrementOffset && decrementFirst ) {
@@ -431,7 +439,7 @@ public class RuleBuilder {
             column = new Column( this.columnCounter.getNext(),
                                  this.columnOffset,
                                  objectType,
-                                 columnDescr.getIdentifier() );;
+                                 columnDescr.getIdentifier() );
             this.declarations.put( column.getDeclaration().getIdentifier(),
                                    column.getDeclaration() );
 
@@ -1031,6 +1039,109 @@ public class RuleBuilder {
         return eval;
     }
 
+    private Accumulate build(final AccumulateDescr accumDescr) {
+        Column sourceColumn = build( accumDescr.getSourceColumn() );
+        // decrementing offset as accumulate fills only one column
+        this.columnOffset--;
+        Column resultColumn = build( accumDescr.getResultColumn() );
+
+        final String className = "accumulate" + this.counter++;
+        accumDescr.setClassMethodName( className );
+
+        final List[] usedIdentifiers1 = getUsedIdentifiers( accumDescr,
+                                                            accumDescr.getInitCode() );
+        final List[] usedIdentifiers2 = getUsedIdentifiers( accumDescr,
+                                                            accumDescr.getActionCode() );
+        final List[] usedIdentifiers3 = getUsedIdentifiers( accumDescr,
+                                                            accumDescr.getResultCode() );
+
+        final List requiredDeclarations = new ArrayList( usedIdentifiers1[0] );
+        requiredDeclarations.addAll( usedIdentifiers2[0] );
+        requiredDeclarations.addAll( usedIdentifiers3[0] );
+        final List requiredGlobals = new ArrayList( usedIdentifiers1[1] );
+        requiredGlobals.addAll( usedIdentifiers2[1] );
+        requiredGlobals.addAll( usedIdentifiers3[1] );
+
+        final Declaration[] declarations = (Declaration[]) requiredDeclarations.toArray( new Declaration[requiredDeclarations.size()] );
+        final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
+
+        StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "accumulateMethod" );
+
+        setStringTemplateAttributes( st,
+                                     declarations,
+                                     globals,
+                                     null );
+
+        st.setAttribute( "methodName",
+                         className );
+
+        final String initCode = this.functionFixer.fix( accumDescr.getInitCode() );
+        final String actionCode = this.functionFixer.fix( accumDescr.getActionCode() );
+        final String resultCode = this.functionFixer.fix( accumDescr.getResultCode() );
+        st.setAttribute( "initCode",
+                         initCode );
+        st.setAttribute( "actionCode",
+                         actionCode );
+        st.setAttribute( "resultCode",
+                         resultCode );
+
+        String columnType = null;
+        // TODO: Need to change this... 
+        if ( sourceColumn.getObjectType() instanceof ClassObjectType ) {
+            columnType = ((ClassObjectType) sourceColumn.getObjectType()).getClassType().getName();
+        } else {
+            columnType = sourceColumn.getObjectType().getValueType().getClassType().getName();
+        }
+        
+        String resultType = null;
+        // TODO: Need to change this... 
+        if ( resultColumn.getObjectType() instanceof ClassObjectType ) {
+            resultType = ((ClassObjectType) resultColumn.getObjectType()).getClassType().getName();
+        } else {
+            resultType = resultColumn.getObjectType().getValueType().getClassType().getName();
+        }
+        
+        st.setAttribute( "columnType",
+                         columnType );
+        st.setAttribute( "columnDeclaration",
+                         sourceColumn.getDeclaration() );
+        st.setAttribute( "resultType",
+                         resultType );
+
+        this.methods.add( st.toString() );
+
+        st = RuleBuilder.invokerGroup.getInstanceOf( "accumulateInvoker" );
+
+        st.setAttribute( "package",
+                         this.pkg.getName() );
+        st.setAttribute( "ruleClassName",
+                         ucFirst( this.ruleDescr.getClassName() ) );
+        st.setAttribute( "invokerClassName",
+                         this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker" );
+        st.setAttribute( "methodName",
+                         className );
+
+        setStringTemplateAttributes( st,
+                                     declarations,
+                                     (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] ),
+                                     null );
+
+        st.setAttribute( "hashCode",
+                         actionCode.hashCode() );
+
+        Accumulate accumulate = new Accumulate( sourceColumn,
+                                                resultColumn,
+                                                declarations);
+        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker";
+        this.invokers.put( invokerClassName,
+                           st.toString() );
+        this.invokerLookups.put( invokerClassName,
+                                 accumulate );
+        this.descrLookups.put( invokerClassName,
+                               accumDescr );
+        return accumulate;
+    }
+
     private void buildConsequence(final RuleDescr ruleDescr) {
         // generate 
         // generate Invoker
@@ -1126,7 +1237,7 @@ public class RuleBuilder {
         final String[] lines = buffer.toString().split( lineSeparator );
 
         this.ruleDescr.setConsequenceOffset( lines.length + 1 );
-        
+
         buffer.append( this.methods.get( this.methods.size() - 1 ) + lineSeparator );
         buffer.append( "}" );
 

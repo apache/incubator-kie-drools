@@ -34,6 +34,7 @@ import java.util.Map;
 import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.ObjectInputStreamWithLoader;
+import org.drools.spi.Accumulator;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
@@ -233,6 +234,8 @@ public class PackageCompilationData
             ((PredicateConstraint) invoker).setPredicateExpression( (PredicateExpression) clazz.newInstance() );
         } else if ( invoker instanceof EvalCondition ) {
             ((EvalCondition) invoker).setEvalExpression( (EvalExpression) clazz.newInstance() );
+        } else if ( invoker instanceof Accumulate ) {
+            ((Accumulate) invoker).setAccumulator( (Accumulator) clazz.newInstance() );
         } else if ( invoker instanceof Rule ) {
             ((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
         }

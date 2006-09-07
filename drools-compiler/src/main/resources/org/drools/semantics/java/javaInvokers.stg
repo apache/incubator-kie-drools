@@ -143,6 +143,39 @@ public class <invokerClassName> implements org.drools.spi.EvalExpression, org.dr
 }     
 >>
 
+accumulateInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, globals, globalTypes, hashCode) ::= <<
+package <package>;
+
+import org.drools.asm.ClassReader;
+import org.drools.asm.util.TraceMethodVisitor;
+import org.drools.util.asm.MethodComparator.Tracer;
+
+public class <invokerClassName> implements org.drools.spi.Accumulator, org.drools.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 320L;
+    
+    public Object accumulate(org.drools.reteoo.ReteTuple tuple,
+                              java.util.List matchingObjects,
+                              org.drools.rule.Declaration[] declarations, 
+                              org.drools.WorkingMemory workingMemory) throws Exception {                               
+
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
+        <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
+        
+        return <ruleClassName>.<methodName>(
+            matchingObjects<if(declarations)>,<endif> 
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
+	        <globals:{ identifier | <identifier>}; separator=",\n"> );
+    }
+
+    <hashCode(hashCode=hashCode)>
+    
+    <getMethodBytecode(package=package, ruleClassName=ruleClassName, methodName=methodName)>
+    
+    <equals()>  
+}     
+>>
+
 consequenceInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, indexes, globals, globalTypes, text) ::= <<
 package <package>;
 

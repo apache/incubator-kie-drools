@@ -31,6 +31,7 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -350,7 +351,9 @@ public class RuleParserTest extends TestCase {
 		RuleParser parser = new RuleParser( tokenStream );
 		parser.setLineOffset( descrs.getLine() );
 		parser.normal_lhs_block(descrs);
-		System.err.println(parser.getErrorMessages());
+        if(parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
 		assertFalse(parser.hasErrors());
     	
     }
@@ -565,7 +568,9 @@ public class RuleParserTest extends TestCase {
     public void testFrom() throws Exception {
         final RuleDescr rule = parseResource( "from.drl" ).rule();
 
-        System.err.println(parser.getErrorMessages());
+        if(parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
         assertFalse(parser.hasErrors());
         
         assertNotNull( rule );
@@ -1211,7 +1216,9 @@ public class RuleParserTest extends TestCase {
         parser.setExpanderResolver( mockExpanderResolver );
         parser.compilation_unit();
         final PackageDescr pack = parser.getPackageDescr();
-        System.err.println(parser.getErrorMessages());
+        if(parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
         assertNotNull( pack );
         assertEquals( 1,
                       pack.getRules().size() );
@@ -1328,7 +1335,9 @@ public class RuleParserTest extends TestCase {
         parser.setExpanderResolver( res );
         parser.setExpanderDebug( true );
         parser.compilation_unit();
-        System.err.println(parser.getErrorMessages());
+        if(parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
         
         //        List errorMessages = parser.getErrorMessages();
         //        for ( Iterator iter = errorMessages.iterator(); iter.hasNext(); ) {
@@ -1360,7 +1369,9 @@ public class RuleParserTest extends TestCase {
         parser.setExpanderDebug( true );
         parser.compilation_unit();
       
-        System.err.println(parser.getErrorMessages());
+        if(parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
 
         assertFalse( parser.hasErrors() );
         
@@ -1834,7 +1845,9 @@ public class RuleParserTest extends TestCase {
         final RuleParser parser = parseResource( "eval_multiple.drl" );
         parser.compilation_unit();
 
-        System.err.println( parser.getErrorMessages() );
+        if(parser.hasErrors()) {
+            System.err.println( parser.getErrorMessages() );
+        }
 
         assertFalse( parser.hasErrors() );
 
@@ -2016,6 +2029,10 @@ public class RuleParserTest extends TestCase {
                       func.getParameterNames().size() );
         assertEquals( 2,
                       func.getParameterTypes().size() );
+        assertEquals( 4,
+                      func.getLine());
+        assertEquals( 0,
+                      func.getColumn());
 
         assertEquals( "String",
                       func.getParameterTypes().get( 0 ) );
@@ -2251,7 +2268,9 @@ public class RuleParserTest extends TestCase {
     public void testEvalWithNewline() throws Exception {
         parseResource( "eval_with_newline.drl" ).compilation_unit();
 
-        System.err.println( this.parser.getErrorMessages() );
+        if(parser.hasErrors()) {
+            System.err.println( parser.getErrorMessages() );
+        }
         assertFalse( this.parser.hasErrors() );
     }
 
@@ -2261,7 +2280,6 @@ public class RuleParserTest extends TestCase {
         assertTrue( this.parser.hasErrors() );
         assertEquals( 1,
                       this.parser.getErrorMessages().size() );
-        System.err.println( this.parser.getErrorMessages().get( 0 ) );
         assertTrue( ((String) this.parser.getErrorMessages().get( 0 )).indexOf( "Trailing semi-colon not allowed" ) >= 0 );
     }
     
@@ -2290,6 +2308,64 @@ public class RuleParserTest extends TestCase {
                       c.getObjectType() );
     }
 
+    public void testAccumulate() throws Exception {
+        final RuleParser parser = parseResource( "accumulate.drl" );
+        parser.compilation_unit();
+
+        if(parser.hasErrors()) {
+            System.err.println( parser.getErrorMessages() );
+        }
+
+        assertFalse( parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final AccumulateDescr accum = (AccumulateDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEqualsIgnoreWhitespace( "int x = 0 ;",
+                                      accum.getInitCode() );
+        assertEqualsIgnoreWhitespace( "x++;",
+                                      accum.getActionCode() );
+        assertEqualsIgnoreWhitespace( "new Integer(x)",
+                                      accum.getResultCode() );
+
+        final ColumnDescr col = (ColumnDescr) accum.getSourceColumn();
+        assertEquals( "Person",
+                      col.getObjectType() );
+    }
+
+    public void testAccumulateWithBindings() throws Exception {
+        final RuleParser parser = parseResource( "accumulate_with_bindings.drl" );
+        parser.compilation_unit();
+
+        assertFalse( parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final AccumulateDescr accum = (AccumulateDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEqualsIgnoreWhitespace( "$counter",
+                                      accum.getResultColumn().getIdentifier());
+        assertEqualsIgnoreWhitespace( "int x = 0 ;",
+                                      accum.getInitCode() );
+        assertEqualsIgnoreWhitespace( "x++;",
+                                      accum.getActionCode() );
+        assertEqualsIgnoreWhitespace( "new Integer(x)",
+                                      accum.getResultCode() );
+
+        final ColumnDescr col = (ColumnDescr) accum.getSourceColumn();
+        assertEquals( "Person",
+                      col.getObjectType() );
+    }
+
     private RuleParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
@@ -2304,7 +2380,7 @@ public class RuleParserTest extends TestCase {
 
     private RuleParser parseResource(final String name) throws Exception {
 
-        System.err.println( getClass().getResource( name ) );
+//        System.err.println( getClass().getResource( name ) );
         final InputStream in = getClass().getResourceAsStream( name );
 
         final InputStreamReader reader = new InputStreamReader( in );

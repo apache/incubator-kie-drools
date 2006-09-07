@@ -10,9 +10,11 @@ package org.drools.lang.descr;
  */
 public class DescrFactory {
 
-	public FromDescr createFrom() {
-		return new FromDescr();		
-	}
-	
-	
+    public FromDescr createFrom() {
+        return new FromDescr();
+    }
+
+    public AccumulateDescr createAccumulate() {
+        return new AccumulateDescr();
+    }
 }
