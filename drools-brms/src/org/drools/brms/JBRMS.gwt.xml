@@ -7,4 +7,6 @@
 	<!-- <entry-point class='org.drools.brms.client.JBRMS'/> -->
 	<entry-point class='org.drools.brms.client.JBRMSEntryPoint'/>
   
+	<servlet path="/jbrmsService" class="org.drools.brms.server.JBRMSServiceServlet" />  
+  
 </module>
