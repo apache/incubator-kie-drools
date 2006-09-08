@@ -198,16 +198,19 @@ public class AccumulateNode extends BetaNode {
             }
         }
         
-        // Need to store the accumulate result object for later disposal
-        InternalFactHandle[] handles = ((ReteTuple)((LinkedListObjectWrapper)leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
-        InternalFactHandle lastHandle = handles[handles.length-1];
-        
-        propagateRetractTuple( leftTuple,
-                               context,
-                               workingMemory );
-        
-        // Destroying the acumulate result object 
-        workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
+        // if tuple was propagated
+        if((leftTuple.getLinkedTuples() != null) && (leftTuple.getLinkedTuples().size() > 0)) {
+            // Need to store the accumulate result object for later disposal
+            InternalFactHandle[] handles = ((ReteTuple)((LinkedListObjectWrapper)leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
+            InternalFactHandle lastHandle = handles[handles.length-1];
+            
+            propagateRetractTuple( leftTuple,
+                                   context,
+                                   workingMemory );
+            
+            // Destroying the acumulate result object 
+            workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
+        }
     }
 
     /**
@@ -257,9 +260,19 @@ public class AccumulateNode extends BetaNode {
     public void modifyObject(DefaultFactHandle handle,
                              PropagationContext context,
                              ReteooWorkingMemory workingMemory) {
-        this.retractObject( handle,
-                            context,
-                            workingMemory );
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        // Remove the FactHandle from memory
+        final ObjectMatches objectMatches = memory.remove( workingMemory,
+                                                           handle );
+
+        // remove references from tuple to the handle
+        for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
+            final ReteTuple leftTuple = tupleMatch.getTuple();
+            leftTuple.removeMatch( handle );
+        }
+        
+        // reassert object modifying appropriate tuples
         this.assertObject( handle,
                            context,
                            workingMemory );

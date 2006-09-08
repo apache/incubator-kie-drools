@@ -34,6 +34,7 @@ public class Accumulate extends ConditionalElement {
     private Column            sourceColumn;
     private Column            resultColumn;
     private Declaration[]     requiredDeclarations;
+    private Declaration[]     innerDeclarations;
 
     public Accumulate(final Column sourceColumn,
                       final Column resultColumn) {
@@ -41,27 +42,32 @@ public class Accumulate extends ConditionalElement {
         this( sourceColumn,
               resultColumn,
               new Declaration[0],
+              new Declaration[0],
               null);
     }
 
     public Accumulate(final Column sourceColumn,
                       final Column resultColumn,
-                      final Declaration[] requiredDeclarations) {
+                      final Declaration[] requiredDeclarations,
+                      final Declaration[] innerDeclarations) {
 
         this( sourceColumn,
               resultColumn,
               requiredDeclarations,
+              innerDeclarations,
               null );
     }
 
     public Accumulate(final Column sourceColumn,
                       final Column resultColumn,
                       final Declaration[] requiredDeclarations,
+                      final Declaration[] innerDeclarations,
                       final Accumulator accumulator) {
 
         this.sourceColumn = sourceColumn;
         this.resultColumn = resultColumn;
         this.requiredDeclarations = requiredDeclarations;
+        this.innerDeclarations = innerDeclarations;
         this.accumulator = accumulator;
     }
 
@@ -80,6 +86,7 @@ public class Accumulate extends ConditionalElement {
             return this.accumulator.accumulate( leftTuple,
                                                 matchingObjects,
                                                 this.requiredDeclarations,
+                                                this.innerDeclarations,
                                                 workingMemory );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
@@ -90,6 +97,7 @@ public class Accumulate extends ConditionalElement {
         return new Accumulate( this.sourceColumn,
                                this.resultColumn,
                                this.requiredDeclarations,
+                               this.innerDeclarations,
                                this.accumulator );
     }
 

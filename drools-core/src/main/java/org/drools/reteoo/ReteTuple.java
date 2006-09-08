@@ -210,7 +210,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
     public void addTupleMatch(final DefaultFactHandle handle,
                               final TupleMatch node) {
         if ( this.matches == Collections.EMPTY_MAP ) {
-            this.matches = new HashMap(1);
+            this.matches = new HashMap(2);
         }
         this.matches.put( handle,
                           node );

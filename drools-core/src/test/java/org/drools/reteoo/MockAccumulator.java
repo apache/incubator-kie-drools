@@ -44,6 +44,7 @@ public class MockAccumulator
     public Object accumulate(ReteTuple leftTuple,
                              List matchingObjects,
                              Declaration[] declarations,
+                             Declaration[] inner,
                              WorkingMemory workingMemory) {
         this.leftTuple = leftTuple;
         this.matchingObjects = matchingObjects;

@@ -33,6 +33,7 @@ public class Cheesery
     private final List        cheeses          = new ArrayList();
 
     private int               status;
+    private int               totalAmount;
 
     public List getCheeses() {
         return this.cheeses;
@@ -40,6 +41,7 @@ public class Cheesery
 
     public void addCheese(Cheese cheese) {
         this.cheeses.add( cheese );
+        this.totalAmount += cheese.getPrice();
     }
     
     public void setStatus(final int status) {
@@ -48,5 +50,13 @@ public class Cheesery
 
     public int getStatus() {
         return this.status;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
     }
 }

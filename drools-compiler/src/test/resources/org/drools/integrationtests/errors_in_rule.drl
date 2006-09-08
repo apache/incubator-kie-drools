@@ -20,5 +20,5 @@ rule "This is fine"
 	when
 		String()
 	then
-		System.out.println("hello");
+		//System.out.println("hello");
 end

@@ -1,16 +1,55 @@
 package org.drools.test;
 
 import org.drools.Cheese;
+import org.drools.Person;
+import org.drools.Cheesery;
 
 global java.util.List results;
 
-rule "AccumulateTest"
+rule "AccumulateTest" salience 100
     when
     	$totalAmount : Integer() from accumulate( $cheese : Cheese( ),
                                                   init( int total = 0; ),
     	                                          action( total += $cheese.getPrice(); ),
                                                   result( new Integer( total ) ) );
     then
-        //System.out.println("Total amount = "+$totalAmount );
+        //System.out.println("Total amount = US$ "+$totalAmount );
         results.add($totalAmount);
 end  
+
+rule "Accumulate with Bindings" salience 90
+    when
+        $person      : Person( name == "Bob", $likes : likes )
+    	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes ),
+                                                  init( int total = 0; ),
+   	                                          action( total += $cheese.getPrice(); ),
+                                                  result( new Integer( total ) ) );
+    then
+        //System.out.println($person.getName() +" will spend US$ "+ $totalAmount + " buying cheese");
+        results.add($totalAmount);
+end  
+
+rule "Constraints everywhere" salience 80
+    when
+        $person      : Person( $likes : likes )
+    	$cheesery    : Cheesery( totalAmount > 100 ) 
+    	                       from accumulate( $cheese : Cheese( type == $likes ),
+                                                init( Cheesery cheesery = new Cheesery(); ),
+    	                                        action( cheesery.addCheese( $cheese ); ),
+                                                result( cheesery ) );
+    then
+        //System.out.println($person.getName() +" is spending a lot buying cheese ( US$ "+$cheesery.getTotalAmount()+" )!");
+        results.add(new Integer($cheesery.getTotalAmount()));
+end  
+
+rule "Source column binds" salience 70
+    when
+        $person      : Person( name == "Bob", $likes : likes )
+    	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price: price ),
+                                                  init( int total = 0; ),
+    	                                          action( total += $price.intValue(); ),
+                                                  result( new Integer( total ) ) );
+    then
+        //System.out.println($person.getName() +" will spend US$ "+ $totalAmount + " buying cheese");
+        results.add($totalAmount);
+end
