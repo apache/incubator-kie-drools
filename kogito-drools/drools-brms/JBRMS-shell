@@ -1,3 +1,0 @@
-#!/bin/sh
-APPDIR=`dirname $0`;
-java -cp "$APPDIR/src:$APPDIR/bin:/home/michael/apps/gwt/gwt-user.jar:/home/michael/apps/gwt/gwt-dev-linux.jar" com.google.gwt.dev.GWTShell -out "$APPDIR/www" "$@" org.drools.brms.JBRMS/JBRMS.html;
