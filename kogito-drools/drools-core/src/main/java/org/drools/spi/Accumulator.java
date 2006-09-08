@@ -37,6 +37,7 @@ public interface Accumulator
     public Object accumulate(ReteTuple leftTuple,
                              List matchingObjects,
                              Declaration[] declarations,
+                             Declaration[] innerDeclarations,
                              WorkingMemory workingMemory) throws Exception;
 
 }

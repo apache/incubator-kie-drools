@@ -12,18 +12,18 @@ public class Person
      * 
      */
     private static final long serialVersionUID = 2640286967578736742L;
-    private final String name;
-    private final String likes;
-    private int    age;
-    private BigDecimal   bigDecimal;
-    private BigInteger   bigInteger;
-    private String       hair;
+    private final String      name;
+    private String            likes;
+    private int               age;
+    private BigDecimal        bigDecimal;
+    private BigInteger        bigInteger;
+    private String            hair;
 
-    private char         sex;
+    private char              sex;
 
-    private boolean      alive;
+    private boolean           alive;
 
-    private String       status;
+    private String            status;
 
     public Person(final String name) {
         this( name,
@@ -80,7 +80,7 @@ public class Person
     public int getAge() {
         return this.age;
     }
-    
+
     public void setAge(int age) {
         this.age = age;
     }
@@ -112,8 +112,6 @@ public class Person
     public void setSex(final char sex) {
         this.sex = sex;
     }
-    
-    
 
     public String getHair() {
         return this.hair;
@@ -199,5 +197,9 @@ public class Person
      */
     public void setBigInteger(final BigInteger bigInteger) {
         this.bigInteger = bigInteger;
+    }
+
+    public void setLikes(String likes) {
+        this.likes = likes;
     }
 }

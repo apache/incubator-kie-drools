@@ -19,7 +19,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
@@ -79,6 +78,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                           resultObjType );
         this.accumulate = new Accumulate( sourceColumn,
                                           resultColumn,
+                                          new Declaration[0],
                                           new Declaration[0],
                                           this.accumulator );
 
@@ -410,9 +410,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                 this.workingMemory );
         assertEquals( 2,
                       this.memory.getRightObjectMemory().size() );
-        assertEquals( 3,
-                      this.sink.getAsserted().size() );
         assertEquals( 2,
+                      this.sink.getAsserted().size() );
+        assertEquals( 1,
                       this.sink.getRetracted().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,

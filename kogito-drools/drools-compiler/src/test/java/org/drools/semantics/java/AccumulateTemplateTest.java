@@ -9,7 +9,11 @@ import junit.framework.TestCase;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
+import org.drools.Cheese;
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
+import org.drools.spi.ColumnExtractor;
 
 public class AccumulateTemplateTest extends TestCase {
 
@@ -29,9 +33,16 @@ public class AccumulateTemplateTest extends TestCase {
         final String[] declarationTypes = new String[]{"String", "Integer"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
                                                                               null,
-                                                                              null ), new Declaration( "age",
-                                                                                                       null,
-                                                                                                       null )};
+                                                                              null ), 
+                                                             new Declaration( "age",
+                                                                              null,
+                                                                              null )};
+        final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
+                                                                              new ColumnExtractor(new ClassObjectType(Cheese.class)),
+                                                                              null ), 
+                                                      new Declaration( "price",
+                                                                              new ClassFieldExtractor(Cheese.class, "price"),
+                                                                              null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
 
@@ -39,6 +50,8 @@ public class AccumulateTemplateTest extends TestCase {
                                 declarations );
         accMethod.setAttribute( "declarationTypes",
                                 declarationTypes );
+        accMethod.setAttribute( "innerDeclarations",
+                                inner );
         accMethod.setAttribute( "globals",
                                 globals );
         accMethod.setAttribute( "globalTypes",

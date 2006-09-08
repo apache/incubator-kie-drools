@@ -18,11 +18,12 @@ public static boolean <methodName>(<declarationTypes, declarations:{ type, declr
 }
 >>
 
-accumulateMethod(declarations, declarationTypes, globals, globalTypes, methodName, columnType, columnDeclaration, resultType, initCode, actionCode, resultCode) ::= <<
-public static <resultType> <methodName>(java.util.List matchingObjects<if(declarations)>, <endif><declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+accumulateMethod(declarations, declarationTypes, innerDeclarations, globals, globalTypes, methodName, columnType, columnDeclaration, resultType, initCode, actionCode, resultCode) ::= <<
+public static <resultType> <methodName>(org.drools.rule.Declaration[] innerDeclarations, java.util.List matchingObjects<if(declarations)>, <endif><declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
     <initCode>
     for( java.util.Iterator it = matchingObjects.iterator(); it.hasNext(); ) {
-      <columnType> <columnDeclaration.identifier> = (<columnType>) it.next();
+      Object __itNextElem__ = it.next();
+      <innerDeclarations:{ declr | <declr.extractor.extractToClass.name> <declr.identifier> = (<declr.extractor.extractToClass.name>) innerDeclarations[<i0>].getValue( __itNextElem__ );}; separator="\n">
       <actionCode>
     }
     return ( <resultCode> );

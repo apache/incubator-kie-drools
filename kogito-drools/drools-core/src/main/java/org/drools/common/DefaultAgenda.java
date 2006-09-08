@@ -436,7 +436,7 @@ public class DefaultAgenda
             activation.getRule().getConsequence().evaluate( knowledgeHelper,
                                                             this.workingMemory );
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new ConsequenceException( e,
                                             activation.getRule() );
         }

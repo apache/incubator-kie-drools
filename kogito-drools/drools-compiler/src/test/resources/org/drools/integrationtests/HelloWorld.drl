@@ -19,7 +19,7 @@ rule "Hello World"
 			int a = 0;
 		}
 		try {
-			System.out.println("hello world with collections " + $m.getMessage());
+			//System.out.println("hello world with collections " + $m.getMessage());
 	    } catch  ( Exception e ) {
 	    
 	    } finally {

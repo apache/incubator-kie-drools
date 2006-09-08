@@ -132,7 +132,7 @@ public class RuleBuilder {
 
     private final TypeResolver                typeResolver;
 
-    private Map                               notDeclarations;
+    private Map                               innerDeclarations;
 
     private static final StringTemplateGroup  ruleGroup            = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
                                                                                               AngleBracketTemplateLexer.class );
@@ -256,7 +256,6 @@ public class RuleBuilder {
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object.getClass() == AndDescr.class ) {
                     final And and = new And();
-                    this.columnCounter.setParent( and );
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            and,
@@ -265,7 +264,6 @@ public class RuleBuilder {
                     this.rule.addPattern( and );
                 } else if ( object.getClass() == OrDescr.class ) {
                     final Or or = new Or();
-                    this.columnCounter.setParent( or );
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            or,
@@ -274,9 +272,8 @@ public class RuleBuilder {
                     this.rule.addPattern( or );
                 } else if ( object.getClass() == NotDescr.class ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
-                    this.notDeclarations = new HashMap();
+                    this.innerDeclarations = new HashMap();
                     final Not not = new Not();
-                    this.columnCounter.setParent( not );
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            not,
@@ -285,27 +282,26 @@ public class RuleBuilder {
                     this.rule.addPattern( not );
 
                     // remove declarations bound inside not node
-                    for ( final Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
+                    for ( final Iterator notIt = this.innerDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
                     }
 
-                    this.notDeclarations = null;
+                    this.innerDeclarations = null;
                 } else if ( object.getClass() == ExistsDescr.class ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
-                    this.notDeclarations = new HashMap();
+                    this.innerDeclarations = new HashMap();
                     final Exists exists = new Exists();
-                    this.columnCounter.setParent( exists );
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            exists,
                            true, // when EXIST is used, offset MUST be decremented
                            true ); // when EXIST is used, offset MUST be decremented for first column
                     // remove declarations bound inside not node
-                    for ( final Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
+                    for ( final Iterator notIt = this.innerDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
                     }
 
-                    this.notDeclarations = null;
+                    this.innerDeclarations = null;
                     this.rule.addPattern( exists );
                 } else if ( object.getClass() == EvalDescr.class ) {
                     final EvalCondition eval = build( (EvalDescr) object );
@@ -346,7 +342,6 @@ public class RuleBuilder {
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object.getClass() == AndDescr.class ) {
                     final And and = new And();
-                    this.columnCounter.setParent( and );
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
@@ -355,7 +350,6 @@ public class RuleBuilder {
                     ce.addChild( and );
                 } else if ( object.getClass() == OrDescr.class ) {
                     final Or or = new Or();
-                    this.columnCounter.setParent( or );
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
@@ -364,7 +358,6 @@ public class RuleBuilder {
                     ce.addChild( or );
                 } else if ( object.getClass() == NotDescr.class ) {
                     final Not not = new Not();
-                    this.columnCounter.setParent( not );
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
@@ -373,7 +366,6 @@ public class RuleBuilder {
                     ce.addChild( not );
                 } else if ( object.getClass() == ExistsDescr.class ) {
                     final Exists exists = new Exists();
-                    this.columnCounter.setParent( exists );
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
@@ -443,9 +435,9 @@ public class RuleBuilder {
             this.declarations.put( column.getDeclaration().getIdentifier(),
                                    column.getDeclaration() );
 
-            if ( this.notDeclarations != null ) {
-                this.notDeclarations.put( column.getDeclaration().getIdentifier(),
-                                          column.getDeclaration() );
+            if ( this.innerDeclarations != null ) {
+                this.innerDeclarations.put( column.getDeclaration().getIdentifier(),
+                                            column.getDeclaration() );
             }
         } else {
             column = new Column( this.columnCounter.getNext(),
@@ -653,9 +645,9 @@ public class RuleBuilder {
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
 
-        if ( this.notDeclarations != null ) {
-            this.notDeclarations.put( declaration.getIdentifier(),
-                                      declaration );
+        if ( this.innerDeclarations != null ) {
+            this.innerDeclarations.put( declaration.getIdentifier(),
+                                        declaration );
         }
     }
 
@@ -828,9 +820,9 @@ public class RuleBuilder {
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
 
-        if ( this.notDeclarations != null ) {
-            this.notDeclarations.put( declaration.getIdentifier(),
-                                      declaration );
+        if ( this.innerDeclarations != null ) {
+            this.innerDeclarations.put( declaration.getIdentifier(),
+                                        declaration );
         }
 
         final List[] usedIdentifiers = getUsedIdentifiers( predicateDescr,
@@ -1040,7 +1032,17 @@ public class RuleBuilder {
     }
 
     private Accumulate build(final AccumulateDescr accumDescr) {
+        this.innerDeclarations = new HashMap();
+
         Column sourceColumn = build( accumDescr.getSourceColumn() );
+        // remove declarations bound inside source column
+        this.declarations.keySet().removeAll( this.innerDeclarations.keySet() );
+        Map sourceDeclarations = this.innerDeclarations;
+        this.innerDeclarations = null;
+
+        // removing declaration as it is not a real declaration
+        this.declarations.remove( sourceColumn.getDeclaration().getIdentifier() );
+
         // decrementing offset as accumulate fills only one column
         this.columnOffset--;
         Column resultColumn = build( accumDescr.getResultColumn() );
@@ -1058,11 +1060,17 @@ public class RuleBuilder {
         final List requiredDeclarations = new ArrayList( usedIdentifiers1[0] );
         requiredDeclarations.addAll( usedIdentifiers2[0] );
         requiredDeclarations.addAll( usedIdentifiers3[0] );
+
         final List requiredGlobals = new ArrayList( usedIdentifiers1[1] );
         requiredGlobals.addAll( usedIdentifiers2[1] );
         requiredGlobals.addAll( usedIdentifiers3[1] );
 
-        final Declaration[] declarations = (Declaration[]) requiredDeclarations.toArray( new Declaration[requiredDeclarations.size()] );
+        final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
+        for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
+            declarations[i] = (Declaration) this.declarations.get( (String) requiredDeclarations.get( i ) );
+        }
+        final Declaration[] sourceDeclArr = (Declaration[]) sourceDeclarations.values().toArray( new Declaration[sourceDeclarations.size()] );
+
         final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "accumulateMethod" );
@@ -1072,6 +1080,8 @@ public class RuleBuilder {
                                      globals,
                                      null );
 
+        st.setAttribute( "innerDeclarations",
+                         sourceDeclArr );
         st.setAttribute( "methodName",
                          className );
 
@@ -1085,14 +1095,6 @@ public class RuleBuilder {
         st.setAttribute( "resultCode",
                          resultCode );
 
-        String columnType = null;
-        // TODO: Need to change this... 
-        if ( sourceColumn.getObjectType() instanceof ClassObjectType ) {
-            columnType = ((ClassObjectType) sourceColumn.getObjectType()).getClassType().getName();
-        } else {
-            columnType = sourceColumn.getObjectType().getValueType().getClassType().getName();
-        }
-        
         String resultType = null;
         // TODO: Need to change this... 
         if ( resultColumn.getObjectType() instanceof ClassObjectType ) {
@@ -1100,11 +1102,7 @@ public class RuleBuilder {
         } else {
             resultType = resultColumn.getObjectType().getValueType().getClassType().getName();
         }
-        
-        st.setAttribute( "columnType",
-                         columnType );
-        st.setAttribute( "columnDeclaration",
-                         sourceColumn.getDeclaration() );
+
         st.setAttribute( "resultType",
                          resultType );
 
@@ -1131,7 +1129,8 @@ public class RuleBuilder {
 
         Accumulate accumulate = new Accumulate( sourceColumn,
                                                 resultColumn,
-                                                declarations);
+                                                declarations,
+                                                sourceDeclArr);
         final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
@@ -1349,12 +1348,6 @@ public class RuleBuilder {
     static class ColumnCounter {
         // we start with -1 so that we can ++this.value - otherwise the first element has a lower value than the second in an 'or'
         private int          value = -1;
-
-        private GroupElement ge;
-
-        public void setParent(final GroupElement ge) {
-            this.ge = ge;
-        }
 
         public int getNext() {
             return ++this.value;

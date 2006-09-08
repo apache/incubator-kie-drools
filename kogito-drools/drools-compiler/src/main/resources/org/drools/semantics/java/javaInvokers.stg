@@ -157,12 +157,14 @@ public class <invokerClassName> implements org.drools.spi.Accumulator, org.drool
     public Object accumulate(org.drools.reteoo.ReteTuple tuple,
                               java.util.List matchingObjects,
                               org.drools.rule.Declaration[] declarations, 
+                              org.drools.rule.Declaration[] innerDeclarations,
                               org.drools.WorkingMemory workingMemory) throws Exception {                               
 
         <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>(
+            innerDeclarations,
             matchingObjects<if(declarations)>,<endif> 
             <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
 	        <globals:{ identifier | <identifier>}; separator=",\n"> );

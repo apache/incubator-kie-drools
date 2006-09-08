@@ -8,6 +8,6 @@ rule "MyRule"
 		Long())
 		s: String()
 	then 
-		System.out.println("result is " + s);
+		//System.out.println("result is " + s);
 		results.add(s);		
 end
