@@ -19,6 +19,8 @@ package org.drools.reteoo;
 import java.util.LinkedList;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
@@ -97,23 +99,23 @@ final class QueryTerminalNode extends BaseNode
      */
     public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {
         final LinkedList list = (LinkedList) workingMemory.getNodeMemory( this );
         if ( list.isEmpty() ) {
-            workingMemory.setQueryResults( this.rule.getName(),
-                                           this );
+            ((ReteooWorkingMemory) workingMemory).setQueryResults( this.rule.getName(),
+                                                                   this );
         }
         list.add( tuple );
     }
 
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
     }
 
     public void modifyTuple(final ReteTuple tuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {
 
     }
 
@@ -129,11 +131,11 @@ final class QueryTerminalNode extends BaseNode
         this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
@@ -144,7 +146,7 @@ final class QueryTerminalNode extends BaseNode
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
+                       final InternalWorkingMemory[] workingMemories) {
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             workingMemories[i].clearNodeMemory( this );
         }
@@ -152,7 +154,7 @@ final class QueryTerminalNode extends BaseNode
                                  workingMemories );
     }
 
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         // There are no child nodes to update, do nothing.
     }

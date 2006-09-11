@@ -24,7 +24,7 @@ import java.util.Map;
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.BetaNodeBinder;
-import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.beta.BetaLeftMemory;
 import org.drools.reteoo.beta.BetaMemoryFactory;
 import org.drools.reteoo.beta.BetaRightMemory;
@@ -94,7 +94,7 @@ class BetaMemory
      * @return A tuple iterator with possible matches for the handle
      */
     public Iterator leftTupleIterator(final WorkingMemory wm,
-                                      final DefaultFactHandle handle) {
+                                      final InternalFactHandle handle) {
         return this.leftMemory.iterator( wm,
                                          handle );
     }
@@ -140,7 +140,7 @@ class BetaMemory
      *      The ObjectMatches to hold the tuples that match with the <code>FactHandleImpl</code>
      */
     ObjectMatches add(final WorkingMemory wm,
-                      final DefaultFactHandle handle) {
+                      final InternalFactHandle handle) {
         final ObjectMatches objectMatches = new ObjectMatches( handle );
         this.rightObjectMap.put( handle,
                                  objectMatches );
@@ -167,7 +167,7 @@ class BetaMemory
      *      The ObjectMatches that held the tuples that match with the <code>FactHandleImpl</code>
      */
     ObjectMatches remove(final WorkingMemory wm,
-                         final DefaultFactHandle handle) {
+                         final InternalFactHandle handle) {
         final ObjectMatches matches = (ObjectMatches) this.rightObjectMap.remove( handle );
         this.rightMemory.remove( wm,
                                  matches );

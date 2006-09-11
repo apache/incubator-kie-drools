@@ -14,13 +14,10 @@ public class LiteralValue
     
     private static final long serialVersionUID = 320L;
 
-    private final String value;   
-    
-    private final Class clazz;
+    private final Object value;       
 
-    public LiteralValue(final String value, final Class clazz) {
+    public LiteralValue(final Object value) {
         this.value = value;
-        this.clazz = clazz;
     }
 
     public Object getValue(final Tuple tuple,
@@ -29,7 +26,7 @@ public class LiteralValue
     }
     
     public Class getExtractToClass() {
-        return this.clazz;
+        return this.value.getClass();
     }     
     
     public void reset() {

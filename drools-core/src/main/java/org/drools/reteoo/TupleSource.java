@@ -20,8 +20,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.common.BaseNode;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -48,7 +50,7 @@ abstract class TupleSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>Tuples</code>. */
-    protected List tupleSinks = new ArrayList( 1 );
+    protected TupleSinkPropagator sink;
 
     // ------------------------------------------------------------
     // Constructors
@@ -75,9 +77,16 @@ abstract class TupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addTupleSink(final TupleSink tupleSink) {
-        if ( !this.tupleSinks.contains( tupleSink ) ) {
-            this.tupleSinks.add( tupleSink );
+    protected void addTupleSink(final TupleSink tupleSink) {        
+        if ( this.sink == null ) {
+            this.sink = new SingleTupleSinkAdapter( tupleSink );
+        } else if ( this.sink.getClass() == SingleTupleSinkAdapter.class ) {
+            CompositeTupleSinkAdapter sinkAdapter = ( CompositeTupleSinkAdapter ) new CompositeTupleSinkAdapter();
+            sinkAdapter.addTupleSink( this.sink.getSinks()[0] );
+            sinkAdapter.addTupleSink( tupleSink );
+            this.sink = sinkAdapter;
+        } else {
+            ( (CompositeTupleSinkAdapter) sink ).addTupleSink( tupleSink );
         }
     }
 
@@ -88,168 +97,23 @@ abstract class TupleSource extends BaseNode
      *            The <code>TupleSink</code> to remove
      */
     protected void removeTupleSink(final TupleSink tupleSink) {
-        this.tupleSinks.remove( tupleSink );
-    }
-
-    protected TupleMatch attemptJoin(final ReteTuple leftTuple,
-                                     final DefaultFactHandle handle,
-                                     final ObjectMatches objectMatches,
-                                     final BetaNodeBinder binder,
-                                     final ReteooWorkingMemory workingMemory) {
-        if ( binder.isAllowed( handle,
-                               leftTuple,
-                               workingMemory ) ) {
-            final TupleMatch tupleMatch = objectMatches.add( leftTuple );
-
-            leftTuple.addTupleMatch( handle,
-                                     tupleMatch );
-            return tupleMatch;
-
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Propagate the assertion of a <code>ReteTuple</code> to this node's
-     * <code>TupleSink</code>.
-     * 
-     * @param tuple
-     *            The <code>ReteTuple</code> to propagate.
-     * @param context
-     *            The <code>PropagationContext</code> of the
-     *            <code>WorkingMemory<code> action            
-     * @param workingMemory
-     *            the <code>WorkingMemory</code> session.
-     */
-
-    protected void propagateAssertTuple(final ReteTuple tuple,
-                                        final TupleMatch tupleMatch,
-                                        final PropagationContext context,
-                                        final ReteooWorkingMemory workingMemory) {
-
-        // we do this one first to avoid an extra clone
-        if ( !getTupleSinks().isEmpty() ) {
-            ((TupleSink) getTupleSinks().get( 0 )).assertTuple( tuple,
-                                                                context,
-                                                                workingMemory );
-
-            tupleMatch.addJoinedTuple( tuple );
-
-            for ( int i = 1, size = getTupleSinks().size(); i < size; i++ ) {
-                final ReteTuple clone = new ReteTuple( tuple );
-                tupleMatch.addJoinedTuple( clone );
-                ((TupleSink) getTupleSinks().get( i )).assertTuple( clone,
-                                                                    context,
-                                                                    workingMemory );
+        if ( this.sink.getClass() == SingleTupleSinkAdapter.class ) {
+            this.sink = null;
+        } else { 
+            CompositeTupleSinkAdapter sinkAdapter = ( CompositeTupleSinkAdapter ) tupleSink;
+            sinkAdapter.removeTupleSink( tupleSink );
+            if ( sinkAdapter.size() == 1 ) {
+                this.sink = new SingleTupleSinkAdapter( sinkAdapter.getSinks()[0] );
             }
-        }
+        } 
     }
 
-    protected void propagateAssertTuple(final ReteTuple tuple,
-                                        final PropagationContext context,
-                                        final ReteooWorkingMemory workingMemory) {
-        for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
-            final ReteTuple child = new ReteTuple( tuple );
-            // no TupleMatch so instead add as a linked tuple
-            tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
-            ((TupleSink) getTupleSinks().get( i )).assertTuple( child,
-                                                                context,
-                                                                workingMemory );
-        }
-    }
-
-    /**
-     * Propagates a new tuple adding the given fact handle to the tuple 
-     * before propagating.
-     * 
-     * @param tuple The base tuple for propagation
-     * @param handle The handle to add to the tuple when propagating
-     * @param context
-     * @param workingMemory
-     */
-    protected void propagateAssertTuple(final ReteTuple tuple,
-                                        final DefaultFactHandle handle,
-                                        final PropagationContext context,
-                                        final ReteooWorkingMemory workingMemory) {
-        for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
-            final ReteTuple child = new ReteTuple( tuple, handle );
-            // no TupleMatch so instead add as a linked tuple
-            tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
-            ((TupleSink) getTupleSinks().get( i )).assertTuple( child,
-                                                                context,
-                                                                workingMemory );
-        }
-    }
-
-    protected void propagateRetractTuple(final TupleMatch tupleMatch,
-                                         final PropagationContext context,
-                                         final ReteooWorkingMemory workingMemory) {
-
-        final List joined = tupleMatch.getJoinedTuples();
-        for ( int i = 0, size = joined.size(); i < size; i++ ) {
-            ((TupleSink) getTupleSinks().get( i )).retractTuple( (ReteTuple) joined.get( i ),
-                                                                 context,
-                                                                 workingMemory );
-        }
-    }
-
-    protected void propagateRetractTuple(final ReteTuple tuple,
-                                         final PropagationContext context,
-                                         final ReteooWorkingMemory workingMemory) {
-        final LinkedList list = tuple.getLinkedTuples();
-        if ( list != null && !list.isEmpty() ) {
-            int i = 0;
-            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
-                ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
-                                                                       context,
-                                                                       workingMemory );
-            }
-        }
-    }
-
-    protected void propagateModifyTuple(final TupleMatch tupleMatch,
-                                        final PropagationContext context,
-                                        final ReteooWorkingMemory workingMemory) {
-
-        final List joined = tupleMatch.getJoinedTuples();
-        for ( int i = 0, size = joined.size(); i < size; i++ ) {
-            ((TupleSink) getTupleSinks().get( i )).modifyTuple( (ReteTuple) joined.get( i ),
-                                                                context,
-                                                                workingMemory );
-        }
-    }
-
-    protected void propagateModifyTuple(final ReteTuple tuple,
-                                        final PropagationContext context,
-                                        final ReteooWorkingMemory workingMemory) {
-        final LinkedList list = tuple.getLinkedTuples();
-        if ( list != null && !list.isEmpty() ) {
-            int i = 0;
-            for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
-                                                                      context,
-                                                                      workingMemory );
-            }
-        }
-    }
-
-    /**
-     * Retrieve the <code>TupleSinks</code> that receive propagated
-     * <code>Tuples</code>s.
-     * 
-     * @return The <code>TupleSinks</code> that receive propagated
-     *         <code>Tuples</code>.
-     */
-    public List getTupleSinks() {
-        return this.tupleSinks;
-    }
 
     /**
      * Returns the list of propagated tuples
      * @return
      */
-    public abstract List getPropagatedTuples(ReteooWorkingMemory workingMemory,
+    public abstract List getPropagatedTuples(InternalWorkingMemory workingMemory,
                                              TupleSink sink);
 
 }

@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -17,7 +17,6 @@ package org.drools.reteoo;
  */
 
 import org.drools.spi.PropagationContext;
-import org.drools.spi.ReteooNode;
 
 /**
  * The base class for all Rete nodes.
@@ -26,9 +25,9 @@ import org.drools.spi.ReteooNode;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-abstract class BaseNode
+public abstract class BaseNode
     implements
-    ReteooNode {
+    NetworkNode {
     protected final int id;
 
     protected boolean   attachingNewNode = false;
@@ -78,14 +77,14 @@ abstract class BaseNode
      */
     public abstract void attach();
 
-    public abstract void attach(ReteooWorkingMemory[] workingMemories);
+    public abstract void attach(InternalWorkingMemory[] workingMemories);
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      *
      */
     public abstract void remove(BaseNode node,
-                                ReteooWorkingMemory[] workingMemories);
+                                InternalWorkingMemory[] workingMemories);
 
     /**
      * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
@@ -98,7 +97,7 @@ abstract class BaseNode
      *      The PropagationContext
      *      
      */
-    public abstract void updateNewNode(ReteooWorkingMemory workingMemory,
+    public abstract void updateNewNode(InternalWorkingMemory workingMemory,
                                        PropagationContext context);
 
     /**
@@ -151,5 +150,5 @@ abstract class BaseNode
 
     public String toString() {
         return "[" + this.getClass().getName() + "(" + this.id + ")]";
-    }
+    }  
 }

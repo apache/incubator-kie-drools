@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.spi.PropagationContext;
 
@@ -99,19 +101,19 @@ public class MockTupleSink extends TupleSource
 
     }
 
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) throws FactException {
         // TODO Auto-generated method stub
 
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
+                       final InternalWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }

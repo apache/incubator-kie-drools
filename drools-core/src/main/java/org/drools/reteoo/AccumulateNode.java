@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Accumulate;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -222,9 +223,9 @@ public class AccumulateNode extends BetaNode {
      *  2. For each matching tuple, call a modify tuple
      *  
      */
-    public void assertObject(DefaultFactHandle handle,
+    public void assertObject(InternalFactHandle handle,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         ObjectMatches objectMatches = memory.add( workingMemory,
@@ -257,9 +258,9 @@ public class AccumulateNode extends BetaNode {
      * So, a modify object is in fact a retract+assert object.
      * 
      */
-    public void modifyObject(DefaultFactHandle handle,
+    public void modifyObject(InternalFactHandle handle,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
@@ -284,9 +285,9 @@ public class AccumulateNode extends BetaNode {
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
-    public void retractObject(DefaultFactHandle handle,
+    public void retractObject(InternalFactHandle handle,
                               PropagationContext context,
-                              ReteooWorkingMemory workingMemory) {
+                              InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
@@ -328,7 +329,7 @@ public class AccumulateNode extends BetaNode {
     /**
      * @inheritDoc
      */
-    public void updateNewNode(ReteooWorkingMemory workingMemory,
+    public void updateNewNode(InternalWorkingMemory workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
 

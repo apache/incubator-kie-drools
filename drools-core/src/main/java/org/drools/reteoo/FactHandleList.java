@@ -46,7 +46,7 @@ final class FactHandleList
     /**
      * 
      */
-    private static final long          serialVersionUID = -6767210501355521967L;
+    private static final long          serialVersionUID = 320L;
 
     /** Empty list for testing purposes only. */
     static final FactHandleList        EMPTY_LIST       = new FactHandleList();
@@ -96,8 +96,8 @@ final class FactHandleList
      * @param handle
      *            The handle to use.
      */
-    public FactHandleList(final DefaultFactHandle handle) {
-        this.handles = new DefaultFactHandle[]{handle};
+    public FactHandleList(final InternalFactHandle handle) {
+        this.handles = new DefaultFactHandle[]{(DefaultFactHandle) handle};
         this.hashCode = handle.hashCode();
     }
 

@@ -22,7 +22,9 @@ import java.util.Iterator;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
+import org.drools.common.BaseNode;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
@@ -43,7 +45,7 @@ import org.drools.spi.PropagationContext;
  */
 final class TerminalNode extends BaseNode
     implements
-    TupleSink,
+    TupleSinkNode,
     NodeMemory {
     // ------------------------------------------------------------
     // Instance members
@@ -56,6 +58,9 @@ final class TerminalNode extends BaseNode
     /** The rule to invoke upon match. */
     private final Rule        rule;
     private final TupleSource tupleSource;
+    
+    private TupleSinkNode previousTupleSinkNode;
+    private TupleSinkNode nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -96,7 +101,7 @@ final class TerminalNode extends BaseNode
 
     public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {
         assertTuple( tuple,
                      context,
                      workingMemory,
@@ -116,7 +121,7 @@ final class TerminalNode extends BaseNode
      */
     public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory,
+                            final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
         // if the current Rule is no-loop and the origin rule is the same then
         // return
@@ -209,7 +214,7 @@ final class TerminalNode extends BaseNode
 
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         final Activation activation = tuple.getActivation();
         if ( activation.isActivated() ) {
             activation.remove();
@@ -223,7 +228,7 @@ final class TerminalNode extends BaseNode
 
     public void modifyTuple(final ReteTuple tuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {
         // We have to remove and assert the new tuple as it has modified facts and thus its tuple is newer
         boolean fireActivation = true;
         Activation activation = tuple.getActivation();
@@ -252,11 +257,11 @@ final class TerminalNode extends BaseNode
         this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
@@ -267,9 +272,9 @@ final class TerminalNode extends BaseNode
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
+                       final InternalWorkingMemory[] workingMemories) {
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final InternalWorkingMemory workingMemory = workingMemories[i];
 
             for ( final Iterator it = this.tupleSource.getPropagatedTuples( workingMemory,
                                                                             this ).iterator(); it.hasNext(); ) {
@@ -296,7 +301,7 @@ final class TerminalNode extends BaseNode
                                  workingMemories );
     }
 
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         // There are no child nodes to update, do nothing.
     }
@@ -304,6 +309,42 @@ final class TerminalNode extends BaseNode
     public Object createMemory(final RuleBaseConfiguration config) {
         return new TerminalNodeMemory();
     }
+    
+    /**
+     * Returns the next node
+     * @return
+     *      The next TupleSinkNode
+     */
+    public TupleSinkNode getNextTupleSinkNode() {
+        return this.nextTupleSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next TupleSinkNode
+     */
+    public void setNextTupleSinkNode(TupleSinkNode next) {
+        this.nextTupleSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous TupleSinkNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode() {
+       return this.previousTupleSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous TupleSinkNode
+     */
+    public void setPreviousTupleSinkNode(TupleSinkNode previous) {
+        this.previousTupleSinkNode = previous;
+    }    
 
     public int hashCode() {
         return this.rule.hashCode();

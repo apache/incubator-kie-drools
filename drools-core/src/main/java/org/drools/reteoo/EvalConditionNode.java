@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
@@ -91,7 +93,7 @@ class EvalConditionNode extends TupleSource
         this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -196,7 +198,7 @@ class EvalConditionNode extends TupleSource
         }
     }
 
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         this.attachingNewNode = true;
 
@@ -243,7 +245,7 @@ class EvalConditionNode extends TupleSource
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
+                       final InternalWorkingMemory[] workingMemories) {
         if( !node.isInUse() ) {
             getTupleSinks().remove( node );
         }

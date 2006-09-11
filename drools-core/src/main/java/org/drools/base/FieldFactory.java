@@ -32,7 +32,7 @@ public class FieldFactory {
 
     }
 
-    public static FieldValue getFieldValue(final String value,
+    public static FieldValue getFieldValue(String value,
                                            ValueType valueType) {
         FieldValue field = null;
         if ( value == null ) {
@@ -48,13 +48,13 @@ public class FieldFactory {
         } else if ( valueType == ValueType.SHORT_TYPE ) {
             field = new FieldImpl( new Short( value ) );
         } else if ( valueType == ValueType.INTEGER_TYPE ) {
-            field = new FieldImpl( new Integer( value ) );
+            field = new FieldImpl( new Integer( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.LONG_TYPE ) {
-            field = new FieldImpl( new Long( value ) );
+            field = new FieldImpl( new Long( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.FLOAT_TYPE ) {
-            field = new FieldImpl( new Float( value ) );
+            field = new FieldImpl( new Float( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.DOUBLE_TYPE ) {
-            field = new FieldImpl( new Double( value ) );
+            field = new FieldImpl( new Double( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.BOOLEAN_TYPE ) {
             field = new FieldImpl( new Boolean( value ) );
         } else if ( valueType == ValueType.STRING_TYPE ) {
@@ -74,6 +74,15 @@ public class FieldFactory {
         }
 
         return field;
+    }
+    
+    private static String stripNumericType(String value) {
+        // incase a user adds a f or l, strip it as its not needed
+        if ( Character.getType( value.charAt( value.length() -1 ) ) != Character.DECIMAL_DIGIT_NUMBER ) {
+            value = value.substring( 0, value.length() -1 );
+        }
+        
+        return value;
     }
 
 }

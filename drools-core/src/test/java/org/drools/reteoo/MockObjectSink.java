@@ -19,7 +19,8 @@ package org.drools.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class MockObjectSink
@@ -29,21 +30,21 @@ public class MockObjectSink
     private final List retracted = new ArrayList();
     private final List modified  = new ArrayList();
 
-    public void assertObject(final DefaultFactHandle handle,
+    public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         this.asserted.add( new Object[]{handle, context, workingMemory} );
     }
 
-    public void retractObject(final DefaultFactHandle handle,
+    public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ReteooWorkingMemory workingMemory) {
+                              final InternalWorkingMemory workingMemory) {
         this.retracted.add( new Object[]{handle, context, workingMemory} );
     }
 
-    public void modifyObject(final DefaultFactHandle handle,
+    public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         this.modified.add( new Object[]{handle, context, workingMemory} );
 
     }

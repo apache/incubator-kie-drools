@@ -20,7 +20,10 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
@@ -84,27 +87,7 @@ class ObjectTypeNode extends ObjectSource
     public ObjectTypeNode(final int id,
                           final ObjectType objectType,
                           final Rete rete) {
-        this( id,
-              null,
-              objectType,
-              rete );
-    }
-
-    /**
-     * Construct given a semantic <code>ObjectType</code> and the provided
-     * unique id. All <code>ObjectTypdeNode</code> have node memory.
-     * 
-     * @param id The unique id for the node
-     * @param sinklist An object sink list for the node. If null, a default will be created.
-     * @param objectType The semantic object-type differentiator
-     * @param rete The rete network reference
-     */
-    public ObjectTypeNode(final int id,
-                          final ObjectSinkList sinklist,
-                          final ObjectType objectType,
-                          final Rete rete) {
-        super( id,
-               sinklist );
+        super( id );
         this.rete = rete;
         this.objectType = objectType;
         setHasMemory( true );
@@ -148,16 +131,14 @@ class ObjectTypeNode extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(final DefaultFactHandle handle,
+    public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
         memory.put( handle.getId(),
                     handle );
-
-        propagateAssertObject( handle,
-                               context,
-                               workingMemory );
+        
+        this.sink.propagateAssertObject( handle, context, workingMemory );
     }
 
     /**
@@ -171,46 +152,33 @@ class ObjectTypeNode extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void retractObject(final DefaultFactHandle handle,
+    public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ReteooWorkingMemory workingMemory) {
+                              final InternalWorkingMemory workingMemory) {
         final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
         memory.remove( handle.getId() );
 
-        propagateRetractObject( handle,
-                                context,
-                                workingMemory );
+        this.sink.propagateRetractObject( handle, context, workingMemory, true );
     }
 
-    public void modifyObject(final DefaultFactHandle handle,
+    public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-
-        propagateModifyObject( handle,
-                               context,
-                               workingMemory );
+                             final InternalWorkingMemory workingMemory) {        
+        this.sink.propagateModifyObject( handle, context, workingMemory );       
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         this.attachingNewNode = true;
 
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );        
 
-        for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {
+        for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {            
             final DefaultFactHandle handle = (DefaultFactHandle) it.next();
-            final ObjectSink sink = this.objectSinks.getLastObjectSink();
-            if ( sink != null ) {
-                sink.assertObject( handle,
-                                   context,
-                                   workingMemory );
-            } else {
-                throw new RuntimeException( "Possible BUG: trying to propagate an assert to a node that was the last added node" );
-            }
+            this.sink.propagateNewObjectSink( handle, context, workingMemory );
         }
 
         this.attachingNewNode = false;
@@ -223,14 +191,14 @@ class ObjectTypeNode extends ObjectSource
         this.rete.addObjectSink( this );
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
         // we need to call updateNewNode on Rete, because someone 
         // might have already added facts matching this ObjectTypeNode 
         // to working memories
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
@@ -241,9 +209,9 @@ class ObjectTypeNode extends ObjectSource
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
+                       final InternalWorkingMemory[] workingMemories) {
         if( !node.isInUse()) {
-            this.objectSinks.remove( (ObjectSink) node );
+            removeObjectSink( ( ObjectSink ) node );
         }
         removeShare();
         if ( !this.isInUse() ) {

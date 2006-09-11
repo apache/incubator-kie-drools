@@ -16,10 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.PropagationContext;
 import org.drools.util.AbstractBaseLinkedListNode;
 
 /**
@@ -37,11 +35,11 @@ import org.drools.util.AbstractBaseLinkedListNode;
  *
  */
 public class TupleMatch extends AbstractBaseLinkedListNode {
-    private ReteTuple     tuple;
+    private ReteTuple          tuple;
 
-    private List          joined = Collections.EMPTY_LIST;
+    private TupleMatchChildren children;
 
-    private ObjectMatches objectMatches;
+    private ObjectMatches      objectMatches;
 
     /**
      * Construct a <code>TupleMatch</code> with references to the parent <code>ReteTuple</code> and 
@@ -54,6 +52,7 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
                       final ObjectMatches objectMatches) {
         this.tuple = tuple;
         this.objectMatches = objectMatches;
+        this.children = new CompositeTupleMatchChildren();
     }
 
     /**
@@ -81,19 +80,23 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
      * @param tuple
      */
     public void addJoinedTuple(final ReteTuple tuple) {
-        if ( this.joined == Collections.EMPTY_LIST ) {
-            this.joined = new ArrayList( 1 );
-        }
-        this.joined.add( tuple );
+        this.children.add( tuple );
     }
 
-    /**
-     * Return the <code>List</code> of joined <code>ReteTuple</code>s.
-     * 
-     * @return the <code>List<code>.
-     */
-    public List getJoinedTuples() {
-        return this.joined;
+    public void propagateRetractTuple(final PropagationContext context,
+                                      final InternalWorkingMemory workingMemory) {
+        this.children.propagateRetractTuple( context,
+                                        workingMemory );
+    }
+
+    public void propagateModifyTuple(final PropagationContext context,
+                                     final InternalWorkingMemory workingMemory) {
+        this.children.propagateModifyTuple( context,
+                                       workingMemory );
+    }
+    
+    public ReteTuple getTupleForSink(TupleSink sink) {
+        return this.children.getTupleForSink( sink );
     }
 
 }

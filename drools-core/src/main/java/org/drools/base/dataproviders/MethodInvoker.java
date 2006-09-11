@@ -18,11 +18,15 @@ import org.drools.rule.Declaration;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
-public class MethodInvoker {
-    private final ValueHandler   instanceValueHandler;
-    private final Method         method;
-    private final ValueHandler[] valueHandlers;
-    private final Declaration[]  requiredDeclarations;
+public class MethodInvoker
+    implements
+    Invoker {
+    private final ValueHandler         instanceValueHandler;
+    private final Method               method;
+    private final Class[]              parameterTypes;
+    private final ValueHandler[]       valueHandlers;
+    private final Declaration[]        requiredDeclarations;
+    private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
     /**
      * Method invoker for static method
@@ -32,21 +36,31 @@ public class MethodInvoker {
                          ValueHandler[] valueHandlers) {
         this.instanceValueHandler = null;
         this.valueHandlers = valueHandlers;
-        
+
         // determine required declarations
-        List list = new ArrayList(1);        
+        List list = new ArrayList( 1 );
+
         for ( int i = 0, length = valueHandlers.length; i < length; i++ ) {
             if ( valueHandlers[i].getClass() == DeclarationVariable.class ) {
-                list.add( ( (DeclarationVariable) valueHandlers[i] ).getDeclaration() );    
+                list.add( ((DeclarationVariable) valueHandlers[i]).getDeclaration() );
             }
         }
-        
-        this.requiredDeclarations = ( Declaration[] )list.toArray( new Declaration[ list.size() ] );
+
+        if ( list.isEmpty() ) {
+            this.requiredDeclarations = EMPTY_DECLARATIONS;
+        } else {
+            this.requiredDeclarations = (Declaration[]) list.toArray( new Declaration[list.size()] );
+        }
 
         this.method = configureMethod( clazz,
                                        methodName,
                                        valueHandlers.length );
+
+        //the types we have to convert the arguments to
+        this.parameterTypes = this.method.getParameterTypes();
+
     }
+
     /**
      * Method invoker for an instance
      */
@@ -55,31 +69,39 @@ public class MethodInvoker {
                          ValueHandler[] valueHandlers) {
         this.instanceValueHandler = instanceValueHandler;
         this.valueHandlers = valueHandlers;
-        
+
         // determine required declarations
-        List list = new ArrayList(1);        
+        List list = new ArrayList( 1 );
         if ( instanceValueHandler != null && instanceValueHandler.getClass() == DeclarationVariable.class ) {
-            list.add( ( (DeclarationVariable) instanceValueHandler ).getDeclaration() ); 
+            list.add( ((DeclarationVariable) instanceValueHandler).getDeclaration() );
         }
+
         for ( int i = 0, length = valueHandlers.length; i < length; i++ ) {
             if ( valueHandlers[i].getClass() == DeclarationVariable.class ) {
-                list.add( ( (DeclarationVariable) valueHandlers[i] ).getDeclaration() );    
+                list.add( ((DeclarationVariable) valueHandlers[i]).getDeclaration() );
             }
         }
-        
-        this.requiredDeclarations = ( Declaration[] )list.toArray( new Declaration[ list.size() ] );
+
+        if ( list.isEmpty() ) {
+            this.requiredDeclarations = EMPTY_DECLARATIONS;
+        } else {
+            this.requiredDeclarations = (Declaration[]) list.toArray( new Declaration[list.size()] );
+        }
 
         this.method = configureMethod( this.instanceValueHandler.getExtractToClass(),
                                        methodName,
                                        valueHandlers.length );
+
+        //the types we have to convert the arguments to
+        this.parameterTypes = this.method.getParameterTypes();
     }
 
     /**
      * work out what method we will be calling at runtime, based on the name and number of parameters.
      */
-    private Method configureMethod(Class clazz,
-                                   String methodName,
-                                   int numOfArgs) {
+    private static Method configureMethod(Class clazz,
+                                          String methodName,
+                                          int numOfArgs) {
         Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
             if ( methods[i].getName().equals( methodName ) ) {
@@ -106,9 +128,6 @@ public class MethodInvoker {
         if ( instance == null ) {
             throw new IllegalArgumentException( "Unable to resolve the variable: [" + this.instanceValueHandler + "]" );
         }
-
-        //the types we have to convert the arguments to
-        Class[] parameterTypes = this.method.getParameterTypes();
 
         //the args values that we will pass
         Object[] args = new Object[this.valueHandlers.length];
@@ -152,8 +171,8 @@ public class MethodInvoker {
     /** 
      * Attempt to convert text to the target class type 
      */
-    private Object convert(String text,
-                           Class type) {
+    private static Object convert(String text,
+                                  Class type) {
         if ( type == Integer.class || type == int.class ) {
             return new Integer( text );
         } else if ( text == "null" ) {
