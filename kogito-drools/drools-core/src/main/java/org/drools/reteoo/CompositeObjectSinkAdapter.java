@@ -23,15 +23,17 @@ public class CompositeObjectSinkAdapter
     ObjectSinkPropagator {
 
     private ObjectSinkNodeList otherSinks;
+    private ObjectSinkNodeList hashedSinks;
 
     private LinkedList         hashedFieldIndexes;
 
-    private Map                hashedSinks;
+    private Map                hashedSinkMap;
 
     private HashKey            hashKey;
 
     public CompositeObjectSinkAdapter() {
         this.otherSinks = new ObjectSinkNodeList();
+        this.hashedSinks = new ObjectSinkNodeList();
         this.hashKey = new HashKey();
     }
 
@@ -43,24 +45,18 @@ public class CompositeObjectSinkAdapter
             if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
                 LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 Evaluator evaluator = literalConstraint.getEvaluator();
-                Object value = literalConstraint.getField().getValue();
 
                 if ( evaluator.getOperator() == Operator.EQUAL ) {
                     int index = literalConstraint.getFieldExtractor().getIndex();
                     FieldIndex fieldIndex = registerFieldIndex( index,
                                                                 literalConstraint.getFieldExtractor() );
-                    if ( fieldIndex.count > 2 ) {
-                        if ( this.hashedSinks == null ) {
-                            this.hashedSinks = new HashMap();
-                        }
+                    this.hashedSinks.add( (ObjectSinkNode) sink );
+
+                    if ( !fieldIndex.isHashed() && fieldIndex.getCount() >= 3 ) {
                         // this is our third equal constraint for this field, so hash this index
-                        hashSinks( index );
-                        hashedSinks.put( new HashKey( index,
-                                                      value ),
-                                         sink );
-                        fieldIndex.setHashed( true );
-                        return;
+                        hashSinks( fieldIndex );
                     }
+                    return;
                 }
 
             }
@@ -81,19 +77,19 @@ public class CompositeObjectSinkAdapter
 
                 if ( evaluator.getOperator() == Operator.EQUAL ) {
                     int index = literalConstraint.getFieldExtractor().getIndex();
-                    this.hashKey.setIndex( index );
-                    this.hashKey.setValue( value );
-                    hashedSinks.remove( this.hashKey );
-                    FieldIndex fieldIndex = unregisterFieldIndex( index );
-                    if ( fieldIndex.count < 3 ) {
-                        // we have less than three so unhash
-                        unHashSinks( index );
-                        fieldIndex.setHashed( false );
-                        return;
+                    FieldIndex fieldIndex = unregisterFieldIndex( index );                    
+                    this.hashedSinks.remove( (ObjectSinkNode) sink );
+                    
+                    if ( fieldIndex.isHashed() ) {
+                        this.hashKey.setIndex( index );
+                        this.hashKey.setValue( value );
+                        hashedSinkMap.remove( this.hashKey );
+                        if ( fieldIndex.getCount() <= 2 ) {
+                            // we have less than three so unhash
+                            unHashSinks( fieldIndex );
+                        }
                     }
-                    if ( this.hashedSinks.isEmpty() ) {
-                        this.hashedSinks = null;
-                    }
+                    
                     return;
                 }
             }
@@ -102,59 +98,50 @@ public class CompositeObjectSinkAdapter
         this.otherSinks.remove( (ObjectSinkNode) sink );
     }
 
-    public void hashSinks(int index) {
-        List list = new ArrayList();
-
-        for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-            if ( sink.getClass() == AlphaNode.class ) {
-                AlphaNode alphaNode = (AlphaNode) sink;
-                FieldConstraint fieldConstraint = alphaNode.getConstraint();
-
-                if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
-                    LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
-                    Evaluator evaluator = literalConstraint.getEvaluator();
-                    Object value = literalConstraint.getField().getValue();
-
-                    if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                        hashedSinks.put( new HashKey( index,
-                                                      value ),
-                                         sink );
-                        //Add to a list as our linkedlists cannot handle removal during iteration
-                        list.add( sink );
-                    }
-                }
+    public void hashSinks(FieldIndex fieldIndex) {
+        int index = fieldIndex.getIndex();
+        
+        if ( this.hashedSinkMap == null ) {
+            this.hashedSinkMap = new HashMap();
+        }
+        
+        for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+            AlphaNode alphaNode = (AlphaNode) sink;
+            FieldConstraint fieldConstraint = alphaNode.getConstraint();
+            LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
+            Evaluator evaluator = literalConstraint.getEvaluator();
+            if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
+                Object value = literalConstraint.getField().getValue();
+                hashedSinkMap.put( new HashKey( index,
+                                                value ),
+                                   sink );            
             }
         }
-
-        // now remove all the sinks
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            ObjectSink sink = (ObjectSink) it.next();
-            this.otherSinks.remove( (ObjectSinkNode) sink );
-        }
+        fieldIndex.setHashed( true );
     }
 
-    public void unHashSinks(int index) {
-        for ( Iterator it = this.hashedSinks.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
-            ObjectSink sink = (ObjectSink) entry.getValue();
-
-            if ( sink.getClass() == AlphaNode.class ) {
+        public void unHashSinks(FieldIndex fieldIndex) {
+            int index = fieldIndex.getIndex();
+            
+            for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 AlphaNode alphaNode = (AlphaNode) sink;
                 FieldConstraint fieldConstraint = alphaNode.getConstraint();
-
-                if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
-                    LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
-                    Evaluator evaluator = literalConstraint.getEvaluator();
+                LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
+                Evaluator evaluator = literalConstraint.getEvaluator();
+                if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {                                        
                     Object value = literalConstraint.getField().getValue();
-
-                    if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                        this.hashedSinks.remove( entry.getKey() );
-                        this.otherSinks.add( (ObjectSinkNode) sink );
-                    }
+                    this.hashKey.setIndex( index ) ;
+                    this.hashKey.setValue( value );                    
+                    hashedSinkMap.remove( this.hashKey );            
                 }
             }
-        }
-    }
+            
+            if ( this.hashedSinkMap.isEmpty() ) {
+                this.hashedSinkMap = null;
+            }
+            
+            fieldIndex.setHashed( false );
+        }    
 
     /**
      * Returns a FieldIndex which Keeps a count on how many times a particular field is used with an equality check in the sinks.
@@ -231,7 +218,7 @@ public class CompositeObjectSinkAdapter
                     FieldExtractor extractor = fieldIndex.getFieldExtactor();
                     this.hashKey.setIndex( index );
                     this.hashKey.setValue( extractor.getValue( object ) );
-                    ObjectSink sink = (ObjectSink) this.hashedSinks.get( this.hashKey );
+                    ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
                     if ( sink != null ) {
                         // The sink exists so propagate
                         sink.assertObject( handle,
@@ -254,10 +241,9 @@ public class CompositeObjectSinkAdapter
     public void propagateModifyObject(InternalFactHandle handle,
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory) {
-        if ( this.hashedSinks != null ) {
+        if ( this.hashedSinkMap != null ) {
             // we can't retrieve hashed sinks, as the field value might have changed, so we have to iterate and propagate to all hashed sinks
-            for ( Iterator it = this.hashedSinks.values().iterator(); it.hasNext(); ) {
-                ObjectSink sink = (ObjectSink) it.next();
+            for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sink.modifyObject( handle,
                                    context,
                                    workingMemory );
@@ -287,8 +273,8 @@ public class CompositeObjectSinkAdapter
                         int index = fieldIndex.getIndex();
                         FieldExtractor extractor = fieldIndex.getFieldExtactor();
                         this.hashKey.setIndex( index );
-                        this.hashKey.setValue( extractor.getValue( object ) ); 
-                        ObjectSink sink = (ObjectSink) this.hashedSinks.get( this.hashKey );
+                        this.hashKey.setValue( extractor.getValue( object ) );
+                        ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
                         if ( sink != null ) {
                             // The sink exists so propagate
                             sink.retractObject( handle,
@@ -297,14 +283,13 @@ public class CompositeObjectSinkAdapter
                         }
                     }
                 }
-            }
-        } else {
-            // we can't retrieve hashed sinks, as the field value might have changed, so we have to iterate and propagate to all hashed sinks
-            for ( Iterator it = this.hashedSinks.values().iterator(); it.hasNext(); ) {
-                ObjectSink sink = (ObjectSink) it.next();
-                sink.retractObject( handle,
-                                    context,
-                                    workingMemory );
+            } else {
+                // we can't retrieve hashed sinks, as the field value might have changed, so we have to iterate and propagate to all hashed sinks
+                for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                    sink.retractObject( handle,
+                                        context,
+                                        workingMemory );
+                }
             }
         }
 
@@ -384,7 +369,7 @@ public class CompositeObjectSinkAdapter
         public boolean equals(Object object) {
             final HashKey other = (HashKey) object;
 
-            return this.index == other.index && this.value.equals( other.value);
+            return this.index == other.index && this.value.equals( other.value );
         }
 
     }
