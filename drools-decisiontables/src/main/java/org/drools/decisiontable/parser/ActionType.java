@@ -56,14 +56,13 @@ public class ActionType {
 
     int                     type;
 
-    private SourceBuilder sourceBuilder = null;
+    private SourceBuilder   sourceBuilder   = null;
 
-//    private String                  value;
+    //    private String                  value;
 
     ActionType(final int actionType) {
         this.type = actionType;
     }
-        
 
     /**
      * This is only set for LHS or RHS building. 
@@ -71,15 +70,15 @@ public class ActionType {
     public void setSourceBuilder(SourceBuilder src) {
         this.sourceBuilder = src;
     }
-    
+
     public SourceBuilder getSourceBuilder() {
         return this.sourceBuilder;
     }
 
-//    String getSnippet(final String cellValue) {
-//        final SnippetBuilder builder = new SnippetBuilder( this.value );
-//        return builder.build( cellValue );
-//    }
+    //    String getSnippet(final String cellValue) {
+    //        final SnippetBuilder builder = new SnippetBuilder( this.value );
+    //        return builder.build( cellValue );
+    //    }
 
     /**
      * Create a new action type that matches this cell, and add it to the map,
@@ -89,12 +88,30 @@ public class ActionType {
                                         final String value,
                                         final int column,
                                         final int row) {
-        if ( value.toUpperCase().startsWith( "C" ) ) {
+        if ( value.toUpperCase().startsWith( "U" ) || value.toUpperCase().equals( "NO-LOOP" ) ) // if the title cell
+        // value starts with
+        // "U" then put a
+        // ActionType.NOLOOP
+        // to the _actions  
+        // list
+        {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.CONDITION) );
+                               new ActionType( ActionType.NOLOOP ) );
+        } else if ( value.toUpperCase().startsWith( "X" ) || value.toUpperCase().equals( "ACTIVATION-GROUP" ) ) // if the title cell
+        // value starts with
+        // "X" then put a
+        // ActionType.XORGROUP
+        // to the _actions  
+        // list
+        {
+            actionTypeMap.put( new Integer( column ),
+                               new ActionType( ActionType.ACTIVATIONGROUP ) );
+        } else if ( value.toUpperCase().startsWith( "C" ) ) {
+            actionTypeMap.put( new Integer( column ),
+                               new ActionType( ActionType.CONDITION ) );
         } else if ( value.toUpperCase().startsWith( "A" ) ) {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.ACTION) );
+                               new ActionType( ActionType.ACTION ) );
         } else if ( value.toUpperCase().startsWith( "P" ) ) // if the title cell
         // value starts with
         // "P" then put a
@@ -131,24 +148,6 @@ public class ActionType {
         {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.DESCRIPTION ) );
-        } else if ( value.toUpperCase().startsWith( "U" ) || value.toUpperCase().equals( "NO-LOOP" ) ) // if the title cell
-        // value starts with
-        // "U" then put a
-        // ActionType.NOLOOP
-        // to the _actions	
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.NOLOOP ) );
-        } else if ( value.toUpperCase().startsWith( "X" ) || value.toUpperCase().equals( "ACTIVATION-GROUP" ) ) // if the title cell
-        // value starts with
-        // "X" then put a
-        // ActionType.XORGROUP
-        // to the _actions	
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.ACTIVATIONGROUP ) );
         } else {
             throw new DecisionTableParseException( "Invalid column header (ACTION type), " + "should be CONDITION or ACTION (etc..) row number:" + (row + 1) + " cell number:" + (column + 1) + " - does not contain a leading C or A identifer." );
         }
@@ -157,17 +156,20 @@ public class ActionType {
     /**
      * This is where a code snippet template is added.
      */
-    public void addTemplate(int col, String content) {
-        this.sourceBuilder.addTemplate(  col, content );        
+    public void addTemplate(int col,
+                            String content) {
+        this.sourceBuilder.addTemplate( col,
+                                        content );
     }
-    
+
     /**
      * Values are added to populate the template.
      * The source builder contained needs to be "cleared" when the resultant snippet is extracted.
      */
-    public void addCellValue(int col, String content) {
-        this.sourceBuilder.addCellValue( col, content );
+    public void addCellValue(int col,
+                             String content) {
+        this.sourceBuilder.addCellValue( col,
+                                         content );
     }
-    
 
 }
