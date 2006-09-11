@@ -5,10 +5,13 @@
   <section>
     <title>Production Rules</title>
 
-    <para>A <indexterm>
+    <para>A 
+      <indexterm>
         <primary>Production Rule</primary>
-      </indexterm>Production Rule, or Rule, in Drools is a two part structure
-    with a Left Hand Side (LHS) and a Right Hand Side (RHS) additionally a
+      </indexterm>
+    Production Rule (aka Rule) in Drools is a two part structure,
+    with a Left Hand Side (LHS) and a Right Hand Side (RHS) which are
+    alternately known as the "Head" and "Tail" respectively. Additionally a
     Rule may have the following attributes:</para>
 
     <itemizedlist>
@@ -37,23 +40,29 @@
       </listitem>
     </itemizedlist>
 
-    <programlisting>rule “&lt;name&gt;”    
-    &lt;attribute&gt; &lt;value&gt;    
-    when        
-        &lt;LHS&gt;    
-    then        
-        &lt;RHS&gt;
-end
-</programlisting>
+    <programlisting>
+      <![CDATA[
+        rule "<name>" <attribute> <value>
+        when <LHS>
+        then <RHS>
+        end
+      ]]>
+    </programlisting>
 
-    <para>The LHS of a Rule consists of <indexterm>
+    <para>The LHS of a Rule consists of 
+      <indexterm>
         <primary>Conditional Element</primary>
-      </indexterm>Conditional Elements (CE) and Columns; to facilate the
-    encoding of propositional and first order logic. The term <indexterm>
+      </indexterm>
+    Conditional Elements (CE) and Columns (aka - Patterns); to facilate the
+    encoding of propositional and first order logic. The term 
+      <indexterm>
         <primary>Column</primary>
-      </indexterm>Column is used to indicate <indexterm>
+      </indexterm>
+    Column is used to indicate 
+      <indexterm>
         <primary>Field Constraint</primary>
-      </indexterm>Field Constraints on a Fact.</para>
+      </indexterm>
+    Field Constraints on a Fact.</para>
 
     <para>Drools currently supports the follows CEs:</para>
 
@@ -75,8 +84,8 @@ end
       </listitem>
     </itemizedlist>
 
-    <para>'forall' and 'accumulate' will be added shortley. The following
-    Field Constraints are allowed:</para>
+    <para>'forall' and 'accumulate' will be added shortley. 
+    The following Field Constraints are allowed:</para>
 
     <itemizedlist>
       <listitem>
@@ -99,18 +108,23 @@ end
     <para>The Language Guide chapter provides more indepth information for
     each of these.</para>
 
-    <para>As facts are asserted and modified in the Working Memory it matches
-    the facts against the LHS conditions, when all the conditions are met and
-    true the Rule plus those match facts are activated. When a Rule is
+    <para>As facts are asserted and modified in the Working Memory, the rules engine
+    matches the facts against the LHS conditions, when all the conditions of a rules
+    LHS are met and true that rule plus those match facts are activated. When a Rule is
     activated it is placed onto the Agenda for potential execution, where the
-    actions of RHS, called t he <indexterm>
+    actions of RHS, called the 
+      <indexterm>
         <primary>Consequence</primary>
-      </indexterm>Consequence, are executed. The LHS and the RHS is analogous
-    to:</para>
-
-    <programlisting>if ( &lt;LHS&gt; ) {
-    &lt;RHS&gt;
-}</programlisting>
+      </indexterm>
+    Consequence, are executed. The LHS and the RHS is analogous to:</para>
+    
+    <programlisting>
+      <![CDATA[
+    if (<LHS>) {
+      <RHS>
+    }
+      ]]>
+    </programlisting>
 
     <para>However 'if' is considered procedural in that it is one part of a
     possible execution flow - if this.... else if.... else ..... Rules use
@@ -121,10 +135,12 @@ end
     <literal>package</literal> keyword; other Rule Engines may call this a
     <indexterm>
         <primary>Rule Set</primary>
-      </indexterm>Rule Set. A Package declares imports, global variables,
-    functions and rules.</para>
+    </indexterm>
+    Rule Set. A Package declares imports, global variables, functions and rules.</para>
 
-    <programlisting>package com.sample
+    <programlisting>
+<![CDATA[
+package com.sample
 
 import java.util.List
 import com.sample.Cheese
@@ -141,33 +157,45 @@ rule “A Cheesey Rule”
     then
         exampleFunction( cheese );
         cheeses.add( cheese );
-end</programlisting>
+end
+]]>
+    </programlisting>
 
     <para>The following example shows a LHS with a single Column that has a
-    single <indexterm>
-        <primary>Literal Field Constraint</primary>
-      </indexterm>Literal Field Constraint used with a Cheese Fact:</para>
+    single 
+    <indexterm>
+      <primary>Literal Field Constraint</primary>
+    </indexterm>
+    Literal Field Constraint used with a Cheese Fact:</para>
 
-    <programlisting>rule "Cheddar Cheese"
-    when
-        Cheese( type == "cheddar" )
-    then
-        System.out.println( "cheddar" );
-end</programlisting>
+    <programlisting>
+<![CDATA[
+rule "Cheddar Cheese"
+when
+    Cheese( type == "cheddar" )
+then
+    System.out.println( "cheddar" );
+end
+  ]]>
+    </programlisting>
 
     <para>The example above is analogous to :</para>
 
-    <programlisting>public void cheddarCheese(Cheese cheese) {
-    if ( cheese.getType().equals("cheddar") {
-        System.out.println( "cheddar" );
-    }
-}</programlisting>
+    <programlisting>
+<![CDATA[
+public void cheddarCheese(Cheese cheese) {
+  if ( cheese.getType().equals("cheddar") {
+      System.out.println( "cheddar" );
+  }
+}
+]]>
+    </programlisting>
 
-    <para>Rule are a complete de-coupling of data from the logic. Rules cannot
+    <para>Rules are a complete de-coupling of data from the logic. Rules cannot
     be called directly as they are not methods or functions instead Rules fire
     in response to changes in Working Memory's data. Rules are also fully
     declarative in that they describe "what" not "how" like imperative
-    languages such as java.</para>
+    languages such as Java.</para>
   </section>
 
   <section>
@@ -186,9 +214,9 @@ end</programlisting>
     be a "closed statement". In programming terms this is an expression that
     does not reference any variables:</para>
 
-    <para>10 = = 2 * 5</para>
+    <para>10 == 2 * 5</para>
 
-    <para>Expressions that evaluate against one or more variables, facts, are
+    <para>Expressions that evaluate against one or more variables, the facts, are
     "open statements", in that we cannot determine whether the statement is
     true until we have a variable instance to evaluate against:</para>
 
@@ -218,7 +246,7 @@ end</programlisting>
       </mediaobject>
     </figure>
 
-    <para>So in java we can say that a simple proposition is of the form
+    <para>So in Java we can say that a simple proposition is of the form
     'variable' 'operator' 'value' - where we often refer to 'value' as being a
     literal value - a proposition can be thought as a field constraint.
     Further to this propositions can be combined with conjuntive and
@@ -226,22 +254,34 @@ end</programlisting>
     '&amp;&amp;' and '||'. The following shows two open propositional
     statements connected together with a single disjunctive connective.</para>
 
-    <programlisting>person.getEyeColor().equals("blue") || person.getEyeColor().equals("green") </programlisting>
+    <programlisting>
+      <![CDATA[
+      person.getEyeColor().equals("blue") || person.getEyeColor().equals("green") 
+      ]]>
+    </programlisting>
 
     <para>This can be expressed using a disjunctive Conditional Element
     connective - which actually results in the generation of two rules, to
     represent the two possible logic outcomes.</para>
 
-    <programlisting>Person( eyeColour == "blue" ) || Person( eyeColor == "green" )</programlisting>
+    <programlisting>
+      <![CDATA[
+      Person( eyeColour == "blue" ) || Person( eyeColor == "green" )
+      ]]>
+    </programlisting>
 
     <para>Disjunctive field constraints connectives could also be used -
     although they are not currently supported in Drools 3.0 - and would not
     result in multiple rule generation.</para>
 
-    <programlisting>Person( eyeColour == "blue"||"green" )</programlisting>
+    <programlisting>
+      <![CDATA[
+      Person( eyeColour == "blue"||"green" )
+      ]]>
+    </programlisting>
 
-    <para>However Propositional Logic is not Turing complete in that you are
-    limited to the problems you can define because it cannot express criteria
+    <para>Propositional Logic is not Turing complete, limiting the problems 
+    you can define, because it cannot express criteria
     for the structure of data. First Order Logic (FOL), or Predicate Logic,
     extends Propositional Logic with two new quantifier concepts to allow
     expressions defining structure - specifically universal and existential
@@ -259,42 +299,56 @@ end</programlisting>
     40" open proposition to check for the existence of a Module that is true
     for the specified criteria.</para>
 
-    <programlisting>public class Student {
+    <programlisting>
+    <![CDATA[
+    public class Student {
     private String name;
     private List modules;
 
     ...
-}</programlisting>
+    }
+    ]]>   
+    </programlisting>
 
-    <programlisting>public class Module {
+    <programlisting>
+    <![CDATA[
+    public class Module {
     private String name;
     private String studentName;
-    private int score;</programlisting>
+    private int score;
+    ]]>
+    </programlisting>
 
     <para>Java is Turing complete in that you can write code, among other
     things, to iterate data structures to check for existence. The following
     should return a List of students who have failed the semester.</para>
 
-    <programlisting>List failedStudents = new ArrayList();
-
-for ( Iterator studentIter = students.iterator(); studentIter.hasNext() {
-    Student student = ( Student ) studentIter.next();
-    for ( Iterator it = student.getModules.iterator(); it.hasNext(); ) {
-        Module module = ( Module ) it.next();
-        if ( module.getScore() &lt; 40  ) {
-            failedStudents.add( student ) ;
-            break;
+    <programlisting>
+    <![CDATA[
+    List failedStudents = new ArrayList();
+    
+    for ( Iterator studentIter = students.iterator(); studentIter.hasNext() {
+        Student student = ( Student ) studentIter.next();
+        for ( Iterator it = student.getModules.iterator(); it.hasNext(); ) {
+            Module module = ( Module ) it.next();
+            if ( module.getScore() < 40  ) {
+                failedStudents.add( student ) ;
+                break;
+            }
         }
     }
-}</programlisting>
+    ]]>
+    </programlisting>
 
     <para>Early SQL implementations were not Turing complete as they did not
-    provide quantifiers to asses the structure of data. However modern SQL
-    engines allow nesting of SQL which can be combined with keywords like
-    'exists' and 'in': The following query would return a set of Students who
+    provide quantifiers to access the structure of data. Modern SQL
+    engines do allow nesting of SQL, which can be combined with keywords like
+    'exists' and 'in'. The following show SQL and a Rule to return a set of Students who
     have failed the semester.</para>
 
-    <programlisting>select 
+    <programlisting>
+<![CDATA[
+      select 
     * 
 from 
     Students s 
@@ -305,14 +359,20 @@ where exists (
         Modules m 
     where 
         m.student_name = s.name and 
-        m.score &lt; 40 
-)</programlisting>
+        m.score < 40 
+)
+]]>
+    </programlisting>
 
     <para></para>
 
-    <programlisting>rule
+    <programlisting>
+<![CDATA[
+    rule "Failed_Students"
     when
-        exists( $student : Student() &amp;&amp; Module( student == $student, score &lt; 40 ) )</programlisting>
+        exists( $student : Student() && Module( student == $student, score < 40 ) )
+]]>    
+    </programlisting>
 
     <para></para>
   </section>
