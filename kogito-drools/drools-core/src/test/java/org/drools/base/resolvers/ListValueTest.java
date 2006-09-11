@@ -31,7 +31,7 @@ public class ListValueTest extends TestCase {
         wm.setGlobal( "list",
                       list );        
         
-        LiteralValue literal = new LiteralValue( "literal", String.class );
+        LiteralValue literal = new LiteralValue( "literal" );
         
         Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ),
@@ -40,8 +40,8 @@ public class ListValueTest extends TestCase {
         
         GlobalVariable global = new GlobalVariable( "list", List.class );
         
-        LiteralValue literalKey = new LiteralValue( "literalKey", String.class );
-        LiteralValue literalValue = new LiteralValue( "literalValue", String.class );
+        LiteralValue literalKey = new LiteralValue( "literalKey" );
+        LiteralValue literalValue = new LiteralValue( "literalValue" );
         MapValue.KeyValuePair literalPair = new MapValue.KeyValuePair( literalKey,
                                                                        literalValue );
         MapValue mapValue = new MapValue( new MapValue.KeyValuePair[]{literalPair} );
@@ -74,7 +74,7 @@ public class ListValueTest extends TestCase {
         RuleBase rb = RuleBaseFactory.newRuleBase();
         WorkingMemory wm = rb.newWorkingMemory();
         
-        LiteralValue literal = new LiteralValue( "literal", String.class );
+        LiteralValue literal = new LiteralValue( "literal" );
         List nestedListValueHandlers = new ArrayList();
         nestedListValueHandlers.add(  literal );
         ListValue nestedListValue = new ListValue( nestedListValueHandlers );

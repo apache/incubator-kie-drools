@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.util.BaseMultiLinkedListNode;
 import org.drools.util.LinkedList;
 
@@ -34,14 +35,14 @@ import org.drools.util.LinkedList;
 public class ObjectMatches extends BaseMultiLinkedListNode {
     private LinkedList              list;
 
-    private final DefaultFactHandle handle;
+    private final InternalFactHandle handle;
 
     /**
      * Constructs an ObjectMatches which maintain a reference to its <code>FactHandleImpl</code> with an empty <code>LinkedList</code>.
      *  
      * @param handle
      */
-    public ObjectMatches(final DefaultFactHandle handle) {
+    public ObjectMatches(final InternalFactHandle handle) {
         this.list = new LinkedList();
         this.handle = handle;
     }
@@ -79,7 +80,7 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
      * Return <code>FactHandleImpl</code> that this provides the <code>TupleMatch</code>es for.
      * @return
      */
-    public DefaultFactHandle getFactHandle() {
+    public InternalFactHandle getFactHandle() {
         return this.handle;
     }
 

@@ -22,7 +22,10 @@ import java.util.Set;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
@@ -41,7 +44,7 @@ import org.drools.spi.PropagationContext;
  */
 class AlphaNode extends ObjectSource
     implements
-    ObjectSink,
+    ObjectSinkNode,
     NodeMemory {
 
     /**
@@ -54,6 +57,9 @@ class AlphaNode extends ObjectSource
 
     /** The <code>ObjectSource</code> */
     private final ObjectSource    objectSource;
+    
+    private ObjectSinkNode previousObjectSinkNode;
+    private ObjectSinkNode nextObjectSinkNode; 
 
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
@@ -69,27 +75,7 @@ class AlphaNode extends ObjectSource
     AlphaNode(final int id,
               final FieldConstraint constraint,
               final ObjectSource objectSource) {
-        this( id,
-              null,
-              constraint,
-              objectSource );
-    }
-
-    /**
-     * Construct an <code>AlphaNode</code> with a unique id using the provided
-     * <code>ObjectSinkList</code> and <code>FieldConstraint</code>. 
-     * 
-     * @param id Node unique id
-     * @param sinklist An object sink list. If null, a default will be used.
-     * @param constraint Node's constraints
-     * @param objectSource Node's object source
-     */
-    AlphaNode(final int id,
-              final ObjectSinkList sinklist,
-              final FieldConstraint constraint,
-              final ObjectSource objectSource) {
-        super( id,
-               sinklist );
+        super( id );
         this.constraint = constraint;
         this.objectSource = objectSource;
         setHasMemory( true );
@@ -113,11 +99,11 @@ class AlphaNode extends ObjectSource
         this.objectSource.addObjectSink( this );
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
@@ -127,83 +113,82 @@ class AlphaNode extends ObjectSource
         }
     }
 
-    public void assertObject(final DefaultFactHandle handle,
+    public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) throws FactException {
+                             final InternalWorkingMemory workingMemory) throws FactException {
         final Set memory = (Set) workingMemory.getNodeMemory( this );
         if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
             memory.add( handle );
-            propagateAssertObject( handle,
-                                   context,
-                                   workingMemory );
+            sink.propagateAssertObject( handle,
+                                        context,
+                                        workingMemory );
         }
     }
 
-    public void retractObject(final DefaultFactHandle handle,
+    public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ReteooWorkingMemory workingMemory) {
+                              final InternalWorkingMemory workingMemory) {
         final Set memory = (Set) workingMemory.getNodeMemory( this );
         if ( memory.remove( handle ) ) {
-            propagateRetractObject( handle,
-                                    context,
-                                    workingMemory );
+
+            this.sink.propagateRetractObject( handle,
+                                              context,
+                                              workingMemory,
+                                              true );
         }
     }
 
-    public void modifyObject(final DefaultFactHandle handle,
+    public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         final Set memory = (Set) workingMemory.getNodeMemory( this );
 
         if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
             if ( memory.add( handle ) ) {
-                propagateAssertObject( handle,
-                                       context,
-                                       workingMemory );
+                this.sink.propagateAssertObject( handle,
+                                                 context,
+                                                 workingMemory );
             } else {
                 // handle already existed so propagate as modify
-                propagateModifyObject( handle,
-                                       context,
-                                       workingMemory );
+                this.sink.propagateModifyObject( handle,
+                                                 context,
+                                                 workingMemory );
             }
         } else {
             if ( memory.remove( handle ) ) {
-                propagateRetractObject( handle,
-                                        context,
-                                        workingMemory );
+                this.sink.propagateRetractObject( handle,
+                                                  context,
+                                                  workingMemory,
+                                                  false );
             }
         }
     }
 
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         this.attachingNewNode = true;
 
         final Set memory = (Set) workingMemory.getNodeMemory( this );
 
         for ( final Iterator it = memory.iterator(); it.hasNext(); ) {
-            final DefaultFactHandle handle = (DefaultFactHandle) it.next();
-            final ObjectSink sink = this.objectSinks.getLastObjectSink();
-            if ( sink != null ) {
-                sink.assertObject( handle,
-                                   context,
-                                   workingMemory );
-            } else {
-                throw new RuntimeException( "Possible BUG: trying to propagate an assert to a node that was the last added node" );
-            }
+            final InternalFactHandle handle = (InternalFactHandle) it.next();
+            this.sink.propagateNewObjectSink( handle,
+                                              context,
+                                              workingMemory );
         }
 
         this.attachingNewNode = false;
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
-        if( !node.isInUse()) {
-            this.objectSinks.remove( (ObjectSink) node );
+                       final InternalWorkingMemory[] workingMemories) {
+
+        if ( !node.isInUse() ) {
+            removeObjectSink( (ObjectSink) node );
         }
         removeShare();
         if ( !this.isInUse() ) {
@@ -223,7 +208,7 @@ class AlphaNode extends ObjectSource
     }
 
     public String toString() {
-        return "[AlphaNode("+this.id+") constraint=" + this.constraint + "]";
+        return "[AlphaNode(" + this.id + ") constraint=" + this.constraint + "]";
     }
 
     public int hashCode() {
@@ -248,4 +233,40 @@ class AlphaNode extends ObjectSource
 
         return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
     }
+    
+    /**
+     * Returns the next node
+     * @return
+     *      The next ObjectSinkNode
+     */
+    public ObjectSinkNode getNextObjectSinkNode() {
+        return this.nextObjectSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next ObjectSinkNode
+     */
+    public void setNextObjectSinkNode(ObjectSinkNode next) {
+        this.nextObjectSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous ObjectSinkNode
+     */
+    public ObjectSinkNode getPreviousObjectSinkNode() {
+       return this.previousObjectSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous ObjectSinkNode
+     */
+    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
+        this.previousObjectSinkNode = previous;
+    }    
 }

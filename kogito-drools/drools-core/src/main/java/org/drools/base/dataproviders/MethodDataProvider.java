@@ -13,21 +13,21 @@ import org.drools.spi.Tuple;
 public class MethodDataProvider
     implements
     DataProvider {
-    private final MethodInvoker method;
+    private final Invoker invoker;
     
-    public MethodDataProvider(MethodInvoker method) {
-        this.method = method;
+    public MethodDataProvider(Invoker invoker) {
+        this.invoker = invoker;
     }
      
 
     public Declaration[] getRequiredDeclarations() {
-        return this.method.getRequiredDeclarations();
+        return this.invoker.getRequiredDeclarations();
     }
 
     public Iterator getResults(Tuple tuple,
                                WorkingMemory wm,
                                PropagationContext ctx) {
-        Object result = this.method.invoke( tuple, wm, ctx );
+        Object result = this.invoker.invoke( tuple, wm, ctx );
         if ( result instanceof Collection ) {
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {

@@ -26,7 +26,10 @@ import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactImpl;
@@ -104,13 +107,12 @@ class Rete extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(final DefaultFactHandle handle,
+    public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         final HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
         final Object object = handle.getObject();
-
         
         Object key = null;
             
@@ -143,9 +145,9 @@ class Rete extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void retractObject(final DefaultFactHandle handle,
+    public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ReteooWorkingMemory workingMemory) {
+                              final InternalWorkingMemory workingMemory) {
         final HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
         final Object object = handle.getObject();
@@ -164,9 +166,9 @@ class Rete extends ObjectSource
         }
     }
 
-    public void modifyObject(final DefaultFactHandle handle,
+    public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         final HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
         final Object object = handle.getObject();
@@ -262,13 +264,13 @@ class Rete extends ObjectSource
         // do nothing this is the root node
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         // do nothing this is the root node        
     }
 
     // when a new ObjectTypeNode is added, check for possible 
     // propagations into the new node
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         if ( this.lastAddedNode != null ) {
             final ObjectType objType = this.lastAddedNode.getObjectType();
@@ -286,7 +288,7 @@ class Rete extends ObjectSource
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
+                       final InternalWorkingMemory[] workingMemories) {
         final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
         removeObjectSink( objectTypeNode );
         //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        

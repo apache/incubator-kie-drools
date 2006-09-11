@@ -71,8 +71,8 @@ public class MethodDataProviderTest extends TestCase {
                           var2Dec );
 
         List args = new ArrayList();
-        args.add( new LiteralValue( "boo", String.class ) );
-        args.add( new LiteralValue( "42", Integer.class ) );
+        args.add( new LiteralValue( "boo" ) );
+        args.add( new LiteralValue( new Integer( 42 ) ) );
         args.add( new DeclarationVariable( var2Dec ) );
 
         MethodInvoker invoker = new MethodInvoker( "helloWorld",

@@ -24,8 +24,10 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.BaseMultiLinkedListNode;
 import org.drools.util.LinkedList;
@@ -61,10 +63,12 @@ public class ReteTuple extends BaseMultiLinkedListNode
     /**
      * 
      */
-    private static final long serialVersionUID = -4430322768472253111L;
+    private static final long serialVersionUID = 320;
 
     /** The </code>TupleKey</code> */
     private final TupleKey    key;
+    
+    private final TupleSink   sink;
 
     /** The <code>Map</code> of <code>FactHandleImpl</code> matches */
     private Map               matches          = Collections.EMPTY_MAP;
@@ -72,7 +76,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
     /** The resuling propagation when used in a <code>NotNode</code> */
     private LinkedList        linkedTuples;
 
-    private Activation        activation;
+    private Activation        activation;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -87,8 +91,9 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * @param workingMemory
      *      The <code>WorkingMemory</code> session.
      */
-    public ReteTuple(final DefaultFactHandle handle) {
+    public ReteTuple(final InternalFactHandle handle, final TupleSink sink) {
         this.key = new TupleKey( handle );
+        this.sink = sink;
     }
 
     /**
@@ -96,8 +101,9 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * 
      * @param tuple
      */
-    public ReteTuple(final ReteTuple tuple) {
+    public ReteTuple(final ReteTuple tuple, final TupleSink sink) {
         this.key = new TupleKey( tuple.key );
+        this.sink = sink;
     }
 
     /**
@@ -109,9 +115,10 @@ public class ReteTuple extends BaseMultiLinkedListNode
      *      the <code>FactHandleImpl</code> to be joined.
      */
     public ReteTuple(final ReteTuple left,
-              final DefaultFactHandle handle) {
+              final InternalFactHandle handle, final TupleSink sink) {
         this.key = new TupleKey( left.key,
                                  handle );
+        this.sink = sink;
     }
 
     // ------------------------------------------------------------
@@ -207,7 +214,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
         this.matches.clear();
     }    
     
-    public void addTupleMatch(final DefaultFactHandle handle,
+    public void addTupleMatch(final InternalFactHandle handle,
                               final TupleMatch node) {
         if ( this.matches == Collections.EMPTY_MAP ) {
             this.matches = new HashMap(2);
@@ -228,7 +235,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
         return (TupleMatch) this.matches.get( handle );
     }
 
-    public TupleMatch removeMatch(final DefaultFactHandle handle) {
+    public TupleMatch removeMatch(final InternalFactHandle handle) {
         return (TupleMatch) this.matches.remove( handle );
     }
 
@@ -287,4 +294,26 @@ public class ReteTuple extends BaseMultiLinkedListNode
         }
         return buffer.toString();
     }
+
+    public void assertTuple(PropagationContext context,
+                            InternalWorkingMemory workingMemory) {
+        this.sink.assertTuple( this, context, workingMemory );
+        
+    }
+
+    public void modifyTuple(PropagationContext context,
+                            InternalWorkingMemory workingMemory) {
+        this.sink.modifyTuple( this, context, workingMemory );
+        
+    }
+
+    public void retractTuple(PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        this.sink.retractTuple( this, context, workingMemory );        
+    }
+    
+    public TupleSink getTupleSink() {
+        return this.sink;
+    }
+    
 }

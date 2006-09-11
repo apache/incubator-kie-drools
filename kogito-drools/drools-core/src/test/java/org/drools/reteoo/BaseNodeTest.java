@@ -18,6 +18,8 @@ package org.drools.reteoo;
 
 import junit.framework.TestCase;
 
+import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class BaseNodeTest extends TestCase {
@@ -52,19 +54,19 @@ public class BaseNodeTest extends TestCase {
 
         }
 
-        public void updateNewNode(final ReteooWorkingMemory workingMemory,
+        public void updateNewNode(final InternalWorkingMemory workingMemory,
                                   final PropagationContext context) {
             // TODO Auto-generated method stub
 
         }
 
         public void remove(final BaseNode node,
-                           final ReteooWorkingMemory[] workingMemories) {
+                           final InternalWorkingMemory[] workingMemories) {
             // TODO Auto-generated method stub
 
         }
 
-        public void attach(final ReteooWorkingMemory[] workingMemories) {
+        public void attach(final InternalWorkingMemory[] workingMemories) {
             // TODO Auto-generated method stub
 
         }

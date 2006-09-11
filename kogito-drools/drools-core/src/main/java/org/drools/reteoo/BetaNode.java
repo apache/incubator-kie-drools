@@ -17,7 +17,10 @@ package org.drools.reteoo;
  */
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
 import org.drools.common.BetaNodeBinder;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
@@ -35,10 +38,9 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-abstract class BetaNode extends TupleSource
-    implements
-    TupleSink,
-    ObjectSink,
+abstract class BetaNode extends TupleSource implements
+    TupleSinkNode,
+    ObjectSinkNode,
     NodeMemory {
     // ------------------------------------------------------------
     // Instance members
@@ -51,6 +53,12 @@ abstract class BetaNode extends TupleSource
     private final ObjectSource   rightInput;
 
     private final BetaNodeBinder joinNodeBinder;
+    
+    private TupleSinkNode previousTupleSinkNode;
+    private TupleSinkNode nextTupleSinkNode;
+    
+    private ObjectSinkNode previousObjectSinkNode;
+    private ObjectSinkNode nextObjectSinkNode;   
 
     // ------------------------------------------------------------
     // Constructors
@@ -104,11 +112,11 @@ abstract class BetaNode extends TupleSource
         this.rightInput.addObjectSink( this );
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
@@ -122,21 +130,21 @@ abstract class BetaNode extends TupleSource
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
-        if( !node.isInUse()) {
-            getTupleSinks().remove( node );
-        }
-        removeShare();
-
-        if ( ! this.isInUse() ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                workingMemories[i].clearNodeMemory( this );
-            }
-        }
-        this.rightInput.remove( this,
-                                workingMemories );
-        this.leftInput.remove( this,
-                               workingMemories );
+                       final InternalWorkingMemory[] workingMemories) {
+//        if( !node.isInUse()) {
+//            getTupleSinks().remove( node );
+//        }
+//        removeShare();
+//
+//        if ( ! this.isInUse() ) {
+//            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+//                workingMemories[i].clearNodeMemory( this );
+//            }
+//        }
+//        this.rightInput.remove( this,
+//                                workingMemories );
+//        this.leftInput.remove( this,
+//                               workingMemories );
 
     }
 
@@ -145,7 +153,28 @@ abstract class BetaNode extends TupleSource
      */
     BetaNodeBinder getJoinNodeBinder() {
         return this.joinNodeBinder;
+    }    
+    
+    protected TupleMatch attemptJoin(final ReteTuple leftTuple,
+                                     final InternalFactHandle handle,
+                                     final ObjectMatches objectMatches,
+                                     final BetaNodeBinder binder,
+                                     final InternalWorkingMemory workingMemory) {
+        if ( binder.isAllowed( handle,
+                               leftTuple,
+                               workingMemory ) ) {
+            TupleMatch tupleMatch = objectMatches.add( leftTuple );          
+
+            leftTuple.addTupleMatch( handle,
+                                     tupleMatch );
+            return tupleMatch;
+
+        } else {
+            return null;
+        }
     }
+    
+    //public abstract TupleSink getTupleSink();
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -186,5 +215,78 @@ abstract class BetaNode extends TupleSource
         return new BetaMemory( config,
                                this.getJoinNodeBinder() );
     }
+    
+    
+    /**
+     * Returns the next node
+     * @return
+     *      The next TupleSinkNode
+     */
+    public TupleSinkNode getNextTupleSinkNode() {
+        return this.nextTupleSinkNode;
+    }
 
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next TupleSinkNode
+     */
+    public void setNextTupleSinkNode(TupleSinkNode next) {
+        this.nextTupleSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous TupleSinkNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode() {
+       return this.previousTupleSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous TupleSinkNode
+     */
+    public void setPreviousTupleSinkNode(TupleSinkNode previous) {
+        this.previousTupleSinkNode = previous;
+    }
+
+    /**
+     * Returns the next node
+     * @return
+     *      The next ObjectSinkNode
+     */
+    public ObjectSinkNode getNextObjectSinkNode() {
+        return this.nextObjectSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next ObjectSinkNode
+     */
+    public void setNextObjectSinkNode(ObjectSinkNode next) {
+        this.nextObjectSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous ObjectSinkNode
+     */
+    public ObjectSinkNode getPreviousObjectSinkNode() {
+       return this.previousObjectSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous ObjectSinkNode
+     */
+    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
+        this.previousObjectSinkNode = previous;
+    }
+    
 }

@@ -36,7 +36,7 @@ class TupleKey
     /**
      * 
      */
-    private static final long    serialVersionUID = -880184112928387666L;
+    private static final long    serialVersionUID = 320L;
 
     public static final TupleKey EMPTY_KEY        = new TupleKey();
 
@@ -66,13 +66,13 @@ class TupleKey
         this.recency = key.recency;
     }
 
-    public TupleKey(final DefaultFactHandle handle) {
+    public TupleKey(final InternalFactHandle handle) {
         this.handles = new FactHandleList( handle );
         this.recency = handle.getRecency();
     }
 
     public TupleKey(final TupleKey left,
-                    final DefaultFactHandle handle) {
+                    final InternalFactHandle handle) {
         this.handles = new FactHandleList( left.handles,
                                            handle );
         this.recency = left.recency + handle.getRecency();

@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.spi.PropagationContext;
 
@@ -44,7 +45,9 @@ abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>FactHandleImpl</code>. */
-    protected ObjectSinkList objectSinks;
+    protected ObjectSinkPropagator sink;
+    
+    protected ObjectSource objectSource;   
 
     // ------------------------------------------------------------
     // Constructors
@@ -66,9 +69,9 @@ abstract class ObjectSource extends BaseNode
      * @param id
      */
     ObjectSource(final int id,
-                 final ObjectSinkList objectSinks) {
+                 final ObjectSource objectSource) {
         super( id );
-        this.objectSinks = (objectSinks != null) ? objectSinks : ObjectSinkListFactory.newDefaultObjectSinkList();
+        this.objectSource = objectSource;
     }
 
     // ------------------------------------------------------------
@@ -85,8 +88,15 @@ abstract class ObjectSource extends BaseNode
      *            <code>FactHandleImpl</code>.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
-        if ( !this.objectSinks.contains( objectSink ) ) {
-            this.objectSinks.add( objectSink );
+        if ( this.sink == null ) {
+            this.sink = new SingleObjectSinkAdapter( objectSink );
+        } else if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
+            CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) new CompositeObjectSinkAdapter();
+            sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
+            sinkAdapter.addObjectSink( objectSink );
+            this.sink = sinkAdapter;
+        } else {
+            ( (CompositeObjectSinkAdapter) sink ).addObjectSink( objectSink );
         }
     }
 
@@ -97,80 +107,14 @@ abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to remove
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
-        this.objectSinks.remove( objectSink );
+        if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
+            this.sink = null;
+        } else { 
+            CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) objectSink;
+            sinkAdapter.removeObjectSink( objectSink );
+            if ( sinkAdapter.size() == 1 ) {
+                this.sink = new SingleObjectSinkAdapter( sinkAdapter.getSinks()[0] );
+            }
+        }         
     }
-
-    /**
-     * Propagate the assertion of a <code>FactHandleImpl/code> to this node's
-     * <code>ObjectSink</code>s.
-     * 
-     * @param handle
-     *           the FactHandleImpl to be asserted
-     * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action            
-     * @param workingMemory
-     *            the <code>WorkingMemory</code> session.
-     */
-    protected void propagateAssertObject(final DefaultFactHandle handle,
-                                         final PropagationContext context,
-                                         final ReteooWorkingMemory workingMemory) {
-        for ( final Iterator i = this.objectSinks.iterator( workingMemory,
-                                                            handle ); i.hasNext(); ) {
-            ((ObjectSink) i.next()).assertObject( handle,
-                                                  context,
-                                                  workingMemory );
-        }
-    }
-
-    /**
-     * Propagate the retration of a <code>FactHandleImpl/code> to this node's
-     * <code>ObjectSink</code>.
-     * 
-     * @param handle
-     *           the FactHandleImpl to be retractred
-     * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action            
-     * @param workingMemory
-     *            the <code>WorkingMemory</code> session.
-     *
-     */
-    protected void propagateRetractObject(final DefaultFactHandle handle,
-                                          final PropagationContext context,
-                                          final ReteooWorkingMemory workingMemory) {
-        for ( final Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
-            ((ObjectSink) i.next()).retractObject( handle,
-                                                   context,
-                                                   workingMemory );
-        }
-    }
-
-    protected void propagateModifyObject(final DefaultFactHandle handle,
-                                         final PropagationContext context,
-                                         final ReteooWorkingMemory workingMemory) {
-        for ( final Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
-            ((ObjectSink) i.next()).modifyObject( handle,
-                                                  context,
-                                                  workingMemory );
-        }
-    }
-
-    /**
-     * Retrieve the <code>ObectsSinks</code> that receive propagated
-     * <code>FactHandleImpl</code>s.
-     * 
-     * @return The <code>ObjectsSinks</code> that receive propagated
-     *         <code>FactHandles</code>.
-     */
-    public ObjectSinkList getObjectSinks() {
-        return this.objectSinks;
-    }
-
-    /**
-     * Returns the object sinks as an unmodifiable list
-     * @return
-     */
-    public List getObjectSinksAsList() {
-        return this.objectSinks.getObjectsAsList();
-    }
-
 }

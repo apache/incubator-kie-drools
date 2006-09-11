@@ -19,6 +19,8 @@ package org.drools.reteoo;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class MockTupleSource extends TupleSource {
@@ -48,18 +50,18 @@ public class MockTupleSource extends TupleSource {
         return this.updated;
     }
 
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         this.updated++;
     }
 
     public void remove(final BaseNode node,
-                       final ReteooWorkingMemory[] workingMemories) {
+                       final InternalWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }
 
-    public void attach(final ReteooWorkingMemory[] workingMemories) {
+    public void attach(final InternalWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }

@@ -1,10 +1,10 @@
-package org.drools.util;
+package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.drools.reteoo.CompositeObjectSinkAdapter.FieldIndex;
+import org.drools.util.LinkedListNode;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -45,55 +45,55 @@ import org.drools.reteoo.CompositeObjectSinkAdapter.FieldIndex;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class LinkedList implements Serializable {
+public class ObjectSinkNodeList implements Serializable {
     private static final long serialVersionUID = 320;
     
-    private LinkedListNode firstNode;
-    private LinkedListNode lastNode;
+    private ObjectSinkNode firstNode;
+    private ObjectSinkNode lastNode;
 
     private int            size;
 
     /**
      * Construct an empty <code>LinkedList</code>
      */
-    public LinkedList() {
+    public ObjectSinkNodeList() {
 
     }
 
     /**
-     * Add a <code>LinkedListNode</code> to the list. If the <code>LinkedList</code> is empty then the first and 
+     * Add a <code>ObjectSinkNode</code> to the list. If the <code>LinkedList</code> is empty then the first and 
      * last nodes are set to the added node.
      * 
      * @param node
-     *      The <code>LinkedListNode</code> to be added
+     *      The <code>ObjectSinkNode</code> to be added
      */
-    public void add(final LinkedListNode node) {
+    public void add(final ObjectSinkNode node) {
         if ( this.firstNode == null ) {
             this.firstNode = node;
             this.lastNode = node;;
         } else {
-            this.lastNode.setNext( node );
-            node.setPrevious( this.lastNode );
+            this.lastNode.setNextObjectSinkNode( node );
+            node.setPreviousObjectSinkNode( this.lastNode );
             this.lastNode = node;
         }
         this.size++;
     }
 
     /**
-     * Removes a <code>LinkedListNode</code> from the list. This works by attach the previous reference to the child reference.
+     * Removes a <code>ObjectSinkNode</code> from the list. This works by attach the previous reference to the child reference.
      * When the node to be removed is the first node it calls <code>removeFirst()</code>. When the node to be removed is the last node
      * it calls <code>removeLast()</code>.
      * 
      * @param node
-     *      The <code>LinkedListNode</code> to be removed.
+     *      The <code>ObjectSinkNode</code> to be removed.
      */
-    public void remove(final LinkedListNode node) {
+    public void remove(final ObjectSinkNode node) {
         if ( (this.firstNode != node) && (this.lastNode != node) ) {
-            node.getPrevious().setNext( node.getNext() );
-            node.getNext().setPrevious( node.getPrevious() );
+            node.getPreviousObjectSinkNode().setNextObjectSinkNode( node.getNextObjectSinkNode() );
+            node.getNextObjectSinkNode().setPreviousObjectSinkNode( node.getPreviousObjectSinkNode() );
             this.size--;
-            node.setPrevious( null );
-            node.setNext( null );
+            node.setPreviousObjectSinkNode( null );
+            node.setNextObjectSinkNode( null );
 
         } else {
             if ( this.firstNode == node ) {
@@ -107,18 +107,18 @@ public class LinkedList implements Serializable {
     /**
      * Return the first node in the list
      * @return
-     *      The first <code>LinkedListNode</code>.
+     *      The first <code>ObjectSinkNode</code>.
      */
-    public final LinkedListNode getFirst() {
+    public final ObjectSinkNode getFirst() {
         return this.firstNode;
     }
 
     /**
      * Return the last node in the list
      * @return
-     *      The last <code>LinkedListNode</code>.
+     *      The last <code>ObjectSinkNode</code>.
      */
-    public final LinkedListNode getLast() {
+    public final ObjectSinkNode getLast() {
         return this.lastNode;
     }
 
@@ -127,17 +127,17 @@ public class LinkedList implements Serializable {
      * node then both first and last node references are set to null.
      * 
      * @return
-     *      The first <code>LinkedListNode</code>.
+     *      The first <code>ObjectSinkNode</code>.
      */
-    public LinkedListNode removeFirst() {
+    public ObjectSinkNode removeFirst() {
         if ( this.firstNode == null ) {
             return null;
         }
-        final LinkedListNode node = this.firstNode;
-        this.firstNode = node.getNext();
-        node.setNext( null );
+        final ObjectSinkNode node = this.firstNode;
+        this.firstNode = node.getNextObjectSinkNode();
+        node.setNextObjectSinkNode( null );
         if ( this.firstNode != null ) {
-            this.firstNode.setPrevious( null );
+            this.firstNode.setPreviousObjectSinkNode( null );
         } else {
             this.lastNode = null;
         }
@@ -150,23 +150,23 @@ public class LinkedList implements Serializable {
      * node then both first and last node references are set to null.
      * 
      * @return
-     *      The first <code>LinkedListNode</code>.
+     *      The first <code>ObjectSinkNode</code>.
      */
-    public LinkedListNode removeLast() {
+    public ObjectSinkNode removeLast() {
         if ( this.lastNode == null ) {
             return null;
         }
-        final LinkedListNode node = this.lastNode;
-        this.lastNode = node.getPrevious();
-        node.setPrevious( null );
+        final ObjectSinkNode node = this.lastNode;
+        this.lastNode = node.getPreviousObjectSinkNode();
+        node.setPreviousObjectSinkNode( null );
         if ( this.lastNode != null ) {
-            this.lastNode.setNext( null );
+            this.lastNode.setNextObjectSinkNode( null );
         } else {
             this.firstNode = this.lastNode;
         }
         this.size--;
         return node;
-    }    
+    }
 
     /**
      * @return
@@ -198,8 +198,8 @@ public class LinkedList implements Serializable {
      */
     public Iterator iterator() {
         return new Iterator() {
-            private LinkedListNode currentNode = null;
-            private LinkedListNode nextNode    = getFirst();
+            private ObjectSinkNode currentNode = null;
+            private ObjectSinkNode nextNode    = getFirst();
 
             public boolean hasNext() {
                 return (this.nextNode != null);
@@ -208,7 +208,7 @@ public class LinkedList implements Serializable {
             public Object next() {
                 this.currentNode = this.nextNode;
                 if ( this.currentNode != null ) {
-                    this.nextNode = this.currentNode.getNext();
+                    this.nextNode = this.currentNode.getNextObjectSinkNode();
                 } else {
                     throw new NoSuchElementException( "No more elements to return" );
                 }
@@ -217,7 +217,7 @@ public class LinkedList implements Serializable {
 
             public void remove() {
                 if ( this.currentNode != null ) {
-                    LinkedList.this.remove( this.currentNode );
+                    ObjectSinkNodeList.this.remove( this.currentNode );
                     this.currentNode = null;
                 } else {
                     throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );

@@ -23,6 +23,8 @@ import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Column;
@@ -106,7 +108,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#updateNewNode(org.drools.reteoo.ReteooWorkingMemory, org.drools.spi.PropagationContext)}.
+     * Test method for {@link org.drools.reteoo.AccumulateNode#updateNewNode(InternalWorkingMemory, org.drools.spi.PropagationContext)}.
      */
     public void testUpdateNewNode() {
         this.node.updateNewNode( workingMemory,
@@ -327,7 +329,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#assertObject(org.drools.common.DefaultFactHandle, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.drools.reteoo.AccumulateNode#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
      */
     public void testAssertObject() {
         final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
@@ -372,7 +374,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#modifyObject(org.drools.common.DefaultFactHandle, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.drools.reteoo.AccumulateNode#modifyObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
      */
     public void testModifyObject() {
         final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
@@ -426,7 +428,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#retractObject(org.drools.common.DefaultFactHandle, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.drools.reteoo.AccumulateNode#retractObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
      */
     public void testRetractObject() {
         final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( "cheese" );

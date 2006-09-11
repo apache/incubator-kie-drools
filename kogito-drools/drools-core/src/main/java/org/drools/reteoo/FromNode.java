@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.DataProvider;
@@ -168,7 +170,7 @@ public class FromNode extends TupleSource
         this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(ReteooWorkingMemory[] workingMemories) {
+    public void attach(InternalWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -183,7 +185,7 @@ public class FromNode extends TupleSource
     }
 
     public void remove(BaseNode node,
-                       ReteooWorkingMemory[] workingMemories) {
+                       InternalWorkingMemory[] workingMemories) {
         if( !node.isInUse() ) {
             getTupleSinks().remove( node );
         }
@@ -198,7 +200,7 @@ public class FromNode extends TupleSource
                                  workingMemories );
     }
 
-    public void updateNewNode(ReteooWorkingMemory workingMemory,
+    public void updateNewNode(InternalWorkingMemory workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
 

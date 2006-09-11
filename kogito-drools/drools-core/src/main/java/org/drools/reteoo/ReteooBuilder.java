@@ -32,6 +32,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.common.BaseNode;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
@@ -101,9 +102,6 @@ class ReteooBuilder
 
     private int                             currentOffsetAdjustment;
 
-    /** A factory for object sink lists */
-    private transient ObjectSinkListFactory sinklistFactory;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -122,9 +120,6 @@ class ReteooBuilder
 
         //Set to 1 as Rete node is set to 0
         this.id = 1;
-
-        // creating factory
-        this.sinklistFactory = new ObjectSinkListFactory( this.ruleBase.getConfiguration() );
     }
 
     /**
@@ -296,7 +291,6 @@ class ReteooBuilder
                     this.currentOffsetAdjustment = 1;
 
                     final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                                      this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                                                       new ClassObjectType( InitialFact.class ),
                                                                                       this.rete ) );
 
@@ -347,7 +341,6 @@ class ReteooBuilder
         this.currentOffsetAdjustment += 1;
 
         final ObjectSource objectTypeSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                              this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                                               new ClassObjectType( DroolsQuery.class ),
                                                                               this.rete ) );
 
@@ -362,7 +355,6 @@ class ReteooBuilder
                                                                     field );
 
         final ObjectSource alphaNodeSource = attachNode( new AlphaNode( this.id++,
-                                                                        this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
                                                                         constraint,
                                                                         objectTypeSource ) );
 
@@ -403,7 +395,6 @@ class ReteooBuilder
         final List constraints = column.getConstraints();
 
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                            this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                             column.getObjectType(),
                                                             this.rete ) );
 
@@ -440,7 +431,6 @@ class ReteooBuilder
             final FieldConstraint fieldConstraint = (FieldConstraint) object;
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
-                                                               this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
                                                                fieldConstraint,
                                                                this.objectSource ) );
             } else {
@@ -576,7 +566,6 @@ class ReteooBuilder
             this.currentOffsetAdjustment = 1;
 
             final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                              this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                                               new ClassObjectType( InitialFact.class ),
                                                                               this.rete ) );
 
@@ -646,7 +635,6 @@ class ReteooBuilder
             this.currentOffsetAdjustment = 1;
 
             final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                                 this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                                                  new ClassObjectType( InitialFact.class ),
                                                                                  this.rete ) );
 

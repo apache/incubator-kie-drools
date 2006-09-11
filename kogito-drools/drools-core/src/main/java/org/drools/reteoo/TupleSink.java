@@ -18,7 +18,9 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
+import org.drools.util.LinkedListNode;
 
 /**
  * Receiver of propagated <code>ReteTuple</code>s from a
@@ -45,14 +47,16 @@ interface TupleSink
      */
     void assertTuple(ReteTuple tuple,
                      PropagationContext context,
-                     ReteooWorkingMemory workingMemory);
+                     InternalWorkingMemory workingMemory);
 
     void retractTuple(ReteTuple tuple,
                       PropagationContext context,
-                      ReteooWorkingMemory workingMemory);
+                      InternalWorkingMemory workingMemory);
 
     void modifyTuple(ReteTuple tuple,
                      PropagationContext context,
-                     ReteooWorkingMemory workingMemory);
+                     InternalWorkingMemory workingMemory);
+    
+    
 
 }

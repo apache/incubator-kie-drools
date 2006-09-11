@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.ClassFieldExtractor;
+import org.drools.common.BaseNode;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.FieldConstraint;
 import org.drools.util.ReflectiveVisitor;

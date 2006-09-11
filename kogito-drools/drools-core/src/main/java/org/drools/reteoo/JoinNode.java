@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BetaNodeBinder;
-import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -107,9 +108,9 @@ class JoinNode extends BetaNode {
      */
     public void assertTuple(final ReteTuple leftTuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         memory.add( workingMemory,
                     leftTuple );
 
@@ -118,18 +119,18 @@ class JoinNode extends BetaNode {
         for ( final Iterator it = memory.rightObjectIterator( workingMemory,
                                                               leftTuple ); it.hasNext(); ) {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            final DefaultFactHandle handle = objectMatches.getFactHandle();
+            final InternalFactHandle handle = objectMatches.getFactHandle();
             final TupleMatch tupleMatch = attemptJoin( leftTuple,
                                                        handle,
                                                        objectMatches,
                                                        binder,
                                                        workingMemory );
             if ( tupleMatch != null ) {
-                propagateAssertTuple( new ReteTuple( leftTuple,
-                                                     handle ),
-                                      tupleMatch,
-                                      context,
-                                      workingMemory );
+                sink.propagateAssertTuple( leftTuple,
+                                           handle,
+                                           tupleMatch,
+                                           context,
+                                           workingMemory );
             }
         }
     }
@@ -152,9 +153,9 @@ class JoinNode extends BetaNode {
      * @param workingMemory
      *            The working memory seesion.
      */
-    public void assertObject(final DefaultFactHandle handle,
+    public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         final ObjectMatches objectMatches = memory.add( workingMemory,
                                                         handle );
@@ -168,12 +169,13 @@ class JoinNode extends BetaNode {
                                                        objectMatches,
                                                        binder,
                                                        workingMemory );
+
             if ( tupleMatch != null ) {
-                propagateAssertTuple( new ReteTuple( leftTuple,
-                                                     handle ),
-                                      tupleMatch,
-                                      context,
-                                      workingMemory );
+                this.sink.propagateAssertTuple( leftTuple,
+                                                handle,
+                                                tupleMatch,
+                                                context,
+                                                workingMemory );
             }
         }
     }
@@ -189,11 +191,11 @@ class JoinNode extends BetaNode {
      * @param workingMemory
      *            The working memory seesion.
      */
-    public void retractObject(final DefaultFactHandle handle,
+    public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ReteooWorkingMemory workingMemory) {
+                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         // Remove the FactHandle from memory
         final ObjectMatches objectMatches = memory.remove( workingMemory,
                                                            handle );
@@ -201,9 +203,8 @@ class JoinNode extends BetaNode {
         for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
             final ReteTuple leftTuple = tupleMatch.getTuple();
             leftTuple.removeMatch( handle );
-            propagateRetractTuple( tupleMatch,
-                                   context,
-                                   workingMemory );
+            tupleMatch.propagateRetractTuple( context,
+                                              workingMemory );
         }
     }
 
@@ -221,7 +222,7 @@ class JoinNode extends BetaNode {
      */
     public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.remove( workingMemory,
@@ -233,16 +234,15 @@ class JoinNode extends BetaNode {
             for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
                 final TupleMatch tupleMatch = (TupleMatch) it.next();
                 tupleMatch.getObjectMatches().remove( tupleMatch );
-                propagateRetractTuple( tupleMatch,
-                                       context,
-                                       workingMemory );
+                tupleMatch.propagateRetractTuple( context,
+                                                  workingMemory );
             }
         }
     }
 
     public void modifyTuple(final ReteTuple leftTuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // We remove the tuple as now its modified it needs to go to the top of
@@ -262,9 +262,9 @@ class JoinNode extends BetaNode {
             // TIRELLI's NOTE: the following is necessary because in case memory  
             // indexing is enabled, the loop over right objects may skip some of the
             // previously matched objects
-            final Map oldMatches = new HashMap(matches);
+            final Map oldMatches = new HashMap( matches );
             leftTuple.getTupleMatches().clear();
-            
+
             // ensure the tuple is at the top of the memory
             memory.add( workingMemory,
                         leftTuple );
@@ -273,7 +273,7 @@ class JoinNode extends BetaNode {
             for ( final Iterator rightIterator = memory.rightObjectIterator( workingMemory,
                                                                              leftTuple ); rightIterator.hasNext(); ) {
                 final ObjectMatches objectMatches = (ObjectMatches) rightIterator.next();
-                final DefaultFactHandle handle = objectMatches.getFactHandle();
+                final InternalFactHandle handle = objectMatches.getFactHandle();
 
                 if ( binder.isAllowed( handle,
                                        leftTuple,
@@ -283,20 +283,19 @@ class JoinNode extends BetaNode {
                         // ensures tupleMatch will be in the appropriate order
                         objectMatches.remove( tupleMatch );
                         objectMatches.add( tupleMatch );
-                        leftTuple.addTupleMatch( handle, tupleMatch );
-                        
-                        propagateModifyTuple( tupleMatch,
-                                              context,
-                                              workingMemory );
+                        leftTuple.addTupleMatch( handle,
+                                                 tupleMatch );
+                        tupleMatch.propagateModifyTuple( context,
+                                                         workingMemory );
                     } else {
                         tupleMatch = objectMatches.add( leftTuple );
                         leftTuple.addTupleMatch( handle,
                                                  tupleMatch );
-                        propagateAssertTuple( new ReteTuple( leftTuple,
-                                                             handle ),
-                                              tupleMatch,
-                                              context,
-                                              workingMemory );
+                        this.sink.propagateAssertTuple( leftTuple,
+                                                        handle,
+                                                        tupleMatch,
+                                                        context,
+                                                        workingMemory );
                     }
 
                 } else {
@@ -304,33 +303,30 @@ class JoinNode extends BetaNode {
                     if ( tupleMatch != null ) {
                         oldMatches.remove( handle );
                         objectMatches.remove( tupleMatch );
-                        propagateRetractTuple( tupleMatch,
-                                               context,
-                                               workingMemory );
+                        tupleMatch.propagateRetractTuple( context,
+                                                          workingMemory );
                     }
                 }
             }
-            
+
             // TIRELLI's NOTE: the following is necessary because in case memory  
             // indexing is enabled, the loop over right objects may skip some of the
             // previously matched objects
-            if(!oldMatches.isEmpty()) {
-                for(Iterator it = oldMatches.values().iterator(); it.hasNext(); ) {
+            if ( !oldMatches.isEmpty() ) {
+                for ( Iterator it = oldMatches.values().iterator(); it.hasNext(); ) {
                     final TupleMatch tupleMatch = (TupleMatch) it.next();
                     tupleMatch.getObjectMatches().remove( tupleMatch );
-                    propagateRetractTuple( tupleMatch,
-                                           context,
-                                           workingMemory );
+                    tupleMatch.propagateRetractTuple( context, workingMemory );
                 }
             }
         }
     }
 
-    public void modifyObject(final DefaultFactHandle handle,
+    public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         // Remove and re-add the FactHandle from memory, ensures that its the latest on the list
         final ObjectMatches objectMatches = memory.remove( workingMemory,
                                                            handle );
@@ -353,15 +349,11 @@ class JoinNode extends BetaNode {
                 if ( binder.isAllowed( handle,
                                        leftTuple,
                                        workingMemory ) ) {
-                    propagateModifyTuple( tupleMatch,
-                                          context,
-                                          workingMemory );
+                    tupleMatch.propagateModifyTuple( context, workingMemory );
                 } else {
                     leftTuple.removeMatch( handle );
                     objectMatches.remove( tupleMatch );
-                    propagateRetractTuple( tupleMatch,
-                                           context,
-                                           workingMemory );
+                    tupleMatch.propagateRetractTuple( context, workingMemory );
                 }
                 tupleMatch = nextTupleMatch;
             } else {
@@ -372,11 +364,7 @@ class JoinNode extends BetaNode {
                                                               binder,
                                                               workingMemory );
                 if ( newTupleMatch != null ) {
-                    propagateAssertTuple( new ReteTuple( leftTuple,
-                                                         handle ),
-                                          newTupleMatch,
-                                          context,
-                                          workingMemory );
+                    this.sink.propagateAssertTuple( leftTuple, handle, newTupleMatch, context, workingMemory );
                 }
             }
         }
@@ -385,7 +373,7 @@ class JoinNode extends BetaNode {
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+    public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         this.attachingNewNode = true;
 
@@ -393,19 +381,8 @@ class JoinNode extends BetaNode {
 
         for ( final Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            final DefaultFactHandle handle = objectMatches.getFactHandle();
-            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
-                final ReteTuple tuple = new ReteTuple( tupleMatch.getTuple(),
-                                                       handle );
-                final TupleSink sink = (TupleSink) this.tupleSinks.get( this.tupleSinks.size() - 1 );
-                if ( sink != null ) {
-                    tupleMatch.addJoinedTuple( tuple );
-                    sink.assertTuple( tuple,
-                                      context,
-                                      workingMemory );
-                } else {
-                    throw new RuntimeException( "Possible BUG: trying to propagate an assert to a node that was the last added node" );
-                }
+            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {                
+                this.sink.propagateNewTupleSink( tupleMatch, context, workingMemory );
             }
         }
 
@@ -415,16 +392,16 @@ class JoinNode extends BetaNode {
     /**
      * @inheritDoc
      */
-    public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
+    public List getPropagatedTuples(final InternalWorkingMemory workingMemory,
                                     final TupleSink sink) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        final int index = this.getTupleSinks().indexOf( sink );
+        
         final List propagatedTuples = new ArrayList();
 
         for ( final Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
-                propagatedTuples.add( tupleMatch.getJoinedTuples().get( index ) );
+            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {                
+                propagatedTuples.add( tupleMatch.getTupleForSink( sink ) );
             }
         }
         return propagatedTuples;

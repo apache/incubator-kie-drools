@@ -27,8 +27,8 @@ public class MapValueTest extends TestCase {
         WorkingMemory wm = rb.newWorkingMemory();
 
         // Make a literal key/value pair
-        LiteralValue literalKey = new LiteralValue( "literalKey1", String.class );
-        LiteralValue literalValue = new LiteralValue( "literalValue", String.class );
+        LiteralValue literalKey = new LiteralValue( "literalKey1" );
+        LiteralValue literalValue = new LiteralValue( "literalValue" );
         MapValue.KeyValuePair literalPair = new MapValue.KeyValuePair( literalKey,
                                                                        literalValue );
 
@@ -41,7 +41,7 @@ public class MapValueTest extends TestCase {
                                                                                   literalValue );
 
         // Make a literal/declaration key/value pair
-        LiteralValue literalKey2 = new LiteralValue( "literalKey2", String.class );
+        LiteralValue literalKey2 = new LiteralValue( "literalKey2" );
         MapValue.KeyValuePair literalDeclarationPair = new MapValue.KeyValuePair( literalKey2,
                                                                                   declaration );
 
@@ -51,7 +51,7 @@ public class MapValueTest extends TestCase {
                                                                                  declaration );
 
         // Make a literal/global key/value pair
-        LiteralValue literalKey3 = new LiteralValue( "literalKey3", String.class );
+        LiteralValue literalKey3 = new LiteralValue( "literalKey3" );
         MapValue.KeyValuePair LiteralGlobalPair = new MapValue.KeyValuePair( literalKey3,
                                                                              global );
 
@@ -88,13 +88,13 @@ public class MapValueTest extends TestCase {
         WorkingMemory wm = rb.newWorkingMemory();
 
         // Make a literal key/value pair
-        LiteralValue literalKey1 = new LiteralValue( "literalKey1", String.class );
-        LiteralValue literalValue1 = new LiteralValue( "literalValue1", String.class );
+        LiteralValue literalKey1 = new LiteralValue( "literalKey1" );
+        LiteralValue literalValue1 = new LiteralValue( "literalValue1" );
         MapValue.KeyValuePair literalPair = new MapValue.KeyValuePair( literalKey1,
                                                                        literalValue1 );
         MapValue nestedMapValue = new MapValue( new MapValue.KeyValuePair[]{literalPair} );
 
-        LiteralValue literalKey2 = new LiteralValue( "literalKey2", String.class );
+        LiteralValue literalKey2 = new LiteralValue( "literalKey2" );
         MapValue.KeyValuePair nestedMapPair = new MapValue.KeyValuePair( literalKey2,
                                                                          nestedMapValue );
 

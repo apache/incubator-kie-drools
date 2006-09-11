@@ -1,4 +1,4 @@
-package org.drools.spi;
+package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -19,21 +19,41 @@ package org.drools.spi;
 import java.io.Serializable;
 
 /**
- * Interface used to expose generic information on Rete nodes outside of he package. It is used
- * for exposing information events.
+ * Items placed in a <code>LinkedList<code> must implement this interface .
+ * 
+ * @see TupleSinkNodeList
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
- *
  */
-public interface ReteooNode
-    extends
-    Serializable {
+public interface TupleSinkNode extends TupleSink {
 
     /**
-     * Returns the unique id that represents the node in the Rete network
+     * Returns the next node
      * @return
-     *      unique int value
+     *      The next LinkedListNode
      */
-    public int getId();
+    public TupleSinkNode getNextTupleSinkNode();
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next LinkedListNode
+     */
+    public void setNextTupleSinkNode(TupleSinkNode next);
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous LinkedListNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode();
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous LinkedListNode
+     */
+    public void setPreviousTupleSinkNode(TupleSinkNode previous);
+
 }
