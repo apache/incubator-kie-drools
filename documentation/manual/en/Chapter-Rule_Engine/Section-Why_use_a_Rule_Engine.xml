@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>Why use a Rule Engine</title>
+  <title>Why use a Rule Engine?</title>
 
-  <para>Some questions often asked are</para>
+  <para>Some frequently asked questions:</para>
 
   <orderedlist>
     <listitem>
-      <para>When should I use a rule engine ?</para>
+      <para>When should you use a rule engine?</para>
     </listitem>
 
     <listitem>
-      <para>What advantage does this have over hand coded "if ..... then"
+      <para>What advantage does a rules engine have over hand coded "if...then"
       approaches?</para>
     </listitem>
 
     <listitem>
-      <para>Why should I use a Rule Engine instead of a scripting framework,
-      like <indexterm>
+      <para>Why should you use a rule engine instead of a scripting framework,
+      like 
+        <indexterm>
           <primary>BeanShell</primary>
-        </indexterm> Beanshell?</para>
+        </indexterm> 
+      BeanShell?</para>
     </listitem>
   </orderedlist>
 
-  <para>We will attempt to adderess these below.</para>
+  <para>We will attempt to adderess these questions below.</para>
 
   <section>
-    <title>Summary of advantages of a rule engine</title>
+    <title>Advantages of a Rule Engine</title>
 
     <itemizedlist>
       <listitem>
@@ -34,26 +36,32 @@
         <para>Rule engines allow you to say "What to do" not "How to do
         it".</para>
 
-        <para>They key advantage of this point is that it can make it easy to
-        express solutions to hard problems, and consequently have those
-        solutions verified (rules are much easier to read then code).</para>
+        <para>The key advantage of this point is that using rules can make 
+        it easy to express solutions to difficult problems and consequently 
+        have those solutions verified (rules are much easier to read then code).
+        </para>
 
-        <para>Rule systems are capable of solving very very hard problems, yet
-        providing a solution that is able to explain why a "decision" was made
-        (not so easy with other types of AI systems like neural networks, or
-        say, my brain - I have no idea why I scratched the side of the
-        car).</para>
+        <para>Rule systems are capable of solving very, very hard problems, 
+        providing an explination of how the solution was arrived at and 
+        why each "decision" along the way was made (not so easy with other 
+        of AI systems like neural networks or the human brain - I have no 
+        idea why I scratched the side of the car).
+        </para>
       </listitem>
 
       <listitem>
         <para>Logic and Data Separation</para>
 
         <para>Your data is in your domain objects, the logic is in the rules.
-        This is fundamentally breaking the OO coupling of data and logic (this
-        can be an advantage as well as a disadvantage depending on your point
-        of view). The upshot is that the logic can be much easier to maintain
+        This is fundamentally breaking the OO coupling of data and logic, which
+        can be an advantage or a disadvantage depending on your point
+        of view. The upshot is that the logic can be much easier to maintain
         as there are changes in the future, as the logic is all layed out in
-        rules.</para>
+        rules. This can be espically true if the logic is cross-domain
+        or multi-domain logic. Instead of the logic being spread across many
+        domain objects or controllers, it can all be organized in one
+        or more very distinct rules files.
+        </para>
       </listitem>
 
       <listitem>
@@ -68,123 +76,131 @@
       </listitem>
 
       <listitem>
-        <para>Centralisation of Knowledge</para>
+        <para>Centralization of Knowledge</para>
 
-        <para>By using rules, you are creating a repository of knowlegde (a
-        knowledebase) which is executable. This means its a single point of
+        <para>By using rules, you create a repository of knowlegde (a
+        knowledgebase) which is executable. This means it's a single point of
         truth, for business policy (for instance) - ideally rules are so
-        readable, they also serve as the documentation.</para>
+        readable that they can also serve as documentation.</para>
       </listitem>
 
       <listitem>
         <para>Tool Integration</para>
 
-        <para>Tools such as eclipse (and in future, Web based UIs) provide
+        <para>Tools such as Eclipse (and in future, Web based UIs) provide
         ways to edit and manage rules and get immediate feedback, validation
         and content assistance. Auditing and debugging tools are also
         available.</para>
       </listitem>
 
       <listitem>
-        <para>Explanation facility</para>
+        <para>Explanation Facility</para>
 
         <para>Rule systems effectively provide an "explanation facility" by
-        being able to log the "decisions" made by the rule engine (and why the
-        decisions were made).</para>
+        being able to log the decisions made by the rule engine along with
+        why the decisions were made.</para>
       </listitem>
 
       <listitem>
-        <para>Understandable rules (readable by domain experts)</para>
+        <para>Understandable Rules</para>
 
-        <para>By creating object models (and optionally Domain Specific
-        Languages) that model your problem domain, rules can look very close
-        to natural language. They lend themselves to logic that is
-        understandable to domain experts who may be non technical (as all the
-        program plumbing is in the usual code, hidden away).</para>
+        <para>
+        By creating object models and optionally Domain Specific
+        Languages that model your problem domain you can set yourself up to
+        write rules that look very close to natural language. They lend themselves
+        to logic that is understandable to, possibly nontechnical, domain experts
+        as they are expressed in their language. (as all the program plumbing, 
+        the "How", is in the usual code, hidden away).
+        </para>
       </listitem>
     </itemizedlist>
   </section>
 
   <section>
-    <title>When should you use a rule engine</title>
+    <title>When should you use a Rule Engine?</title>
 
     <para>The shortest answer to this is "when there is no satisfactory
     traditional programming approach to solve the problem.". Given that short
     answer, some more explanation is required. The reason why there is no
-    "traditional" approach is possibly one of the following: <itemizedlist>
+    "traditional" approach is possibly one of the following:
+     <itemizedlist>
         <listitem>
           <para>The problem is just too fiddly for traditional code.</para>
-
-          <para>The problem may not be complex, but you can't see a non
-          fragile way of building it.</para>
+  
+          <para>The problem may not be complex, but you can't see a 
+          non-fragile way of building it.
+          </para>
         </listitem>
-
+  
         <listitem>
           <para>The problem is beyond any obvious algorithm based
-          solution.</para>
-
+          solution.
+          </para>
+  
           <para>It is a complex problem to solve, there are no obvious
           traditional solutions or basically the problem isn't fully
-          understood.</para>
+          understood.
+          </para>
         </listitem>
-
+  
         <listitem>
           <para>The logic changes often</para>
-
+  
           <para>The logic itself may be simple (but doesn't have to be) but
-          the rules change just too often. In many organisations, software
-          releases are few and far between, and rules can help provide the
-          "agility" that is needed, and expected these days (in a reasonably
-          safe way).</para>
+          the rules change quite often. In many organizations software
+          releases are few and far between and rules can help provide the
+          "agility" that is needed and expected in a reasonably
+          safe way.</para>
         </listitem>
-
+  
         <listitem>
           <para>Domain experts (or business analysts) are readily available,
-          but are non technical.</para>
-
-          <para>Non technical domain experts are often a wealth of knowledge
-          about business rules. They typically are non technical, but can be
-          very logical. Rules can allow them to express the logic in their own
-          terms. Of course, they still have to think critically and be capable
-          of logical thinking (many people in "soft" non technical positions
-          are not, so be careful, as by codifying business knowledge in rules,
-          you will often be exposing flaws in the way the business rules are
-          at present).</para>
+          but are nontechnical.</para>
+  
+          <para>Domain experts are often a wealth of knowledge
+          about business rules and processes. They typically are nontechnical, 
+          but can be very logical. Rules can allow them to express the logic in 
+          their own terms. Of course, they still have to think critically and be
+          capable of logical thinking (many people in "soft" nontechnical positions
+          do not have training in formal logic, so be careful and work with them,
+          as by codifying business knowledge in rules, you will often expose holes
+          in the way the business rules and processes are currently understood).</para>
         </listitem>
-      </itemizedlist></para>
+     </itemizedlist>
+    </para>
 
-    <para>Of course if rules are a new technology in your project teams
-    experience, the overhead in getting going must be factored in. Its not a
-    trivial technology, but we try to make it easier.</para>
+    <para>If rules are a new technology for your project teams,
+    the overhead in getting going must be factored in. Its not a trivial
+    technology, but this document tries to make it easier to understand.</para>
 
     <para>Typically in a modern OO application you would use a rule engine to
     contain key parts of your business logic (what that means of course
-    depends on the application) - ESPECIALLY the REALLY MESSY parts !. This is
+    depends on the application) - ESPECIALLY the REALLY MESSY parts!. This is
     an inversion of the OO concept of encapsulating all the logic inside your
     objects. This is not to say that you throw out OO practices, on the
     contrary in any real world application, business logic is just one part of
-    the application. If you ever notice lots of "if" "else" "switch" and other
-    messy logic in your code that just doesn't feel right (and you keep coming
-    back to fix it - either because you got it wrong, or the logic/your
-    understanding changes) - think about using rules. If you are faced with
-    tough problems of which there are no algorithms or patterns for, consider
-    rules.</para>
+    the application. If you ever notice lots of "if", "else", "switch", an 
+    over abundance of strategy patterns and/or other messy logic in your code that
+    just doesn't feel right (and you keep coming back to fix it - either because
+    you got it wrong, or the logic/your understanding changes) - think about 
+    using rules. If you are faced with tough problems of which there are no
+    algorithms or patterns for, consider using rules.
+    </para>
 
-    <para>Rules could be used embedded in your application, or perhaps as a
+    <para>Rules could be used embedded in your application or perhaps as a
     service. Often rules work best as "stateful" component - hence they are
     often an integral part of an application. However, there have been
-    successful cases of creating reusable rul eservices which are
-    stateless.</para>
+    successful cases of creating reusable rule services which are stateless.</para>
 
-    <para>In your organisation, it is important to think about the process you
-    may want to/have to use for updating rules in systems that are in
-    production (the options are many, but different organisations have
-    different requirements - often they are out of the control of the
-    application vendors/project teams).</para>
+    <para>In your organization it is important to think about the process you
+    will use for updating rules in systems that are in production (the options 
+    are many, but different organizations have different requirements - often 
+    they are out of the control of the application vendors/project teams).
+    </para>
   </section>
 
   <section>
-    <title>When not to use a rule engine</title>
+    <title>When not to use a Rule Engine</title>
 
     <para>To quote a Drools mailing list regular (Dave Hamu): "It seems to me
     that in the excitement of working with rules engines, that people forget
@@ -196,18 +212,18 @@
     it's designed for."</para>
 
     <para>As rule engines are dynamic (dynamic in the sense that the rules can
-    be stored and managed and updates as data), they are often looked at as a
+    be stored and managed and updated as data), they are often looked at as a
     solution to the problem of deploying software (most IT departments seem to
     exist for the purpose of preventing software being rolled out). If this is
     the reason you wish to use a rule engine, be aware that rule engines work
     best when you are able to write declarative rules. As an alternative, you
     can consider data-driven designs (lookup tables), or script/process
-    engines where the scripts are managed in a database, and able to be
+    engines where the scripts are managed in a database and are able to be
     updated on the fly.</para>
   </section>
 
   <section>
-    <title>Scripting or process engines</title>
+    <title>Scripting or Process Engines</title>
 
     <para>Hopefully the preceeding sections have explained when you may want
     to use a rule engine.</para>
@@ -215,9 +231,9 @@
     <para>Alternatives are script-based engines that provide the dynamicness
     for "changes on the fly" (there are many solutions here). </para>
 
-	<para>Alternatively Process engines (also capable of workflow) such as jBPM allow you to
-    graphically (or programmatically) describe steps in a process - those
-    steps can also involve decision point which are in themselves a simple
+	<para>Alternatively Process Engines (also capable of workflow) such as jBPM
+	  allow you to graphically (or programmatically) describe steps in a process
+	  - those steps can also involve decision point which are in themselves a simple
     rule. Process engines and rules often can work nicely together, so its not
     an either-or proposition.</para>
 
@@ -228,34 +244,36 @@
     difficulty in future maintenance, as they tend to grow in complexity over
     time. The upside of scripting engines is they can be easier to implement
     at first, and you can get quick results (and conceptually simpler for
-    imperative programmers !).</para>
+    imperative programmers!).</para>
 
     <para>Many people have also implemented data-driven systems successfully
     in the past (where there are control tables that store meta-data that
     changes your applications behaviour) - these can work well when the
     control can remain very limited. However, they can quickly grow out of
     control if extended to much (such that only the original creators can
-    change the applications behaviour), or, they cause the application to
+    change the applications behaviour) or they cause the application to
     stagnate as they are too inflexible.</para>
   </section>
 
   <section>
-    <title>Strong and Loose coupling</title>
+    <title>Strong and Loose Coupling</title>
 
     <para>No doubt you have heard terms like "tight coupling" and "loose
-    coupling" in systems design. Generally people assert that loose or "weak"
-    coupling is preferable in design terms, due to the added flexibility.
-    Similarly with rules, you can have "strongly coupled" and "weakly coupled"
+    coupling" in systems design. Generally people assert that "loose" or "weak"
+    coupling is preferable in design terms, due to the added flexibility it affords.
+    Similarly, you can have "strongly coupled" and "weakly coupled"
     rules. Strongly coupled in this sense means that one rule "firing" will
-    clearly result in another rule firing etc. in other words there is a clear
+    clearly result in another rule firing etc.; in other words there is a clear
     (probably obvious) chain of logic. If your rules are all strongly coupled,
     the chances are that the rules will have future inflexibility, and more
     significantly, that perhaps a rule engine is overkill (as the logic is a
-    clear chain of rules - and can be hard coded). This is not to say that
-    strong or weak coupling is inherently bad, but its a point to keep in mind
-    when considering a rule engine, and also in how you capture the rules.
-    "Loosely" coupled rules should result in a system that allows rules to be
-    changed, removed, added without requiring changes to other rules that are
-    unrelated.</para>
+    clear chain of rules - and can be hard coded. [A Decision Tree may be in order]).
+    This is not to say that strong or weak coupling is inherently bad, but it is a
+    point to keep in mind when considering a rule engine and in how you
+    capture the rules. "Loosely" coupled rules should result in a system that
+    allows rules to be changed, removed and added without requiring changes to other
+    rules that are unrelated.
+    </para>
+    
   </section>
 </section>

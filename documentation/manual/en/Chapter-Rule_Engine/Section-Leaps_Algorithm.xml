@@ -2,7 +2,7 @@
 <section>
   <title>Leaps Algorithm</title>
 
-  <para>Leaps algorithm for production systems uses a "lazy" approach to
+  <para>The Leaps algorithm for production systems uses a "lazy" approach to
   condition evaluations. A modified version of this algorithm, implemented as part
   of Drools v3, attempts to take the best features of both Leaps and Rete
   approaches in processing facts in the working memory. Leaps is not being
@@ -13,62 +13,69 @@
   the main stack according to the order facts were asserted in the working
   memory (FIFO). It inspects facts one by one trying to find a match for each
   relevant (based on type of the fact and data types required by CEs) rule by
-  iterating over collections of facts that match datatype of each CE. As soon
-  as such match is found system remembers iteration position to resume such
-  iteration later and fires the rule consequence. After execution of
-  consequence is completed, systems is trying to resume processing by
-  inspecting a fact at the top of the main processing stack and either start
-  processing from beginning or resumes the processing if it was stopped due to
-  finding a match for a rule and consequence firing.</para>
+  iterating over collections of facts that match the datatype of each CE. As soon
+  as such match is found, the system remembers the current iteration position so
+  it can possibly resume iteration later and then fires the matching rules consequence. 
+  After execution of consequence is completed, the system trys to resume processing by
+  inspecting a fact on the top of the main processing stack and either start
+  processing from beginning or resumes the processing that was suspended.</para>
 
   <section>
-    <title>Conflict resolution</title>
-
+    <title>Conflict Resolution</title>
+    
+<!-- FIXME - This needs to be clarified. It is unclear at best as it stands now... -->
+    
     <para>Please note that Leaps allows for rule firing before ALL cross-fact
-    matches were attempted as per RETE approach that explains reported
+    matches are attempted as per RETE approach, which explains the reported
     significant performance gains for this algorithm. It's made possible by
-    pushing conflict resolution upfront (sort order of facts on the stack and
-    rules matching order), before matching begins while with RETE all matches
-    should be attempted, activations sorted based on the conflict resolution
+    pushing conflict resolution upfront before matching begins (sort order 
+    of facts on the stack and rules matching order), while with RETE all matches
+    should (must) be attempted, activations are sorted based on the conflict resolution
     strategy and head element's consequence fired.</para>
 
     <para>The current implementation allows for flexible conflict resolution
-    strategy selection. Even that it's not exposed as a pluggable feature one
-    can either use supplied conflict resolution strategies
-    (org.drools.leaps.conflict) or develop new ones to modify default
-    behavior. Up to date the general approach was to state conflict resolution
-    stategy without specifying if order activation is based on fact or rules
-    attributes. Current implementation allows for specifying separate ordering
-    based on fact attribute and rule attribute conflict resolution strategy
-    that makes it more apparent.</para>
+    strategy selection. Even though it's not exposed as a pluggable feature, you
+    can either use the supplied conflict resolution strategies
+    (org.drools.leaps.conflict) or develop new ones to customize the default
+    behavior. Update:  The general approach for the conflict resolution stategy 
+    does not specifying whether the order of activation was based on fact or 
+    rule attributes. The current implementation does, however, allow for 
+    specifying that the conflict resolution strategy be based on the fact and 
+    rule attribute so it is more apparent.</para>
   </section>
 
   <section>
-    <title>'not' and 'exists'</title>
+    <title>'Not' and 'Exists'</title>
 
-    <para>The main deviation from the "classical" leaps in this implementation
-    lays in the way it deals with "negative" and "exists" CE processing.
-    "classical" approach makes use of "shadow" fact stack, full scan of
+    <para>The main deviation of the Drools 3 implmentation of Leaps from the 
+    "classical" Leaps is in the way it deals with "negative" and "exists" CE processing.
+    The "classical" approach makes use of a "shadow" fact stack, a full scan of
     relevant collections to determine presence of certain facts matching NOT
-    or EXISTS conditions, and conversion of source rules to account for the
+    or EXISTS conditions and conversion of source rules to account for the
     instances where retracted facts "release" rule activations that were
-    previously blocked by it. Current implementation takes a different
-    approach. Its functionality is similar to the way RETE negative node by
+    previously blocked by it. The current implementation takes a different
+    approach. Its functionality is similar to the way RETE negates nodes by
     creating tuples with deferred activation in "lazy" manner.</para>
-
-    <para>After finding match for all "positive" conditions, current
+<!-- FIXME - Last sentence of previous paragraph was confusing. Need to 
+  verfiy I didn't change the meaning.
+  It was this:
+    Its functionality is similar to the way RETE negative node by
+    creating tuples with deferred activation in "lazy" manner.
+-->
+    
+    <para>After finding matchs for all "positive" conditions, the current
     implementation starts looking for facts that might satisfy "not" and
-    "exists" conditions. As soon as such fact found the system stops looking
-    for a given CE and stores found fact handle. When all "not" and "exists"
-    CEs are checked the tuple is being evaluated if it eligible for activation
-    - no matching "not" facts and all "exists" CEs have matching facts. Tuple
-    is either activated or if it has blocking conditions ("not" facts or
-    missing "exists") than it's being deferred for further inspection.</para>
+    "exists" conditions. As soon as such a fact is found the system stops looking
+    for a given CE and stores found fact handle. All the "not" and "exists"
+    CEs are checked, with the CE's tuple being evaluated to see if it is eligible 
+    for activation - no matching "not" facts and all "exists" CEs have matching 
+    facts. The tuple is either activated or if it has blocking conditions ("not" facts or
+    missing "exists"), then it's is deferred for further inspection.</para>
 
-    <para>All fact assertions are being used to see if it can activate tuples
-    with deferred activation from above. At the same time all fact that are
-    being retracted inspected to see they remove blocking condition from the
-    deferred tuples or deactivate activation triggered by matching given fact
-    in "exists" condition.</para>
+    <para>All fact assertions are then checked again, to see if they can activate tuples
+    that were deferred from activation. At the same time, all facts that are
+    being retracted are inspected to see if they remove a blocking condition from the
+    deferred tuples or if they will deactivate an activation that was triggered by 
+    matching a given fact in an "exists" condition.</para>
   </section>
 </section>
