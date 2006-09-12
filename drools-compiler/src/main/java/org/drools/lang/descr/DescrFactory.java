@@ -17,4 +17,8 @@ public class DescrFactory {
     public AccumulateDescr createAccumulate() {
         return new AccumulateDescr();
     }
+    
+    public CollectDescr createCollect() {
+        return new CollectDescr();
+    }
 }

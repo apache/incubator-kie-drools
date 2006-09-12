@@ -38,6 +38,7 @@ import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.rule.Accumulate;
 import org.drools.rule.And;
+import org.drools.rule.Collect;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -49,7 +50,6 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ObjectTypeResolver;
@@ -322,6 +322,10 @@ class ReteooBuilder
                 attachAccumulate( this.tupleSource,
                                   and,
                                   (Accumulate) object );
+            } else if ( object.getClass() == Collect.class ) {
+                attachCollect( this.tupleSource,
+                               and,
+                               (Collect) object );
             } else if ( this.objectSource != null ) {
                 this.tupleSource = attachNode( new JoinNode( this.id++,
                                                              this.tupleSource,
@@ -643,9 +647,9 @@ class ReteooBuilder
         }
 
         final Column sourceColumn = accumulate.getSourceColumn();
-        final BetaNodeBinder sourceBinder = attachColumn(sourceColumn,
-                                                   parent,
-                                                   true);
+        final BetaNodeBinder sourceBinder = attachColumn( sourceColumn,
+                                                          parent,
+                                                          true );
 
         Column column = accumulate.getResultColumn();
         // Adjusting offset in case a previous Initial-Fact was added to the network
@@ -697,7 +701,83 @@ class ReteooBuilder
                                                            (FieldConstraint[]) alphaNodeConstraints.toArray( new FieldConstraint[alphaNodeConstraints.size()] ),
                                                            sourceBinder,
                                                            resultsBinder,
-                                                           accumulate) );
+                                                           accumulate ) );
+    }
+
+    private void attachCollect(final TupleSource tupleSource,
+                               final And parent,
+                               final Collect collect) {
+        // If a tupleSource does not exist then we need to adapt an
+        // InitialFact into a a TupleSource using LeftInputAdapterNode
+        if ( this.tupleSource == null ) {
+            // adjusting offset as all tuples will now contain initial-fact at index 0
+            this.currentOffsetAdjustment = 1;
+
+            final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
+                                                                                 this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
+                                                                                 new ClassObjectType( InitialFact.class ),
+                                                                                 this.rete ) );
+
+            this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
+                                                                     auxObjectSource ) );
+        }
+
+        final Column sourceColumn = collect.getSourceColumn();
+        final BetaNodeBinder sourceBinder = attachColumn( sourceColumn,
+                                                          parent,
+                                                          true );
+
+        Column column = collect.getResultColumn();
+        // Adjusting offset in case a previous Initial-Fact was added to the network
+        column.adjustOffset( this.currentOffsetAdjustment );
+
+        final List constraints = column.getConstraints();
+
+        // Check if the Column is bound
+        if ( column.getDeclaration() != null ) {
+            final Declaration declaration = column.getDeclaration();
+            // Add the declaration the map of previously bound declarations
+            this.declarations.put( declaration.getIdentifier(),
+                                   declaration );
+        }
+
+        final List predicateConstraints = new ArrayList();
+        final List alphaNodeConstraints = new ArrayList();
+
+        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
+            // Check if its a declaration
+            if ( object instanceof Declaration ) {
+                final Declaration declaration = (Declaration) object;
+                // Add the declaration the map of previously bound declarations
+                this.declarations.put( declaration.getIdentifier(),
+                                       declaration );
+                continue;
+            }
+
+            final FieldConstraint fieldConstraint = (FieldConstraint) object;
+            if ( fieldConstraint instanceof LiteralConstraint ) {
+                alphaNodeConstraints.add( fieldConstraint );
+            } else {
+                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
+                predicateConstraints.add( fieldConstraint );
+            }
+        }
+
+        BetaNodeBinder resultsBinder = null;
+        if ( !predicateConstraints.isEmpty() ) {
+            resultsBinder = new BetaNodeBinder( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+        } else {
+            resultsBinder = new BetaNodeBinder();
+        }
+
+        this.tupleSource = attachNode( new CollectNode( id++,
+                                                        this.tupleSource,
+                                                        this.objectSource,
+                                                        (FieldConstraint[]) alphaNodeConstraints.toArray( new FieldConstraint[alphaNodeConstraints.size()] ),
+                                                        sourceBinder,
+                                                        resultsBinder,
+                                                        collect ) );
     }
 
     private ObjectSource attachNode(final ObjectSource candidate) {

@@ -51,6 +51,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.DeclarativeInvokerDescr;
@@ -74,6 +75,7 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.And;
 import org.drools.rule.AndCompositeRestriction;
+import org.drools.rule.Collect;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -314,6 +316,9 @@ public class RuleBuilder {
                 } else if ( object.getClass() == AccumulateDescr.class ) {
                     final Accumulate accumulate = build( (AccumulateDescr) object );
                     this.rule.addPattern( accumulate );
+                } else if ( object.getClass() == CollectDescr.class ) {
+                    final Collect collect = build( (CollectDescr) object );
+                    this.rule.addPattern( collect );
                 }
             } else if ( object.getClass() == ColumnDescr.class ) {
                 final Column column = build( (ColumnDescr) object );
@@ -383,6 +388,9 @@ public class RuleBuilder {
                 } else if ( object.getClass() == AccumulateDescr.class ) {
                     final Accumulate accumulate = build( (AccumulateDescr) object );
                     this.rule.addPattern( accumulate );
+                } else if ( object.getClass() == CollectDescr.class ) {
+                    final Collect collect = build( (CollectDescr) object );
+                    this.rule.addPattern( collect );
                 }
             } else if ( object.getClass() == ColumnDescr.class ) {
                 if ( decrementOffset && decrementFirst ) {
@@ -1040,9 +1048,6 @@ public class RuleBuilder {
         Map sourceDeclarations = this.innerDeclarations;
         this.innerDeclarations = null;
 
-        // removing declaration as it is not a real declaration
-        this.declarations.remove( sourceColumn.getDeclaration().getIdentifier() );
-
         // decrementing offset as accumulate fills only one column
         this.columnOffset--;
         Column resultColumn = build( accumDescr.getResultColumn() );
@@ -1130,7 +1135,7 @@ public class RuleBuilder {
         Accumulate accumulate = new Accumulate( sourceColumn,
                                                 resultColumn,
                                                 declarations,
-                                                sourceDeclArr);
+                                                sourceDeclArr );
         final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( className ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
@@ -1139,6 +1144,25 @@ public class RuleBuilder {
         this.descrLookups.put( invokerClassName,
                                accumDescr );
         return accumulate;
+    }
+
+    private Collect build(final CollectDescr collectDescr) {
+        this.innerDeclarations = new HashMap();
+        Column sourceColumn = build( collectDescr.getSourceColumn() );
+        // remove declarations bound inside source column
+        this.declarations.keySet().removeAll( this.innerDeclarations.keySet() );
+        this.innerDeclarations = null;
+
+        // decrementing offset as collect fills only one column
+        this.columnOffset--;
+        Column resultColumn = build( collectDescr.getResultColumn() );
+
+        final String className = "collect" + this.counter++;
+        collectDescr.setClassMethodName( className );
+
+        Collect collect = new Collect( sourceColumn,
+                                       resultColumn );
+        return collect;
     }
 
     private void buildConsequence(final RuleDescr ruleDescr) {
@@ -1347,7 +1371,7 @@ public class RuleBuilder {
 
     static class ColumnCounter {
         // we start with -1 so that we can ++this.value - otherwise the first element has a lower value than the second in an 'or'
-        private int          value = -1;
+        private int value = -1;
 
         public int getNext() {
             return ++this.value;

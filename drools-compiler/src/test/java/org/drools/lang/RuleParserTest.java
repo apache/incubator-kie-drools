@@ -35,6 +35,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -2362,6 +2363,30 @@ public class RuleParserTest extends TestCase {
                                       accum.getResultCode() );
 
         final ColumnDescr col = (ColumnDescr) accum.getSourceColumn();
+        assertEquals( "Person",
+                      col.getObjectType() );
+    }
+
+    public void testCollect() throws Exception {
+        final RuleParser parser = parseResource( "collect.drl" );
+        parser.compilation_unit();
+
+        if(parser.hasErrors()) {
+            System.err.println( parser.getErrorMessages() );
+        }
+
+        assertFalse( parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final CollectDescr collect = (CollectDescr) rule.getLhs().getDescrs().get( 0 );
+
+        final ColumnDescr col = (ColumnDescr) collect.getSourceColumn();
         assertEquals( "Person",
                       col.getObjectType() );
     }

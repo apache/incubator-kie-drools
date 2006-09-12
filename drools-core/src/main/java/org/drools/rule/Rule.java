@@ -300,6 +300,8 @@ public class Rule
             addDeclarations( ((From) ce).getColumn() );
         } else if ( ce.getClass() == Accumulate.class ) {
             addDeclarations( ((Accumulate) ce).getResultColumn() );
+        } else if ( ce.getClass() == Collect.class ) {
+            addDeclarations( ((Collect) ce).getResultColumn() );
         }
         this.lhsRoot.addChild( ce );
     }

@@ -435,4 +435,11 @@ public class LeapsTest extends IntegrationCases {
         // FIXME
     }
     
+    public void testCollect() throws Exception {
+        // FIXME
+    }
+    
+    public void testCollectModify() throws Exception {
+        // FIXME
+    }
 }
