@@ -23,7 +23,7 @@ import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
 import org.drools.base.evaluators.Operator;
-import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
@@ -251,7 +251,7 @@ public class BooleanConstrainedRightMemory
      * @return
      */
     private final MultiLinkedList getMatchingList(final WorkingMemory workingMemory,
-                                                  final DefaultFactHandle handle) {
+                                                  final InternalFactHandle handle) {
         final boolean select = ((Boolean) this.extractor.getValue( handle.getObject() )).booleanValue();
         final MultiLinkedList list = (select == true) ? this.trueList : this.falseList;
         return list;
@@ -274,8 +274,8 @@ public class BooleanConstrainedRightMemory
         final TreeSet set = new TreeSet( new Comparator() {
             public int compare(Object arg0,
                                Object arg1) {
-                DefaultFactHandle f0 = ((ObjectMatches) arg0).getFactHandle();
-                DefaultFactHandle f1 = ((ObjectMatches) arg1).getFactHandle();
+                InternalFactHandle f0 = ((ObjectMatches) arg0).getFactHandle();
+                InternalFactHandle f1 = ((ObjectMatches) arg1).getFactHandle();
                 return (f0.getRecency() == f1.getRecency()) ? 0 : (f0.getRecency() > f1.getRecency()) ? 1 : -1;
             }
 

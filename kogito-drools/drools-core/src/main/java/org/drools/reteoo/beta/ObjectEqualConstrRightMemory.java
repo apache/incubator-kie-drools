@@ -309,8 +309,8 @@ public class ObjectEqualConstrRightMemory
         final TreeSet set = new TreeSet( new Comparator() {
             public int compare(Object arg0,
                                Object arg1) {
-                DefaultFactHandle f0 = ((ObjectMatches) arg0).getFactHandle();
-                DefaultFactHandle f1 = ((ObjectMatches) arg1).getFactHandle();
+                InternalFactHandle f0 = ((ObjectMatches) arg0).getFactHandle();
+                InternalFactHandle f1 = ((ObjectMatches) arg1).getFactHandle();
                 return (f0.getRecency() == f1.getRecency()) ? 0 : (f0.getRecency() > f1.getRecency()) ? 1 : -1;
             }
 
