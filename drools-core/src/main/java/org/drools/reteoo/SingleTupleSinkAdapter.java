@@ -40,9 +40,10 @@ public class SingleTupleSinkAdapter
         final LinkedList list = new LinkedList();
         ReteTuple tuple = new ReteTuple( handle,
                                          sink );
+        list.add( new LinkedListObjectWrapper( tuple ) );
+        memory.put( handle, list );
         tuple.assertTuple( context,
                            workingMemory );
-        list.add( tuple );
     }
 
     public void propagateAssertTuple(ReteTuple tuple,
