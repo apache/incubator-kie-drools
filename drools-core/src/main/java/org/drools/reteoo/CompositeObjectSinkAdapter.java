@@ -32,8 +32,6 @@ public class CompositeObjectSinkAdapter
     private HashKey            hashKey;
 
     public CompositeObjectSinkAdapter() {
-        this.otherSinks = new ObjectSinkNodeList();
-        this.hashedSinks = new ObjectSinkNodeList();
         this.hashKey = new HashKey();
     }
 
@@ -50,6 +48,11 @@ public class CompositeObjectSinkAdapter
                     int index = literalConstraint.getFieldExtractor().getIndex();
                     FieldIndex fieldIndex = registerFieldIndex( index,
                                                                 literalConstraint.getFieldExtractor() );
+
+                    if ( this.hashedSinks == null ) {
+                        this.hashedSinks = new ObjectSinkNodeList();
+                    }
+
                     this.hashedSinks.add( (ObjectSinkNode) sink );
 
                     if ( !fieldIndex.isHashed() && fieldIndex.getCount() >= 3 ) {
@@ -60,6 +63,10 @@ public class CompositeObjectSinkAdapter
                 }
 
             }
+        }
+
+        if ( this.otherSinks == null ) {
+            this.otherSinks = new ObjectSinkNodeList();
         }
 
         this.otherSinks.add( (ObjectSinkNode) sink );
@@ -80,6 +87,10 @@ public class CompositeObjectSinkAdapter
                     FieldIndex fieldIndex = unregisterFieldIndex( index );
                     this.hashedSinks.remove( (ObjectSinkNode) sink );
 
+                    if ( this.hashedSinks.isEmpty() ) {
+                        this.hashedSinks = null;
+                    }
+
                     if ( fieldIndex.isHashed() ) {
                         this.hashKey.setIndex( index );
                         this.hashKey.setValue( value );
@@ -96,6 +107,10 @@ public class CompositeObjectSinkAdapter
         }
 
         this.otherSinks.remove( (ObjectSinkNode) sink );
+
+        if ( this.otherSinks.isEmpty() ) {
+            this.otherSinks = null;
+        }
     }
 
     public void hashSinks(FieldIndex fieldIndex) {
@@ -112,6 +127,7 @@ public class CompositeObjectSinkAdapter
             Evaluator evaluator = literalConstraint.getEvaluator();
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
                 Object value = literalConstraint.getField().getValue();
+                this.hashedSinks.remove( sink );
                 hashedSinkMap.put( new HashKey( index,
                                                 value ),
                                    sink );
@@ -132,6 +148,7 @@ public class CompositeObjectSinkAdapter
                 Object value = literalConstraint.getField().getValue();
                 this.hashKey.setIndex( index );
                 this.hashKey.setValue( value );
+                this.hashedSinks.add( sink );
                 hashedSinkMap.remove( this.hashKey );
             }
         }
@@ -209,7 +226,7 @@ public class CompositeObjectSinkAdapter
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory) {
         Object object = handle.getObject();
-        if ( this.hashedSinkMap != null ) {
+        if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed        
             for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null && fieldIndex.isHashed(); fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
@@ -227,11 +244,22 @@ public class CompositeObjectSinkAdapter
             }
         }
 
-        // propagate others
-        for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-            sink.assertObject( handle,
-                               context,
-                               workingMemory );
+        // propagate unhashed
+        if ( this.hashedSinks != null ) {
+            for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sink.assertObject( handle,
+                                   context,
+                                   workingMemory );
+            }
+        }
+
+        if ( this.otherSinks != null ) {
+            // propagate others
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sink.assertObject( handle,
+                                   context,
+                                   workingMemory );
+            }
         }
 
     }
@@ -239,6 +267,16 @@ public class CompositeObjectSinkAdapter
     public void propagateModifyObject(InternalFactHandle handle,
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory) {
+
+        if ( this.hashedSinkMap != null ) {
+            for ( Iterator it = this.hashedSinkMap.values().iterator(); it.hasNext(); ) {
+                ObjectSink sink = (ObjectSink) it.next();
+                sink.modifyObject( handle,
+                                   context,
+                                   workingMemory );
+            }
+        }
+
         if ( this.hashedSinks != null ) {
             // we can't retrieve hashed sinks, as the field value might have changed, so we have to iterate and propagate to all hashed sinks
             for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
@@ -248,11 +286,13 @@ public class CompositeObjectSinkAdapter
             }
         }
 
-        // propagate others
-        for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-            sink.modifyObject( handle,
-                               context,
-                               workingMemory );
+        if ( this.otherSinks != null ) {
+            // propagate others
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sink.modifyObject( handle,
+                                   context,
+                                   workingMemory );
+            }
         }
 
     }
@@ -279,21 +319,32 @@ public class CompositeObjectSinkAdapter
                                             workingMemory );
                     }
                 }
-            } else {
-                // we can't retrieve hashed sinks, as the field value might have changed, so we have to iterate and propagate to all hashed sinks
-                for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                    sink.retractObject( handle,
-                                        context,
-                                        workingMemory );
+            } else if ( this.hashedSinkMap != null ) {
+                for ( Iterator it = this.hashedSinkMap.values().iterator(); it.hasNext(); ) {
+                    ObjectSink sink = (ObjectSink) it.next();
+                    sink.modifyObject( handle,
+                                       context,
+                                       workingMemory );
                 }
             }
         }
 
-        // propagate others
-        for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-            sink.retractObject( handle,
-                                context,
-                                workingMemory );
+        if ( this.hashedSinks != null ) {
+            // we can't retrieve hashed sinks, as the field value might have changed, so we have to iterate and propagate to all hashed sinks
+            for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sink.retractObject( handle,
+                                    context,
+                                    workingMemory );
+            }
+        }
+
+        if ( this.otherSinks != null ) {
+            // propagate others
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sink.retractObject( handle,
+                                    context,
+                                    workingMemory );
+            }
         }
     }
 
