@@ -17,6 +17,7 @@
 package org.drools.reteoo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,32 +25,29 @@ import java.util.Map;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.Accumulate;
+import org.drools.rule.Collect;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListObjectWrapper;
 
 /**
- * AccumulateNode
- * A beta node capable of doing accumulate logic.
+ * @author etirelli
  *
- * Created: 04/06/2006
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
- *
- * @version $Id$
  */
-public class AccumulateNode extends BetaNode {
+public class CollectNode extends BetaNode
+    implements
+    TupleSink,
+    ObjectSink {
 
-    private static final long       serialVersionUID = -4081578178269297948L;
-
-    private final Accumulate        accumulate;
-    private final FieldConstraint[] constraints;
+    private static final long serialVersionUID = -8321568626178187047L;
+    
+    private final Collect           collect;
+    private final FieldConstraint[] resultConstraints;
     private final BetaNodeBinder    resultsBinder;
 
     /**
-     * Construct.
+     * Constructor.
      * 
      * @param id
      *            The id for the node
@@ -57,55 +55,67 @@ public class AccumulateNode extends BetaNode {
      *            The left input <code>TupleSource</code>.
      * @param rightInput
      *            The right input <code>ObjectSource</code>.
-     * @param accumulate
-     *            The accumulate conditional element
+     * @param collect
+     *            The collect conditional element
      */
-    AccumulateNode(final int id,
-                   final TupleSource leftInput,
-                   final ObjectSource rightInput,
-                   final Accumulate accumulate) {
+    CollectNode(final int id,
+                final TupleSource leftInput,
+                final ObjectSource rightInput,
+                final Collect collect) {
         this( id,
               leftInput,
               rightInput,
               new FieldConstraint[0],
               new BetaNodeBinder(),
               new BetaNodeBinder(),
-              accumulate );
+              collect );
     }
 
-    public AccumulateNode(final int id,
-                          final TupleSource leftInput,
-                          final ObjectSource rightInput,
-                          final FieldConstraint[] constraints,
-                          final BetaNodeBinder sourceBinder,
-                          final BetaNodeBinder resultsBinder,
-                          final Accumulate accumulate) {
+    /**
+     * Constructor.
+     * 
+     * @param id
+     *            The id for the node
+     * @param leftInput
+     *            The left input <code>TupleSource</code>.
+     * @param rightInput
+     *            The right input <code>ObjectSource</code>.
+     * @param resultConstraints
+     *            The alpha constraints to be applied to the resulting collection
+     * @param sourceBinder
+     *            The beta binder to be applied to the source facts
+     * @param resultsBinder
+     *            The beta binder to be applied to the resulting collection
+     * @param collect
+     *            The collect conditional element
+     */
+    public CollectNode(final int id,
+                       final TupleSource leftInput,
+                       final ObjectSource rightInput,
+                       final FieldConstraint[] resultConstraints,
+                       final BetaNodeBinder sourceBinder,
+                       final BetaNodeBinder resultsBinder,
+                       final Collect collect) {
         super( id,
                leftInput,
                rightInput,
                sourceBinder );
         this.resultsBinder = resultsBinder;
-        this.constraints = constraints;
-        this.accumulate = accumulate;
+        this.resultConstraints = resultConstraints;
+        this.collect = collect;
     }
 
     /**
      * @inheritDoc
      * 
-     *  When a new tuple is asserted into an AccumulateNode, do this:
+     *  When a new tuple is asserted into a CollectNode, do this:
      *  
      *  1. Select all matching objects from right memory
-     *  2. Execute the initialization code using the tuple + matching objects
-     *  3. Execute the accumulation code for each combination of tuple+object
-     *  4. Execute the return code
-     *  5. Create a new CalculatedObjectHandle for the resulting object and add it to the tuple
-     *  6. Propagate the tuple
-     *  
-     *  The initialization, accumulation and return codes, in JBRules, are assembled
-     *  into a generated method code and called once for the whole match, as you can see
-     *  bellow:
-     *  
-     *   Object result = this.accumulator.accumulate( ... );
+     *  2. Add them to the resulting collection object
+     *  3. Apply resultConstraints and resultsBinder to the resulting collection
+     *  4. In case all of them evaluates to true do the following:
+     *  4.1. Create a new InternalFactHandle for the resulting collection and add it to the tuple
+     *  4.2. Propagate the tuple
      *  
      */
     public void assertTuple(ReteTuple leftTuple,
@@ -119,7 +129,7 @@ public class AccumulateNode extends BetaNode {
 
         //final BetaNodeBinder binder = getJoinNodeBinder();
 
-        List matchingObjects = new ArrayList();
+        Collection result = this.collect.instantiateResultObject();
         for ( final Iterator it = memory.rightObjectIterator( workingMemory,
                                                               leftTuple ); it.hasNext(); ) {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
@@ -129,27 +139,27 @@ public class AccumulateNode extends BetaNode {
                               handle,
                               objectMatches,
                               this.resultsBinder,
-                              workingMemory )  != null) {
-                matchingObjects.add( handle.getObject() );
+                              workingMemory ) != null ) {
+                result.add( handle.getObject() );
             }
         }
 
-        Object result = this.accumulate.accumulate( leftTuple,
-                                                    matchingObjects,
-                                                    workingMemory );
-
         // First alpha node filters
         boolean isAllowed = true;
-        for ( int i = 0, length = this.constraints.length; i < length; i++ ) {
-            if ( !this.constraints[i].isAllowed( result, leftTuple, workingMemory ) ) {
+        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
+            if ( !this.resultConstraints[i].isAllowed( result,
+                                                       leftTuple,
+                                                       workingMemory ) ) {
                 isAllowed = false;
                 break;
             }
         }
-        if( isAllowed ) {
+        if ( isAllowed ) {
             DefaultFactHandle handle = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( result );
 
-            if( this.resultsBinder.isAllowed( handle, leftTuple, workingMemory )) {
+            if ( this.resultsBinder.isAllowed( handle,
+                                               leftTuple,
+                                               workingMemory ) ) {
                 propagateAssertTuple( leftTuple,
                                       handle,
                                       context,
@@ -161,8 +171,8 @@ public class AccumulateNode extends BetaNode {
     /**
      * @inheritDoc
      * 
-     * As the accumulate node will propagate the tuple,
-     * but will recalculate the accumulated result object every time,
+     * As the collect node will propagate the tuple,
+     * but will recalculate the collection result object every time,
      * a modify is really a retract + assert. 
      * 
      */
@@ -181,10 +191,6 @@ public class AccumulateNode extends BetaNode {
 
     /**
      * @inheritDoc
-     * 
-     * As the accumulate node will always propagate the tuple,
-     * it must always also retreat it.
-     * 
      */
     public void retractTuple(ReteTuple leftTuple,
                              PropagationContext context,
@@ -202,17 +208,17 @@ public class AccumulateNode extends BetaNode {
                 it.remove();
             }
         }
-        
+
         // if tuple was propagated
-        if((leftTuple.getLinkedTuples() != null) && (leftTuple.getLinkedTuples().size() > 0)) {
-            // Need to store the accumulate result object for later disposal
-            InternalFactHandle[] handles = ((ReteTuple)((LinkedListObjectWrapper)leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
-            InternalFactHandle lastHandle = handles[handles.length-1];
-            
+        if ( (leftTuple.getLinkedTuples() != null) && (leftTuple.getLinkedTuples().size() > 0) ) {
+            // Need to store the collection result object for later disposal
+            InternalFactHandle[] handles = ((ReteTuple) ((LinkedListObjectWrapper) leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
+            InternalFactHandle lastHandle = handles[handles.length - 1];
+
             propagateRetractTuple( leftTuple,
                                    context,
                                    workingMemory );
-            
+
             // Destroying the acumulate result object 
             workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
         }
@@ -221,19 +227,19 @@ public class AccumulateNode extends BetaNode {
     /**
      * @inheritDoc
      * 
-     *  When a new object is asserted into an AccumulateNode, do this:
+     *  When a new object is asserted into a CollectNode, do this:
      *  
      *  1. Select all matching tuples from left memory
      *  2. For each matching tuple, call a modify tuple
      *  
      */
-    public void assertObject(InternalFactHandle handle,
+    public void assertObject(DefaultFactHandle handle,
                              PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
+                             ReteooWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        ObjectMatches objectMatches = memory.add( workingMemory,
-                                                  handle );
+        memory.add( workingMemory,
+                    handle );
 
         final BetaNodeBinder binder = getJoinNodeBinder();
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
@@ -257,14 +263,14 @@ public class AccumulateNode extends BetaNode {
      * If an object is modified, iterate over all matching tuples
      * and propagate a modify tuple for them.
      * 
-     * NOTE: a modify tuple for accumulate node is exactly the 
-     * same as a retract+assert tuple, since the calculated object changes.
+     * NOTE: a modify tuple for collect node is exactly the 
+     * same as a retract+assert tuple, since the collection object changes.
      * So, a modify object is in fact a retract+assert object.
      * 
      */
-    public void modifyObject(InternalFactHandle handle,
+    public void modifyObject(DefaultFactHandle handle,
                              PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
+                             ReteooWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
@@ -276,7 +282,7 @@ public class AccumulateNode extends BetaNode {
             final ReteTuple leftTuple = tupleMatch.getTuple();
             leftTuple.removeMatch( handle );
         }
-        
+
         // reassert object modifying appropriate tuples
         this.assertObject( handle,
                            context,
@@ -289,9 +295,9 @@ public class AccumulateNode extends BetaNode {
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
-    public void retractObject(InternalFactHandle handle,
+    public void retractObject(DefaultFactHandle handle,
                               PropagationContext context,
-                              InternalWorkingMemory workingMemory) {
+                              ReteooWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
@@ -333,7 +339,7 @@ public class AccumulateNode extends BetaNode {
     /**
      * @inheritDoc
      */
-    public void updateNewNode(InternalWorkingMemory workingMemory,
+    public void updateNewNode(ReteooWorkingMemory workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
 

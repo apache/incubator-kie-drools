@@ -811,6 +811,21 @@ accumulate_statement returns [AccumulateDescr d]
 		} 
 	; 		
  		
+collect_statement returns [CollectDescr d]
+	@init {
+		d = factory.createCollect();
+	}
+	:
+	        loc='from' opt_eol 'collect' opt_eol 
+		{ 
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+		}	
+		'(' opt_eol column=lhs_column opt_eol ')'
+		{
+		        d.setSourceColumn( (ColumnDescr)column );
+		}
+	; 		
+
 argument_list returns [ArrayList args]
 	@init {
 		args = new ArrayList();
@@ -1241,7 +1256,8 @@ lhs_unary returns [PatternDescr d]
 		|	u=lhs_eval {d = u;}				
 		|	u=lhs_column {d=u;} 
 		          ((fm=from_statement {fm.setColumn((ColumnDescr) u); d=fm;}) 
-		          |(ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); d=ac;}) )?
+		          |(ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); d=ac;})
+		          |(cs=collect_statement {cs.setResultColumn((ColumnDescr) u); d=cs;}) )?
 		|	'(' opt_eol u=lhs opt_eol ')' {d = u;}
 		) 
 	;

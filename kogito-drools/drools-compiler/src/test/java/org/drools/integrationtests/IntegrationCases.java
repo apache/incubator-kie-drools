@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -3180,4 +3181,113 @@ public abstract class IntegrationCases extends TestCase {
         Assert.assertEquals( 2, results.size());
         
     }
+    
+    public void testCollect() throws Exception {
+
+        //read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
+        final DrlParser parser = new DrlParser();
+        final PackageDescr packageDescr = parser.parse( reader );
+
+        //pre build the package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( packageDescr );
+        final Package pkg = builder.getPackage();
+
+        //add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        //load up the rulebase
+
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        List results = new ArrayList();
+        
+        wm.setGlobal( "results", results );
+        
+        wm.assertObject( new Cheese("stilton", 10) );
+        wm.assertObject( new Cheese("stilton", 7) );
+        wm.assertObject( new Cheese("stilton", 8) );
+        wm.assertObject( new Cheese("brie", 5) );
+        wm.assertObject( new Cheese("provolone", 150) );
+        wm.assertObject( new Cheese("provolone", 20) );
+        wm.assertObject( new Person("Bob", "stilton") );
+        wm.assertObject( new Person("Mark", "provolone") );
+        
+        wm.fireAllRules();
+        
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals(3, ((Collection)results.get(0)).size());
+        Assert.assertEquals(ArrayList.class.getName(), results.get(0).getClass().getName());
+    }
+    
+    public void testCollectModify() throws Exception {
+        //read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
+        final DrlParser parser = new DrlParser();
+        final PackageDescr packageDescr = parser.parse( reader );
+
+        //pre build the package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( packageDescr );
+        final Package pkg = builder.getPackage();
+
+        //add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        //load up the rulebase
+
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        List results = new ArrayList();
+        
+        wm.setGlobal( "results", results );
+        
+        Cheese[] cheese = new Cheese[] {
+                       new Cheese("stilton", 10),
+                       new Cheese("stilton", 2),
+                       new Cheese("stilton", 5),
+                       new Cheese("brie", 15),
+                       new Cheese("brie", 16),
+                       new Cheese("provolone", 8)
+        };
+        Person bob =  new Person("Bob", "stilton");
+        
+        FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = wm.assertObject( cheese[i] );
+        }
+        FactHandle bobHandle = wm.assertObject( bob );
+
+        // ---------------- 1st scenario
+        int fireCount = 0;
+        wm.fireAllRules();
+        Assert.assertEquals( ++fireCount, results.size() );
+        Assert.assertEquals( 3, ((Collection)results.get(fireCount-1)).size());
+        Assert.assertEquals( ArrayList.class.getName(), results.get(fireCount-1).getClass().getName());
+        
+        // ---------------- 2nd scenario
+        int index = 1;
+        cheese[index].setPrice( 9 );
+        wm.modifyObject( cheeseHandles[index], cheese[index] );
+        wm.fireAllRules();
+        
+        Assert.assertEquals( ++fireCount, results.size() );
+        Assert.assertEquals( 3, ((Collection)results.get(fireCount-1)).size());
+        Assert.assertEquals( ArrayList.class.getName(), results.get(fireCount-1).getClass().getName());
+        
+        // ---------------- 3rd scenario
+        bob.setLikes( "brie" );
+        wm.modifyObject( bobHandle, bob );
+        wm.fireAllRules();
+        
+        Assert.assertEquals( fireCount, results.size() );
+        
+        // ---------------- 4th scenario
+        wm.retractObject( cheeseHandles[3] );
+        wm.fireAllRules();
+        
+        // should not have fired as per constraint
+        Assert.assertEquals( fireCount, results.size());
+        
+    }
+    
 }

@@ -1,0 +1,5 @@
+rule "CollectParserTest"
+when
+     $personList : ArrayList() from collect( Person( age > 21 ) );
+then
+end
