@@ -9,7 +9,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListNode;
 import org.drools.util.LinkedListObjectWrapper;
 
 public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
@@ -38,9 +37,9 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
         joined.assertTuple( context, workingMemory );           
         
         for ( sink = sink.getNextTupleSinkNode();sink != null; sink = sink.getNextTupleSinkNode() ) {
-            ReteTuple cloned = new ReteTuple(tuple, sink);
+            ReteTuple cloned = new ReteTuple(joined, sink);
             tupleMatch.addJoinedTuple( cloned );
-            joined.assertTuple( context, workingMemory );                
+            cloned.assertTuple( context, workingMemory );                
         }
     }
     
