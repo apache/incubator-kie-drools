@@ -714,7 +714,6 @@ class ReteooBuilder
             this.currentOffsetAdjustment = 1;
 
             final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                                 this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                                                  new ClassObjectType( InitialFact.class ),
                                                                                  this.rete ) );
 
