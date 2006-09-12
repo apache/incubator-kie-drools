@@ -32,11 +32,12 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
                                      TupleMatch tupleMatch,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory) {
-        ReteTuple joined = new ReteTuple(tuple, handle, (TupleSink) sinks.getFirst() );
+        TupleSinkNode sink = this.sinks.getFirst();
+        ReteTuple joined = new ReteTuple(tuple, handle, (TupleSink) sink );
         tupleMatch.addJoinedTuple( joined );
         joined.assertTuple( context, workingMemory );           
         
-        for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
+        for ( sink = sink.getNextTupleSinkNode();sink != null; sink = sink.getNextTupleSinkNode() ) {
             ReteTuple cloned = new ReteTuple(tuple, sink);
             tupleMatch.addJoinedTuple( cloned );
             joined.assertTuple( context, workingMemory );                
