@@ -242,10 +242,12 @@ public class NotNode extends BetaNode {
         }
 
         LinkedList list = leftTuple.getLinkedTuples();
-        for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-            ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
-            tuple.retractTuple( context,
-                                workingMemory );
+        if( list != null ) {
+            for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
+                ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                tuple.retractTuple( context,
+                                    workingMemory );
+            }
         }
     }
 
