@@ -16,6 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.AbstractBaseLinkedListNode;
@@ -26,7 +29,7 @@ import org.drools.util.AbstractBaseLinkedListNode;
  * A reference is also maintained to the <code>ObjectMatches</code> instance; this is so the <code>FactHandleImpl</code> that 
  * is used in the join can be referenced, and also any other <code>TupleMatch</code>es the <code>FactHandleImpl</code> is joined with.
  * 
- * @see TupleMatch
+ * @see CompositeTupleMatch
  * @see ObjectMatches
  * @see ReteTuple
  * 
@@ -34,10 +37,10 @@ import org.drools.util.AbstractBaseLinkedListNode;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class TupleMatch extends AbstractBaseLinkedListNode {
+public class CompositeTupleMatch extends AbstractBaseLinkedListNode implements TupleMatch {
     private ReteTuple          tuple;
-
-    private TupleMatchChildren children;
+    
+    private LinkedList list;
 
     private ObjectMatches      objectMatches;
 
@@ -48,55 +51,57 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
      * @param tuple
      * @param objectMatches
      */
-    public TupleMatch(final ReteTuple tuple,
+    public CompositeTupleMatch(final ReteTuple tuple,
                       final ObjectMatches objectMatches) {
         this.tuple = tuple;
-        this.objectMatches = objectMatches;
-        this.children = new CompositeTupleMatchChildren();
+        this.objectMatches = objectMatches;       
+        this.list = new LinkedList();
     }
 
-    /**
-     * Return the parent <code>ReteTuple</code>
-     * 
-     * @return the <code>ReteTuple</code>
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.ITupleMatch#getTuple()
      */
     public ReteTuple getTuple() {
         return this.tuple;
     }
 
-    /**
-     * Returns the referenced <code>ObjectMatches</code> which provides the 
-     * <code>FactHandleImpl</code> the <code>ReteTuple</code> is joined with.
-     * 
-     * @return the <code>ObjectMatches</code>
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.ITupleMatch#getObjectMatches()
      */
     public ObjectMatches getObjectMatches() {
         return this.objectMatches;
     }
 
-    /**
-     * Adds a resulting join to the <code>List</code>. A join is made for each <code>TupleSink</code>.
-     * 
-     * @param tuple
-     */
-    public void addJoinedTuple(final ReteTuple tuple) {
-        this.children.add( tuple );
+    public void addJoinedTuple(ReteTuple tuple) {
+        list.add( tuple );
     }
 
     public void propagateRetractTuple(final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
-        this.children.propagateRetractTuple( context,
-                                             workingMemory );
+        for ( Iterator it = this.list.iterator(); it.hasNext(); ) {
+            ReteTuple joined = (ReteTuple) it.next();
+            joined.retractTuple( context,
+                                 workingMemory );
+        }
     }
 
     public void propagateModifyTuple(final PropagationContext context,
                                      final InternalWorkingMemory workingMemory) {
-        this.children.propagateModifyTuple( context,
-                                            workingMemory );
+        for ( Iterator it = this.list.iterator(); it.hasNext(); ) {
+            ReteTuple joined = (ReteTuple) it.next();
+            joined.modifyTuple( context,
+                                workingMemory );
+        }
     }
 
     public ReteTuple getTupleForSink(TupleSink sink) {
-        return this.children.getTupleForSink( sink );
+        for ( Iterator it = this.list.iterator(); it.hasNext(); ) {
+            ReteTuple joined = (ReteTuple) it.next();
+            if ( sink.equals(  joined.getTupleSink() ) ) {
+                return joined;
+            }
+        }    
+        return null;
     }
 
 }

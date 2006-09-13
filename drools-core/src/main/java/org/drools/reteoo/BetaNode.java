@@ -59,6 +59,8 @@ abstract class BetaNode extends TupleSource implements
     
     private ObjectSinkNode previousObjectSinkNode;
     private ObjectSinkNode nextObjectSinkNode;   
+    
+    protected TupleMatchFactory tupleMatchFactory;
 
     // ------------------------------------------------------------
     // Constructors
@@ -97,8 +99,32 @@ abstract class BetaNode extends TupleSource implements
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.joinNodeBinder = joinNodeBinder;
-
+        
+        this.tupleMatchFactory = SingleTupleMatchFactory.getInstance();     
     }
+    
+    public void addTupleSink(TupleSink tupleSink) {
+        int previousSize = 0;
+        if ( this.sink != null ) {
+            previousSize = this.sink.size();
+        }
+        super.addTupleSink( tupleSink );
+        
+        // we are now greater than one, so use a CompositeTupleMatchFactory
+        if ( previousSize == 1 ) {
+            this.tupleMatchFactory = CompositeTupleMatchFactory.getInstance();
+        }        
+    }
+    
+    public void removeTupleSink(TupleSink tupleSink) {
+        super.removeTupleSink( tupleSink );
+        
+        // We are now only one, so use a SingleTupleMatchFactory
+        if ( this.sink.size() == 1 ) {
+            this.tupleMatchFactory = SingleTupleMatchFactory.getInstance();
+        }        
+    }
+    
 
     public FieldConstraint[] getConstraints() {
         return this.joinNodeBinder.getConstraints();
@@ -163,8 +189,8 @@ abstract class BetaNode extends TupleSource implements
         if ( binder.isAllowed( handle,
                                leftTuple,
                                workingMemory ) ) {
-            TupleMatch tupleMatch = objectMatches.add( leftTuple );          
-
+            TupleMatch tupleMatch = this.tupleMatchFactory.newTupleMatch( leftTuple, objectMatches );          
+			objectMatches.add( tupleMatch );
             leftTuple.addTupleMatch( handle,
                                      tupleMatch );
             return tupleMatch;

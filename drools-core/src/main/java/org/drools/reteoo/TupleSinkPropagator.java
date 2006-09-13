@@ -38,5 +38,7 @@ public interface TupleSinkPropagator {
     public List getPropagatedTuples(final Map memory,
                                     final InternalWorkingMemory workingMemory,
                                     final TupleSink sink);
+    
+    public int size();
 
 }

@@ -283,7 +283,8 @@ public class NotNode extends BetaNode {
                 TupleMatch tupleMatch = (TupleMatch) oldMatches.remove( handle );
                 if ( tupleMatch == null ) {
                     // no previous matches so add a match now
-                    tupleMatch = objectMatches.add( leftTuple );
+                    tupleMatch = this.tupleMatchFactory.newTupleMatch( leftTuple, objectMatches );
+                    objectMatches.add( tupleMatch );
                 }
                 leftTuple.addTupleMatch( handle,
                                          tupleMatch );

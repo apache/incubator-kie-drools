@@ -46,7 +46,7 @@ import org.drools.util.LinkedListNode;
  * hashCode implementation for <code>ReteTuple</code>.
  * 
  * @see Tuple
- * @see TupleMatch
+ * @see CompositeTupleMatch
  * @see TupleKey
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
@@ -235,8 +235,8 @@ public class ReteTuple extends BaseMultiLinkedListNode
         return (TupleMatch) this.matches.get( handle );
     }
 
-    public TupleMatch removeMatch(final InternalFactHandle handle) {
-        return (TupleMatch) this.matches.remove( handle );
+    public CompositeTupleMatch removeMatch(final InternalFactHandle handle) {
+        return (CompositeTupleMatch) this.matches.remove( handle );
     }
 
     //    public void remove(PropagationContext context,

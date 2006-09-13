@@ -82,7 +82,7 @@ public class FromNode extends TupleSource
             if ( binder.isAllowed( handle,
                                    leftTuple,
                                    workingMemory ) ) {
-                final TupleMatch tupleMatch = new TupleMatch( leftTuple,
+                final TupleMatch tupleMatch = new CompositeTupleMatch( leftTuple,
                                                               objectMatches );
 
                 leftTuple.addTupleMatch( (DefaultFactHandle) handle,
