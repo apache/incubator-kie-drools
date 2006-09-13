@@ -25,7 +25,7 @@ import org.drools.util.LinkedList;
  * 
  * <code>ObjectMatches</code> maintains a reference to its <code>FactHandleImpl</code> and a <code>LinkedList</code> of <code>TupleMatch</code>es.
  * 
- * @see TupleMatch
+ * @see CompositeTupleMatch
  * @see LinkedList
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
@@ -46,23 +46,7 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
         this.list = new LinkedList();
         this.handle = handle;
     }
-
-    /**
-     * Adds a matched <code>ReteTuple</code>, which is then wrapped in a <code>TupleMatch</code> which is added to 
-     * the <code>LinkedList</code> and then returned.
-     * 
-     * @param tuple
-     * @return
-     */
-    TupleMatch add(final ReteTuple tuple) {
-        final TupleMatch tupleMatch = new TupleMatch( tuple,
-                                                      this );
-
-        this.list.add( tupleMatch );
-
-        return tupleMatch;
-    }
-    
+   
     void add(final TupleMatch tupleMatch) {
         this.list.add( tupleMatch );
     }
@@ -70,7 +54,7 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
     /**
      * Removes the <code>TupleMatch</code> as the underlying <code>ReteTuple</code> has been retracted and no longer matches.
      * 
-     * @param tupleMatch
+     * @param compositeTupleMatch
      */
     void remove(final TupleMatch tupleMatch) {
         this.list.remove( tupleMatch );
@@ -89,8 +73,8 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
      * 
      * @return the <code>TupleMatch</code>
      */
-    public TupleMatch getFirstTupleMatch() {
-        return (TupleMatch) this.list.getFirst();
+    public CompositeTupleMatch getFirstTupleMatch() {
+        return (CompositeTupleMatch) this.list.getFirst();
     }
 
     /**

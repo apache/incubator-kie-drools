@@ -288,7 +288,8 @@ class JoinNode extends BetaNode {
                         tupleMatch.propagateModifyTuple( context,
                                                          workingMemory );
                     } else {
-                        tupleMatch = objectMatches.add( leftTuple );
+                        tupleMatch = this.tupleMatchFactory.newTupleMatch( leftTuple, objectMatches );
+                        objectMatches.add( tupleMatch );
                         leftTuple.addTupleMatch( handle,
                                                  tupleMatch );
                         this.sink.propagateAssertTuple( leftTuple,

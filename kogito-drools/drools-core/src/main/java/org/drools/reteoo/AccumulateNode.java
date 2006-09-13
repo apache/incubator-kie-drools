@@ -197,8 +197,8 @@ public class AccumulateNode extends BetaNode {
 
         if ( !matches.isEmpty() ) {
             for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
-                final TupleMatch tupleMatch = (TupleMatch) it.next();
-                tupleMatch.getObjectMatches().remove( tupleMatch );
+                final CompositeTupleMatch compositeTupleMatch = (CompositeTupleMatch) it.next();
+                compositeTupleMatch.getObjectMatches().remove( compositeTupleMatch );
                 it.remove();
             }
         }
@@ -272,8 +272,8 @@ public class AccumulateNode extends BetaNode {
                                                            handle );
 
         // remove references from tuple to the handle
-        for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
-            final ReteTuple leftTuple = tupleMatch.getTuple();
+        for ( CompositeTupleMatch compositeTupleMatch = objectMatches.getFirstTupleMatch(); compositeTupleMatch != null; compositeTupleMatch = (CompositeTupleMatch) compositeTupleMatch.getNext() ) {
+            final ReteTuple leftTuple = compositeTupleMatch.getTuple();
             leftTuple.removeMatch( handle );
         }
         
@@ -298,8 +298,8 @@ public class AccumulateNode extends BetaNode {
         final ObjectMatches objectMatches = memory.remove( workingMemory,
                                                            handle );
 
-        for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
-            final ReteTuple leftTuple = tupleMatch.getTuple();
+        for ( CompositeTupleMatch compositeTupleMatch = objectMatches.getFirstTupleMatch(); compositeTupleMatch != null; compositeTupleMatch = (CompositeTupleMatch) compositeTupleMatch.getNext() ) {
+            final ReteTuple leftTuple = compositeTupleMatch.getTuple();
             leftTuple.removeMatch( handle );
 
             this.modifyTuple( leftTuple,

@@ -88,5 +88,9 @@ public class SingleTupleSinkAdapter
 
         return propagatedTuples;
     }
+    
+    public int size() {
+        return 1;
+    }
 
 }
