@@ -53,8 +53,18 @@ public class CompositeObjectSinkAdapter
                         this.hashedSinks = new ObjectSinkNodeList();
                     }
 
-                    this.hashedSinks.add( (ObjectSinkNode) sink );
-
+                    if ( fieldIndex.getCount() >= 3 ) {
+                        if ( !fieldIndex.isHashed() ) {
+                            hashSinks( fieldIndex );
+                       }
+                        Object value = literalConstraint.getField().getValue();
+                        hashedSinkMap.put( new HashKey( index,
+                                                        value ),
+                                           sink );    
+                    } else {
+                        this.hashedSinks.add( (ObjectSinkNode) sink );   
+                    }
+                    
                     if ( !fieldIndex.isHashed() && fieldIndex.getCount() >= 3 ) {
                         // this is our third equal constraint for this field, so hash this index
                         hashSinks( fieldIndex );
@@ -85,12 +95,7 @@ public class CompositeObjectSinkAdapter
                 if ( evaluator.getOperator() == Operator.EQUAL ) {
                     int index = literalConstraint.getFieldExtractor().getIndex();
                     FieldIndex fieldIndex = unregisterFieldIndex( index );
-                    this.hashedSinks.remove( (ObjectSinkNode) sink );
-
-                    if ( this.hashedSinks.isEmpty() ) {
-                        this.hashedSinks = null;
-                    }
-
+                    
                     if ( fieldIndex.isHashed() ) {
                         this.hashKey.setIndex( index );
                         this.hashKey.setValue( value );
@@ -99,6 +104,12 @@ public class CompositeObjectSinkAdapter
                             // we have less than three so unhash
                             unHashSinks( fieldIndex );
                         }
+                    } else {
+                        this.hashedSinks.remove( (ObjectSinkNode) sink );
+                    }                   
+                    
+                    if ( this.hashedSinks.isEmpty() ) {
+                        this.hashedSinks = null;
                     }
 
                     return;
