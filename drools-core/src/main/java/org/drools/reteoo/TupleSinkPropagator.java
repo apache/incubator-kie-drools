@@ -19,10 +19,9 @@ public interface TupleSinkPropagator {
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);    
     
-    public void createAndAssertTuple(InternalFactHandle handle,
+    public LinkedList createAndAssertTuple(InternalFactHandle handle,
                                      PropagationContext context,
-                                     InternalWorkingMemory workingMemory,
-                                     Map memory);    
+                                     InternalWorkingMemory workingMemory);    
     
 
     public TupleSink[] getSinks();

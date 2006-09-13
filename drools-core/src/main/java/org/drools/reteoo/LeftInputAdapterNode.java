@@ -140,10 +140,10 @@ class LeftInputAdapterNode extends TupleSource
         if ( (this.binder == null) || (this.binder.isAllowed( handle,
                                                               null,
                                                               workingMemory )) ) {
-            this.sink.createAndAssertTuple( handle,
-                                            context,
-                                            workingMemory,
-                                            memory );
+            memory.put( handle,
+                        this.sink.createAndAssertTuple( handle,
+                                                        context,
+                                                        workingMemory ) );
         }
     }
 
@@ -166,9 +166,10 @@ class LeftInputAdapterNode extends TupleSource
 
         // the handle might have been filtered out by the binder
         if ( list != null ) {
-            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {                
-                ReteTuple reteTuple = ( ReteTuple )  ((LinkedListObjectWrapper) node).getObject();
-                reteTuple.retractTuple( context, workingMemory );
+            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
+                ReteTuple reteTuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                reteTuple.retractTuple( context,
+                                        workingMemory );
             }
         }
     }
@@ -186,23 +187,25 @@ class LeftInputAdapterNode extends TupleSource
             if ( list != null ) {
                 // already existed, so propagate as a modify
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple reteTuple = ( ReteTuple )  ((LinkedListObjectWrapper) node).getObject();
-                    reteTuple.modifyTuple( context, workingMemory );
+                    ReteTuple reteTuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                    reteTuple.modifyTuple( context,
+                                           workingMemory );
                 }
             } else {
                 // didn't existed, so propagate as an assert
-                this.sink.createAndAssertTuple( handle,
-                                           context,
-                                           workingMemory,
-                                           memory );
+                memory.put( handle,
+                            this.sink.createAndAssertTuple( handle,
+                                                            context,
+                                                            workingMemory ) );
             }
         } else {
             final LinkedList list = (LinkedList) memory.remove( handle );
 
             if ( list != null ) {
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple reteTuple = ( ReteTuple )  ((LinkedListObjectWrapper) node).getObject();
-                    reteTuple.retractTuple( context, workingMemory );
+                    ReteTuple reteTuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                    reteTuple.retractTuple( context,
+                                            workingMemory );
                 }
             }
         }
@@ -216,17 +219,20 @@ class LeftInputAdapterNode extends TupleSource
         this.attachingNewNode = true;
 
         // Get the newly attached TupleSink
-//        final TupleSink sink = (TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 );
+        //        final TupleSink sink = (TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 );
 
         // Iterate the memory and assert all tuples into the newly attached TupleSink
         final Map memory = (Map) workingMemory.getNodeMemory( this );
-        
+
         for ( final Iterator it = memory.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = ( Entry ) it.next();
-            
-            final InternalFactHandle handle = ( InternalFactHandle ) entry.getKey();
+            Entry entry = (Entry) it.next();
+
+            final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
             final LinkedList list = (LinkedList) entry.getValue();
-            this.sink.propagateNewTupleSink( handle, list, context, workingMemory );
+            this.sink.propagateNewTupleSink( handle,
+                                             list,
+                                             context,
+                                             workingMemory );
         }
 
         this.attachingNewNode = false;
@@ -235,7 +241,7 @@ class LeftInputAdapterNode extends TupleSource
     public void remove(final BaseNode node,
                        final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeTupleSink( (TupleSink ) node );
+            removeTupleSink( (TupleSink) node );
         }
         removeShare();
         if ( !this.isInUse() ) {
@@ -282,6 +288,8 @@ class LeftInputAdapterNode extends TupleSource
     public List getPropagatedTuples(final InternalWorkingMemory workingMemory,
                                     final TupleSink sink) {
         final Map memory = (Map) workingMemory.getNodeMemory( this );
-        return this.sink.getPropagatedTuples( memory, workingMemory, sink );
+        return this.sink.getPropagatedTuples( memory,
+                                              workingMemory,
+                                              sink );
     }
 }
