@@ -33,17 +33,16 @@ public class SingleTupleSinkAdapter
                             workingMemory );
     }
 
-    public void createAndAssertTuple(InternalFactHandle handle,
+    public LinkedList createAndAssertTuple(InternalFactHandle handle,
                                      PropagationContext context,
-                                     InternalWorkingMemory workingMemory,
-                                     Map memory) {
+                                     InternalWorkingMemory workingMemory) {
         final LinkedList list = new LinkedList();
         ReteTuple tuple = new ReteTuple( handle,
                                          sink );
         list.add( new LinkedListObjectWrapper( tuple ) );
-        memory.put( handle, list );
         tuple.assertTuple( context,
                            workingMemory );
+        return list;
     }
 
     public void propagateAssertTuple(ReteTuple tuple,

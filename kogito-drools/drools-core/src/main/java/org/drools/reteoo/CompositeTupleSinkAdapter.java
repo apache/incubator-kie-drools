@@ -54,17 +54,16 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
         }
     }    
     
-    public void createAndAssertTuple(InternalFactHandle handle,
+    public LinkedList createAndAssertTuple(InternalFactHandle handle,
                                      PropagationContext context,
-                                     InternalWorkingMemory workingMemory,
-                                     Map memory) {
+                                     InternalWorkingMemory workingMemory) {
         final LinkedList list = new LinkedList();
-        memory.put( handle, list );
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {    
             ReteTuple tuple = new ReteTuple( handle, sink );
             list.add( new LinkedListObjectWrapper( tuple ) );
             tuple.assertTuple( context, workingMemory );
         }     
+        return list;
     }    
 
     public TupleSink[] getSinks() {

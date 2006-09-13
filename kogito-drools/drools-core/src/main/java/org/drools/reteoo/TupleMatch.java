@@ -86,15 +86,15 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
     public void propagateRetractTuple(final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
         this.children.propagateRetractTuple( context,
-                                        workingMemory );
+                                             workingMemory );
     }
 
     public void propagateModifyTuple(final PropagationContext context,
                                      final InternalWorkingMemory workingMemory) {
         this.children.propagateModifyTuple( context,
-                                       workingMemory );
+                                            workingMemory );
     }
-    
+
     public ReteTuple getTupleForSink(TupleSink sink) {
         return this.children.getTupleForSink( sink );
     }
