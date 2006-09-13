@@ -239,10 +239,8 @@ public class NotNode extends BetaNode {
                 final TupleMatch tupleMatch = (TupleMatch) it.next();
                 tupleMatch.getObjectMatches().remove( tupleMatch );
             }
-        }
-
-        LinkedList list = leftTuple.getLinkedTuples();
-        if( list != null ) {
+        } else {
+            LinkedList list = leftTuple.getLinkedTuples();
             for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
                 ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
                 tuple.retractTuple( context,
