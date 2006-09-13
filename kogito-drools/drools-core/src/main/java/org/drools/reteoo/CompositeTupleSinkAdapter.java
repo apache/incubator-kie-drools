@@ -59,6 +59,7 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
                                      InternalWorkingMemory workingMemory,
                                      Map memory) {
         final LinkedList list = new LinkedList();
+        memory.put( handle, list );
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {    
             ReteTuple tuple = new ReteTuple( handle, sink );
             list.add( new LinkedListObjectWrapper( tuple ) );
