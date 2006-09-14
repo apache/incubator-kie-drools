@@ -25,30 +25,30 @@ import org.drools.rule.Declaration;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Tuple;
 
-public class BetaNodeBinder
+public class BetaNodeConstraints
     implements
     Serializable {
 
     /**
      * 
      */
-    private static final long              serialVersionUID  = -2793835336853071181L;
+    private static final long               serialVersionUID         = 320L;
 
-    public final static BetaNodeBinder     simpleBinder      = new BetaNodeBinder();
+    public final static BetaNodeConstraints emptyBetaNodeConstraints = new BetaNodeConstraints();
 
-    private final FieldConstraint[]        constraints;
+    private final FieldConstraint[]         constraints;
 
-    private static final FieldConstraint[] EMPTY_CONSTRAINTS = new FieldConstraint[0];
+    private static final FieldConstraint[]  EMPTY_CONSTRAINTS        = new FieldConstraint[0];
 
-    public BetaNodeBinder() {
-        this.constraints = BetaNodeBinder.EMPTY_CONSTRAINTS;
+    public BetaNodeConstraints() {
+        this.constraints = BetaNodeConstraints.EMPTY_CONSTRAINTS;
     }
 
-    public BetaNodeBinder(final FieldConstraint constraint) {
+    public BetaNodeConstraints(final FieldConstraint constraint) {
         this.constraints = new FieldConstraint[]{constraint};
     }
 
-    public BetaNodeBinder(final FieldConstraint[] constraints) {
+    public BetaNodeConstraints(final FieldConstraint[] constraints) {
         this.constraints = constraints;
     }
 
@@ -106,7 +106,7 @@ public class BetaNodeBinder
             return false;
         }
 
-        final BetaNodeBinder other = (BetaNodeBinder) object;
+        final BetaNodeConstraints other = (BetaNodeConstraints) object;
 
         if ( this.constraints == other.constraints ) {
             return true;
