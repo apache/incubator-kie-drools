@@ -716,7 +716,7 @@ expander_lhs_block[AndDescr descrs]
 	
 	
 	
-lhs returns [PatternDescr d]
+lhs returns [BaseDescr d]
 	@init {
 		d=null;
 	}
@@ -724,7 +724,7 @@ lhs returns [PatternDescr d]
 	;
 
 	
-lhs_column returns [PatternDescr d]
+lhs_column returns [BaseDescr d]
 	@init {
 		d=null;
 	}
@@ -752,29 +752,33 @@ from_source returns [DeclarativeInvokerDescr ds]
 		ds = null;
 	}
 	:
-		(var=ID '.' field=ID 
+		(var=ID '.' field=ID  ('[' arg=argument_value ']')?
 		
 			{
-			  FieldAccessDescr fa = new FieldAccessDescr(var.getText(), field.getText());	
-			  fa.setLine(var.getLine());
+          		 FieldAccessDescr fa;
+			  if ( arg == null )   {
+				  fa = new FieldAccessDescr(var.getText(), field.getText());	
+			  } else {
+				  fa = new FieldAccessDescr(var.getText(), field.getText(), arg);				  
+			  }
+			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
 			  ds = fa;
 			 }
 	
-		) 
+		)  
 		|
 		(var=ID '.' method=ID opt_eol  '(' opt_eol args=argument_list opt_eol ')' 
 			{
-			MethodAccessDescr mc = new MethodAccessDescr(var.getText(), method.getText());
-			mc.setArguments(args);
-			mc.setLine(var.getLine());
-			ds = mc;
+			  FieldAccessDescr fa = new FieldAccessDescr(var.getText(), field.getText());	
+			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+			  ds = fa;
 			}	
 		)
 		|
 		(functionName=ID opt_eol '(' opt_eol args=argument_list opt_eol ')'
 			{
 			FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
-			fc.setLine(functionName.getLine());
+			fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
 			fc.setArguments(args);
 			ds = fc;
 			}
@@ -897,7 +901,7 @@ inline_array returns [List list]
       
     
     ; 	
-fact_binding returns [PatternDescr d]
+fact_binding returns [BaseDescr d]
 	@init {
 		d=null;
 		boolean multi=false;
@@ -911,7 +915,7 @@ fact_binding returns [PatternDescr d]
  		}
 	;
  
- fact_expression[String id] returns [PatternDescr pd]
+ fact_expression[String id] returns [BaseDescr pd]
  	@init {
  		pd = null;
  		boolean multi = false;
@@ -924,7 +928,7 @@ fact_binding returns [PatternDescr d]
  		}
  		(	('or'|'||') opt_eol
  			{	if ( ! multi ) {
- 					PatternDescr first = pd;
+ 					BaseDescr first = pd;
  					pd = new OrDescr();
  					((OrDescr)pd).addDescr( first );
  					multi=true;
@@ -938,7 +942,7 @@ fact_binding returns [PatternDescr d]
  		)*	
 	;
  
-fact returns [PatternDescr d] 
+fact returns [BaseDescr d] 
 	@init {
 		d=null;
 	}
@@ -951,7 +955,7 @@ fact returns [PatternDescr d]
  			}opt_eol (	c=constraints
  				{
 		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
- 						((ColumnDescr)d).addDescr( (PatternDescr) cIter.next() );
+ 						((ColumnDescr)d).addDescr( (BaseDescr) cIter.next() );
  					}
  				}
  
@@ -974,7 +978,7 @@ constraints returns [List constraints]
 	
 constraint[List constraints]
 	@init {
-		PatternDescr d = null;
+		BaseDescr d = null;
 	}
 	:	opt_eol
 		( fb=ID opt_eol ':' opt_eol )? 
@@ -1205,7 +1209,7 @@ curly_chunk returns [String text]
 		)*
 	;	
 	
-lhs_or returns [PatternDescr d]
+lhs_or returns [BaseDescr d]
 	@init{
 		d = null;
 	}
@@ -1226,7 +1230,7 @@ lhs_or returns [PatternDescr d]
 		)*
 	;
 	
-lhs_and returns [PatternDescr d]
+lhs_and returns [BaseDescr d]
 	@init{
 		d = null;
 	}
@@ -1247,7 +1251,7 @@ lhs_and returns [PatternDescr d]
 		)* 
 	;
 	
-lhs_unary returns [PatternDescr d]
+lhs_unary returns [BaseDescr d]
 	@init {
 		d = null;
 	}
@@ -1262,7 +1266,7 @@ lhs_unary returns [PatternDescr d]
 		) 
 	;
 	
-lhs_exist returns [PatternDescr d]
+lhs_exist returns [BaseDescr d]
 	@init {
 		d = null;
 	}
@@ -1284,7 +1288,7 @@ lhs_not	returns [NotDescr d]
 		}
 	;
 
-lhs_eval returns [PatternDescr d]
+lhs_eval returns [BaseDescr d]
 	@init {
 		d = null;
 		String text = "";
@@ -1377,7 +1381,7 @@ EOL 	:
         ;  
         
 INT	
-	:	('-')?('0'..'9')+
+	:	('-')?('0'..'9')+('l'|'L')?
 	;
 
 FLOAT

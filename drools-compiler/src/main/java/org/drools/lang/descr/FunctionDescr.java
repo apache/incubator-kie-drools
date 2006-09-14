@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FunctionDescr extends PatternDescr {
+public class FunctionDescr extends BaseDescr {
     private static final long serialVersionUID = 320;
     
     private final String name;

@@ -21,6 +21,6 @@ package org.drools.lang.descr;
  * a constraint on a single field of a column. 
  * The "text" contains the content, which may also be an enumeration. 
  */
-public class RestrictionDescr extends PatternDescr {
+public class RestrictionDescr extends BaseDescr {
 
 }

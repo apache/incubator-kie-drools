@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class AndDescr extends PatternDescr
+public class AndDescr extends BaseDescr
     implements
     ConditionalElementDescr {
     /**
@@ -36,15 +36,15 @@ public class AndDescr extends PatternDescr
     public AndDescr() {
     }
 
-    public void addDescr(final PatternDescr patternDescr) {
+    public void addDescr(final BaseDescr baseDescr) {
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList( 1 );
         }
 
-        if ( patternDescr instanceof ColumnDescr ) {
-            addColumn( (ColumnDescr) patternDescr );
+        if ( baseDescr instanceof ColumnDescr ) {
+            addColumn( (ColumnDescr) baseDescr );
         } else {
-            this.descrs.add( patternDescr );
+            this.descrs.add( baseDescr );
         }
     }
 
@@ -80,7 +80,7 @@ public class AndDescr extends PatternDescr
     private void combinePatterns(final ColumnDescr existingCol,
                                  final List newColPatterns) {
         for ( final Iterator iter = newColPatterns.iterator(); iter.hasNext(); ) {
-            existingCol.addDescr( (PatternDescr) iter.next() );
+            existingCol.addDescr( (BaseDescr) iter.next() );
         }
 
     }

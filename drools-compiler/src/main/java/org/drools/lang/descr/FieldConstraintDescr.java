@@ -25,7 +25,7 @@ import java.util.List;
  * a constraint on a single field of a column. 
  * The "text" contains the content, which may also be an enumeration. 
  */
-public class FieldConstraintDescr extends PatternDescr {
+public class FieldConstraintDescr extends BaseDescr {
 
 	private static final long serialVersionUID = 320;
     private String  fieldName;

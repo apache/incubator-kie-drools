@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * A descr class for accumulate node
  */
-public class AccumulateDescr extends PatternDescr 
+public class AccumulateDescr extends BaseDescr 
     implements ConditionalElementDescr {
 
     private static final long serialVersionUID = 2831283873824863255L;
@@ -103,7 +103,7 @@ public class AccumulateDescr extends PatternDescr
         return "[Accumulate: id=" + resultColumn.getIdentifier() + "; objectType=" + resultColumn.getObjectType() + "]";
     }
 
-    public void addDescr(PatternDescr patternDescr) {
+    public void addDescr(BaseDescr patternDescr) {
         // Nothing to do
     }
 

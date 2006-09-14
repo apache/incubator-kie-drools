@@ -1,6 +1,6 @@
 package org.drools.lang.descr;
 
-public class FieldTemplateDescr extends PatternDescr {
+public class FieldTemplateDescr extends BaseDescr {
     private final String      name;
     private final String      classType;
     public FieldTemplateDescr(final String name,

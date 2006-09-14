@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ColumnDescr extends PatternDescr {
+public class ColumnDescr extends BaseDescr {
     /**
      * 
      */
@@ -44,11 +44,11 @@ public class ColumnDescr extends PatternDescr {
         this.identifier = identifier;
     }
 
-    public void addDescr(final PatternDescr patternDescr) {
+    public void addDescr(final BaseDescr baseDescr) {
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList( 1 );
         }
-        this.descrs.add( patternDescr );
+        this.descrs.add( baseDescr );
     }
 
     public void setIdentifier(final String identifier) {

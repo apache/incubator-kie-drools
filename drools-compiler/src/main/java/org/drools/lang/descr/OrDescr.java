@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OrDescr extends PatternDescr
+public class OrDescr extends BaseDescr
     implements
     ConditionalElementDescr {
     /**
@@ -32,11 +32,11 @@ public class OrDescr extends PatternDescr
     public OrDescr() {
     }
 
-    public void addDescr(final PatternDescr patternDescr) {
+    public void addDescr(final BaseDescr baseDescr) {
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList( 1 );
         }
-        this.descrs.add( patternDescr );
+        this.descrs.add( baseDescr );
     }
 
     public List getDescrs() {

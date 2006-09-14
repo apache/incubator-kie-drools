@@ -20,7 +20,7 @@ import java.util.List;
 
 public interface ConditionalElementDescr {
 
-    public void addDescr(PatternDescr patternDescr);
+    public void addDescr(BaseDescr baseDescr);
 
     public List getDescrs();
 }

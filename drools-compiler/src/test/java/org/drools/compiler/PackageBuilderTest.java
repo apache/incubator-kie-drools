@@ -57,7 +57,7 @@ import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -1025,7 +1025,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        lhs.addDescr( (PatternDescr) ceDescr );
+        lhs.addDescr( (BaseDescr) ceDescr );
 
         final ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
                                                          "stilton" );

@@ -2,12 +2,21 @@ package org.drools.semantics.java;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.dataproviders.MethodResolver;
+import org.drools.base.resolvers.LiteralValue;
+import org.drools.rule.Declaration;
+import org.drools.spi.AvailableVariables;
 import org.drools.spi.FunctionResolver;
 import org.drools.spi.TypeResolver;
+import org.eclipse.jdt.core.dom.ASTParser;
+
+import antlr.collections.AST;
 
 public class StaticMethodFunctionResolver
     implements
@@ -32,9 +41,17 @@ public class StaticMethodFunctionResolver
     public List getFunctionImports() {
         return this.functionImports;
     }
+    
+    public String resolveFunction(String functionName,
+                                  String params) {
+        return resolveFunction(functionName,
+                               params,
+                               null );      
+    }
 
     public String resolveFunction(String functionName,
-                                  int numberOfArgs) {
+                                  String params,
+                                  AvailableVariables variables) {
         for ( Iterator it = this.functionImports.iterator(); it.hasNext(); ) {
             String functionImport = (String) it.next();
 
@@ -55,16 +72,133 @@ public class StaticMethodFunctionResolver
                 // todo : must be a better way so we don't have to try/catch each resolveType call
                 throw new RuntimeDroolsException( e );
             }
-            Method[] methods = clazz.getMethods();
-            for ( int i = 0, length = methods.length; i < length; i++ ) {
-                if ( (methods[i].getModifiers() & Modifier.STATIC) == Modifier.STATIC && (methods[i].getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC && methods[i].getName().equals( functionName )
-                     && methods[i].getParameterTypes().length == numberOfArgs ) {
-                    return clazz.getName().replace( '$',
-                                                    '.' );
-                }
-            }
+            MethodResolver methodResolver = new MethodResolver( clazz,
+                                                                functionName );
+            
+            
+            Class[] classes = determineParameterTypes( params, variables );
+            
+            Method method = methodResolver.resolveMethod( classes );
+
+            if ( method != null && methodResolver.isStaticMethod() ) {
+                   return clazz.getName().replace( '$',
+                                                   '.' );
+            }            
         }
         throw new RuntimeDroolsException( "unable to find the function '" + functionName + "'" );
     }
 
+    /**
+     * pass a string representation of parameters and determine the used class types
+     * @param paramString
+     * @return
+     */
+    private Class[] determineParameterTypes(String paramString, AvailableVariables variables) {
+        if ( paramString.trim().equals( "" ) ) {
+            return new Class[0];
+        }
+        String[] params = paramString.split( "," );
+        Class[] classes = new Class[params.length];
+
+        for ( int i = 0, length = params.length; i < length; i++ ) {
+            String param = params[i].trim();
+            if ( param.charAt( 0 ) == '"' && param.charAt( param.length() - 1 ) == '"' ) {
+                // we have a string literal
+                classes[i] = String.class;
+            } else if ( Character.getType( param.charAt( 0 ) ) == Character.DECIMAL_DIGIT_NUMBER ) {
+                // we have a number
+
+                char c = param.charAt( param.length() - 1 );
+                if ( param.indexOf( '.' ) == -1 ) {
+                    /// we have an integral
+                    if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
+                        switch ( c ) {
+                            case 'l' :
+                            case 'L' :
+                                classes[i] = Long.class;
+                                break;
+                            case 'f' :
+                            case 'F' :
+                                classes[i] = Float.class;
+                                break;
+                            case 'd' :
+                            case 'D' :
+                                classes[i] = Double.class;
+                                break;
+                            default :
+                                throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + param + "]" );
+                        }
+                    } else {
+                        classes[i] = Integer.class;
+                    }
+                } else {
+                    // we have a decimal
+                    if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
+                        switch ( c ) {
+                            case 'l' :
+                            case 'L' :
+                                throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + param + "]" );
+                            case 'f' :
+                            case 'F' :
+                                classes[i] = Float.class;
+                                break;
+                            case 'd' :
+                            case 'D' :
+                                classes[i] = Double.class;
+                                break;
+                            default :
+                                throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + param + "]" );
+                        }
+                    } else {
+                        classes[i] = Float.class;
+                    }
+                }
+            } else if ( param.startsWith( "new" ) ) {
+                //We have a new instance, get its type
+                int start = 3;
+                int wordLength = param.length();
+                // scan to start of first word
+                for ( int j = start; j < wordLength; j++ ) {
+                    if ( param.charAt( j ) != ' ') {
+                        break;
+                    }
+                    start++;
+                }
+                
+                int end = start;
+                // now scan to end of the first word           
+                for ( int j = start; j <= wordLength; j++ ) {
+                    char c = param.charAt( j );
+                    if (  c == ' ' || c == '(' ) {
+                        break;
+                    }
+                    end++;
+                }       
+            
+                char[] word = new char[end-start];
+                // now copy the word         
+                int k = 0;
+                for ( int j = start; j < end; j++ ) {
+                    word[k++]= param.charAt( j );
+                }                 
+            
+                Class clazz = null;
+                try {
+                    clazz = this.typeResolver.resolveType( new String( word ) );
+                } catch ( Exception e ) {
+                    throw new IllegalArgumentException( "Unable to resovle type [" + new String( word )  + "]" );
+                }
+                classes[i] = clazz;
+                
+                
+            } else {
+                // we have a varable
+                if ( variables != null ) {
+                    classes[i] = variables.getType( param );
+                }
+            }
+
+        }
+        return classes;
+    }
 }

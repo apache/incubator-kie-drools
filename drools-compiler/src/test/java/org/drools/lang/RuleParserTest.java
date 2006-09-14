@@ -579,7 +579,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "using_from",
                       rule.getName() );
 
-        assertEquals(6, rule.getLhs().getDescrs().size());
+        assertEquals(9, rule.getLhs().getDescrs().size());
         
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
         
@@ -594,6 +594,23 @@ public class RuleParserTest extends TestCase {
         ArgumentValueDescr arg = null;
         
         from = (FromDescr) rule.getLhs().getDescrs().get(1);
+        assertEquals("Foo", from.getReturnedColumn().getObjectType());
+        assertEquals(0, from.getReturnedColumn().getDescrs().size());
+        FieldAccessDescr fieldAccess = ( FieldAccessDescr ) from.getDataSource();
+        arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
+        assertEquals(ArgumentValueDescr.STRING,  arg.getType() );
+        
+        from = (FromDescr) rule.getLhs().getDescrs().get(2);
+        fieldAccess = ( FieldAccessDescr ) from.getDataSource();
+        arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
+        assertEquals(ArgumentValueDescr.VARIABLE,  arg.getType() );        
+        
+        from = (FromDescr) rule.getLhs().getDescrs().get(3);
+        fieldAccess = ( FieldAccessDescr ) from.getDataSource();
+        arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
+        assertEquals(ArgumentValueDescr.INTEGRAL,  arg.getType() );
+        
+        from = (FromDescr) rule.getLhs().getDescrs().get(4);
         assertEquals("Whee", from.getReturnedColumn().getObjectType());
         assertEquals(1, from.getReturnedColumn().getDescrs().size());
         assertTrue(from.getDataSource() instanceof FunctionCallDescr);
@@ -603,10 +620,10 @@ public class RuleParserTest extends TestCase {
         assertEquals("y", arg.getValue());
         assertEquals(ArgumentValueDescr.STRING, arg.getType());
 
-        assertEquals(4, from.getLine());
-        assertEquals(4, from.getReturnedColumn().getLine());
+        assertEquals(7, from.getLine());
+        assertEquals(7, from.getReturnedColumn().getLine());
         
-        from = (FromDescr) rule.getLhs().getDescrs().get(2);
+        from = (FromDescr) rule.getLhs().getDescrs().get(5);
         assertEquals("Foo", from.getReturnedColumn().getObjectType());
         assertEquals(1, from.getReturnedColumn().getDescrs().size());
         assertEquals("f", from.getReturnedColumn().getIdentifier());
@@ -622,10 +639,10 @@ public class RuleParserTest extends TestCase {
 
         assertEqualsIgnoreWhitespace("whee();", rule.getConsequence());
         
-        from = (FromDescr) rule.getLhs().getDescrs().get(3);
+        from = (FromDescr) rule.getLhs().getDescrs().get(6);
         assertEquals("wa", ((FunctionCallDescr)from.getDataSource()).getName());
 
-        from = (FromDescr) rule.getLhs().getDescrs().get(4);
+        from = (FromDescr) rule.getLhs().getDescrs().get(7);
         MethodAccessDescr meth = (MethodAccessDescr)from.getDataSource();
         assertEquals("wa", meth.getMethodName());
         assertEquals("la", meth.getVariableName());
@@ -648,7 +665,7 @@ public class RuleParserTest extends TestCase {
         
                 
         
-        assertEquals("Bam", ((ColumnDescr)rule.getLhs().getDescrs().get(5)).getObjectType());
+        assertEquals("Bam", ((ColumnDescr)rule.getLhs().getDescrs().get(8)).getObjectType());
     }
     
     public void testSimpleRule() throws Exception {

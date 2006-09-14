@@ -26,7 +26,7 @@ public class Cheesery
     /**
      * 
      */
-    private static final long serialVersionUID = 4654655548777389065L;
+    private static final long serialVersionUID = 320L;
     public final static int   MAKING_CHEESE    = 0;
     public final static int   SELLING_CHEESE   = 1;
 

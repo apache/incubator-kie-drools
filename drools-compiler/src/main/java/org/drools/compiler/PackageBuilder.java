@@ -45,7 +45,7 @@ import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
@@ -67,7 +67,8 @@ import org.xml.sax.SAXException;
  * This can be done by merging into existing binary packages, or totally from source.
  */
 public class PackageBuilder {
-
+    private static final JavaCompiler cachedJavaCompiler = null;
+    
     private JavaCompiler                compiler;
     private Package                     pkg;
     private List                        results;
@@ -75,13 +76,13 @@ public class PackageBuilder {
     private MemoryResourceReader        src;
     private PackageBuilderConfiguration configuration;
     private Map                         errorHandlers;
-    private List                        generatedClassList;
+    private List                         generatedClassList;
     private TypeResolver                typeResolver;
     private FunctionFixer               functionFixer;
     private FunctionResolver            functionResolver;
     private ClassFieldExtractorCache    classFieldExtractorCache;
     private Map                         lineMappings;
-
+    
     /**
      * Use this when package is starting from scratch. 
      */
@@ -293,12 +294,14 @@ public class PackageBuilder {
      * element that caused it.
      */
     private void addClassCompileTask(final String className,
+                                     final BaseDescr descr,
                                      final String text,
                                      final MemoryResourceReader src,
                                      final ErrorHandler handler) {
 
         final String fileName = className.replace( '.',
                                                    '/' ) + ".java";
+                
         src.add( fileName,
                  text.getBytes() );
 
@@ -308,13 +311,15 @@ public class PackageBuilder {
     }
 
     private void addFunction(final FunctionDescr functionDescr) {
-        final FunctionBuilder buidler = new FunctionBuilder();
+        final FunctionBuilder builder = new FunctionBuilder();
         this.pkg.addFunction( functionDescr.getName() );
 
         addClassCompileTask( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
-                             buidler.build( this.pkg,
-                                            functionDescr,
+                             functionDescr,
+                             builder.build( this.pkg,
+                                            functionDescr,                                            
                                             getFunctionFixer(),
+                                            getTypeResolver(),
                                             lineMappings ),
                              this.src,
                              new FunctionErrorHandler( functionDescr,
@@ -423,6 +428,7 @@ public class PackageBuilder {
                                   final RuleDescr ruleDescr) {
         // The compilation result is for th entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
+                             ruleDescr,
                              builder.getRuleClass(),
                              this.src,
                              new RuleErrorHandler( ruleDescr,
@@ -442,8 +448,9 @@ public class PackageBuilder {
             final String text = (String) builder.getInvokers().get( className );
 
             //System.out.println( className + ":\n" + text );
-            final PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
+            final BaseDescr descr = (BaseDescr) builder.getDescrLookups().get( className );
             addClassCompileTask( className,
+                                 descr,
                                  text,
                                  this.src,
                                  new RuleInvokerErrorHandler( descr,
@@ -660,10 +667,10 @@ public class PackageBuilder {
 
     public static class RuleErrorHandler extends ErrorHandler {
 
-        private PatternDescr descr;
+        private BaseDescr descr;
         private Rule         rule;
 
-        public RuleErrorHandler(final PatternDescr ruleDescr,
+        public RuleErrorHandler(final BaseDescr ruleDescr,
                                 final Rule rule,
                                 final String message) {
             this.descr = ruleDescr;
@@ -686,7 +693,7 @@ public class PackageBuilder {
      */
     public static class RuleInvokerErrorHandler extends RuleErrorHandler {
 
-        public RuleInvokerErrorHandler(final PatternDescr ruleDescr,
+        public RuleInvokerErrorHandler(final BaseDescr ruleDescr,
                                        final Rule rule,
                                        final String message) {
             super( ruleDescr,
@@ -712,7 +719,5 @@ public class PackageBuilder {
         }
 
     }
-
-    private static final JavaCompiler cachedJavaCompiler = null;
 
 }

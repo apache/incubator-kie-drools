@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * This is the super type for all pattern AST nodes.
  */
-public class PatternDescr
+public class BaseDescr
     implements
     Serializable {
 

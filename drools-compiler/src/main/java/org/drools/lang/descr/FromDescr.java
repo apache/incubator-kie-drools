@@ -2,7 +2,7 @@ package org.drools.lang.descr;
 
 import java.util.List;
 
-public class FromDescr extends PatternDescr
+public class FromDescr extends BaseDescr
     implements
     ConditionalElementDescr { 
 	private ColumnDescr column;
@@ -29,7 +29,7 @@ public class FromDescr extends PatternDescr
 		return column;
 	}
 
-    public void addDescr(PatternDescr patternDescr) {
+    public void addDescr(BaseDescr baseDescr) {
         //
     }
 

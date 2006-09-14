@@ -17,10 +17,12 @@ package org.drools.semantics.java;
  */
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.spi.AvailableVariables;
 import org.drools.spi.FunctionResolver;
 import org.drools.rule.Package;
 
@@ -55,11 +57,20 @@ public class FunctionFixer {
     public String fix(final String raw) {
         //return raw;
         return fix( raw,
-                    FunctionFixer.FUNCTION );
+                    FunctionFixer.FUNCTION,
+                    null );
     }
+    
+    public String fix(final String raw, final AvailableVariables variables) {
+        //return raw;
+        return fix( raw,
+                    FunctionFixer.FUNCTION,
+                    variables);
+    }    
 
     public String fix(final String raw,
-                      final Pattern pattern) {
+                      final Pattern pattern,
+                      final AvailableVariables variables ) {
         if ( raw == null ) {
             return null;
         }
@@ -90,7 +101,8 @@ public class FunctionFixer {
             }
             // Recursively process parameters
             params = fix( params,
-                          pattern );
+                          pattern,
+                          variables );
 
             String function = null;
 
@@ -112,17 +124,12 @@ public class FunctionFixer {
                     function = raw.substring( matcher.start( 2 ),
                                               matcher.start( 3 ) - 1 );
                 } else {
-                    int countParams = 0;
-                    for ( int i = 0, length = params.length(); i < length; i++ ) {
-                        if ( params.charAt( i ) == ',' ) {
-                            countParams++;
-                        }
-                    }
                     if ( this.pkg.getFunctions().contains( function ) ) {
                         function = ucFirst( function ) + "." + function;
                     } else {
                         function = resolver.resolveFunction( function,
-                                                             countParams + 1 ) + "." + function;
+                                                             params,
+                                                             variables) + "." + function;
                     }
                 }
             }

@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.antlr.stringtemplate.StringTemplate;
@@ -29,6 +31,8 @@ import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
+import org.drools.spi.AvailableVariables;
+import org.drools.spi.TypeResolver;
 
 public class FunctionBuilder {
     private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( FunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
@@ -41,6 +45,7 @@ public class FunctionBuilder {
     public String build(final Package pkg,
                         final FunctionDescr functionDescr,
                         final FunctionFixer fixer,
+                        final TypeResolver typeResolver,
                         final Map lineMappings) {
         final StringTemplate st = FunctionBuilder.functionGroup.getInstanceOf( "function" );
 
@@ -64,8 +69,20 @@ public class FunctionBuilder {
         st.setAttribute( "parameterNames",
                          functionDescr.getParameterNames() );
 
+        Map params = new HashMap();
+        List names = functionDescr.getParameterNames();
+        List types = functionDescr.getParameterTypes();
+        try {
+            for ( int i = 0, size = names.size(); i < size; i++ ) {
+                params.put( names.get( i ), typeResolver.resolveType( (String) types.get( i ) ) );
+            }
+        } catch ( ClassNotFoundException e ) {
+            // todo : must be a better way so we don't have to try/catch each resolveType call
+            throw new RuntimeDroolsException( e );                
+        }                   
+        
         st.setAttribute( "text",
-                         fixer.fix( functionDescr.getText() ) );
+                         fixer.fix( functionDescr.getText(), new AvailableVariables( new Map[] { params } ) ) );
         
         String text = st.toString();
         

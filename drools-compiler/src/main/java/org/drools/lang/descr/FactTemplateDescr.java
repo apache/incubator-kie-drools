@@ -3,7 +3,7 @@ package org.drools.lang.descr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FactTemplateDescr extends PatternDescr {
+public class FactTemplateDescr extends BaseDescr {
     private static final long serialVersionUID = 320;
     
     String name;
