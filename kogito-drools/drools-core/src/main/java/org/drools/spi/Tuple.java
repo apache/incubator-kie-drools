@@ -58,8 +58,6 @@ public interface Tuple {
 
     long getRecency();
 
-    boolean dependsOn(FactHandle handle);
-
     void setActivation(Activation activation);
 
 }
