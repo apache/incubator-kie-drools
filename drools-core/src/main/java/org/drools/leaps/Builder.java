@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -156,7 +156,7 @@ class Builder {
      */
     final private static ColumnConstraints processColumn(final Column column,
                                                          final boolean removeIdentities ) {
-        BetaNodeBinder binder;
+        BetaNodeConstraints binder;
         final List alphaConstraints = new ArrayList( );
         final List predicateConstraints = new ArrayList( );
 
@@ -190,9 +190,9 @@ class Builder {
 
 
         if ( !predicateConstraints.isEmpty() ) {
-            binder = new BetaNodeBinder( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            binder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
         } else {
-            binder = new BetaNodeBinder();
+            binder = new BetaNodeConstraints();
         }
 
         return new ColumnConstraints( column,
