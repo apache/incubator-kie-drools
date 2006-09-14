@@ -21,10 +21,10 @@ package org.drools.util;
  * the same <code>LinkedListNode</code> to multiple <code>LinkedList</code>s 
  * where the node can have different previous and next nodes in each list.
  */
-public class LinkedListObjectWrapper extends AbstractBaseLinkedListNode {
+public class LinkedListEntry extends AbstractBaseLinkedListNode {
     private Object object;
 
-    public LinkedListObjectWrapper(final Object object) {
+    public LinkedListEntry(final Object object) {
         this.object = object;
     }
 
