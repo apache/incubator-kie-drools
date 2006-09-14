@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Column;
 import org.drools.spi.FieldConstraint;
@@ -39,13 +39,13 @@ public class ColumnConstraints implements Serializable {
 
     private final boolean           alphaPresent;
 
-    private final BetaNodeBinder    beta;
+    private final BetaNodeConstraints    beta;
 
     private final boolean           betaPresent;
 
     public ColumnConstraints(final Column column,
                              final List alpha,
-                             final BetaNodeBinder beta) {
+                             final BetaNodeConstraints beta) {
         this.classType = LeapsBuilder.getLeapsClassType( column.getObjectType() );
 
         if ( beta != null ) {

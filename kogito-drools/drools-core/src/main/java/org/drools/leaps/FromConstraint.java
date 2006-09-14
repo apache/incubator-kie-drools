@@ -2,7 +2,7 @@ package org.drools.leaps;
 
 import java.util.Arrays;
 
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.rule.Column;
 import org.drools.spi.DataProvider;
 
@@ -15,7 +15,7 @@ public class FromConstraint extends ColumnConstraints {
         super( column,
                ( constraints.getAlphaContraints( ) == null || constraints.getAlphaContraints( ).length == 0 ) ? Arrays.asList( new FromConstraint[0] )
                        : Arrays.asList( constraints.getAlphaContraints( ) ),
-               new BetaNodeBinder( constraints.getBetaContraints( ) ) );
+               new BetaNodeConstraints( constraints.getBetaContraints( ) ) );
         this.provider = provider;
     }
 
