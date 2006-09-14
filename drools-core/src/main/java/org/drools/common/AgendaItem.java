@@ -109,20 +109,6 @@ public class AgendaItem
     }
 
     /**
-     * Determine if this <code>Actiation</code>'s tuple depends on the given
-     * FactHandle
-     * 
-     * @param handle
-     *            The root object handle.
-     * 
-     * @return <code>true<code> if this agenda item depends
-     *          upon the item, otherwise <code>false</code>.
-     */
-    boolean dependsOn(final FactHandle handle) {
-        return this.tuple.dependsOn( handle );
-    }
-
-    /**
      * Retrieve the tuple.
      * 
      * @return The tuple.
