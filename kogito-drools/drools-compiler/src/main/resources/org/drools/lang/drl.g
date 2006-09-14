@@ -769,9 +769,10 @@ from_source returns [DeclarativeInvokerDescr ds]
 		|
 		(var=ID '.' method=ID opt_eol  '(' opt_eol args=argument_list opt_eol ')' 
 			{
-			  FieldAccessDescr fa = new FieldAccessDescr(var.getText(), field.getText());	
-			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
-			  ds = fa;
+			  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), method.getText());	
+			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+			  ma.setArguments(args);
+			  ds = ma;
 			}	
 		)
 		|
