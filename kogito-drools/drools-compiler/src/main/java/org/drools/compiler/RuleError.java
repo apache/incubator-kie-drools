@@ -17,17 +17,17 @@ package org.drools.compiler;
  */
 
 import org.apache.commons.jci.problems.CompilationProblem;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Rule;
 
 public class RuleError extends DroolsError {
     private Rule         rule;
-    private PatternDescr descr;
+    private BaseDescr descr;
     private Object       object;
     private String       message;
 
     public RuleError(final Rule rule,
-                     final PatternDescr descr,
+                     final BaseDescr descr,
                      final Object object,
                      final String message) {
         super();
@@ -41,7 +41,7 @@ public class RuleError extends DroolsError {
         return this.rule;
     }
 
-    public PatternDescr getDescr() {
+    public BaseDescr getDescr() {
         return this.descr;
     }
 

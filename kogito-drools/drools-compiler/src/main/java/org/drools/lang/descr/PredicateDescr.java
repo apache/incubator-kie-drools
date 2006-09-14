@@ -16,7 +16,7 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-public class PredicateDescr extends PatternDescr {
+public class PredicateDescr extends BaseDescr {
     /**
      * 
      */

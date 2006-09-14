@@ -17,6 +17,6 @@ package org.drools.lang.descr;
  */
 
 
-public class Restriction extends PatternDescr {
+public class Restriction extends BaseDescr {
  
 }

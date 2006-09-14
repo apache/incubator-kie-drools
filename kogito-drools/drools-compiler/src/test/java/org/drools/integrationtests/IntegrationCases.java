@@ -106,9 +106,9 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 
         assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );
+                      list.get( 0 ) );       
     }
-
+ 
     public void testFieldBiningsAndEvalSharing() throws Exception {
         String drl = "test_FieldBindingsAndEvalSharing.drl";
         evalSharingTest( drl );

@@ -19,7 +19,7 @@ package org.drools.lang.descr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExistsDescr extends PatternDescr
+public class ExistsDescr extends BaseDescr
     implements
     ConditionalElementDescr {
 
@@ -36,8 +36,8 @@ public class ExistsDescr extends PatternDescr
         addDescr( column );
     }
 
-    public void addDescr(final PatternDescr patternDescr) {
-        this.descrs.add( patternDescr );
+    public void addDescr(final BaseDescr baseDescr) {
+        this.descrs.add( baseDescr );
     }
 
     public List getDescrs() {

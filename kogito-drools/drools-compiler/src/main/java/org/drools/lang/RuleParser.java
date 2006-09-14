@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-09-11 08:58:37
+// $ANTLR 3.0ea8 D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-09-14 18:21:10
 
 	package org.drools.lang;
 	import java.util.List;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class RuleParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "ID", "INT", "BOOL", "STRING", "FLOAT", "MISC", "WS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "\';\'", "\'package\'", "\'import\'", "\'function\'", "\'.\'", "\'.*\'", "\'expander\'", "\'global\'", "\'(\'", "\',\'", "\')\'", "\'{\'", "\'}\'", "\'query\'", "\'end\'", "\'template\'", "\'rule\'", "\'when\'", "\':\'", "\'then\'", "\'attributes\'", "\'salience\'", "\'no-loop\'", "\'auto-focus\'", "\'activation-group\'", "\'agenda-group\'", "\'duration\'", "\'from\'", "\'accumulate\'", "\'init\'", "\'action\'", "\'result\'", "\'collect\'", "\'null\'", "\'=>\'", "\'[\'", "\']\'", "\'or\'", "\'||\'", "\'&\'", "\'|\'", "\'->\'", "\'and\'", "\'&&\'", "\'exists\'", "\'not\'", "\'eval\'", "\'use\'", "\'==\'", "\'=\'", "\'>\'", "\'>=\'", "\'<\'", "\'<=\'", "\'!=\'", "\'contains\'", "\'matches\'", "\'excludes\'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "ID", "INT", "BOOL", "STRING", "FLOAT", "MISC", "WS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "\';\'", "\'package\'", "\'import\'", "\'function\'", "\'.\'", "\'.*\'", "\'expander\'", "\'global\'", "\'(\'", "\',\'", "\')\'", "\'{\'", "\'}\'", "\'query\'", "\'end\'", "\'template\'", "\'rule\'", "\'when\'", "\':\'", "\'then\'", "\'attributes\'", "\'salience\'", "\'no-loop\'", "\'auto-focus\'", "\'activation-group\'", "\'agenda-group\'", "\'duration\'", "\'from\'", "\'[\'", "\']\'", "\'accumulate\'", "\'init\'", "\'action\'", "\'result\'", "\'collect\'", "\'null\'", "\'=>\'", "\'or\'", "\'||\'", "\'&\'", "\'|\'", "\'->\'", "\'and\'", "\'&&\'", "\'exists\'", "\'not\'", "\'eval\'", "\'use\'", "\'==\'", "\'=\'", "\'>\'", "\'>=\'", "\'<\'", "\'<=\'", "\'!=\'", "\'contains\'", "\'matches\'", "\'excludes\'"
     };
     public static final int BOOL=7;
     public static final int INT=6;
@@ -311,13 +311,13 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start opt_eol
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:289:1: opt_eol : ( (';'|EOL))* ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:289:1: opt_eol : ( (';'|EOL))* ;
     public void opt_eol() throws RecognitionException {   
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:17: ( ( (';'|EOL))* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:17: ( (';'|EOL))*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:17: ( ( (';'|EOL))* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:17: ( (';'|EOL))*
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:17: ( (';'|EOL))*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:17: ( (';'|EOL))*
             loop1:
             do {
                 int alt1=2;
@@ -332,7 +332,7 @@ public class RuleParser extends Parser {
 
                 switch (alt1) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:18: (';'|EOL)
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:290:18: (';'|EOL)
             	    {
             	    if ( input.LA(1)==EOL||input.LA(1)==15 ) {
             	        input.consume();
@@ -369,7 +369,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start compilation_unit
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:293:1: compilation_unit : opt_eol prolog (r= rule | q= query | t= template | extra_statement )* ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:293:1: compilation_unit : opt_eol prolog (r= rule | q= query | t= template | extra_statement )* ;
     public void compilation_unit() throws RecognitionException {   
         RuleDescr r = null;
 
@@ -379,8 +379,8 @@ public class RuleParser extends Parser {
 
 
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:294:17: ( opt_eol prolog (r= rule | q= query | t= template | extra_statement )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:294:17: opt_eol prolog (r= rule | q= query | t= template | extra_statement )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:294:17: ( opt_eol prolog (r= rule | q= query | t= template | extra_statement )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:294:17: opt_eol prolog (r= rule | q= query | t= template | extra_statement )*
             {
             following.push(FOLLOW_opt_eol_in_compilation_unit57);
             opt_eol();
@@ -390,14 +390,14 @@ public class RuleParser extends Parser {
             prolog();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:296:17: (r= rule | q= query | t= template | extra_statement )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:296:17: (r= rule | q= query | t= template | extra_statement )*
             loop2:
             do {
                 int alt2=5;
                 alt2 = dfa2.predict(input); 
                 switch (alt2) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:296:25: r= rule
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:296:25: r= rule
             	    {
             	    following.push(FOLLOW_rule_in_compilation_unit70);
             	    r=rule();
@@ -408,7 +408,7 @@ public class RuleParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:297:25: q= query
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:297:25: q= query
             	    {
             	    following.push(FOLLOW_query_in_compilation_unit83);
             	    q=query();
@@ -419,7 +419,7 @@ public class RuleParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:298:25: t= template
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:298:25: t= template
             	    {
             	    following.push(FOLLOW_template_in_compilation_unit93);
             	    t=template();
@@ -430,7 +430,7 @@ public class RuleParser extends Parser {
             	    }
             	    break;
             	case 4 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:299:25: extra_statement
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:299:25: extra_statement
             	    {
             	    following.push(FOLLOW_extra_statement_in_compilation_unit101);
             	    extra_statement();
@@ -461,7 +461,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start prolog
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:303:1: prolog : opt_eol (name= package_statement )? ( extra_statement | expander )* opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:303:1: prolog : opt_eol (name= package_statement )? ( extra_statement | expander )* opt_eol ;
     public void prolog() throws RecognitionException {   
         String name = null;
 
@@ -470,14 +470,14 @@ public class RuleParser extends Parser {
         		String packageName = "";
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:307:17: ( opt_eol (name= package_statement )? ( extra_statement | expander )* opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:307:17: opt_eol (name= package_statement )? ( extra_statement | expander )* opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:307:17: ( opt_eol (name= package_statement )? ( extra_statement | expander )* opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:307:17: opt_eol (name= package_statement )? ( extra_statement | expander )* opt_eol
             {
             following.push(FOLLOW_opt_eol_in_prolog125);
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:308:17: (name= package_statement )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:308:17: (name= package_statement )?
             int alt3=2;
             int LA3_0 = input.LA(1);
             if ( LA3_0==16 ) {
@@ -494,7 +494,7 @@ public class RuleParser extends Parser {
             }
             switch (alt3) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:308:19: name= package_statement
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:308:19: name= package_statement
                     {
                     following.push(FOLLOW_package_statement_in_prolog133);
                     name=package_statement();
@@ -510,14 +510,14 @@ public class RuleParser extends Parser {
              
             			this.packageDescr = new PackageDescr( name ); 
             		
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:312:17: ( extra_statement | expander )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:312:17: ( extra_statement | expander )*
             loop4:
             do {
                 int alt4=3;
                 alt4 = dfa4.predict(input); 
                 switch (alt4) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:312:25: extra_statement
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:312:25: extra_statement
             	    {
             	    following.push(FOLLOW_extra_statement_in_prolog148);
             	    extra_statement();
@@ -527,7 +527,7 @@ public class RuleParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:313:25: expander
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:313:25: expander
             	    {
             	    following.push(FOLLOW_expander_in_prolog154);
             	    expander();
@@ -562,7 +562,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start package_statement
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:319:1: package_statement returns [String packageName] : 'package' opt_eol name= dotted_name ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:319:1: package_statement returns [String packageName] : 'package' opt_eol name= dotted_name ( ';' )? opt_eol ;
     public String package_statement() throws RecognitionException {   
         String packageName;
         String name = null;
@@ -572,8 +572,8 @@ public class RuleParser extends Parser {
         		packageName = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:17: ( 'package' opt_eol name= dotted_name ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:17: 'package' opt_eol name= dotted_name ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:17: ( 'package' opt_eol name= dotted_name ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:17: 'package' opt_eol name= dotted_name ( ';' )? opt_eol
             {
             match(input,16,FOLLOW_16_in_package_statement190); 
             following.push(FOLLOW_opt_eol_in_package_statement192);
@@ -584,7 +584,7 @@ public class RuleParser extends Parser {
             name=dotted_name();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:52: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:52: ( ';' )?
             int alt5=2;
             int LA5_0 = input.LA(1);
             if ( LA5_0==15 ) {
@@ -601,7 +601,7 @@ public class RuleParser extends Parser {
             }
             switch (alt5) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:52: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:324:52: ';'
                     {
                     match(input,15,FOLLOW_15_in_package_statement198); 
 
@@ -633,14 +633,14 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start import_statement
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:330:1: import_statement : 'import' opt_eol name= import_name ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:330:1: import_statement : 'import' opt_eol name= import_name ( ';' )? opt_eol ;
     public void import_statement() throws RecognitionException {   
         String name = null;
 
 
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:17: ( 'import' opt_eol name= import_name ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:17: 'import' opt_eol name= import_name ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:17: ( 'import' opt_eol name= import_name ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:17: 'import' opt_eol name= import_name ( ';' )? opt_eol
             {
             match(input,17,FOLLOW_17_in_import_statement217); 
             following.push(FOLLOW_opt_eol_in_import_statement219);
@@ -651,7 +651,7 @@ public class RuleParser extends Parser {
             name=import_name();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:51: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:51: ( ';' )?
             int alt6=2;
             int LA6_0 = input.LA(1);
             if ( LA6_0==15 ) {
@@ -668,7 +668,7 @@ public class RuleParser extends Parser {
             }
             switch (alt6) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:51: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:51: ';'
                     {
                     match(input,15,FOLLOW_15_in_import_statement225); 
 
@@ -701,14 +701,14 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start function_import_statement
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:338:1: function_import_statement : 'import' 'function' opt_eol name= import_name ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:338:1: function_import_statement : 'import' 'function' opt_eol name= import_name ( ';' )? opt_eol ;
     public void function_import_statement() throws RecognitionException {   
         String name = null;
 
 
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:17: ( 'import' 'function' opt_eol name= import_name ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:17: 'import' 'function' opt_eol name= import_name ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:17: ( 'import' 'function' opt_eol name= import_name ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:17: 'import' 'function' opt_eol name= import_name ( ';' )? opt_eol
             {
             match(input,17,FOLLOW_17_in_function_import_statement244); 
             match(input,18,FOLLOW_18_in_function_import_statement246); 
@@ -720,7 +720,7 @@ public class RuleParser extends Parser {
             name=import_name();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:62: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:62: ( ';' )?
             int alt7=2;
             int LA7_0 = input.LA(1);
             if ( LA7_0==15 ) {
@@ -737,7 +737,7 @@ public class RuleParser extends Parser {
             }
             switch (alt7) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:62: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:339:62: ';'
                     {
                     match(input,15,FOLLOW_15_in_function_import_statement254); 
 
@@ -770,7 +770,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start import_name
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:347:1: import_name returns [String name] : id= ID ( '.' id= ID )* (star= '.*' )? ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:347:1: import_name returns [String name] : id= ID ( '.' id= ID )* (star= '.*' )? ;
     public String import_name() throws RecognitionException {   
         String name;
         Token id=null;
@@ -780,13 +780,13 @@ public class RuleParser extends Parser {
         		name = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:17: (id= ID ( '.' id= ID )* (star= '.*' )? )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:17: id= ID ( '.' id= ID )* (star= '.*' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:17: (id= ID ( '.' id= ID )* (star= '.*' )? )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:17: id= ID ( '.' id= ID )* (star= '.*' )?
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_import_name289); 
              name=id.getText(); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:46: ( '.' id= ID )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:46: ( '.' id= ID )*
             loop8:
             do {
                 int alt8=2;
@@ -798,7 +798,7 @@ public class RuleParser extends Parser {
 
                 switch (alt8) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:48: '.' id= ID
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:48: '.' id= ID
             	    {
             	    match(input,19,FOLLOW_19_in_import_name295); 
             	    id=(Token)input.LT(1);
@@ -813,7 +813,7 @@ public class RuleParser extends Parser {
                 }
             } while (true);
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:99: (star= '.*' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:99: (star= '.*' )?
             int alt9=2;
             int LA9_0 = input.LA(1);
             if ( LA9_0==20 ) {
@@ -830,7 +830,7 @@ public class RuleParser extends Parser {
             }
             switch (alt9) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:100: star= '.*'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:352:100: star= '.*'
                     {
                     star=(Token)input.LT(1);
                     match(input,20,FOLLOW_20_in_import_name309); 
@@ -857,7 +857,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start expander
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:354:1: expander : 'expander' (name= dotted_name )? ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:354:1: expander : 'expander' (name= dotted_name )? ( ';' )? opt_eol ;
     public void expander() throws RecognitionException {   
         String name = null;
 
@@ -866,11 +866,11 @@ public class RuleParser extends Parser {
         		String config=null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:17: ( 'expander' (name= dotted_name )? ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:17: 'expander' (name= dotted_name )? ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:17: ( 'expander' (name= dotted_name )? ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:17: 'expander' (name= dotted_name )? ( ';' )? opt_eol
             {
             match(input,21,FOLLOW_21_in_expander329); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:28: (name= dotted_name )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:28: (name= dotted_name )?
             int alt10=2;
             int LA10_0 = input.LA(1);
             if ( LA10_0==ID ) {
@@ -887,7 +887,7 @@ public class RuleParser extends Parser {
             }
             switch (alt10) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:29: name= dotted_name
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:29: name= dotted_name
                     {
                     following.push(FOLLOW_dotted_name_in_expander334);
                     name=dotted_name();
@@ -899,7 +899,7 @@ public class RuleParser extends Parser {
 
             }
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:48: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:48: ( ';' )?
             int alt11=2;
             int LA11_0 = input.LA(1);
             if ( LA11_0==15 ) {
@@ -916,7 +916,7 @@ public class RuleParser extends Parser {
             }
             switch (alt11) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:48: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:358:48: ';'
                     {
                     match(input,15,FOLLOW_15_in_expander338); 
 
@@ -952,7 +952,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start global
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:368:1: global : 'global' type= dotted_name id= ID ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:368:1: global : 'global' type= dotted_name id= ID ( ';' )? opt_eol ;
     public void global() throws RecognitionException {   
         Token id=null;
         String type = null;
@@ -961,8 +961,8 @@ public class RuleParser extends Parser {
         
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:17: ( 'global' type= dotted_name id= ID ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:17: 'global' type= dotted_name id= ID ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:17: ( 'global' type= dotted_name id= ID ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:17: 'global' type= dotted_name id= ID ( ';' )? opt_eol
             {
             match(input,22,FOLLOW_22_in_global365); 
             following.push(FOLLOW_dotted_name_in_global369);
@@ -971,7 +971,7 @@ public class RuleParser extends Parser {
 
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_global373); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:49: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:49: ( ';' )?
             int alt12=2;
             int LA12_0 = input.LA(1);
             if ( LA12_0==15 ) {
@@ -988,7 +988,7 @@ public class RuleParser extends Parser {
             }
             switch (alt12) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:49: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:372:49: ';'
                     {
                     match(input,15,FOLLOW_15_in_global375); 
 
@@ -1020,7 +1020,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start function
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:378:1: function : loc= 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:378:1: function : loc= 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol ;
     public void function() throws RecognitionException {   
         Token loc=null;
         Token name=null;
@@ -1037,8 +1037,8 @@ public class RuleParser extends Parser {
         		FunctionDescr f = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:17: (loc= 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:17: loc= 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:17: (loc= 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:17: loc= 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol
             {
             loc=(Token)input.LT(1);
             match(input,18,FOLLOW_18_in_function404); 
@@ -1046,12 +1046,12 @@ public class RuleParser extends Parser {
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:40: (retType= dotted_name )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:40: (retType= dotted_name )?
             int alt13=2;
             alt13 = dfa13.predict(input); 
             switch (alt13) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:41: retType= dotted_name
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:383:41: retType= dotted_name
                     {
                     following.push(FOLLOW_dotted_name_in_function411);
                     retType=dotted_name();
@@ -1083,7 +1083,7 @@ public class RuleParser extends Parser {
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:25: ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:25: ( (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )* )?
             int alt17=2;
             int LA17_0 = input.LA(1);
             if ( (LA17_0>=EOL && LA17_0<=ID)||LA17_0==15 ) {
@@ -1100,14 +1100,14 @@ public class RuleParser extends Parser {
             }
             switch (alt17) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:33: (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )*
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:33: (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )*
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:33: (paramType= dotted_name )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:33: (paramType= dotted_name )?
                     int alt14=2;
                     alt14 = dfa14.predict(input); 
                     switch (alt14) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:34: paramType= dotted_name
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:390:34: paramType= dotted_name
                             {
                             following.push(FOLLOW_dotted_name_in_function442);
                             paramType=dotted_name();
@@ -1134,7 +1134,7 @@ public class RuleParser extends Parser {
                     
                     					f.addParameter( paramType, paramName );
                     				
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:33: ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )*
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:33: ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol )*
                     loop16:
                     do {
                         int alt16=2;
@@ -1146,19 +1146,19 @@ public class RuleParser extends Parser {
 
                         switch (alt16) {
                     	case 1 :
-                    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:41: ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol
+                    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:41: ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument_name opt_eol
                     	    {
                     	    match(input,24,FOLLOW_24_in_function466); 
                     	    following.push(FOLLOW_opt_eol_in_function468);
                     	    opt_eol();
                     	    following.pop();
 
-                    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:53: (paramType= dotted_name )?
+                    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:53: (paramType= dotted_name )?
                     	    int alt15=2;
                     	    alt15 = dfa15.predict(input); 
                     	    switch (alt15) {
                     	        case 1 :
-                    	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:54: paramType= dotted_name
+                    	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:394:54: paramType= dotted_name
                     	            {
                     	            following.push(FOLLOW_dotted_name_in_function473);
                     	            paramType=dotted_name();
@@ -1237,7 +1237,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start query
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:415:1: query returns [QueryDescr query] : opt_eol loc= 'query' queryName= word opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) 'end' opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:415:1: query returns [QueryDescr query] : opt_eol loc= 'query' queryName= word opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) 'end' opt_eol ;
     public QueryDescr query() throws RecognitionException {   
         QueryDescr query;
         Token loc=null;
@@ -1248,8 +1248,8 @@ public class RuleParser extends Parser {
         		query = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:420:17: ( opt_eol loc= 'query' queryName= word opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) 'end' opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:420:17: opt_eol loc= 'query' queryName= word opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) 'end' opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:420:17: ( opt_eol loc= 'query' queryName= word opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) 'end' opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:420:17: opt_eol loc= 'query' queryName= word opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) 'end' opt_eol
             {
             following.push(FOLLOW_opt_eol_in_query564);
             opt_eol();
@@ -1271,7 +1271,7 @@ public class RuleParser extends Parser {
             			AndDescr lhs = new AndDescr(); query.setLhs( lhs ); 
             			lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
             		
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:428:17: ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:428:17: ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] )
             int alt18=2;
             switch ( input.LA(1) ) {
             case 23:
@@ -1466,7 +1466,7 @@ public class RuleParser extends Parser {
 
             switch (alt18) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:429:25: {...}? expander_lhs_block[lhs]
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:429:25: {...}? expander_lhs_block[lhs]
                     {
                     if ( !( expander != null ) ) {
                         throw new FailedPredicateException(input, "query", " expander != null ");
@@ -1479,7 +1479,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:430:27: normal_lhs_block[lhs]
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:430:27: normal_lhs_block[lhs]
                     {
                     following.push(FOLLOW_normal_lhs_block_in_query600);
                     normal_lhs_block(lhs);
@@ -1512,7 +1512,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start template
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:436:1: template returns [FactTemplateDescr template] : opt_eol loc= 'template' templateName= ID EOL (slot= template_slot )+ 'end' EOL ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:436:1: template returns [FactTemplateDescr template] : opt_eol loc= 'template' templateName= ID EOL (slot= template_slot )+ 'end' EOL ;
     public FactTemplateDescr template() throws RecognitionException {   
         FactTemplateDescr template;
         Token loc=null;
@@ -1524,8 +1524,8 @@ public class RuleParser extends Parser {
         		template = null;		
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:441:17: ( opt_eol loc= 'template' templateName= ID EOL (slot= template_slot )+ 'end' EOL )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:441:17: opt_eol loc= 'template' templateName= ID EOL (slot= template_slot )+ 'end' EOL
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:441:17: ( opt_eol loc= 'template' templateName= ID EOL (slot= template_slot )+ 'end' EOL )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:441:17: opt_eol loc= 'template' templateName= ID EOL (slot= template_slot )+ 'end' EOL
             {
             following.push(FOLLOW_opt_eol_in_template641);
             opt_eol();
@@ -1540,7 +1540,7 @@ public class RuleParser extends Parser {
             			template = new FactTemplateDescr(templateName.getText());
             			template.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );			
             		
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:447:17: (slot= template_slot )+
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:447:17: (slot= template_slot )+
             int cnt19=0;
             loop19:
             do {
@@ -1553,7 +1553,7 @@ public class RuleParser extends Parser {
 
                 switch (alt19) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:448:25: slot= template_slot
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:448:25: slot= template_slot
             	    {
             	    following.push(FOLLOW_template_slot_in_template668);
             	    slot=template_slot();
@@ -1593,7 +1593,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start template_slot
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:456:1: template_slot returns [FieldTemplateDescr field] : fieldType= dotted_name name= ID (EOL|';');
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:456:1: template_slot returns [FieldTemplateDescr field] : fieldType= dotted_name name= ID (EOL|';');
     public FieldTemplateDescr template_slot() throws RecognitionException {   
         FieldTemplateDescr field;
         Token name=null;
@@ -1604,8 +1604,8 @@ public class RuleParser extends Parser {
         		field = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:462:18: (fieldType= dotted_name name= ID (EOL|';'))
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:462:18: fieldType= dotted_name name= ID (EOL|';')
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:462:18: (fieldType= dotted_name name= ID (EOL|';'))
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:462:18: fieldType= dotted_name name= ID (EOL|';')
             {
             following.push(FOLLOW_dotted_name_in_template_slot717);
             fieldType=dotted_name();
@@ -1645,7 +1645,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start rule
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:471:1: rule returns [RuleDescr rule] : opt_eol loc= 'rule' ruleName= word opt_eol ( rule_attributes[rule] )? opt_eol ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )? 'end' opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:471:1: rule returns [RuleDescr rule] : opt_eol loc= 'rule' ruleName= word opt_eol ( rule_attributes[rule] )? opt_eol ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )? 'end' opt_eol ;
     public RuleDescr rule() throws RecognitionException {   
         RuleDescr rule;
         Token loc=null;
@@ -1658,8 +1658,8 @@ public class RuleParser extends Parser {
         		String consequence = "";
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:477:17: ( opt_eol loc= 'rule' ruleName= word opt_eol ( rule_attributes[rule] )? opt_eol ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )? 'end' opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:477:17: opt_eol loc= 'rule' ruleName= word opt_eol ( rule_attributes[rule] )? opt_eol ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )? 'end' opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:477:17: ( opt_eol loc= 'rule' ruleName= word opt_eol ( rule_attributes[rule] )? opt_eol ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )? 'end' opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:477:17: opt_eol loc= 'rule' ruleName= word opt_eol ( rule_attributes[rule] )? opt_eol ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )? 'end' opt_eol
             {
             following.push(FOLLOW_opt_eol_in_rule760);
             opt_eol();
@@ -1680,7 +1680,7 @@ public class RuleParser extends Parser {
             			rule = new RuleDescr( ruleName, null ); 
             			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
             		
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:484:17: ( rule_attributes[rule] )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:484:17: ( rule_attributes[rule] )?
             int alt20=2;
             switch ( input.LA(1) ) {
             case 33:
@@ -1716,7 +1716,7 @@ public class RuleParser extends Parser {
 
             switch (alt20) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:484:25: rule_attributes[rule]
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:484:25: rule_attributes[rule]
                     {
                     following.push(FOLLOW_rule_attributes_in_rule783);
                     rule_attributes(rule);
@@ -1732,7 +1732,7 @@ public class RuleParser extends Parser {
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:17: ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:17: ( (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )? )?
             int alt28=2;
             int LA28_0 = input.LA(1);
             if ( LA28_0==EOL||LA28_0==15||LA28_0==32||LA28_0==34 ) {
@@ -1749,9 +1749,9 @@ public class RuleParser extends Parser {
             }
             switch (alt28) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:18: (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:18: (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )? ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )?
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:18: (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:18: (loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] ) )?
                     int alt23=2;
                     int LA23_0 = input.LA(1);
                     if ( LA23_0==32 ) {
@@ -1768,11 +1768,11 @@ public class RuleParser extends Parser {
                     }
                     switch (alt23) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:25: loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:25: loc= 'when' ( ':' )? opt_eol ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] )
                             {
                             loc=(Token)input.LT(1);
                             match(input,32,FOLLOW_32_in_rule802); 
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:36: ( ':' )?
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:36: ( ':' )?
                             int alt21=2;
                             int LA21_0 = input.LA(1);
                             if ( LA21_0==33 ) {
@@ -1801,7 +1801,7 @@ public class RuleParser extends Parser {
                             }
                             switch (alt21) {
                                 case 1 :
-                                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:36: ':'
+                                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:487:36: ':'
                                     {
                                     match(input,33,FOLLOW_33_in_rule804); 
 
@@ -1818,7 +1818,7 @@ public class RuleParser extends Parser {
                             				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
                             				lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
                             			
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:492:25: ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:492:25: ({...}? expander_lhs_block[lhs] | normal_lhs_block[lhs] )
                             int alt22=2;
                             switch ( input.LA(1) ) {
                             case 23:
@@ -2027,7 +2027,7 @@ public class RuleParser extends Parser {
 
                             switch (alt22) {
                                 case 1 :
-                                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:493:33: {...}? expander_lhs_block[lhs]
+                                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:493:33: {...}? expander_lhs_block[lhs]
                                     {
                                     if ( !( expander != null ) ) {
                                         throw new FailedPredicateException(input, "rule", " expander != null ");
@@ -2040,7 +2040,7 @@ public class RuleParser extends Parser {
                                     }
                                     break;
                                 case 2 :
-                                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:494:35: normal_lhs_block[lhs]
+                                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:494:35: normal_lhs_block[lhs]
                                     {
                                     following.push(FOLLOW_normal_lhs_block_in_rule834);
                                     normal_lhs_block(lhs);
@@ -2058,7 +2058,7 @@ public class RuleParser extends Parser {
 
                     }
 
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:17: ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:17: ( opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )* )?
                     int alt27=2;
                     int LA27_0 = input.LA(1);
                     if ( LA27_0==EOL||LA27_0==15||LA27_0==34 ) {
@@ -2075,7 +2075,7 @@ public class RuleParser extends Parser {
                     }
                     switch (alt27) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:19: opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )*
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:19: opt_eol loc= 'then' ( ':' )? opt_eol ( options {greedy=false; } : any= . ( EOL )* )*
                             {
                             following.push(FOLLOW_opt_eol_in_rule857);
                             opt_eol();
@@ -2083,7 +2083,7 @@ public class RuleParser extends Parser {
 
                             loc=(Token)input.LT(1);
                             match(input,34,FOLLOW_34_in_rule861); 
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:38: ( ':' )?
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:38: ( ':' )?
                             int alt24=2;
                             int LA24_0 = input.LA(1);
                             if ( LA24_0==33 ) {
@@ -2100,7 +2100,7 @@ public class RuleParser extends Parser {
                             }
                             switch (alt24) {
                                 case 1 :
-                                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:38: ':'
+                                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:498:38: ':'
                                     {
                                     match(input,33,FOLLOW_33_in_rule863); 
 
@@ -2114,7 +2114,7 @@ public class RuleParser extends Parser {
                             following.pop();
 
                             int prevLine = loc.getLine()+1; 
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:25: ( options {greedy=false; } : any= . ( EOL )* )*
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:25: ( options {greedy=false; } : any= . ( EOL )* )*
                             loop26:
                             do {
                                 int alt26=2;
@@ -2129,11 +2129,11 @@ public class RuleParser extends Parser {
 
                                 switch (alt26) {
                             	case 1 :
-                            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:52: any= . ( EOL )*
+                            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:52: any= . ( EOL )*
                             	    {
                             	    any=(Token)input.LT(1);
                             	    matchAny(input); 
-                            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:58: ( EOL )*
+                            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:58: ( EOL )*
                             	    loop25:
                             	    do {
                             	        int alt25=2;
@@ -2145,7 +2145,7 @@ public class RuleParser extends Parser {
 
                             	        switch (alt25) {
                             	    	case 1 :
-                            	    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:59: EOL
+                            	    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:59: EOL
                             	    	    {
                             	    	    match(input,EOL,FOLLOW_EOL_in_rule894); 
 
@@ -2223,13 +2223,13 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start extra_statement
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:530:1: extra_statement : ( import_statement | function_import_statement | global | function ) ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:530:1: extra_statement : ( import_statement | function_import_statement | global | function ) ;
     public void extra_statement() throws RecognitionException {   
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:9: ( ( import_statement | function_import_statement | global | function ) )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:9: ( import_statement | function_import_statement | global | function )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:9: ( ( import_statement | function_import_statement | global | function ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:9: ( import_statement | function_import_statement | global | function )
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:9: ( import_statement | function_import_statement | global | function )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:9: ( import_statement | function_import_statement | global | function )
             int alt29=4;
             switch ( input.LA(1) ) {
             case 17:
@@ -2262,7 +2262,7 @@ public class RuleParser extends Parser {
 
             switch (alt29) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:17: import_statement
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:17: import_statement
                     {
                     following.push(FOLLOW_import_statement_in_extra_statement946);
                     import_statement();
@@ -2272,7 +2272,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:533:17: function_import_statement
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:533:17: function_import_statement
                     {
                     following.push(FOLLOW_function_import_statement_in_extra_statement951);
                     function_import_statement();
@@ -2282,7 +2282,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:17: global
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:17: global
                     {
                     following.push(FOLLOW_global_in_extra_statement956);
                     global();
@@ -2292,7 +2292,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:535:17: function
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:535:17: function
                     {
                     following.push(FOLLOW_function_in_extra_statement961);
                     function();
@@ -2320,16 +2320,16 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start rule_attributes
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:539:1: rule_attributes[RuleDescr rule] : ( 'attributes' )? ( ':' )? opt_eol ( ( ',' )? a= rule_attribute opt_eol )* ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:539:1: rule_attributes[RuleDescr rule] : ( 'attributes' )? ( ':' )? opt_eol ( ( ',' )? a= rule_attribute opt_eol )* ;
     public void rule_attributes(RuleDescr rule) throws RecognitionException {   
         AttributeDescr a = null;
 
 
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: ( ( 'attributes' )? ( ':' )? opt_eol ( ( ',' )? a= rule_attribute opt_eol )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: ( 'attributes' )? ( ':' )? opt_eol ( ( ',' )? a= rule_attribute opt_eol )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: ( ( 'attributes' )? ( ':' )? opt_eol ( ( ',' )? a= rule_attribute opt_eol )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: ( 'attributes' )? ( ':' )? opt_eol ( ( ',' )? a= rule_attribute opt_eol )*
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: ( 'attributes' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: ( 'attributes' )?
             int alt30=2;
             int LA30_0 = input.LA(1);
             if ( LA30_0==35 ) {
@@ -2346,7 +2346,7 @@ public class RuleParser extends Parser {
             }
             switch (alt30) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: 'attributes'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:25: 'attributes'
                     {
                     match(input,35,FOLLOW_35_in_rule_attributes980); 
 
@@ -2355,7 +2355,7 @@ public class RuleParser extends Parser {
 
             }
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:39: ( ':' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:39: ( ':' )?
             int alt31=2;
             int LA31_0 = input.LA(1);
             if ( LA31_0==33 ) {
@@ -2372,7 +2372,7 @@ public class RuleParser extends Parser {
             }
             switch (alt31) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:39: ':'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:39: ':'
                     {
                     match(input,33,FOLLOW_33_in_rule_attributes983); 
 
@@ -2385,7 +2385,7 @@ public class RuleParser extends Parser {
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:25: ( ( ',' )? a= rule_attribute opt_eol )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:25: ( ( ',' )? a= rule_attribute opt_eol )*
             loop33:
             do {
                 int alt33=2;
@@ -2397,9 +2397,9 @@ public class RuleParser extends Parser {
 
                 switch (alt33) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:33: ( ',' )? a= rule_attribute opt_eol
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:33: ( ',' )? a= rule_attribute opt_eol
             	    {
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:33: ( ',' )?
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:33: ( ',' )?
             	    int alt32=2;
             	    int LA32_0 = input.LA(1);
             	    if ( LA32_0==24 ) {
@@ -2416,7 +2416,7 @@ public class RuleParser extends Parser {
             	    }
             	    switch (alt32) {
             	        case 1 :
-            	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:33: ','
+            	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:542:33: ','
             	            {
             	            match(input,24,FOLLOW_24_in_rule_attributes993); 
 
@@ -2461,7 +2461,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start rule_attribute
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:549:1: rule_attribute returns [AttributeDescr d] : (a= salience | a= no_loop | a= agenda_group | a= duration | a= activation_group | a= auto_focus );
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:549:1: rule_attribute returns [AttributeDescr d] : (a= salience | a= no_loop | a= agenda_group | a= duration | a= activation_group | a= auto_focus );
     public AttributeDescr rule_attribute() throws RecognitionException {   
         AttributeDescr d;
         AttributeDescr a = null;
@@ -2471,7 +2471,7 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:25: (a= salience | a= no_loop | a= agenda_group | a= duration | a= activation_group | a= auto_focus )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:25: (a= salience | a= no_loop | a= agenda_group | a= duration | a= activation_group | a= auto_focus )
             int alt34=6;
             switch ( input.LA(1) ) {
             case 36:
@@ -2501,7 +2501,7 @@ public class RuleParser extends Parser {
 
             switch (alt34) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:25: a= salience
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:25: a= salience
                     {
                     following.push(FOLLOW_salience_in_rule_attribute1039);
                     a=salience();
@@ -2512,7 +2512,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:25: a= no_loop
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:25: a= no_loop
                     {
                     following.push(FOLLOW_no_loop_in_rule_attribute1049);
                     a=no_loop();
@@ -2523,7 +2523,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:25: a= agenda_group
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:25: a= agenda_group
                     {
                     following.push(FOLLOW_agenda_group_in_rule_attribute1060);
                     a=agenda_group();
@@ -2534,7 +2534,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:557:25: a= duration
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:557:25: a= duration
                     {
                     following.push(FOLLOW_duration_in_rule_attribute1073);
                     a=duration();
@@ -2545,7 +2545,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:558:25: a= activation_group
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:558:25: a= activation_group
                     {
                     following.push(FOLLOW_activation_group_in_rule_attribute1087);
                     a=activation_group();
@@ -2556,7 +2556,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:559:25: a= auto_focus
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:559:25: a= auto_focus
                     {
                     following.push(FOLLOW_auto_focus_in_rule_attribute1098);
                     a=auto_focus();
@@ -2581,7 +2581,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start salience
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:563:1: salience returns [AttributeDescr d ] : loc= 'salience' opt_eol i= INT ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:563:1: salience returns [AttributeDescr d ] : loc= 'salience' opt_eol i= INT ( ';' )? opt_eol ;
     public AttributeDescr salience() throws RecognitionException {   
         AttributeDescr d;
         Token loc=null;
@@ -2591,8 +2591,8 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:17: (loc= 'salience' opt_eol i= INT ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:17: loc= 'salience' opt_eol i= INT ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:17: (loc= 'salience' opt_eol i= INT ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:17: loc= 'salience' opt_eol i= INT ( ';' )? opt_eol
             {
             loc=(Token)input.LT(1);
             match(input,36,FOLLOW_36_in_salience1131); 
@@ -2602,7 +2602,7 @@ public class RuleParser extends Parser {
 
             i=(Token)input.LT(1);
             match(input,INT,FOLLOW_INT_in_salience1137); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:46: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:46: ( ';' )?
             int alt35=2;
             int LA35_0 = input.LA(1);
             if ( LA35_0==15 ) {
@@ -2619,7 +2619,7 @@ public class RuleParser extends Parser {
             }
             switch (alt35) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:46: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:46: ';'
                     {
                     match(input,15,FOLLOW_15_in_salience1139); 
 
@@ -2652,7 +2652,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start no_loop
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:575:1: no_loop returns [AttributeDescr d] : ( (loc= 'no-loop' opt_eol ( ';' )? opt_eol ) | (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol ) );
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:575:1: no_loop returns [AttributeDescr d] : ( (loc= 'no-loop' opt_eol ( ';' )? opt_eol ) | (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol ) );
     public AttributeDescr no_loop() throws RecognitionException {   
         AttributeDescr d;
         Token loc=null;
@@ -2662,7 +2662,7 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:580:17: ( (loc= 'no-loop' opt_eol ( ';' )? opt_eol ) | (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:580:17: ( (loc= 'no-loop' opt_eol ( ';' )? opt_eol ) | (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol ) )
             int alt38=2;
             int LA38_0 = input.LA(1);
             if ( LA38_0==37 ) {
@@ -2688,10 +2688,10 @@ public class RuleParser extends Parser {
             }
             switch (alt38) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:580:17: (loc= 'no-loop' opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:580:17: (loc= 'no-loop' opt_eol ( ';' )? opt_eol )
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:580:17: (loc= 'no-loop' opt_eol ( ';' )? opt_eol )
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:581:25: loc= 'no-loop' opt_eol ( ';' )? opt_eol
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:580:17: (loc= 'no-loop' opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:581:25: loc= 'no-loop' opt_eol ( ';' )? opt_eol
                     {
                     loc=(Token)input.LT(1);
                     match(input,37,FOLLOW_37_in_no_loop1177); 
@@ -2699,7 +2699,7 @@ public class RuleParser extends Parser {
                     opt_eol();
                     following.pop();
 
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:581:47: ( ';' )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:581:47: ( ';' )?
                     int alt36=2;
                     int LA36_0 = input.LA(1);
                     if ( LA36_0==15 ) {
@@ -2716,7 +2716,7 @@ public class RuleParser extends Parser {
                     }
                     switch (alt36) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:581:47: ';'
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:581:47: ';'
                             {
                             match(input,15,FOLLOW_15_in_no_loop1181); 
 
@@ -2740,10 +2740,10 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:588:17: (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:588:17: (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol )
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:588:17: (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol )
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:589:25: loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:588:17: (loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:589:25: loc= 'no-loop' t= BOOL opt_eol ( ';' )? opt_eol
                     {
                     loc=(Token)input.LT(1);
                     match(input,37,FOLLOW_37_in_no_loop1209); 
@@ -2753,7 +2753,7 @@ public class RuleParser extends Parser {
                     opt_eol();
                     following.pop();
 
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:589:54: ( ';' )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:589:54: ( ';' )?
                     int alt37=2;
                     int LA37_0 = input.LA(1);
                     if ( LA37_0==15 ) {
@@ -2770,7 +2770,7 @@ public class RuleParser extends Parser {
                     }
                     switch (alt37) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:589:54: ';'
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:589:54: ';'
                             {
                             match(input,15,FOLLOW_15_in_no_loop1217); 
 
@@ -2808,7 +2808,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start auto_focus
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:599:1: auto_focus returns [AttributeDescr d] : ( (loc= 'auto-focus' opt_eol ( ';' )? opt_eol ) | (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol ) );
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:599:1: auto_focus returns [AttributeDescr d] : ( (loc= 'auto-focus' opt_eol ( ';' )? opt_eol ) | (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol ) );
     public AttributeDescr auto_focus() throws RecognitionException {   
         AttributeDescr d;
         Token loc=null;
@@ -2818,7 +2818,7 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:604:17: ( (loc= 'auto-focus' opt_eol ( ';' )? opt_eol ) | (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:604:17: ( (loc= 'auto-focus' opt_eol ( ';' )? opt_eol ) | (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol ) )
             int alt41=2;
             int LA41_0 = input.LA(1);
             if ( LA41_0==38 ) {
@@ -2844,10 +2844,10 @@ public class RuleParser extends Parser {
             }
             switch (alt41) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:604:17: (loc= 'auto-focus' opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:604:17: (loc= 'auto-focus' opt_eol ( ';' )? opt_eol )
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:604:17: (loc= 'auto-focus' opt_eol ( ';' )? opt_eol )
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:605:25: loc= 'auto-focus' opt_eol ( ';' )? opt_eol
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:604:17: (loc= 'auto-focus' opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:605:25: loc= 'auto-focus' opt_eol ( ';' )? opt_eol
                     {
                     loc=(Token)input.LT(1);
                     match(input,38,FOLLOW_38_in_auto_focus1266); 
@@ -2855,7 +2855,7 @@ public class RuleParser extends Parser {
                     opt_eol();
                     following.pop();
 
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:605:50: ( ';' )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:605:50: ( ';' )?
                     int alt39=2;
                     int LA39_0 = input.LA(1);
                     if ( LA39_0==15 ) {
@@ -2872,7 +2872,7 @@ public class RuleParser extends Parser {
                     }
                     switch (alt39) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:605:50: ';'
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:605:50: ';'
                             {
                             match(input,15,FOLLOW_15_in_auto_focus1270); 
 
@@ -2896,10 +2896,10 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:612:17: (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:612:17: (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol )
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:612:17: (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol )
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:613:25: loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:612:17: (loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:613:25: loc= 'auto-focus' t= BOOL opt_eol ( ';' )? opt_eol
                     {
                     loc=(Token)input.LT(1);
                     match(input,38,FOLLOW_38_in_auto_focus1298); 
@@ -2909,7 +2909,7 @@ public class RuleParser extends Parser {
                     opt_eol();
                     following.pop();
 
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:613:57: ( ';' )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:613:57: ( ';' )?
                     int alt40=2;
                     int LA40_0 = input.LA(1);
                     if ( LA40_0==15 ) {
@@ -2926,7 +2926,7 @@ public class RuleParser extends Parser {
                     }
                     switch (alt40) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:613:57: ';'
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:613:57: ';'
                             {
                             match(input,15,FOLLOW_15_in_auto_focus1306); 
 
@@ -2964,7 +2964,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start activation_group
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:623:1: activation_group returns [AttributeDescr d] : loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:623:1: activation_group returns [AttributeDescr d] : loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol ;
     public AttributeDescr activation_group() throws RecognitionException {   
         AttributeDescr d;
         Token loc=null;
@@ -2974,8 +2974,8 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:17: (loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:17: loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:17: (loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:17: loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol
             {
             loc=(Token)input.LT(1);
             match(input,39,FOLLOW_39_in_activation_group1351); 
@@ -2985,7 +2985,7 @@ public class RuleParser extends Parser {
 
             name=(Token)input.LT(1);
             match(input,STRING,FOLLOW_STRING_in_activation_group1357); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:60: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:60: ( ';' )?
             int alt42=2;
             int LA42_0 = input.LA(1);
             if ( LA42_0==15 ) {
@@ -3002,7 +3002,7 @@ public class RuleParser extends Parser {
             }
             switch (alt42) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:60: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:628:60: ';'
                     {
                     match(input,15,FOLLOW_15_in_activation_group1359); 
 
@@ -3035,7 +3035,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start agenda_group
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:635:1: agenda_group returns [AttributeDescr d] : loc= 'agenda-group' opt_eol name= STRING ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:635:1: agenda_group returns [AttributeDescr d] : loc= 'agenda-group' opt_eol name= STRING ( ';' )? opt_eol ;
     public AttributeDescr agenda_group() throws RecognitionException {   
         AttributeDescr d;
         Token loc=null;
@@ -3045,8 +3045,8 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:17: (loc= 'agenda-group' opt_eol name= STRING ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:17: loc= 'agenda-group' opt_eol name= STRING ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:17: (loc= 'agenda-group' opt_eol name= STRING ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:17: loc= 'agenda-group' opt_eol name= STRING ( ';' )? opt_eol
             {
             loc=(Token)input.LT(1);
             match(input,40,FOLLOW_40_in_agenda_group1391); 
@@ -3056,7 +3056,7 @@ public class RuleParser extends Parser {
 
             name=(Token)input.LT(1);
             match(input,STRING,FOLLOW_STRING_in_agenda_group1397); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:56: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:56: ( ';' )?
             int alt43=2;
             int LA43_0 = input.LA(1);
             if ( LA43_0==15 ) {
@@ -3073,7 +3073,7 @@ public class RuleParser extends Parser {
             }
             switch (alt43) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:56: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:640:56: ';'
                     {
                     match(input,15,FOLLOW_15_in_agenda_group1399); 
 
@@ -3106,7 +3106,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start duration
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:648:1: duration returns [AttributeDescr d] : loc= 'duration' opt_eol i= INT ( ';' )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:648:1: duration returns [AttributeDescr d] : loc= 'duration' opt_eol i= INT ( ';' )? opt_eol ;
     public AttributeDescr duration() throws RecognitionException {   
         AttributeDescr d;
         Token loc=null;
@@ -3116,8 +3116,8 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:17: (loc= 'duration' opt_eol i= INT ( ';' )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:17: loc= 'duration' opt_eol i= INT ( ';' )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:17: (loc= 'duration' opt_eol i= INT ( ';' )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:17: loc= 'duration' opt_eol i= INT ( ';' )? opt_eol
             {
             loc=(Token)input.LT(1);
             match(input,41,FOLLOW_41_in_duration1434); 
@@ -3127,7 +3127,7 @@ public class RuleParser extends Parser {
 
             i=(Token)input.LT(1);
             match(input,INT,FOLLOW_INT_in_duration1440); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:46: ( ';' )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:46: ( ';' )?
             int alt44=2;
             int LA44_0 = input.LA(1);
             if ( LA44_0==15 ) {
@@ -3144,7 +3144,7 @@ public class RuleParser extends Parser {
             }
             switch (alt44) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:46: ';'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:653:46: ';'
                     {
                     match(input,15,FOLLOW_15_in_duration1442); 
 
@@ -3177,16 +3177,16 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start normal_lhs_block
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:661:1: normal_lhs_block[AndDescr descrs] : (d= lhs opt_eol )* opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:661:1: normal_lhs_block[AndDescr descrs] : (d= lhs opt_eol )* opt_eol ;
     public void normal_lhs_block(AndDescr descrs) throws RecognitionException {   
-        PatternDescr d = null;
+        BaseDescr d = null;
 
 
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:17: ( (d= lhs opt_eol )* opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:17: (d= lhs opt_eol )* opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:17: ( (d= lhs opt_eol )* opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:17: (d= lhs opt_eol )* opt_eol
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:17: (d= lhs opt_eol )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:17: (d= lhs opt_eol )*
             loop45:
             do {
                 int alt45=2;
@@ -3198,7 +3198,7 @@ public class RuleParser extends Parser {
 
                 switch (alt45) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:25: d= lhs opt_eol
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:663:25: d= lhs opt_eol
             	    {
             	    following.push(FOLLOW_lhs_in_normal_lhs_block1471);
             	    d=lhs();
@@ -3238,7 +3238,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start expander_lhs_block
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:671:1: expander_lhs_block[AndDescr descrs] : ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )* ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:671:1: expander_lhs_block[AndDescr descrs] : ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )* ;
     public void expander_lhs_block(AndDescr descrs) throws RecognitionException {   
         Token loc=null;
         String text = null;
@@ -3250,10 +3250,10 @@ public class RuleParser extends Parser {
         		List constraints = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:678:17: ( ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:678:17: ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:678:17: ( ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:678:17: ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )*
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:678:17: ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:678:17: ( options {greedy=false; } : text= paren_chunk loc= EOL ( EOL )* )*
             loop47:
             do {
                 int alt47=2;
@@ -3342,7 +3342,7 @@ public class RuleParser extends Parser {
 
                 switch (alt47) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:679:25: text= paren_chunk loc= EOL ( EOL )*
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:679:25: text= paren_chunk loc= EOL ( EOL )*
             	    {
             	    following.push(FOLLOW_paren_chunk_in_expander_lhs_block1526);
             	    text=paren_chunk();
@@ -3374,7 +3374,7 @@ public class RuleParser extends Parser {
             	    					text = null;
             	    				}
             	    			
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:705:17: ( EOL )*
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:705:17: ( EOL )*
             	    loop46:
             	    do {
             	        int alt46=2;
@@ -3386,7 +3386,7 @@ public class RuleParser extends Parser {
 
             	        switch (alt46) {
             	    	case 1 :
-            	    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:705:18: EOL
+            	    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:705:18: EOL
             	    	    {
             	    	    match(input,EOL,FOLLOW_EOL_in_expander_lhs_block1545); 
 
@@ -3430,18 +3430,18 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start lhs
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:719:1: lhs returns [PatternDescr d] : l= lhs_or ;
-    public PatternDescr lhs() throws RecognitionException {   
-        PatternDescr d;
-        PatternDescr l = null;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:719:1: lhs returns [BaseDescr d] : l= lhs_or ;
+    public BaseDescr lhs() throws RecognitionException {   
+        BaseDescr d;
+        BaseDescr l = null;
 
 
         
         		d=null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:723:17: (l= lhs_or )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:723:17: l= lhs_or
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:723:17: (l= lhs_or )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:723:17: l= lhs_or
             {
             following.push(FOLLOW_lhs_or_in_lhs1587);
             l=lhs_or();
@@ -3464,22 +3464,22 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start lhs_column
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:727:1: lhs_column returns [PatternDescr d] : (f= fact_binding | f= fact );
-    public PatternDescr lhs_column() throws RecognitionException {   
-        PatternDescr d;
-        PatternDescr f = null;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:727:1: lhs_column returns [BaseDescr d] : (f= fact_binding | f= fact );
+    public BaseDescr lhs_column() throws RecognitionException {   
+        BaseDescr d;
+        BaseDescr f = null;
 
 
         
         		d=null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:731:17: (f= fact_binding | f= fact )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:731:17: (f= fact_binding | f= fact )
             int alt48=2;
             alt48 = dfa48.predict(input); 
             switch (alt48) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:731:17: f= fact_binding
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:731:17: f= fact_binding
                     {
                     following.push(FOLLOW_fact_binding_in_lhs_column1615);
                     f=fact_binding();
@@ -3490,7 +3490,7 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:732:17: f= fact
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:732:17: f= fact
                     {
                     following.push(FOLLOW_fact_in_lhs_column1624);
                     f=fact();
@@ -3515,7 +3515,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start from_statement
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:735:1: from_statement returns [FromDescr d] : 'from' opt_eol ds= from_source ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:735:1: from_statement returns [FromDescr d] : 'from' opt_eol ds= from_source ;
     public FromDescr from_statement() throws RecognitionException {   
         FromDescr d;
         DeclarativeInvokerDescr ds = null;
@@ -3525,8 +3525,8 @@ public class RuleParser extends Parser {
         		d=factory.createFrom();
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:740:17: ( 'from' opt_eol ds= from_source )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:740:17: 'from' opt_eol ds= from_source
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:740:17: ( 'from' opt_eol ds= from_source )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:740:17: 'from' opt_eol ds= from_source
             {
             match(input,42,FOLLOW_42_in_from_statement1652); 
             following.push(FOLLOW_opt_eol_in_from_statement1654);
@@ -3557,13 +3557,15 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start from_source
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:750:1: from_source returns [DeclarativeInvokerDescr ds] : ( (var= ID '.' field= ID ) | (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) | (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) );
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:750:1: from_source returns [DeclarativeInvokerDescr ds] : ( (var= ID '.' field= ID ( '[' arg= argument_value ']' )? ) | (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) | (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) );
     public DeclarativeInvokerDescr from_source() throws RecognitionException {   
         DeclarativeInvokerDescr ds;
         Token var=null;
         Token field=null;
         Token method=null;
         Token functionName=null;
+        ArgumentValueDescr arg = null;
+
         ArrayList args = null;
 
 
@@ -3571,24 +3573,60 @@ public class RuleParser extends Parser {
         		ds = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:17: ( (var= ID '.' field= ID ) | (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) | (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) )
-            int alt49=3;
-            alt49 = dfa49.predict(input); 
-            switch (alt49) {
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:17: ( (var= ID '.' field= ID ( '[' arg= argument_value ']' )? ) | (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) | (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' ) )
+            int alt50=3;
+            alt50 = dfa50.predict(input); 
+            switch (alt50) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:17: (var= ID '.' field= ID )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:17: (var= ID '.' field= ID ( '[' arg= argument_value ']' )? )
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:17: (var= ID '.' field= ID )
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:18: var= ID '.' field= ID
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:17: (var= ID '.' field= ID ( '[' arg= argument_value ']' )? )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:18: var= ID '.' field= ID ( '[' arg= argument_value ']' )?
                     {
                     var=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_from_source1702); 
                     match(input,19,FOLLOW_19_in_from_source1704); 
                     field=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_from_source1708); 
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:39: ( '[' arg= argument_value ']' )?
+                    int alt49=2;
+                    int LA49_0 = input.LA(1);
+                    if ( LA49_0==43 ) {
+                        alt49=1;
+                    }
+                    else if ( (LA49_0>=EOL && LA49_0<=ID)||LA49_0==15||LA49_0==23||LA49_0==25||LA49_0==29||LA49_0==34||(LA49_0>=52 && LA49_0<=53)||(LA49_0>=57 && LA49_0<=61) ) {
+                        alt49=2;
+                    }
+                    else {
+                        NoViableAltException nvae =
+                            new NoViableAltException("755:39: ( \'[\' arg= argument_value \']\' )?", 49, 0, input);
+
+                        throw nvae;
+                    }
+                    switch (alt49) {
+                        case 1 :
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:755:40: '[' arg= argument_value ']'
+                            {
+                            match(input,43,FOLLOW_43_in_from_source1712); 
+                            following.push(FOLLOW_argument_value_in_from_source1716);
+                            arg=argument_value();
+                            following.pop();
+
+                            match(input,44,FOLLOW_44_in_from_source1718); 
+
+                            }
+                            break;
+
+                    }
+
                     
-                    			  FieldAccessDescr fa = new FieldAccessDescr(var.getText(), field.getText());	
-                    			  fa.setLine(var.getLine());
+                              		 FieldAccessDescr fa;
+                    			  if ( arg == null )   {
+                    				  fa = new FieldAccessDescr(var.getText(), field.getText());	
+                    			  } else {
+                    				  fa = new FieldAccessDescr(var.getText(), field.getText(), arg);				  
+                    			  }
+                    			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
                     			  ds = fa;
                     			 
 
@@ -3598,39 +3636,38 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:765:17: (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:770:17: (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:765:17: (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:765:18: var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:770:17: (var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:770:18: var= ID '.' method= ID opt_eol '(' opt_eol args= argument_list opt_eol ')'
                     {
                     var=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_from_source1735); 
-                    match(input,19,FOLLOW_19_in_from_source1737); 
+                    match(input,ID,FOLLOW_ID_in_from_source1747); 
+                    match(input,19,FOLLOW_19_in_from_source1749); 
                     method=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_from_source1741); 
-                    following.push(FOLLOW_opt_eol_in_from_source1743);
+                    match(input,ID,FOLLOW_ID_in_from_source1753); 
+                    following.push(FOLLOW_opt_eol_in_from_source1755);
                     opt_eol();
                     following.pop();
 
-                    match(input,23,FOLLOW_23_in_from_source1746); 
-                    following.push(FOLLOW_opt_eol_in_from_source1748);
+                    match(input,23,FOLLOW_23_in_from_source1758); 
+                    following.push(FOLLOW_opt_eol_in_from_source1760);
                     opt_eol();
                     following.pop();
 
-                    following.push(FOLLOW_argument_list_in_from_source1752);
+                    following.push(FOLLOW_argument_list_in_from_source1764);
                     args=argument_list();
                     following.pop();
 
-                    following.push(FOLLOW_opt_eol_in_from_source1754);
+                    following.push(FOLLOW_opt_eol_in_from_source1766);
                     opt_eol();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_from_source1756); 
+                    match(input,25,FOLLOW_25_in_from_source1768); 
                     
-                    			MethodAccessDescr mc = new MethodAccessDescr(var.getText(), method.getText());
-                    			mc.setArguments(args);
-                    			mc.setLine(var.getLine());
-                    			ds = mc;
+                    			  FieldAccessDescr fa = new FieldAccessDescr(var.getText(), field.getText());	
+                    			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+                    			  ds = fa;
                     			
 
                     }
@@ -3639,34 +3676,34 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:774:17: (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:778:17: (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
                     {
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:774:17: (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:774:18: functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:778:17: (functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')' )
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:778:18: functionName= ID opt_eol '(' opt_eol args= argument_list opt_eol ')'
                     {
                     functionName=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_from_source1778); 
-                    following.push(FOLLOW_opt_eol_in_from_source1780);
+                    match(input,ID,FOLLOW_ID_in_from_source1790); 
+                    following.push(FOLLOW_opt_eol_in_from_source1792);
                     opt_eol();
                     following.pop();
 
-                    match(input,23,FOLLOW_23_in_from_source1782); 
-                    following.push(FOLLOW_opt_eol_in_from_source1784);
+                    match(input,23,FOLLOW_23_in_from_source1794); 
+                    following.push(FOLLOW_opt_eol_in_from_source1796);
                     opt_eol();
                     following.pop();
 
-                    following.push(FOLLOW_argument_list_in_from_source1788);
+                    following.push(FOLLOW_argument_list_in_from_source1800);
                     args=argument_list();
                     following.pop();
 
-                    following.push(FOLLOW_opt_eol_in_from_source1790);
+                    following.push(FOLLOW_opt_eol_in_from_source1802);
                     opt_eol();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_from_source1792); 
+                    match(input,25,FOLLOW_25_in_from_source1804); 
                     
                     			FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
-                    			fc.setLine(functionName.getLine());
+                    			fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
                     			fc.setArguments(args);
                     			ds = fc;
                     			
@@ -3691,11 +3728,11 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start accumulate_statement
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:787:1: accumulate_statement returns [AccumulateDescr d] : loc= 'from' opt_eol 'accumulate' opt_eol '(' opt_eol column= lhs_column opt_eol ',' opt_eol 'init' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'action' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'result' opt_eol '(' c= paren_chunk2 ')' opt_eol ')' ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:791:1: accumulate_statement returns [AccumulateDescr d] : loc= 'from' opt_eol 'accumulate' opt_eol '(' opt_eol column= lhs_column opt_eol ',' opt_eol 'init' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'action' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'result' opt_eol '(' c= paren_chunk2 ')' opt_eol ')' ;
     public AccumulateDescr accumulate_statement() throws RecognitionException {   
         AccumulateDescr d;
         Token loc=null;
-        PatternDescr column = null;
+        BaseDescr column = null;
 
         String c = null;
 
@@ -3704,106 +3741,106 @@ public class RuleParser extends Parser {
         		d = factory.createAccumulate();
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:792:17: (loc= 'from' opt_eol 'accumulate' opt_eol '(' opt_eol column= lhs_column opt_eol ',' opt_eol 'init' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'action' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'result' opt_eol '(' c= paren_chunk2 ')' opt_eol ')' )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:792:17: loc= 'from' opt_eol 'accumulate' opt_eol '(' opt_eol column= lhs_column opt_eol ',' opt_eol 'init' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'action' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'result' opt_eol '(' c= paren_chunk2 ')' opt_eol ')'
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:796:17: (loc= 'from' opt_eol 'accumulate' opt_eol '(' opt_eol column= lhs_column opt_eol ',' opt_eol 'init' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'action' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'result' opt_eol '(' c= paren_chunk2 ')' opt_eol ')' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:796:17: loc= 'from' opt_eol 'accumulate' opt_eol '(' opt_eol column= lhs_column opt_eol ',' opt_eol 'init' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'action' opt_eol '(' c= paren_chunk2 ')' opt_eol ',' opt_eol 'result' opt_eol '(' c= paren_chunk2 ')' opt_eol ')'
             {
             loc=(Token)input.LT(1);
-            match(input,42,FOLLOW_42_in_accumulate_statement1841); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1843);
+            match(input,42,FOLLOW_42_in_accumulate_statement1853); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1855);
             opt_eol();
             following.pop();
 
-            match(input,43,FOLLOW_43_in_accumulate_statement1845); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1847);
+            match(input,45,FOLLOW_45_in_accumulate_statement1857); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1859);
             opt_eol();
             following.pop();
 
              
             			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
             		
-            match(input,23,FOLLOW_23_in_accumulate_statement1857); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1859);
+            match(input,23,FOLLOW_23_in_accumulate_statement1869); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1871);
             opt_eol();
             following.pop();
 
-            following.push(FOLLOW_lhs_column_in_accumulate_statement1863);
+            following.push(FOLLOW_lhs_column_in_accumulate_statement1875);
             column=lhs_column();
             following.pop();
 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1865);
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1877);
             opt_eol();
             following.pop();
 
-            match(input,24,FOLLOW_24_in_accumulate_statement1867); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1869);
+            match(input,24,FOLLOW_24_in_accumulate_statement1879); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1881);
             opt_eol();
             following.pop();
 
             
             		        d.setSourceColumn( (ColumnDescr)column );
             		
-            match(input,44,FOLLOW_44_in_accumulate_statement1877); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1879);
+            match(input,46,FOLLOW_46_in_accumulate_statement1889); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1891);
             opt_eol();
             following.pop();
 
-            match(input,23,FOLLOW_23_in_accumulate_statement1881); 
-            following.push(FOLLOW_paren_chunk2_in_accumulate_statement1885);
+            match(input,23,FOLLOW_23_in_accumulate_statement1893); 
+            following.push(FOLLOW_paren_chunk2_in_accumulate_statement1897);
             c=paren_chunk2();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_accumulate_statement1887); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1889);
+            match(input,25,FOLLOW_25_in_accumulate_statement1899); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1901);
             opt_eol();
             following.pop();
 
-            match(input,24,FOLLOW_24_in_accumulate_statement1891); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1893);
+            match(input,24,FOLLOW_24_in_accumulate_statement1903); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1905);
             opt_eol();
             following.pop();
 
             
             		        d.setInitCode( c );
             		
-            match(input,45,FOLLOW_45_in_accumulate_statement1901); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1903);
+            match(input,47,FOLLOW_47_in_accumulate_statement1913); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1915);
             opt_eol();
             following.pop();
 
-            match(input,23,FOLLOW_23_in_accumulate_statement1905); 
-            following.push(FOLLOW_paren_chunk2_in_accumulate_statement1909);
+            match(input,23,FOLLOW_23_in_accumulate_statement1917); 
+            following.push(FOLLOW_paren_chunk2_in_accumulate_statement1921);
             c=paren_chunk2();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_accumulate_statement1911); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1913);
+            match(input,25,FOLLOW_25_in_accumulate_statement1923); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1925);
             opt_eol();
             following.pop();
 
-            match(input,24,FOLLOW_24_in_accumulate_statement1915); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1917);
+            match(input,24,FOLLOW_24_in_accumulate_statement1927); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1929);
             opt_eol();
             following.pop();
 
             
             		        d.setActionCode( c );
             		
-            match(input,46,FOLLOW_46_in_accumulate_statement1925); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1927);
+            match(input,48,FOLLOW_48_in_accumulate_statement1937); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1939);
             opt_eol();
             following.pop();
 
-            match(input,23,FOLLOW_23_in_accumulate_statement1929); 
-            following.push(FOLLOW_paren_chunk2_in_accumulate_statement1933);
+            match(input,23,FOLLOW_23_in_accumulate_statement1941); 
+            following.push(FOLLOW_paren_chunk2_in_accumulate_statement1945);
             c=paren_chunk2();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_accumulate_statement1935); 
-            following.push(FOLLOW_opt_eol_in_accumulate_statement1937);
+            match(input,25,FOLLOW_25_in_accumulate_statement1947); 
+            following.push(FOLLOW_opt_eol_in_accumulate_statement1949);
             opt_eol();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_accumulate_statement1939); 
+            match(input,25,FOLLOW_25_in_accumulate_statement1951); 
             
             		        d.setResultCode( c );
             		
@@ -3823,48 +3860,48 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start collect_statement
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:814:1: collect_statement returns [CollectDescr d] : loc= 'from' opt_eol 'collect' opt_eol '(' opt_eol column= lhs_column opt_eol ')' ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:818:1: collect_statement returns [CollectDescr d] : loc= 'from' opt_eol 'collect' opt_eol '(' opt_eol column= lhs_column opt_eol ')' ;
     public CollectDescr collect_statement() throws RecognitionException {   
         CollectDescr d;
         Token loc=null;
-        PatternDescr column = null;
+        BaseDescr column = null;
 
 
         
         		d = factory.createCollect();
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:819:17: (loc= 'from' opt_eol 'collect' opt_eol '(' opt_eol column= lhs_column opt_eol ')' )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:819:17: loc= 'from' opt_eol 'collect' opt_eol '(' opt_eol column= lhs_column opt_eol ')'
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:823:17: (loc= 'from' opt_eol 'collect' opt_eol '(' opt_eol column= lhs_column opt_eol ')' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:823:17: loc= 'from' opt_eol 'collect' opt_eol '(' opt_eol column= lhs_column opt_eol ')'
             {
             loc=(Token)input.LT(1);
-            match(input,42,FOLLOW_42_in_collect_statement1982); 
-            following.push(FOLLOW_opt_eol_in_collect_statement1984);
+            match(input,42,FOLLOW_42_in_collect_statement1994); 
+            following.push(FOLLOW_opt_eol_in_collect_statement1996);
             opt_eol();
             following.pop();
 
-            match(input,47,FOLLOW_47_in_collect_statement1986); 
-            following.push(FOLLOW_opt_eol_in_collect_statement1988);
+            match(input,49,FOLLOW_49_in_collect_statement1998); 
+            following.push(FOLLOW_opt_eol_in_collect_statement2000);
             opt_eol();
             following.pop();
 
              
             			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
             		
-            match(input,23,FOLLOW_23_in_collect_statement1998); 
-            following.push(FOLLOW_opt_eol_in_collect_statement2000);
+            match(input,23,FOLLOW_23_in_collect_statement2010); 
+            following.push(FOLLOW_opt_eol_in_collect_statement2012);
             opt_eol();
             following.pop();
 
-            following.push(FOLLOW_lhs_column_in_collect_statement2004);
+            following.push(FOLLOW_lhs_column_in_collect_statement2016);
             column=lhs_column();
             following.pop();
 
-            following.push(FOLLOW_opt_eol_in_collect_statement2006);
+            following.push(FOLLOW_opt_eol_in_collect_statement2018);
             opt_eol();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_collect_statement2008); 
+            match(input,25,FOLLOW_25_in_collect_statement2020); 
             
             		        d.setSourceColumn( (ColumnDescr)column );
             		
@@ -3884,7 +3921,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start argument_list
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:829:1: argument_list returns [ArrayList args] : (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )? ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:833:1: argument_list returns [ArrayList args] : (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )? ;
     public ArrayList argument_list() throws RecognitionException {   
         ArrayList args;
         ArgumentValueDescr param = null;
@@ -3894,29 +3931,29 @@ public class RuleParser extends Parser {
         		args = new ArrayList();
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:834:17: ( (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )? )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:834:17: (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )?
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:838:17: ( (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )? )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:838:17: (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )?
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:834:17: (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )?
-            int alt51=2;
-            int LA51_0 = input.LA(1);
-            if ( (LA51_0>=ID && LA51_0<=FLOAT)||LA51_0==26||LA51_0==48||LA51_0==50 ) {
-                alt51=1;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:838:17: (param= argument_value ( opt_eol ',' opt_eol param= argument_value )* )?
+            int alt52=2;
+            int LA52_0 = input.LA(1);
+            if ( (LA52_0>=ID && LA52_0<=FLOAT)||LA52_0==26||LA52_0==43||LA52_0==50 ) {
+                alt52=1;
             }
-            else if ( LA51_0==EOL||LA51_0==15||LA51_0==25 ) {
-                alt51=2;
+            else if ( LA52_0==EOL||LA52_0==15||LA52_0==25 ) {
+                alt52=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("834:17: (param= argument_value ( opt_eol \',\' opt_eol param= argument_value )* )?", 51, 0, input);
+                    new NoViableAltException("838:17: (param= argument_value ( opt_eol \',\' opt_eol param= argument_value )* )?", 52, 0, input);
 
                 throw nvae;
             }
-            switch (alt51) {
+            switch (alt52) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:834:18: param= argument_value ( opt_eol ',' opt_eol param= argument_value )*
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:838:18: param= argument_value ( opt_eol ',' opt_eol param= argument_value )*
                     {
-                    following.push(FOLLOW_argument_value_in_argument_list2041);
+                    following.push(FOLLOW_argument_value_in_argument_list2053);
                     param=argument_value();
                     following.pop();
 
@@ -3925,25 +3962,25 @@ public class RuleParser extends Parser {
                     				args.add(param);
                     			}
                     		
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:840:17: ( opt_eol ',' opt_eol param= argument_value )*
-                    loop50:
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:844:17: ( opt_eol ',' opt_eol param= argument_value )*
+                    loop51:
                     do {
-                        int alt50=2;
-                        alt50 = dfa50.predict(input); 
-                        switch (alt50) {
+                        int alt51=2;
+                        alt51 = dfa51.predict(input); 
+                        switch (alt51) {
                     	case 1 :
-                    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:841:25: opt_eol ',' opt_eol param= argument_value
+                    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:845:25: opt_eol ',' opt_eol param= argument_value
                     	    {
-                    	    following.push(FOLLOW_opt_eol_in_argument_list2057);
+                    	    following.push(FOLLOW_opt_eol_in_argument_list2069);
                     	    opt_eol();
                     	    following.pop();
 
-                    	    match(input,24,FOLLOW_24_in_argument_list2059); 
-                    	    following.push(FOLLOW_opt_eol_in_argument_list2061);
+                    	    match(input,24,FOLLOW_24_in_argument_list2071); 
+                    	    following.push(FOLLOW_opt_eol_in_argument_list2073);
                     	    opt_eol();
                     	    following.pop();
 
-                    	    following.push(FOLLOW_argument_value_in_argument_list2065);
+                    	    following.push(FOLLOW_argument_value_in_argument_list2077);
                     	    param=argument_value();
                     	    following.pop();
 
@@ -3957,7 +3994,7 @@ public class RuleParser extends Parser {
                     	    break;
 
                     	default :
-                    	    break loop50;
+                    	    break loop51;
                         }
                     } while (true);
 
@@ -3983,7 +4020,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start argument_value
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:850:1: argument_value returns [ArgumentValueDescr value] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array ) ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:854:1: argument_value returns [ArgumentValueDescr value] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array ) ;
     public ArgumentValueDescr argument_value() throws RecognitionException {   
         ArgumentValueDescr value;
         Token t=null;
@@ -3997,111 +4034,111 @@ public class RuleParser extends Parser {
         		String text = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:855:17: ( (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array ) )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:855:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:859:17: ( (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:859:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array )
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:855:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array )
-            int alt52=9;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:859:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= 'null' | t= 'null' | m= inline_map | a= inline_array )
+            int alt53=9;
             switch ( input.LA(1) ) {
             case STRING:
-                alt52=1;
+                alt53=1;
                 break;
             case INT:
-                alt52=2;
+                alt53=2;
                 break;
             case FLOAT:
-                alt52=3;
+                alt53=3;
                 break;
             case BOOL:
-                alt52=4;
+                alt53=4;
                 break;
             case ID:
-                alt52=5;
-                break;
-            case 48:
-                alt52=6;
-                break;
-            case 26:
-                alt52=8;
+                alt53=5;
                 break;
             case 50:
-                alt52=9;
+                alt53=6;
+                break;
+            case 26:
+                alt53=8;
+                break;
+            case 43:
+                alt53=9;
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("855:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= \'null\' | t= \'null\' | m= inline_map | a= inline_array )", 52, 0, input);
+                    new NoViableAltException("859:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= ID | t= \'null\' | t= \'null\' | m= inline_map | a= inline_array )", 53, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt52) {
+            switch (alt53) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:855:25: t= STRING
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:859:25: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_argument_value2105); 
+                    match(input,STRING,FOLLOW_STRING_in_argument_value2117); 
                      text = getString( t );  value=new ArgumentValueDescr(ArgumentValueDescr.STRING, text);
 
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:856:25: t= INT
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:860:25: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_argument_value2116); 
+                    match(input,INT,FOLLOW_INT_in_argument_value2128); 
                      text = t.getText();  value=new ArgumentValueDescr(ArgumentValueDescr.INTEGRAL, text);
 
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:857:25: t= FLOAT
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:861:25: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_argument_value2129); 
+                    match(input,FLOAT,FOLLOW_FLOAT_in_argument_value2141); 
                      text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.DECIMAL, text); 
 
                     }
                     break;
                 case 4 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:858:25: t= BOOL
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:862:25: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_argument_value2140); 
+                    match(input,BOOL,FOLLOW_BOOL_in_argument_value2152); 
                      text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.BOOLEAN, text); 
 
                     }
                     break;
                 case 5 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:859:25: t= ID
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:863:25: t= ID
                     {
                     t=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_argument_value2152); 
+                    match(input,ID,FOLLOW_ID_in_argument_value2164); 
                      text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text);
 
                     }
                     break;
                 case 6 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:860:25: t= 'null'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:864:25: t= 'null'
                     {
                     t=(Token)input.LT(1);
-                    match(input,48,FOLLOW_48_in_argument_value2163); 
+                    match(input,50,FOLLOW_50_in_argument_value2175); 
                      text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);
 
                     }
                     break;
                 case 7 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:861:25: t= 'null'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:865:25: t= 'null'
                     {
                     t=(Token)input.LT(1);
-                    match(input,48,FOLLOW_48_in_argument_value2174); 
+                    match(input,50,FOLLOW_50_in_argument_value2186); 
                      text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);
 
                     }
                     break;
                 case 8 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:862:25: m= inline_map
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:866:25: m= inline_map
                     {
-                    following.push(FOLLOW_inline_map_in_argument_value2193);
+                    following.push(FOLLOW_inline_map_in_argument_value2205);
                     m=inline_map();
                     following.pop();
 
@@ -4110,9 +4147,9 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:863:25: a= inline_array
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:867:25: a= inline_array
                     {
-                    following.push(FOLLOW_inline_array_in_argument_value2209);
+                    following.push(FOLLOW_inline_array_in_argument_value2221);
                     a=inline_array();
                     following.pop();
 
@@ -4139,7 +4176,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start inline_map
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:867:1: inline_map returns [ArgumentValueDescr.MapDescr mapDescr] : '{' (key= argument_value '=>' value= argument_value ) ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )* '}' ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:871:1: inline_map returns [ArgumentValueDescr.MapDescr mapDescr] : '{' (key= argument_value '=>' value= argument_value ) ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )* '}' ;
     public ArgumentValueDescr.MapDescr inline_map() throws RecognitionException {   
         ArgumentValueDescr.MapDescr mapDescr;
         ArgumentValueDescr key = null;
@@ -4151,19 +4188,19 @@ public class RuleParser extends Parser {
                 mapDescr = new ArgumentValueDescr.MapDescr();
             
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:871:8: ( '{' (key= argument_value '=>' value= argument_value ) ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )* '}' )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:871:8: '{' (key= argument_value '=>' value= argument_value ) ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )* '}'
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:875:8: ( '{' (key= argument_value '=>' value= argument_value ) ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )* '}' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:875:8: '{' (key= argument_value '=>' value= argument_value ) ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )* '}'
             {
-            match(input,26,FOLLOW_26_in_inline_map2249); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:872:12: (key= argument_value '=>' value= argument_value )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:872:14: key= argument_value '=>' value= argument_value
+            match(input,26,FOLLOW_26_in_inline_map2261); 
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:876:12: (key= argument_value '=>' value= argument_value )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:876:14: key= argument_value '=>' value= argument_value
             {
-            following.push(FOLLOW_argument_value_in_inline_map2267);
+            following.push(FOLLOW_argument_value_in_inline_map2279);
             key=argument_value();
             following.pop();
 
-            match(input,49,FOLLOW_49_in_inline_map2269); 
-            following.push(FOLLOW_argument_value_in_inline_map2273);
+            match(input,51,FOLLOW_51_in_inline_map2281); 
+            following.push(FOLLOW_argument_value_in_inline_map2285);
             value=argument_value();
             following.pop();
 
@@ -4175,79 +4212,79 @@ public class RuleParser extends Parser {
 
             }
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:879:12: ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )*
-            loop55:
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:883:12: ( ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value )*
+            loop56:
             do {
-                int alt55=2;
-                int LA55_0 = input.LA(1);
-                if ( LA55_0==EOL||LA55_0==24 ) {
-                    alt55=1;
+                int alt56=2;
+                int LA56_0 = input.LA(1);
+                if ( LA56_0==EOL||LA56_0==24 ) {
+                    alt56=1;
                 }
 
 
-                switch (alt55) {
+                switch (alt56) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:879:14: ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:883:14: ( EOL )? ',' ( EOL )? key= argument_value '=>' value= argument_value
             	    {
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:879:14: ( EOL )?
-            	    int alt53=2;
-            	    int LA53_0 = input.LA(1);
-            	    if ( LA53_0==EOL ) {
-            	        alt53=1;
-            	    }
-            	    else if ( LA53_0==24 ) {
-            	        alt53=2;
-            	    }
-            	    else {
-            	        NoViableAltException nvae =
-            	            new NoViableAltException("879:14: ( EOL )?", 53, 0, input);
-
-            	        throw nvae;
-            	    }
-            	    switch (alt53) {
-            	        case 1 :
-            	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:879:15: EOL
-            	            {
-            	            match(input,EOL,FOLLOW_EOL_in_inline_map2316); 
-
-            	            }
-            	            break;
-
-            	    }
-
-            	    match(input,24,FOLLOW_24_in_inline_map2320); 
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:879:25: ( EOL )?
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:883:14: ( EOL )?
             	    int alt54=2;
             	    int LA54_0 = input.LA(1);
             	    if ( LA54_0==EOL ) {
             	        alt54=1;
             	    }
-            	    else if ( (LA54_0>=ID && LA54_0<=FLOAT)||LA54_0==26||LA54_0==48||LA54_0==50 ) {
+            	    else if ( LA54_0==24 ) {
             	        alt54=2;
             	    }
             	    else {
             	        NoViableAltException nvae =
-            	            new NoViableAltException("879:25: ( EOL )?", 54, 0, input);
+            	            new NoViableAltException("883:14: ( EOL )?", 54, 0, input);
 
             	        throw nvae;
             	    }
             	    switch (alt54) {
             	        case 1 :
-            	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:879:26: EOL
+            	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:883:15: EOL
             	            {
-            	            match(input,EOL,FOLLOW_EOL_in_inline_map2323); 
+            	            match(input,EOL,FOLLOW_EOL_in_inline_map2328); 
 
             	            }
             	            break;
 
             	    }
 
-            	    following.push(FOLLOW_argument_value_in_inline_map2329);
+            	    match(input,24,FOLLOW_24_in_inline_map2332); 
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:883:25: ( EOL )?
+            	    int alt55=2;
+            	    int LA55_0 = input.LA(1);
+            	    if ( LA55_0==EOL ) {
+            	        alt55=1;
+            	    }
+            	    else if ( (LA55_0>=ID && LA55_0<=FLOAT)||LA55_0==26||LA55_0==43||LA55_0==50 ) {
+            	        alt55=2;
+            	    }
+            	    else {
+            	        NoViableAltException nvae =
+            	            new NoViableAltException("883:25: ( EOL )?", 55, 0, input);
+
+            	        throw nvae;
+            	    }
+            	    switch (alt55) {
+            	        case 1 :
+            	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:883:26: EOL
+            	            {
+            	            match(input,EOL,FOLLOW_EOL_in_inline_map2335); 
+
+            	            }
+            	            break;
+
+            	    }
+
+            	    following.push(FOLLOW_argument_value_in_inline_map2341);
             	    key=argument_value();
             	    following.pop();
 
-            	    match(input,49,FOLLOW_49_in_inline_map2331); 
-            	    following.push(FOLLOW_argument_value_in_inline_map2335);
+            	    match(input,51,FOLLOW_51_in_inline_map2343); 
+            	    following.push(FOLLOW_argument_value_in_inline_map2347);
             	    value=argument_value();
             	    following.pop();
 
@@ -4261,11 +4298,11 @@ public class RuleParser extends Parser {
             	    break;
 
             	default :
-            	    break loop55;
+            	    break loop56;
                 }
             } while (true);
 
-            match(input,27,FOLLOW_27_in_inline_map2371); 
+            match(input,27,FOLLOW_27_in_inline_map2383); 
 
             }
 
@@ -4282,7 +4319,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start inline_array
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:888:1: inline_array returns [List list] : '[' arg= argument_value ( ( EOL )? ',' ( EOL )? arg= argument_value )* ']' ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:892:1: inline_array returns [List list] : '[' arg= argument_value ( ( EOL )? ',' ( EOL )? arg= argument_value )* ']' ;
     public List inline_array() throws RecognitionException {   
         List list;
         ArgumentValueDescr arg = null;
@@ -4292,83 +4329,83 @@ public class RuleParser extends Parser {
             	list = new ArrayList();
             
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:893:5: ( '[' arg= argument_value ( ( EOL )? ',' ( EOL )? arg= argument_value )* ']' )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:893:5: '[' arg= argument_value ( ( EOL )? ',' ( EOL )? arg= argument_value )* ']'
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:897:5: ( '[' arg= argument_value ( ( EOL )? ',' ( EOL )? arg= argument_value )* ']' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:897:5: '[' arg= argument_value ( ( EOL )? ',' ( EOL )? arg= argument_value )* ']'
             {
-            match(input,50,FOLLOW_50_in_inline_array2415); 
-            following.push(FOLLOW_argument_value_in_inline_array2419);
+            match(input,43,FOLLOW_43_in_inline_array2427); 
+            following.push(FOLLOW_argument_value_in_inline_array2431);
             arg=argument_value();
             following.pop();
 
              list.add(arg); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:895:10: ( ( EOL )? ',' ( EOL )? arg= argument_value )*
-            loop58:
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:899:10: ( ( EOL )? ',' ( EOL )? arg= argument_value )*
+            loop59:
             do {
-                int alt58=2;
-                int LA58_0 = input.LA(1);
-                if ( LA58_0==EOL||LA58_0==24 ) {
-                    alt58=1;
+                int alt59=2;
+                int LA59_0 = input.LA(1);
+                if ( LA59_0==EOL||LA59_0==24 ) {
+                    alt59=1;
                 }
 
 
-                switch (alt58) {
+                switch (alt59) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:895:12: ( EOL )? ',' ( EOL )? arg= argument_value
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:899:12: ( EOL )? ',' ( EOL )? arg= argument_value
             	    {
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:895:12: ( EOL )?
-            	    int alt56=2;
-            	    int LA56_0 = input.LA(1);
-            	    if ( LA56_0==EOL ) {
-            	        alt56=1;
-            	    }
-            	    else if ( LA56_0==24 ) {
-            	        alt56=2;
-            	    }
-            	    else {
-            	        NoViableAltException nvae =
-            	            new NoViableAltException("895:12: ( EOL )?", 56, 0, input);
-
-            	        throw nvae;
-            	    }
-            	    switch (alt56) {
-            	        case 1 :
-            	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:895:12: EOL
-            	            {
-            	            match(input,EOL,FOLLOW_EOL_in_inline_array2437); 
-
-            	            }
-            	            break;
-
-            	    }
-
-            	    match(input,24,FOLLOW_24_in_inline_array2440); 
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:895:21: ( EOL )?
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:899:12: ( EOL )?
             	    int alt57=2;
             	    int LA57_0 = input.LA(1);
             	    if ( LA57_0==EOL ) {
             	        alt57=1;
             	    }
-            	    else if ( (LA57_0>=ID && LA57_0<=FLOAT)||LA57_0==26||LA57_0==48||LA57_0==50 ) {
+            	    else if ( LA57_0==24 ) {
             	        alt57=2;
             	    }
             	    else {
             	        NoViableAltException nvae =
-            	            new NoViableAltException("895:21: ( EOL )?", 57, 0, input);
+            	            new NoViableAltException("899:12: ( EOL )?", 57, 0, input);
 
             	        throw nvae;
             	    }
             	    switch (alt57) {
             	        case 1 :
-            	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:895:21: EOL
+            	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:899:12: EOL
             	            {
-            	            match(input,EOL,FOLLOW_EOL_in_inline_array2442); 
+            	            match(input,EOL,FOLLOW_EOL_in_inline_array2449); 
 
             	            }
             	            break;
 
             	    }
 
-            	    following.push(FOLLOW_argument_value_in_inline_array2447);
+            	    match(input,24,FOLLOW_24_in_inline_array2452); 
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:899:21: ( EOL )?
+            	    int alt58=2;
+            	    int LA58_0 = input.LA(1);
+            	    if ( LA58_0==EOL ) {
+            	        alt58=1;
+            	    }
+            	    else if ( (LA58_0>=ID && LA58_0<=FLOAT)||LA58_0==26||LA58_0==43||LA58_0==50 ) {
+            	        alt58=2;
+            	    }
+            	    else {
+            	        NoViableAltException nvae =
+            	            new NoViableAltException("899:21: ( EOL )?", 58, 0, input);
+
+            	        throw nvae;
+            	    }
+            	    switch (alt58) {
+            	        case 1 :
+            	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:899:21: EOL
+            	            {
+            	            match(input,EOL,FOLLOW_EOL_in_inline_array2454); 
+
+            	            }
+            	            break;
+
+            	    }
+
+            	    following.push(FOLLOW_argument_value_in_inline_array2459);
             	    arg=argument_value();
             	    following.pop();
 
@@ -4378,11 +4415,11 @@ public class RuleParser extends Parser {
             	    break;
 
             	default :
-            	    break loop58;
+            	    break loop59;
                 }
             } while (true);
 
-            match(input,51,FOLLOW_51_in_inline_array2460); 
+            match(input,44,FOLLOW_44_in_inline_array2472); 
 
             }
 
@@ -4399,11 +4436,11 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start fact_binding
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:900:1: fact_binding returns [PatternDescr d] : id= ID opt_eol ':' opt_eol fe= fact_expression[id.getText()] ;
-    public PatternDescr fact_binding() throws RecognitionException {   
-        PatternDescr d;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:904:1: fact_binding returns [BaseDescr d] : id= ID opt_eol ':' opt_eol fe= fact_expression[id.getText()] ;
+    public BaseDescr fact_binding() throws RecognitionException {   
+        BaseDescr d;
         Token id=null;
-        PatternDescr fe = null;
+        BaseDescr fe = null;
 
 
         
@@ -4411,21 +4448,21 @@ public class RuleParser extends Parser {
         		boolean multi=false;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:906:17: (id= ID opt_eol ':' opt_eol fe= fact_expression[id.getText()] )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:906:17: id= ID opt_eol ':' opt_eol fe= fact_expression[id.getText()]
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:910:17: (id= ID opt_eol ':' opt_eol fe= fact_expression[id.getText()] )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:910:17: id= ID opt_eol ':' opt_eol fe= fact_expression[id.getText()]
             {
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_fact_binding2503); 
-            following.push(FOLLOW_opt_eol_in_fact_binding2513);
+            match(input,ID,FOLLOW_ID_in_fact_binding2515); 
+            following.push(FOLLOW_opt_eol_in_fact_binding2525);
             opt_eol();
             following.pop();
 
-            match(input,33,FOLLOW_33_in_fact_binding2515); 
-            following.push(FOLLOW_opt_eol_in_fact_binding2517);
+            match(input,33,FOLLOW_33_in_fact_binding2527); 
+            following.push(FOLLOW_opt_eol_in_fact_binding2529);
             opt_eol();
             following.pop();
 
-            following.push(FOLLOW_fact_expression_in_fact_binding2521);
+            following.push(FOLLOW_fact_expression_in_fact_binding2533);
             fe=fact_expression(id.getText());
             following.pop();
 
@@ -4448,12 +4485,12 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start fact_expression
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:914:2: fact_expression[String id] returns [PatternDescr pd] : ( '(' opt_eol fe= fact_expression[id] opt_eol ')' | f= fact opt_eol ( ('or'|'||') opt_eol f= fact )* );
-    public PatternDescr fact_expression(String id) throws RecognitionException {   
-        PatternDescr pd;
-        PatternDescr fe = null;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:918:2: fact_expression[String id] returns [BaseDescr pd] : ( '(' opt_eol fe= fact_expression[id] opt_eol ')' | f= fact opt_eol ( ('or'|'||') opt_eol f= fact )* );
+    public BaseDescr fact_expression(String id) throws RecognitionException {   
+        BaseDescr pd;
+        BaseDescr fe = null;
 
-        PatternDescr f = null;
+        BaseDescr f = null;
 
 
         
@@ -4461,51 +4498,51 @@ public class RuleParser extends Parser {
          		boolean multi = false;
          	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:919:17: ( '(' opt_eol fe= fact_expression[id] opt_eol ')' | f= fact opt_eol ( ('or'|'||') opt_eol f= fact )* )
-            int alt60=2;
-            int LA60_0 = input.LA(1);
-            if ( LA60_0==23 ) {
-                alt60=1;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:923:17: ( '(' opt_eol fe= fact_expression[id] opt_eol ')' | f= fact opt_eol ( ('or'|'||') opt_eol f= fact )* )
+            int alt61=2;
+            int LA61_0 = input.LA(1);
+            if ( LA61_0==23 ) {
+                alt61=1;
             }
-            else if ( LA60_0==ID ) {
-                alt60=2;
+            else if ( LA61_0==ID ) {
+                alt61=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("914:2: fact_expression[String id] returns [PatternDescr pd] : ( \'(\' opt_eol fe= fact_expression[id] opt_eol \')\' | f= fact opt_eol ( (\'or\'|\'||\') opt_eol f= fact )* );", 60, 0, input);
+                    new NoViableAltException("918:2: fact_expression[String id] returns [BaseDescr pd] : ( \'(\' opt_eol fe= fact_expression[id] opt_eol \')\' | f= fact opt_eol ( (\'or\'|\'||\') opt_eol f= fact )* );", 61, 0, input);
 
                 throw nvae;
             }
-            switch (alt60) {
+            switch (alt61) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:919:17: '(' opt_eol fe= fact_expression[id] opt_eol ')'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:923:17: '(' opt_eol fe= fact_expression[id] opt_eol ')'
                     {
-                    match(input,23,FOLLOW_23_in_fact_expression2553); 
-                    following.push(FOLLOW_opt_eol_in_fact_expression2555);
+                    match(input,23,FOLLOW_23_in_fact_expression2565); 
+                    following.push(FOLLOW_opt_eol_in_fact_expression2567);
                     opt_eol();
                     following.pop();
 
-                    following.push(FOLLOW_fact_expression_in_fact_expression2559);
+                    following.push(FOLLOW_fact_expression_in_fact_expression2571);
                     fe=fact_expression(id);
                     following.pop();
 
-                    following.push(FOLLOW_opt_eol_in_fact_expression2561);
+                    following.push(FOLLOW_opt_eol_in_fact_expression2573);
                     opt_eol();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_fact_expression2563); 
+                    match(input,25,FOLLOW_25_in_fact_expression2575); 
                      pd=fe; 
 
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:920:17: f= fact opt_eol ( ('or'|'||') opt_eol f= fact )*
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:924:17: f= fact opt_eol ( ('or'|'||') opt_eol f= fact )*
                     {
-                    following.push(FOLLOW_fact_in_fact_expression2574);
+                    following.push(FOLLOW_fact_in_fact_expression2586);
                     f=fact();
                     following.pop();
 
-                    following.push(FOLLOW_opt_eol_in_fact_expression2576);
+                    following.push(FOLLOW_opt_eol_in_fact_expression2588);
                     opt_eol();
                     following.pop();
 
@@ -4513,19 +4550,19 @@ public class RuleParser extends Parser {
                      			((ColumnDescr)f).setIdentifier( id );
                      			pd = f;
                      		
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:925:17: ( ('or'|'||') opt_eol f= fact )*
-                    loop59:
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:929:17: ( ('or'|'||') opt_eol f= fact )*
+                    loop60:
                     do {
-                        int alt59=2;
-                        int LA59_0 = input.LA(1);
-                        if ( (LA59_0>=52 && LA59_0<=53) ) {
-                            alt59=1;
+                        int alt60=2;
+                        int LA60_0 = input.LA(1);
+                        if ( (LA60_0>=52 && LA60_0<=53) ) {
+                            alt60=1;
                         }
 
 
-                        switch (alt59) {
+                        switch (alt60) {
                     	case 1 :
-                    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:925:25: ('or'|'||') opt_eol f= fact
+                    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:929:25: ('or'|'||') opt_eol f= fact
                     	    {
                     	    if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
                     	        input.consume();
@@ -4534,21 +4571,21 @@ public class RuleParser extends Parser {
                     	    else {
                     	        MismatchedSetException mse =
                     	            new MismatchedSetException(null,input);
-                    	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_fact_expression2589);    throw mse;
+                    	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_fact_expression2601);    throw mse;
                     	    }
 
-                    	    following.push(FOLLOW_opt_eol_in_fact_expression2594);
+                    	    following.push(FOLLOW_opt_eol_in_fact_expression2606);
                     	    opt_eol();
                     	    following.pop();
 
                     	    	if ( ! multi ) {
-                    	     					PatternDescr first = pd;
+                    	     					BaseDescr first = pd;
                     	     					pd = new OrDescr();
                     	     					((OrDescr)pd).addDescr( first );
                     	     					multi=true;
                     	     				}
                     	     			
-                    	    following.push(FOLLOW_fact_in_fact_expression2608);
+                    	    following.push(FOLLOW_fact_in_fact_expression2620);
                     	    f=fact();
                     	    following.pop();
 
@@ -4561,7 +4598,7 @@ public class RuleParser extends Parser {
                     	    break;
 
                     	default :
-                    	    break loop59;
+                    	    break loop60;
                         }
                     } while (true);
 
@@ -4583,9 +4620,9 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start fact
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:941:1: fact returns [PatternDescr d] : id= dotted_name opt_eol loc= '(' opt_eol (c= constraints )? opt_eol endLoc= ')' opt_eol ;
-    public PatternDescr fact() throws RecognitionException {   
-        PatternDescr d;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:945:1: fact returns [BaseDescr d] : id= dotted_name opt_eol loc= '(' opt_eol (c= constraints )? opt_eol endLoc= ')' opt_eol ;
+    public BaseDescr fact() throws RecognitionException {   
+        BaseDescr d;
         Token loc=null;
         Token endLoc=null;
         String id = null;
@@ -4597,43 +4634,43 @@ public class RuleParser extends Parser {
         		d=null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:945:17: (id= dotted_name opt_eol loc= '(' opt_eol (c= constraints )? opt_eol endLoc= ')' opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:945:17: id= dotted_name opt_eol loc= '(' opt_eol (c= constraints )? opt_eol endLoc= ')' opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:949:17: (id= dotted_name opt_eol loc= '(' opt_eol (c= constraints )? opt_eol endLoc= ')' opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:949:17: id= dotted_name opt_eol loc= '(' opt_eol (c= constraints )? opt_eol endLoc= ')' opt_eol
             {
-            following.push(FOLLOW_dotted_name_in_fact2647);
+            following.push(FOLLOW_dotted_name_in_fact2659);
             id=dotted_name();
             following.pop();
 
              
              			d = new ColumnDescr( id ); 
              		
-            following.push(FOLLOW_opt_eol_in_fact2655);
+            following.push(FOLLOW_opt_eol_in_fact2667);
             opt_eol();
             following.pop();
 
             loc=(Token)input.LT(1);
-            match(input,23,FOLLOW_23_in_fact2663); 
+            match(input,23,FOLLOW_23_in_fact2675); 
             
              				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
              			
-            following.push(FOLLOW_opt_eol_in_fact2666);
+            following.push(FOLLOW_opt_eol_in_fact2678);
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:951:34: (c= constraints )?
-            int alt61=2;
-            alt61 = dfa61.predict(input); 
-            switch (alt61) {
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:955:34: (c= constraints )?
+            int alt62=2;
+            alt62 = dfa62.predict(input); 
+            switch (alt62) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:951:41: c= constraints
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:955:41: c= constraints
                     {
-                    following.push(FOLLOW_constraints_in_fact2672);
+                    following.push(FOLLOW_constraints_in_fact2684);
                     c=constraints();
                     following.pop();
 
                     
                     		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
-                     						((ColumnDescr)d).addDescr( (PatternDescr) cIter.next() );
+                     						((ColumnDescr)d).addDescr( (BaseDescr) cIter.next() );
                      					}
                      				
 
@@ -4642,13 +4679,13 @@ public class RuleParser extends Parser {
 
             }
 
-            following.push(FOLLOW_opt_eol_in_fact2691);
+            following.push(FOLLOW_opt_eol_in_fact2703);
             opt_eol();
             following.pop();
 
             endLoc=(Token)input.LT(1);
-            match(input,25,FOLLOW_25_in_fact2695); 
-            following.push(FOLLOW_opt_eol_in_fact2697);
+            match(input,25,FOLLOW_25_in_fact2707); 
+            following.push(FOLLOW_opt_eol_in_fact2709);
             opt_eol();
             following.pop();
 
@@ -4671,76 +4708,76 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start constraints
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:965:1: constraints returns [List constraints] : opt_eol ( constraint[constraints] | predicate[constraints] ) ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )* opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:969:1: constraints returns [List constraints] : opt_eol ( constraint[constraints] | predicate[constraints] ) ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )* opt_eol ;
     public List constraints() throws RecognitionException {   
         List constraints;
         
         		constraints = new ArrayList();
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:969:17: ( opt_eol ( constraint[constraints] | predicate[constraints] ) ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )* opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:969:17: opt_eol ( constraint[constraints] | predicate[constraints] ) ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )* opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:973:17: ( opt_eol ( constraint[constraints] | predicate[constraints] ) ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )* opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:973:17: opt_eol ( constraint[constraints] | predicate[constraints] ) ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )* opt_eol
             {
-            following.push(FOLLOW_opt_eol_in_constraints2729);
+            following.push(FOLLOW_opt_eol_in_constraints2741);
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:970:17: ( constraint[constraints] | predicate[constraints] )
-            int alt62=2;
-            int LA62_0 = input.LA(1);
-            if ( LA62_0==EOL||LA62_0==15 ) {
-                alt62=1;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:974:17: ( constraint[constraints] | predicate[constraints] )
+            int alt63=2;
+            int LA63_0 = input.LA(1);
+            if ( LA63_0==EOL||LA63_0==15 ) {
+                alt63=1;
             }
-            else if ( LA62_0==ID ) {
-                int LA62_2 = input.LA(2);
-                if ( LA62_2==33 ) {
-                    int LA62_3 = input.LA(3);
-                    if ( LA62_3==ID ) {
-                        int LA62_17 = input.LA(4);
-                        if ( LA62_17==56 ) {
-                            alt62=2;
+            else if ( LA63_0==ID ) {
+                int LA63_2 = input.LA(2);
+                if ( LA63_2==33 ) {
+                    int LA63_3 = input.LA(3);
+                    if ( LA63_3==ID ) {
+                        int LA63_17 = input.LA(4);
+                        if ( LA63_17==56 ) {
+                            alt63=2;
                         }
-                        else if ( LA62_17==EOL||LA62_17==15||(LA62_17>=24 && LA62_17<=25)||(LA62_17>=63 && LA62_17<=72) ) {
-                            alt62=1;
+                        else if ( LA63_17==EOL||LA63_17==15||(LA63_17>=24 && LA63_17<=25)||(LA63_17>=63 && LA63_17<=72) ) {
+                            alt63=1;
                         }
                         else {
                             NoViableAltException nvae =
-                                new NoViableAltException("970:17: ( constraint[constraints] | predicate[constraints] )", 62, 17, input);
+                                new NoViableAltException("974:17: ( constraint[constraints] | predicate[constraints] )", 63, 17, input);
 
                             throw nvae;
                         }
                     }
-                    else if ( LA62_3==EOL||LA62_3==15 ) {
-                        alt62=1;
+                    else if ( LA63_3==EOL||LA63_3==15 ) {
+                        alt63=1;
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("970:17: ( constraint[constraints] | predicate[constraints] )", 62, 3, input);
+                            new NoViableAltException("974:17: ( constraint[constraints] | predicate[constraints] )", 63, 3, input);
 
                         throw nvae;
                     }
                 }
-                else if ( LA62_2==EOL||LA62_2==15||(LA62_2>=24 && LA62_2<=25)||(LA62_2>=63 && LA62_2<=72) ) {
-                    alt62=1;
+                else if ( LA63_2==EOL||LA63_2==15||(LA63_2>=24 && LA63_2<=25)||(LA63_2>=63 && LA63_2<=72) ) {
+                    alt63=1;
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("970:17: ( constraint[constraints] | predicate[constraints] )", 62, 2, input);
+                        new NoViableAltException("974:17: ( constraint[constraints] | predicate[constraints] )", 63, 2, input);
 
                     throw nvae;
                 }
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("970:17: ( constraint[constraints] | predicate[constraints] )", 62, 0, input);
+                    new NoViableAltException("974:17: ( constraint[constraints] | predicate[constraints] )", 63, 0, input);
 
                 throw nvae;
             }
-            switch (alt62) {
+            switch (alt63) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:970:18: constraint[constraints]
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:974:18: constraint[constraints]
                     {
-                    following.push(FOLLOW_constraint_in_constraints2734);
+                    following.push(FOLLOW_constraint_in_constraints2746);
                     constraint(constraints);
                     following.pop();
 
@@ -4748,9 +4785,9 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:970:42: predicate[constraints]
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:974:42: predicate[constraints]
                     {
-                    following.push(FOLLOW_predicate_in_constraints2737);
+                    following.push(FOLLOW_predicate_in_constraints2749);
                     predicate(constraints);
                     following.pop();
 
@@ -4760,80 +4797,80 @@ public class RuleParser extends Parser {
 
             }
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:971:17: ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )*
-            loop64:
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:975:17: ( opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] ) )*
+            loop65:
             do {
-                int alt64=2;
-                alt64 = dfa64.predict(input); 
-                switch (alt64) {
+                int alt65=2;
+                alt65 = dfa65.predict(input); 
+                switch (alt65) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:971:19: opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] )
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:975:19: opt_eol ',' opt_eol ( constraint[constraints] | predicate[constraints] )
             	    {
-            	    following.push(FOLLOW_opt_eol_in_constraints2745);
+            	    following.push(FOLLOW_opt_eol_in_constraints2757);
             	    opt_eol();
             	    following.pop();
 
-            	    match(input,24,FOLLOW_24_in_constraints2747); 
-            	    following.push(FOLLOW_opt_eol_in_constraints2749);
+            	    match(input,24,FOLLOW_24_in_constraints2759); 
+            	    following.push(FOLLOW_opt_eol_in_constraints2761);
             	    opt_eol();
             	    following.pop();
 
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:971:39: ( constraint[constraints] | predicate[constraints] )
-            	    int alt63=2;
-            	    int LA63_0 = input.LA(1);
-            	    if ( LA63_0==EOL||LA63_0==15 ) {
-            	        alt63=1;
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:975:39: ( constraint[constraints] | predicate[constraints] )
+            	    int alt64=2;
+            	    int LA64_0 = input.LA(1);
+            	    if ( LA64_0==EOL||LA64_0==15 ) {
+            	        alt64=1;
             	    }
-            	    else if ( LA63_0==ID ) {
-            	        int LA63_2 = input.LA(2);
-            	        if ( LA63_2==33 ) {
-            	            int LA63_3 = input.LA(3);
-            	            if ( LA63_3==ID ) {
-            	                int LA63_17 = input.LA(4);
-            	                if ( LA63_17==56 ) {
-            	                    alt63=2;
+            	    else if ( LA64_0==ID ) {
+            	        int LA64_2 = input.LA(2);
+            	        if ( LA64_2==33 ) {
+            	            int LA64_3 = input.LA(3);
+            	            if ( LA64_3==ID ) {
+            	                int LA64_17 = input.LA(4);
+            	                if ( LA64_17==56 ) {
+            	                    alt64=2;
             	                }
-            	                else if ( LA63_17==EOL||LA63_17==15||(LA63_17>=24 && LA63_17<=25)||(LA63_17>=63 && LA63_17<=72) ) {
-            	                    alt63=1;
+            	                else if ( LA64_17==EOL||LA64_17==15||(LA64_17>=24 && LA64_17<=25)||(LA64_17>=63 && LA64_17<=72) ) {
+            	                    alt64=1;
             	                }
             	                else {
             	                    NoViableAltException nvae =
-            	                        new NoViableAltException("971:39: ( constraint[constraints] | predicate[constraints] )", 63, 17, input);
+            	                        new NoViableAltException("975:39: ( constraint[constraints] | predicate[constraints] )", 64, 17, input);
 
             	                    throw nvae;
             	                }
             	            }
-            	            else if ( LA63_3==EOL||LA63_3==15 ) {
-            	                alt63=1;
+            	            else if ( LA64_3==EOL||LA64_3==15 ) {
+            	                alt64=1;
             	            }
             	            else {
             	                NoViableAltException nvae =
-            	                    new NoViableAltException("971:39: ( constraint[constraints] | predicate[constraints] )", 63, 3, input);
+            	                    new NoViableAltException("975:39: ( constraint[constraints] | predicate[constraints] )", 64, 3, input);
 
             	                throw nvae;
             	            }
             	        }
-            	        else if ( LA63_2==EOL||LA63_2==15||(LA63_2>=24 && LA63_2<=25)||(LA63_2>=63 && LA63_2<=72) ) {
-            	            alt63=1;
+            	        else if ( LA64_2==EOL||LA64_2==15||(LA64_2>=24 && LA64_2<=25)||(LA64_2>=63 && LA64_2<=72) ) {
+            	            alt64=1;
             	        }
             	        else {
             	            NoViableAltException nvae =
-            	                new NoViableAltException("971:39: ( constraint[constraints] | predicate[constraints] )", 63, 2, input);
+            	                new NoViableAltException("975:39: ( constraint[constraints] | predicate[constraints] )", 64, 2, input);
 
             	            throw nvae;
             	        }
             	    }
             	    else {
             	        NoViableAltException nvae =
-            	            new NoViableAltException("971:39: ( constraint[constraints] | predicate[constraints] )", 63, 0, input);
+            	            new NoViableAltException("975:39: ( constraint[constraints] | predicate[constraints] )", 64, 0, input);
 
             	        throw nvae;
             	    }
-            	    switch (alt63) {
+            	    switch (alt64) {
             	        case 1 :
-            	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:971:40: constraint[constraints]
+            	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:975:40: constraint[constraints]
             	            {
-            	            following.push(FOLLOW_constraint_in_constraints2752);
+            	            following.push(FOLLOW_constraint_in_constraints2764);
             	            constraint(constraints);
             	            following.pop();
 
@@ -4841,9 +4878,9 @@ public class RuleParser extends Parser {
             	            }
             	            break;
             	        case 2 :
-            	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:971:64: predicate[constraints]
+            	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:975:64: predicate[constraints]
             	            {
-            	            following.push(FOLLOW_predicate_in_constraints2755);
+            	            following.push(FOLLOW_predicate_in_constraints2767);
             	            predicate(constraints);
             	            following.pop();
 
@@ -4858,11 +4895,11 @@ public class RuleParser extends Parser {
             	    break;
 
             	default :
-            	    break loop64;
+            	    break loop65;
                 }
             } while (true);
 
-            following.push(FOLLOW_opt_eol_in_constraints2763);
+            following.push(FOLLOW_opt_eol_in_constraints2775);
             opt_eol();
             following.pop();
 
@@ -4882,7 +4919,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start constraint
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:975:1: constraint[List constraints] : opt_eol (fb= ID opt_eol ':' opt_eol )? f= ID opt_eol (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )? opt_eol ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:979:1: constraint[List constraints] : opt_eol (fb= ID opt_eol ':' opt_eol )? f= ID opt_eol (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )? opt_eol ;
     public void constraint(List constraints) throws RecognitionException {   
         Token fb=null;
         Token f=null;
@@ -4896,31 +4933,31 @@ public class RuleParser extends Parser {
 
 
         
-        		PatternDescr d = null;
+        		BaseDescr d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:979:17: ( opt_eol (fb= ID opt_eol ':' opt_eol )? f= ID opt_eol (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )? opt_eol )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:979:17: opt_eol (fb= ID opt_eol ':' opt_eol )? f= ID opt_eol (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )? opt_eol
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:983:17: ( opt_eol (fb= ID opt_eol ':' opt_eol )? f= ID opt_eol (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )? opt_eol )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:983:17: opt_eol (fb= ID opt_eol ':' opt_eol )? f= ID opt_eol (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )? opt_eol
             {
-            following.push(FOLLOW_opt_eol_in_constraint2782);
+            following.push(FOLLOW_opt_eol_in_constraint2794);
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:980:17: (fb= ID opt_eol ':' opt_eol )?
-            int alt65=2;
-            alt65 = dfa65.predict(input); 
-            switch (alt65) {
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:984:17: (fb= ID opt_eol ':' opt_eol )?
+            int alt66=2;
+            alt66 = dfa66.predict(input); 
+            switch (alt66) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:980:19: fb= ID opt_eol ':' opt_eol
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:984:19: fb= ID opt_eol ':' opt_eol
                     {
                     fb=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_constraint2790); 
-                    following.push(FOLLOW_opt_eol_in_constraint2792);
+                    match(input,ID,FOLLOW_ID_in_constraint2802); 
+                    following.push(FOLLOW_opt_eol_in_constraint2804);
                     opt_eol();
                     following.pop();
 
-                    match(input,33,FOLLOW_33_in_constraint2794); 
-                    following.push(FOLLOW_opt_eol_in_constraint2796);
+                    match(input,33,FOLLOW_33_in_constraint2806); 
+                    following.push(FOLLOW_opt_eol_in_constraint2808);
                     opt_eol();
                     following.pop();
 
@@ -4931,7 +4968,7 @@ public class RuleParser extends Parser {
             }
 
             f=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_constraint2806); 
+            match(input,ID,FOLLOW_ID_in_constraint2818); 
             
             
             			if ( fb != null ) {
@@ -4948,51 +4985,51 @@ public class RuleParser extends Parser {
             									
             			
             		
-            following.push(FOLLOW_opt_eol_in_constraint2820);
+            following.push(FOLLOW_opt_eol_in_constraint2832);
             opt_eol();
             following.pop();
 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:998:33: (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )?
-            int alt69=2;
-            int LA69_0 = input.LA(1);
-            if ( (LA69_0>=63 && LA69_0<=72) ) {
-                alt69=1;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1002:33: (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )?
+            int alt70=2;
+            int LA70_0 = input.LA(1);
+            if ( (LA70_0>=63 && LA70_0<=72) ) {
+                alt70=1;
             }
-            else if ( LA69_0==EOL||LA69_0==15||(LA69_0>=24 && LA69_0<=25) ) {
-                alt69=2;
+            else if ( LA70_0==EOL||LA70_0==15||(LA70_0>=24 && LA70_0<=25) ) {
+                alt70=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("998:33: (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= (\'&\'|\'|\')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )?", 69, 0, input);
+                    new NoViableAltException("1002:33: (op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= (\'&\'|\'|\')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )* )?", 70, 0, input);
 
                 throw nvae;
             }
-            switch (alt69) {
+            switch (alt70) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:998:41: op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )*
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1002:41: op= operator opt_eol (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )*
                     {
-                    following.push(FOLLOW_operator_in_constraint2826);
+                    following.push(FOLLOW_operator_in_constraint2838);
                     op=operator();
                     following.pop();
 
-                    following.push(FOLLOW_opt_eol_in_constraint2828);
+                    following.push(FOLLOW_opt_eol_in_constraint2840);
                     opt_eol();
                     following.pop();
 
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1000:41: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )
-                    int alt66=4;
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1004:41: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )
+                    int alt67=4;
                     switch ( input.LA(1) ) {
                     case ID:
-                        int LA66_1 = input.LA(2);
-                        if ( LA66_1==19 ) {
-                            alt66=2;
+                        int LA67_1 = input.LA(2);
+                        if ( LA67_1==19 ) {
+                            alt67=2;
                         }
-                        else if ( LA66_1==EOL||LA66_1==15||(LA66_1>=24 && LA66_1<=25)||(LA66_1>=54 && LA66_1<=55) ) {
-                            alt66=1;
+                        else if ( LA67_1==EOL||LA67_1==15||(LA67_1>=24 && LA67_1<=25)||(LA67_1>=54 && LA67_1<=55) ) {
+                            alt67=1;
                         }
                         else {
                             NoViableAltException nvae =
-                                new NoViableAltException("1000:41: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 66, 1, input);
+                                new NoViableAltException("1004:41: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 67, 1, input);
 
                             throw nvae;
                         }
@@ -5001,25 +5038,25 @@ public class RuleParser extends Parser {
                     case BOOL:
                     case STRING:
                     case FLOAT:
-                    case 48:
-                        alt66=3;
+                    case 50:
+                        alt67=3;
                         break;
                     case 23:
-                        alt66=4;
+                        alt67=4;
                         break;
                     default:
                         NoViableAltException nvae =
-                            new NoViableAltException("1000:41: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 66, 0, input);
+                            new NoViableAltException("1004:41: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 67, 0, input);
 
                         throw nvae;
                     }
 
-                    switch (alt66) {
+                    switch (alt67) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1000:49: bvc= ID
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1004:49: bvc= ID
                             {
                             bvc=(Token)input.LT(1);
-                            match(input,ID,FOLLOW_ID_in_constraint2846); 
+                            match(input,ID,FOLLOW_ID_in_constraint2858); 
                             
                             							
                             														
@@ -5033,9 +5070,9 @@ public class RuleParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1011:49: lc= enum_constraint
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1015:49: lc= enum_constraint
                             {
-                            following.push(FOLLOW_enum_constraint_in_constraint2871);
+                            following.push(FOLLOW_enum_constraint_in_constraint2883);
                             lc=enum_constraint();
                             following.pop();
 
@@ -5050,9 +5087,9 @@ public class RuleParser extends Parser {
                             }
                             break;
                         case 3 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1020:49: lc= literal_constraint
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1024:49: lc= literal_constraint
                             {
-                            following.push(FOLLOW_literal_constraint_in_constraint2903);
+                            following.push(FOLLOW_literal_constraint_in_constraint2915);
                             lc=literal_constraint();
                             following.pop();
 
@@ -5067,9 +5104,9 @@ public class RuleParser extends Parser {
                             }
                             break;
                         case 4 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1028:49: rvc= retval_constraint
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1032:49: rvc= retval_constraint
                             {
-                            following.push(FOLLOW_retval_constraint_in_constraint2923);
+                            following.push(FOLLOW_retval_constraint_in_constraint2935);
                             rvc=retval_constraint();
                             following.pop();
 
@@ -5088,19 +5125,19 @@ public class RuleParser extends Parser {
 
                     }
 
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1039:41: (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )*
-                    loop68:
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1043:41: (con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint ) )*
+                    loop69:
                     do {
-                        int alt68=2;
-                        int LA68_0 = input.LA(1);
-                        if ( (LA68_0>=54 && LA68_0<=55) ) {
-                            alt68=1;
+                        int alt69=2;
+                        int LA69_0 = input.LA(1);
+                        if ( (LA69_0>=54 && LA69_0<=55) ) {
+                            alt69=1;
                         }
 
 
-                        switch (alt68) {
+                        switch (alt69) {
                     	case 1 :
-                    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1040:49: con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )
+                    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1044:49: con= ('&'|'|')op= operator (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )
                     	    {
                     	    con=(Token)input.LT(1);
                     	    if ( (input.LA(1)>=54 && input.LA(1)<=55) ) {
@@ -5110,7 +5147,7 @@ public class RuleParser extends Parser {
                     	    else {
                     	        MismatchedSetException mse =
                     	            new MismatchedSetException(null,input);
-                    	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_constraint2958);    throw mse;
+                    	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_constraint2970);    throw mse;
                     	    }
 
                     	    
@@ -5120,24 +5157,24 @@ public class RuleParser extends Parser {
                     	    								fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
                     	    							}							
                     	    						
-                    	    following.push(FOLLOW_operator_in_constraint2980);
+                    	    following.push(FOLLOW_operator_in_constraint2992);
                     	    op=operator();
                     	    following.pop();
 
-                    	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1050:49: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )
-                    	    int alt67=4;
+                    	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1054:49: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )
+                    	    int alt68=4;
                     	    switch ( input.LA(1) ) {
                     	    case ID:
-                    	        int LA67_1 = input.LA(2);
-                    	        if ( LA67_1==19 ) {
-                    	            alt67=2;
+                    	        int LA68_1 = input.LA(2);
+                    	        if ( LA68_1==19 ) {
+                    	            alt68=2;
                     	        }
-                    	        else if ( LA67_1==EOL||LA67_1==15||(LA67_1>=24 && LA67_1<=25)||(LA67_1>=54 && LA67_1<=55) ) {
-                    	            alt67=1;
+                    	        else if ( LA68_1==EOL||LA68_1==15||(LA68_1>=24 && LA68_1<=25)||(LA68_1>=54 && LA68_1<=55) ) {
+                    	            alt68=1;
                     	        }
                     	        else {
                     	            NoViableAltException nvae =
-                    	                new NoViableAltException("1050:49: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 67, 1, input);
+                    	                new NoViableAltException("1054:49: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 68, 1, input);
 
                     	            throw nvae;
                     	        }
@@ -5146,25 +5183,25 @@ public class RuleParser extends Parser {
                     	    case BOOL:
                     	    case STRING:
                     	    case FLOAT:
-                    	    case 48:
-                    	        alt67=3;
+                    	    case 50:
+                    	        alt68=3;
                     	        break;
                     	    case 23:
-                    	        alt67=4;
+                    	        alt68=4;
                     	        break;
                     	    default:
                     	        NoViableAltException nvae =
-                    	            new NoViableAltException("1050:49: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 67, 0, input);
+                    	            new NoViableAltException("1054:49: (bvc= ID | lc= enum_constraint | lc= literal_constraint | rvc= retval_constraint )", 68, 0, input);
 
                     	        throw nvae;
                     	    }
 
-                    	    switch (alt67) {
+                    	    switch (alt68) {
                     	        case 1 :
-                    	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1050:57: bvc= ID
+                    	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1054:57: bvc= ID
                     	            {
                     	            bvc=(Token)input.LT(1);
-                    	            match(input,ID,FOLLOW_ID_in_constraint2992); 
+                    	            match(input,ID,FOLLOW_ID_in_constraint3004); 
                     	            
                     	            								VariableRestrictionDescr vd = new VariableRestrictionDescr(op, bvc.getText());
                     	            								fc.addRestriction(vd);
@@ -5173,9 +5210,9 @@ public class RuleParser extends Parser {
                     	            }
                     	            break;
                     	        case 2 :
-                    	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1056:57: lc= enum_constraint
+                    	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1060:57: lc= enum_constraint
                     	            {
-                    	            following.push(FOLLOW_enum_constraint_in_constraint3020);
+                    	            following.push(FOLLOW_enum_constraint_in_constraint3032);
                     	            lc=enum_constraint();
                     	            following.pop();
 
@@ -5188,9 +5225,9 @@ public class RuleParser extends Parser {
                     	            }
                     	            break;
                     	        case 3 :
-                    	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1063:57: lc= literal_constraint
+                    	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1067:57: lc= literal_constraint
                     	            {
-                    	            following.push(FOLLOW_literal_constraint_in_constraint3055);
+                    	            following.push(FOLLOW_literal_constraint_in_constraint3067);
                     	            lc=literal_constraint();
                     	            following.pop();
 
@@ -5203,9 +5240,9 @@ public class RuleParser extends Parser {
                     	            }
                     	            break;
                     	        case 4 :
-                    	            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1069:57: rvc= retval_constraint
+                    	            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1073:57: rvc= retval_constraint
                     	            {
-                    	            following.push(FOLLOW_retval_constraint_in_constraint3077);
+                    	            following.push(FOLLOW_retval_constraint_in_constraint3089);
                     	            rvc=retval_constraint();
                     	            following.pop();
 
@@ -5225,7 +5262,7 @@ public class RuleParser extends Parser {
                     	    break;
 
                     	default :
-                    	    break loop68;
+                    	    break loop69;
                         }
                     } while (true);
 
@@ -5235,7 +5272,7 @@ public class RuleParser extends Parser {
 
             }
 
-            following.push(FOLLOW_opt_eol_in_constraint3133);
+            following.push(FOLLOW_opt_eol_in_constraint3145);
             opt_eol();
             following.pop();
 
@@ -5255,7 +5292,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start literal_constraint
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1082:1: literal_constraint returns [String text] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' ) ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1086:1: literal_constraint returns [String text] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' ) ;
     public String literal_constraint() throws RecognitionException {   
         String text;
         Token t=null;
@@ -5264,76 +5301,76 @@ public class RuleParser extends Parser {
         		text = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1086:17: ( (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' ) )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1086:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1090:17: ( (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1090:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' )
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1086:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' )
-            int alt70=5;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1090:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= 'null' )
+            int alt71=5;
             switch ( input.LA(1) ) {
             case STRING:
-                alt70=1;
+                alt71=1;
                 break;
             case INT:
-                alt70=2;
+                alt71=2;
                 break;
             case FLOAT:
-                alt70=3;
+                alt71=3;
                 break;
             case BOOL:
-                alt70=4;
+                alt71=4;
                 break;
-            case 48:
-                alt70=5;
+            case 50:
+                alt71=5;
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("1086:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= \'null\' )", 70, 0, input);
+                    new NoViableAltException("1090:17: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= \'null\' )", 71, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt70) {
+            switch (alt71) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1086:25: t= STRING
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1090:25: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal_constraint3160); 
+                    match(input,STRING,FOLLOW_STRING_in_literal_constraint3172); 
                      text = getString( t ); 
 
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1087:25: t= INT
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1091:25: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal_constraint3171); 
+                    match(input,INT,FOLLOW_INT_in_literal_constraint3183); 
                      text = t.getText(); 
 
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1088:25: t= FLOAT
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1092:25: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint3184); 
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint3196); 
                      text = t.getText(); 
 
                     }
                     break;
                 case 4 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1089:25: t= BOOL
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1093:25: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint3195); 
+                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint3207); 
                      text = t.getText(); 
 
                     }
                     break;
                 case 5 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1090:25: t= 'null'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1094:25: t= 'null'
                     {
                     t=(Token)input.LT(1);
-                    match(input,48,FOLLOW_48_in_literal_constraint3207); 
+                    match(input,50,FOLLOW_50_in_literal_constraint3219); 
                      text = null; 
 
                     }
@@ -5357,7 +5394,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start enum_constraint
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1094:1: enum_constraint returns [String text] : (cls= ID '.' en= ID ) ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1098:1: enum_constraint returns [String text] : (cls= ID '.' en= ID ) ;
     public String enum_constraint() throws RecognitionException {   
         String text;
         Token cls=null;
@@ -5367,17 +5404,17 @@ public class RuleParser extends Parser {
         		text = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1098:17: ( (cls= ID '.' en= ID ) )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1098:17: (cls= ID '.' en= ID )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1102:17: ( (cls= ID '.' en= ID ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1102:17: (cls= ID '.' en= ID )
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1098:17: (cls= ID '.' en= ID )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1098:18: cls= ID '.' en= ID
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1102:17: (cls= ID '.' en= ID )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1102:18: cls= ID '.' en= ID
             {
             cls=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_enum_constraint3238); 
-            match(input,19,FOLLOW_19_in_enum_constraint3240); 
+            match(input,ID,FOLLOW_ID_in_enum_constraint3250); 
+            match(input,19,FOLLOW_19_in_enum_constraint3252); 
             en=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_enum_constraint3244); 
+            match(input,ID,FOLLOW_ID_in_enum_constraint3256); 
 
             }
 
@@ -5398,7 +5435,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start retval_constraint
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1101:1: retval_constraint returns [String text] : '(' c= paren_chunk ')' ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1105:1: retval_constraint returns [String text] : '(' c= paren_chunk ')' ;
     public String retval_constraint() throws RecognitionException {   
         String text;
         String c = null;
@@ -5408,15 +5445,15 @@ public class RuleParser extends Parser {
         		text = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1106:17: ( '(' c= paren_chunk ')' )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1106:17: '(' c= paren_chunk ')'
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1110:17: ( '(' c= paren_chunk ')' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1110:17: '(' c= paren_chunk ')'
             {
-            match(input,23,FOLLOW_23_in_retval_constraint3273); 
-            following.push(FOLLOW_paren_chunk_in_retval_constraint3278);
+            match(input,23,FOLLOW_23_in_retval_constraint3285); 
+            following.push(FOLLOW_paren_chunk_in_retval_constraint3290);
             c=paren_chunk();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_retval_constraint3281); 
+            match(input,25,FOLLOW_25_in_retval_constraint3293); 
              text = c; 
 
             }
@@ -5434,7 +5471,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start predicate
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1109:1: predicate[List constraints] : decl= ID ':' field= ID '->' '(' text= paren_chunk ')' ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1113:1: predicate[List constraints] : decl= ID ':' field= ID '->' '(' text= paren_chunk ')' ;
     public void predicate(List constraints) throws RecognitionException {   
         Token decl=null;
         Token field=null;
@@ -5442,21 +5479,21 @@ public class RuleParser extends Parser {
 
 
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1111:17: (decl= ID ':' field= ID '->' '(' text= paren_chunk ')' )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1111:17: decl= ID ':' field= ID '->' '(' text= paren_chunk ')'
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1115:17: (decl= ID ':' field= ID '->' '(' text= paren_chunk ')' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1115:17: decl= ID ':' field= ID '->' '(' text= paren_chunk ')'
             {
             decl=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_predicate3299); 
-            match(input,33,FOLLOW_33_in_predicate3301); 
+            match(input,ID,FOLLOW_ID_in_predicate3311); 
+            match(input,33,FOLLOW_33_in_predicate3313); 
             field=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_predicate3305); 
-            match(input,56,FOLLOW_56_in_predicate3307); 
-            match(input,23,FOLLOW_23_in_predicate3309); 
-            following.push(FOLLOW_paren_chunk_in_predicate3313);
+            match(input,ID,FOLLOW_ID_in_predicate3317); 
+            match(input,56,FOLLOW_56_in_predicate3319); 
+            match(input,23,FOLLOW_23_in_predicate3321); 
+            following.push(FOLLOW_paren_chunk_in_predicate3325);
             text=paren_chunk();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_predicate3315); 
+            match(input,25,FOLLOW_25_in_predicate3327); 
             
             			PredicateDescr d = new PredicateDescr(field.getText(), decl.getText(), text );
             			constraints.add( d );
@@ -5477,7 +5514,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start paren_chunk
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1118:1: paren_chunk returns [String text] : ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )* ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1122:1: paren_chunk returns [String text] : ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )* ;
     public String paren_chunk() throws RecognitionException {   
         String text;
         Token any=null;
@@ -5488,180 +5525,23 @@ public class RuleParser extends Parser {
         		text = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1124:18: ( ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1124:18: ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1128:18: ( ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1128:18: ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )*
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1124:18: ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )*
-            loop71:
-            do {
-                int alt71=3;
-                switch ( input.LA(1) ) {
-                case EOL:
-                    alt71=3;
-                    break;
-                case 25:
-                    alt71=3;
-                    break;
-                case 23:
-                    alt71=1;
-                    break;
-                case ID:
-                case INT:
-                case BOOL:
-                case STRING:
-                case FLOAT:
-                case MISC:
-                case WS:
-                case SH_STYLE_SINGLE_LINE_COMMENT:
-                case C_STYLE_SINGLE_LINE_COMMENT:
-                case MULTI_LINE_COMMENT:
-                case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 24:
-                case 26:
-                case 27:
-                case 28:
-                case 29:
-                case 30:
-                case 31:
-                case 32:
-                case 33:
-                case 34:
-                case 35:
-                case 36:
-                case 37:
-                case 38:
-                case 39:
-                case 40:
-                case 41:
-                case 42:
-                case 43:
-                case 44:
-                case 45:
-                case 46:
-                case 47:
-                case 48:
-                case 49:
-                case 50:
-                case 51:
-                case 52:
-                case 53:
-                case 54:
-                case 55:
-                case 56:
-                case 57:
-                case 58:
-                case 59:
-                case 60:
-                case 61:
-                case 62:
-                case 63:
-                case 64:
-                case 65:
-                case 66:
-                case 67:
-                case 68:
-                case 69:
-                case 70:
-                case 71:
-                case 72:
-                    alt71=2;
-                    break;
-
-                }
-
-                switch (alt71) {
-            	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1125:25: '(' c= paren_chunk ')'
-            	    {
-            	    match(input,23,FOLLOW_23_in_paren_chunk3361); 
-            	    following.push(FOLLOW_paren_chunk_in_paren_chunk3365);
-            	    c=paren_chunk();
-            	    following.pop();
-
-            	    match(input,25,FOLLOW_25_in_paren_chunk3367); 
-            	    
-            	    				if ( c == null ) {
-            	    					c = "";
-            	    				}
-            	    				if ( text == null ) {
-            	    					text = "( " + c + " )";
-            	    				} else {
-            	    					text = text + " ( " + c + " )";
-            	    				}
-            	    			
-
-            	    }
-            	    break;
-            	case 2 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1136:19: any= .
-            	    {
-            	    any=(Token)input.LT(1);
-            	    matchAny(input); 
-            	    
-            	    				if ( text == null ) {
-            	    					text = any.getText();
-            	    				} else {
-            	    					text = text + " " + any.getText(); 
-            	    				} 
-            	    			
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop71;
-                }
-            } while (true);
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-        }
-        return text;
-    }
-    // $ANTLR end paren_chunk
-
-
-    // $ANTLR start paren_chunk2
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1148:1: paren_chunk2 returns [String text] : ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )* ;
-    public String paren_chunk2() throws RecognitionException {   
-        String text;
-        Token any=null;
-        String c = null;
-
-
-        
-        		text = null;
-        	
-        try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1154:18: ( ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1154:18: ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )*
-            {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1154:18: ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1128:18: ( options {greedy=false; } : '(' c= paren_chunk ')' | any= . )*
             loop72:
             do {
                 int alt72=3;
                 switch ( input.LA(1) ) {
+                case EOL:
+                    alt72=3;
+                    break;
                 case 25:
                     alt72=3;
                     break;
                 case 23:
                     alt72=1;
                     break;
-                case EOL:
                 case ID:
                 case INT:
                 case BOOL:
@@ -5735,14 +5615,14 @@ public class RuleParser extends Parser {
 
                 switch (alt72) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1155:25: '(' c= paren_chunk2 ')'
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1129:25: '(' c= paren_chunk ')'
             	    {
-            	    match(input,23,FOLLOW_23_in_paren_chunk23438); 
-            	    following.push(FOLLOW_paren_chunk2_in_paren_chunk23442);
-            	    c=paren_chunk2();
+            	    match(input,23,FOLLOW_23_in_paren_chunk3373); 
+            	    following.push(FOLLOW_paren_chunk_in_paren_chunk3377);
+            	    c=paren_chunk();
             	    following.pop();
 
-            	    match(input,25,FOLLOW_25_in_paren_chunk23444); 
+            	    match(input,25,FOLLOW_25_in_paren_chunk3379); 
             	    
             	    				if ( c == null ) {
             	    					c = "";
@@ -5757,7 +5637,7 @@ public class RuleParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1166:19: any= .
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1140:19: any= .
             	    {
             	    any=(Token)input.LT(1);
             	    matchAny(input); 
@@ -5789,11 +5669,168 @@ public class RuleParser extends Parser {
         }
         return text;
     }
+    // $ANTLR end paren_chunk
+
+
+    // $ANTLR start paren_chunk2
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1152:1: paren_chunk2 returns [String text] : ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )* ;
+    public String paren_chunk2() throws RecognitionException {   
+        String text;
+        Token any=null;
+        String c = null;
+
+
+        
+        		text = null;
+        	
+        try {
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1158:18: ( ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1158:18: ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )*
+            {
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1158:18: ( options {greedy=false; } : '(' c= paren_chunk2 ')' | any= . )*
+            loop73:
+            do {
+                int alt73=3;
+                switch ( input.LA(1) ) {
+                case 25:
+                    alt73=3;
+                    break;
+                case 23:
+                    alt73=1;
+                    break;
+                case EOL:
+                case ID:
+                case INT:
+                case BOOL:
+                case STRING:
+                case FLOAT:
+                case MISC:
+                case WS:
+                case SH_STYLE_SINGLE_LINE_COMMENT:
+                case C_STYLE_SINGLE_LINE_COMMENT:
+                case MULTI_LINE_COMMENT:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                case 24:
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 30:
+                case 31:
+                case 32:
+                case 33:
+                case 34:
+                case 35:
+                case 36:
+                case 37:
+                case 38:
+                case 39:
+                case 40:
+                case 41:
+                case 42:
+                case 43:
+                case 44:
+                case 45:
+                case 46:
+                case 47:
+                case 48:
+                case 49:
+                case 50:
+                case 51:
+                case 52:
+                case 53:
+                case 54:
+                case 55:
+                case 56:
+                case 57:
+                case 58:
+                case 59:
+                case 60:
+                case 61:
+                case 62:
+                case 63:
+                case 64:
+                case 65:
+                case 66:
+                case 67:
+                case 68:
+                case 69:
+                case 70:
+                case 71:
+                case 72:
+                    alt73=2;
+                    break;
+
+                }
+
+                switch (alt73) {
+            	case 1 :
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1159:25: '(' c= paren_chunk2 ')'
+            	    {
+            	    match(input,23,FOLLOW_23_in_paren_chunk23450); 
+            	    following.push(FOLLOW_paren_chunk2_in_paren_chunk23454);
+            	    c=paren_chunk2();
+            	    following.pop();
+
+            	    match(input,25,FOLLOW_25_in_paren_chunk23456); 
+            	    
+            	    				if ( c == null ) {
+            	    					c = "";
+            	    				}
+            	    				if ( text == null ) {
+            	    					text = "( " + c + " )";
+            	    				} else {
+            	    					text = text + " ( " + c + " )";
+            	    				}
+            	    			
+
+            	    }
+            	    break;
+            	case 2 :
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1170:19: any= .
+            	    {
+            	    any=(Token)input.LT(1);
+            	    matchAny(input); 
+            	    
+            	    				if ( text == null ) {
+            	    					text = any.getText();
+            	    				} else {
+            	    					text = text + " " + any.getText(); 
+            	    				} 
+            	    			
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop73;
+                }
+            } while (true);
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return text;
+    }
     // $ANTLR end paren_chunk2
 
 
     // $ANTLR start curly_chunk
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1177:1: curly_chunk returns [String text] : ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )* ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1181:1: curly_chunk returns [String text] : ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )* ;
     public String curly_chunk() throws RecognitionException {   
         String text;
         Token any=null;
@@ -5804,19 +5841,19 @@ public class RuleParser extends Parser {
         		text = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1183:17: ( ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1183:17: ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1187:17: ( ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1187:17: ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )*
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1183:17: ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )*
-            loop73:
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1187:17: ( options {greedy=false; } : '{' c= curly_chunk '}' | any= . )*
+            loop74:
             do {
-                int alt73=3;
+                int alt74=3;
                 switch ( input.LA(1) ) {
                 case 27:
-                    alt73=3;
+                    alt74=3;
                     break;
                 case 26:
-                    alt73=1;
+                    alt74=1;
                     break;
                 case EOL:
                 case ID:
@@ -5885,21 +5922,21 @@ public class RuleParser extends Parser {
                 case 70:
                 case 71:
                 case 72:
-                    alt73=2;
+                    alt74=2;
                     break;
 
                 }
 
-                switch (alt73) {
+                switch (alt74) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1184:25: '{' c= curly_chunk '}'
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1188:25: '{' c= curly_chunk '}'
             	    {
-            	    match(input,26,FOLLOW_26_in_curly_chunk3513); 
-            	    following.push(FOLLOW_curly_chunk_in_curly_chunk3517);
+            	    match(input,26,FOLLOW_26_in_curly_chunk3525); 
+            	    following.push(FOLLOW_curly_chunk_in_curly_chunk3529);
             	    c=curly_chunk();
             	    following.pop();
 
-            	    match(input,27,FOLLOW_27_in_curly_chunk3519); 
+            	    match(input,27,FOLLOW_27_in_curly_chunk3531); 
             	    
             	    				//System.err.println( "chunk [" + c + "]" );
             	    				if ( c == null ) {
@@ -5915,7 +5952,7 @@ public class RuleParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1196:19: any= .
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1200:19: any= .
             	    {
             	    any=(Token)input.LT(1);
             	    matchAny(input); 
@@ -5926,93 +5963,6 @@ public class RuleParser extends Parser {
             	    				} else {
             	    					text = text + " " + any.getText(); 
             	    				} 
-            	    			
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop73;
-                }
-            } while (true);
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-        }
-        return text;
-    }
-    // $ANTLR end curly_chunk
-
-
-    // $ANTLR start lhs_or
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1208:1: lhs_or returns [PatternDescr d] : left= lhs_and ( ('or'|'||') opt_eol right= lhs_and )* ;
-    public PatternDescr lhs_or() throws RecognitionException {   
-        PatternDescr d;
-        PatternDescr left = null;
-
-        PatternDescr right = null;
-
-
-        
-        		d = null;
-        	
-        try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1213:17: (left= lhs_and ( ('or'|'||') opt_eol right= lhs_and )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1213:17: left= lhs_and ( ('or'|'||') opt_eol right= lhs_and )*
-            {
-             OrDescr or = null; 
-            following.push(FOLLOW_lhs_and_in_lhs_or3577);
-            left=lhs_and();
-            following.pop();
-
-            d = left; 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1215:17: ( ('or'|'||') opt_eol right= lhs_and )*
-            loop74:
-            do {
-                int alt74=2;
-                int LA74_0 = input.LA(1);
-                if ( (LA74_0>=52 && LA74_0<=53) ) {
-                    alt74=1;
-                }
-
-
-                switch (alt74) {
-            	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1215:19: ('or'|'||') opt_eol right= lhs_and
-            	    {
-            	    if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
-            	        input.consume();
-            	        errorRecovery=false;
-            	    }
-            	    else {
-            	        MismatchedSetException mse =
-            	            new MismatchedSetException(null,input);
-            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_lhs_or3586);    throw mse;
-            	    }
-
-            	    following.push(FOLLOW_opt_eol_in_lhs_or3591);
-            	    opt_eol();
-            	    following.pop();
-
-            	    following.push(FOLLOW_lhs_and_in_lhs_or3598);
-            	    right=lhs_and();
-            	    following.pop();
-
-            	    
-            	    				if ( or == null ) {
-            	    					or = new OrDescr();
-            	    					or.addDescr( left );
-            	    					d = or;
-            	    				}
-            	    				
-            	    				or.addDescr( right );
             	    			
 
             	    }
@@ -6033,73 +5983,73 @@ public class RuleParser extends Parser {
         }
         finally {
         }
-        return d;
+        return text;
     }
-    // $ANTLR end lhs_or
+    // $ANTLR end curly_chunk
 
 
-    // $ANTLR start lhs_and
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1229:1: lhs_and returns [PatternDescr d] : left= lhs_unary ( ('and'|'&&') opt_eol right= lhs_unary )* ;
-    public PatternDescr lhs_and() throws RecognitionException {   
-        PatternDescr d;
-        PatternDescr left = null;
+    // $ANTLR start lhs_or
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1212:1: lhs_or returns [BaseDescr d] : left= lhs_and ( ('or'|'||') opt_eol right= lhs_and )* ;
+    public BaseDescr lhs_or() throws RecognitionException {   
+        BaseDescr d;
+        BaseDescr left = null;
 
-        PatternDescr right = null;
+        BaseDescr right = null;
 
 
         
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1234:17: (left= lhs_unary ( ('and'|'&&') opt_eol right= lhs_unary )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1234:17: left= lhs_unary ( ('and'|'&&') opt_eol right= lhs_unary )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1217:17: (left= lhs_and ( ('or'|'||') opt_eol right= lhs_and )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1217:17: left= lhs_and ( ('or'|'||') opt_eol right= lhs_and )*
             {
-             AndDescr and = null; 
-            following.push(FOLLOW_lhs_unary_in_lhs_and3638);
-            left=lhs_unary();
+             OrDescr or = null; 
+            following.push(FOLLOW_lhs_and_in_lhs_or3589);
+            left=lhs_and();
             following.pop();
 
-             d = left; 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1236:17: ( ('and'|'&&') opt_eol right= lhs_unary )*
+            d = left; 
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1219:17: ( ('or'|'||') opt_eol right= lhs_and )*
             loop75:
             do {
                 int alt75=2;
                 int LA75_0 = input.LA(1);
-                if ( (LA75_0>=57 && LA75_0<=58) ) {
+                if ( (LA75_0>=52 && LA75_0<=53) ) {
                     alt75=1;
                 }
 
 
                 switch (alt75) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1236:19: ('and'|'&&') opt_eol right= lhs_unary
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1219:19: ('or'|'||') opt_eol right= lhs_and
             	    {
-            	    if ( (input.LA(1)>=57 && input.LA(1)<=58) ) {
+            	    if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
             	        input.consume();
             	        errorRecovery=false;
             	    }
             	    else {
             	        MismatchedSetException mse =
             	            new MismatchedSetException(null,input);
-            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_lhs_and3647);    throw mse;
+            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_lhs_or3598);    throw mse;
             	    }
 
-            	    following.push(FOLLOW_opt_eol_in_lhs_and3652);
+            	    following.push(FOLLOW_opt_eol_in_lhs_or3603);
             	    opt_eol();
             	    following.pop();
 
-            	    following.push(FOLLOW_lhs_unary_in_lhs_and3659);
-            	    right=lhs_unary();
+            	    following.push(FOLLOW_lhs_and_in_lhs_or3610);
+            	    right=lhs_and();
             	    following.pop();
 
             	    
-            	    				if ( and == null ) {
-            	    					and = new AndDescr();
-            	    					and.addDescr( left );
-            	    					d = and;
+            	    				if ( or == null ) {
+            	    					or = new OrDescr();
+            	    					or.addDescr( left );
+            	    					d = or;
             	    				}
             	    				
-            	    				and.addDescr( right );
+            	    				or.addDescr( right );
             	    			
 
             	    }
@@ -6122,14 +6072,101 @@ public class RuleParser extends Parser {
         }
         return d;
     }
+    // $ANTLR end lhs_or
+
+
+    // $ANTLR start lhs_and
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1233:1: lhs_and returns [BaseDescr d] : left= lhs_unary ( ('and'|'&&') opt_eol right= lhs_unary )* ;
+    public BaseDescr lhs_and() throws RecognitionException {   
+        BaseDescr d;
+        BaseDescr left = null;
+
+        BaseDescr right = null;
+
+
+        
+        		d = null;
+        	
+        try {
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1238:17: (left= lhs_unary ( ('and'|'&&') opt_eol right= lhs_unary )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1238:17: left= lhs_unary ( ('and'|'&&') opt_eol right= lhs_unary )*
+            {
+             AndDescr and = null; 
+            following.push(FOLLOW_lhs_unary_in_lhs_and3650);
+            left=lhs_unary();
+            following.pop();
+
+             d = left; 
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1240:17: ( ('and'|'&&') opt_eol right= lhs_unary )*
+            loop76:
+            do {
+                int alt76=2;
+                int LA76_0 = input.LA(1);
+                if ( (LA76_0>=57 && LA76_0<=58) ) {
+                    alt76=1;
+                }
+
+
+                switch (alt76) {
+            	case 1 :
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1240:19: ('and'|'&&') opt_eol right= lhs_unary
+            	    {
+            	    if ( (input.LA(1)>=57 && input.LA(1)<=58) ) {
+            	        input.consume();
+            	        errorRecovery=false;
+            	    }
+            	    else {
+            	        MismatchedSetException mse =
+            	            new MismatchedSetException(null,input);
+            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_lhs_and3659);    throw mse;
+            	    }
+
+            	    following.push(FOLLOW_opt_eol_in_lhs_and3664);
+            	    opt_eol();
+            	    following.pop();
+
+            	    following.push(FOLLOW_lhs_unary_in_lhs_and3671);
+            	    right=lhs_unary();
+            	    following.pop();
+
+            	    
+            	    				if ( and == null ) {
+            	    					and = new AndDescr();
+            	    					and.addDescr( left );
+            	    					d = and;
+            	    				}
+            	    				
+            	    				and.addDescr( right );
+            	    			
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop76;
+                }
+            } while (true);
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return d;
+    }
     // $ANTLR end lhs_and
 
 
     // $ANTLR start lhs_unary
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1250:1: lhs_unary returns [PatternDescr d] : (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' ) ;
-    public PatternDescr lhs_unary() throws RecognitionException {   
-        PatternDescr d;
-        PatternDescr u = null;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1254:1: lhs_unary returns [BaseDescr d] : (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' ) ;
+    public BaseDescr lhs_unary() throws RecognitionException {   
+        BaseDescr d;
+        BaseDescr u = null;
 
         FromDescr fm = null;
 
@@ -6142,39 +6179,39 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1254:17: ( (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' ) )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1254:17: (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:17: ( (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:17: (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' )
             {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1254:17: (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' )
-            int alt77=5;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:17: (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | '(' opt_eol u= lhs opt_eol ')' )
+            int alt78=5;
             switch ( input.LA(1) ) {
             case 59:
-                alt77=1;
+                alt78=1;
                 break;
             case 60:
-                alt77=2;
+                alt78=2;
                 break;
             case 61:
-                alt77=3;
+                alt78=3;
                 break;
             case ID:
-                alt77=4;
+                alt78=4;
                 break;
             case 23:
-                alt77=5;
+                alt78=5;
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("1254:17: (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | \'(\' opt_eol u= lhs opt_eol \')\' )", 77, 0, input);
+                    new NoViableAltException("1258:17: (u= lhs_exist | u= lhs_not | u= lhs_eval | u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )? | \'(\' opt_eol u= lhs opt_eol \')\' )", 78, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt77) {
+            switch (alt78) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1254:25: u= lhs_exist
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:25: u= lhs_exist
                     {
-                    following.push(FOLLOW_lhs_exist_in_lhs_unary3697);
+                    following.push(FOLLOW_lhs_exist_in_lhs_unary3709);
                     u=lhs_exist();
                     following.pop();
 
@@ -6183,9 +6220,9 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1255:25: u= lhs_not
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1259:25: u= lhs_not
                     {
-                    following.push(FOLLOW_lhs_not_in_lhs_unary3707);
+                    following.push(FOLLOW_lhs_not_in_lhs_unary3719);
                     u=lhs_not();
                     following.pop();
 
@@ -6194,9 +6231,9 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1256:25: u= lhs_eval
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1260:25: u= lhs_eval
                     {
-                    following.push(FOLLOW_lhs_eval_in_lhs_unary3717);
+                    following.push(FOLLOW_lhs_eval_in_lhs_unary3729);
                     u=lhs_eval();
                     following.pop();
 
@@ -6205,24 +6242,24 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1257:25: u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )?
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1261:25: u= lhs_column ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )?
                     {
-                    following.push(FOLLOW_lhs_column_in_lhs_unary3731);
+                    following.push(FOLLOW_lhs_column_in_lhs_unary3743);
                     u=lhs_column();
                     following.pop();
 
                     d=u;
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:27: ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )?
-                    int alt76=4;
-                    alt76 = dfa76.predict(input); 
-                    switch (alt76) {
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1262:27: ( (fm= from_statement ) | (ac= accumulate_statement ) | (cs= collect_statement ) )?
+                    int alt77=4;
+                    alt77 = dfa77.predict(input); 
+                    switch (alt77) {
                         case 1 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:28: (fm= from_statement )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1262:28: (fm= from_statement )
                             {
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:28: (fm= from_statement )
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1258:29: fm= from_statement
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1262:28: (fm= from_statement )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1262:29: fm= from_statement
                             {
-                            following.push(FOLLOW_from_statement_in_lhs_unary3752);
+                            following.push(FOLLOW_from_statement_in_lhs_unary3764);
                             fm=from_statement();
                             following.pop();
 
@@ -6234,12 +6271,12 @@ public class RuleParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1259:28: (ac= accumulate_statement )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1263:28: (ac= accumulate_statement )
                             {
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1259:28: (ac= accumulate_statement )
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1259:29: ac= accumulate_statement
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1263:28: (ac= accumulate_statement )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1263:29: ac= accumulate_statement
                             {
-                            following.push(FOLLOW_accumulate_statement_in_lhs_unary3774);
+                            following.push(FOLLOW_accumulate_statement_in_lhs_unary3786);
                             ac=accumulate_statement();
                             following.pop();
 
@@ -6251,12 +6288,12 @@ public class RuleParser extends Parser {
                             }
                             break;
                         case 3 :
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1260:28: (cs= collect_statement )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1264:28: (cs= collect_statement )
                             {
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1260:28: (cs= collect_statement )
-                            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1260:29: cs= collect_statement
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1264:28: (cs= collect_statement )
+                            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1264:29: cs= collect_statement
                             {
-                            following.push(FOLLOW_collect_statement_in_lhs_unary3795);
+                            following.push(FOLLOW_collect_statement_in_lhs_unary3807);
                             cs=collect_statement();
                             following.pop();
 
@@ -6274,22 +6311,22 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1261:25: '(' opt_eol u= lhs opt_eol ')'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1265:25: '(' opt_eol u= lhs opt_eol ')'
                     {
-                    match(input,23,FOLLOW_23_in_lhs_unary3807); 
-                    following.push(FOLLOW_opt_eol_in_lhs_unary3809);
+                    match(input,23,FOLLOW_23_in_lhs_unary3819); 
+                    following.push(FOLLOW_opt_eol_in_lhs_unary3821);
                     opt_eol();
                     following.pop();
 
-                    following.push(FOLLOW_lhs_in_lhs_unary3813);
+                    following.push(FOLLOW_lhs_in_lhs_unary3825);
                     u=lhs();
                     following.pop();
 
-                    following.push(FOLLOW_opt_eol_in_lhs_unary3815);
+                    following.push(FOLLOW_opt_eol_in_lhs_unary3827);
                     opt_eol();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_lhs_unary3817); 
+                    match(input,25,FOLLOW_25_in_lhs_unary3829); 
                     d = u;
 
                     }
@@ -6313,54 +6350,54 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start lhs_exist
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1265:1: lhs_exist returns [PatternDescr d] : loc= 'exists' ( '(' column= lhs_column ')' | column= lhs_column ) ;
-    public PatternDescr lhs_exist() throws RecognitionException {   
-        PatternDescr d;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1269:1: lhs_exist returns [BaseDescr d] : loc= 'exists' ( '(' column= lhs_column ')' | column= lhs_column ) ;
+    public BaseDescr lhs_exist() throws RecognitionException {   
+        BaseDescr d;
         Token loc=null;
-        PatternDescr column = null;
+        BaseDescr column = null;
 
 
         
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1269:17: (loc= 'exists' ( '(' column= lhs_column ')' | column= lhs_column ) )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1269:17: loc= 'exists' ( '(' column= lhs_column ')' | column= lhs_column )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1273:17: (loc= 'exists' ( '(' column= lhs_column ')' | column= lhs_column ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1273:17: loc= 'exists' ( '(' column= lhs_column ')' | column= lhs_column )
             {
             loc=(Token)input.LT(1);
-            match(input,59,FOLLOW_59_in_lhs_exist3848); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1269:30: ( '(' column= lhs_column ')' | column= lhs_column )
-            int alt78=2;
-            int LA78_0 = input.LA(1);
-            if ( LA78_0==23 ) {
-                alt78=1;
+            match(input,59,FOLLOW_59_in_lhs_exist3860); 
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1273:30: ( '(' column= lhs_column ')' | column= lhs_column )
+            int alt79=2;
+            int LA79_0 = input.LA(1);
+            if ( LA79_0==23 ) {
+                alt79=1;
             }
-            else if ( LA78_0==ID ) {
-                alt78=2;
+            else if ( LA79_0==ID ) {
+                alt79=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("1269:30: ( \'(\' column= lhs_column \')\' | column= lhs_column )", 78, 0, input);
+                    new NoViableAltException("1273:30: ( \'(\' column= lhs_column \')\' | column= lhs_column )", 79, 0, input);
 
                 throw nvae;
             }
-            switch (alt78) {
+            switch (alt79) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1269:31: '(' column= lhs_column ')'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1273:31: '(' column= lhs_column ')'
                     {
-                    match(input,23,FOLLOW_23_in_lhs_exist3851); 
-                    following.push(FOLLOW_lhs_column_in_lhs_exist3855);
+                    match(input,23,FOLLOW_23_in_lhs_exist3863); 
+                    following.push(FOLLOW_lhs_column_in_lhs_exist3867);
                     column=lhs_column();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_lhs_exist3857); 
+                    match(input,25,FOLLOW_25_in_lhs_exist3869); 
 
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1269:59: column= lhs_column
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1273:59: column= lhs_column
                     {
-                    following.push(FOLLOW_lhs_column_in_lhs_exist3863);
+                    following.push(FOLLOW_lhs_column_in_lhs_exist3875);
                     column=lhs_column();
                     following.pop();
 
@@ -6390,54 +6427,54 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start lhs_not
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1276:1: lhs_not returns [NotDescr d] : loc= 'not' ( '(' column= lhs_column ')' | column= lhs_column ) ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1280:1: lhs_not returns [NotDescr d] : loc= 'not' ( '(' column= lhs_column ')' | column= lhs_column ) ;
     public NotDescr lhs_not() throws RecognitionException {   
         NotDescr d;
         Token loc=null;
-        PatternDescr column = null;
+        BaseDescr column = null;
 
 
         
         		d = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1280:17: (loc= 'not' ( '(' column= lhs_column ')' | column= lhs_column ) )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1280:17: loc= 'not' ( '(' column= lhs_column ')' | column= lhs_column )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1284:17: (loc= 'not' ( '(' column= lhs_column ')' | column= lhs_column ) )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1284:17: loc= 'not' ( '(' column= lhs_column ')' | column= lhs_column )
             {
             loc=(Token)input.LT(1);
-            match(input,60,FOLLOW_60_in_lhs_not3893); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1280:27: ( '(' column= lhs_column ')' | column= lhs_column )
-            int alt79=2;
-            int LA79_0 = input.LA(1);
-            if ( LA79_0==23 ) {
-                alt79=1;
+            match(input,60,FOLLOW_60_in_lhs_not3905); 
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1284:27: ( '(' column= lhs_column ')' | column= lhs_column )
+            int alt80=2;
+            int LA80_0 = input.LA(1);
+            if ( LA80_0==23 ) {
+                alt80=1;
             }
-            else if ( LA79_0==ID ) {
-                alt79=2;
+            else if ( LA80_0==ID ) {
+                alt80=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("1280:27: ( \'(\' column= lhs_column \')\' | column= lhs_column )", 79, 0, input);
+                    new NoViableAltException("1284:27: ( \'(\' column= lhs_column \')\' | column= lhs_column )", 80, 0, input);
 
                 throw nvae;
             }
-            switch (alt79) {
+            switch (alt80) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1280:28: '(' column= lhs_column ')'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1284:28: '(' column= lhs_column ')'
                     {
-                    match(input,23,FOLLOW_23_in_lhs_not3896); 
-                    following.push(FOLLOW_lhs_column_in_lhs_not3900);
+                    match(input,23,FOLLOW_23_in_lhs_not3908); 
+                    following.push(FOLLOW_lhs_column_in_lhs_not3912);
                     column=lhs_column();
                     following.pop();
 
-                    match(input,25,FOLLOW_25_in_lhs_not3903); 
+                    match(input,25,FOLLOW_25_in_lhs_not3915); 
 
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1280:57: column= lhs_column
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1284:57: column= lhs_column
                     {
-                    following.push(FOLLOW_lhs_column_in_lhs_not3909);
+                    following.push(FOLLOW_lhs_column_in_lhs_not3921);
                     column=lhs_column();
                     following.pop();
 
@@ -6467,9 +6504,9 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start lhs_eval
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1287:1: lhs_eval returns [PatternDescr d] : 'eval' loc= '(' c= paren_chunk2 ')' ;
-    public PatternDescr lhs_eval() throws RecognitionException {   
-        PatternDescr d;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1291:1: lhs_eval returns [BaseDescr d] : 'eval' loc= '(' c= paren_chunk2 ')' ;
+    public BaseDescr lhs_eval() throws RecognitionException {   
+        BaseDescr d;
         Token loc=null;
         String c = null;
 
@@ -6479,17 +6516,17 @@ public class RuleParser extends Parser {
         		String text = "";
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1292:17: ( 'eval' loc= '(' c= paren_chunk2 ')' )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1292:17: 'eval' loc= '(' c= paren_chunk2 ')'
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1296:17: ( 'eval' loc= '(' c= paren_chunk2 ')' )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1296:17: 'eval' loc= '(' c= paren_chunk2 ')'
             {
-            match(input,61,FOLLOW_61_in_lhs_eval3935); 
+            match(input,61,FOLLOW_61_in_lhs_eval3947); 
             loc=(Token)input.LT(1);
-            match(input,23,FOLLOW_23_in_lhs_eval3939); 
-            following.push(FOLLOW_paren_chunk2_in_lhs_eval3947);
+            match(input,23,FOLLOW_23_in_lhs_eval3951); 
+            following.push(FOLLOW_paren_chunk2_in_lhs_eval3959);
             c=paren_chunk2();
             following.pop();
 
-            match(input,25,FOLLOW_25_in_lhs_eval3951); 
+            match(input,25,FOLLOW_25_in_lhs_eval3963); 
              
             			checkTrailingSemicolon( c, offset(loc.getLine()) );
             			d = new EvalDescr( c ); 
@@ -6510,7 +6547,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start dotted_name
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1301:1: dotted_name returns [String name] : id= ID ( '.' id= ID )* ( '[' ']' )* ;
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1305:1: dotted_name returns [String name] : id= ID ( '.' id= ID )* ( '[' ']' )* ;
     public String dotted_name() throws RecognitionException {   
         String name;
         Token id=null;
@@ -6519,56 +6556,30 @@ public class RuleParser extends Parser {
         		name = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1306:17: (id= ID ( '.' id= ID )* ( '[' ']' )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1306:17: id= ID ( '.' id= ID )* ( '[' ']' )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1310:17: (id= ID ( '.' id= ID )* ( '[' ']' )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1310:17: id= ID ( '.' id= ID )* ( '[' ']' )*
             {
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_dotted_name3983); 
+            match(input,ID,FOLLOW_ID_in_dotted_name3995); 
              name=id.getText(); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1306:46: ( '.' id= ID )*
-            loop80:
-            do {
-                int alt80=2;
-                int LA80_0 = input.LA(1);
-                if ( LA80_0==19 ) {
-                    alt80=1;
-                }
-
-
-                switch (alt80) {
-            	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1306:48: '.' id= ID
-            	    {
-            	    match(input,19,FOLLOW_19_in_dotted_name3989); 
-            	    id=(Token)input.LT(1);
-            	    match(input,ID,FOLLOW_ID_in_dotted_name3993); 
-            	     name = name + "." + id.getText(); 
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop80;
-                }
-            } while (true);
-
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1306:99: ( '[' ']' )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1310:46: ( '.' id= ID )*
             loop81:
             do {
                 int alt81=2;
                 int LA81_0 = input.LA(1);
-                if ( LA81_0==50 ) {
+                if ( LA81_0==19 ) {
                     alt81=1;
                 }
 
 
                 switch (alt81) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1306:101: '[' ']'
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1310:48: '.' id= ID
             	    {
-            	    match(input,50,FOLLOW_50_in_dotted_name4002); 
-            	    match(input,51,FOLLOW_51_in_dotted_name4004); 
-            	     name = name + "[]";
+            	    match(input,19,FOLLOW_19_in_dotted_name4001); 
+            	    id=(Token)input.LT(1);
+            	    match(input,ID,FOLLOW_ID_in_dotted_name4005); 
+            	     name = name + "." + id.getText(); 
 
             	    }
             	    break;
@@ -6578,53 +6589,22 @@ public class RuleParser extends Parser {
                 }
             } while (true);
 
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-        }
-        return name;
-    }
-    // $ANTLR end dotted_name
-
-
-    // $ANTLR start argument_name
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1309:1: argument_name returns [String name] : id= ID ( '[' ']' )* ;
-    public String argument_name() throws RecognitionException {   
-        String name;
-        Token id=null;
-
-        
-        		name = null;
-        	
-        try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1314:17: (id= ID ( '[' ']' )* )
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1314:17: id= ID ( '[' ']' )*
-            {
-            id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_argument_name4034); 
-             name=id.getText(); 
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1314:46: ( '[' ']' )*
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1310:99: ( '[' ']' )*
             loop82:
             do {
                 int alt82=2;
                 int LA82_0 = input.LA(1);
-                if ( LA82_0==50 ) {
+                if ( LA82_0==43 ) {
                     alt82=1;
                 }
 
 
                 switch (alt82) {
             	case 1 :
-            	    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1314:48: '[' ']'
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1310:101: '[' ']'
             	    {
-            	    match(input,50,FOLLOW_50_in_argument_name4040); 
-            	    match(input,51,FOLLOW_51_in_argument_name4042); 
+            	    match(input,43,FOLLOW_43_in_dotted_name4014); 
+            	    match(input,44,FOLLOW_44_in_dotted_name4016); 
             	     name = name + "[]";
 
             	    }
@@ -6647,11 +6627,68 @@ public class RuleParser extends Parser {
         }
         return name;
     }
+    // $ANTLR end dotted_name
+
+
+    // $ANTLR start argument_name
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1313:1: argument_name returns [String name] : id= ID ( '[' ']' )* ;
+    public String argument_name() throws RecognitionException {   
+        String name;
+        Token id=null;
+
+        
+        		name = null;
+        	
+        try {
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1318:17: (id= ID ( '[' ']' )* )
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1318:17: id= ID ( '[' ']' )*
+            {
+            id=(Token)input.LT(1);
+            match(input,ID,FOLLOW_ID_in_argument_name4046); 
+             name=id.getText(); 
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1318:46: ( '[' ']' )*
+            loop83:
+            do {
+                int alt83=2;
+                int LA83_0 = input.LA(1);
+                if ( LA83_0==43 ) {
+                    alt83=1;
+                }
+
+
+                switch (alt83) {
+            	case 1 :
+            	    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1318:48: '[' ']'
+            	    {
+            	    match(input,43,FOLLOW_43_in_argument_name4052); 
+            	    match(input,44,FOLLOW_44_in_argument_name4054); 
+            	     name = name + "[]";
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop83;
+                }
+            } while (true);
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return name;
+    }
     // $ANTLR end argument_name
 
 
     // $ANTLR start word
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1318:1: word returns [String word] : (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING );
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1322:1: word returns [String word] : (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING );
     public String word() throws RecognitionException {   
         String word;
         Token id=null;
@@ -6661,136 +6698,136 @@ public class RuleParser extends Parser {
         		word = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1322:17: (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING )
-            int alt83=11;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1326:17: (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING )
+            int alt84=11;
             switch ( input.LA(1) ) {
             case ID:
-                alt83=1;
+                alt84=1;
                 break;
             case 17:
-                alt83=2;
+                alt84=2;
                 break;
             case 62:
-                alt83=3;
+                alt84=3;
                 break;
             case 31:
-                alt83=4;
+                alt84=4;
                 break;
             case 28:
-                alt83=5;
+                alt84=5;
                 break;
             case 36:
-                alt83=6;
+                alt84=6;
                 break;
             case 37:
-                alt83=7;
+                alt84=7;
                 break;
             case 32:
-                alt83=8;
+                alt84=8;
                 break;
             case 34:
-                alt83=9;
+                alt84=9;
                 break;
             case 29:
-                alt83=10;
+                alt84=10;
                 break;
             case STRING:
-                alt83=11;
+                alt84=11;
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("1318:1: word returns [String word] : (id= ID | \'import\' | \'use\' | \'rule\' | \'query\' | \'salience\' | \'no-loop\' | \'when\' | \'then\' | \'end\' | str= STRING );", 83, 0, input);
+                    new NoViableAltException("1322:1: word returns [String word] : (id= ID | \'import\' | \'use\' | \'rule\' | \'query\' | \'salience\' | \'no-loop\' | \'when\' | \'then\' | \'end\' | str= STRING );", 84, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt83) {
+            switch (alt84) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1322:17: id= ID
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1326:17: id= ID
                     {
                     id=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_word4070); 
+                    match(input,ID,FOLLOW_ID_in_word4082); 
                      word=id.getText(); 
 
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1323:17: 'import'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1327:17: 'import'
                     {
-                    match(input,17,FOLLOW_17_in_word4082); 
+                    match(input,17,FOLLOW_17_in_word4094); 
                      word="import"; 
 
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1324:17: 'use'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1328:17: 'use'
                     {
-                    match(input,62,FOLLOW_62_in_word4091); 
+                    match(input,62,FOLLOW_62_in_word4103); 
                      word="use"; 
 
                     }
                     break;
                 case 4 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1325:17: 'rule'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1329:17: 'rule'
                     {
-                    match(input,31,FOLLOW_31_in_word4103); 
+                    match(input,31,FOLLOW_31_in_word4115); 
                      word="rule"; 
 
                     }
                     break;
                 case 5 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1326:17: 'query'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1330:17: 'query'
                     {
-                    match(input,28,FOLLOW_28_in_word4114); 
+                    match(input,28,FOLLOW_28_in_word4126); 
                      word="query"; 
 
                     }
                     break;
                 case 6 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1327:17: 'salience'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1331:17: 'salience'
                     {
-                    match(input,36,FOLLOW_36_in_word4124); 
+                    match(input,36,FOLLOW_36_in_word4136); 
                      word="salience"; 
 
                     }
                     break;
                 case 7 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1328:17: 'no-loop'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1332:17: 'no-loop'
                     {
-                    match(input,37,FOLLOW_37_in_word4132); 
+                    match(input,37,FOLLOW_37_in_word4144); 
                      word="no-loop"; 
 
                     }
                     break;
                 case 8 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1329:17: 'when'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1333:17: 'when'
                     {
-                    match(input,32,FOLLOW_32_in_word4140); 
+                    match(input,32,FOLLOW_32_in_word4152); 
                      word="when"; 
 
                     }
                     break;
                 case 9 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1330:17: 'then'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1334:17: 'then'
                     {
-                    match(input,34,FOLLOW_34_in_word4151); 
+                    match(input,34,FOLLOW_34_in_word4163); 
                      word="then"; 
 
                     }
                     break;
                 case 10 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1331:17: 'end'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1335:17: 'end'
                     {
-                    match(input,29,FOLLOW_29_in_word4162); 
+                    match(input,29,FOLLOW_29_in_word4174); 
                      word="end"; 
 
                     }
                     break;
                 case 11 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1332:17: str= STRING
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1336:17: str= STRING
                     {
                     str=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_word4176); 
+                    match(input,STRING,FOLLOW_STRING_in_word4188); 
                      word=getString(str);
 
                     }
@@ -6810,130 +6847,130 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start operator
-    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1335:1: operator returns [String str] : ( '==' | '=' | '>' | '>=' | '<' | '<=' | '!=' | 'contains' | 'matches' | 'excludes' );
+    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1339:1: operator returns [String str] : ( '==' | '=' | '>' | '>=' | '<' | '<=' | '!=' | 'contains' | 'matches' | 'excludes' );
     public String operator() throws RecognitionException {   
         String str;
         
         		str = null;
         	
         try {
-            // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1341:17: ( '==' | '=' | '>' | '>=' | '<' | '<=' | '!=' | 'contains' | 'matches' | 'excludes' )
-            int alt84=10;
+            // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1345:17: ( '==' | '=' | '>' | '>=' | '<' | '<=' | '!=' | 'contains' | 'matches' | 'excludes' )
+            int alt85=10;
             switch ( input.LA(1) ) {
             case 63:
-                alt84=1;
+                alt85=1;
                 break;
             case 64:
-                alt84=2;
+                alt85=2;
                 break;
             case 65:
-                alt84=3;
+                alt85=3;
                 break;
             case 66:
-                alt84=4;
+                alt85=4;
                 break;
             case 67:
-                alt84=5;
+                alt85=5;
                 break;
             case 68:
-                alt84=6;
+                alt85=6;
                 break;
             case 69:
-                alt84=7;
+                alt85=7;
                 break;
             case 70:
-                alt84=8;
+                alt85=8;
                 break;
             case 71:
-                alt84=9;
+                alt85=9;
                 break;
             case 72:
-                alt84=10;
+                alt85=10;
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("1335:1: operator returns [String str] : ( \'==\' | \'=\' | \'>\' | \'>=\' | \'<\' | \'<=\' | \'!=\' | \'contains\' | \'matches\' | \'excludes\' );", 84, 0, input);
+                    new NoViableAltException("1339:1: operator returns [String str] : ( \'==\' | \'=\' | \'>\' | \'>=\' | \'<\' | \'<=\' | \'!=\' | \'contains\' | \'matches\' | \'excludes\' );", 85, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt84) {
+            switch (alt85) {
                 case 1 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1341:17: '=='
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1345:17: '=='
                     {
-                    match(input,63,FOLLOW_63_in_operator4205); 
+                    match(input,63,FOLLOW_63_in_operator4217); 
                     str= "==";
 
                     }
                     break;
                 case 2 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1342:18: '='
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1346:18: '='
                     {
-                    match(input,64,FOLLOW_64_in_operator4212); 
+                    match(input,64,FOLLOW_64_in_operator4224); 
                     str="==";
 
                     }
                     break;
                 case 3 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1343:18: '>'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1347:18: '>'
                     {
-                    match(input,65,FOLLOW_65_in_operator4219); 
+                    match(input,65,FOLLOW_65_in_operator4231); 
                     str=">";
 
                     }
                     break;
                 case 4 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1344:18: '>='
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1348:18: '>='
                     {
-                    match(input,66,FOLLOW_66_in_operator4226); 
+                    match(input,66,FOLLOW_66_in_operator4238); 
                     str=">=";
 
                     }
                     break;
                 case 5 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1345:18: '<'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1349:18: '<'
                     {
-                    match(input,67,FOLLOW_67_in_operator4235); 
+                    match(input,67,FOLLOW_67_in_operator4247); 
                     str="<";
 
                     }
                     break;
                 case 6 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1346:18: '<='
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1350:18: '<='
                     {
-                    match(input,68,FOLLOW_68_in_operator4242); 
+                    match(input,68,FOLLOW_68_in_operator4254); 
                     str="<=";
 
                     }
                     break;
                 case 7 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1347:18: '!='
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1351:18: '!='
                     {
-                    match(input,69,FOLLOW_69_in_operator4249); 
+                    match(input,69,FOLLOW_69_in_operator4261); 
                     str="!=";
 
                     }
                     break;
                 case 8 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1348:18: 'contains'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1352:18: 'contains'
                     {
-                    match(input,70,FOLLOW_70_in_operator4256); 
+                    match(input,70,FOLLOW_70_in_operator4268); 
                     str="contains";
 
                     }
                     break;
                 case 9 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1349:18: 'matches'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1353:18: 'matches'
                     {
-                    match(input,71,FOLLOW_71_in_operator4263); 
+                    match(input,71,FOLLOW_71_in_operator4275); 
                     str="matches";
 
                     }
                     break;
                 case 10 :
-                    // D:\workspace\jboss\jbossrules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1350:18: 'excludes'
+                    // D:\dev\drools-3.1\drools-compiler\src\main\resources\org\drools\lang\drl.g:1354:18: 'excludes'
                     {
-                    match(input,72,FOLLOW_72_in_operator4270); 
+                    match(input,72,FOLLOW_72_in_operator4282); 
                     str="excludes";
 
                     }
@@ -6952,7 +6989,7 @@ public class RuleParser extends Parser {
     // $ANTLR end operator
 
 
-    protected DFA2 dfa2 = new DFA2();protected DFA4 dfa4 = new DFA4();protected DFA13 dfa13 = new DFA13();protected DFA14 dfa14 = new DFA14();protected DFA15 dfa15 = new DFA15();protected DFA48 dfa48 = new DFA48();protected DFA49 dfa49 = new DFA49();protected DFA50 dfa50 = new DFA50();protected DFA61 dfa61 = new DFA61();protected DFA64 dfa64 = new DFA64();protected DFA65 dfa65 = new DFA65();protected DFA76 dfa76 = new DFA76();
+    protected DFA2 dfa2 = new DFA2();protected DFA4 dfa4 = new DFA4();protected DFA13 dfa13 = new DFA13();protected DFA14 dfa14 = new DFA14();protected DFA15 dfa15 = new DFA15();protected DFA48 dfa48 = new DFA48();protected DFA50 dfa50 = new DFA50();protected DFA51 dfa51 = new DFA51();protected DFA62 dfa62 = new DFA62();protected DFA65 dfa65 = new DFA65();protected DFA66 dfa66 = new DFA66();protected DFA77 dfa77 = new DFA77();
     class DFA2 extends DFA {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
@@ -7085,7 +7122,7 @@ public class RuleParser extends Parser {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA4_33 = input.LA(1);
                 if ( LA4_33==ID ) {return s22;}
-                if ( LA4_33==50 ) {return s21;}
+                if ( LA4_33==43 ) {return s21;}
 
                 NoViableAltException nvae =
         	    new NoViableAltException("", 4, 33, input);
@@ -7096,7 +7133,7 @@ public class RuleParser extends Parser {
         DFA.State s21 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA4_21 = input.LA(1);
-                if ( LA4_21==51 ) {return s33;}
+                if ( LA4_21==44 ) {return s33;}
 
                 NoViableAltException nvae =
         	    new NoViableAltException("", 4, 21, input);
@@ -7107,7 +7144,7 @@ public class RuleParser extends Parser {
         DFA.State s32 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 50:
+                case 43:
                     return s21;
 
                 case ID:
@@ -7140,7 +7177,7 @@ public class RuleParser extends Parser {
                 case 19:
                     return s20;
 
-                case 50:
+                case 43:
                     return s21;
 
                 case ID:
@@ -7167,15 +7204,15 @@ public class RuleParser extends Parser {
         DFA.State s93 = new DFA.State() {{alt=1;}};
         DFA.State s111 = new DFA.State() {{alt=1;}};
         DFA.State s120 = new DFA.State() {{alt=1;}};
-        DFA.State s127 = new DFA.State() {{alt=1;}};
+        DFA.State s126 = new DFA.State() {{alt=1;}};
         DFA.State s128 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 27:
-                    return s127;
+                    return s126;
 
                 case 26:
-                    return s126;
+                    return s127;
 
                 case EOL:
                 case ID:
@@ -7253,13 +7290,13 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
-        DFA.State s126 = new DFA.State() {
+        DFA.State s127 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 26:
+                case 27:
                     return s126;
 
-                case 27:
+                case 26:
                     return s127;
 
                 case EOL:
@@ -7333,7 +7370,7 @@ public class RuleParser extends Parser {
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 126, input);
+                        new NoViableAltException("", 4, 127, input);
 
                     throw nvae;        }
             }
@@ -7341,10 +7378,10 @@ public class RuleParser extends Parser {
         DFA.State s121 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 26:
+                case 27:
                     return s126;
 
-                case 27:
+                case 26:
                     return s127;
 
                 case EOL:
@@ -8128,45 +8165,22 @@ public class RuleParser extends Parser {
                 throw nvae;
             }
         };
-        DFA.State s108 = new DFA.State() {
+        DFA.State s104 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 25:
                     return s39;
 
                 case 24:
-                    return s54;
+                    return s52;
 
                 case EOL:
                 case 15:
-                    return s108;
+                    return s104;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 108, input);
-
-                    throw nvae;        }
-            }
-        };
-        DFA.State s92 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 50:
-                    return s65;
-
-                case EOL:
-                case 15:
-                    return s108;
-
-                case 25:
-                    return s39;
-
-                case 24:
-                    return s54;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 92, input);
+                        new NoViableAltException("", 4, 104, input);
 
                     throw nvae;        }
             }
@@ -8174,18 +8188,18 @@ public class RuleParser extends Parser {
         DFA.State s88 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
+                case 43:
+                    return s67;
+
+                case EOL:
+                case 15:
+                    return s104;
+
                 case 25:
                     return s39;
 
                 case 24:
-                    return s54;
-
-                case EOL:
-                case 15:
-                    return s88;
-
-                case ID:
-                    return s92;
+                    return s52;
 
                 default:
                     NoViableAltException nvae =
@@ -8194,71 +8208,50 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
-        DFA.State s70 = new DFA.State() {
+        DFA.State s84 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 50:
-                    return s51;
-
-                case EOL:
-                case 15:
-                    return s88;
-
                 case 25:
                     return s39;
 
                 case 24:
-                    return s54;
+                    return s52;
 
-                case 19:
-                    return s20;
+                case EOL:
+                case 15:
+                    return s84;
 
                 case ID:
-                    return s92;
+                    return s88;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 70, input);
+                        new NoViableAltException("", 4, 84, input);
 
                     throw nvae;        }
-            }
-        };
-        DFA.State s69 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_69 = input.LA(1);
-                if ( LA4_69==ID ) {return s70;}
-                if ( LA4_69==EOL||LA4_69==15 ) {return s69;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 69, input);
-
-                throw nvae;
-            }
-        };
-        DFA.State s54 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_54 = input.LA(1);
-                if ( LA4_54==EOL||LA4_54==15 ) {return s69;}
-                if ( LA4_54==ID ) {return s70;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 54, input);
-
-                throw nvae;
             }
         };
         DFA.State s66 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 24:
-                    return s54;
+                case 43:
+                    return s50;
+
+                case EOL:
+                case 15:
+                    return s84;
 
                 case 25:
                     return s39;
 
-                case EOL:
-                case 15:
-                    return s66;
+                case 24:
+                    return s52;
+
+                case 19:
+                    return s20;
+
+                case ID:
+                    return s88;
 
                 default:
                     NoViableAltException nvae =
@@ -8267,33 +8260,11 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
-        DFA.State s81 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case EOL:
-                case 15:
-                    return s66;
-
-                case 24:
-                    return s54;
-
-                case 25:
-                    return s39;
-
-                case 50:
-                    return s65;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 81, input);
-
-                    throw nvae;        }
-            }
-        };
         DFA.State s65 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA4_65 = input.LA(1);
-                if ( LA4_65==51 ) {return s81;}
+                if ( LA4_65==ID ) {return s66;}
+                if ( LA4_65==EOL||LA4_65==15 ) {return s65;}
 
                 NoViableAltException nvae =
         	    new NoViableAltException("", 4, 65, input);
@@ -8301,48 +8272,114 @@ public class RuleParser extends Parser {
                 throw nvae;
             }
         };
-        DFA.State s53 = new DFA.State() {
+        DFA.State s52 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_52 = input.LA(1);
+                if ( LA4_52==EOL||LA4_52==15 ) {return s65;}
+                if ( LA4_52==ID ) {return s66;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 52, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s68 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 50:
-                    return s65;
-
-                case EOL:
-                case 15:
-                    return s66;
-
                 case 24:
-                    return s54;
+                    return s52;
 
                 case 25:
                     return s39;
 
+                case EOL:
+                case 15:
+                    return s68;
+
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 53, input);
+                        new NoViableAltException("", 4, 68, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s52 = new DFA.State() {
+        DFA.State s89 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case ID:
-                    return s53;
+                case EOL:
+                case 15:
+                    return s68;
+
+                case 24:
+                    return s52;
+
+                case 25:
+                    return s39;
+
+                case 43:
+                    return s67;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 89, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s67 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_67 = input.LA(1);
+                if ( LA4_67==44 ) {return s89;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 67, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s55 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 43:
+                    return s67;
 
                 case EOL:
                 case 15:
-                    return s52;
+                    return s68;
 
                 case 24:
-                    return s54;
+                    return s52;
 
                 case 25:
                     return s39;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 52, input);
+                        new NoViableAltException("", 4, 55, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s51 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case ID:
+                    return s55;
+
+                case EOL:
+                case 15:
+                    return s51;
+
+                case 24:
+                    return s52;
+
+                case 25:
+                    return s39;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 51, input);
 
                     throw nvae;        }
             }
@@ -8352,19 +8389,19 @@ public class RuleParser extends Parser {
                 switch ( input.LA(1) ) {
                 case EOL:
                 case 15:
-                    return s52;
+                    return s51;
 
                 case 24:
-                    return s54;
+                    return s52;
 
                 case 25:
                     return s39;
 
-                case 50:
-                    return s51;
+                case 43:
+                    return s50;
 
                 case ID:
-                    return s53;
+                    return s55;
 
                 default:
                     NoViableAltException nvae =
@@ -8373,13 +8410,13 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
-        DFA.State s51 = new DFA.State() {
+        DFA.State s50 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_51 = input.LA(1);
-                if ( LA4_51==51 ) {return s60;}
+                int LA4_50 = input.LA(1);
+                if ( LA4_50==44 ) {return s60;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 51, input);
+        	    new NoViableAltException("", 4, 50, input);
 
                 throw nvae;
             }
@@ -8387,24 +8424,24 @@ public class RuleParser extends Parser {
         DFA.State s38 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 19:
-                    return s20;
-
-                case 50:
-                    return s51;
+                case 43:
+                    return s50;
 
                 case EOL:
                 case 15:
-                    return s52;
-
-                case ID:
-                    return s53;
+                    return s51;
 
                 case 24:
-                    return s54;
+                    return s52;
 
                 case 25:
                     return s39;
+
+                case 19:
+                    return s20;
+
+                case ID:
+                    return s55;
 
                 default:
                     NoViableAltException nvae =
@@ -8510,7 +8547,7 @@ public class RuleParser extends Parser {
                 case 19:
                     return s20;
 
-                case 50:
+                case 43:
                     return s21;
 
                 case ID:
@@ -8610,7 +8647,7 @@ public class RuleParser extends Parser {
                 switch ( input.LA(1) ) {
                 case ID:
                 case 19:
-                case 50:
+                case 43:
                     return s3;
 
                 case EOL:
@@ -8644,17 +8681,17 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s7 = new DFA.State() {{alt=1;}};
+        DFA.State s3 = new DFA.State() {{alt=1;}};
         DFA.State s2 = new DFA.State() {{alt=2;}};
-        DFA.State s4 = new DFA.State() {
+        DFA.State s5 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case ID:
-                    return s7;
+                    return s3;
 
                 case EOL:
                 case 15:
-                    return s4;
+                    return s5;
 
                 case 24:
                 case 25:
@@ -8662,7 +8699,7 @@ public class RuleParser extends Parser {
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 14, 4, input);
+                        new NoViableAltException("", 14, 5, input);
 
                     throw nvae;        }
             }
@@ -8672,13 +8709,13 @@ public class RuleParser extends Parser {
                 switch ( input.LA(1) ) {
                 case EOL:
                 case 15:
-                    return s4;
+                    return s5;
 
                 case ID:
-                    return s7;
-
-                case 50:
                     return s3;
+
+                case 43:
+                    return s4;
 
                 case 24:
                 case 25:
@@ -8691,13 +8728,13 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
-        DFA.State s3 = new DFA.State() {
+        DFA.State s4 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA14_3 = input.LA(1);
-                if ( LA14_3==51 ) {return s9;}
+                int LA14_4 = input.LA(1);
+                if ( LA14_4==44 ) {return s9;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 14, 3, input);
+        	    new NoViableAltException("", 14, 4, input);
 
                 throw nvae;
             }
@@ -8705,20 +8742,20 @@ public class RuleParser extends Parser {
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 50:
+                case ID:
+                case 19:
                     return s3;
+
+                case 43:
+                    return s4;
 
                 case EOL:
                 case 15:
-                    return s4;
+                    return s5;
 
                 case 24:
                 case 25:
                     return s2;
-
-                case ID:
-                case 19:
-                    return s7;
 
                 default:
                     NoViableAltException nvae =
@@ -8744,9 +8781,9 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
+        DFA.State s3 = new DFA.State() {{alt=1;}};
         DFA.State s2 = new DFA.State() {{alt=2;}};
-        DFA.State s7 = new DFA.State() {{alt=1;}};
-        DFA.State s4 = new DFA.State() {
+        DFA.State s5 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 24:
@@ -8755,14 +8792,14 @@ public class RuleParser extends Parser {
 
                 case EOL:
                 case 15:
-                    return s4;
+                    return s5;
 
                 case ID:
-                    return s7;
+                    return s3;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 15, 4, input);
+                        new NoViableAltException("", 15, 5, input);
 
                     throw nvae;        }
             }
@@ -8772,17 +8809,17 @@ public class RuleParser extends Parser {
                 switch ( input.LA(1) ) {
                 case EOL:
                 case 15:
+                    return s5;
+
+                case ID:
+                    return s3;
+
+                case 43:
                     return s4;
 
                 case 24:
                 case 25:
                     return s2;
-
-                case 50:
-                    return s3;
-
-                case ID:
-                    return s7;
 
                 default:
                     NoViableAltException nvae =
@@ -8791,13 +8828,13 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
-        DFA.State s3 = new DFA.State() {
+        DFA.State s4 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA15_3 = input.LA(1);
-                if ( LA15_3==51 ) {return s9;}
+                int LA15_4 = input.LA(1);
+                if ( LA15_4==44 ) {return s9;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 15, 3, input);
+        	    new NoViableAltException("", 15, 4, input);
 
                 throw nvae;
             }
@@ -8805,20 +8842,20 @@ public class RuleParser extends Parser {
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 50:
+                case ID:
+                case 19:
                     return s3;
+
+                case 43:
+                    return s4;
 
                 case EOL:
                 case 15:
-                    return s4;
+                    return s5;
 
                 case 24:
                 case 25:
                     return s2;
-
-                case ID:
-                case 19:
-                    return s7;
 
                 default:
                     NoViableAltException nvae =
@@ -8849,15 +8886,15 @@ public class RuleParser extends Parser {
         DFA.State s4 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 33:
-                    return s6;
+                case 23:
+                    return s2;
 
                 case EOL:
                 case 15:
                     return s4;
 
-                case 23:
-                    return s2;
+                case 33:
+                    return s6;
 
                 default:
                     NoViableAltException nvae =
@@ -8871,7 +8908,7 @@ public class RuleParser extends Parser {
                 switch ( input.LA(1) ) {
                 case 19:
                 case 23:
-                case 50:
+                case 43:
                     return s2;
 
                 case EOL:
@@ -8900,75 +8937,61 @@ public class RuleParser extends Parser {
             }
         };
 
-    }class DFA49 extends DFA {
+    }class DFA50 extends DFA {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
         DFA.State s8 = new DFA.State() {{alt=1;}};
-        DFA.State s32 = new DFA.State() {{alt=2;}};
-        DFA.State s56 = new DFA.State() {
+        DFA.State s33 = new DFA.State() {{alt=2;}};
+        DFA.State s55 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 24:
-                case 25:
-                    return s32;
-
-                case EOL:
-                case 15:
-                    return s56;
-
                 case 23:
                 case 33:
                     return s8;
 
+                case EOL:
+                case 15:
+                    return s55;
+
+                case 24:
+                case 25:
+                    return s33;
+
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 49, 56, input);
+                        new NoViableAltException("", 50, 55, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s30 = new DFA.State() {
+        DFA.State s31 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
+                case EOL:
+                case 15:
+                    return s55;
+
+                case 24:
+                case 25:
+                    return s33;
+
                 case 19:
                 case 23:
                 case 33:
-                case 50:
+                case 43:
                     return s8;
-
-                case EOL:
-                case 15:
-                    return s56;
-
-                case 24:
-                case 25:
-                    return s32;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 49, 30, input);
+                        new NoViableAltException("", 50, 31, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s26 = new DFA.State() {
+        DFA.State s27 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case INT:
-                case BOOL:
-                case STRING:
-                case FLOAT:
-                case 25:
-                case 26:
-                case 48:
-                case 50:
-                    return s32;
-
-                case EOL:
-                case 15:
-                    return s26;
-
                 case 23:
                 case 59:
                 case 60:
@@ -8976,11 +8999,25 @@ public class RuleParser extends Parser {
                     return s8;
 
                 case ID:
-                    return s30;
+                    return s31;
+
+                case EOL:
+                case 15:
+                    return s27;
+
+                case INT:
+                case BOOL:
+                case STRING:
+                case FLOAT:
+                case 25:
+                case 26:
+                case 43:
+                case 50:
+                    return s33;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 49, 26, input);
+                        new NoViableAltException("", 50, 27, input);
 
                     throw nvae;        }
             }
@@ -8990,7 +9027,7 @@ public class RuleParser extends Parser {
                 switch ( input.LA(1) ) {
                 case EOL:
                 case 15:
-                    return s26;
+                    return s27;
 
                 case 23:
                 case 59:
@@ -8999,7 +9036,7 @@ public class RuleParser extends Parser {
                     return s8;
 
                 case ID:
-                    return s30;
+                    return s31;
 
                 case INT:
                 case BOOL:
@@ -9007,13 +9044,13 @@ public class RuleParser extends Parser {
                 case FLOAT:
                 case 25:
                 case 26:
-                case 48:
+                case 43:
                 case 50:
-                    return s32;
+                    return s33;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 49, 7, input);
+                        new NoViableAltException("", 50, 7, input);
 
                     throw nvae;        }
             }
@@ -9021,6 +9058,13 @@ public class RuleParser extends Parser {
         DFA.State s6 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
+                case 23:
+                    return s7;
+
+                case EOL:
+                case 15:
+                    return s6;
+
                 case ID:
                 case 25:
                 case 29:
@@ -9030,16 +9074,9 @@ public class RuleParser extends Parser {
                 case 61:
                     return s8;
 
-                case EOL:
-                case 15:
-                    return s6;
-
-                case 23:
-                    return s7;
-
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 49, 6, input);
+                        new NoViableAltException("", 50, 6, input);
 
                     throw nvae;        }
             }
@@ -9058,6 +9095,7 @@ public class RuleParser extends Parser {
                 case 25:
                 case 29:
                 case 34:
+                case 43:
                 case 52:
                 case 53:
                 case 57:
@@ -9069,18 +9107,18 @@ public class RuleParser extends Parser {
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 49, 5, input);
+                        new NoViableAltException("", 50, 5, input);
 
                     throw nvae;        }
             }
         };
         DFA.State s2 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA49_2 = input.LA(1);
-                if ( LA49_2==ID ) {return s5;}
+                int LA50_2 = input.LA(1);
+                if ( LA50_2==ID ) {return s5;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 49, 2, input);
+        	    new NoViableAltException("", 50, 2, input);
 
                 throw nvae;
             }
@@ -9088,50 +9126,50 @@ public class RuleParser extends Parser {
         DFA.State s3 = new DFA.State() {{alt=3;}};
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA49_1 = input.LA(1);
-                if ( LA49_1==19 ) {return s2;}
-                if ( LA49_1==EOL||LA49_1==15||LA49_1==23 ) {return s3;}
+                int LA50_1 = input.LA(1);
+                if ( LA50_1==19 ) {return s2;}
+                if ( LA50_1==EOL||LA50_1==15||LA50_1==23 ) {return s3;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 49, 1, input);
+        	    new NoViableAltException("", 50, 1, input);
 
                 throw nvae;
             }
         };
         DFA.State s0 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA49_0 = input.LA(1);
-                if ( LA49_0==ID ) {return s1;}
+                int LA50_0 = input.LA(1);
+                if ( LA50_0==ID ) {return s1;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 49, 0, input);
+        	    new NoViableAltException("", 50, 0, input);
 
                 throw nvae;
             }
         };
 
-    }class DFA50 extends DFA {
+    }class DFA51 extends DFA {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s2 = new DFA.State() {{alt=2;}};
         DFA.State s3 = new DFA.State() {{alt=1;}};
+        DFA.State s2 = new DFA.State() {{alt=2;}};
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 25:
-                    return s2;
+                case 24:
+                    return s3;
 
                 case EOL:
                 case 15:
                     return s1;
 
-                case 24:
-                    return s3;
+                case 25:
+                    return s2;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 50, 1, input);
+                        new NoViableAltException("", 51, 1, input);
 
                     throw nvae;        }
             }
@@ -9151,13 +9189,13 @@ public class RuleParser extends Parser {
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 50, 0, input);
+                        new NoViableAltException("", 51, 0, input);
 
                     throw nvae;        }
             }
         };
 
-    }class DFA61 extends DFA {
+    }class DFA62 extends DFA {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
@@ -9178,7 +9216,7 @@ public class RuleParser extends Parser {
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 61, 1, input);
+                        new NoViableAltException("", 62, 1, input);
 
                     throw nvae;        }
             }
@@ -9198,54 +9236,7 @@ public class RuleParser extends Parser {
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 61, 0, input);
-
-                    throw nvae;        }
-            }
-        };
-
-    }class DFA64 extends DFA {
-        public int predict(IntStream input) throws RecognitionException {
-            return predict(input, s0);
-        }
-        DFA.State s2 = new DFA.State() {{alt=2;}};
-        DFA.State s3 = new DFA.State() {{alt=1;}};
-        DFA.State s1 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case EOL:
-                case 15:
-                    return s1;
-
-                case 25:
-                    return s2;
-
-                case 24:
-                    return s3;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 64, 1, input);
-
-                    throw nvae;        }
-            }
-        };
-        DFA.State s0 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case EOL:
-                case 15:
-                    return s1;
-
-                case 25:
-                    return s2;
-
-                case 24:
-                    return s3;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 64, 0, input);
+                        new NoViableAltException("", 62, 0, input);
 
                     throw nvae;        }
             }
@@ -9255,62 +9246,20 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s4 = new DFA.State() {{alt=2;}};
         DFA.State s3 = new DFA.State() {{alt=1;}};
-        DFA.State s2 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case EOL:
-                case 15:
-                    return s2;
-
-                case 24:
-                case 25:
-                case 63:
-                case 64:
-                case 65:
-                case 66:
-                case 67:
-                case 68:
-                case 69:
-                case 70:
-                case 71:
-                case 72:
-                    return s4;
-
-                case 33:
-                    return s3;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 65, 2, input);
-
-                    throw nvae;        }
-            }
-        };
+        DFA.State s2 = new DFA.State() {{alt=2;}};
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case EOL:
-                case 15:
-                    return s2;
-
-                case 33:
+                case 24:
                     return s3;
 
-                case 24:
+                case EOL:
+                case 15:
+                    return s1;
+
                 case 25:
-                case 63:
-                case 64:
-                case 65:
-                case 66:
-                case 67:
-                case 68:
-                case 69:
-                case 70:
-                case 71:
-                case 72:
-                    return s4;
+                    return s2;
 
                 default:
                     NoViableAltException nvae =
@@ -9321,42 +9270,131 @@ public class RuleParser extends Parser {
         };
         DFA.State s0 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA65_0 = input.LA(1);
-                if ( LA65_0==ID ) {return s1;}
+                switch ( input.LA(1) ) {
+                case EOL:
+                case 15:
+                    return s1;
+
+                case 25:
+                    return s2;
+
+                case 24:
+                    return s3;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 65, 0, input);
+
+                    throw nvae;        }
+            }
+        };
+
+    }class DFA66 extends DFA {
+        public int predict(IntStream input) throws RecognitionException {
+            return predict(input, s0);
+        }
+        DFA.State s3 = new DFA.State() {{alt=2;}};
+        DFA.State s15 = new DFA.State() {{alt=1;}};
+        DFA.State s2 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 24:
+                case 25:
+                case 63:
+                case 64:
+                case 65:
+                case 66:
+                case 67:
+                case 68:
+                case 69:
+                case 70:
+                case 71:
+                case 72:
+                    return s3;
+
+                case EOL:
+                case 15:
+                    return s2;
+
+                case 33:
+                    return s15;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 66, 2, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s1 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case EOL:
+                case 15:
+                    return s2;
+
+                case 24:
+                case 25:
+                case 63:
+                case 64:
+                case 65:
+                case 66:
+                case 67:
+                case 68:
+                case 69:
+                case 70:
+                case 71:
+                case 72:
+                    return s3;
+
+                case 33:
+                    return s15;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 66, 1, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s0 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA66_0 = input.LA(1);
+                if ( LA66_0==ID ) {return s1;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 65, 0, input);
+        	    new NoViableAltException("", 66, 0, input);
 
                 throw nvae;
             }
         };
 
-    }class DFA76 extends DFA {
+    }class DFA77 extends DFA {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s14 = new DFA.State() {{alt=3;}};
-        DFA.State s16 = new DFA.State() {{alt=1;}};
-        DFA.State s15 = new DFA.State() {{alt=2;}};
+        DFA.State s15 = new DFA.State() {{alt=1;}};
+        DFA.State s14 = new DFA.State() {{alt=2;}};
+        DFA.State s16 = new DFA.State() {{alt=3;}};
         DFA.State s13 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 47:
-                    return s14;
+                case ID:
+                    return s15;
 
                 case EOL:
                 case 15:
                     return s13;
 
-                case ID:
-                    return s16;
+                case 45:
+                    return s14;
 
-                case 43:
-                    return s15;
+                case 49:
+                    return s16;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 76, 13, input);
+                        new NoViableAltException("", 77, 13, input);
 
                     throw nvae;        }
             }
@@ -9368,18 +9406,18 @@ public class RuleParser extends Parser {
                 case 15:
                     return s13;
 
-                case 47:
+                case 45:
                     return s14;
 
-                case 43:
+                case ID:
                     return s15;
 
-                case ID:
+                case 49:
                     return s16;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 76, 1, input);
+                        new NoViableAltException("", 77, 1, input);
 
                     throw nvae;        }
             }
@@ -9387,12 +9425,12 @@ public class RuleParser extends Parser {
         DFA.State s2 = new DFA.State() {{alt=4;}};
         DFA.State s0 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA76_0 = input.LA(1);
-                if ( LA76_0==42 ) {return s1;}
-                if ( (LA76_0>=EOL && LA76_0<=ID)||LA76_0==15||LA76_0==23||LA76_0==25||LA76_0==29||LA76_0==34||(LA76_0>=52 && LA76_0<=53)||(LA76_0>=57 && LA76_0<=61) ) {return s2;}
+                int LA77_0 = input.LA(1);
+                if ( LA77_0==42 ) {return s1;}
+                if ( (LA77_0>=EOL && LA77_0<=ID)||LA77_0==15||LA77_0==23||LA77_0==25||LA77_0==29||LA77_0==34||(LA77_0>=52 && LA77_0<=53)||(LA77_0>=57 && LA77_0<=61) ) {return s2;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 76, 0, input);
+        	    new NoViableAltException("", 77, 0, input);
 
                 throw nvae;
             }
@@ -9570,238 +9608,241 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_from_source_in_from_statement1658 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_from_source1702 = new BitSet(new long[]{0x0000000000080000L});
     public static final BitSet FOLLOW_19_in_from_source1704 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_from_source1708 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_from_source1735 = new BitSet(new long[]{0x0000000000080000L});
-    public static final BitSet FOLLOW_19_in_from_source1737 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_from_source1741 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_from_source1743 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_from_source1746 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_from_source1748 = new BitSet(new long[]{0x00050000040003E2L});
-    public static final BitSet FOLLOW_argument_list_in_from_source1752 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_from_source1754 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_from_source1756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_from_source1778 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_from_source1780 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_from_source1782 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_from_source1784 = new BitSet(new long[]{0x00050000040003E2L});
-    public static final BitSet FOLLOW_argument_list_in_from_source1788 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_from_source1790 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_from_source1792 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_accumulate_statement1841 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1843 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_accumulate_statement1845 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1847 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_accumulate_statement1857 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1859 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_lhs_column_in_accumulate_statement1863 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1865 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_accumulate_statement1867 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1869 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_accumulate_statement1877 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1879 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_accumulate_statement1881 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk2_in_accumulate_statement1885 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_accumulate_statement1887 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1889 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_accumulate_statement1891 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1893 = new BitSet(new long[]{0x0000200000000000L});
-    public static final BitSet FOLLOW_45_in_accumulate_statement1901 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1903 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_accumulate_statement1905 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk2_in_accumulate_statement1909 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_accumulate_statement1911 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1913 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_accumulate_statement1915 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1917 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_46_in_accumulate_statement1925 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1927 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_accumulate_statement1929 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk2_in_accumulate_statement1933 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_accumulate_statement1935 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1937 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_accumulate_statement1939 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_collect_statement1982 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_collect_statement1984 = new BitSet(new long[]{0x0000800000000000L});
-    public static final BitSet FOLLOW_47_in_collect_statement1986 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_collect_statement1988 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_collect_statement1998 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_collect_statement2000 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_lhs_column_in_collect_statement2004 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_collect_statement2006 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_collect_statement2008 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_argument_value_in_argument_list2041 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_argument_list2057 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_argument_list2059 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_argument_list2061 = new BitSet(new long[]{0x00050000040003E0L});
-    public static final BitSet FOLLOW_argument_value_in_argument_list2065 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_STRING_in_argument_value2105 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_argument_value2116 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_argument_value2129 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_argument_value2140 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_argument_value2152 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_48_in_argument_value2163 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_48_in_argument_value2174 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inline_map_in_argument_value2193 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inline_array_in_argument_value2209 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_26_in_inline_map2249 = new BitSet(new long[]{0x00050000040003E0L});
-    public static final BitSet FOLLOW_argument_value_in_inline_map2267 = new BitSet(new long[]{0x0002000000000000L});
-    public static final BitSet FOLLOW_49_in_inline_map2269 = new BitSet(new long[]{0x00050000040003E0L});
-    public static final BitSet FOLLOW_argument_value_in_inline_map2273 = new BitSet(new long[]{0x0000000009000010L});
-    public static final BitSet FOLLOW_EOL_in_inline_map2316 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_inline_map2320 = new BitSet(new long[]{0x00050000040003F0L});
-    public static final BitSet FOLLOW_EOL_in_inline_map2323 = new BitSet(new long[]{0x00050000040003E0L});
-    public static final BitSet FOLLOW_argument_value_in_inline_map2329 = new BitSet(new long[]{0x0002000000000000L});
-    public static final BitSet FOLLOW_49_in_inline_map2331 = new BitSet(new long[]{0x00050000040003E0L});
-    public static final BitSet FOLLOW_argument_value_in_inline_map2335 = new BitSet(new long[]{0x0000000009000010L});
-    public static final BitSet FOLLOW_27_in_inline_map2371 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_50_in_inline_array2415 = new BitSet(new long[]{0x00050000040003E0L});
-    public static final BitSet FOLLOW_argument_value_in_inline_array2419 = new BitSet(new long[]{0x0008000001000010L});
-    public static final BitSet FOLLOW_EOL_in_inline_array2437 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_inline_array2440 = new BitSet(new long[]{0x00050000040003F0L});
-    public static final BitSet FOLLOW_EOL_in_inline_array2442 = new BitSet(new long[]{0x00050000040003E0L});
-    public static final BitSet FOLLOW_argument_value_in_inline_array2447 = new BitSet(new long[]{0x0008000001000010L});
-    public static final BitSet FOLLOW_51_in_inline_array2460 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_fact_binding2503 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact_binding2513 = new BitSet(new long[]{0x0000000200000000L});
-    public static final BitSet FOLLOW_33_in_fact_binding2515 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact_binding2517 = new BitSet(new long[]{0x0000000000800020L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_binding2521 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_fact_expression2553 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact_expression2555 = new BitSet(new long[]{0x0000000000800020L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2559 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact_expression2561 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_fact_expression2563 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_fact_in_fact_expression2574 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact_expression2576 = new BitSet(new long[]{0x0030000000000002L});
-    public static final BitSet FOLLOW_set_in_fact_expression2589 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact_expression2594 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_fact_in_fact_expression2608 = new BitSet(new long[]{0x0030000000000002L});
-    public static final BitSet FOLLOW_dotted_name_in_fact2647 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact2655 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_fact2663 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact2666 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_constraints_in_fact2672 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact2691 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_fact2695 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_fact2697 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_opt_eol_in_constraints2729 = new BitSet(new long[]{0x0000000000008032L});
-    public static final BitSet FOLLOW_constraint_in_constraints2734 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_predicate_in_constraints2737 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraints2745 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_constraints2747 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraints2749 = new BitSet(new long[]{0x0000000000008032L});
-    public static final BitSet FOLLOW_constraint_in_constraints2752 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_predicate_in_constraints2755 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraints2763 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_opt_eol_in_constraint2782 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_constraint2790 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraint2792 = new BitSet(new long[]{0x0000000200000000L});
-    public static final BitSet FOLLOW_33_in_constraint2794 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraint2796 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_constraint2806 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraint2820 = new BitSet(new long[]{0x8000000000008012L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_operator_in_constraint2826 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraint2828 = new BitSet(new long[]{0x00010000008003E0L});
-    public static final BitSet FOLLOW_ID_in_constraint2846 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_enum_constraint_in_constraint2871 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_literal_constraint_in_constraint2903 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_retval_constraint_in_constraint2923 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_set_in_constraint2958 = new BitSet(new long[]{0x8000000000000000L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_operator_in_constraint2980 = new BitSet(new long[]{0x00010000008003E0L});
-    public static final BitSet FOLLOW_ID_in_constraint2992 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_enum_constraint_in_constraint3020 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_literal_constraint_in_constraint3055 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_retval_constraint_in_constraint3077 = new BitSet(new long[]{0x00C0000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_constraint3133 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal_constraint3160 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal_constraint3171 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal_constraint3184 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_literal_constraint3195 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_48_in_literal_constraint3207 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_enum_constraint3238 = new BitSet(new long[]{0x0000000000080000L});
-    public static final BitSet FOLLOW_19_in_enum_constraint3240 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_enum_constraint3244 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_retval_constraint3273 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk_in_retval_constraint3278 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_retval_constraint3281 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_predicate3299 = new BitSet(new long[]{0x0000000200000000L});
-    public static final BitSet FOLLOW_33_in_predicate3301 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_predicate3305 = new BitSet(new long[]{0x0100000000000000L});
-    public static final BitSet FOLLOW_56_in_predicate3307 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_predicate3309 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk_in_predicate3313 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_predicate3315 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_paren_chunk3361 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk_in_paren_chunk3365 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_paren_chunk3367 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_23_in_paren_chunk23438 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk2_in_paren_chunk23442 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_paren_chunk23444 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_26_in_curly_chunk3513 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_curly_chunk_in_curly_chunk3517 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_27_in_curly_chunk3519 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_lhs_and_in_lhs_or3577 = new BitSet(new long[]{0x0030000000000002L});
-    public static final BitSet FOLLOW_set_in_lhs_or3586 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_lhs_or3591 = new BitSet(new long[]{0x3800000000800020L});
-    public static final BitSet FOLLOW_lhs_and_in_lhs_or3598 = new BitSet(new long[]{0x0030000000000002L});
-    public static final BitSet FOLLOW_lhs_unary_in_lhs_and3638 = new BitSet(new long[]{0x0600000000000002L});
-    public static final BitSet FOLLOW_set_in_lhs_and3647 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_lhs_and3652 = new BitSet(new long[]{0x3800000000800020L});
-    public static final BitSet FOLLOW_lhs_unary_in_lhs_and3659 = new BitSet(new long[]{0x0600000000000002L});
-    public static final BitSet FOLLOW_lhs_exist_in_lhs_unary3697 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_not_in_lhs_unary3707 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_eval_in_lhs_unary3717 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_unary3731 = new BitSet(new long[]{0x0000040000000002L});
-    public static final BitSet FOLLOW_from_statement_in_lhs_unary3752 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_accumulate_statement_in_lhs_unary3774 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_collect_statement_in_lhs_unary3795 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_lhs_unary3807 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3809 = new BitSet(new long[]{0x3800000000800020L});
-    public static final BitSet FOLLOW_lhs_in_lhs_unary3813 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3815 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_unary3817 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_59_in_lhs_exist3848 = new BitSet(new long[]{0x0000000000800020L});
-    public static final BitSet FOLLOW_23_in_lhs_exist3851 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3855 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_exist3857 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3863 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_60_in_lhs_not3893 = new BitSet(new long[]{0x0000000000800020L});
-    public static final BitSet FOLLOW_23_in_lhs_not3896 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_not3900 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_not3903 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_not3909 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_61_in_lhs_eval3935 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_lhs_eval3939 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
-    public static final BitSet FOLLOW_paren_chunk2_in_lhs_eval3947 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_lhs_eval3951 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_dotted_name3983 = new BitSet(new long[]{0x0004000000080002L});
-    public static final BitSet FOLLOW_19_in_dotted_name3989 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_dotted_name3993 = new BitSet(new long[]{0x0004000000080002L});
-    public static final BitSet FOLLOW_50_in_dotted_name4002 = new BitSet(new long[]{0x0008000000000000L});
-    public static final BitSet FOLLOW_51_in_dotted_name4004 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_ID_in_argument_name4034 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_50_in_argument_name4040 = new BitSet(new long[]{0x0008000000000000L});
-    public static final BitSet FOLLOW_51_in_argument_name4042 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_ID_in_word4070 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_word4082 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_62_in_word4091 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_31_in_word4103 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_28_in_word4114 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_36_in_word4124 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_37_in_word4132 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_32_in_word4140 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_34_in_word4151 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_29_in_word4162 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_word4176 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_63_in_operator4205 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_operator4212 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_operator4219 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_66_in_operator4226 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_operator4235 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_operator4242 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_69_in_operator4249 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_70_in_operator4256 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_71_in_operator4263 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_operator4270 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_from_source1708 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_43_in_from_source1712 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_from_source1716 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_from_source1718 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_from_source1747 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_19_in_from_source1749 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_from_source1753 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_from_source1755 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_from_source1758 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_from_source1760 = new BitSet(new long[]{0x00040800040003E2L});
+    public static final BitSet FOLLOW_argument_list_in_from_source1764 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_from_source1766 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_from_source1768 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_from_source1790 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_from_source1792 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_from_source1794 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_from_source1796 = new BitSet(new long[]{0x00040800040003E2L});
+    public static final BitSet FOLLOW_argument_list_in_from_source1800 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_from_source1802 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_from_source1804 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_42_in_accumulate_statement1853 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1855 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_45_in_accumulate_statement1857 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1859 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_accumulate_statement1869 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1871 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_lhs_column_in_accumulate_statement1875 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1877 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_accumulate_statement1879 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1881 = new BitSet(new long[]{0x0000400000000000L});
+    public static final BitSet FOLLOW_46_in_accumulate_statement1889 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1891 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_accumulate_statement1893 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk2_in_accumulate_statement1897 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_accumulate_statement1899 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1901 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_accumulate_statement1903 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1905 = new BitSet(new long[]{0x0000800000000000L});
+    public static final BitSet FOLLOW_47_in_accumulate_statement1913 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1915 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_accumulate_statement1917 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk2_in_accumulate_statement1921 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_accumulate_statement1923 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1925 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_accumulate_statement1927 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1929 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_48_in_accumulate_statement1937 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1939 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_accumulate_statement1941 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk2_in_accumulate_statement1945 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_accumulate_statement1947 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_accumulate_statement1949 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_accumulate_statement1951 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_42_in_collect_statement1994 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_collect_statement1996 = new BitSet(new long[]{0x0002000000000000L});
+    public static final BitSet FOLLOW_49_in_collect_statement1998 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_collect_statement2000 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_collect_statement2010 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_collect_statement2012 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_lhs_column_in_collect_statement2016 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_collect_statement2018 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_collect_statement2020 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_argument_value_in_argument_list2053 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_argument_list2069 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_argument_list2071 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_argument_list2073 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_argument_list2077 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_STRING_in_argument_value2117 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_argument_value2128 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_argument_value2141 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_argument_value2152 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_argument_value2164 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_50_in_argument_value2175 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_50_in_argument_value2186 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inline_map_in_argument_value2205 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inline_array_in_argument_value2221 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_26_in_inline_map2261 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_inline_map2279 = new BitSet(new long[]{0x0008000000000000L});
+    public static final BitSet FOLLOW_51_in_inline_map2281 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_inline_map2285 = new BitSet(new long[]{0x0000000009000010L});
+    public static final BitSet FOLLOW_EOL_in_inline_map2328 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_inline_map2332 = new BitSet(new long[]{0x00040800040003F0L});
+    public static final BitSet FOLLOW_EOL_in_inline_map2335 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_inline_map2341 = new BitSet(new long[]{0x0008000000000000L});
+    public static final BitSet FOLLOW_51_in_inline_map2343 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_inline_map2347 = new BitSet(new long[]{0x0000000009000010L});
+    public static final BitSet FOLLOW_27_in_inline_map2383 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_inline_array2427 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_inline_array2431 = new BitSet(new long[]{0x0000100001000010L});
+    public static final BitSet FOLLOW_EOL_in_inline_array2449 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_inline_array2452 = new BitSet(new long[]{0x00040800040003F0L});
+    public static final BitSet FOLLOW_EOL_in_inline_array2454 = new BitSet(new long[]{0x00040800040003E0L});
+    public static final BitSet FOLLOW_argument_value_in_inline_array2459 = new BitSet(new long[]{0x0000100001000010L});
+    public static final BitSet FOLLOW_44_in_inline_array2472 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_fact_binding2515 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact_binding2525 = new BitSet(new long[]{0x0000000200000000L});
+    public static final BitSet FOLLOW_33_in_fact_binding2527 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact_binding2529 = new BitSet(new long[]{0x0000000000800020L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_binding2533 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_23_in_fact_expression2565 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact_expression2567 = new BitSet(new long[]{0x0000000000800020L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2571 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact_expression2573 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_fact_expression2575 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_fact_in_fact_expression2586 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact_expression2588 = new BitSet(new long[]{0x0030000000000002L});
+    public static final BitSet FOLLOW_set_in_fact_expression2601 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact_expression2606 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_fact_in_fact_expression2620 = new BitSet(new long[]{0x0030000000000002L});
+    public static final BitSet FOLLOW_dotted_name_in_fact2659 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact2667 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_fact2675 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact2678 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_constraints_in_fact2684 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact2703 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_fact2707 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_fact2709 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_opt_eol_in_constraints2741 = new BitSet(new long[]{0x0000000000008032L});
+    public static final BitSet FOLLOW_constraint_in_constraints2746 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_predicate_in_constraints2749 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraints2757 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_constraints2759 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraints2761 = new BitSet(new long[]{0x0000000000008032L});
+    public static final BitSet FOLLOW_constraint_in_constraints2764 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_predicate_in_constraints2767 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraints2775 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_opt_eol_in_constraint2794 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_constraint2802 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraint2804 = new BitSet(new long[]{0x0000000200000000L});
+    public static final BitSet FOLLOW_33_in_constraint2806 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraint2808 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_constraint2818 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraint2832 = new BitSet(new long[]{0x8000000000008012L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_operator_in_constraint2838 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraint2840 = new BitSet(new long[]{0x00040000008003E0L});
+    public static final BitSet FOLLOW_ID_in_constraint2858 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_enum_constraint_in_constraint2883 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_literal_constraint_in_constraint2915 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_retval_constraint_in_constraint2935 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_set_in_constraint2970 = new BitSet(new long[]{0x8000000000000000L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_operator_in_constraint2992 = new BitSet(new long[]{0x00040000008003E0L});
+    public static final BitSet FOLLOW_ID_in_constraint3004 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_enum_constraint_in_constraint3032 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_literal_constraint_in_constraint3067 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_retval_constraint_in_constraint3089 = new BitSet(new long[]{0x00C0000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_constraint3145 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal_constraint3172 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal_constraint3183 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal_constraint3196 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_literal_constraint3207 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_50_in_literal_constraint3219 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_enum_constraint3250 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_19_in_enum_constraint3252 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_enum_constraint3256 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_23_in_retval_constraint3285 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk_in_retval_constraint3290 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_retval_constraint3293 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_predicate3311 = new BitSet(new long[]{0x0000000200000000L});
+    public static final BitSet FOLLOW_33_in_predicate3313 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_predicate3317 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_predicate3319 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_predicate3321 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk_in_predicate3325 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_predicate3327 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_23_in_paren_chunk3373 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk_in_paren_chunk3377 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_paren_chunk3379 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_23_in_paren_chunk23450 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk2_in_paren_chunk23454 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_paren_chunk23456 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_26_in_curly_chunk3525 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_curly_chunk_in_curly_chunk3529 = new BitSet(new long[]{0x0000000008000000L});
+    public static final BitSet FOLLOW_27_in_curly_chunk3531 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_lhs_and_in_lhs_or3589 = new BitSet(new long[]{0x0030000000000002L});
+    public static final BitSet FOLLOW_set_in_lhs_or3598 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_lhs_or3603 = new BitSet(new long[]{0x3800000000800020L});
+    public static final BitSet FOLLOW_lhs_and_in_lhs_or3610 = new BitSet(new long[]{0x0030000000000002L});
+    public static final BitSet FOLLOW_lhs_unary_in_lhs_and3650 = new BitSet(new long[]{0x0600000000000002L});
+    public static final BitSet FOLLOW_set_in_lhs_and3659 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_lhs_and3664 = new BitSet(new long[]{0x3800000000800020L});
+    public static final BitSet FOLLOW_lhs_unary_in_lhs_and3671 = new BitSet(new long[]{0x0600000000000002L});
+    public static final BitSet FOLLOW_lhs_exist_in_lhs_unary3709 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_not_in_lhs_unary3719 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_eval_in_lhs_unary3729 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_unary3743 = new BitSet(new long[]{0x0000040000000002L});
+    public static final BitSet FOLLOW_from_statement_in_lhs_unary3764 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_accumulate_statement_in_lhs_unary3786 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_collect_statement_in_lhs_unary3807 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_23_in_lhs_unary3819 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3821 = new BitSet(new long[]{0x3800000000800020L});
+    public static final BitSet FOLLOW_lhs_in_lhs_unary3825 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_lhs_unary3827 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_unary3829 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_59_in_lhs_exist3860 = new BitSet(new long[]{0x0000000000800020L});
+    public static final BitSet FOLLOW_23_in_lhs_exist3863 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3867 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_exist3869 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3875 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_60_in_lhs_not3905 = new BitSet(new long[]{0x0000000000800020L});
+    public static final BitSet FOLLOW_23_in_lhs_not3908 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_not3912 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_not3915 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_column_in_lhs_not3921 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_lhs_eval3947 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_lhs_eval3951 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF2L,0x00000000000001FFL});
+    public static final BitSet FOLLOW_paren_chunk2_in_lhs_eval3959 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_lhs_eval3963 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_dotted_name3995 = new BitSet(new long[]{0x0000080000080002L});
+    public static final BitSet FOLLOW_19_in_dotted_name4001 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_dotted_name4005 = new BitSet(new long[]{0x0000080000080002L});
+    public static final BitSet FOLLOW_43_in_dotted_name4014 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_dotted_name4016 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_ID_in_argument_name4046 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_43_in_argument_name4052 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_argument_name4054 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_ID_in_word4082 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_word4094 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_62_in_word4103 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_31_in_word4115 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_28_in_word4126 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_36_in_word4136 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_37_in_word4144 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_32_in_word4152 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_34_in_word4163 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_29_in_word4174 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_word4188 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_63_in_operator4217 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_operator4224 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_operator4231 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_66_in_operator4238 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_67_in_operator4247 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_operator4254 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_69_in_operator4261 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_70_in_operator4268 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_71_in_operator4275 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_72_in_operator4282 = new BitSet(new long[]{0x0000000000000002L});
 
 }

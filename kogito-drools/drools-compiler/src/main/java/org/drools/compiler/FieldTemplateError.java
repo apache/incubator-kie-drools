@@ -17,18 +17,18 @@ package org.drools.compiler;
  */
 
 import org.apache.commons.jci.problems.CompilationProblem;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Rule;
 import org.drools.rule.Package;
 
 public class FieldTemplateError extends DroolsError {
     private Package      pkg;
-    private PatternDescr descr;
+    private BaseDescr descr;
     private Object       object;
     private String       message;
 
     public FieldTemplateError(final Package pkg,
-                              final PatternDescr descr,
+                              final BaseDescr descr,
                               final Object object,
                               final String message) {
         this.pkg = pkg;
@@ -41,7 +41,7 @@ public class FieldTemplateError extends DroolsError {
         return this.pkg;
     }
 
-    public PatternDescr getDescr() {
+    public BaseDescr getDescr() {
         return this.descr;
     }
 

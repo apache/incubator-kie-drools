@@ -19,7 +19,7 @@ package org.drools.lang.descr;
 import java.util.Collections;
 import java.util.List;
 
-public class EvalDescr extends PatternDescr
+public class EvalDescr extends BaseDescr
     implements
     ConditionalElementDescr {
     /**
@@ -68,7 +68,7 @@ public class EvalDescr extends PatternDescr
         return Collections.EMPTY_LIST;
     }
 
-    public void addDescr(final PatternDescr patternDescr) {
+    public void addDescr(final BaseDescr baseDescr) {
         // do thing, this can have no children        
     }
 }

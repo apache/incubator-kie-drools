@@ -25,7 +25,7 @@ import java.util.List;
  * @author etirelli
  *
  */
-public class CollectDescr extends PatternDescr
+public class CollectDescr extends BaseDescr
     implements
     ConditionalElementDescr {
 
@@ -71,7 +71,7 @@ public class CollectDescr extends PatternDescr
         return "[Collect: id=" + resultColumn.getIdentifier() + "; objectType=" + resultColumn.getObjectType() + "]";
     }
 
-    public void addDescr(PatternDescr patternDescr) {
+    public void addDescr(BaseDescr patternDescr) {
         // Nothing to do
     }
 

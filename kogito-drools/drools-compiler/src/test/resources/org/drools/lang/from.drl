@@ -1,6 +1,9 @@
 rule using_from
   when
     Foo() from bar.baz
+    Foo() from bar.baz["key"]    
+    Foo() from bar.baz[$key]    
+    Foo() from bar.baz[1]        
     Whee(bar=="baz") from whee("y")
     f: Foo(la==2) from bar.la(x)   
     Bam() from wa()

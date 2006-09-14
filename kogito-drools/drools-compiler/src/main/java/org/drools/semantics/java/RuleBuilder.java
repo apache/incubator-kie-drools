@@ -34,6 +34,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.FieldImpl;
 import org.drools.base.ValueType;
+import org.drools.base.dataproviders.FieldGetter;
 import org.drools.base.dataproviders.MethodDataProvider;
 import org.drools.base.dataproviders.MethodInvoker;
 import org.drools.base.evaluators.Operator;
@@ -57,6 +58,7 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.DeclarativeInvokerDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldAccessDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
@@ -64,7 +66,7 @@ import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
@@ -96,6 +98,7 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
+import org.drools.spi.AvailableVariables;
 import org.drools.spi.DataProvider;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -145,6 +148,8 @@ public class RuleBuilder {
     private static final KnowledgeHelperFixer knowledgeHelperFixer = new KnowledgeHelperFixer();
 
     private final FunctionFixer               functionFixer;
+    
+    private AvailableVariables          variables;
 
     // @todo move to an interface so it can work as a decorator
     private final JavaExprAnalyzer            analyzer             = new JavaExprAnalyzer();
@@ -199,6 +204,7 @@ public class RuleBuilder {
         this.declarations = new HashMap();
         this.descrLookups = new HashMap();
         this.columnCounter = new ColumnCounter();
+        this.variables = new AvailableVariables( new Map[] { this.declarations, this.pkg.getGlobals() } );
 
         this.ruleDescr = ruleDescr;
 
@@ -772,7 +778,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String returnValueText = this.functionFixer.fix( returnValueRestrictionDescr.getText() );
+        final String returnValueText = this.functionFixer.fix( returnValueRestrictionDescr.getText(), variables );
         st.setAttribute( "text",
                          returnValueText );
 
@@ -864,7 +870,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String predicateText = this.functionFixer.fix( predicateDescr.getText() );
+        final String predicateText = this.functionFixer.fix( predicateDescr.getText(), variables );
         st.setAttribute( "text",
                          predicateText );
 
@@ -936,6 +942,29 @@ public class RuleBuilder {
                                                              instanceValueHandler,
                                                              (ValueHandler[]) valueHandlers.toArray( new ValueHandler[valueHandlers.size()] ) );
             dataProvider = new MethodDataProvider( invoker );
+        } else if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
+            final FieldAccessDescr fieldAccessor = (FieldAccessDescr) invokerDescr;
+
+            ValueHandler instanceValueHandler = null;
+            final String variableName = fieldAccessor.getVariableName();
+            if ( this.declarations.containsKey( variableName ) ) {
+                instanceValueHandler = new DeclarationVariable( (Declaration) this.declarations.get( variableName ) );
+            } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
+                instanceValueHandler = new GlobalVariable( variableName,
+                                                           (Class) this.pkg.getGlobals().get( variableName ) );
+            } else {
+                throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
+            }
+            ArgumentValueDescr arg = ((FieldAccessDescr) invokerDescr).getArgument();
+            ValueHandler valueHandler = null;
+            if ( arg != null ) {
+                valueHandler = buildValueHandler( arg );
+            }
+
+            final FieldGetter getter = new FieldGetter( fieldAccessor.getFieldName(),
+                                                        instanceValueHandler,
+                                                        valueHandler );
+            dataProvider = new MethodDataProvider( getter );
         }
 
         return new From( column,
@@ -971,10 +1000,61 @@ public class RuleBuilder {
                 handlers.add( buildValueHandler( arg ) );
             }
             valueHandler = new ListValue( handlers );
-        } else {
+        } else if ( descr.getType() == ArgumentValueDescr.BOOLEAN ) {
             // handling a literal
-            valueHandler = new LiteralValue( (String) descr.getValue(),
-                                             Object.class );
+            valueHandler = new LiteralValue( new Boolean ( (String) descr.getValue() ) );
+        } else if ( descr.getType() == ArgumentValueDescr.INTEGRAL ) {
+            String text = (String) descr.getValue();
+            char c = text.charAt( text.length() - 1 );
+            if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
+                switch ( c ) {
+                    case 'l' :
+                    case 'L' :
+                        valueHandler = new LiteralValue( new Long( (String) descr.getValue() ) );                        
+                        break;
+                    case 'f' :
+                    case 'F' :
+                        valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                          
+                        break;
+                    case 'd' :
+                    case 'D' :
+                        valueHandler = new LiteralValue( new Double( (String) descr.getValue() ) );                        
+                        break;
+                    default :
+                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );
+                }
+            } else {
+                valueHandler = new LiteralValue( new Integer( (String) descr.getValue() ) );                
+            }
+            
+        } else if ( descr.getType() == ArgumentValueDescr.DECIMAL ) {
+            String text = (String) descr.getValue();
+            char c = text.charAt( text.length() - 1 );
+            if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
+                switch ( c ) {
+                    case 'l' :
+                    case 'L' :
+                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );                      
+                    case 'f' :
+                    case 'F' :
+                        valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                          
+                        break;
+                    case 'd' :
+                    case 'D' :
+                        valueHandler = new LiteralValue( new Double( (String) descr.getValue() ) );                        
+                        break;
+                    default :
+                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );
+                }
+            } else {
+                valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                
+            }
+        } else if ( descr.getType() == ArgumentValueDescr.STRING ) {
+            // handling a literal
+            valueHandler = new LiteralValue( (String) descr.getValue() );
+        } else {
+            // This should never happen
+            throw new IllegalArgumentException( "Unable to determine type for argument [" + descr.getType() + "]" );
         }
         return valueHandler;
     }
@@ -1004,7 +1084,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String evalText = this.functionFixer.fix( evalDescr.getText() );
+        final String evalText = this.functionFixer.fix( evalDescr.getText(), variables );
         st.setAttribute( "text",
                          evalText );
 
@@ -1188,7 +1268,7 @@ public class RuleBuilder {
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      ruleDescr.getConsequence() );
         st.setAttribute( "text",
-                         this.functionFixer.fix( RuleBuilder.knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
+                         this.functionFixer.fix( RuleBuilder.knowledgeHelperFixer.fix( ruleDescr.getConsequence() ), variables ) );
 
         this.methods.add( st.toString() );
 
@@ -1298,7 +1378,7 @@ public class RuleBuilder {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
-    private FieldExtractor getFieldExtractor(final PatternDescr descr,
+    private FieldExtractor getFieldExtractor(final BaseDescr descr,
                                              final ObjectType objectType,
                                              final String fieldName) {
         FieldExtractor extractor = null;
@@ -1323,7 +1403,7 @@ public class RuleBuilder {
         return extractor;
     }
 
-    private Evaluator getEvaluator(final PatternDescr descr,
+    private Evaluator getEvaluator(final BaseDescr descr,
                                    final ValueType valueType,
                                    final String evaluatorString) {
 
@@ -1339,7 +1419,7 @@ public class RuleBuilder {
         return evaluator;
     }
 
-    private List[] getUsedIdentifiers(final PatternDescr descr,
+    private List[] getUsedIdentifiers(final BaseDescr descr,
                                       final String text) {
         List[] usedIdentifiers = null;
         try {
@@ -1354,7 +1434,7 @@ public class RuleBuilder {
         return usedIdentifiers;
     }
 
-    private List[] getUsedCIdentifiers(final PatternDescr descr,
+    private List[] getUsedCIdentifiers(final BaseDescr descr,
                                        final String text) {
         List[] usedIdentifiers = null;
         try {

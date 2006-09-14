@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RuleDescr extends PatternDescr {
+public class RuleDescr extends BaseDescr {
     /**
      * 
      */

@@ -16,7 +16,7 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-public class FieldBindingDescr extends PatternDescr {
+public class FieldBindingDescr extends BaseDescr {
     /**
      * 
      */

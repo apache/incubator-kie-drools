@@ -17,8 +17,11 @@ package org.drools.semantics.java;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.spi.AvailableVariables;
 import org.drools.spi.TypeResolver;
 import org.drools.rule.Package;
 
@@ -48,13 +51,19 @@ public class FunctionFixerTest extends TestCase {
     }
 
     public void testSimpleWithPArams() {
+        Map variables = new HashMap();
+        variables.put( "yyy", String.class );
+        variables.put( "iii", String.class );
         assertEquals( "org.drools.Func.func(yyy, iii)",
-                      fixer.fix( "func(yyy, iii)" ) );
+                      fixer.fix( "func(yyy, iii)", new AvailableVariables( new Map[] { variables }  ) ) );
     }
 
     public void testMoreComplex() {
+        Map variables = new HashMap();
+        variables.put( "yyy", String.class );
+        variables.put( "iii", String.class );        
         assertEquals( "xxx org.drools.Func.func(yyy, iii) yyy",
-                      fixer.fix( "xxx func(yyy, iii) yyy" ) );
+                      fixer.fix( "xxx func(yyy, iii) yyy", new AvailableVariables( new Map[] { variables }  )  ) );
     }
 
     public void testLeaveAloneNew() {
