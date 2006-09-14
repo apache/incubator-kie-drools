@@ -21,15 +21,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Accumulate;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 /**
  * AccumulateNode
@@ -46,7 +47,7 @@ public class AccumulateNode extends BetaNode {
 
     private final Accumulate        accumulate;
     private final FieldConstraint[] constraints;
-    private final BetaNodeBinder    resultsBinder;
+    private final BetaNodeConstraints    resultsBinder;
 
     /**
      * Construct.
@@ -68,8 +69,8 @@ public class AccumulateNode extends BetaNode {
               leftInput,
               rightInput,
               new FieldConstraint[0],
-              new BetaNodeBinder(),
-              new BetaNodeBinder(),
+              new BetaNodeConstraints(),
+              new BetaNodeConstraints(),
               accumulate );
     }
 
@@ -77,8 +78,8 @@ public class AccumulateNode extends BetaNode {
                           final TupleSource leftInput,
                           final ObjectSource rightInput,
                           final FieldConstraint[] constraints,
-                          final BetaNodeBinder sourceBinder,
-                          final BetaNodeBinder resultsBinder,
+                          final BetaNodeConstraints sourceBinder,
+                          final BetaNodeConstraints resultsBinder,
                           final Accumulate accumulate) {
         super( id,
                leftInput,
@@ -206,7 +207,7 @@ public class AccumulateNode extends BetaNode {
         // if tuple was propagated
         if((leftTuple.getLinkedTuples() != null) && (leftTuple.getLinkedTuples().size() > 0)) {
             // Need to store the accumulate result object for later disposal
-            InternalFactHandle[] handles = ((ReteTuple)((LinkedListObjectWrapper)leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
+            InternalFactHandle[] handles = ((Tuple)((LinkedListEntry)leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
             InternalFactHandle lastHandle = handles[handles.length-1];
             
             propagateRetractTuple( leftTuple,
@@ -235,7 +236,7 @@ public class AccumulateNode extends BetaNode {
         ObjectMatches objectMatches = memory.add( workingMemory,
                                                   handle );
 
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
@@ -321,9 +322,9 @@ public class AccumulateNode extends BetaNode {
             final ReteTuple leftTuple = (ReteTuple) it.next();
             final LinkedList linkedTuples = leftTuple.getLinkedTuples();
 
-            LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) linkedTuples.getFirst();
+            LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
             for ( int i = 0; i < index; i++ ) {
-                wrapper = (LinkedListObjectWrapper) wrapper.getNext();
+                wrapper = (LinkedListEntry) wrapper.getNext();
             }
             propagatedTuples.add( wrapper.getObject() );
         }

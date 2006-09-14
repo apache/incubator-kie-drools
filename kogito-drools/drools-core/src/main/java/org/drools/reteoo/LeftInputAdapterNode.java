@@ -16,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +24,7 @@ import java.util.Map.Entry;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaNodeBinder;
-import org.drools.common.DefaultFactHandle;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -35,7 +33,7 @@ import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Column
@@ -57,7 +55,7 @@ class LeftInputAdapterNode extends TupleSource
      */
     private static final long    serialVersionUID = 320L;
     private final ObjectSource   objectSource;
-    private final BetaNodeBinder binder;
+    private final BetaNodeConstraints binder;
 
     /**
      * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
@@ -89,7 +87,7 @@ class LeftInputAdapterNode extends TupleSource
      */
     public LeftInputAdapterNode(final int id,
                                 final ObjectSource source,
-                                final BetaNodeBinder binder) {
+                                final BetaNodeConstraints binder) {
         super( id );
         this.objectSource = source;
         this.binder = binder;
@@ -167,9 +165,9 @@ class LeftInputAdapterNode extends TupleSource
         // the handle might have been filtered out by the binder
         if ( list != null ) {
             for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
-                ReteTuple reteTuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
-                reteTuple.retractTuple( context,
-                                        workingMemory );
+                ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
+                tuple.retractTuple( context,
+                                    workingMemory );
             }
         }
     }
@@ -187,9 +185,9 @@ class LeftInputAdapterNode extends TupleSource
             if ( list != null ) {
                 // already existed, so propagate as a modify
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple reteTuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
-                    reteTuple.modifyTuple( context,
-                                           workingMemory );
+                    ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
+                    tuple.modifyTuple( context,
+                                       workingMemory );
                 }
             } else {
                 // didn't existed, so propagate as an assert
@@ -203,9 +201,9 @@ class LeftInputAdapterNode extends TupleSource
 
             if ( list != null ) {
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple reteTuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
-                    reteTuple.retractTuple( context,
-                                            workingMemory );
+                    ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
+                    tuple.retractTuple( context,
+                                        workingMemory );
                 }
             }
         }

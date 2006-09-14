@@ -28,7 +28,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -208,7 +208,7 @@ class EvalConditionNode extends TupleSource
             final ReteTuple tuple = (ReteTuple) it.next();
             final ReteTuple child = new ReteTuple( tuple );
             // no TupleMatch so instead add as a linked tuple
-            tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
+            tuple.addLinkedTuple( new LinkedListEntry( child ) );
             ((TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 )).assertTuple( child,
                                                                                          context,
                                                                                          workingMemory );
@@ -276,9 +276,9 @@ class EvalConditionNode extends TupleSource
             final ReteTuple leftTuple = (ReteTuple) it.next();
             final LinkedList linkedTuples = leftTuple.getLinkedTuples();
 
-            LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) linkedTuples.getFirst();
+            LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
             for ( int i = 0; i < index; i++ ) {
-                wrapper = (LinkedListObjectWrapper) wrapper.getNext();
+                wrapper = (LinkedListEntry) wrapper.getNext();
             }
             propagatedTuples.add( wrapper.getObject() );
         }

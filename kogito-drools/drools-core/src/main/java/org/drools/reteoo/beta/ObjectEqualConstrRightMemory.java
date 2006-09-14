@@ -28,11 +28,11 @@ import org.drools.WorkingMemory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ObjectMatches;
-import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.Tuple;
 import org.drools.util.MultiLinkedList;
 import org.drools.util.MultiLinkedListNodeWrapper;
 
@@ -167,7 +167,7 @@ public class ObjectEqualConstrRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
     public final Iterator iterator(final WorkingMemory workingMemory,
-                                   final ReteTuple tuple) {
+                                   final Tuple tuple) {
         this.selectPossibleMatches( workingMemory,
                                     tuple );
         Iterator iterator = null;
@@ -232,7 +232,7 @@ public class ObjectEqualConstrRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
     public final void selectPossibleMatches(final WorkingMemory workingMemory,
-                                            final ReteTuple tuple) {
+                                            final Tuple tuple) {
         final Object select = this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() );
         final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         this.selectedList = (MultiLinkedList) this.memoryMap.get( hash );

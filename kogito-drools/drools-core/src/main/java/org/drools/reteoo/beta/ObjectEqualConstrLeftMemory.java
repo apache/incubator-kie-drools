@@ -31,6 +31,7 @@ import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
 import org.drools.util.MultiLinkedList;
 import org.drools.util.MultiLinkedListNode;
@@ -123,7 +124,7 @@ public class ObjectEqualConstrLeftMemory
     public final void add(final WorkingMemory workingMemory,
                           final MultiLinkedListNodeWrapper tuple) {
         final MultiLinkedList list = this.getTupleBucket( workingMemory,
-                                                          (ReteTuple) tuple.getNode() );
+                                                          (Tuple) tuple.getNode() );
 
         // adding the wrapper instead of the node
         list.add( tuple );
@@ -236,8 +237,8 @@ public class ObjectEqualConstrLeftMemory
         final TreeSet set = new TreeSet( new Comparator() {
             public int compare(Object arg0,
                                Object arg1) {
-                ReteTuple t0 = (ReteTuple) arg0;
-                ReteTuple t1 = (ReteTuple) arg1;
+                Tuple t0 = (Tuple) arg0;
+                Tuple t1 = (Tuple) arg1;
                 return (t0.getRecency() <= t1.getRecency()) ? -1 : 1;
             }
         } );
@@ -285,7 +286,7 @@ public class ObjectEqualConstrLeftMemory
      * @return
      */
     private final MultiLinkedList getTupleBucket(final WorkingMemory workingMemory,
-                                                 final ReteTuple tuple) {
+                                                 final Tuple tuple) {
         final Integer hash = getTupleHash( workingMemory,
                                            tuple );
         MultiLinkedList list = (MultiLinkedList) this.memoryMap.get( hash );
@@ -305,7 +306,7 @@ public class ObjectEqualConstrLeftMemory
      * @return
      */
     private final Integer getTupleHash(final WorkingMemory workingMemory,
-                                       final ReteTuple tuple) {
+                                       final Tuple tuple) {
         final Object select = this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() );
         final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         return hash;

@@ -22,14 +22,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 /**
  * <code>NotNode</code> extends <code>BetaNode</code> to perform tests for
@@ -52,7 +52,7 @@ public class NotNode extends BetaNode {
     /**
      * 
      */
-    private static final long serialVersionUID = 5876745507400274713L;
+    private static final long serialVersionUID = 320L;
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
 
@@ -74,7 +74,7 @@ public class NotNode extends BetaNode {
         super( id,
                leftInput,
                rightInput,
-               new BetaNodeBinder() );
+               new BetaNodeConstraints() );
     }
 
     /**
@@ -88,7 +88,7 @@ public class NotNode extends BetaNode {
     NotNode(final int id,
             final TupleSource leftInput,
             final ObjectSource rightInput,
-            final BetaNodeBinder joinNodeBinder) {
+            final BetaNodeConstraints joinNodeBinder) {
         super( id,
                leftInput,
                rightInput,
@@ -115,7 +115,7 @@ public class NotNode extends BetaNode {
         memory.add( workingMemory,
                     leftTuple );
 
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
 
         for ( final Iterator it = memory.rightObjectIterator( workingMemory,
                                                               leftTuple ); it.hasNext(); ) {
@@ -156,7 +156,7 @@ public class NotNode extends BetaNode {
         final ObjectMatches objectMatches = memory.add( workingMemory,
                                                         handle );
 
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
 
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {
@@ -168,9 +168,8 @@ public class NotNode extends BetaNode {
                          binder,
                          workingMemory );
             if ( previousSize == 0 && leftTuple.matchesSize() != 0 ) {
-                LinkedList list = leftTuple.getLinkedTuples();
-                for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                for ( LinkedListNode node = leftTuple.getChildEntries().getFirst(); node != null; node = node.getNext() ) {
+                    ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
                     tuple.retractTuple( context,
                                         workingMemory );
                 }
@@ -204,12 +203,7 @@ public class NotNode extends BetaNode {
             leftTuple.removeMatch( handle );
 
             if ( previousSize != 0 && leftTuple.matchesSize() == 0 ) {
-                LinkedList list = leftTuple.getLinkedTuples();
-                for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
-                    tuple.assertTuple( context,
-                                       workingMemory );
-                }
+                this.sink.propagateAssertTuple( leftTuple, context, workingMemory );
             }
         }
     }
@@ -240,9 +234,8 @@ public class NotNode extends BetaNode {
                 tupleMatch.getObjectMatches().remove( tupleMatch );
             }
         } else {
-            LinkedList list = leftTuple.getLinkedTuples();
-            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.getFirst() ) {
-                ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+            for ( LinkedListNode node = leftTuple.getChildEntries().getFirst(); node != null; node = node.getNext() ) {
+                ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
                 tuple.retractTuple( context,
                                     workingMemory );
             }
@@ -269,7 +262,7 @@ public class NotNode extends BetaNode {
         leftTuple.getTupleMatches().clear();
 
         final int previous = oldMatches.size();
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
 
         for ( final Iterator rightIterator = memory.rightObjectIterator( workingMemory,
                                                                          leftTuple ); rightIterator.hasNext(); ) {
@@ -306,9 +299,8 @@ public class NotNode extends BetaNode {
         }
 
         if ( previous == 0 && leftTuple.matchesSize() == 0 ) {
-            LinkedList list = leftTuple.getLinkedTuples();
-            for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+            for ( LinkedListNode node = leftTuple.getChildEntries().getFirst(); node != null; node = node.getNext() ) {
+                ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
                 tuple.modifyTuple( context,
                                    workingMemory );
             }
@@ -317,9 +309,8 @@ public class NotNode extends BetaNode {
                                             context,
                                             workingMemory );
         } else if ( previous == 0 && leftTuple.matchesSize() != 0 ) {
-            LinkedList list = leftTuple.getLinkedTuples();
-            for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+            for ( LinkedListNode node = leftTuple.getChildEntries().getFirst(); node != null; node = node.getNext() ) {
+                ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
                 tuple.retractTuple( context,
                                     workingMemory );
             }
@@ -338,7 +329,7 @@ public class NotNode extends BetaNode {
                     objectMatches );
 
         TupleMatch tupleMatch = objectMatches.getFirstTupleMatch();
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
 
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {
@@ -356,9 +347,8 @@ public class NotNode extends BetaNode {
                     objectMatches.remove( tupleMatch );
                 }
                 if ( previous == 0 && leftTuple.matchesSize() == 0 ) {
-                    LinkedList list = leftTuple.getLinkedTuples();
-                    for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                        ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                    for ( LinkedListNode node = leftTuple.getChildEntries().getFirst(); node != null; node = node.getNext() ) {
+                        ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
                         tuple.modifyTuple( context,
                                            workingMemory );
                     }
@@ -367,9 +357,8 @@ public class NotNode extends BetaNode {
                                                     context,
                                                     workingMemory );
                 } else if ( previous == 0 && leftTuple.matchesSize() != 0 ) {
-                    LinkedList list = leftTuple.getLinkedTuples();
-                    for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                        ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                    for ( LinkedListNode node = leftTuple.getChildEntries().getFirst(); node != null; node = node.getNext() ) {
+                        ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
                         tuple.retractTuple( context,
                                             workingMemory );
                     }
@@ -385,9 +374,8 @@ public class NotNode extends BetaNode {
                              binder,
                              workingMemory );
                 if ( previousSize == 0 && leftTuple.matchesSize() != 0 ) {
-                    LinkedList list = leftTuple.getLinkedTuples();
-                    for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                        ReteTuple tuple = (ReteTuple) ((LinkedListObjectWrapper) node).getObject();
+                    for ( LinkedListNode node = leftTuple.getChildEntries().getFirst(); node != null; node = node.getNext() ) {
+                        ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
                         tuple.retractTuple( context,
                                             workingMemory );
                     }

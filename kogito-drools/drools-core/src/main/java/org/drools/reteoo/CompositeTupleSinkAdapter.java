@@ -9,7 +9,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
     private TupleSinkNodeList sinks;
@@ -30,16 +30,12 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
                                      InternalFactHandle handle,
                                      TupleMatch tupleMatch,
                                      PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
-        TupleSinkNode sink = this.sinks.getFirst();
-        ReteTuple joined = new ReteTuple(tuple, handle, (TupleSink) sink );
-        tupleMatch.addJoinedTuple( joined );
-        joined.assertTuple( context, workingMemory );           
+                                     InternalWorkingMemory workingMemory) {           
         
-        for ( sink = sink.getNextTupleSinkNode();sink != null; sink = sink.getNextTupleSinkNode() ) {
-            ReteTuple cloned = new ReteTuple(joined, sink);
-            tupleMatch.addJoinedTuple( cloned );
-            cloned.assertTuple( context, workingMemory );                
+        for ( TupleSinkNode  sink = this.sinks.getFirst();sink != null; sink = sink.getNextTupleSinkNode() ) {
+            ReteTuple child = new ReteTuple(tuple, handle, (TupleSink) sink );            
+            tupleMatch.addJoinedTuple( child );
+            child.assertTuple( context, workingMemory );                
         }
     }
     
@@ -47,9 +43,8 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory) {        
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            final ReteTuple child = new ReteTuple( tuple, sink );
-            // no TupleMatch so instead add as a linked tuple
-            tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
+            ReteTuple child = new ReteTuple( tuple, sink);
+            tuple.addChildEntry( child );
             child.assertTuple( context, workingMemory );            
         }
     }    
@@ -60,7 +55,7 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
         final LinkedList list = new LinkedList();
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {    
             ReteTuple tuple = new ReteTuple( handle, sink );
-            list.add( new LinkedListObjectWrapper( tuple ) );
+            list.add( new LinkedListEntry( tuple ) );
             tuple.assertTuple( context, workingMemory );
         }     
         return list;
@@ -83,8 +78,8 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
 
             final TupleSink sink = sinks.getLast();
             final ReteTuple tuple = new ReteTuple( tupleMatch.getTuple(),
-                                                   tupleMatch.getObjectMatches().getFactHandle(), 
-                                                   sink  );
+                                                     tupleMatch.getObjectMatches().getFactHandle(), 
+                                                    sink  );
             tupleMatch.addJoinedTuple( tuple );
             tuple.assertTuple( context, workingMemory );                          
     }
@@ -95,7 +90,7 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
                                       InternalWorkingMemory workingMemory) {
         TupleSink sink = this.sinks.getLast();
         ReteTuple tuple = new ReteTuple( handle, sink );
-        list.add( new LinkedListObjectWrapper( tuple ) );
+        list.add( new LinkedListEntry( tuple ) );
         tuple.assertTuple( context, workingMemory );                       
     }    
     
@@ -117,9 +112,9 @@ public class CompositeTupleSinkAdapter implements TupleSinkPropagator {
 
         for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {
             final LinkedList tuples = (LinkedList) it.next();
-            LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) tuples.getFirst();
+            LinkedListEntry wrapper = (LinkedListEntry) tuples.getFirst();
             for ( int i = 0; i < index; i++ ) {
-                wrapper = (LinkedListObjectWrapper) wrapper.getNext();
+                wrapper = (LinkedListEntry) wrapper.getNext();
             }
             propagatedTuples.add( wrapper.getObject() );
         }

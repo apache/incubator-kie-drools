@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
@@ -81,7 +81,7 @@ class JoinNode extends BetaNode {
     JoinNode(final int id,
              final TupleSource leftInput,
              final ObjectSource rightInput,
-             final BetaNodeBinder binder) {
+             final BetaNodeConstraints binder) {
         super( id,
                leftInput,
                rightInput,
@@ -114,7 +114,7 @@ class JoinNode extends BetaNode {
         memory.add( workingMemory,
                     leftTuple );
 
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
 
         for ( final Iterator it = memory.rightObjectIterator( workingMemory,
                                                               leftTuple ); it.hasNext(); ) {
@@ -160,7 +160,7 @@ class JoinNode extends BetaNode {
         final ObjectMatches objectMatches = memory.add( workingMemory,
                                                         handle );
 
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
@@ -268,7 +268,7 @@ class JoinNode extends BetaNode {
             // ensure the tuple is at the top of the memory
             memory.add( workingMemory,
                         leftTuple );
-            final BetaNodeBinder binder = getJoinNodeBinder();
+            final BetaNodeConstraints binder = getJoinNodeBinder();
 
             for ( final Iterator rightIterator = memory.rightObjectIterator( workingMemory,
                                                                              leftTuple ); rightIterator.hasNext(); ) {
@@ -335,7 +335,7 @@ class JoinNode extends BetaNode {
                     objectMatches );
 
         TupleMatch tupleMatch = objectMatches.getFirstTupleMatch();
-        final BetaNodeBinder binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = getJoinNodeBinder();
 
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {

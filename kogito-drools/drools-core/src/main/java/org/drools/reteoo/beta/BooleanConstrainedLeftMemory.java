@@ -27,6 +27,7 @@ import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.Tuple;
 import org.drools.util.MultiLinkedList;
 import org.drools.util.MultiLinkedListNode;
 import org.drools.util.MultiLinkedListNodeWrapper;
@@ -117,7 +118,7 @@ public class BooleanConstrainedLeftMemory
      */
     public final void add(final WorkingMemory workingMemory,
                           final MultiLinkedListNodeWrapper tuple) {
-        final boolean partition = ((Boolean) this.declaration.getValue( ((ReteTuple) tuple.getNode()).get( this.column.getFactIndex() ).getObject() )).booleanValue();
+        final boolean partition = ((Boolean) this.declaration.getValue( ((Tuple) tuple.getNode()).get( this.column.getFactIndex() ).getObject() )).booleanValue();
         if ( partition == true ) {
             this.trueList.add( tuple );
         } else {
@@ -217,19 +218,19 @@ public class BooleanConstrainedLeftMemory
         return new Iterator() {
             Iterator  trueIt       = BooleanConstrainedLeftMemory.this.trueList.iterator();
             Iterator  falseIt      = BooleanConstrainedLeftMemory.this.falseList.iterator();
-            ReteTuple currentTrue  = null;
-            ReteTuple currentFalse = null;
-            ReteTuple current      = null;
-            ReteTuple next         = null;
+            Tuple currentTrue  = null;
+            Tuple currentFalse = null;
+            Tuple current      = null;
+            Tuple next         = null;
 
             public final boolean hasNext() {
                 boolean hasnext = false;
                 if ( this.next == null ) {
                     if ( (this.currentTrue == null) && (this.trueIt.hasNext()) ) {
-                        this.currentTrue = (ReteTuple) this.trueIt.next();
+                        this.currentTrue = (Tuple) this.trueIt.next();
                     }
                     if ( (this.currentFalse == null) && (this.falseIt.hasNext()) ) {
-                        this.currentFalse = (ReteTuple) this.falseIt.next();
+                        this.currentFalse = (Tuple) this.falseIt.next();
                     }
                     if ( (this.currentTrue != null) && (this.currentFalse != null) ) {
                         if ( this.currentTrue.getRecency() <= this.currentFalse.getRecency() ) {

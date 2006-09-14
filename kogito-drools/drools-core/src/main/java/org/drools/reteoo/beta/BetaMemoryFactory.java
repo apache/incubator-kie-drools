@@ -21,7 +21,7 @@ import javax.naming.OperationNotSupportedException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.FieldConstraint;
@@ -49,7 +49,7 @@ public class BetaMemoryFactory {
      * @return the newly created BetaLeftMemory 
      */
     public static BetaLeftMemory newLeftMemory(final RuleBaseConfiguration config,
-                                               final BetaNodeBinder binder) {
+                                               final BetaNodeConstraints binder) {
         BetaLeftMemory memory = null;
         BetaLeftMemory innerMostMemory = null;
         final FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
@@ -109,7 +109,7 @@ public class BetaMemoryFactory {
      * @return the newly created BetaRightMemory 
      */
     public static BetaRightMemory newRightMemory(final RuleBaseConfiguration config,
-                                                 final BetaNodeBinder binder) {
+                                                 final BetaNodeConstraints binder) {
         BetaRightMemory memory = null;
         BetaRightMemory innerMostMemory = null;
         final FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
