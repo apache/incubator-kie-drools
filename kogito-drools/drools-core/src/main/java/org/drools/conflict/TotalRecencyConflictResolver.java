@@ -19,6 +19,7 @@ package org.drools.conflict;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
+import org.drools.spi.Tuple;
 
 /**
  * A conflict resolver that compares the total recency of a tuple when 
@@ -74,10 +75,10 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
         long leftRecency = 0;
         long rightRecency = 0;
         if ( lhs.getTuple() instanceof ReteTuple ) {
-            leftRecency = ((ReteTuple) lhs.getTuple()).getRecency();
+            leftRecency = ((Tuple) lhs.getTuple()).getRecency();
         }
         if ( rhs.getTuple() instanceof ReteTuple ) {
-            rightRecency = ((ReteTuple) rhs.getTuple()).getRecency();
+            rightRecency = ((Tuple) rhs.getTuple()).getRecency();
         }
         return (rightRecency > leftRecency) ? 1 : (rightRecency < leftRecency) ? -1 : 0;
     }
