@@ -33,7 +33,7 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.rule.Accumulate;
@@ -252,7 +252,7 @@ class ReteooBuilder
                 continue;
             }
 
-            BetaNodeBinder binder = null;
+            BetaNodeConstraints binder = null;
             Column column = null;
 
             if ( object instanceof Column ) {
@@ -366,7 +366,7 @@ class ReteooBuilder
                                                                  alphaNodeSource ) );
     }
 
-    private BetaNodeBinder attachColumn(final Column column,
+    private BetaNodeConstraints attachColumn(final Column column,
                                         final GroupElement parent,
                                         final boolean removeIdentities) throws InvalidPatternException {
         // Adjusting offset in case a previous Initial-Fact was added to the network
@@ -383,12 +383,12 @@ class ReteooBuilder
         final List predicates = attachAlphaNodes( column,
                                                   removeIdentities );
 
-        BetaNodeBinder binder;
+        BetaNodeConstraints binder;
 
         if ( !predicates.isEmpty() ) {
-            binder = new BetaNodeBinder( (FieldConstraint[]) predicates.toArray( new FieldConstraint[predicates.size()] ) );
+            binder = new BetaNodeConstraints( (FieldConstraint[]) predicates.toArray( new FieldConstraint[predicates.size()] ) );
         } else {
-            binder = new BetaNodeBinder();
+            binder = new BetaNodeConstraints();
         }
 
         return binder;
@@ -449,7 +449,7 @@ class ReteooBuilder
     private void attachNot(final TupleSource tupleSource,
                            final Not not,
                            final ObjectSource ObjectSource,
-                           final BetaNodeBinder binder,
+                           final BetaNodeConstraints binder,
                            final Column column) {
         final NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                                    tupleSource,
@@ -463,7 +463,7 @@ class ReteooBuilder
             attachNot( tupleSource,
                        (Not) not.getChild(),
                        adapter,
-                       new BetaNodeBinder(),
+                       new BetaNodeConstraints(),
                        column );
         } else if ( not.getChild() instanceof Exists ) {
             final RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
@@ -472,7 +472,7 @@ class ReteooBuilder
             attachExists( tupleSource,
                           (Exists) not.getChild(),
                           adapter,
-                          new BetaNodeBinder(),
+                          new BetaNodeConstraints(),
                           column );
         } else {
             this.tupleSource = notNode;
@@ -482,7 +482,7 @@ class ReteooBuilder
     private void attachExists(final TupleSource tupleSource,
                               final Exists exists,
                               final ObjectSource ObjectSource,
-                              final BetaNodeBinder binder,
+                              final BetaNodeConstraints binder,
                               final Column column) {
         NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                              tupleSource,
@@ -492,7 +492,7 @@ class ReteooBuilder
                                                                                                        column.getFactIndex(),
                                                                                                        notNode ) );
 
-        BetaNodeBinder identityBinder = new BetaNodeBinder( new InstanceEqualsConstraint( column.getFactIndex() ) );
+        BetaNodeConstraints identityBinder = new BetaNodeConstraints( new InstanceEqualsConstraint( column.getFactIndex() ) );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
                                                      adapter,
@@ -505,7 +505,7 @@ class ReteooBuilder
             attachNot( tupleSource,
                        (Not) exists.getChild(),
                        adapter,
-                       new BetaNodeBinder(),
+                       new BetaNodeConstraints(),
                        column );
         } else if ( exists.getChild() instanceof Exists ) {
             adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
@@ -514,7 +514,7 @@ class ReteooBuilder
             attachExists( tupleSource,
                           (Exists) exists.getChild(),
                           adapter,
-                          new BetaNodeBinder(),
+                          new BetaNodeConstraints(),
                           column );
         } else {
             this.tupleSource = notNode;
@@ -613,12 +613,12 @@ class ReteooBuilder
             }
         }
 
-        BetaNodeBinder binder;
+        BetaNodeConstraints binder;
 
         if ( !predicateConstraints.isEmpty() ) {
-            binder = new BetaNodeBinder( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            binder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
         } else {
-            binder = new BetaNodeBinder();
+            binder = new BetaNodeConstraints();
         }
 
         this.tupleSource = attachNode( new FromNode( id++,
@@ -647,7 +647,7 @@ class ReteooBuilder
         }
 
         final Column sourceColumn = accumulate.getSourceColumn();
-        final BetaNodeBinder sourceBinder = attachColumn( sourceColumn,
+        final BetaNodeConstraints sourceBinder = attachColumn( sourceColumn,
                                                           parent,
                                                           true );
 
@@ -688,11 +688,11 @@ class ReteooBuilder
             }
         }
 
-        BetaNodeBinder resultsBinder = null;
+        BetaNodeConstraints resultsBinder = null;
         if ( !predicateConstraints.isEmpty() ) {
-            resultsBinder = new BetaNodeBinder( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            resultsBinder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
         } else {
-            resultsBinder = new BetaNodeBinder();
+            resultsBinder = new BetaNodeConstraints();
         }
 
         this.tupleSource = attachNode( new AccumulateNode( id++,
@@ -722,7 +722,7 @@ class ReteooBuilder
         }
 
         final Column sourceColumn = collect.getSourceColumn();
-        final BetaNodeBinder sourceBinder = attachColumn( sourceColumn,
+        final BetaNodeConstraints sourceBinder = attachColumn( sourceColumn,
                                                           parent,
                                                           true );
 
@@ -763,11 +763,11 @@ class ReteooBuilder
             }
         }
 
-        BetaNodeBinder resultsBinder = null;
+        BetaNodeConstraints resultsBinder = null;
         if ( !predicateConstraints.isEmpty() ) {
-            resultsBinder = new BetaNodeBinder( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            resultsBinder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
         } else {
-            resultsBinder = new BetaNodeBinder();
+            resultsBinder = new BetaNodeConstraints();
         }
 
         this.tupleSource = attachNode( new CollectNode( id++,

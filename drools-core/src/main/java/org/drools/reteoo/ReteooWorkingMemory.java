@@ -87,7 +87,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     public void modifyObject(final FactHandle factHandle,
                              final Object object,
                              final Rule rule,
-                             final Activation activation) throws FactException {
+                             final Activation activation) throws FactException {        
         try {
             this.lock.lock();
             final int status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();

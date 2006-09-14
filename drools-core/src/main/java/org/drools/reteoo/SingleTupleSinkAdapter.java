@@ -9,7 +9,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 public class SingleTupleSinkAdapter
     implements
@@ -34,12 +34,12 @@ public class SingleTupleSinkAdapter
     }
 
     public LinkedList createAndAssertTuple(InternalFactHandle handle,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory) {
         final LinkedList list = new LinkedList();
         ReteTuple tuple = new ReteTuple( handle,
                                          sink );
-        list.add( new LinkedListObjectWrapper( tuple ) );
+        list.add( new LinkedListEntry( tuple ) );
         tuple.assertTuple( context,
                            workingMemory );
         return list;
@@ -51,7 +51,7 @@ public class SingleTupleSinkAdapter
         final ReteTuple child = new ReteTuple( tuple,
                                                sink );
         // no TupleMatch so instead add as a linked tuple
-        tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
+        tuple.addChildEntry( child );
         child.assertTuple( context,
                            workingMemory );
     }
@@ -83,12 +83,12 @@ public class SingleTupleSinkAdapter
 
         for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {
             final LinkedList tuples = (LinkedList) it.next();
-            propagatedTuples.add( ((LinkedListObjectWrapper) tuples.getFirst()).getObject() );
+            propagatedTuples.add( ((LinkedListEntry) tuples.getFirst()).getObject() );
         }
 
         return propagatedTuples;
     }
-    
+
     public int size() {
         return 1;
     }

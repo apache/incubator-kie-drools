@@ -26,7 +26,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ObjectMatches;
-import org.drools.reteoo.ReteTuple;
+import org.drools.spi.Tuple;
 import org.drools.util.IdentityMap;
 import org.drools.util.MultiLinkedList;
 import org.drools.util.MultiLinkedListNodeWrapper;
@@ -132,7 +132,7 @@ public class InstanceEqualConstrRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
     public final Iterator iterator(final WorkingMemory workingMemory,
-                                   final ReteTuple tuple) {
+                                   final Tuple tuple) {
         this.selectPossibleMatches( workingMemory,
                                     tuple );
         Iterator iterator = null;
@@ -159,7 +159,7 @@ public class InstanceEqualConstrRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
     public final void selectPossibleMatches(final WorkingMemory workingMemory,
-                                            final ReteTuple tuple) {
+                                            final Tuple tuple) {
         final Object select = tuple.get( this.column ).getObject();
         this.selectedObject = this.memoryMap.get( select );
 

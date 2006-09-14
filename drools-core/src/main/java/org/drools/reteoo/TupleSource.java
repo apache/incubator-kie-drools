@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.common.BaseNode;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.

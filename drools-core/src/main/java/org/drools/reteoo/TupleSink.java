@@ -56,7 +56,5 @@ interface TupleSink
     void modifyTuple(ReteTuple tuple,
                      PropagationContext context,
                      InternalWorkingMemory workingMemory);
-    
-    
 
 }

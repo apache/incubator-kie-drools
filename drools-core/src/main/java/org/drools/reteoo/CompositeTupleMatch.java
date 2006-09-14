@@ -15,13 +15,12 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.AbstractBaseLinkedListNode;
+import org.drools.util.LinkedList;
+import org.drools.util.LinkedListNode;
+import org.drools.util.LinkedListEntry;
 
 /**
  * <code>TupleMatch</code> maintains a reference to the parent <code>ReteTuple</code> and a <code>List</code> of all resulting joins. 
@@ -37,12 +36,14 @@ import org.drools.util.AbstractBaseLinkedListNode;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class CompositeTupleMatch extends AbstractBaseLinkedListNode implements TupleMatch {
-    private ReteTuple          tuple;
-    
-    private LinkedList list;
+public class CompositeTupleMatch extends AbstractBaseLinkedListNode
+    implements
+    TupleMatch {
+    private ReteTuple     tuple;
 
-    private ObjectMatches      objectMatches;
+    private LinkedList    list;
+
+    private ObjectMatches objectMatches;
 
     /**
      * Construct a <code>TupleMatch</code> with references to the parent <code>ReteTuple</code> and 
@@ -52,9 +53,9 @@ public class CompositeTupleMatch extends AbstractBaseLinkedListNode implements T
      * @param objectMatches
      */
     public CompositeTupleMatch(final ReteTuple tuple,
-                      final ObjectMatches objectMatches) {
+                               final ObjectMatches objectMatches) {
         this.tuple = tuple;
-        this.objectMatches = objectMatches;       
+        this.objectMatches = objectMatches;
         this.list = new LinkedList();
     }
 
@@ -72,14 +73,14 @@ public class CompositeTupleMatch extends AbstractBaseLinkedListNode implements T
         return this.objectMatches;
     }
 
-    public void addJoinedTuple(ReteTuple tuple) {
-        list.add( tuple );
+    public void addJoinedTuple(ReteTuple joined) {
+        this.list.add( new LinkedListEntry( joined ) );
     }
 
     public void propagateRetractTuple(final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
-        for ( Iterator it = this.list.iterator(); it.hasNext(); ) {
-            ReteTuple joined = (ReteTuple) it.next();
+        for ( LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext() ) {
+            ReteTuple joined = (ReteTuple) ((LinkedListEntry) node).getObject();
             joined.retractTuple( context,
                                  workingMemory );
         }
@@ -87,20 +88,20 @@ public class CompositeTupleMatch extends AbstractBaseLinkedListNode implements T
 
     public void propagateModifyTuple(final PropagationContext context,
                                      final InternalWorkingMemory workingMemory) {
-        for ( Iterator it = this.list.iterator(); it.hasNext(); ) {
-            ReteTuple joined = (ReteTuple) it.next();
+        for ( LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext() ) {
+            ReteTuple joined = (ReteTuple) ((LinkedListEntry) node).getObject();
             joined.modifyTuple( context,
                                 workingMemory );
         }
     }
 
     public ReteTuple getTupleForSink(TupleSink sink) {
-        for ( Iterator it = this.list.iterator(); it.hasNext(); ) {
-            ReteTuple joined = (ReteTuple) it.next();
-            if ( sink.equals(  joined.getTupleSink() ) ) {
+        for ( LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext() ) {
+            ReteTuple joined = (ReteTuple) ((LinkedListEntry) node).getObject();
+            if ( sink.equals( joined.getTupleSink() ) ) {
                 return joined;
             }
-        }    
+        }
         return null;
     }
 

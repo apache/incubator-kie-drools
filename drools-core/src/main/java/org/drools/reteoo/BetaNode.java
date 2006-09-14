@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -52,7 +52,7 @@ abstract class BetaNode extends TupleSource implements
     /** The right input <code>TupleSource</code>. */
     private final ObjectSource   rightInput;
 
-    private final BetaNodeBinder joinNodeBinder;
+    private final BetaNodeConstraints joinNodeBinder;
     
     private TupleSinkNode previousTupleSinkNode;
     private TupleSinkNode nextTupleSinkNode;
@@ -80,7 +80,7 @@ abstract class BetaNode extends TupleSource implements
         this( id,
               leftInput,
               rightInput,
-              BetaNodeBinder.simpleBinder );
+              BetaNodeConstraints.emptyBetaNodeConstraints );
     }
 
     /**
@@ -94,7 +94,7 @@ abstract class BetaNode extends TupleSource implements
     BetaNode(final int id,
              final TupleSource leftInput,
              final ObjectSource rightInput,
-             final BetaNodeBinder joinNodeBinder) {
+             final BetaNodeConstraints joinNodeBinder) {
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
@@ -177,14 +177,14 @@ abstract class BetaNode extends TupleSource implements
     /**
      * @return the <code>joinNodeBinder</code>
      */
-    BetaNodeBinder getJoinNodeBinder() {
+    BetaNodeConstraints getJoinNodeBinder() {
         return this.joinNodeBinder;
     }    
     
     protected TupleMatch attemptJoin(final ReteTuple leftTuple,
                                      final InternalFactHandle handle,
                                      final ObjectMatches objectMatches,
-                                     final BetaNodeBinder binder,
+                                     final BetaNodeConstraints binder,
                                      final InternalWorkingMemory workingMemory) {
         if ( binder.isAllowed( handle,
                                leftTuple,

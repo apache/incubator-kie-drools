@@ -34,6 +34,7 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -99,9 +100,9 @@ final class TerminalNode extends BaseNode
     // org.drools.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    public void assertTuple(final ReteTuple tuple,
+    public void assertTuple(ReteTuple tuple,
                             final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {        
         assertTuple( tuple,
                      context,
                      workingMemory,
@@ -123,6 +124,10 @@ final class TerminalNode extends BaseNode
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
+        //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
+        ReteTuple cloned = new ReteTuple( tuple );
+        
+        
         // if the current Rule is no-loop and the origin rule is the same then
         // return
         if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
@@ -134,7 +139,7 @@ final class TerminalNode extends BaseNode
 
         if ( dur != null && dur.getDuration( tuple ) > 0 ) {
             final ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
-                                                                      tuple,
+                                                                      cloned,
                                                                       agenda,
                                                                       context,
                                                                       this.rule );
@@ -186,7 +191,7 @@ final class TerminalNode extends BaseNode
             }
 
             final AgendaItem item = new AgendaItem( context.getPropagationNumber(),
-                                                    tuple,
+                                                    cloned,
                                                     context,
                                                     this.rule );
 

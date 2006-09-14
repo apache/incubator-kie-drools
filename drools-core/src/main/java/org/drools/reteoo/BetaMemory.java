@@ -23,11 +23,12 @@ import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.beta.BetaLeftMemory;
 import org.drools.reteoo.beta.BetaMemoryFactory;
 import org.drools.reteoo.beta.BetaRightMemory;
+import org.drools.spi.Tuple;
 
 /**
  * Memory for left and right inputs of a <code>BetaNode</code>. The LeftMemory is a <code>LinkedList</code> for all incoming 
@@ -74,7 +75,7 @@ class BetaMemory
      * <code>FactHandle</code>s
      */
     BetaMemory(final RuleBaseConfiguration config,
-               final BetaNodeBinder binder) {
+               final BetaNodeConstraints binder) {
         this.leftMemory = BetaMemoryFactory.newLeftMemory( config,
                                                            binder );
         this.rightMemory = BetaMemoryFactory.newRightMemory( config,
@@ -104,7 +105,7 @@ class BetaMemory
      * @return The an Iterator for the right memory
      */
     Iterator rightObjectIterator(final WorkingMemory wm,
-                                 final ReteTuple tuple) {
+                                 final Tuple tuple) {
         return this.rightMemory.iterator( wm,
                                           tuple );
     }

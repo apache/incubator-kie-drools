@@ -23,7 +23,7 @@ import javax.naming.OperationNotSupportedException;
 
 import org.drools.WorkingMemory;
 import org.drools.reteoo.ObjectMatches;
-import org.drools.reteoo.ReteTuple;
+import org.drools.spi.Tuple;
 import org.drools.util.MultiLinkedListNodeWrapper;
 
 /**
@@ -93,7 +93,7 @@ public interface BetaRightMemory extends Serializable {
      * @return
      */
     public Iterator iterator(WorkingMemory workingMemory,
-                             ReteTuple tuple);
+                             Tuple tuple);
 
     /**
      * Returns an iterator that allows to iterate over all the ObjectMatches
@@ -125,7 +125,7 @@ public interface BetaRightMemory extends Serializable {
      * @param handle
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
-                                      ReteTuple tuple);
+                                      Tuple tuple);
 
     /**
      * Returns true if the matches is a possible match to the tuple

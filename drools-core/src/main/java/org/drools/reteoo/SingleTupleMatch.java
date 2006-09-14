@@ -18,7 +18,9 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 import org.drools.util.AbstractBaseLinkedListNode;
+import org.drools.util.LinkedListEntry;
 
 /**
  * <code>TupleMatch</code> maintains a reference to the parent <code>ReteTuple</code> and a <code>List</code> of all resulting joins. 
@@ -36,8 +38,8 @@ import org.drools.util.AbstractBaseLinkedListNode;
  */
 public class SingleTupleMatch extends AbstractBaseLinkedListNode implements TupleMatch {
     private ReteTuple          tuple;
-
-    private ReteTuple          child;
+    
+    private ReteTuple           joined;
 
     private ObjectMatches      objectMatches;
 
@@ -72,7 +74,7 @@ public class SingleTupleMatch extends AbstractBaseLinkedListNode implements Tupl
      * @see org.drools.reteoo.ITupleMatch#addJoinedTuple(org.drools.reteoo.ReteTuple)
      */
     public void addJoinedTuple(final ReteTuple tuple) {
-        this.child = tuple;
+        this.joined = tuple;
     }
 
     /* (non-Javadoc)
@@ -80,7 +82,7 @@ public class SingleTupleMatch extends AbstractBaseLinkedListNode implements Tupl
      */
     public void propagateRetractTuple(final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
-        this.child.retractTuple( context, workingMemory );
+        this.joined.retractTuple( context, workingMemory );
     }
 
     /* (non-Javadoc)
@@ -88,14 +90,14 @@ public class SingleTupleMatch extends AbstractBaseLinkedListNode implements Tupl
      */
     public void propagateModifyTuple(final PropagationContext context,
                                      final InternalWorkingMemory workingMemory) {
-        this.child.modifyTuple( context, workingMemory );
+        this.joined.modifyTuple( context, workingMemory );
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.ITupleMatch#getTupleForSink(org.drools.reteoo.TupleSink)
      */
     public ReteTuple getTupleForSink(TupleSink sink) {
-        return this.child;
+        return this.joined;
     }
 
 }
