@@ -39,6 +39,7 @@ public class DefaultLeftMemory
     implements
     BetaLeftMemory {
 
+    private static final long serialVersionUID = 5316711294716215716L;
     private final MultiLinkedList memory;
 
     public DefaultLeftMemory() {

@@ -1,5 +1,4 @@
 /*
- * Copyright 2005 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +47,8 @@ import org.drools.util.MultiLinkedListNodeWrapper;
 public class ObjectEqualConstrLeftMemory
     implements
     BetaLeftMemory {
+
+    private static final long serialVersionUID = 8850322171273097103L;
 
     private BetaLeftMemory  innerMemory  = null;
 
@@ -287,7 +288,7 @@ public class ObjectEqualConstrLeftMemory
      */
     private final MultiLinkedList getTupleBucket(final WorkingMemory workingMemory,
                                                  final Tuple tuple) {
-        final Integer hash = getTupleHash( workingMemory,
+        final Object hash = getTupleHash( workingMemory,
                                            tuple );
         MultiLinkedList list = (MultiLinkedList) this.memoryMap.get( hash );
         if ( list == null ) {
@@ -305,11 +306,11 @@ public class ObjectEqualConstrLeftMemory
      * @param tuple
      * @return
      */
-    private final Integer getTupleHash(final WorkingMemory workingMemory,
+    private final Object getTupleHash(final WorkingMemory workingMemory,
                                        final Tuple tuple) {
         final Object select = this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() );
-        final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
-        return hash;
+        //final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
+        return select;
     }
 
     public final int size() {
@@ -345,6 +346,7 @@ public class ObjectEqualConstrLeftMemory
     }
 
     private static final class KeyMultiLinkedList extends MultiLinkedList {
+        private static final long serialVersionUID = -8399527096749007875L;
         private final Object key;
 
         public KeyMultiLinkedList(final Object key) {

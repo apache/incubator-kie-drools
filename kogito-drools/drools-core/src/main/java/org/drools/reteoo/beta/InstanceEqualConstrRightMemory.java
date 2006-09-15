@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.spi.Tuple;
