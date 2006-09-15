@@ -44,6 +44,8 @@ public class BooleanConstrainedLeftMemory
     implements
     BetaLeftMemory {
 
+    private static final long serialVersionUID = 2385678633684465433L;
+
     private BetaLeftMemory  innerMemory  = null;
 
     private MultiLinkedList trueList     = null;
@@ -54,7 +56,7 @@ public class BooleanConstrainedLeftMemory
     private Declaration     declaration  = null;
     private Column             column;
     private Evaluator       evaluator    = null;
-
+    
     public BooleanConstrainedLeftMemory(final FieldExtractor extractor,
                                         final Declaration declaration,
                                         final Evaluator evaluator) {

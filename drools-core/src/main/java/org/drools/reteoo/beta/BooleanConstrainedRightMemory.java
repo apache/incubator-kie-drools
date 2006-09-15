@@ -45,6 +45,8 @@ public class BooleanConstrainedRightMemory
     implements
     BetaRightMemory {
 
+    private static final long serialVersionUID = -4971705123457908949L;
+
     private BetaRightMemory innerMemory  = null;
 
     private MultiLinkedList trueList     = null;
