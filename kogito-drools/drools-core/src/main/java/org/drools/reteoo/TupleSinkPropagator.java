@@ -19,6 +19,20 @@ public interface TupleSinkPropagator {
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);    
     
+    /**
+     * Propagates a new tuple adding the given fact handle to the tuple 
+     * before propagating.
+     * 
+     * @param tuple The base tuple for propagation
+     * @param handle The handle to add to the tuple when propagating
+     * @param context
+     * @param workingMemory
+     */
+    public void propagateAssertTuple(final ReteTuple tuple,
+                                        final InternalFactHandle handle,
+                                        final PropagationContext context,
+                                        final ReteooWorkingMemory workingMemory);
+    
     public LinkedList createAndAssertTuple(InternalFactHandle handle,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);    
