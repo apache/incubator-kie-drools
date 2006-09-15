@@ -3,7 +3,6 @@ package org.drools.reteoo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,15 +13,16 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.AbstractBaseLinkedListNode;
 import org.drools.util.BaseMultiLinkedListNode;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListNode;
 import org.drools.util.LinkedListEntry;
+import org.drools.util.LinkedListNode;
 
-public class ReteTuple extends AbstractBaseLinkedListNode
+public class ReteTuple extends BaseMultiLinkedListNode
     implements
     Tuple {
+    private static final long serialVersionUID = -4221694077704683140L;
+
     private int                      index;
 
     private final InternalFactHandle handle;
@@ -122,6 +122,10 @@ public class ReteTuple extends AbstractBaseLinkedListNode
             entry = entry.parent;
         }
         return entry.handle;
+    }
+    
+    public InternalFactHandle getLastHandle() {
+        return this.handle;
     }
 
     public InternalFactHandle get(Declaration declaration) {

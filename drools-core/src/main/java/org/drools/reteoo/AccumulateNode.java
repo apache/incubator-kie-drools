@@ -43,11 +43,11 @@ import org.drools.util.LinkedListEntry;
  */
 public class AccumulateNode extends BetaNode {
 
-    private static final long       serialVersionUID = -4081578178269297948L;
+    private static final long         serialVersionUID = -4081578178269297948L;
 
-    private final Accumulate        accumulate;
-    private final FieldConstraint[] constraints;
-    private final BetaNodeConstraints    resultsBinder;
+    private final Accumulate          accumulate;
+    private final FieldConstraint[]   constraints;
+    private final BetaNodeConstraints resultsBinder;
 
     /**
      * Construct.
@@ -124,13 +124,13 @@ public class AccumulateNode extends BetaNode {
         for ( final Iterator it = memory.rightObjectIterator( workingMemory,
                                                               leftTuple ); it.hasNext(); ) {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            final DefaultFactHandle handle = objectMatches.getFactHandle();
+            final InternalFactHandle handle = objectMatches.getFactHandle();
 
             if ( attemptJoin( leftTuple,
                               handle,
                               objectMatches,
                               this.resultsBinder,
-                              workingMemory )  != null) {
+                              workingMemory ) != null ) {
                 matchingObjects.add( handle.getObject() );
             }
         }
@@ -142,19 +142,23 @@ public class AccumulateNode extends BetaNode {
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.constraints.length; i < length; i++ ) {
-            if ( !this.constraints[i].isAllowed( result, leftTuple, workingMemory ) ) {
+            if ( !this.constraints[i].isAllowed( result,
+                                                 leftTuple,
+                                                 workingMemory ) ) {
                 isAllowed = false;
                 break;
             }
         }
-        if( isAllowed ) {
+        if ( isAllowed ) {
             DefaultFactHandle handle = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( result );
 
-            if( this.resultsBinder.isAllowed( handle, leftTuple, workingMemory )) {
-                propagateAssertTuple( leftTuple,
-                                      handle,
-                                      context,
-                                      workingMemory );
+            if ( this.resultsBinder.isAllowed( handle,
+                                               leftTuple,
+                                               workingMemory ) ) {
+                this.sink.propagateAssertTuple( leftTuple,
+                                                handle,
+                                                context,
+                                                workingMemory );
             }
         }
     }
@@ -203,17 +207,14 @@ public class AccumulateNode extends BetaNode {
                 it.remove();
             }
         }
-        
+
         // if tuple was propagated
-        if((leftTuple.getLinkedTuples() != null) && (leftTuple.getLinkedTuples().size() > 0)) {
+        if ( (leftTuple.getChildEntries() != null) && (leftTuple.getChildEntries().size() > 0) ) {
             // Need to store the accumulate result object for later disposal
-            InternalFactHandle[] handles = ((Tuple)((LinkedListEntry)leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
-            InternalFactHandle lastHandle = handles[handles.length-1];
-            
-            propagateRetractTuple( leftTuple,
-                                   context,
-                                   workingMemory );
-            
+            InternalFactHandle lastHandle = ((ReteTuple) ((LinkedListEntry)leftTuple.getChildEntries().getFirst()).getObject()).getLastHandle();
+
+            leftTuple.retractChildEntries( context, workingMemory );
+
             // Destroying the acumulate result object 
             workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
         }
@@ -277,7 +278,7 @@ public class AccumulateNode extends BetaNode {
             final ReteTuple leftTuple = compositeTupleMatch.getTuple();
             leftTuple.removeMatch( handle );
         }
-        
+
         // reassert object modifying appropriate tuples
         this.assertObject( handle,
                            context,
@@ -315,17 +316,14 @@ public class AccumulateNode extends BetaNode {
     public List getPropagatedTuples(ReteooWorkingMemory workingMemory,
                                     TupleSink sink) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        final int index = this.getTupleSinks().indexOf( sink );
+        //final int index = this.getTupleSinks().indexOf( sink );
         final List propagatedTuples = new ArrayList();
 
         for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
-            final LinkedList linkedTuples = leftTuple.getLinkedTuples();
+            final LinkedList linkedTuples = leftTuple.getChildEntries();
 
             LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
-            for ( int i = 0; i < index; i++ ) {
-                wrapper = (LinkedListEntry) wrapper.getNext();
-            }
             propagatedTuples.add( wrapper.getObject() );
         }
         return propagatedTuples;

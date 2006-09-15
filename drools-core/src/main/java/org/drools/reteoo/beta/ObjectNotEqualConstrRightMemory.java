@@ -44,6 +44,8 @@ public class ObjectNotEqualConstrRightMemory
     implements
     BetaRightMemory {
 
+    private static final long serialVersionUID = -3901433030465097663L;
+
     private BetaRightMemory innerMemory      = null;
 
     private Map             memoryMap        = null;
@@ -261,8 +263,7 @@ public class ObjectNotEqualConstrRightMemory
     public final void selectPossibleMatches(final WorkingMemory workingMemory,
                                             final Tuple tuple) {
         final Object select = this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() );
-        final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
-        this.noMatchList = (MultiLinkedList) this.memoryMap.get( hash );
+        this.noMatchList = (MultiLinkedList) this.memoryMap.get( select );
 
         if ( this.innerMemory != null ) {
             this.innerMemory.selectPossibleMatches( workingMemory,
@@ -298,11 +299,10 @@ public class ObjectNotEqualConstrRightMemory
     private final MultiLinkedList getFactList(final WorkingMemory workingMemory,
                                               final InternalFactHandle handle) {
         final Object select = this.extractor.getValue( handle.getObject() );
-        final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
-        MultiLinkedList list = (MultiLinkedList) this.memoryMap.get( hash );
+        MultiLinkedList list = (MultiLinkedList) this.memoryMap.get( select );
         if ( list == null ) {
-            list = new KeyMultiLinkedList( hash );
-            this.memoryMap.put( hash,
+            list = new KeyMultiLinkedList( select );
+            this.memoryMap.put( select,
                                 list );
         }
         return list;
@@ -363,6 +363,7 @@ public class ObjectNotEqualConstrRightMemory
     }
 
     private static class KeyMultiLinkedList extends MultiLinkedList {
+        private static final long serialVersionUID = 489200140229400242L;
         private final Object key;
 
         public KeyMultiLinkedList(final Object key) {

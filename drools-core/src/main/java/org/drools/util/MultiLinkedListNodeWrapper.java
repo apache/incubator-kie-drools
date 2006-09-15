@@ -28,10 +28,22 @@ package org.drools.util;
  */
 public class MultiLinkedListNodeWrapper extends BaseMultiLinkedListNode {
 
+    private static final long serialVersionUID = 3326764563267697646L;
+
     private LinkedListNode node = null;
+
+    private MultiLinkedListNode parent = null;
 
     public MultiLinkedListNodeWrapper(final LinkedListNode node) {
         this.node = node;
+    }
+
+    public MultiLinkedListNode getParent() {
+        return this.parent;
+    }
+    
+    public void setParent(MultiLinkedListNode parent) {
+        this.parent = parent;
     }
 
     public LinkedListNode getNode() {

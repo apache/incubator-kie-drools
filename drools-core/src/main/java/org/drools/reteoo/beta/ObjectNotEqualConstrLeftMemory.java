@@ -45,6 +45,9 @@ import org.drools.util.MultiLinkedListNodeWrapper;
 public class ObjectNotEqualConstrLeftMemory
     implements
     BetaLeftMemory {
+
+    private static final long serialVersionUID = -58634273356357726L;
+
     private BetaLeftMemory  innerMemory      = null;
 
     private Map             memoryMap        = null;
@@ -357,6 +360,7 @@ public class ObjectNotEqualConstrLeftMemory
     }
 
     private static class KeyMultiLinkedList extends MultiLinkedList {
+        private static final long serialVersionUID = 2502061884559498808L;
         private final Object key;
 
         public KeyMultiLinkedList(final Object key) {

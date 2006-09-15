@@ -56,6 +56,21 @@ public class SingleTupleSinkAdapter
                            workingMemory );
     }
 
+    /**
+     * @inheritDoc
+     */
+    public void propagateAssertTuple(final ReteTuple tuple,
+                                     final InternalFactHandle handle,
+                                     final PropagationContext context,
+                                     final ReteooWorkingMemory workingMemory) {
+        final ReteTuple joined = new ReteTuple( tuple,
+                                                handle,
+                                                sink );
+        tuple.addChildEntry( joined );
+        joined.assertTuple( context,
+                            workingMemory );
+    }
+
     public TupleSink[] getSinks() {
         return new TupleSink[]{this.sink};
     }
