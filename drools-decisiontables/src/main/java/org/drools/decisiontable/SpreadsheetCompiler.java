@@ -23,6 +23,7 @@ import java.util.Map;
 import org.drools.decisiontable.model.DRLOutput;
 import org.drools.decisiontable.model.Package;
 import org.drools.decisiontable.parser.DecisionTableParser;
+import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetListener;
 import org.drools.decisiontable.parser.xls.ExcelParser;
 
@@ -44,8 +45,28 @@ public class SpreadsheetCompiler {
      */
     public String compile(final InputStream xlsStream,
                           final InputType type) {
-        final RuleSheetListener listener = getRuleSheetListener( xlsStream,
-                                                           type );
+        return compile( xlsStream,
+                        type,
+                        new DefaultRuleSheetListener() );
+    }
+
+    /**
+     * Generates DRL from the input stream containing the spreadsheet.
+     * 
+     * @param xlsStream
+     *            The stream to the spreadsheet. Uses the first worksheet found
+     *            for the decision tables, ignores others.
+     * @param type
+     *            The type of the file - InputType.CSV or InputType.XLS
+     * @param listener
+     *            
+     * @return DRL xml, ready for use in drools.
+     */
+    public String compile(final InputStream xlsStream,
+                          final InputType type,
+                          final RuleSheetListener listener) {
+        final DecisionTableParser parser = type.createParser( listener );
+        parser.parseFile( xlsStream );
         final Package rulePackage = listener.getRuleSet();
         final DRLOutput out = new DRLOutput();
         rulePackage.renderDRL( out );
@@ -67,7 +88,7 @@ public class SpreadsheetCompiler {
         final InputStream stream = this.getClass().getResourceAsStream( classPathResource );
         try {
             final String drl = compile( stream,
-                                  inputType );
+                                        inputType );
             return drl;
         } finally {
             closeStream( stream );
@@ -87,7 +108,7 @@ public class SpreadsheetCompiler {
     public String compile(final InputStream stream,
                           final String worksheetName) {
         final RuleSheetListener listener = getRuleSheetListener( stream,
-                                                           worksheetName );
+                                                                 worksheetName );
         final Package rulePackage = listener.getRuleSet();
         final DRLOutput out = new DRLOutput();
         rulePackage.renderDRL( out );
@@ -95,17 +116,8 @@ public class SpreadsheetCompiler {
     }
 
     private RuleSheetListener getRuleSheetListener(final InputStream stream,
-                                                   final InputType type) {
-        final RuleSheetListener listener = new RuleSheetListener();
-
-        final DecisionTableParser parser = type.createParser( listener );
-        parser.parseFile( stream );
-        return listener;
-    }
-
-    private RuleSheetListener getRuleSheetListener(final InputStream stream,
                                                    final String worksheetName) {
-        final RuleSheetListener listener = new RuleSheetListener();
+        final RuleSheetListener listener = new DefaultRuleSheetListener();
         final Map listeners = new HashMap();
         listeners.put( worksheetName,
                        listener );

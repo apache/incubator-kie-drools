@@ -35,12 +35,12 @@ public class RuleSheetParserUtil {
     }
 
     public static String getRuleName(final String ruleRow) {
-        final int left = ruleRow.indexOf( RuleSheetListener.RULE_TABLE_TAG );
+        final int left = ruleRow.indexOf( DefaultRuleSheetListener.RULE_TABLE_TAG );
 
         if ( ruleRow.indexOf( '(' ) > -1 || ruleRow.indexOf( ')' ) > -1 ) {
             invalidRuleTableDef( ruleRow );
         }
-        return ruleRow.substring( left + RuleSheetListener.RULE_TABLE_TAG.length() ).trim();
+        return ruleRow.substring( left + DefaultRuleSheetListener.RULE_TABLE_TAG.length() ).trim();
     }
 
     private static void invalidRuleTableDef(final String ruleRow) {

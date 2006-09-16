@@ -18,8 +18,6 @@ package org.drools.decisiontable.parser;
 
 import java.util.Map;
 
-import org.drools.decisiontable.model.SnippetBuilder;
-
 /**
  * Simple holder class identifying a condition or action column etc.
  * This is stored in a map in the main listener class, to track what type of values
@@ -53,6 +51,10 @@ public class ActionType {
 
     //  XOR-GROUP is used to set the activation-group parameter of a rule tag
     public static final int ACTIVATIONGROUP = 7;
+
+    //  14 September 2006 SJW: Add new Agenda Group ActionType
+    //  AGENDA-GROUP is used to set the agenda-group parameter of a rule tag
+    public static final int AGENDAGROUP     = 8;
 
     int                     type;
 
@@ -97,6 +99,15 @@ public class ActionType {
         {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.NOLOOP ) );
+        } else if ( value.toUpperCase().equals( "AGENDA-GROUP" ) ) // if the title cell
+        // value equals "AGENDA-GROUP"
+        // then put a
+        // ActionType.AGENDAGROUP
+        // to the _actions  
+        // list
+        {
+            actionTypeMap.put( new Integer( column ),
+                               new ActionType( ActionType.AGENDAGROUP ) );
         } else if ( value.toUpperCase().startsWith( "X" ) || value.toUpperCase().equals( "ACTIVATION-GROUP" ) ) // if the title cell
         // value starts with
         // "X" then put a
