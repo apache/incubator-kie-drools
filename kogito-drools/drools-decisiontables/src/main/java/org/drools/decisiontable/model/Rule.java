@@ -17,12 +17,9 @@ package org.drools.decisiontable.model;
  */
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.drools.decisiontable.parser.SourceBuilder;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
@@ -52,12 +49,15 @@ public class Rule extends DRLElement
     private String           _activationGroup; // RIK: New variable to the Rule class (Set the
     // activation-group parameter of the rule tag)
 
+    private String           _agendaGroup;    // SJW: New variable to the Rule class (Set the
+    // agenda-group parameter of the rule tag
+
     private List             _lhs;
 
     private List             _rhs;
 
     private int              _spreadsheetRow;
-    
+
     /**
      * Create a new rule. Note that the rule name should be post-fixed with the row number,
      * as one way of providing tracability for errors back to the originating spreadsheet.
@@ -78,7 +78,6 @@ public class Rule extends DRLElement
         this._rhs = new LinkedList();
         this._spreadsheetRow = spreadsheetRow;
     }
-    
 
     public void addCondition(final Condition con) {
         this._lhs.add( con );
@@ -101,6 +100,9 @@ public class Rule extends DRLElement
         }
         if ( this._activationGroup != null ) {
             out.writeLine( "\tactivation-group " + this._activationGroup );
+        }
+        if ( this._agendaGroup != null ) {
+            out.writeLine( "\tagenda-group " + this._agendaGroup );
         }
         if ( this._noLoop != null ) {
             out.writeLine( "\tno-loop " + this._noLoop );
@@ -225,7 +227,7 @@ public class Rule extends DRLElement
         return this._duration.getSnippet();
     }
 
-    public void setActivationrGroup(final String value) // Set the duration of the rule
+    public void setActivationGroup(final String value) // Set the duration of the rule
     {
         this._activationGroup = value;
     }
@@ -234,11 +236,19 @@ public class Rule extends DRLElement
         return this._activationGroup;
     }
 
+    public String getAgendaGroup() {
+        return _agendaGroup;
+    }
+
+    public void setAgendaGroup(String group) // Set the agenda-group of the rule
+    {
+        _agendaGroup = group;
+    }
+
     public void setNoLoop(final String value) // Set the no-loop attribute of the rule
     {
         this._noLoop = value;
     }
-
 
     /**
      * @return The row in the spreadsheet this represents. 

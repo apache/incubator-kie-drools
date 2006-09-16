@@ -58,9 +58,9 @@ import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
  * 
  * All subsequent rows identify rules with the set.
  */
-public class RuleSheetListener
+public class DefaultRuleSheetListener
     implements
-    SheetListener {
+    RuleSheetListener {
 
     //keywords
     public static final String      FUNCTIONS_TAG          = "Functions";
@@ -93,15 +93,15 @@ public class RuleSheetListener
     
     private final PropertiesSheetListener _propertiesListner     = new PropertiesSheetListener();
 
-    /**
-     * Return the rule sheet properties
+    /* (non-Javadoc)
+     * @see org.drools.decisiontable.parser.RuleSheetListener#getProperties()
      */
     public Properties getProperties() {
         return this._propertiesListner.getProperties();
     }
 
-    /**
-     * Build the final ruleset as parsed.
+    /* (non-Javadoc)
+     * @see org.drools.decisiontable.parser.RuleSheetListener#getRuleSet()
      */
     public Package getRuleSet() {
         if ( this._ruleList.isEmpty() ) {
@@ -110,26 +110,34 @@ public class RuleSheetListener
         final Package ruleset = buildRuleSet();
         return ruleset;
     }
+    
+    /**
+     * Add a new rule to the current list of rules
+     * @param rule
+     */
+    protected void addRule(final Rule newRule) {
+        this._ruleList.add( newRule );
+    }
 
     private Package buildRuleSet() {
-        final String rulesetName = getProperties().getProperty( RuleSheetListener.RULESET_TAG,
+        final String rulesetName = getProperties().getProperty( DefaultRuleSheetListener.RULESET_TAG,
                                                           "rule_table" );
         final Package ruleset = new Package( rulesetName );
         for ( final Iterator it = this._ruleList.iterator(); it.hasNext(); ) {
             ruleset.addRule( (Rule) it.next() );
         }
-        final List importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( RuleSheetListener.IMPORT_TAG ) );
+        final List importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( DefaultRuleSheetListener.IMPORT_TAG ) );
         for ( final Iterator it = importList.iterator(); it.hasNext(); ) {
             ruleset.addImport( (Import) it.next() );
         }
-        final List variableList = RuleSheetParserUtil.getVariableList( getProperties().getProperty( RuleSheetListener.VARIABLES_TAG ) ); // Set the list of variables to
+        final List variableList = RuleSheetParserUtil.getVariableList( getProperties().getProperty( DefaultRuleSheetListener.VARIABLES_TAG ) ); // Set the list of variables to
         // be added to the
         // application-data tags
         for ( final Iterator it = variableList.iterator(); it.hasNext(); ) {
             ruleset.addVariable( (Global) it.next() );
         }
 
-        final String functions = getProperties().getProperty( RuleSheetListener.FUNCTIONS_TAG );
+        final String functions = getProperties().getProperty( DefaultRuleSheetListener.FUNCTIONS_TAG );
         ruleset.addFunctions( functions );
         return ruleset;
     }
@@ -223,13 +231,13 @@ public class RuleSheetListener
     private void initRuleTable(final int row,
                                final int column,
                                final String value) {
-
+        preInitRuleTable(row, column, value);
         this._isInRuleTable = true;
         this._actions = new HashMap();
         this.sourceBuilders = new ArrayList();
         this._ruleStartColumn = column;
         this._ruleStartRow = row;
-        this._ruleRow = row + RuleSheetListener.LABEL_ROW + 1;
+        this._ruleRow = row + DefaultRuleSheetListener.LABEL_ROW + 1;
 
         // setup stuff for the rules to come.. (the order of these steps are
         // important !)
@@ -239,11 +247,34 @@ public class RuleSheetListener
         this._currentRule = createNewRuleForRow( this._ruleRow );
 
         this._ruleList.add( this._currentRule );
+        postInitRuleTable(row, column, value);
 
     }
 
+    /**
+     * Called before rule table initialisation. Subclasses may
+     * override this method to do additional processing.
+     */
+    protected void preInitRuleTable(int row,
+                                    int column,
+                                    String value) {
+    }
+
+    protected Rule getCurrentRule() {
+        return _currentRule;
+    }
+
+    /**
+     * Called after rule table initialisation. Subclasses may
+     * override this method to do additional processing.
+     */
+    protected void postInitRuleTable(int row,
+                                     int column,
+                                     String value) {
+    }
+
     private boolean getSequentialFlag() {
-        final String seqFlag = getProperties().getProperty( RuleSheetListener.SEQUENTIAL_FLAG );
+        final String seqFlag = getProperties().getProperty( DefaultRuleSheetListener.SEQUENTIAL_FLAG );
         return RuleSheetParserUtil.isStringMeaningTrue( seqFlag );
     }
 
@@ -258,7 +289,7 @@ public class RuleSheetListener
     private void processNonRuleCell(final int row,
                                     final int column,
                                     final String value) {
-        if ( value.startsWith( RuleSheetListener.RULE_TABLE_TAG ) ) {
+        if ( value.startsWith( DefaultRuleSheetListener.RULE_TABLE_TAG ) ) {
             initRuleTable( row,
                            column,
                            value );
@@ -273,7 +304,7 @@ public class RuleSheetListener
                                  final int column,
                                  final String value,
                                  final int mergedColStart) {
-        if ( value.startsWith( RuleSheetListener.RULE_TABLE_TAG ) ) {
+        if ( value.startsWith( DefaultRuleSheetListener.RULE_TABLE_TAG ) ) {
             finishRuleTable();
             initRuleTable( row,
                            column,
@@ -474,7 +505,7 @@ public class RuleSheetListener
         // the value got
         // from the cell
         {
-            this._currentRule.setActivationrGroup( value );
+            this._currentRule.setActivationGroup( value );
         } else if ( actionType.type == ActionType.NOLOOP ) // if the actionType
         // type is NOLOOP
         // then set the

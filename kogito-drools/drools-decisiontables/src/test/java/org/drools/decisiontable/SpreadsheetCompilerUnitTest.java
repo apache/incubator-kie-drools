@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
+import org.drools.decisiontable.parser.RuleMatrixSheetListener;
+
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  * 
@@ -35,7 +37,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
     public void testLoadFromClassPath() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final String drl = converter.compile( "/data/MultiSheetDST.xls",
-                                        InputType.XLS );
+                                              InputType.XLS );
 
         assertNotNull( drl );
 
@@ -48,49 +50,62 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/MultiSheetDST.xls" );
         final String drl = converter.compile( stream,
-                                        "Another Sheet" );
+                                              "Another Sheet" );
         assertNotNull( drl );
+    }
+
+    public void testLoadCustomListener() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/CustomWorkbook.xls" );
+        final String drl = converter.compile( stream,
+                                              InputType.XLS,
+                                              new RuleMatrixSheetListener() );
+        assertNotNull( drl );
+        assertTrue( drl.indexOf( "\"matrix\"" ) != -1 );
+        assertTrue( drl.indexOf( "$v : FundVisibility" ) != -1 );
+        assertTrue( drl.indexOf( "FundType" ) != -1 );
+        assertTrue( drl.indexOf( "Role" ) != -1 );
     }
 
     public void testLoadCsv() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/ComplexWorkbook.csv" );
         final String drl = converter.compile( stream,
-                                        InputType.CSV );
+                                              InputType.CSV );
         assertNotNull( drl );
-        
-        System.out.println(drl);        
-        
+
+        System.out.println( drl );
+
         assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
-        assertTrue( drl.indexOf( "myObject.size () > 50" ) > 0 );    
-        
-        assertTrue( drl.indexOf("Foo(myObject.getColour().equals(red), myObject.size () > 1)") > 0);
+        assertTrue( drl.indexOf( "myObject.size () > 50" ) > 0 );
+
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) > 0 );
     }
 
     public void testLoadBasicWithMergedCells() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/BasicWorkbook.xls" );
         final String drl = converter.compile( stream,
-                                        InputType.XLS );
+                                              InputType.XLS );
 
         assertNotNull( drl );
-        
-        Pattern p = Pattern.compile(".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",Pattern.DOTALL | Pattern.MULTILINE);
-        Matcher m = p.matcher(drl);
-        assertTrue(m.matches());
-                
+
+        Pattern p = Pattern.compile( ".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",
+                                     Pattern.DOTALL | Pattern.MULTILINE );
+        Matcher m = p.matcher( drl );
+        assertTrue( m.matches() );
+
         assertTrue( drl.indexOf( "This is a function block" ) > -1 );
         assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
         assertTrue( drl.indexOf( "myObject.setIsValid(10-Jul-1974)" ) > -1 );
         assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) > -1 );
-        
+
         assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ) > -1 );
         assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 9)" ) > -1 );
-        
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) < 
-                    drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ));
-        
+
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) < drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ) );
+
     }
 
 }
