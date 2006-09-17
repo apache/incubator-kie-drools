@@ -38,7 +38,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
 
     private Activation               activation;
 
-    private long                     recency;
+    private long                     recency;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -201,4 +201,22 @@ public class ReteTuple extends BaseMultiLinkedListNode
         this.activation = activation;
     }
         
+    
+    public int hashCode() {
+        return this.handle.hashCode();
+    }
+    
+    public boolean equals(Object object) {
+        if ( object == this ) {
+            return true;
+        }
+        
+        if ( object == null || object.getClass() == getClass() ) {
+            return false;
+        }
+        
+        ReteTuple other = ( ReteTuple ) object;
+        
+        return ( this.handle.getId() == other.handle.getId() );            
+    }
 }

@@ -33,6 +33,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 
 /**
  * A test case for AccumulateNode
@@ -155,8 +156,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              2,
                              this.sink.getAsserted().size() );
 
-        final ReteTuple t1 = (ReteTuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0];
-        final ReteTuple t2 = (ReteTuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0];
+        final Tuple t1 = (Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0];
+        final Tuple t2 = (Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0];
 
         List propagated = this.node.getPropagatedTuples( workingMemory,
                                                          sink );
@@ -420,7 +421,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              2,
                              this.accumulator.getMatchingObjects().size() );
 
-        final ReteTuple tuple = (ReteTuple) this.memory.getLeftTupleMemory().iterator( this.workingMemory,
+        final Tuple tuple = (Tuple) this.memory.getLeftTupleMemory().iterator( this.workingMemory,
                                                                                        f0 ).next();
         assertEquals( tuple0,
                       tuple );

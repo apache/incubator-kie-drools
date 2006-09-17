@@ -32,6 +32,7 @@ import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.spi.FactHandleFactory;
+import org.drools.spi.Tuple;
 import org.drools.util.MultiLinkedListNodeWrapper;
 
 /**
@@ -57,9 +58,9 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     protected ObjectMatches       matches0;
     protected ObjectMatches       matches1;
     protected ObjectMatches       matches2;
-    protected ReteTuple           tuple0;
-    protected ReteTuple           tuple1;
-    protected ReteTuple           tuple2;
+    protected Tuple           tuple0;
+    protected Tuple           tuple1;
+    protected Tuple           tuple2;
 
     public BaseBetaRightMemoryTestClass() {
         this.memory = null;
@@ -398,7 +399,7 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
         }
 
         public Iterator iterator(final WorkingMemory workingMemory,
-                                 final ReteTuple tuple) {
+                                 final Tuple tuple) {
             this.callCounter++;
             return null;
         }
@@ -419,7 +420,7 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
         }
 
         public void selectPossibleMatches(final WorkingMemory workingMemory,
-                                          final ReteTuple tuple) {
+                                          final Tuple tuple) {
             this.callCounter++;
         }
 

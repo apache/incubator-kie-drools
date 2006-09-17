@@ -16,6 +16,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Package;
+import org.drools.spi.Tuple;
 
 public class MapValueTest extends TestCase {
     public void testFlatMap() throws Exception {
@@ -61,7 +62,7 @@ public class MapValueTest extends TestCase {
                                      20 );
         FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        ReteTuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
 
         List list = new ArrayList();
         wm.setGlobal( "list",
@@ -104,7 +105,7 @@ public class MapValueTest extends TestCase {
                                      20 );
         FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        ReteTuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
 
         Map map = (Map) mapValue.getValue( tuple,
                                            wm );

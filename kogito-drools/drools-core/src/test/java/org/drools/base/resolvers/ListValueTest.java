@@ -14,6 +14,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Package;
+import org.drools.spi.Tuple;
 
 import junit.framework.TestCase;
 
@@ -58,7 +59,7 @@ public class ListValueTest extends TestCase {
                                      20 );
         FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        ReteTuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
         
         List values = ( List ) listValue.getValue( tuple, wm );
         assertEquals( "literal", values.get( 0 ) );
@@ -87,7 +88,7 @@ public class ListValueTest extends TestCase {
                                      20 );
         FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        ReteTuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
         
         List list = ( List ) listValue.getValue( tuple, wm );
         assertEquals( 1, list.size() );

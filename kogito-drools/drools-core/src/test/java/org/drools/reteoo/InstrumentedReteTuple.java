@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.FactHandle;
 import org.drools.common.DefaultFactHandle;
+import org.drools.spi.Tuple;
 
 public class InstrumentedReteTuple extends ReteTuple {
     /**
@@ -25,7 +26,7 @@ public class InstrumentedReteTuple extends ReteTuple {
      */
     private static final long serialVersionUID = -5225370016555785111L;
 
-    public InstrumentedReteTuple(final ReteTuple left,
+    public InstrumentedReteTuple(final Tuple left,
                                  final FactHandle handle) {
         super( left,
                (DefaultFactHandle) handle );

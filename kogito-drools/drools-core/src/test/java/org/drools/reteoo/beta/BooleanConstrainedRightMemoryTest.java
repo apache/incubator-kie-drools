@@ -31,6 +31,7 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Tuple;
 import org.drools.util.MultiLinkedListNodeWrapper;
 
 /**
@@ -115,7 +116,7 @@ public class BooleanConstrainedRightMemoryTest extends BaseBetaRightMemoryTestCl
                                                                 "object3" );
             final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
 
-            final ReteTuple tuple2 = new ReteTuple( f2 );
+            final Tuple tuple2 = new ReteTuple( f2 );
             iterator = this.memory.iterator( this.workingMemory,
                                              tuple2 );
             Assert.assertFalse( "There should not be a next element",
@@ -163,7 +164,7 @@ public class BooleanConstrainedRightMemoryTest extends BaseBetaRightMemoryTestCl
                                                             "object3" );
         final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
 
-        final ReteTuple tuple2 = new ReteTuple( f2 );
+        final Tuple tuple2 = new ReteTuple( f2 );
         this.memory.selectPossibleMatches( this.workingMemory,
                                            tuple2 );
         Assert.assertFalse( "Wrapper0 was not a possible match",

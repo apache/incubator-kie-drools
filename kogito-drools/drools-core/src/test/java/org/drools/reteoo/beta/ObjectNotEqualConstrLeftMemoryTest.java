@@ -30,6 +30,7 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Tuple;
 import org.drools.util.MultiLinkedListNodeWrapper;
 
 /**
@@ -83,7 +84,7 @@ public class ObjectNotEqualConstrLeftMemoryTest extends BaseBetaLeftMemoryTestCl
 
             Assert.assertTrue( "There should be a next element",
                                iterator.hasNext() );
-            final ReteTuple t1 = (ReteTuple) iterator.next();
+            final Tuple t1 = (Tuple) iterator.next();
             Assert.assertSame( "The first object to return should have been tuple1",
                                this.tuple1,
                                t1 );
@@ -114,7 +115,7 @@ public class ObjectNotEqualConstrLeftMemoryTest extends BaseBetaLeftMemoryTestCl
             Assert.assertTrue( "There should be a next element",
                                iterator.hasNext() );
 
-            final ReteTuple t0 = (ReteTuple) iterator.next();
+            final Tuple t0 = (Tuple) iterator.next();
             Assert.assertSame( "The first object to return should have been tuple0",
                                this.tuple0,
                                t0 );

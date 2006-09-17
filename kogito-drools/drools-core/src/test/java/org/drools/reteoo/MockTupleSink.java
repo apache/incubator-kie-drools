@@ -27,6 +27,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 
 public class MockTupleSink extends TupleSource
     implements
@@ -48,21 +49,21 @@ public class MockTupleSink extends TupleSource
         super( id );
     }
 
-    public void assertTuple(final ReteTuple tuple,
+    public void assertTuple(final Tuple tuple,
                             final PropagationContext context,
                             final ReteooWorkingMemory workingMemory) {
         this.asserted.add( new Object[]{tuple, context, workingMemory} );
 
     }
 
-    public void retractTuple(final ReteTuple tuple,
+    public void retractTuple(final Tuple tuple,
                              final PropagationContext context,
                              final ReteooWorkingMemory workingMemory) {
         this.retracted.add( new Object[]{tuple, context, workingMemory} );
 
     }
 
-    public void modifyTuple(final ReteTuple tuple,
+    public void modifyTuple(final Tuple tuple,
                             final PropagationContext context,
                             final ReteooWorkingMemory workingMemory) {
         this.modified.add( new Object[]{tuple, context, workingMemory} );

@@ -10,6 +10,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Package;
+import org.drools.spi.Tuple;
 
 public class LiteralValueTest extends TestCase {
     public void testLiteral() throws Exception {
@@ -24,7 +25,7 @@ public class LiteralValueTest extends TestCase {
                                      20 );
         FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        ReteTuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
         assertEquals( "literal",
                       literal.getValue( tuple,
                                         wm ) );

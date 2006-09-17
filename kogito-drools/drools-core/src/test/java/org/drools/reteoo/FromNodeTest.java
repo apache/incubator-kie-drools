@@ -87,7 +87,7 @@ public class FromNodeTest extends TestCase {
         List asserted = sink.getAsserted();
         assertEquals( 1,
                       asserted.size() );
-        ReteTuple tuple = (ReteTuple) ((Object[]) asserted.get( 0 ))[0];
+        Tuple tuple = (Tuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( person2,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese1,
@@ -104,12 +104,12 @@ public class FromNodeTest extends TestCase {
 
         assertEquals( 3,
                       asserted.size() );
-        tuple = (ReteTuple) ((Object[]) asserted.get( 1 ))[0];
+        tuple = (Tuple) ((Object[]) asserted.get( 1 ))[0];
         assertSame( person3,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese1,
                     tuple.getFactHandles()[1].getObject() );
-        tuple = (ReteTuple) ((Object[]) asserted.get( 2 ))[0];
+        tuple = (Tuple) ((Object[]) asserted.get( 2 ))[0];
         assertSame( person3,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese2,
@@ -186,7 +186,7 @@ public class FromNodeTest extends TestCase {
         List asserted = sink.getAsserted();
         assertEquals( 1,
                       asserted.size() );
-        ReteTuple tuple = (ReteTuple) ((Object[]) asserted.get( 0 ))[0];
+        Tuple tuple = (Tuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( person2,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese1,
@@ -203,12 +203,12 @@ public class FromNodeTest extends TestCase {
 
         assertEquals( 3,
                       asserted.size() );
-        tuple = (ReteTuple) ((Object[]) asserted.get( 1 ))[0];
+        tuple = (Tuple) ((Object[]) asserted.get( 1 ))[0];
         assertSame( person3,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese1,
                     tuple.getFactHandles()[1].getObject() );
-        tuple = (ReteTuple) ((Object[]) asserted.get( 2 ))[0];
+        tuple = (Tuple) ((Object[]) asserted.get( 2 ))[0];
         assertSame( person3,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese2,
@@ -342,7 +342,7 @@ public class FromNodeTest extends TestCase {
         List asserted = sink.getAsserted();
         assertEquals( 1,
                       asserted.size() );
-        ReteTuple tuple = (ReteTuple) ((Object[]) asserted.get( 0 ))[0];
+        Tuple tuple = (Tuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( person1,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese1,
@@ -359,13 +359,13 @@ public class FromNodeTest extends TestCase {
         
         assertEquals( 3,
                       asserted.size() );
-        tuple = (ReteTuple) ((Object[]) asserted.get( 1 ))[0];
+        tuple = (Tuple) ((Object[]) asserted.get( 1 ))[0];
         assertSame( person1,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese1,
                     tuple.getFactHandles()[1].getObject() );    
         
-        tuple = (ReteTuple) ((Object[]) asserted.get( 2 ))[0];
+        tuple = (Tuple) ((Object[]) asserted.get( 2 ))[0];
         assertSame( person1,
                     tuple.getFactHandles()[0].getObject() );
         assertSame( cheese2,

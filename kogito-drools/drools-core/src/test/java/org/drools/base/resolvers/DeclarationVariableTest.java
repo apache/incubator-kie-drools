@@ -12,6 +12,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Package;
+import org.drools.spi.Tuple;
 
 public class DeclarationVariableTest extends TestCase {
     public void testDeclaration() throws Exception {
@@ -29,7 +30,7 @@ public class DeclarationVariableTest extends TestCase {
                                      20 );
         FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        ReteTuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
         assertEquals( stilton,
                       declaration.getValue( tuple,
                                             wm ) );

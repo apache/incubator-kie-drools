@@ -29,6 +29,7 @@ import org.drools.rule.Package;
 import org.drools.spi.ColumnExtractor;
 import org.drools.spi.Extractor;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 
 public class MethodDataProviderTest extends TestCase {
 
@@ -85,7 +86,7 @@ public class MethodDataProviderTest extends TestCase {
         FactHandle varHandle = workingMemory.assertObject( var );
         FactHandle var2Handle = workingMemory.assertObject( "hola" );
 
-        ReteTuple tuple = new ReteTuple( new ReteTuple( (DefaultFactHandle) varHandle ),
+        Tuple tuple = new ReteTuple( new ReteTuple( (DefaultFactHandle) varHandle ),
                                          (DefaultFactHandle) var2Handle );
 
         Iterator it = prov.getResults( tuple,
