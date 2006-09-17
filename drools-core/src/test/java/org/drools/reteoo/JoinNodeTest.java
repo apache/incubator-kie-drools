@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.beta.BetaRightMemory;
@@ -29,6 +29,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 
 public class JoinNodeTest extends DroolsTestCase {
     Rule                rule;
@@ -60,7 +61,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node = new JoinNode( 15,
                                   this.tupleSource,
                                   this.objectSource,
-                                  new BetaNodeBinder( new FieldConstraint[]{this.constraint} ) );
+                                  new BetaNodeConstraints( new FieldConstraint[]{this.constraint} ) );
 
         this.node.addTupleSink( this.sink );
 
@@ -303,14 +304,14 @@ public class JoinNodeTest extends DroolsTestCase {
                                 this.workingMemory );
         ObjectMatches matches = this.getMatchesFor( tuple2,
                                                     f3 );
-        for ( TupleMatch match = matches.getFirstTupleMatch(); match != null; match = (TupleMatch) match.getNext() ) {
+        for ( CompositeTupleMatch match = matches.getFirstTupleMatch(); match != null; match = (CompositeTupleMatch) match.getNext() ) {
             assertNotSame( tuple2,
                            match.getTuple() );
         }
 
         matches = this.getMatchesFor( tuple2,
                                       f4 );
-        for ( TupleMatch match = matches.getFirstTupleMatch(); match != null; match = (TupleMatch) match.getNext() ) {
+        for ( CompositeTupleMatch match = matches.getFirstTupleMatch(); match != null; match = (CompositeTupleMatch) match.getNext() ) {
             assertNotSame( tuple2,
                            match.getTuple() );
         }
@@ -398,7 +399,7 @@ public class JoinNodeTest extends DroolsTestCase {
      * @param f3
      * @return
      */
-    private ObjectMatches getMatchesFor(final ReteTuple tuple1,
+    private ObjectMatches getMatchesFor(final Tuple tuple1,
                                         final DefaultFactHandle f3) {
         ObjectMatches matches = null;
         for ( final Iterator i = this.memory.rightObjectIterator( this.workingMemory,

@@ -20,7 +20,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.MockConstraint;
 
@@ -34,14 +34,14 @@ import org.drools.spi.MockConstraint;
  * Created: 28/02/2006
  */
 public class BetaMemoryFactoryTest extends TestCase {
-    BetaNodeBinder        binder = null;
+    BetaNodeConstraints        binder = null;
     RuleBaseConfiguration config;
 
     protected void setUp() throws Exception {
         super.setUp();
         this.config = new RuleBaseConfiguration();
         final FieldConstraint[] constraints = new FieldConstraint[]{new MockConstraint()};
-        this.binder = new BetaNodeBinder( constraints );
+        this.binder = new BetaNodeConstraints( constraints );
     }
 
     protected void tearDown() throws Exception {

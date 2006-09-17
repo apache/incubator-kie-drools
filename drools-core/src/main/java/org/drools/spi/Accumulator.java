@@ -19,7 +19,6 @@ package org.drools.spi;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 
 /**
@@ -34,7 +33,7 @@ public interface Accumulator
     extends
     Invoker {
 
-    public Object accumulate(ReteTuple leftTuple,
+    public Object accumulate(Tuple leftTuple,
                              List matchingObjects,
                              Declaration[] declarations,
                              Declaration[] innerDeclarations,

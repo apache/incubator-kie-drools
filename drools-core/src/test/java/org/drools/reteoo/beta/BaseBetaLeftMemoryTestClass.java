@@ -32,6 +32,7 @@ import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.spi.FactHandleFactory;
+import org.drools.spi.Tuple;
 import org.drools.util.MultiLinkedListNodeWrapper;
 
 /**
@@ -319,28 +320,28 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
             final Iterator i = this.memory.iterator();
             Assert.assertTrue( "There should be a next tuple",
                                i.hasNext() );
-            ReteTuple tuple = (ReteTuple) i.next();
+            Tuple tuple = (Tuple) i.next();
             Assert.assertSame( "Wrong returned tuple",
                                this.tuple0,
                                tuple );
 
             Assert.assertTrue( "There should be a next tuple",
                                i.hasNext() );
-            tuple = (ReteTuple) i.next();
+            tuple = (Tuple) i.next();
             Assert.assertSame( "Wrong returned tuple",
                                this.tuple1,
                                tuple );
 
             Assert.assertTrue( "There should be a next tuple",
                                i.hasNext() );
-            tuple = (ReteTuple) i.next();
+            tuple = (Tuple) i.next();
             Assert.assertSame( "Wrong returned tuple",
                                this.tuple2,
                                tuple );
 
             Assert.assertTrue( "There should be a next tuple",
                                i.hasNext() );
-            tuple = (ReteTuple) i.next();
+            tuple = (Tuple) i.next();
             Assert.assertSame( "Wrong returned tuple",
                                tuple3,
                                tuple );

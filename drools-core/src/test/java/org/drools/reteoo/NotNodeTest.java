@@ -24,7 +24,7 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
-import org.drools.common.BetaNodeBinder;
+import org.drools.common.BetaNodeConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
@@ -60,7 +60,7 @@ public class NotNodeTest extends DroolsTestCase {
         this.node = new NotNode( 15,
                                  new MockTupleSource( 5 ),
                                  new MockObjectSource( 8 ),
-                                 new BetaNodeBinder( this.constraint ) );
+                                 new BetaNodeConstraints( this.constraint ) );
 
         this.ria = new RightInputAdapterNode( 2,
                                               0,

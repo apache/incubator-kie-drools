@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.Accumulator;
+import org.drools.spi.Tuple;
 
 /**
  * A Mock accumulate object.
@@ -34,14 +35,14 @@ public class MockAccumulator
     
     private static final long serialVersionUID = 8959310397185256783L;
     
-    private ReteTuple leftTuple = null;
+    private Tuple leftTuple = null;
     private List      matchingObjects = Collections.EMPTY_LIST;
     private WorkingMemory workingMemory = null;
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.Accumulator#accumulate(org.drools.reteoo.ReteTuple, java.util.List, org.drools.WorkingMemory)
      */
-    public Object accumulate(ReteTuple leftTuple,
+    public Object accumulate(Tuple leftTuple,
                              List matchingObjects,
                              Declaration[] declarations,
                              Declaration[] inner,
@@ -52,7 +53,7 @@ public class MockAccumulator
         return matchingObjects;
     }
 
-    public ReteTuple getLeftTuple() {
+    public Tuple getLeftTuple() {
         return leftTuple;
     }
 

@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
-import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Accumulator;
+import org.drools.spi.Tuple;
 
 /**
  * A class to represent a Accumulate CE
@@ -79,7 +79,7 @@ public class Accumulate extends ConditionalElement {
         this.accumulator = accumulator;
     }
 
-    public Object accumulate(final ReteTuple leftTuple,
+    public Object accumulate(final Tuple leftTuple,
                              final List matchingObjects,
                              final WorkingMemory workingMemory) {
         try {

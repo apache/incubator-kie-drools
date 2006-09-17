@@ -22,6 +22,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 
 public class TupleSourceTest extends DroolsTestCase {
 
@@ -67,7 +68,7 @@ public class TupleSourceTest extends DroolsTestCase {
         assertLength( 0,
                       sink1.getAsserted() );
 
-        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+        final Tuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
 
         source.propagateAssertTuple( tuple1,
@@ -85,7 +86,7 @@ public class TupleSourceTest extends DroolsTestCase {
         assertSame( workingMemory,
                     list[2] );
 
-        final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 1,
+        final Tuple tuple2 = new ReteTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
 
         final MockTupleSink sink2 = new MockTupleSink();

@@ -24,8 +24,9 @@ import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.LinkedListEntry;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
@@ -98,7 +99,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final List asserted = sink.getAsserted();
         assertLength( 1,
                       asserted );
-        final ReteTuple tuple0 = (ReteTuple) ((Object[]) asserted.get( 0 ))[0];
+        final Tuple tuple0 = (Tuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( string1,
                     workingMemory.getObject( tuple0.get( 0 ) ) );
 
@@ -108,7 +109,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       list0.size() );
         assertSame( tuple0,
-                    ((LinkedListObjectWrapper) list0.getFirst()).getObject() );
+                    ((LinkedListEntry) list0.getFirst()).getObject() );
 
         // check memory stacks correctly
         final DefaultFactHandle f1 = (DefaultFactHandle) workingMemory.assertObject( "test1" );
@@ -118,13 +119,13 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         assertLength( 2,
                       asserted );
-        final ReteTuple tuple1 = (ReteTuple) ((Object[]) asserted.get( 1 ))[0];
+        final Tuple tuple1 = (Tuple) ((Object[]) asserted.get( 1 ))[0];
 
         final LinkedList list1 = (LinkedList) map.get( f1 );
         assertEquals( 1,
                       list1.size() );
         assertSame( tuple1,
-                    ((LinkedListObjectWrapper) list1.getFirst()).getObject() );
+                    ((LinkedListEntry) list1.getFirst()).getObject() );
 
         assertNotSame( tuple0,
                        tuple1 );
@@ -160,7 +161,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                               context,
                               workingMemory );
 
-        final ReteTuple tuple = (ReteTuple) ((Object[]) sink.getAsserted().get( 0 ))[0];
+        final Tuple tuple = (Tuple) ((Object[]) sink.getAsserted().get( 0 ))[0];
 
         liaNode.retractObject( f0,
                                context,
