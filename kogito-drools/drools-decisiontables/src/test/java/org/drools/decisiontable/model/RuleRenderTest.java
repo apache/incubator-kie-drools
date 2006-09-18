@@ -44,20 +44,36 @@ public class RuleRenderTest extends TestCase {
 
         final DRLOutput out = new DRLOutput();
         rule.renderDRL( out );
-        final String xml = out.getDRL();
-        assertNotNull( xml );
+        final String drl = out.getDRL();
+        assertNotNull( drl );
 
-        assertTrue( xml.indexOf( "cond snippet" ) != -1 );
-        assertTrue( xml.indexOf( "cons snippet" ) != -1 );
-        assertTrue( xml.indexOf( "salience 42" ) != -1 );
-        assertTrue( xml.indexOf( "salience 42" ) < xml.indexOf( "when" ) );
-        assertTrue( xml.indexOf( "cond snippet" ) < xml.indexOf( "then" ) );
-        assertTrue( xml.indexOf( "cons snippet;" ) > xml.indexOf( "then" ) );
-        assertTrue( xml.indexOf( "rule" ) != -1 );
-        assertTrue( xml.indexOf( "end" ) > xml.indexOf( "rule " ) );
-        assertTrue( xml.indexOf( "#rule comments" ) > -1 );
+        assertTrue( drl.indexOf( "cond snippet" ) != -1 );
+        assertTrue( drl.indexOf( "cons snippet" ) != -1 );
+        assertTrue( drl.indexOf( "salience 42" ) != -1 );
+        assertTrue( drl.indexOf( "salience 42" ) < drl.indexOf( "when" ) );
+        assertTrue( drl.indexOf( "cond snippet" ) < drl.indexOf( "then" ) );
+        assertTrue( drl.indexOf( "cons snippet;" ) > drl.indexOf( "then" ) );
+        assertTrue( drl.indexOf( "rule" ) != -1 );
+        assertTrue( drl.indexOf( "end" ) > drl.indexOf( "rule " ) );
+        assertTrue( drl.indexOf( "#rule comments" ) > -1 );
 
     }
+    
+    public void testAttributes() throws Exception {
+        Rule rule = new Rule("la", new Integer(42), 2);
+        
+        rule.setActivationGroup( "foo" );
+        rule.setNoLoop( "true" );
+        
+        DRLOutput out = new DRLOutput();
+        rule.renderDRL( out );
+        
+        String result = out.toString();
+        assertTrue(result.indexOf( "no-loop true" ) > -1);
+        assertTrue(result.indexOf( "activation-group \"foo\"" ) > -1);
+        
+        
+    }    
 
     public void testSalienceCalculator() {
         final int rowNumber = 2;
