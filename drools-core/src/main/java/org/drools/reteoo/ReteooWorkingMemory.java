@@ -31,7 +31,6 @@ import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.AbstractWorkingMemory.WorkingMemoryAction;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;

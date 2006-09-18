@@ -62,7 +62,7 @@ public class CompositeTupleSinkAdapter
     public void propagateAssertTuple(final ReteTuple tuple,
                                      final InternalFactHandle handle,
                                      final PropagationContext context,
-                                     final ReteooWorkingMemory workingMemory) {
+                                     final InternalWorkingMemory workingMemory) {
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
             final ReteTuple joined = new ReteTuple( tuple,
                                                     handle,
@@ -108,6 +108,18 @@ public class CompositeTupleSinkAdapter
                                                sink );
         tupleMatch.addJoinedTuple( tuple );
         tuple.assertTuple( context,
+                           workingMemory );
+    }
+
+    public void propagateNewTupleSink(ReteTuple tuple,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory) {
+
+        final TupleSink sink = sinks.getLast();
+        ReteTuple child = new ReteTuple( tuple,
+                                         sink );
+        tuple.addChildEntry( child );
+        child.assertTuple( context,
                            workingMemory );
     }
 
