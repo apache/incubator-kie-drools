@@ -314,6 +314,7 @@ public class AccumulateNode extends BetaNode {
      */
     public List getPropagatedTuples(InternalWorkingMemory workingMemory,
                                     TupleSink sink) {
+        // FIXME
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         final List propagatedTuples = new ArrayList();
 
@@ -332,6 +333,7 @@ public class AccumulateNode extends BetaNode {
      */
     public void updateNewNode(InternalWorkingMemory workingMemory,
                               PropagationContext context) {
+        // FIXME
         this.attachingNewNode = true;
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
