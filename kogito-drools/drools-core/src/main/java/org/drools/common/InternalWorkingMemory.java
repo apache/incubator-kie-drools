@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.event.AgendaEventSupport;
+import org.drools.spi.FactHandleFactory;
 
 public interface InternalWorkingMemory extends WorkingMemory {
     public long getId();
@@ -20,6 +21,8 @@ public interface InternalWorkingMemory extends WorkingMemory {
     
     public TruthMaintenanceSystem getTruthMaintenanceSystem();
     
-    public void propagateQueuedActions();    
+    public void propagateQueuedActions();
+
+    public FactHandleFactory getFactHandleFactory();    
 }
 

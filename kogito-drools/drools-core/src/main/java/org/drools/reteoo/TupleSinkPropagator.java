@@ -14,11 +14,11 @@ public interface TupleSinkPropagator {
                                      TupleMatch tupleMatch,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);
-    
+
     public void propagateAssertTuple(ReteTuple tuple,
                                      PropagationContext context,
-                                     InternalWorkingMemory workingMemory);    
-    
+                                     InternalWorkingMemory workingMemory);
+
     /**
      * Propagates a new tuple adding the given fact handle to the tuple 
      * before propagating.
@@ -29,30 +29,33 @@ public interface TupleSinkPropagator {
      * @param workingMemory
      */
     public void propagateAssertTuple(final ReteTuple tuple,
-                                        final InternalFactHandle handle,
-                                        final PropagationContext context,
-                                        final ReteooWorkingMemory workingMemory);
-    
+                                     final InternalFactHandle handle,
+                                     final PropagationContext context,
+                                     final InternalWorkingMemory workingMemory);
+
     public LinkedList createAndAssertTuple(InternalFactHandle handle,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory);    
-    
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory);
 
     public TupleSink[] getSinks();
 
     public void propagateNewTupleSink(TupleMatch tupleMatch,
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory);
-    
+
     public void propagateNewTupleSink(InternalFactHandle handle,
                                       LinkedList list,
                                       PropagationContext context,
-                                      InternalWorkingMemory workingMemory);    
-    
+                                      InternalWorkingMemory workingMemory);
+
+    public void propagateNewTupleSink(ReteTuple tuple,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory);
+
     public List getPropagatedTuples(final Map memory,
                                     final InternalWorkingMemory workingMemory,
                                     final TupleSink sink);
-    
+
     public int size();
 
 }

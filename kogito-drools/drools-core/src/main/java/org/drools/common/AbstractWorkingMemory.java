@@ -94,6 +94,7 @@ public abstract class AbstractWorkingMemory
     protected GlobalResolver                  globalResolver;
 
     protected static final Object             NULL                                          = new Serializable() {
+                                                                                                private static final long serialVersionUID = -6666310064415179894L;
                                                                                             };
 
     /** The eventSupport */
@@ -243,7 +244,7 @@ public abstract class AbstractWorkingMemory
         if ( value == null ) {
             return;
         }
-        
+
         try {
             lock.lock();
             // Make sure the global has been declared in the RuleBase
@@ -262,7 +263,7 @@ public abstract class AbstractWorkingMemory
             lock.unlock();
         }
     }
-    
+
     public void setGlobalResolver(GlobalResolver globalResolver) {
         this.globalResolver = globalResolver;
     }

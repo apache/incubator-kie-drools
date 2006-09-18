@@ -62,7 +62,7 @@ public class SingleTupleSinkAdapter
     public void propagateAssertTuple(final ReteTuple tuple,
                                      final InternalFactHandle handle,
                                      final PropagationContext context,
-                                     final ReteooWorkingMemory workingMemory) {
+                                     final InternalWorkingMemory workingMemory) {
         final ReteTuple joined = new ReteTuple( tuple,
                                                 handle,
                                                 sink );
@@ -89,6 +89,13 @@ public class SingleTupleSinkAdapter
         // do nothing, as we have no new tuple sinks
         throw new RuntimeException( "This is a bug you cannot update new data through this single sink adapter" );
 
+    }
+
+    public void propagateNewTupleSink(ReteTuple tuple,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory) {
+        // do nothing, as we have no new tuple sinks
+        throw new RuntimeException( "This is a bug you cannot update new data through this single sink adapter" );
     }
 
     public List getPropagatedTuples(final Map memory,

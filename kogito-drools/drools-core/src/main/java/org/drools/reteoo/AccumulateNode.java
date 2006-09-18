@@ -28,7 +28,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Accumulate;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 
@@ -111,7 +110,7 @@ public class AccumulateNode extends BetaNode {
      */
     public void assertTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            ReteooWorkingMemory workingMemory) {
+                            InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
@@ -173,7 +172,7 @@ public class AccumulateNode extends BetaNode {
      */
     public void modifyTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            ReteooWorkingMemory workingMemory) {
+                            InternalWorkingMemory workingMemory) {
 
         this.retractTuple( leftTuple,
                            context,
@@ -193,7 +192,7 @@ public class AccumulateNode extends BetaNode {
      */
     public void retractTuple(ReteTuple leftTuple,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.remove( workingMemory,
                        leftTuple );
@@ -211,9 +210,10 @@ public class AccumulateNode extends BetaNode {
         // if tuple was propagated
         if ( (leftTuple.getChildEntries() != null) && (leftTuple.getChildEntries().size() > 0) ) {
             // Need to store the accumulate result object for later disposal
-            InternalFactHandle lastHandle = ((ReteTuple) ((LinkedListEntry)leftTuple.getChildEntries().getFirst()).getObject()).getLastHandle();
+            InternalFactHandle lastHandle = ((ReteTuple) ((LinkedListEntry) leftTuple.getChildEntries().getFirst()).getObject()).getLastHandle();
 
-            leftTuple.retractChildEntries( context, workingMemory );
+            leftTuple.retractChildEntries( context,
+                                           workingMemory );
 
             // Destroying the acumulate result object 
             workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
@@ -234,8 +234,8 @@ public class AccumulateNode extends BetaNode {
                              InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        ObjectMatches objectMatches = memory.add( workingMemory,
-                                                  handle );
+        memory.add( workingMemory,
+                    handle );
 
         final BetaNodeConstraints binder = getJoinNodeBinder();
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
@@ -313,7 +313,7 @@ public class AccumulateNode extends BetaNode {
     /**
      * @inheritDoc
      */
-    public List getPropagatedTuples(ReteooWorkingMemory workingMemory,
+    public List getPropagatedTuples(InternalWorkingMemory workingMemory,
                                     TupleSink sink) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         //final int index = this.getTupleSinks().indexOf( sink );
@@ -340,11 +340,9 @@ public class AccumulateNode extends BetaNode {
 
         for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
-            final ReteTuple child = new ReteTuple( leftTuple );
-            leftTuple.addLinkedTuple( child );
-            ((TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 )).assertTuple( child,
-                                                                                         context,
-                                                                                         workingMemory );
+            this.sink.propagateNewTupleSink( (ReteTuple) leftTuple.getChildEntries().getFirst(),
+                                             context,
+                                             workingMemory );
         }
         this.attachingNewNode = false;
     }
