@@ -4,6 +4,7 @@ import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.util.FieldIndexHashTable.FieldIndexEntry;
 
 import junit.framework.TestCase;
 

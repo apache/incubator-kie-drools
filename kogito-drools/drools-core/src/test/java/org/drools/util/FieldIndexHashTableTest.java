@@ -10,13 +10,14 @@ import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.util.FieldIndexHashTable.FieldIndexEntry;
 
-public class FieldIndexMapTest extends TestCase {
+public class FieldIndexHashTableTest extends TestCase {
     
     public void testSingleEntry() throws Exception {
         ClassFieldExtractor extractor = new ClassFieldExtractor(Cheese.class, "type");
         
-        FieldIndexMap map = new FieldIndexMap( extractor.getIndex(), extractor );
+        FieldIndexHashTable map = new FieldIndexHashTable( extractor.getIndex(), extractor );
         
         assertEquals(0, map.size() );
         
@@ -37,7 +38,7 @@ public class FieldIndexMapTest extends TestCase {
     public void testTwoDifferentEntries() throws Exception {
         ClassFieldExtractor extractor = new ClassFieldExtractor(Cheese.class, "type");
         
-        FieldIndexMap map = new FieldIndexMap( extractor.getIndex(), extractor );
+        FieldIndexHashTable map = new FieldIndexHashTable( extractor.getIndex(), extractor );
         
         assertEquals(0, map.size() );
         
@@ -64,7 +65,7 @@ public class FieldIndexMapTest extends TestCase {
     public void testTwoEqualEntries() throws  Exception {
         ClassFieldExtractor extractor = new ClassFieldExtractor(Cheese.class, "type");
         
-        FieldIndexMap map = new FieldIndexMap( extractor.getIndex(), extractor );
+        FieldIndexHashTable map = new FieldIndexHashTable( extractor.getIndex(), extractor );
         
         assertEquals(0, map.size() );
         
@@ -93,7 +94,7 @@ public class FieldIndexMapTest extends TestCase {
     public void testTwoDifferentEntriesSameHashCode() throws Exception  {
         ClassFieldExtractor extractor = new ClassFieldExtractor(TestClass.class, "object");
         
-        FieldIndexMap map = new FieldIndexMap( extractor.getIndex(), extractor );
+        FieldIndexHashTable map = new FieldIndexHashTable( extractor.getIndex(), extractor );
         
         TestClass c1 = new TestClass( 0, new TestClass( 20, "stilton" ) );
         InternalFactHandle ch1 = new DefaultFactHandle( 1, c1 );
@@ -121,7 +122,7 @@ public class FieldIndexMapTest extends TestCase {
     public void testRemove() throws Exception {
         ClassFieldExtractor extractor = new ClassFieldExtractor(Cheese.class, "type");
         
-        FieldIndexMap map = new FieldIndexMap( extractor.getIndex(), extractor );
+        FieldIndexHashTable map = new FieldIndexHashTable( extractor.getIndex(), extractor );
         
         assertEquals(0, map.size() );
         
@@ -160,13 +161,13 @@ public class FieldIndexMapTest extends TestCase {
     
     public void  testResize() throws Exception {
         // use this  to access  the  map table
-        Field field = DroolsMap.class.getDeclaredField( "table" );
+        Field field = AbstractHashTable.class.getDeclaredField( "table" );
         field.setAccessible( true );
         
         // This should  only resize when we have more than X different types of cheeses, not before.
         ClassFieldExtractor extractor = new ClassFieldExtractor(Cheese.class, "type");
         
-        FieldIndexMap map = new FieldIndexMap( extractor.getIndex(), extractor );
+        FieldIndexHashTable map = new FieldIndexHashTable( extractor.getIndex(), extractor );
         
         assertEquals(0, map.size() );
         
@@ -283,8 +284,8 @@ public class FieldIndexMapTest extends TestCase {
         }                        
     }
     
-    private int tablePopulationSize(DroolsMap map) throws Exception {
-        Field field = DroolsMap.class.getDeclaredField( "table" );
+    private int tablePopulationSize(AbstractHashTable map) throws Exception {
+        Field field = AbstractHashTable.class.getDeclaredField( "table" );
         field.setAccessible( true );
         Entry[] array = (Entry[]) field.get( map );
         int size = 0;
@@ -296,8 +297,8 @@ public class FieldIndexMapTest extends TestCase {
         return size;
     }
     
-    private Entry[] getEntries(DroolsMap map) throws Exception {
-        Field field = DroolsMap.class.getDeclaredField( "table" );
+    private Entry[] getEntries(AbstractHashTable map) throws Exception {
+        Field field = AbstractHashTable.class.getDeclaredField( "table" );
         field.setAccessible( true );
         List list = new ArrayList();
         
