@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BetaNodeConstraints;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Accumulate;
@@ -149,7 +148,7 @@ public class AccumulateNode extends BetaNode {
             }
         }
         if ( isAllowed ) {
-            DefaultFactHandle handle = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( result );
+            InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
 
             if ( this.resultsBinder.isAllowed( handle,
                                                leftTuple,
@@ -316,7 +315,6 @@ public class AccumulateNode extends BetaNode {
     public List getPropagatedTuples(InternalWorkingMemory workingMemory,
                                     TupleSink sink) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        //final int index = this.getTupleSinks().indexOf( sink );
         final List propagatedTuples = new ArrayList();
 
         for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {

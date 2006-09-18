@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BetaNodeConstraints;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Collect;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 
@@ -41,11 +40,11 @@ public class CollectNode extends BetaNode
     TupleSink,
     ObjectSink {
 
-    private static final long serialVersionUID = -8321568626178187047L;
-    
-    private final Collect           collect;
-    private final FieldConstraint[] resultConstraints;
-    private final BetaNodeConstraints    resultsBinder;
+    private static final long         serialVersionUID = -8321568626178187047L;
+
+    private final Collect             collect;
+    private final FieldConstraint[]   resultConstraints;
+    private final BetaNodeConstraints resultsBinder;
 
     /**
      * Constructor.
@@ -121,7 +120,7 @@ public class CollectNode extends BetaNode
      */
     public void assertTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            ReteooWorkingMemory workingMemory) {
+                            InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
@@ -134,7 +133,7 @@ public class CollectNode extends BetaNode
         for ( final Iterator it = memory.rightObjectIterator( workingMemory,
                                                               leftTuple ); it.hasNext(); ) {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            final DefaultFactHandle handle = objectMatches.getFactHandle();
+            final InternalFactHandle handle = objectMatches.getFactHandle();
 
             if ( attemptJoin( leftTuple,
                               handle,
@@ -156,15 +155,15 @@ public class CollectNode extends BetaNode
             }
         }
         if ( isAllowed ) {
-            DefaultFactHandle handle = (DefaultFactHandle) workingMemory.getFactHandleFactory().newFactHandle( result );
+            InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
 
             if ( this.resultsBinder.isAllowed( handle,
                                                leftTuple,
                                                workingMemory ) ) {
-                propagateAssertTuple( leftTuple,
-                                      handle,
-                                      context,
-                                      workingMemory );
+                this.sink.propagateAssertTuple( leftTuple,
+                                                handle,
+                                                context,
+                                                workingMemory );
             }
         }
     }
@@ -179,7 +178,7 @@ public class CollectNode extends BetaNode
      */
     public void modifyTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            ReteooWorkingMemory workingMemory) {
+                            InternalWorkingMemory workingMemory) {
 
         this.retractTuple( leftTuple,
                            context,
@@ -195,7 +194,7 @@ public class CollectNode extends BetaNode
      */
     public void retractTuple(ReteTuple leftTuple,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.remove( workingMemory,
                        leftTuple );
@@ -211,14 +210,12 @@ public class CollectNode extends BetaNode
         }
 
         // if tuple was propagated
-        if ( (leftTuple.getLinkedTuples() != null) && (leftTuple.getLinkedTuples().size() > 0) ) {
+        if ( (leftTuple.getChildEntries() != null) && (leftTuple.getChildEntries().size() > 0) ) {
             // Need to store the collection result object for later disposal
-            InternalFactHandle[] handles = ((Tuple) ((LinkedListEntry) leftTuple.getLinkedTuples().getFirst()).getObject()).getFactHandles();
-            InternalFactHandle lastHandle = handles[handles.length - 1];
+            InternalFactHandle lastHandle = ((ReteTuple) ((LinkedListEntry) leftTuple.getChildEntries().getFirst()).getObject()).getLastHandle();
 
-            propagateRetractTuple( leftTuple,
-                                   context,
-                                   workingMemory );
+            leftTuple.retractChildEntries( context,
+                                           workingMemory );
 
             // Destroying the acumulate result object 
             workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
@@ -234,9 +231,9 @@ public class CollectNode extends BetaNode
      *  2. For each matching tuple, call a modify tuple
      *  
      */
-    public void assertObject(DefaultFactHandle handle,
+    public void assertObject(InternalFactHandle handle,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.add( workingMemory,
@@ -269,9 +266,9 @@ public class CollectNode extends BetaNode
      * So, a modify object is in fact a retract+assert object.
      * 
      */
-    public void modifyObject(DefaultFactHandle handle,
+    public void modifyObject(InternalFactHandle handle,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
@@ -296,9 +293,9 @@ public class CollectNode extends BetaNode
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
-    public void retractObject(DefaultFactHandle handle,
+    public void retractObject(InternalFactHandle handle,
                               PropagationContext context,
-                              ReteooWorkingMemory workingMemory) {
+                              InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
@@ -318,20 +315,16 @@ public class CollectNode extends BetaNode
     /**
      * @inheritDoc
      */
-    public List getPropagatedTuples(ReteooWorkingMemory workingMemory,
+    public List getPropagatedTuples(InternalWorkingMemory workingMemory,
                                     TupleSink sink) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        final int index = this.getTupleSinks().indexOf( sink );
         final List propagatedTuples = new ArrayList();
 
         for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
-            final LinkedList linkedTuples = leftTuple.getLinkedTuples();
+            final LinkedList linkedTuples = leftTuple.getChildEntries();
 
             LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
-            for ( int i = 0; i < index; i++ ) {
-                wrapper = (LinkedListEntry) wrapper.getNext();
-            }
             propagatedTuples.add( wrapper.getObject() );
         }
         return propagatedTuples;
@@ -340,7 +333,7 @@ public class CollectNode extends BetaNode
     /**
      * @inheritDoc
      */
-    public void updateNewNode(ReteooWorkingMemory workingMemory,
+    public void updateNewNode(InternalWorkingMemory workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
 
@@ -348,11 +341,9 @@ public class CollectNode extends BetaNode
 
         for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
-            final ReteTuple child = new ReteTuple( leftTuple );
-            leftTuple.addLinkedTuple( child );
-            ((TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 )).assertTuple( child,
-                                                                                         context,
-                                                                                         workingMemory );
+            this.sink.propagateNewTupleSink( (ReteTuple) leftTuple.getChildEntries().getFirst(),
+                                             context,
+                                             workingMemory );
         }
         this.attachingNewNode = false;
     }
