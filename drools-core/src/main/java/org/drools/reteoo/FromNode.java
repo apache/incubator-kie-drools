@@ -23,15 +23,15 @@ public class FromNode extends TupleSource
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long   serialVersionUID = 320;
 
-    private DataProvider      dataProvider;
-    private TupleSource       tupleSource;
-    private FieldConstraint[] constraints;
-    private BetaNodeConstraints    binder;
+    private DataProvider        dataProvider;
+    private TupleSource         tupleSource;
+    private FieldConstraint[]   constraints;
+    private BetaNodeConstraints binder;
 
     public FromNode(final int id,
-                    final DataProvider dataProvider,    
+                    final DataProvider dataProvider,
                     final TupleSource tupleSource,
                     final FieldConstraint[] constraints,
                     final BetaNodeConstraints binder) {
@@ -54,28 +54,32 @@ public class FromNode extends TupleSource
      */
     public void assertTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            ReteooWorkingMemory workingMemory) {
+                            InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         memory.add( workingMemory,
                     leftTuple );
 
-        for ( Iterator it = this.dataProvider.getResults( leftTuple, workingMemory, context ); it.hasNext(); ) {
+        for ( Iterator it = this.dataProvider.getResults( leftTuple,
+                                                          workingMemory,
+                                                          context ); it.hasNext(); ) {
             Object object = it.next();
-            
+
             // First alpha node filters
             boolean isAllowed = true;
             for ( int i = 0, length = this.constraints.length; i < length; i++ ) {
-                if ( !this.constraints[i].isAllowed( object, leftTuple, workingMemory ) ) {
+                if ( !this.constraints[i].isAllowed( object,
+                                                     leftTuple,
+                                                     workingMemory ) ) {
                     isAllowed = false;
                     break;
                 }
             }
-            
+
             if ( !isAllowed ) {
                 continue;
             }
-            
+
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object );
             final ObjectMatches objectMatches = new ObjectMatches( (DefaultFactHandle) handle );
 
@@ -83,16 +87,16 @@ public class FromNode extends TupleSource
                                    leftTuple,
                                    workingMemory ) ) {
                 final TupleMatch tupleMatch = new CompositeTupleMatch( leftTuple,
-                                                              objectMatches );
+                                                                       objectMatches );
 
                 leftTuple.addTupleMatch( (DefaultFactHandle) handle,
                                          tupleMatch );
 
-                propagateAssertTuple( new ReteTuple( leftTuple,
-                                                     (DefaultFactHandle) handle ),
-                                      tupleMatch,
-                                      context,
-                                      workingMemory );
+                this.sink.propagateAssertTuple( leftTuple,
+                                                handle,
+                                                tupleMatch,
+                                                context,
+                                                workingMemory );
             }
         }
     }
@@ -104,7 +108,7 @@ public class FromNode extends TupleSource
      */
     public void modifyTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            ReteooWorkingMemory workingMemory) {
+                            InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // We remove the tuple as now its modified it needs to go to the top of
@@ -124,43 +128,40 @@ public class FromNode extends TupleSource
             // first purge the network of all future uses of the 'from' facts           
             for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
                 final TupleMatch tupleMatch = (TupleMatch) it.next();
-                propagateRetractTuple( tupleMatch,
-                                       context,
-                                       workingMemory );
+                tupleMatch.getTuple().retractChildEntries( context,
+                                                           workingMemory );
                 workingMemory.getFactHandleFactory().destroyFactHandle( tupleMatch.getObjectMatches().getFactHandle() );
-            }      
-            
+            }
+
             // now all existing matches must now be cleared and the DataProvider re-processed.
             leftTuple.clearTupleMatches();
-            
+
             assertTuple( leftTuple,
                          context,
-                         workingMemory );            
-            
+                         workingMemory );
+
         }
     }
 
     public void retractTuple(ReteTuple leftTuple,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.remove( workingMemory,
                        leftTuple );
-        
+
         final Map matches = leftTuple.getTupleMatches();
 
         if ( !matches.isEmpty() ) {
             for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
                 final TupleMatch tupleMatch = (TupleMatch) it.next();
-                propagateRetractTuple( tupleMatch,
-                                       context,
-                                       workingMemory );
+                tupleMatch.getTuple().retractChildEntries( context, workingMemory );
                 workingMemory.getFactHandleFactory().destroyFactHandle( tupleMatch.getObjectMatches().getFactHandle() );
             }
         }
     }
 
-    public List getPropagatedTuples(ReteooWorkingMemory workingMemory,
+    public List getPropagatedTuples(InternalWorkingMemory workingMemory,
                                     TupleSink sink) {
         // TODO Auto-generated method stub
         return null;
@@ -174,7 +175,7 @@ public class FromNode extends TupleSource
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
@@ -186,18 +187,19 @@ public class FromNode extends TupleSource
 
     public void remove(BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
-        if( !node.isInUse() ) {
-            getTupleSinks().remove( node );
-        }
-        removeShare();
-
-        if ( !this.isInUse() ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                workingMemories[i].clearNodeMemory( this );
-            }
-        }
-        this.tupleSource.remove( this,
-                                 workingMemories );
+        // FIXME
+//        if ( !node.isInUse() ) {
+//            getTupleSinks().remove( node );
+//        }
+//        removeShare();
+//
+//        if ( !this.isInUse() ) {
+//            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+//                workingMemories[i].clearNodeMemory( this );
+//            }
+//        }
+//        this.tupleSource.remove( this,
+//                                 workingMemories );
     }
 
     public void updateNewNode(InternalWorkingMemory workingMemory,
