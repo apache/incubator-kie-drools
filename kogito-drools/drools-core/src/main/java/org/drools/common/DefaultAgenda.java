@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
+import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -54,7 +55,7 @@ import org.drools.util.Queueable;
  */
 public class DefaultAgenda
     implements
-    Serializable, 
+    Serializable,
     InternalAgenda {
     // ------------------------------------------------------------
     // Instance members
@@ -82,6 +83,8 @@ public class DefaultAgenda
 
     private AgendaGroup                main;
 
+    private DefaultKnowledgeHelper     knowledgeHelper;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -96,6 +99,7 @@ public class DefaultAgenda
      */
     public DefaultAgenda(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
+        this.knowledgeHelper = new DefaultKnowledgeHelper(this.workingMemory);
         this.agendaGroups = new HashMap();
         this.activationGroups = new HashMap();
         this.focusStack = new LinkedList();
@@ -171,7 +175,7 @@ public class DefaultAgenda
         // Agenda may not have been created yet, if not create it.
         if ( agendaGroup == null ) {
             agendaGroup = new AgendaGroupImpl( name );
-            ( ( DefaultAgenda ) this.workingMemory.getAgenda() ).addAgendaGroup( agendaGroup );
+            ((DefaultAgenda) this.workingMemory.getAgenda()).addAgendaGroup( agendaGroup );
         }
         setFocus( agendaGroup );
     }
@@ -336,7 +340,7 @@ public class DefaultAgenda
     public void clearAgendaGroup(final AgendaGroup agendaGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        final Queueable[] queueable = ( ( AgendaGroupImpl) agendaGroup ).getQueueable();
+        final Queueable[] queueable = ((AgendaGroupImpl) agendaGroup).getQueueable();
         for ( int i = 0, length = queueable.length; i < length; i++ ) {
             final AgendaItem item = (AgendaItem) queueable[i];
             if ( item == null ) {
@@ -352,7 +356,7 @@ public class DefaultAgenda
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
         }
-        ( ( AgendaGroupImpl )agendaGroup ).clear();
+        ((AgendaGroupImpl) agendaGroup).clear();
     }
 
     /* (non-Javadoc)
@@ -431,8 +435,7 @@ public class DefaultAgenda
         activation.setActivated( false );
 
         try {
-            final KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
-                                                                                                this.workingMemory );
+            knowledgeHelper.setActivation(activation);
             activation.getRule().getConsequence().evaluate( knowledgeHelper,
                                                             this.workingMemory );
         } catch ( final Exception e ) {
