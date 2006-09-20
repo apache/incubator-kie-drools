@@ -34,7 +34,6 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -369,6 +368,8 @@ final class TerminalNode extends BaseNode
     }
 
     class TerminalNodeMemory implements Serializable {
+        private static final long serialVersionUID = -2770066307284050292L;
+
         private AgendaGroupImpl agendaGroup;
 
         private ActivationGroup activationGroup;

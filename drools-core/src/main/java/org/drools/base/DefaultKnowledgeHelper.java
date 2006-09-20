@@ -33,10 +33,14 @@ import org.drools.spi.Tuple;
 public class DefaultKnowledgeHelper
     implements
     KnowledgeHelper {
-    private final Rule                         rule;
-    private final Activation                   activation;
-    private final Tuple                        tuple;
+    private Rule                               rule;
+    private Activation                         activation;
+    private Tuple                              tuple;
     private final InternalWorkingMemoryActions workingMemory;
+
+    public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
+        this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+    }
 
     public DefaultKnowledgeHelper(final Activation agendaItem,
                                   final WorkingMemory workingMemory) {
@@ -44,6 +48,12 @@ public class DefaultKnowledgeHelper
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+    }
+    
+    public void setActivation(Activation agendaItem) {
+        this.rule = agendaItem.getRule();
+        this.activation = agendaItem;
+        this.tuple = agendaItem.getTuple();
     }
 
     public void assertObject(final Object object) throws FactException {
