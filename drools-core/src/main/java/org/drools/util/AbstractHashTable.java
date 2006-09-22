@@ -6,7 +6,6 @@ package org.drools.util;
 import java.io.Serializable;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.util.FactHashSet.FactEntry;
 
 public abstract class AbstractHashTable
     implements
