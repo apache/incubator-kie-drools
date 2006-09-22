@@ -137,6 +137,10 @@ public abstract class AbstractHashTable implements Serializable {
     public Entry getBucket(int hashCode) {
         return this.table[ indexOf( hashCode, table.length ) ];
     }
+    
+    public Entry[] getTable() {
+        return this.table;
+    }
 
     public int size() {
         return this.size;
