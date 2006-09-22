@@ -27,7 +27,7 @@ import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.FactHashSet;
-import org.drools.util.FactHashSet.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -170,7 +170,7 @@ class AlphaNode extends ObjectSource
         this.attachingNewNode = true;
 
         final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
-        FactEntry[] entries  = memory.getTable();
+        FactEntry[] entries  = ( FactEntry[]) memory.getTable();
         for ( int i = 0, length  = entries.length; i < length; i++ ) {
             FactEntry current = entries[i];
             while  ( current != null ) {
