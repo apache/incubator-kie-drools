@@ -15,7 +15,7 @@ public class FieldIndexHashTable extends AbstractHashTable {
     private final int      startResult;
 
     public FieldIndexHashTable(int fieldIndex,
-                         FieldExtractor extractor) {
+                               FieldExtractor extractor) {
         this( 16,
               0.75f,
               fieldIndex,
@@ -23,9 +23,9 @@ public class FieldIndexHashTable extends AbstractHashTable {
     }
 
     public FieldIndexHashTable(int capacity,
-                         float loadFactor,
-                         int fieldIndex,
-                         FieldExtractor extractor) {
+                               float loadFactor,
+                               int fieldIndex,
+                               FieldExtractor extractor) {
         super( capacity,
                loadFactor );
         this.fieldIndex = fieldIndex;
@@ -43,19 +43,20 @@ public class FieldIndexHashTable extends AbstractHashTable {
         Object value = this.extractor.getValue( handle.getObject() );
         int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
 
-        int index = indexOf( hashCode, table.length  );
-        
+        int index = indexOf( hashCode,
+                             table.length );
+
         // search the table for  the Entry, we need to track previous  and next, so if the 
         // Entry is empty after  its had the FactEntry removed, we must remove  it from the table
-        FieldIndexEntry previous = ( FieldIndexEntry ) this.table[index];        
+        FieldIndexEntry previous = (FieldIndexEntry) this.table[index];
         FieldIndexEntry current = previous;
         while ( current != null ) {
-            FieldIndexEntry next = ( FieldIndexEntry ) current.next;
+            FieldIndexEntry next = (FieldIndexEntry) current.next;
             if ( hashCode == current.hashCode && value.equals( current.getValue() ) ) {
                 current.remove( handle );
                 // If the FactEntryIndex is empty, then remove it from the hash map
-                if (  current.first ==  null  ) {
-                    if( previous  == current ) {
+                if ( current.first == null ) {
+                    if ( previous == current ) {
                         this.table[index] = next;
                         previous.next = next;
                     }
@@ -67,12 +68,13 @@ public class FieldIndexHashTable extends AbstractHashTable {
             previous = current;
             current = next;
         }
-    }   
+    }
 
     public FieldIndexEntry get(Object value) {
         int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
 
-        int index = indexOf( hashCode, table.length  );
+        int index = indexOf( hashCode,
+                             table.length );
         FieldIndexEntry entry = (FieldIndexEntry) this.table[index];
 
         while ( entry != null ) {
@@ -81,10 +83,9 @@ public class FieldIndexHashTable extends AbstractHashTable {
             }
             entry = (FieldIndexEntry) entry.getNext();
         }
-        
+
         return entry;
     }
-    
 
     /**
      * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
@@ -95,7 +96,8 @@ public class FieldIndexHashTable extends AbstractHashTable {
      */
     public FieldIndexEntry getOrCreate(Object value) {
         int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
-        int index = indexOf( hashCode, table.length  );
+        int index = indexOf( hashCode,
+                             table.length );
         FieldIndexEntry entry = (FieldIndexEntry) this.table[index];
 
         while ( entry != null ) {
@@ -103,7 +105,7 @@ public class FieldIndexHashTable extends AbstractHashTable {
                 return entry;
             }
             entry = (FieldIndexEntry) entry.next;
-        }        
+        }
 
         if ( entry == null ) {
             entry = new FieldIndexEntry( this.extractor,
@@ -118,8 +120,48 @@ public class FieldIndexHashTable extends AbstractHashTable {
         }
         return entry;
     }
-    
-    public static class FieldIndexEntry implements Entry {
+
+    private static class FactEntry
+        implements
+        Entry {
+        private InternalFactHandle handle;
+
+        private Entry              next;
+
+        public FactEntry(InternalFactHandle handle) {
+            this.handle = handle;
+        }
+
+        public InternalFactHandle getFactHandle() {
+            return handle;
+        }
+
+        public Entry getNext() {
+            return this.next;
+        }
+
+        public void setNext(Entry next) {
+            this.next = next;
+        }
+
+        public int hashCode() {
+            return this.handle.hashCode();
+        }
+
+        public boolean equals(Object object) {
+            if ( object == this ) {
+                return true;
+            }
+
+            // assumes we never have null or wrong class
+            FactEntry other = (FactEntry) object;
+            return this.handle.equals( other.handle );
+        }
+    }
+
+    public static class FieldIndexEntry
+        implements
+        Entry {
         private Entry                next;
         FactEntry                    first;
         private final int            hashCode;
@@ -132,8 +174,8 @@ public class FieldIndexHashTable extends AbstractHashTable {
             this.extractor = extractor;
             this.fieldIndex = fieldIndex;
             this.hashCode = hashCode;
-        }       
-        
+        }
+
         public Entry getNext() {
             return next;
         }
@@ -148,7 +190,7 @@ public class FieldIndexHashTable extends AbstractHashTable {
 
         public void add(InternalFactHandle handle) {
             FactEntry entry = new FactEntry( handle );
-            entry.setNext( this.first );
+            entry.next =  this.first;
             this.first = entry;
         }
 
@@ -156,10 +198,10 @@ public class FieldIndexHashTable extends AbstractHashTable {
             long id = handle.getId();
             FactEntry current = first;
             while ( current != null ) {
-                if ( current.getFactHandle().getId() == id ) {
+                if ( current.handle.getId() == id ) {
                     return current;
                 }
-                current = (FactEntry) current.getNext();
+                current = (FactEntry) current.next;
             }
             return null;
         }
@@ -170,14 +212,14 @@ public class FieldIndexHashTable extends AbstractHashTable {
             FactEntry previous = this.first;
             FactEntry current = previous;
             while ( current != null ) {
-                FactEntry next = (FactEntry) current.getNext();
-                if ( current.getFactHandle().getId() == id ) {
+                FactEntry next = (FactEntry) current.next;
+                if ( current.handle.getId() == id ) {
                     if ( this.first == current ) {
                         this.first = next;
                     } else {
-                        previous.setNext( next );
+                        previous.next =   next;
                     }
-                    current.setNext( null );
+                    current.next = null;
                     return current;
                 }
                 previous = current;
@@ -209,5 +251,5 @@ public class FieldIndexHashTable extends AbstractHashTable {
             FieldIndexEntry other = (FieldIndexEntry) object;
             return this.hashCode == other.hashCode && this.fieldIndex == other.fieldIndex;
         }
-    }    
+    }
 }
