@@ -17,7 +17,9 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -173,7 +175,7 @@ class ObjectTypeNode extends ObjectSource
     public void updateNewNode(final InternalWorkingMemory workingMemory,
                               final PropagationContext context) {
         this.attachingNewNode = true;
-
+        
         final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );        
 
         for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {            
@@ -263,6 +265,17 @@ class ObjectTypeNode extends ObjectSource
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
         return this.objectType.equals( other.objectType );
+    }
+
+    public List getPropagatedFacts(InternalWorkingMemory workingMemory) {
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+        final List facts = new ArrayList();
+
+        for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {            
+            final DefaultFactHandle handle = (DefaultFactHandle) it.next();
+            facts.add( handle );
+        }
+        return facts;
     }
 
 }

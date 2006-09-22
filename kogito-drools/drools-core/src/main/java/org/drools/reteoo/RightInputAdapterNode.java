@@ -16,6 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -130,6 +134,17 @@ public class RightInputAdapterNode extends ObjectSource
         removeShare();
         this.tupleSource.remove( this,
                                  workingMemories );
+    }
+
+    public List getPropagatedFacts(InternalWorkingMemory workingMemory) {
+        List tuples = this.tupleSource.getPropagatedTuples( workingMemory, this );
+        List facts = new ArrayList();
+        
+        for(Iterator it = tuples.iterator(); it.hasNext(); ) {
+            ReteTuple tuple = (ReteTuple) it.next();
+            facts.add( (InternalFactHandle) tuple.get( this.column ) );
+        }
+        return facts;
     }
 
 }

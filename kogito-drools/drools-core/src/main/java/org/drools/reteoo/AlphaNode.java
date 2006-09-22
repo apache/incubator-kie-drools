@@ -16,6 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -27,7 +31,6 @@ import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.FactHashSet;
-import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -114,11 +117,13 @@ class AlphaNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) throws FactException {
-        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
         if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
-            memory.add( handle, false );
+            if( hasMemory() ) {
+                final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
+                memory.add( handle, false );
+            }
             sink.propagateAssertObject( handle,
                                         context,
                                         workingMemory );
@@ -128,8 +133,12 @@ class AlphaNode extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
-        if ( memory.remove( handle ) ) {
+        boolean propagate = true;
+        if( hasMemory() ) {
+            final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
+            propagate = memory.remove( handle ); 
+        }
+        if ( propagate ) {
             this.sink.propagateRetractObject( handle,
                                               context,
                                               workingMemory,
@@ -140,12 +149,15 @@ class AlphaNode extends ObjectSource
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
-
+        boolean propagate = true;        
         if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
-            if ( memory.add( handle, true ) ) {
+            if( hasMemory() ) {
+                final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
+                propagate = memory.add( handle, true );
+            }
+            if ( propagate ) {
                 this.sink.propagateAssertObject( handle,
                                                  context,
                                                  workingMemory );
@@ -156,7 +168,11 @@ class AlphaNode extends ObjectSource
                                                  workingMemory );
             }
         } else {
-            if ( memory.remove( handle ) ) {
+            if( hasMemory ) {
+                final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
+                propagate = memory.remove( handle ); 
+            }
+            if ( propagate ) {
                 this.sink.propagateRetractObject( handle,
                                                   context,
                                                   workingMemory,
@@ -169,17 +185,34 @@ class AlphaNode extends ObjectSource
                               final PropagationContext context) {
         this.attachingNewNode = true;
 
-        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
-        FactEntry[] entries  = ( FactEntry[]) memory.getTable();
-        for ( int i = 0, length  = entries.length; i < length; i++ ) {
-            FactEntry current = entries[i];
-            while  ( current != null ) {
-                this.sink.propagateNewObjectSink( current.getFactHandle(),
+        FactHashSet memory = null;
+
+        // if it was not storing facts in memory previously, create memory and
+        // start storing facts in the local memory
+        if( ! hasMemory() ) {
+            setHasMemory( true );
+            memory = (FactHashSet) workingMemory.getNodeMemory( this );
+            for(Iterator it = this.objectSource.getPropagatedFacts( workingMemory ).iterator(); it.hasNext(); ) {
+                InternalFactHandle handle = (InternalFactHandle) it.next();
+                memory.add( handle, false );
+                this.sink.propagateNewObjectSink( handle,
                                                   context,
                                                   workingMemory );
-                current = ( FactEntry ) current.getNext();
             }
-        }        
+        } else {
+            // if already has memory, just iterate and propagate
+            memory = (FactHashSet) workingMemory.getNodeMemory( this );
+            AbstractHashTable.FactEntry[] entries  = (AbstractHashTable.FactEntry[]) memory.getTable();
+            for ( int i = 0, length  = entries.length; i < length; i++ ) {
+                AbstractHashTable.FactEntry current = entries[i];
+                while  ( current != null ) {
+                    this.sink.propagateNewObjectSink( current.getFactHandle(),
+                                                      context,
+                                                      workingMemory );
+                    current = ( AbstractHashTable.FactEntry ) current.getNext();
+                }
+            }        
+        }
 
         this.attachingNewNode = false;
     }
@@ -268,5 +301,24 @@ class AlphaNode extends ObjectSource
      */
     public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
-    }    
+    }   
+    
+    public List getPropagatedFacts(InternalWorkingMemory workingMemory) {
+        List facts = null;
+        if( hasMemory() ) {
+            final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
+            AbstractHashTable.FactEntry[] entries  = (AbstractHashTable.FactEntry[]) memory.getTable();
+            facts = new ArrayList(entries.length);
+            for ( int i = 0, length  = entries.length; i < length; i++ ) {
+                AbstractHashTable.FactEntry current = entries[i];
+                while  ( current != null ) {
+                    facts.add( current.getFactHandle() );
+                    current = ( AbstractHashTable.FactEntry ) current.getNext();
+                }
+            }
+        } else {
+            facts = this.objectSource.getPropagatedFacts(workingMemory);
+        }
+        return facts;
+    }
 }
