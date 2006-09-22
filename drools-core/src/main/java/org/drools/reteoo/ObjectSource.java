@@ -17,12 +17,11 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
-import org.drools.spi.PropagationContext;
+import org.drools.common.InternalWorkingMemory;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -117,4 +116,6 @@ abstract class ObjectSource extends BaseNode
             }
         }         
     }
+    
+    public abstract List getPropagatedFacts(InternalWorkingMemory workingMemory);
 }

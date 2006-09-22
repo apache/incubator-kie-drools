@@ -6,6 +6,8 @@ package org.drools.util;
 import org.drools.common.InternalFactHandle;
 
 public class FactHashSet extends AbstractHashTable {
+    private static final long serialVersionUID = -45167109828358945L;
+
     public FactHashSet() {
         this( 16,
               0.75f );
@@ -29,6 +31,7 @@ public class FactHashSet extends AbstractHashTable {
                 if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() )  {
                     return false;
                 }
+                current = (FactHashSet.FactEntry) current.getNext();
             }
         }
 
