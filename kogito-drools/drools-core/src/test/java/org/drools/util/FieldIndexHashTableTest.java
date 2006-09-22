@@ -10,6 +10,7 @@ import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.util.AbstractHashTable.FactEntry;
 import org.drools.util.FieldIndexHashTable.FieldIndexEntry;
 
 public class FieldIndexHashTableTest extends TestCase {
