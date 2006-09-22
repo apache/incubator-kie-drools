@@ -92,11 +92,7 @@ public class FactHashSet extends AbstractHashTable {
         h ^= (h >>> 10);
         
         return this.table[ indexOf( h, table.length ) ];
-    }    
-    
-    public FactEntry[] getTable()  {
-        return (FactEntry[]) this.table;
-    }
+    }       
 
     public int hash(Object key) {
         return key.hashCode();
