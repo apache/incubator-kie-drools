@@ -35,7 +35,7 @@ public class FactHashSet extends AbstractHashTable {
         // We aren't checking the key exists, or it didn't find the key
         FactEntry entry = new FactEntry( handle,
                                              hashCode );
-        entry.next = this.table[index];
+        entry.next = (FactEntry) this.table[index];
         this.table[index] = entry;
 
         if ( this.size++ >= this.threshold ) {
@@ -102,46 +102,4 @@ public class FactHashSet extends AbstractHashTable {
                           int dataSize) {
         return hashCode & (dataSize - 1);
     }    
-
-    public static class FactEntry
-        implements
-        Entry {
-        private InternalFactHandle handle;
-
-        private int    hashCode;
-
-        private Entry next;
-
-        public FactEntry(InternalFactHandle handle,
-                           int hashCode) {
-            this.handle = handle;
-            this.hashCode = hashCode;
-        }
-
-        public InternalFactHandle getFactHandle() {
-            return handle;
-        }
-
-        public Entry getNext() {
-            return this.next;
-        }
-
-        public void setNext(Entry next) {
-            this.next = next;
-        }
-
-        public int hashCode() {
-            return this.hashCode;
-        }
-
-        public boolean equals(Object object) {
-            if ( object == this ) {
-                return true;
-            }
-
-            // assumes we never have null or wrong class
-            FactEntry other = (FactEntry) object;
-            return this.handle.equals( other.handle );
-        }
-    }
 }
