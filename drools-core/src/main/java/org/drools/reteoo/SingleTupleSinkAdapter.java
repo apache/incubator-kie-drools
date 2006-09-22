@@ -33,7 +33,7 @@ public class SingleTupleSinkAdapter
                             workingMemory );
     }
 
-    public LinkedList createAndAssertTuple(InternalFactHandle handle,
+    public LinkedList createAndPropagateAssertTuple(InternalFactHandle handle,
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory) {
         final LinkedList list = new LinkedList();
