@@ -16,10 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -29,6 +25,9 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.util.AbstractHashTable;
+import org.drools.util.FactHashSet;
+import org.drools.util.FactHashSet.FactEntry;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -115,11 +114,11 @@ class AlphaNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) throws FactException {
-        final Set memory = (Set) workingMemory.getNodeMemory( this );
+        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
         if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
-            memory.add( handle );
+            memory.add( handle, false );
             sink.propagateAssertObject( handle,
                                         context,
                                         workingMemory );
@@ -129,9 +128,8 @@ class AlphaNode extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        final Set memory = (Set) workingMemory.getNodeMemory( this );
+        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
         if ( memory.remove( handle ) ) {
-
             this.sink.propagateRetractObject( handle,
                                               context,
                                               workingMemory,
@@ -142,12 +140,12 @@ class AlphaNode extends ObjectSource
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final Set memory = (Set) workingMemory.getNodeMemory( this );
+        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
 
         if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
-            if ( memory.add( handle ) ) {
+            if ( memory.add( handle, true ) ) {
                 this.sink.propagateAssertObject( handle,
                                                  context,
                                                  workingMemory );
@@ -171,14 +169,17 @@ class AlphaNode extends ObjectSource
                               final PropagationContext context) {
         this.attachingNewNode = true;
 
-        final Set memory = (Set) workingMemory.getNodeMemory( this );
-
-        for ( final Iterator it = memory.iterator(); it.hasNext(); ) {
-            final InternalFactHandle handle = (InternalFactHandle) it.next();
-            this.sink.propagateNewObjectSink( handle,
-                                              context,
-                                              workingMemory );
-        }
+        final FactHashSet memory = (FactHashSet) workingMemory.getNodeMemory( this );
+        FactEntry[] entries  = memory.getTable();
+        for ( int i = 0, length  = entries.length; i < length; i++ ) {
+            FactEntry current = entries[i];
+            while  ( current != null ) {
+                this.sink.propagateNewObjectSink( current.getFactHandle(),
+                                                  context,
+                                                  workingMemory );
+                current = ( FactEntry ) current.getNext();
+            }
+        }        
 
         this.attachingNewNode = false;
     }
@@ -203,7 +204,7 @@ class AlphaNode extends ObjectSource
      * Creates a HashSet for the AlphaNode's memory.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new HashSet();
+        return new FactHashSet();
     }
 
     public String toString() {
