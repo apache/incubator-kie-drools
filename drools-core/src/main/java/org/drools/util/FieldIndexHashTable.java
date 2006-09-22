@@ -121,44 +121,6 @@ public class FieldIndexHashTable extends AbstractHashTable {
         return entry;
     }
 
-    private static class FactEntry
-        implements
-        Entry {
-        private InternalFactHandle handle;
-
-        private Entry              next;
-
-        public FactEntry(InternalFactHandle handle) {
-            this.handle = handle;
-        }
-
-        public InternalFactHandle getFactHandle() {
-            return handle;
-        }
-
-        public Entry getNext() {
-            return this.next;
-        }
-
-        public void setNext(Entry next) {
-            this.next = next;
-        }
-
-        public int hashCode() {
-            return this.handle.hashCode();
-        }
-
-        public boolean equals(Object object) {
-            if ( object == this ) {
-                return true;
-            }
-
-            // assumes we never have null or wrong class
-            FactEntry other = (FactEntry) object;
-            return this.handle.equals( other.handle );
-        }
-    }
-
     public static class FieldIndexEntry
         implements
         Entry {
