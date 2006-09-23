@@ -102,15 +102,19 @@ class AlphaNode extends ObjectSource
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
-
+        
+        // we are attaching this node with existing working memories
+        // so this  node must also have memory
+        this.hasMemory = true;
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.objectSource.updateNewNode( workingMemory,
-                                             propagationContext );
+            this.objectSource.updateSink( this,
+                                          propagationContext,
+                                          workingMemory );
         }
     }
 
@@ -181,10 +185,7 @@ class AlphaNode extends ObjectSource
         }
     }
 
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        this.attachingNewNode = true;
-
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
         FactHashSet memory = null;
 
         // if it was not storing facts in memory previously, create memory and
@@ -195,9 +196,7 @@ class AlphaNode extends ObjectSource
             for(Iterator it = this.objectSource.getPropagatedFacts( workingMemory ).iterator(); it.hasNext(); ) {
                 InternalFactHandle handle = (InternalFactHandle) it.next();
                 memory.add( handle, false );
-                this.sink.propagateNewObjectSink( handle,
-                                                  context,
-                                                  workingMemory );
+                sink.assertObject( handle, context, workingMemory );
             }
         } else {
             // if already has memory, just iterate and propagate
@@ -206,15 +205,11 @@ class AlphaNode extends ObjectSource
             for ( int i = 0, length  = entries.length; i < length; i++ ) {
                 AbstractHashTable.FactEntry current = entries[i];
                 while  ( current != null ) {
-                    this.sink.propagateNewObjectSink( current.getFactHandle(),
-                                                      context,
-                                                      workingMemory );
+                    sink.assertObject( current.getFactHandle(), context, workingMemory );
                     current = ( AbstractHashTable.FactEntry ) current.getNext();
                 }
             }        
-        }
-
-        this.attachingNewNode = false;
+        }        
     }
 
     public void remove(final BaseNode node,

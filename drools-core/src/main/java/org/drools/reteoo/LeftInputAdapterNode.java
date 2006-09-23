@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +35,8 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
 import org.drools.util.LinkedListEntry;
+import org.drools.util.ObjectHashMap;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Column
@@ -53,8 +56,8 @@ class LeftInputAdapterNode extends TupleSource
     /**
      * 
      */
-    private static final long    serialVersionUID = 320L;
-    private final ObjectSource   objectSource;
+    private static final long         serialVersionUID = 320L;
+    private final ObjectSource        objectSource;
     private final BetaNodeConstraints binder;
 
     /**
@@ -67,10 +70,12 @@ class LeftInputAdapterNode extends TupleSource
      *      The parent node, where Facts are propagated from
      */
     public LeftInputAdapterNode(final int id,
-                                final ObjectSource source) {
+                                final ObjectSource source,
+                                final boolean hashMemory) {
         this( id,
               source,
-              null );
+              null,
+              hashMemory );
     }
 
     /**
@@ -87,11 +92,12 @@ class LeftInputAdapterNode extends TupleSource
      */
     public LeftInputAdapterNode(final int id,
                                 final ObjectSource source,
-                                final BetaNodeConstraints binder) {
+                                final BetaNodeConstraints binder,
+                                final boolean hashMemory) {
         super( id );
         this.objectSource = source;
         this.binder = binder;
-        setHasMemory( true );
+        setHasMemory( hashMemory );
     }
 
     public FieldConstraint[] getConstraints() {
@@ -114,8 +120,9 @@ class LeftInputAdapterNode extends TupleSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.objectSource.updateNewNode( workingMemory,
-                                             propagationContext );
+            this.objectSource.updateSink( this,
+                                          propagationContext,
+                                          workingMemory );
         }
     }
 
@@ -133,15 +140,23 @@ class LeftInputAdapterNode extends TupleSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final Map memory = (Map) workingMemory.getNodeMemory( this );
-
         if ( (this.binder == null) || (this.binder.isAllowed( handle,
                                                               null,
                                                               workingMemory )) ) {
-            memory.put( handle,
-                        this.sink.createAndAssertTuple( handle,
-                                                        context,
-                                                        workingMemory ) );
+            if ( this.hasMemory ) {
+                LinkedList list = this.sink.createAndPropagateAssertTupleWithMemory( handle,
+                                                                                     context,
+                                                                                     workingMemory );
+                ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
+                // no need to scan, we know it doesn't exist
+                map.put( handle,
+                         list,
+                         false );
+            } else {
+                this.sink.createAndPropagateAssertTuple( handle,
+                                                         context,
+                                                         workingMemory );
+            }
         }
     }
 
@@ -159,81 +174,64 @@ class LeftInputAdapterNode extends TupleSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        final Map memory = (Map) workingMemory.getNodeMemory( this );
-        final LinkedList list = (LinkedList) memory.remove( handle );
-
-        // the handle might have been filtered out by the binder
-        if ( list != null ) {
-            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
-                ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
-                tuple.retractTuple( context,
-                                    workingMemory );
-            }
+        if ( this.hasMemory ) {
+            ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
+            LinkedList list = (LinkedList) map.remove( handle );
+            this.sink.createAndPropagateRetractTuple( list,
+                                                      context,
+                                                      workingMemory );
+        } else {
+            ReteTuple tuple = new ReteTuple( handle );
+            this.sink.createAndPropagateRetractTuple( tuple,
+                                                      context,
+                                                      workingMemory );
         }
     }
 
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final Map memory = (Map) workingMemory.getNodeMemory( this );
-
-        if ( (this.binder == null) || (this.binder.isAllowed( handle,
-                                                              null,
-                                                              workingMemory )) ) {
-            final LinkedList list = (LinkedList) memory.get( handle );
-
-            if ( list != null ) {
-                // already existed, so propagate as a modify
-                for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
-                    tuple.modifyTuple( context,
-                                       workingMemory );
-                }
-            } else {
-                // didn't existed, so propagate as an assert
-                memory.put( handle,
-                            this.sink.createAndAssertTuple( handle,
-                                                            context,
-                                                            workingMemory ) );
-            }
+        if ( this.hasMemory ) {
+            ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
+            LinkedList list = (LinkedList) map.get( handle );
+            this.sink.createAndPropagateModifyTuple( list,
+                                                     context,
+                                                     workingMemory );
         } else {
-            final LinkedList list = (LinkedList) memory.remove( handle );
-
-            if ( list != null ) {
-                for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ReteTuple tuple = (ReteTuple) ((LinkedListEntry) node).getObject();
-                    tuple.retractTuple( context,
-                                        workingMemory );
-                }
-            }
+            ReteTuple tuple = new ReteTuple( handle );
+            this.sink.createAndPropagateModifyTuple( tuple,
+                                                     context,
+                                                     workingMemory );
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
-     */
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        this.attachingNewNode = true;
-
-        // Get the newly attached TupleSink
-        //        final TupleSink sink = (TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 );
-
-        // Iterate the memory and assert all tuples into the newly attached TupleSink
-        final Map memory = (Map) workingMemory.getNodeMemory( this );
-
-        for ( final Iterator it = memory.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
-
-            final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-            final LinkedList list = (LinkedList) entry.getValue();
-            this.sink.propagateNewTupleSink( handle,
-                                             list,
-                                             context,
-                                             workingMemory );
+    public void updateSink(TupleSink sink,
+                           PropagationContext context,
+                           InternalWorkingMemory workingMemory) {
+        if ( this.hasMemory ) {
+            // We have memory so iterate over all entries making new Tuples and adding them
+            // to the memory before propagating
+            ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
+            ObjectEntry[] entries = (ObjectEntry[]) map.getTable();
+            for ( int i = 0, length = entries.length; i < length; i++ ) {
+                ObjectEntry current = entries[i];
+                while ( current != null ) {
+                    InternalFactHandle handle = (InternalFactHandle) current.getKey();
+                    LinkedList list = (LinkedList) current.getValue();
+                    ReteTuple tuple = new ReteTuple( handle );
+                    list.add( new LinkedListEntry( tuple ) );
+                    sink.assertTuple( tuple,
+                                      context,
+                                      workingMemory );
+                    current = (ObjectEntry) current.getNext();
+                }
+            }
+        } else {
+            ObjectSinkAdapter adapter = new ObjectSinkAdapter( sink );
+            this.objectSource.updateSink( adapter,
+                                          context,
+                                          workingMemory );
         }
-
-        this.attachingNewNode = false;
     }
 
     public void remove(final BaseNode node,
@@ -249,14 +247,6 @@ class LeftInputAdapterNode extends TupleSource
         }
         this.objectSource.remove( this,
                                   workingMemories );
-    }
-
-    /**
-     * LeftInputAdapter uses a HashMap for memory. The key is the received <code>FactHandleImpl</code> and the
-     * created <code>ReteTuple</code> is the value.
-     */
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return new HashMap();
     }
 
     public int hashCode() {
@@ -285,9 +275,73 @@ class LeftInputAdapterNode extends TupleSource
      */
     public List getPropagatedTuples(final InternalWorkingMemory workingMemory,
                                     final TupleSink sink) {
-        final Map memory = (Map) workingMemory.getNodeMemory( this );
-        return this.sink.getPropagatedTuples( memory,
-                                              workingMemory,
-                                              sink );
+        List tupeList = new ArrayList();
+        if (  this.hasMemory ) {  
+            ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
+            ObjectEntry[] entries = (ObjectEntry[]) map.getTable();
+            for ( int i = 0, length = entries.length; i < length; i++ ) {
+                ObjectEntry current = entries[i];
+                while ( current != null ) {
+                    LinkedList list = (LinkedList) current.getValue();
+                    for ( LinkedListEntry entry = ( LinkedListEntry ) list.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
+                        tupeList.add( entry.getObject() );
+                    }                    
+                    current = (ObjectEntry) current.getNext();
+                }
+            }                    
+        } else{
+            ObjectSinkAdapter adapter = new ObjectSinkAdapter( tupeList );
+        }
+        return tupeList;
+    }
+
+    public Object createMemory(RuleBaseConfiguration config) {
+        return new ObjectHashMap();
+    }
+
+    /**
+     * Used with the updateSink method, so that the parent ObjectSource
+     * can  update the  TupleSink
+     * @author mproctor
+     *
+     */
+    private static class ObjectSinkAdapter
+        implements
+        ObjectSink {
+        private TupleSink sink;
+        private List list;
+        
+        public ObjectSinkAdapter(List list) {
+            this.list = list;
+        }
+
+        public ObjectSinkAdapter(TupleSink sink) {
+            this.sink = sink;
+        }        
+
+        public void assertObject(InternalFactHandle handle,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+            ReteTuple tuple = new ReteTuple( handle );
+            if ( this.sink != null  ) {
+                this.sink.assertTuple( tuple,
+                                       context,
+                                       workingMemory );
+            } else {
+                this.list.add( tuple );
+            }
+        }
+
+        public void modifyObject(InternalFactHandle handle,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+        }
+
+        public void retractObject(InternalFactHandle handle,
+                                  PropagationContext context,
+                                  InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+        }
     }
 }

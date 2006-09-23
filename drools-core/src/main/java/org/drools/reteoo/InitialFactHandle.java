@@ -23,7 +23,7 @@ public class InitialFactHandle extends DefaultFactHandle {
     /**
      * 
      */
-    private static final long        serialVersionUID = -9081273269528006282L;
+    private static final long        serialVersionUID = 320L;
 
     private final InternalFactHandle delegate;
 

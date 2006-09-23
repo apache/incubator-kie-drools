@@ -16,7 +16,6 @@ public abstract class AbstractHashTable
     protected int              threshold;
     protected float            loadFactor;
 
-    protected boolean          checkExists;
     protected ObjectComparator comparator;
 
     protected Entry[]          table;
@@ -32,11 +31,6 @@ public abstract class AbstractHashTable
         this.threshold = (int) (capacity * loadFactor);
         this.table = new Entry[capacity];
         this.comparator = EqualityEquals.getInstance();
-        this.checkExists = false;
-    }
-
-    public void setCheckExists(boolean checkExists) {
-        this.checkExists = checkExists;
     }
 
     public void setComparator(ObjectComparator comparator) {

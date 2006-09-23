@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.PropagationContext;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -116,6 +117,8 @@ abstract class ObjectSource extends BaseNode
             }
         }         
     }
+    
+    public abstract void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory);
     
     public abstract List getPropagatedFacts(InternalWorkingMemory workingMemory);
 }

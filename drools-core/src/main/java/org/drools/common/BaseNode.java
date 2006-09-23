@@ -30,8 +30,6 @@ public abstract class BaseNode
     NetworkNode {
     protected final int id;
 
-    protected boolean   attachingNewNode = false;
-
     protected boolean   hasMemory        = false;
 
     protected int       sharedCount      = 0;
@@ -86,19 +84,19 @@ public abstract class BaseNode
     public abstract void remove(BaseNode node,
                                 InternalWorkingMemory[] workingMemories);
 
-    /**
-     * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
-     * This new propagation may result in one or more assertions, so a PropagationContext and the workingMemory for the facts
-     * must be provided.
-     * 
-     * @param workingMemory
-     *      The WorkingMemory
-     * @param context
-     *      The PropagationContext
-     *      
-     */
-    public abstract void updateNewNode(InternalWorkingMemory workingMemory,
-                                       PropagationContext context);
+//    /**
+//     * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
+//     * This new propagation may result in one or more assertions, so a PropagationContext and the workingMemory for the facts
+//     * must be provided.
+//     * 
+//     * @param workingMemory
+//     *      The WorkingMemory
+//     * @param context
+//     *      The PropagationContext
+//     *      
+//     */
+//    public abstract void updateNewNode(InternalWorkingMemory workingMemory,
+//                                       PropagationContext context);    
 
     /**
      * Each time a node is shared a counter is increased.

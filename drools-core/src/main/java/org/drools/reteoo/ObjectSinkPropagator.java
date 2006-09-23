@@ -20,9 +20,5 @@ public interface ObjectSinkPropagator {
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory);
 
-    public ObjectSink[] getSinks();
-
-    public void propagateNewObjectSink(InternalFactHandle handle,
-                                       PropagationContext context,
-                                       InternalWorkingMemory workingMemory); 
+    public ObjectSink[] getSinks(); 
 }

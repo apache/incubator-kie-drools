@@ -374,20 +374,18 @@ class JoinNode extends BetaNode {
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        this.attachingNewNode = true;
+    public void updateSink(final TupleSink sink,
+                           final InternalWorkingMemory workingMemory,
+                           final PropagationContext context) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         for ( final Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
             final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {                
-                this.sink.propagateNewTupleSink( tupleMatch, context, workingMemory );
+            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
+                this.sink.propagateAssertTuple( tupleMatch.getTuple(), context, workingMemory );
             }
         }
-
-        this.attachingNewNode = false;
     }
 
     /**

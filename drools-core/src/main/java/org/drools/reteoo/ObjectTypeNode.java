@@ -168,23 +168,15 @@ class ObjectTypeNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) {        
         this.sink.propagateModifyObject( handle, context, workingMemory );       
     }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
-     */
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        this.attachingNewNode = true;
-        
+    
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
         final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );        
 
         for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {            
             final DefaultFactHandle handle = (DefaultFactHandle) it.next();
-            this.sink.propagateNewObjectSink( handle, context, workingMemory );
+            sink.assertObject( handle, context, workingMemory );
         }
-
-        this.attachingNewNode = false;
-    }
+    }    
 
     /**
      * Rete needs to know that this ObjectTypeNode has been added
