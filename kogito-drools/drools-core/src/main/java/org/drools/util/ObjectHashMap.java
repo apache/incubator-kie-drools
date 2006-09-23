@@ -4,6 +4,7 @@
 package org.drools.util;
 
 public class ObjectHashMap extends AbstractHashTable {
+    
     public ObjectHashMap() {
         this( 16,
               0.75f );
@@ -14,9 +15,15 @@ public class ObjectHashMap extends AbstractHashTable {
         super( capacity,
                loadFactor );
     }
-
+    
     public Object put(Object key,
                       Object value) {
+        return put(key, value, true);
+    }    
+
+    public Object put(Object key,
+                      Object value,
+                      boolean checkExists ) {
         int hashCode = hash( key );
         int index = indexOf( hashCode,
                              table.length );
@@ -113,7 +120,7 @@ public class ObjectHashMap extends AbstractHashTable {
         return hashCode & (dataSize - 1);
     }
 
-    private static class ObjectEntry
+    public static class ObjectEntry
         implements
         Entry {
         private Object key;

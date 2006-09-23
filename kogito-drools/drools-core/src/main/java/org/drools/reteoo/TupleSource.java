@@ -115,5 +115,7 @@ abstract class TupleSource extends BaseNode
      */
     public abstract List getPropagatedTuples(InternalWorkingMemory workingMemory,
                                              TupleSink sink);
+    
+    public abstract void updateSink(TupleSink sink, PropagationContext context, InternalWorkingMemory workingMemory);
 
 }

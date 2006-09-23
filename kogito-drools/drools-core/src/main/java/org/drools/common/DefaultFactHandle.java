@@ -99,7 +99,7 @@ public class DefaultFactHandle
      * @see Object
      */
     public int hashCode() {
-        return (int)  this.id;
+        return (int)(this.id ^ (this.id >>> 32));
     }
 
     /**
