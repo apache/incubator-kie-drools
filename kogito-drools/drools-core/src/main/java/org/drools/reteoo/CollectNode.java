@@ -239,7 +239,7 @@ public class CollectNode extends BetaNode
         memory.add( workingMemory,
                     handle );
 
-        final BetaNodeConstraints binder = getJoinNodeBinder();
+        final BetaNodeConstraints binder = constraints();
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();

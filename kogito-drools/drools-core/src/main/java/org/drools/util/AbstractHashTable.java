@@ -20,6 +20,9 @@ public abstract class AbstractHashTable
 
     protected Entry[]          table;
 
+    
+    private HashTableIterator iterator;
+    
     public AbstractHashTable() {
         this( 16,
               0.75f );
@@ -32,6 +35,14 @@ public abstract class AbstractHashTable
         this.table = new Entry[capacity];
         this.comparator = EqualityEquals.getInstance();
     }
+    
+    public Iterator iterator() {
+        if ( this.iterator == null ) {
+            this.iterator = new HashTableIterator( this );            
+        }
+        this.iterator.reset();
+        return this.iterator;
+    }    
 
     public void setComparator(ObjectComparator comparator) {
         this.comparator = comparator;
@@ -158,6 +169,52 @@ public abstract class AbstractHashTable
         public boolean equal(Object object1,
                              Object object2);
     }
+    
+    /**
+     * Fast re-usable iterator
+     *
+     */
+    public static class HashTableIterator implements Iterator {
+        private AbstractHashTable hashTable;
+        private Entry[] table;
+        private int row;
+        private int length;
+        private Entry entry;
+        
+        public HashTableIterator(AbstractHashTable hashTable) {
+            this.hashTable = hashTable;
+        }
+        
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#next()
+         */
+        public Entry next() {            
+            if (  this.entry == null ) {
+                row++;
+                if ( row == length ) {
+                    return null;
+                }
+                this.entry = this.table[row];
+            } else {
+                this.entry = this.entry.getNext();
+                if ( this.entry == null ) {
+                    this.entry = next();
+                }
+            }
+            
+            return this.entry;
+        }
+        
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#reset()
+         */
+        public void reset() {
+            this.table = this.hashTable.getTable();
+            this.length = this.table.length;
+            this.row = -1;
+            this.entry = null;
+        }
+    }    
 
     public static class InstanceEquals
         implements

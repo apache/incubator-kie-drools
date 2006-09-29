@@ -28,7 +28,7 @@ public class TupleHashTable extends AbstractHashTable {
             resize( 2 * this.table.length );
         }
         return null;
-    }
+    }    
 
     public Object get(ReteTuple tuple) {
         int hashCode = tuple.hashCode();
@@ -43,6 +43,10 @@ public class TupleHashTable extends AbstractHashTable {
             current = (ReteTuple) current.getNext();
         }
         return null;
+    }
+    
+    public boolean contains(ReteTuple tuple) {
+        return (get(tuple) != null);
     }
 
     public Object remove(ReteTuple tuple) {

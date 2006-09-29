@@ -191,6 +191,38 @@ public class LinkedList implements Serializable {
     public final int size() {
         return this.size;
     }
+    
+    public int hashCode()  {
+        final int PRIME = 31;
+        int result = 1;
+        for ( LinkedListNode node = this.firstNode; node  != null; node =  node.getNext()  ) {
+            result = PRIME * result + node.hashCode();    
+        }
+        return result;        
+    }
+    
+    public boolean equals(Object object) {
+        if ( object == this ) {
+            return  true;
+        }
+        
+        if ( object == null || object.getClass() != LinkedList.class ) {
+            return false;
+        }
+        
+        LinkedList other = ( LinkedList ) object;
+        
+        if ( this.size() != other.size() ) {
+            return false;
+        }
+        
+        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode  != null && otherNode != null; thisNode =  thisNode.getNext(), otherNode = otherNode.getNext()  ) {
+            if ( !thisNode.equals( otherNode ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Returns a list iterator
@@ -224,6 +256,6 @@ public class LinkedList implements Serializable {
                 }
             }
         };
-    }
+    }        
 
 }

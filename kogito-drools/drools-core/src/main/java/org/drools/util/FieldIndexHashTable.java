@@ -4,42 +4,164 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.ObjectHashTable;
+import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.Tuple;
 
-public class FieldIndexHashTable extends AbstractHashTable {
-    private int            fieldIndex;
-    private FieldExtractor extractor;
+public class FieldIndexHashTable extends AbstractHashTable
+    implements
+    ObjectHashTable {
+    private int                         fieldIndex;
 
-    private final int      PRIME = 31;
+    private FieldExtractor              extractor;
 
-    private final int      startResult;
+    private Declaration                 declaration;
 
-    public FieldIndexHashTable(int fieldIndex,
-                               FieldExtractor extractor) {
+    private final int                   PRIME = 31;
+
+    private final int                   startResult;
+
+    private FieldIndexHashTableIterator tupleValueIterator;
+
+    private HashCodeHashTableIterator   hashCodeValueIterator;
+
+    public FieldIndexHashTable(FieldExtractor extractor,
+                               Declaration declaration) {
         this( 16,
               0.75f,
-              fieldIndex,
-              extractor );
+              extractor,
+              declaration );
     }
 
     public FieldIndexHashTable(int capacity,
                                float loadFactor,
-                               int fieldIndex,
-                               FieldExtractor extractor) {
+                               FieldExtractor extractor,
+                               Declaration declaration) {
         super( capacity,
                loadFactor );
-        this.fieldIndex = fieldIndex;
+        this.fieldIndex = extractor.getIndex();
+
         this.extractor = extractor;
+
+        this.declaration = declaration;
 
         this.startResult = PRIME + this.fieldIndex;
     }
 
-    public void add(InternalFactHandle handle) {
-        FieldIndexEntry entry = getOrCreate( this.extractor.getValue( handle.getObject() ) );
-        entry.add( handle );
+    public Iterator iterator() {
+        throw new UnsupportedOperationException( "FieldIndexHashTable does not support  iterator()" );
     }
 
-    public void remove(InternalFactHandle handle) {
+    public Iterator iterator(ReteTuple tuple) {
+        if ( this.tupleValueIterator == null ) {
+            this.tupleValueIterator = new FieldIndexHashTableIterator();
+        }
+        this.tupleValueIterator.reset( get( tuple ) );
+        return this.iterator();
+    }
+
+    public Iterator iterator(int hashCode) {
+        if ( this.hashCodeValueIterator == null ) {
+            this.hashCodeValueIterator = new HashCodeHashTableIterator( this );
+        }
+
+        this.hashCodeValueIterator.reset( hashCode );
+        return this.iterator();
+    }
+
+    /**
+     * Fast re-usable iterator
+     *
+     */
+    public static class FieldIndexHashTableIterator
+        implements
+        Iterator {
+        private Entry entry;
+
+        public FieldIndexHashTableIterator() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#next()
+         */
+        public Entry next() {
+            this.entry = this.entry.getNext();
+            return this.entry;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#reset()
+         */
+        public void reset(Entry entry) {
+            this.entry = entry;
+        }
+
+        public void reset(int hashCode) {
+            throw new UnsupportedOperationException( "FieldIndexHashTableIterator does not support reset(int hashCode)" );
+        }
+    }
+
+    /**
+     * Fast re-usable iterator
+     *
+     */
+    public static class HashCodeHashTableIterator
+        implements
+        Iterator {
+        private AbstractHashTable hashTable;
+        private FactEntry         current;
+        private FactEntry         next;
+        private FieldIndexEntry   index;
+
+        public HashCodeHashTableIterator(AbstractHashTable hashTable) {
+            this.hashTable = hashTable;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#next()
+         */
+        public Entry next() {
+            this.current = (FactEntry) this.next;
+            if ( current == null ) {
+                this.index = (FieldIndexEntry) this.index.getNext();
+                if ( this.index == null ) {
+                    return null;
+                }
+                this.current = this.index.first;
+            }
+            this.next = (FactEntry) current.getNext();
+            return current;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#reset()
+         */
+        public void reset(int hashCode) {
+            this.index = (FieldIndexEntry) this.hashTable.getBucket( hashCode );
+            this.current = null;
+            this.next = (FactEntry) index.getFirst();
+        }
+
+        public void reset(Entry entry) {
+            throw new UnsupportedOperationException( "FieldIndexHashTableIterator does not support reset(Entry entry)" );
+        }
+    }
+
+    public boolean add(InternalFactHandle handle) {
+        FieldIndexEntry entry = getOrCreate( this.extractor.getValue( handle.getObject() ) );
+        entry.add( handle );
+        return true;
+    }
+
+    public boolean add(InternalFactHandle handle,
+                       boolean checkExists) {
+        throw new UnsupportedOperationException( "FieldIndexHashTable does not support add(InternalFactHandle handle, boolean checkExists)" );
+    }
+
+    public boolean remove(InternalFactHandle handle) {
         Object value = this.extractor.getValue( handle.getObject() );
         int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
 
@@ -63,15 +185,21 @@ public class FieldIndexHashTable extends AbstractHashTable {
                     current.next = null;
                     this.size--;
                 }
-                return;
+                return true;
             }
             previous = current;
             current = next;
         }
+        return false;
     }
 
-    public FieldIndexEntry get(Object value) {
+    public FieldIndexEntry get(ReteTuple tuple) {
+        Object value = this.declaration.getValue( tuple.get( this.declaration ).getObject() );
         int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
+
+        if ( !tuple.isFieldIndexed() ) {
+            tuple.setFieldIndexHashCode( hashCode );
+        }
 
         int index = indexOf( hashCode,
                              table.length );
@@ -125,7 +253,7 @@ public class FieldIndexHashTable extends AbstractHashTable {
         implements
         Entry {
         private Entry                next;
-        FactEntry                    first;
+        private FactEntry            first;
         private final int            hashCode;
         private final int            fieldIndex;
         private final FieldExtractor extractor;
@@ -152,7 +280,7 @@ public class FieldIndexHashTable extends AbstractHashTable {
 
         public void add(InternalFactHandle handle) {
             FactEntry entry = new FactEntry( handle );
-            entry.next =  this.first;
+            entry.next = this.first;
             this.first = entry;
         }
 
@@ -179,7 +307,7 @@ public class FieldIndexHashTable extends AbstractHashTable {
                     if ( this.first == current ) {
                         this.first = next;
                     } else {
-                        previous.next =   next;
+                        previous.next = next;
                     }
                     current.next = null;
                     return current;

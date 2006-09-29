@@ -58,7 +58,7 @@ class LeftInputAdapterNode extends TupleSource
      */
     private static final long         serialVersionUID = 320L;
     private final ObjectSource        objectSource;
-    private final BetaNodeConstraints binder;
+    private final BetaNodeConstraints constraints;
 
     /**
      * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
@@ -70,12 +70,10 @@ class LeftInputAdapterNode extends TupleSource
      *      The parent node, where Facts are propagated from
      */
     public LeftInputAdapterNode(final int id,
-                                final ObjectSource source,
-                                final boolean hashMemory) {
+                                final ObjectSource source) {
         this( id,
               source,
-              null,
-              hashMemory );
+              null );
     }
 
     /**
@@ -92,16 +90,22 @@ class LeftInputAdapterNode extends TupleSource
      */
     public LeftInputAdapterNode(final int id,
                                 final ObjectSource source,
-                                final BetaNodeConstraints binder,
-                                final boolean hashMemory) {
+                                final BetaNodeConstraints constraints) {
         super( id );
         this.objectSource = source;
-        this.binder = binder;
-        setHasMemory( hashMemory );
+        this.constraints = constraints;
+        setHasMemory( false );
     }
 
     public FieldConstraint[] getConstraints() {
-        return this.binder.getConstraints();
+        LinkedList constraints = this.constraints.getConstraints();
+        
+        FieldConstraint[] array = new FieldConstraint[ constraints.size() ];
+        int i = 0;
+        for ( LinkedListEntry entry = ( LinkedListEntry ) constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
+            array[i++] = ( FieldConstraint ) entry.getObject();
+        }
+        return array;        
     }
 
     /* (non-Javadoc)
@@ -140,7 +144,7 @@ class LeftInputAdapterNode extends TupleSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if ( (this.binder == null) || (this.binder.isAllowed( handle,
+        if ( (this.constraints == null) || (this.constraints.isAllowed( handle,
                                                               null,
                                                               workingMemory )) ) {
             if ( this.hasMemory ) {
@@ -263,36 +267,11 @@ class LeftInputAdapterNode extends TupleSource
         }
 
         final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
-        if ( this.binder == null ) {
-            return this.objectSource.equals( other.objectSource ) && other.binder == null;
+        if ( this.constraints == null ) {
+            return this.objectSource.equals( other.objectSource ) && other.constraints == null;
         } else {
-            return this.objectSource.equals( other.objectSource ) && this.binder.equals( other.binder );
+            return this.objectSource.equals( other.objectSource ) && this.constraints.equals( other.constraints );
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public List getPropagatedTuples(final InternalWorkingMemory workingMemory,
-                                    final TupleSink sink) {
-        List tupeList = new ArrayList();
-        if (  this.hasMemory ) {  
-            ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-            ObjectEntry[] entries = (ObjectEntry[]) map.getTable();
-            for ( int i = 0, length = entries.length; i < length; i++ ) {
-                ObjectEntry current = entries[i];
-                while ( current != null ) {
-                    LinkedList list = (LinkedList) current.getValue();
-                    for ( LinkedListEntry entry = ( LinkedListEntry ) list.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
-                        tupeList.add( entry.getObject() );
-                    }                    
-                    current = (ObjectEntry) current.getNext();
-                }
-            }                    
-        } else{
-            ObjectSinkAdapter adapter = new ObjectSinkAdapter( tupeList );
-        }
-        return tupeList;
     }
 
     public Object createMemory(RuleBaseConfiguration config) {
@@ -309,12 +288,6 @@ class LeftInputAdapterNode extends TupleSource
         implements
         ObjectSink {
         private TupleSink sink;
-        private List list;
-        
-        public ObjectSinkAdapter(List list) {
-            this.list = list;
-        }
-
         public ObjectSinkAdapter(TupleSink sink) {
             this.sink = sink;
         }        
@@ -323,13 +296,9 @@ class LeftInputAdapterNode extends TupleSource
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
             ReteTuple tuple = new ReteTuple( handle );
-            if ( this.sink != null  ) {
-                this.sink.assertTuple( tuple,
-                                       context,
-                                       workingMemory );
-            } else {
-                this.list.add( tuple );
-            }
+            this.sink.assertTuple( tuple,
+                                   context,
+                                   workingMemory );
         }
 
         public void modifyObject(InternalFactHandle handle,

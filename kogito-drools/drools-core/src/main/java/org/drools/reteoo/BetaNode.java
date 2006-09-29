@@ -17,14 +17,23 @@ package org.drools.reteoo;
  */
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.VariableConstraint;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactHashTable;
+import org.drools.util.FieldIndexHashTable;
+import org.drools.util.LinkedList;
+import org.drools.util.LinkedListEntry;
+import org.drools.util.TupleHashTable;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -52,7 +61,7 @@ abstract class BetaNode extends TupleSource implements
     /** The right input <code>TupleSource</code>. */
     private final ObjectSource   rightInput;
 
-    private final BetaNodeConstraints joinNodeBinder;
+    protected final BetaNodeConstraints constraints;
     
     private TupleSinkNode previousTupleSinkNode;
     private TupleSinkNode nextTupleSinkNode;
@@ -94,11 +103,11 @@ abstract class BetaNode extends TupleSource implements
     BetaNode(final int id,
              final TupleSource leftInput,
              final ObjectSource rightInput,
-             final BetaNodeConstraints joinNodeBinder) {
+             final BetaNodeConstraints constraints) {
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
-        this.joinNodeBinder = joinNodeBinder;
+        this.constraints = constraints;
         
         this.tupleMatchFactory = SingleTupleMatchFactory.getInstance();     
     }
@@ -127,7 +136,14 @@ abstract class BetaNode extends TupleSource implements
     
 
     public FieldConstraint[] getConstraints() {
-        return this.joinNodeBinder.getConstraints();
+        LinkedList constraints = this.constraints.getConstraints();
+        
+        FieldConstraint[] array = new FieldConstraint[ constraints.size() ];
+        int i = 0;
+        for ( LinkedListEntry entry = ( LinkedListEntry ) constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
+            array[i++] = ( FieldConstraint ) entry.getObject();
+        }
+        return array;        
     }
 
     /* (non-Javadoc)
@@ -147,10 +163,12 @@ abstract class BetaNode extends TupleSource implements
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.leftInput.updateNewNode( workingMemory,
-                                          propagationContext );
-            this.rightInput.updateNewNode( workingMemory,
-                                           propagationContext );
+            this.leftInput.updateSink( this,
+                                      propagationContext,
+                                      workingMemory );
+            this.rightInput.updateSink( this,
+                                        propagationContext,
+                                        workingMemory );
         }
 
     }
@@ -172,33 +190,7 @@ abstract class BetaNode extends TupleSource implements
 //        this.leftInput.remove( this,
 //                               workingMemories );
 
-    }
-
-    /**
-     * @return the <code>joinNodeBinder</code>
-     */
-    BetaNodeConstraints getJoinNodeBinder() {
-        return this.joinNodeBinder;
-    }    
-    
-    protected TupleMatch attemptJoin(final ReteTuple leftTuple,
-                                     final InternalFactHandle handle,
-                                     final ObjectMatches objectMatches,
-                                     final BetaNodeConstraints binder,
-                                     final InternalWorkingMemory workingMemory) {
-        if ( binder.isAllowed( handle,
-                               leftTuple,
-                               workingMemory ) ) {
-            TupleMatch tupleMatch = this.tupleMatchFactory.newTupleMatch( leftTuple, objectMatches );          
-			objectMatches.add( tupleMatch );
-            leftTuple.addTupleMatch( handle,
-                                     tupleMatch );
-            return tupleMatch;
-
-        } else {
-            return null;
-        }
-    }
+    }     
     
     //public abstract TupleSink getTupleSink();
 
@@ -231,17 +223,39 @@ abstract class BetaNode extends TupleSource implements
 
         final BetaNode other = (BetaNode) object;
 
-        return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.joinNodeBinder.equals( other.joinNodeBinder );
+        return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
     }
 
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new BetaMemory( config,
-                               this.getJoinNodeBinder() );
+        // iterate over all the constraints untill we find one that is indexeable. When we find it we remove it from the list and create the 
+        // BetaMemory for it. If we don't find one, we create a normal beta memory. We don't need the constraint as we can assume that 
+        // anything  returned by the memory already passes that test.
+        LinkedList constraints = this.constraints.getConstraints();
+        for ( LinkedListEntry entry = ( LinkedListEntry ) constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
+            FieldConstraint constraint = ( FieldConstraint ) entry.getObject();            
+            if ( constraint.getClass() == VariableConstraint.class ) {
+                VariableConstraint variableConstraint = ( VariableConstraint ) constraint;
+                FieldExtractor extractor = variableConstraint.getFieldExtractor();
+                Evaluator evaluator = variableConstraint.getEvaluator();
+                if ( evaluator.getOperator() == Operator.EQUAL ) {
+                    // remove this entry                    
+                    constraints.remove( entry );                    
+                    BetaMemory memory = new BetaMemory( new TupleHashTable(),
+                                                        new FieldIndexHashTable(extractor, variableConstraint.getRequiredDeclarations()[0]) );
+                    return memory;
+                    
+                }
+            }
+        }
+        
+        BetaMemory memory = new BetaMemory( new TupleHashTable(),
+                                            new FactHashTable() );                
+        return memory;
     }
-    
+         
     
     /**
      * Returns the next node

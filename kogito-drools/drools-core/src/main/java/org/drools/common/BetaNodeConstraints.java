@@ -21,9 +21,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.WorkingMemory;
+import org.drools.base.evaluators.Operator;
+import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.ObjectHashTable;
 import org.drools.rule.Declaration;
+import org.drools.rule.LiteralConstraint;
+import org.drools.rule.VariableConstraint;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
+import org.drools.util.FactHashTable;
+import org.drools.util.FieldIndexHashTable;
+import org.drools.util.LinkedList;
+import org.drools.util.LinkedListEntry;
+import org.drools.util.TupleHashTable;
 
 public class BetaNodeConstraints
     implements
@@ -36,20 +48,21 @@ public class BetaNodeConstraints
 
     public final static BetaNodeConstraints emptyBetaNodeConstraints = new BetaNodeConstraints();
 
-    private final FieldConstraint[]         constraints;
-
-    private static final FieldConstraint[]  EMPTY_CONSTRAINTS        = new FieldConstraint[0];
+    private final LinkedList         constraints;
 
     public BetaNodeConstraints() {
-        this.constraints = BetaNodeConstraints.EMPTY_CONSTRAINTS;
+        this.constraints = null;
     }
 
     public BetaNodeConstraints(final FieldConstraint constraint) {
-        this.constraints = new FieldConstraint[]{constraint};
+        this( new FieldConstraint[]{constraint} );
     }
 
     public BetaNodeConstraints(final FieldConstraint[] constraints) {
-        this.constraints = constraints;
+        this.constraints =  new  LinkedList();
+        for ( int  i  = 0, length = constraints.length; i < length; i++ ) {
+            this.constraints.add( new LinkedListEntry( constraints[i] ) );
+        }        
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
@@ -58,33 +71,34 @@ public class BetaNodeConstraints
         if ( this.constraints == null ) {
             return true;
         }
-
-        for ( int i = 0; i < this.constraints.length; i++ ) {
-            if ( !this.constraints[i].isAllowed( handle.getObject(),
-                                                 tuple,
-                                                 workingMemory ) ) {
+                
+        for ( LinkedListEntry entry = ( LinkedListEntry ) this.constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
+            FieldConstraint constraint = (FieldConstraint) entry.getObject();
+            if ( constraint.isAllowed( handle.getObject(),
+                                       tuple,
+                                       workingMemory ) ) {
                 return false;
-            }
+            }            
         }
         return true;
-    }
+    }    
 
-    public Set getRequiredDeclarations() {
-        final Set declarations = new HashSet();
-        for ( int i = 0; i < this.constraints.length; i++ ) {
-            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
-            for ( int j = 0; j < array.length; j++ ) {
-                declarations.add( array[j] );
-            }
-        }
-        return declarations;
-    }
+//    public Set getRequiredDeclarations() {
+//        final Set declarations = new HashSet();
+//        for ( int i = 0; i < this.constraints.length; i++ ) {
+//            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
+//            for ( int j = 0; j < array.length; j++ ) {
+//                declarations.add( array[j] );
+//            }
+//        }
+//        return declarations;
+//    }
 
     public int hashCode() {
         return this.constraints.hashCode();
     }
 
-    public FieldConstraint[] getConstraints() {
+    public LinkedList getConstraints() {
         return this.constraints;
     }
 
@@ -112,17 +126,11 @@ public class BetaNodeConstraints
             return true;
         }
 
-        if ( this.constraints.length != other.constraints.length ) {
+        if ( this.constraints.size() != other.constraints.size() ) {
             return false;
         }
-
-        for ( int i = 0; i < this.constraints.length; i++ ) {
-            if ( !this.constraints[i].equals( other.constraints[i] ) ) {
-                return false;
-            }
-        }
-
-        return true;
+        
+        return this.constraints.equals( other );
     }
 
 }

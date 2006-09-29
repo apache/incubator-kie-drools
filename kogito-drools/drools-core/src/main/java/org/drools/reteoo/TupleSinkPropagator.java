@@ -14,6 +14,24 @@ public interface TupleSinkPropagator {
     public void propagateAssertTuple(ReteTuple tuple,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);
+    
+    public void propagateRetractTuple(ReteTuple tuple,
+                                      InternalFactHandle handle,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory);  
+    
+    public void propagateRetractTuple(ReteTuple tuple,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory);      
+    
+    public void propagateModifyTuple(ReteTuple tuple,
+                                     InternalFactHandle handle,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory);    
+    
+    public void propagateModifyTuple(ReteTuple tuple,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory);       
 
     public LinkedList createAndPropagateAssertTupleWithMemory(InternalFactHandle handle,
                                                               PropagationContext context,
