@@ -234,66 +234,7 @@ public class NotNode extends BetaNode {
                                              context,
                                              workingMemory );            
         }    
-    }
-
-    public void modifyTuple(ReteTuple leftTuple,
-                            PropagationContext context,
-                            InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        // Must use the tuple in memory as it has the tuple matches count
-        // If it doesn't exist then propagate as an assert
-        ReteTuple tuple = ( ReteTuple ) memory.getTupleMemory().remove( leftTuple );
-        if ( tuple == null ) {
-            assertTuple( leftTuple, context, workingMemory );
-        }
-        
-        Iterator iterator;
-        if ( leftTuple.isFieldIndexed() ) {
-            iterator = memory.getObjectMemory().iterator(leftTuple.getFieldIndexHashCode());
-        } else {
-            iterator = memory.getObjectMemory().iterator();
-        }
-        
-        int matches = tuple.getMatches();
-        
-        for ( FactEntry entry = (FactEntry) iterator.next(); entry != null; entry = ( FactEntry )entry.getNext() ) {
-            InternalFactHandle handle = entry.getFactHandle();
-            if ( !this.constraints.isAllowed( handle, leftTuple, workingMemory ) ) {                                   
-                matches--;
-            }
-        } 
-        
-        if  ( tuple.getMatches() != 0 && matches  == 0 ) {
-            this.sink.propagateAssertTuple( leftTuple,
-                                            context,
-                                            workingMemory );            
-        } else if ( tuple.getMatches() == 0 && matches != 0 )  {
-            this.sink.propagateRetractTuple( leftTuple,
-                                             context,
-                                             workingMemory );            
-        }
-    }
-
-    public void modifyObject(InternalFactHandle handle,
-                             PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.getObjectMemory().contains( handle ) ) {
-            assertObject( handle, context, workingMemory );
-        }
-        
-        Iterator it = memory.getTupleMemory().iterator();
-        for ( ReteTuple tuple = ( ReteTuple ) it.next(); tuple != null; tuple = ( ReteTuple ) it.next() ) {
-            if ( this.constraints.isAllowed( handle, tuple, workingMemory ) ) {
-                int matches = tuple.getMatches();
-                tuple.setMatches( matches + 1 );
-                if ( matches == 0 ) {
-                    this.sink.propagateRetractTuple( tuple, context, workingMemory );
-                }
-            }
-        }        
-    }            
+    }          
     
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)

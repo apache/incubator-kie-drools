@@ -58,9 +58,5 @@ public interface ObjectSink {
      */
     void retractObject(InternalFactHandle handle,
                        PropagationContext context,
-                       InternalWorkingMemory workingMemory);
-    
-    void modifyObject(InternalFactHandle handle,
-                      PropagationContext context,
-                      InternalWorkingMemory workingMemory);    
+                       InternalWorkingMemory workingMemory);  
 }

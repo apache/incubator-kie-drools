@@ -92,12 +92,6 @@ public class RightInputAdapterNode extends ObjectSource
         this.sink.propagateRetractObject( (InternalFactHandle) tuple.get( this.column ), context, workingMemory, true );
     }
 
-    public void modifyTuple(final ReteTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        this.sink.propagateModifyObject( (InternalFactHandle) tuple.get( this.column ), context, workingMemory );
-    }
-
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
      */

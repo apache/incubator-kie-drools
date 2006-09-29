@@ -192,23 +192,6 @@ class LeftInputAdapterNode extends TupleSource
         }
     }
 
-    public void modifyObject(final InternalFactHandle handle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        if ( this.hasMemory ) {
-            ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-            LinkedList list = (LinkedList) map.get( handle );
-            this.sink.createAndPropagateModifyTuple( list,
-                                                     context,
-                                                     workingMemory );
-        } else {
-            ReteTuple tuple = new ReteTuple( handle );
-            this.sink.createAndPropagateModifyTuple( tuple,
-                                                     context,
-                                                     workingMemory );
-        }
-    }
-
     public void updateSink(TupleSink sink,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
