@@ -8,6 +8,7 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 import org.drools.util.BaseEntry;
+import org.drools.util.LinkedList;
 
 public class ReteTuple extends BaseEntry
     implements
@@ -25,6 +26,12 @@ public class ReteTuple extends BaseEntry
     private long                     recency;    
     
     private int                      hashCode;
+    
+    private int                      fieldIndexHashCode;
+    
+    private boolean                  fieldIndexed;
+    
+    private int                      matches;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -60,8 +67,32 @@ public class ReteTuple extends BaseEntry
             entry = entry.parent;
         }
         return entry.handle;
-    }
+    }        
     
+    public int getFieldIndexHashCode() {
+        return fieldIndexHashCode;
+    }
+
+    public void setFieldIndexHashCode(int fieldIndexHashCode) {
+        this.fieldIndexHashCode = fieldIndexHashCode;
+    }
+
+    public boolean isFieldIndexed() {
+        return fieldIndexed;
+    }
+
+    public void setIsFieldIndexHashCode(boolean fieldIndexed) {
+        this.fieldIndexed = fieldIndexed;
+    }        
+
+    public int getMatches() {
+        return matches;
+    }
+
+    public void setMatches(int matches) {
+        this.matches = matches;
+    }
+
     public InternalFactHandle getLastHandle() {
         return this.handle;
     }

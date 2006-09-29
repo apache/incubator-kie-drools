@@ -162,12 +162,14 @@ class ObjectTypeNode extends ObjectSource
 
         this.sink.propagateRetractObject( handle, context, workingMemory, true );
     }
+    
 
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {        
         this.sink.propagateModifyObject( handle, context, workingMemory );       
     }
+
     
     public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
         final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );        

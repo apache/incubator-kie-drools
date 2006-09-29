@@ -51,6 +51,31 @@ public class CompositeTupleSinkAdapter
         }
     }
 
+    public void propagateRetractTuple(ReteTuple tuple,
+                                      InternalFactHandle handle,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory) {
+        for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
+            sink.retractTuple( new ReteTuple( tuple,
+                                              handle ),
+                               context,
+                               workingMemory );
+        }
+    }
+
+    public void propagateModifyTuple(ReteTuple tuple,
+                                     InternalFactHandle handle,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory) {
+
+        for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
+            sink.modifyTuple( new ReteTuple( tuple,
+                                             handle ),
+                              context,
+                              workingMemory );
+        }
+    }
+
     public LinkedList createAndPropagateAssertTupleWithMemory(InternalFactHandle handle,
                                                               PropagationContext context,
                                                               InternalWorkingMemory workingMemory) {

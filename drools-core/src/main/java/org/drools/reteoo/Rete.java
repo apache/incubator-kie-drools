@@ -315,14 +315,14 @@ class Rete extends ObjectSource
         return this.objectTypeNodes.equals( other.objectTypeNodes );
     }
 
-    public List getPropagatedFacts(InternalWorkingMemory workingMemory) {
-        List facts = new ArrayList();
+    public void updateSink(ObjectSink sink,
+                           PropagationContext context,
+                           InternalWorkingMemory workingMemory) {
         for ( final Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
             final Map.Entry entry = (Map.Entry) i.next();
             final DefaultFactHandle handle = (DefaultFactHandle) entry.getValue();
-            facts.add(handle);
+            sink.assertObject( handle, context, workingMemory );
         }
-        return facts;
     }
 
 }

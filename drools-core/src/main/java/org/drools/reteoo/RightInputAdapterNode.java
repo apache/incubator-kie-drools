@@ -40,7 +40,7 @@ public class RightInputAdapterNode extends ObjectSource
     /**
      * 
      */
-    private static final long serialVersionUID = 5777695177854269219L;
+    private static final long serialVersionUID = 320L;
 
     private final TupleSource tupleSource;
 
@@ -113,17 +113,10 @@ public class RightInputAdapterNode extends ObjectSource
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        // this node has no memory, so we need to get the parent node to repropagate. We simulate this be re-attaching
-        this.attachingNewNode = true;
-        // We need to detach and re-attach to make sure the node is at the top
-        // for the propagation
-        this.tupleSource.removeTupleSink( this );
-        this.tupleSource.addTupleSink( this );
-        this.tupleSource.updateNewNode( workingMemory,
-                                        context );
-        this.attachingNewNode = false;
+    public void updateSink(final ObjectSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
+        this.tupleSource.updateSink( new TupleSinkAdapter( sink, this.column), context, workingMemory );
     }
 
     public void remove(final BaseNode node,
@@ -135,16 +128,40 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource.remove( this,
                                  workingMemories );
     }
+    
+    /**
+     * Used with the updateSink method, so that the parent ObjectSource
+     * can  update the  TupleSink
+     * @author mproctor
+     *
+     */
+    private static class TupleSinkAdapter
+        implements
+        TupleSink {
+        private ObjectSink sink;
+        private int column;
 
-    public List getPropagatedFacts(InternalWorkingMemory workingMemory) {
-        List tuples = this.tupleSource.getPropagatedTuples( workingMemory, this );
-        List facts = new ArrayList();
-        
-        for(Iterator it = tuples.iterator(); it.hasNext(); ) {
-            ReteTuple tuple = (ReteTuple) it.next();
-            facts.add( (InternalFactHandle) tuple.get( this.column ) );
+        public TupleSinkAdapter(ObjectSink sink, int column) {
+            this.sink = sink;
+            this.column =  column;
         }
-        return facts;
-    }
 
+        public void assertTuple(ReteTuple tuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+            this.sink.assertObject( (InternalFactHandle) tuple.get( this.column ), context, workingMemory );
+        }
+
+        public void modifyTuple(ReteTuple tuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "TupleSinkAdapter onlys supports assertObject method calls" );
+        }
+
+        public void retractTuple(ReteTuple tuple,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "TupleSinkAdapter onlys supports assertObject method calls" );
+        }  
+    }
 }

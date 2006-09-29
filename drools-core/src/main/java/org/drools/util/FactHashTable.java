@@ -4,21 +4,36 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.ObjectHashTable;
+import org.drools.reteoo.ReteTuple;
+import org.drools.spi.Tuple;
 
-public class FactHashSet extends AbstractHashTable {
-    private static final long serialVersionUID = -45167109828358945L;
+public class FactHashTable extends AbstractHashTable implements ObjectHashTable {
+    private static final long serialVersionUID = 320L;    
 
-    public FactHashSet() {
+    public FactHashTable() {
         this( 16,
               0.75f );
     }
 
-    public FactHashSet(int capacity,
+    public FactHashTable(int capacity,
                          float loadFactor) {
         super( capacity,
                loadFactor );
+    }        
+    
+    public Iterator iterator(int hashCode) {
+        throw new UnsupportedOperationException("FactHashTable does not support the method iterator(int hashCode");
+    }      
+    
+    public Iterator iterator(ReteTuple tuple) {
+        return iterator();
     }    
 
+    public boolean add(InternalFactHandle handle) {
+        return add( handle, true);
+    }
+    
     public boolean add(InternalFactHandle handle, boolean checkExists) {
         int hashCode =  handle.hashCode();
         int index = indexOf( hashCode,
@@ -31,7 +46,7 @@ public class FactHashSet extends AbstractHashTable {
                 if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() )  {
                     return false;
                 }
-                current = (FactHashSet.FactEntry) current.getNext();
+                current = (FactHashTable.FactEntry) current.getNext();
             }
         }
 
@@ -85,7 +100,7 @@ public class FactHashSet extends AbstractHashTable {
             current = next;
         }
         return false;
-    }
+    }        
     
     public Entry getBucket(int hashCode) {
         int h = hashCode;
