@@ -151,44 +151,6 @@ class AlphaNode extends ObjectSource
         }
     }
     
-    public void modifyObject(final InternalFactHandle handle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {      
-        if ( this.constraint.isAllowed( handle.getObject(),
-                                        null,
-                                        workingMemory ) ) {
-            boolean exists = false;  
-            if( hasMemory() ) {
-                final ObjectHashTable memory = (ObjectHashTable) workingMemory.getNodeMemory( this );
-                // true if the handle exists and it cannot be added
-                exists = !memory.add( handle, true );
-            }
-            if ( exists ) {
-                // handle already existed so propagate as modify
-                this.sink.propagateModifyObject( handle,
-                                                 context,
-                                                 workingMemory );                
-            } else {
-                this.sink.propagateAssertObject( handle,
-                                                 context,
-                                                 workingMemory );
-            }
-        } else {
-            boolean exists = true;  
-            if( hasMemory ) {
-                final ObjectHashTable memory = (ObjectHashTable) workingMemory.getNodeMemory( this );
-                exists = memory.remove( handle ); 
-            }
-            if ( exists ) {
-                this.sink.propagateRetractObject( handle,
-                                                  context,
-                                                  workingMemory,
-                                                  false );
-            }
-        }
-    }
-    
-
     public void updateSink(ObjectSink sink,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {

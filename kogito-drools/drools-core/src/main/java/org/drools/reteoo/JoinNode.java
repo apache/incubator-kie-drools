@@ -207,52 +207,7 @@ class JoinNode extends BetaNode {
         for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {
             sink.propagateRetractTuple( leftTuple, entry.getFactHandle(), context, workingMemory );
         }        
-    }
-    
-    public void modifyTuple(final ReteTuple leftTuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( ! memory.getTupleMemory().contains( leftTuple ) ) {
-            assertTuple( leftTuple, context, workingMemory );
-        }
-
-        Iterator iterator;
-        if ( leftTuple.isFieldIndexed() ) {
-            iterator = memory.getObjectMemory().iterator(leftTuple.getFieldIndexHashCode());
-        } else {
-            iterator = memory.getObjectMemory().iterator();
-        }
-        
-        for ( FactEntry entry = (FactEntry) iterator.next(); entry != null; entry = ( FactEntry )entry.getNext() ) {
-            InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowed( handle, leftTuple, workingMemory ) ) {
-                this.sink.propagateModifyTuple( leftTuple, handle, context, workingMemory );
-            } else {   
-                this.sink.propagateRetractTuple( leftTuple, handle, context, workingMemory );
-            }
-        }        
-    }    
-    
-    public void modifyObject(final InternalFactHandle handle,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( ! memory.getObjectMemory().contains( handle ) ) {
-            assertObject( handle, context, workingMemory );
-        }
-                
-        Iterator it = memory.getTupleMemory().iterator();
-        for ( ReteTuple tuple = ( ReteTuple ) it.next(); tuple != null; tuple = ( ReteTuple ) it.next() ) {
-            if ( this.constraints.isAllowed( handle, tuple, workingMemory ) ) {
-                this.sink.propagateModifyTuple( tuple, handle, context, workingMemory );
-            } else {
-                this.sink.propagateRetractTuple( tuple, handle, context, workingMemory );
-            }
-        }           
-    }       
+    }        
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
