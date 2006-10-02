@@ -57,25 +57,30 @@ public class ClassFieldInspector {
      * @throws IOException
      */
     public ClassFieldInspector(final Class clazz) throws IOException {
-        processClass( clazz );
+        this(clazz, true);
+    }
+    
+    public ClassFieldInspector(final Class clazz, final boolean includeFinalMethods) throws IOException {
+        processClass( clazz, includeFinalMethods );
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
-    private void processClass(final Class clazz) throws IOException {
+    private void processClass(final Class clazz, final boolean includeFinalMethods) throws IOException {
         final String name = getResourcePath( clazz );
         final InputStream stream = clazz.getResourceAsStream( name );
         final ClassReader reader = new ClassReader( stream );
         final ClassFieldVisitor visitor = new ClassFieldVisitor( clazz,
+                                                                 includeFinalMethods,
                                                                  this );
         reader.accept( visitor,
                        false );
         if ( clazz.getSuperclass() != null ) {
-            processClass( clazz.getSuperclass() );
+            processClass( clazz.getSuperclass(), includeFinalMethods );
         }
         if ( clazz.isInterface() ) {
             final Class[] interfaces = clazz.getInterfaces();
             for ( int i = 0; i < interfaces.length; i++ ) {
-                processClass( interfaces[i] );
+                processClass( interfaces[i], includeFinalMethods );
             }
         }
     }
@@ -128,10 +133,13 @@ public class ClassFieldInspector {
 
         private Class               clazz;
         private ClassFieldInspector inspector;
+        private boolean             includeFinalMethods;
 
         ClassFieldVisitor(final Class cls,
+                          final boolean includeFinalMethods,
                           final ClassFieldInspector inspector) {
             this.clazz = cls;
+            this.includeFinalMethods = includeFinalMethods;
             this.inspector = inspector;
         }
 
@@ -140,9 +148,10 @@ public class ClassFieldInspector {
                                          final String desc,
                                          final String signature,
                                          final String[] exceptions) {
-            //only want public methods that start with 'get' or 'is'
+            //only want public methods
             //and have no args, and return a value
-            if ( (access & Opcodes.ACC_PUBLIC) > 0 ) {
+            int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
+            if ( (access & mask) == Opcodes.ACC_PUBLIC ) {
                 if ( desc.startsWith( "()" ) && !(name.equals( "<init>" )) ) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
                         final Method method = this.clazz.getMethod( name,
