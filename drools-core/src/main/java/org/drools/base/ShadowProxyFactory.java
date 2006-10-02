@@ -43,7 +43,7 @@ public class ShadowProxyFactory {
 
     public static Class getProxy(final Class clazz) {
         try {
-            final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+            final ClassFieldInspector inspector = new ClassFieldInspector( clazz, false );
             final String className = Type.getInternalName( clazz ) + "ShadowProxy";
             // generating byte array to create target class
             final byte[] bytes = dump( clazz,
@@ -78,9 +78,6 @@ public class ShadowProxyFactory {
         Map fieldNames = inspector.getFieldNames();
         Map fieldTypes = inspector.getFieldTypes();
         Map fieldGetters = inspector.getGetterMethods();
-        fieldNames.remove( "class" );
-        fieldTypes.remove( "class" );
-        fieldGetters.remove( "class" );
         for ( Iterator it = fieldNames.keySet().iterator(); it.hasNext(); ) {
             String fieldName = (String) it.next();
             buildField( FIELD_NAME_PREFIX + fieldName,
