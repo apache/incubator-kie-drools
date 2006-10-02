@@ -20,7 +20,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
-public class Cheese {
+public class Cheese implements CheeseInterface {
     private String type;
 
     private int    price;
@@ -34,23 +34,29 @@ public class Cheese {
         this.price = price;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.CheeseInterface#getType()
+     */
     public String getType() {
         return this.type;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.CheeseInterface#getPrice()
+     */
     public int getPrice() {
         return this.price;
     }
 
-    /**
-     * @param price the price to set
+    /* (non-Javadoc)
+     * @see org.drools.CheeseInterface#setPrice(int)
      */
     public void setPrice(final int price) {
         this.price = price;
     }
 
-    /**
-     * @param type the type to set
+    /* (non-Javadoc)
+     * @see org.drools.CheeseInterface#setType(java.lang.String)
      */
     public void setType(final String type) {
         this.type = type;
