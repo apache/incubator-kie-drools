@@ -119,12 +119,21 @@ public class ShadowProxyFactory {
     protected static void buildClassHeader(final Class clazz,
                                            final String className,
                                            final ClassWriter cw) {
-        cw.visit( Opcodes.V1_2,
-                  Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-                  className,
-                  null,
-                  Type.getInternalName( clazz ),
-                  new String[]{BASE_INTERFACE} );
+        if( clazz.isInterface() ) {
+            cw.visit( Opcodes.V1_2,
+                      Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+                      className,
+                      null,
+                      Type.getInternalName( Object.class ),
+                      new String[]{BASE_INTERFACE, Type.getInternalName( clazz )} );
+        } else {
+            cw.visit( Opcodes.V1_2,
+                      Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+                      className,
+                      null,
+                      Type.getInternalName( clazz ),
+                      new String[]{BASE_INTERFACE} );
+        }
 
         cw.visitSource( null,
                         null );
@@ -176,11 +185,20 @@ public class ShadowProxyFactory {
                                 l0 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
-            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                Type.getInternalName( clazz ),
-                                "<init>",
-                                Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          new Type[]{} ) );
+            if(clazz.isInterface()) {
+                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+                                    Type.getInternalName( Object.class ),
+                                    "<init>",
+                                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                              new Type[]{} ) );
+            } else {
+                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+                                    Type.getInternalName( clazz ),
+                                    "<init>",
+                                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                              new Type[]{} ) );
+            }
+            
             // this.delegate = delegate
             Label l1 = new Label();
             mv.visitLabel( l1 );
@@ -274,10 +292,17 @@ public class ShadowProxyFactory {
                            className,
                            DELEGATE_FIELD_NAME,
                            Type.getDescriptor( clazz ) );
-        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                            Type.getInternalName( clazz ),
-                            method.getName(),
-                            Type.getMethodDescriptor( method ) );
+        if(clazz.isInterface()) {
+            mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                Type.getInternalName( clazz ),
+                                method.getName(),
+                                Type.getMethodDescriptor( method ) );
+        } else {
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                Type.getInternalName( clazz ),
+                                method.getName(),
+                                Type.getMethodDescriptor( method ) );
+        }
         mv.visitFieldInsn( Opcodes.PUTFIELD,
                            className,
                            fieldName,
