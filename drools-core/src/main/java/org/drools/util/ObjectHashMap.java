@@ -28,7 +28,6 @@ public class ObjectHashMap extends AbstractHashTable {
         int index = indexOf( hashCode,
                              table.length );
 
-        //@todo when in debug for ReteTest and the testCached method, something slows down  here???
         // scan the linked entries to see if it exists
         if ( checkExists ) {
             ObjectEntry current = (ObjectEntry) this.table[index];
