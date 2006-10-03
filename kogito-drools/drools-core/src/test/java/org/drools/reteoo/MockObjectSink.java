@@ -23,13 +23,16 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
-public class MockObjectSink
+public class MockObjectSink 
     implements
-    ObjectSink {
+    ObjectSinkNode {
     private final List asserted  = new ArrayList();
     private final List retracted = new ArrayList();
     private final List modified  = new ArrayList();
 
+    private ObjectSinkNode        previousObjectSinkNode;
+    private ObjectSinkNode        nextObjectSinkNode;
+    
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
@@ -59,6 +62,42 @@ public class MockObjectSink
 
     public List getModified() {
         return this.modified;
+    }
+
+    /**
+     * Returns the next node
+     * @return
+     *      The next ObjectSinkNode
+     */
+    public ObjectSinkNode getNextObjectSinkNode() {
+        return this.nextObjectSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next ObjectSinkNode
+     */
+    public void setNextObjectSinkNode(ObjectSinkNode next) {
+        this.nextObjectSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous ObjectSinkNode
+     */
+    public ObjectSinkNode getPreviousObjectSinkNode() {
+        return this.previousObjectSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous ObjectSinkNode
+     */
+    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
+        this.previousObjectSinkNode = previous;
     }
 
 }

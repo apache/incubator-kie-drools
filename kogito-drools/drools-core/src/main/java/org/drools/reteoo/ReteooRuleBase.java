@@ -30,14 +30,10 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.AbstractWorkingMemory.WorkingMemoryRetractAction;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
-import org.drools.spi.ClassObjectTypeResolver;
 import org.drools.spi.FactHandleFactory;
-import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -125,10 +121,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this.globals = new HashMap();
         this.workingMemories = new WeakHashMap();
 
-        final ObjectTypeResolver resolver = new ClassObjectTypeResolver();
-        this.rete = new Rete( resolver );
-        this.reteooBuilder = new ReteooBuilder( this,
-                                                resolver );
+        this.rete = new Rete( );
+        this.reteooBuilder = new ReteooBuilder( this );
     }
 
     /**
@@ -192,14 +186,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
                              final PropagationContext context,
                              final ReteooWorkingMemory workingMemory) throws FactException {
         getRete().assertObject( (DefaultFactHandle) handle,
-                                context,
-                                workingMemory );
-    }
-
-    public void modifyObject(final FactHandle handle,
-                             final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) throws FactException {
-        getRete().modifyObject( (DefaultFactHandle) handle,
                                 context,
                                 workingMemory );
     }

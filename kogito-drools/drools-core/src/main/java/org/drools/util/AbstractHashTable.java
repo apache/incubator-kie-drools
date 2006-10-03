@@ -155,6 +155,10 @@ public abstract class AbstractHashTable
     public int size() {
         return this.size;
     }
+    
+    public boolean isEmpty() {
+        return this.size == 0;
+    }
 
     protected int indexOf(int hashCode,
                           int dataSize) {

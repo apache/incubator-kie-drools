@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
@@ -23,9 +24,12 @@ import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactHashTable;
+import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 
 public class ObjectTypeNodeTest extends DroolsTestCase {
@@ -42,16 +46,20 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       objectTypeNode.getId() );
 
-        assertLength( 0,
-                      source.getObjectTypeNodes() );
+        Field field =  Rete.class.getDeclaredField( "objectTypeNodes" );
+        field.setAccessible( true );
+        ObjectHashMap map = ( ObjectHashMap ) field.get( source );
+        
+        assertEquals( 0,
+                      map.size() );
 
         objectTypeNode.attach();
 
-        assertLength( 1,
-                      source.getObjectTypeNodes() );
+        assertEquals( 1,
+                      map.size() );
 
         assertSame( objectTypeNode,
-                    source.getObjectTypeNode( objectType ) );
+                    map.get( objectType ) );
     }
 
     public void testAssertObject() throws Exception {
@@ -60,10 +68,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
+        ReteooRuleBase ruleBase  = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+                                                                           ruleBase );
 
-        final Rete source = new Rete();
+        final Rete source = ruleBase.getRete();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
@@ -74,26 +83,25 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Object string1 = "cheese";
 
-        final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.assertObject( string1 );
+        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.assertObject( string1 );
 
-        /* should assert as ObjectType matches */
+        // should assert as ObjectType matches
         objectTypeNode.assertObject( handle1,
                                      context,
                                      workingMemory );
 
-        /* make sure just string1 was asserted */
+        // make sure just string1 was asserted 
         final List asserted = sink.getAsserted();
         assertLength( 1,
                       asserted );
         assertSame( string1,
                     workingMemory.getObject( (DefaultFactHandle) ((Object[]) asserted.get( 0 ))[0] ) );
 
-        /* check asserted object was added to memory */
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
+        // check asserted object was added to memory
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
-        assertSame( handle1,
-                    memory.get( handle1.getId() ) );
+        assertTrue( memory.contains( handle1 ) );
     }
 
     public void testMemory() {
@@ -104,7 +112,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                   new ClassObjectType( String.class ),
                                                                   new Rete() );
 
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
 
         assertNotNull( memory );
     }
@@ -159,7 +167,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                      context,
                                      workingMemory );
         /* check asserted object was added to memory */
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
 
@@ -179,7 +187,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     ((Object[]) retracted.get( 0 ))[0] );
     }
 
-    public void testUpdateNewNode() throws FactException {
+    public void testUpdateSink() throws FactException {
         // Tests that when new child is added only the last added child is
         // updated
         // When the attachingNewNode flag is set
@@ -217,26 +225,21 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                      context,
                                      workingMemory );
 
-        assertLength( 2,
-                      sink1.getAsserted() );
-
-        objectTypeNode.attachingNewNode = true;
+        assertEquals( 2,
+                      sink1.getAsserted().size() );
 
         final MockObjectSink sink2 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink2 );
 
-        assertLength( 0,
-                      sink2.getAsserted() );
+        assertEquals( 0,
+                      sink2.getAsserted().size() );
 
-        objectTypeNode.updateNewNode( workingMemory,
-                                      null );
+        objectTypeNode.updateSink( sink2,
+                                   null,
+                                   workingMemory );
 
-        objectTypeNode.attachingNewNode = false;
-
-        assertLength( 2,
-                      sink1.getAsserted() );
-        assertLength( 2,
-                      sink2.getAsserted() );
+        assertEquals( 2,
+                      sink2.getAsserted().size() );
 
         final Object string3 = "water";
 
@@ -247,11 +250,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                      context,
                                      workingMemory );
 
-        assertLength( 3,
-                      sink1.getAsserted() );
+        assertEquals( 3,
+                      sink1.getAsserted().size() );
 
-        assertLength( 3,
-                      sink2.getAsserted() );
+        assertEquals( 3,
+                      sink2.getAsserted().size() );
 
     }
 

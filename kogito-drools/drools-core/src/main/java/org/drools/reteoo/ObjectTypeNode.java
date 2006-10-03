@@ -18,7 +18,6 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
@@ -30,7 +29,11 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactHashTable;
+import org.drools.util.Iterator;
+import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
+import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -65,7 +68,7 @@ class ObjectTypeNode extends ObjectSource
     /**
      * 
      */
-    private static final long serialVersionUID = 1397702820739948690L;
+    private static final long serialVersionUID = 320L;
 
     /** The <code>ObjectType</code> semantic module. */
     private final ObjectType  objectType;
@@ -136,9 +139,9 @@ class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-        memory.put( handle.getId(),
-                    handle );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+        // we do not need to check if the fact exists already
+        memory.add( handle, false );
         
         this.sink.propagateAssertObject( handle, context, workingMemory );
     }
@@ -157,26 +160,17 @@ class ObjectTypeNode extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-        memory.remove( handle.getId() );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+        memory.remove( handle );
 
         this.sink.propagateRetractObject( handle, context, workingMemory, true );
-    }
-    
-
-    public void modifyObject(final InternalFactHandle handle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {        
-        this.sink.propagateModifyObject( handle, context, workingMemory );       
-    }
-
+    }   
     
     public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );        
-
-        for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {            
-            final DefaultFactHandle handle = (DefaultFactHandle) it.next();
-            sink.assertObject( handle, context, workingMemory );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );        
+        Iterator it =  memory.iterator();
+        for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {            
+            sink.assertObject( entry.getFactHandle(), context, workingMemory );
         }
     }    
 
@@ -190,7 +184,7 @@ class ObjectTypeNode extends ObjectSource
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
-        // we need to call updateNewNode on Rete, because someone 
+        // we need to call updateSink on Rete, because someone 
         // might have already added facts matching this ObjectTypeNode 
         // to working memories
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -199,8 +193,9 @@ class ObjectTypeNode extends ObjectSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.rete.updateNewNode( workingMemory,
-                                     propagationContext );
+            this.rete.updateSink( this,
+                                  propagationContext,
+                                  workingMemory );
         }
     }
 
@@ -232,8 +227,7 @@ class ObjectTypeNode extends ObjectSource
      * to switch back to a standard HashMap.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new PrimitiveLongMap( 32,
-                                     8 );
+        return new FactHashTable();
     }
 
     public String toString() {
@@ -260,16 +254,5 @@ class ObjectTypeNode extends ObjectSource
 
         return this.objectType.equals( other.objectType );
     }
-
-    public List getPropagatedFacts(InternalWorkingMemory workingMemory) {
-        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-        final List facts = new ArrayList();
-
-        for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {            
-            final DefaultFactHandle handle = (DefaultFactHandle) it.next();
-            facts.add( handle );
-        }
-        return facts;
-    }
-
+    
 }

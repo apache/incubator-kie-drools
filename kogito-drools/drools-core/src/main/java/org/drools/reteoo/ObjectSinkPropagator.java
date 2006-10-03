@@ -16,9 +16,5 @@ public interface ObjectSinkPropagator {
                                        InternalWorkingMemory workingMemory,
                                        boolean useHash);
 
-    public void propagateModifyObject(InternalFactHandle handle,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory);
-
     public ObjectSink[] getSinks(); 
 }
