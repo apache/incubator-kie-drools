@@ -70,11 +70,11 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
         FactEntry current = (FactEntry) this.table[index];
         while ( current != null ) {
             if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() ) {
-                return false;
+                return true;
             }
             current = (FactEntry) current.getNext();
         }
-        return true;
+        return false;
     }
 
     public boolean remove(InternalFactHandle handle) {

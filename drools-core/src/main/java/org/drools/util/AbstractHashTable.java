@@ -195,6 +195,11 @@ public abstract class AbstractHashTable
                     return null;
                 }
                 this.entry = this.table[row];
+                // We have to do this recursively as we may have sparsely populated tables and 
+                // we need to recurse till we either reach a populated row or the end of the table
+                if ( this.entry == null ) {
+                    this.entry = next();
+                }
             } else {
                 this.entry = this.entry.getNext();
                 if ( this.entry == null ) {

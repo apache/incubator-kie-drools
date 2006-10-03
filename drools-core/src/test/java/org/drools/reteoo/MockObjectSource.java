@@ -47,8 +47,9 @@ public class MockObjectSource extends ObjectSource {
         return this.updated;
     }
 
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
+    public void updateSink(final ObjectSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
         this.updated++;
     }
 

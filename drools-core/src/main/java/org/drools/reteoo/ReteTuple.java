@@ -25,9 +25,7 @@ public class ReteTuple extends BaseEntry
 
     private long                     recency;    
     
-    private int                      hashCode;
-    
-    private int                      fieldIndexHashCode;
+    private int                      hashCode;    
     
     private boolean                  fieldIndexed;
     
@@ -69,14 +67,6 @@ public class ReteTuple extends BaseEntry
         return entry.handle;
     }        
     
-    public int getFieldIndexHashCode() {
-        return fieldIndexHashCode;
-    }
-
-    public void setFieldIndexHashCode(int fieldIndexHashCode) {
-        this.fieldIndexHashCode = fieldIndexHashCode;
-    }
-
     public boolean isFieldIndexed() {
         return fieldIndexed;
     }

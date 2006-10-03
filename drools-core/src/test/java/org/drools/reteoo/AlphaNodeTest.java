@@ -36,25 +36,26 @@ import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactHashTable;
 
 public class AlphaNodeTest extends DroolsTestCase {
 
-    public void testAttach() throws Exception {
-        final MockObjectSource source = new MockObjectSource( 15 );
-
-        final AlphaNode alphaNode = new AlphaNode( 2,
-                                                   null,
-                                                   source );
-        assertEquals( 2,
-                      alphaNode.getId() );
-        assertLength( 0,
-                      source.getObjectSinksAsList() );
-        alphaNode.attach();
-        assertLength( 1,
-                      source.getObjectSinksAsList() );
-        assertSame( alphaNode,
-                    source.getObjectSinks().getLastObjectSink() );
-    }
+//    public void testAttach() throws Exception {
+//        final MockObjectSource source = new MockObjectSource( 15 );
+//
+//        final AlphaNode alphaNode = new AlphaNode( 2,
+//                                                   null,
+//                                                   source );
+//        assertEquals( 2,
+//                      alphaNode.getId() );
+//        assertLength( 0,
+//                      source.getObjectSinksAsList() );
+//        alphaNode.attach();
+//        assertLength( 1,
+//                      source.getObjectSinksAsList() );
+//        assertSame( alphaNode,
+//                    source.getObjectSinks().getLastObjectSink() );
+//    }
 
     public void testMemory() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
@@ -64,7 +65,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                    null,
                                                    null );
 
-        final Set memory = (HashSet) workingMemory.getNodeMemory( alphaNode );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
 
         assertNotNull( memory );
     }
@@ -107,19 +108,20 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
 
         // check alpha memory is empty 
-        final Set memory = (Set) workingMemory.getNodeMemory( alphaNode );
-        assertLength( 0,
-                      memory );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        
+        assertEquals( 0,
+                      memory.size() );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
-        assertLength( 1,
-                      sink.getAsserted() );
-        assertLength( 1,
-                      memory );
+        assertEquals( 1,
+                      sink.getAsserted().size() );
+        assertEquals( 1,
+                      memory.size() );
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
@@ -138,14 +140,13 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertLength( 1,
                       sink.getAsserted() );
-        assertLength( 1,
-                      memory );
+        assertEquals( 1,
+                      memory.size() );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
         assertTrue( "Should contain 'cheddar handle'",
                     memory.contains( f0 ) );
-
     }
     
     /*
@@ -248,17 +249,17 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                             cheddar );
 
         // check alpha memory is empty
-        final Set memory = (Set) workingMemory.getNodeMemory( alphaNode );
-        assertLength( 0,
-                      memory );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        assertEquals( 0,
+                      memory.size() );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
-        assertLength( 1,
-                      memory );
+        assertEquals( 1,
+                      memory.size() );
 
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheese" );
@@ -270,8 +271,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertLength( 0,
                       sink.getRetracted() );
-        assertLength( 1,
-                      memory );
+        assertEquals( 1,
+                      memory.size() );
         assertTrue( "Should contain 'cheddar handle'",
                     memory.contains( f0 ) );
 
@@ -282,18 +283,17 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertLength( 1,
                       sink.getRetracted() );
-        assertLength( 0,
-                      memory );
+        assertEquals( 0,
+                      memory.size() );
         final Object[] list = (Object[]) sink.getRetracted().get( 0 );
         assertSame( f0,
                     list[0] );
 
     }
 
-    public void testUpdateNewNode() throws FactException,
+    public void testUpdateSink() throws FactException,
                                    IntrospectionException {
-        // An AlphaNode with memory should not try and repropagate from its
-        // source
+        // An AlphaNode with memory should not try and repropagate from its source
         // Also it should only update the latest tuple sinky
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
@@ -333,22 +333,20 @@ public class AlphaNodeTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  cheese );
 
-        source.propagateAssertObject( handle1,
-                                      context,
-                                      workingMemory );
+        alphaNode.assertObject( handle1, context, workingMemory );        
 
         assertLength( 1,
                       sink1.getAsserted() );
 
         // Attach a new tuple sink
         final MockObjectSink sink2 = new MockObjectSink();
-        alphaNode.addObjectSink( sink2 );
 
         // Tell the alphanode to update the new node. Make sure the first sink1
         // is not updated
         // likewise the source should not do anything
-        alphaNode.updateNewNode( workingMemory,
-                                 context );
+        alphaNode.updateSink( sink2,
+                              context,
+                              workingMemory);
 
         assertLength( 1,
                       sink1.getAsserted() );

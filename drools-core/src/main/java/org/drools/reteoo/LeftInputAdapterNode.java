@@ -18,7 +18,6 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +31,7 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
 import org.drools.util.LinkedListEntry;
@@ -199,19 +199,15 @@ class LeftInputAdapterNode extends TupleSource
             // We have memory so iterate over all entries making new Tuples and adding them
             // to the memory before propagating
             ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-            ObjectEntry[] entries = (ObjectEntry[]) map.getTable();
-            for ( int i = 0, length = entries.length; i < length; i++ ) {
-                ObjectEntry current = entries[i];
-                while ( current != null ) {
-                    InternalFactHandle handle = (InternalFactHandle) current.getKey();
-                    LinkedList list = (LinkedList) current.getValue();
-                    ReteTuple tuple = new ReteTuple( handle );
-                    list.add( new LinkedListEntry( tuple ) );
-                    sink.assertTuple( tuple,
-                                      context,
-                                      workingMemory );
-                    current = (ObjectEntry) current.getNext();
-                }
+            Iterator it = map.iterator();
+            for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; it.next() ) {
+                InternalFactHandle handle = (InternalFactHandle) entry.getKey();
+                LinkedList list = (LinkedList) entry.getValue();
+                ReteTuple tuple = new ReteTuple( handle );
+                list.add( new LinkedListEntry( tuple ) );
+                sink.assertTuple( tuple,
+                                  context,
+                                  workingMemory );                
             }
         } else {
             ObjectSinkAdapter adapter = new ObjectSinkAdapter( sink );
