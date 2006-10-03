@@ -16,7 +16,12 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
@@ -29,9 +34,12 @@ public class MockObjectSource extends ObjectSource {
     private int               attached;
 
     private int               updated;
+    
+    private List              facts;
 
     public MockObjectSource(final int id) {
         super( id );
+        this.facts = new ArrayList();
     }
 
     public void attach() {
@@ -46,11 +54,19 @@ public class MockObjectSource extends ObjectSource {
     public int getUdated() {
         return this.updated;
     }
+    
+    public void addFact(InternalFactHandle handle) {
+        this.facts.add( handle );
+    }
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         this.updated++;
+        for(Iterator it = this.facts.iterator(); it.hasNext(); ) {
+            InternalFactHandle handle = (InternalFactHandle) it.next();
+            sink.assertObject( handle, context, workingMemory );
+        }
     }
 
     public void remove(final BaseNode node,

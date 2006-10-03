@@ -24,7 +24,6 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.AbstractHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
@@ -61,22 +60,39 @@ class AlphaNode extends ObjectSource
 
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
-     * <code>FieldConstraint</code>. <code>NodeMemory</code> is optional in
-     * <code>AlphaNode</code>s and is only of benefit when adding additional
-     * <code>Rule</code>s at runtime.
+     * <code>FieldConstraint</code> and the given <code>ObjectSource</code>.
+     * Nodes created in this way will not have a local memory by default. 
      * 
      * @param id
      * @param constraint
-     * @param hasMemory
      * @param objectSource
      */
     AlphaNode(final int id,
               final FieldConstraint constraint,
               final ObjectSource objectSource) {
+        this(id, constraint, objectSource, false);
+    }
+
+    /**
+     * Construct an <code>AlphaNode</code> with a unique id using the provided
+     * <code>FieldConstraint</code> and the given <code>ObjectSource</code>.
+     * Set the boolean flag to true if the node is supposed to have local 
+     * memory, or false otherwise. Memory is optional for <code>AlphaNode</code>s 
+     * and is only of benefic when adding additional <code>Rule</code>s at runtime. 
+     * 
+     * @param id Node's ID
+     * @param constraint Node's constraints
+     * @param objectSource Node's object source
+     * @param hasMemory true if node shall be configured with local memory. False otherwise.
+     */
+    AlphaNode(final int id,
+              final FieldConstraint constraint,
+              final ObjectSource objectSource,
+              final boolean hasMemory) {
         super( id );
         this.constraint = constraint;
         this.objectSource = objectSource;
-        setHasMemory( true );
+        setHasMemory( hasMemory );
     }
 
     /**
@@ -102,7 +118,7 @@ class AlphaNode extends ObjectSource
 
         // we are attaching this node with existing working memories
         // so this  node must also have memory
-        this.hasMemory = true;
+        setHasMemory( true );
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
