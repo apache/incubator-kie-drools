@@ -39,6 +39,7 @@ public class ObjectHashMap extends AbstractHashTable {
                     current.value = value;
                     return oldValue;
                 }
+                current = (ObjectEntry) current.getNext();
             }
         }
 
