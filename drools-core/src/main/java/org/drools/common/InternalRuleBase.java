@@ -61,10 +61,6 @@ public interface InternalRuleBase
                              PropagationContext context,
                              ReteooWorkingMemory workingMemory) throws FactException;
 
-    public void modifyObject(FactHandle handle,
-                             PropagationContext context,
-                             ReteooWorkingMemory workingMemory) throws FactException;
-
     /**
      * Retract a fact object.
      * 

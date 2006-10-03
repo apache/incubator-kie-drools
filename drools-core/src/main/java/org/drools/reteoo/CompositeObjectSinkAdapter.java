@@ -1,11 +1,7 @@
 package org.drools.reteoo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
@@ -15,8 +11,11 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
+import org.drools.util.ObjectHashMap;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class CompositeObjectSinkAdapter
     implements
@@ -27,7 +26,7 @@ public class CompositeObjectSinkAdapter
 
     private LinkedList         hashedFieldIndexes;
 
-    private Map                hashedSinkMap;
+    private ObjectHashMap      hashedSinkMap;
 
     private HashKey            hashKey;
 
@@ -54,9 +53,11 @@ public class CompositeObjectSinkAdapter
                             hashSinks( fieldIndex );
                        }
                         Object value = literalConstraint.getField().getValue();
+                        // no need to check, we know  the sink  does not exist
                         hashedSinkMap.put( new HashKey( index,
                                                         value ),
-                                           sink );    
+                                           sink,
+                                           false );    
                     } else {
                         if ( this.hashedSinks == null ) {
                             this.hashedSinks = new ObjectSinkNodeList();
@@ -124,7 +125,7 @@ public class CompositeObjectSinkAdapter
         List list = new ArrayList();
         
         if ( this.hashedSinkMap == null ) {
-            this.hashedSinkMap = new HashMap();
+            this.hashedSinkMap = new ObjectHashMap();
         }
 
         for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
@@ -141,7 +142,7 @@ public class CompositeObjectSinkAdapter
             }
         }        
         
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
+        for ( java.util.Iterator it = list.iterator(); it.hasNext(); ) {
             ObjectSinkNode sink = ( ObjectSinkNode ) it.next();
             this.hashedSinks.remove( sink );
         }
@@ -281,39 +282,6 @@ public class CompositeObjectSinkAdapter
 
     }
 
-    public void propagateModifyObject(InternalFactHandle handle,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory) {
-
-        if ( this.hashedSinkMap != null ) {
-            for ( Iterator it = this.hashedSinkMap.values().iterator(); it.hasNext(); ) {
-                ObjectSink sink = (ObjectSink) it.next();
-                sink.modifyObject( handle,
-                                   context,
-                                   workingMemory );
-            }
-        }
-
-        if ( this.hashedSinks != null ) {
-            // we can't retrieve hashed sinks, as the field value might have changed, so we have to iterate and propagate to all hashed sinks
-            for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                sink.modifyObject( handle,
-                                   context,
-                                   workingMemory );
-            }
-        }
-
-        if ( this.otherSinks != null ) {
-            // propagate others
-            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                sink.modifyObject( handle,
-                                   context,
-                                   workingMemory );
-            }
-        }
-
-    }
-
     public void propagateRetractObject(InternalFactHandle handle,
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory,
@@ -337,9 +305,10 @@ public class CompositeObjectSinkAdapter
                     }
                 }
             } else if ( this.hashedSinkMap != null ) {
-                for ( Iterator it = this.hashedSinkMap.values().iterator(); it.hasNext(); ) {
-                    ObjectSink sink = (ObjectSink) it.next();
-                    sink.modifyObject( handle,
+                Iterator it = this.hashedSinkMap.iterator();
+                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                    ObjectSink sink = (ObjectSink) entry.getValue();
+                    sink.retractObject( handle,
                                        context,
                                        workingMemory );
                 }

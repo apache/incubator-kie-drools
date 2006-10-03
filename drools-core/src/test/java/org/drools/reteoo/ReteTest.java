@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
+import org.drools.util.ObjectHashMap;
 
 /**
  * @author mproctor
@@ -55,16 +57,16 @@ public class ReteTest extends DroolsTestCase {
                                                                   rete );
         stringTypeNode.attach();
 
-        final Collection objectTypeNodes = rete.getObjectTypeNodes();
+        Field field =  Rete.class.getDeclaredField( "objectTypeNodes" );
+        field.setAccessible( true );
+        ObjectHashMap map = ( ObjectHashMap ) field.get( rete );
 
         // Check the ObjectTypeNodes are correctly added to Rete
         assertEquals( 2,
-                      objectTypeNodes.size() );
+                      map.size() );
 
-        assertContains( objectTypeNode,
-                        objectTypeNodes );
-        assertContains( stringTypeNode,
-                        objectTypeNodes );
+        assertNotNull( map.get( new ClassObjectType( Object.class ) ) );
+        assertNotNull( map.get( new ClassObjectType( String.class ) ) );
     }
 
     /**
@@ -83,14 +85,22 @@ public class ReteTest extends DroolsTestCase {
                                                             new ClassObjectType( List.class ),
                                                             rete );
         objectTypeNode.attach();
+        MockObjectSink sink = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink );
+        
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( Collection.class ),
                                              rete );
         objectTypeNode.attach();
+        sink = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink );        
+        
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( ArrayList.class ),
                                              rete );
         objectTypeNode.attach();
+        sink = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink );
 
         // ArrayList matches all three ObjectTypeNodes
         final DefaultFactHandle h1 = new DefaultFactHandle( 1,
@@ -105,7 +115,7 @@ public class ReteTest extends DroolsTestCase {
                            null,
                            workingMemory );
 
-        final Map map = (HashMap) workingMemory.getNodeMemory( rete );
+        final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( rete );
         assertLength( 3,
                       (ObjectTypeNode[]) map.get( ArrayList.class ) );
 
@@ -130,7 +140,8 @@ public class ReteTest extends DroolsTestCase {
                                                                   new ClassObjectType( List.class ),
                                                                   rete );
         objectTypeNode.attach();
-        objectTypeNode.addObjectSink( new MockObjectSink() );
+        MockObjectSink sink1 = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink1 );
 
         // There are no String ObjectTypeNodes, make sure its not propagated
 
@@ -142,7 +153,6 @@ public class ReteTest extends DroolsTestCase {
                            null,
                            workingMemory );
 
-        final MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
         assertLength( 0,
                       sink1.getAsserted() );
 
@@ -179,7 +189,8 @@ public class ReteTest extends DroolsTestCase {
                                                                   new ClassObjectType( List.class ),
                                                                   rete );
         objectTypeNode.attach();
-        objectTypeNode.addObjectSink( new MockObjectSink() );
+        MockObjectSink sink1 = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink1 );
 
         // There are no String ObjectTypeNodes, make sure its not propagated
         final String string = "String";
@@ -189,8 +200,6 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h1,
                            null,
                            workingMemory );
-
-        final MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
         assertLength( 0,
                       sink1.getRetracted() );
 
@@ -199,6 +208,11 @@ public class ReteTest extends DroolsTestCase {
         final DefaultFactHandle h2 = new DefaultFactHandle( 1,
                                                             list );
 
+        // need  to assert first, to force it to build  up the cache
+        rete.assertObject( h2,
+                           null,
+                           workingMemory );
+        
         rete.retractObject( h2,
                             null,
                             workingMemory );

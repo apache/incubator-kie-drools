@@ -20,13 +20,6 @@ public class SingleObjectSinkAdapter
         this.sink.assertObject( handle, context, workingMemory );
 
     }
-
-    public void propagateModifyObject(InternalFactHandle handle,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory) {
-        this.sink.modifyObject( handle, context, workingMemory );
-
-    }
     
     public void propagateRetractObject(InternalFactHandle handle,
                                        PropagationContext context,
@@ -35,14 +28,6 @@ public class SingleObjectSinkAdapter
         this.sink.retractObject( handle, context, workingMemory );
 
     }    
-
-    public void propagateNewObjectSink(InternalFactHandle handle,
-                                       PropagationContext context,
-                                       InternalWorkingMemory workingMemory) {
-        // do nothing as this cannot have new sinks
-        throw new RuntimeException( "This is a bug you cannot update new data through this single sink adapter" );
-
-    }
 
     public ObjectSink[] getSinks() {
         return new ObjectSink[] { this.sink };

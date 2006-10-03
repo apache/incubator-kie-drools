@@ -52,7 +52,6 @@ import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldValue;
-import org.drools.spi.ObjectTypeResolver;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -83,8 +82,6 @@ class ReteooBuilder
 
     private transient ReteooWorkingMemory[] workingMemories;
 
-    private final ObjectTypeResolver        resolver;
-
     /** Nodes that have been attached. */
     private final Map                       attachedNodes;
 
@@ -110,11 +107,9 @@ class ReteooBuilder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    ReteooBuilder(final ReteooRuleBase ruleBase,
-                  final ObjectTypeResolver resolver) {
+    ReteooBuilder(final ReteooRuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
-        this.resolver = resolver;
         this.attachedNodes = new HashMap();
         this.rules = new HashMap();
 
