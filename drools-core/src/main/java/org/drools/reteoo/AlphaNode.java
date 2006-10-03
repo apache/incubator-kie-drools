@@ -152,12 +152,10 @@ class AlphaNode extends ObjectSource
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
         FactHashTable memory = null;
-
-        // if it was not storing facts in memory previously, create memory and
-        // start storing facts in the local memory
+        
         if ( !hasMemory() ) {
-            ObjectSinkAdapter adapter = new ObjectSinkAdapter( sink );
-            this.objectSource.updateSink( adapter, context, workingMemory );
+            // get the objects from the parent
+            this.objectSource.updateSink( sink, context, workingMemory );
         } else {
             // if already has memory, just iterate and propagate
             memory = (FactHashTable) workingMemory.getNodeMemory( this );
@@ -255,33 +253,5 @@ class AlphaNode extends ObjectSource
     public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
-    
-    private static class ObjectSinkAdapter
-    implements
-    ObjectSink {
-    private ObjectSink sink;
-    public ObjectSinkAdapter(ObjectSink sink) {
-        this.sink = sink;
-    }        
-
-    public void assertObject(InternalFactHandle handle,
-                             PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
-        this.sink.assertObject( handle,
-                               context,
-                               workingMemory );
-    }
-
-    public void modifyObject(InternalFactHandle handle,
-                             PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
-    }
-
-    public void retractObject(InternalFactHandle handle,
-                              PropagationContext context,
-                              InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
-    }
-}    
+      
 }
