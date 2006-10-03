@@ -15,11 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -31,6 +26,8 @@ import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.FactHashTable;
+import org.drools.util.Iterator;
+import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -159,28 +156,16 @@ class AlphaNode extends ObjectSource
         // if it was not storing facts in memory previously, create memory and
         // start storing facts in the local memory
         if ( !hasMemory() ) {
-            setHasMemory( true );
-            memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            for ( Iterator it = this.objectSource.getPropagatedFacts( workingMemory ).iterator(); it.hasNext(); ) {
-                InternalFactHandle handle = (InternalFactHandle) it.next();
-                memory.add( handle,
-                            false );
-                sink.assertObject( handle,
-                                   context,
-                                   workingMemory );
-            }
+            ObjectSinkAdapter adapter = new ObjectSinkAdapter( sink );
+            this.objectSource.updateSink( adapter, context, workingMemory );
         } else {
             // if already has memory, just iterate and propagate
             memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            AbstractHashTable.FactEntry[] entries = (AbstractHashTable.FactEntry[]) memory.getTable();
-            for ( int i = 0, length = entries.length; i < length; i++ ) {
-                AbstractHashTable.FactEntry current = entries[i];
-                while ( current != null ) {
-                    sink.assertObject( current.getFactHandle(),
-                                       context,
-                                       workingMemory );
-                    current = (AbstractHashTable.FactEntry) current.getNext();
-                }
+            Iterator it = memory.iterator();            
+            for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {
+                sink.assertObject( entry.getFactHandle(),
+                                   context,
+                                   workingMemory );                
             }
         }
     }
@@ -270,23 +255,33 @@ class AlphaNode extends ObjectSource
     public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
+    
+    private static class ObjectSinkAdapter
+    implements
+    ObjectSink {
+    private ObjectSink sink;
+    public ObjectSinkAdapter(ObjectSink sink) {
+        this.sink = sink;
+    }        
 
-    public List getPropagatedFacts(InternalWorkingMemory workingMemory) {
-        List facts = null;
-        if ( hasMemory() ) {
-            final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            AbstractHashTable.FactEntry[] entries = (AbstractHashTable.FactEntry[]) memory.getTable();
-            facts = new ArrayList( entries.length );
-            for ( int i = 0, length = entries.length; i < length; i++ ) {
-                AbstractHashTable.FactEntry current = entries[i];
-                while ( current != null ) {
-                    facts.add( current.getFactHandle() );
-                    current = (AbstractHashTable.FactEntry) current.getNext();
-                }
-            }
-        } else {
-            facts = this.objectSource.getPropagatedFacts( workingMemory );
-        }
-        return facts;
+    public void assertObject(InternalFactHandle handle,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        this.sink.assertObject( handle,
+                               context,
+                               workingMemory );
     }
+
+    public void modifyObject(InternalFactHandle handle,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+    }
+
+    public void retractObject(InternalFactHandle handle,
+                              PropagationContext context,
+                              InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+    }
+}    
 }
