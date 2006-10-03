@@ -193,13 +193,26 @@ public class FieldIndexHashTable extends AbstractHashTable
         return false;
     }
 
+    public boolean contains(InternalFactHandle handle) {
+        Object value = this.extractor.getValue( handle.getObject() );
+        int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
+
+        int index = indexOf( hashCode,
+                             table.length );
+
+        FieldIndexEntry current = (FieldIndexEntry) this.table[index];
+        while ( current != null ) {
+            if ( hashCode == current.hashCode && value.equals( current.getValue() ) ) {
+                return  true;
+            }
+            current = (FieldIndexEntry) current.next;
+        }
+        return false;
+    }
+    
     public FieldIndexEntry get(ReteTuple tuple) {
         Object value = this.declaration.getValue( tuple.get( this.declaration ).getObject() );
         int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
-
-        if ( !tuple.isFieldIndexed() ) {
-            tuple.setFieldIndexHashCode( hashCode );
-        }
 
         int index = indexOf( hashCode,
                              table.length );
