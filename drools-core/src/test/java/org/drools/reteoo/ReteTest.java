@@ -19,10 +19,8 @@ package org.drools.reteoo;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;

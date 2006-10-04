@@ -43,7 +43,8 @@ public class ShadowProxyFactory {
 
     public static Class getProxy(final Class clazz) {
         try {
-            final ClassFieldInspector inspector = new ClassFieldInspector( clazz, false );
+            final ClassFieldInspector inspector = new ClassFieldInspector( clazz,
+                                                                           false );
             final String className = Type.getInternalName( clazz ) + "ShadowProxy";
             // generating byte array to create target class
             final byte[] bytes = dump( clazz,
@@ -116,7 +117,7 @@ public class ShadowProxyFactory {
     protected static void buildClassHeader(final Class clazz,
                                            final String className,
                                            final ClassWriter cw) {
-        if( clazz.isInterface() ) {
+        if ( clazz.isInterface() ) {
             cw.visit( Opcodes.V1_2,
                       Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                       className,
@@ -182,7 +183,7 @@ public class ShadowProxyFactory {
                                 l0 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
-            if(clazz.isInterface()) {
+            if ( clazz.isInterface() ) {
                 mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
                                     Type.getInternalName( Object.class ),
                                     "<init>",
@@ -195,7 +196,7 @@ public class ShadowProxyFactory {
                                     Type.getMethodDescriptor( Type.VOID_TYPE,
                                                               new Type[]{} ) );
             }
-            
+
             // this.delegate = delegate
             Label l1 = new Label();
             mv.visitLabel( l1 );
@@ -289,7 +290,7 @@ public class ShadowProxyFactory {
                            className,
                            DELEGATE_FIELD_NAME,
                            Type.getDescriptor( clazz ) );
-        if(clazz.isInterface()) {
+        if ( clazz.isInterface() ) {
             mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
                                 Type.getInternalName( clazz ),
                                 method.getName(),
@@ -347,7 +348,7 @@ public class ShadowProxyFactory {
         MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                            "resetProxy",
                                            Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                                     new Type[] { } ),
+                                                                     new Type[]{} ),
                                            null,
                                            null );
         mv.visitCode();
@@ -362,7 +363,7 @@ public class ShadowProxyFactory {
             mv.visitLabel( l1 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
-            if( fieldType.isPrimitive() ) {
+            if ( fieldType.isPrimitive() ) {
                 if ( fieldType.equals( Long.TYPE ) ) {
                     mv.visitInsn( Opcodes.LCONST_0 );
                 } else if ( fieldType.equals( Double.TYPE ) ) {
@@ -400,6 +401,49 @@ public class ShadowProxyFactory {
                                l0,
                                l5,
                                0 );
+        mv.visitMaxs( 0,
+                      0 );
+        mv.visitEnd();
+    }
+
+    protected static void buildEqualsMethod(Class clazz,
+                                            String className,
+                                            ClassWriter cw) {
+        MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                           "equals",
+                                           "(Ljava/lang/Object;)Z",
+                                           null,
+                                           null );
+        mv.visitCode();
+        Label l0 = new Label();
+        mv.visitLabel( l0 );
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         0 );
+        mv.visitFieldInsn( Opcodes.GETFIELD,
+                           className,
+                           DELEGATE_FIELD_NAME,
+                           Type.getDescriptor( clazz ) );
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         1 );
+        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                            Type.getInternalName( clazz ),
+                            "equals",
+                            "(Ljava/lang/Object;)Z" );
+        mv.visitInsn( Opcodes.IRETURN );
+        Label l1 = new Label();
+        mv.visitLabel( l1 );
+        mv.visitLocalVariable( "this",
+                               "L"+className+";",
+                               null,
+                               l0,
+                               l1,
+                               0 );
+        mv.visitLocalVariable( "object",
+                               Type.getDescriptor( Object.class ),
+                               null,
+                               l0,
+                               l1,
+                               1 );
         mv.visitMaxs( 0,
                       0 );
         mv.visitEnd();

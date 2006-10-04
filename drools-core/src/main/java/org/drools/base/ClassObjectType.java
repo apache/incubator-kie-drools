@@ -16,6 +16,9 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.drools.RuntimeDroolsException;
 import org.drools.spi.ObjectType;
 
 /**
@@ -42,19 +45,42 @@ public class ClassObjectType
 
     protected ValueType       valueType;
 
+    protected boolean         shadowEnabled;
+
+    protected Class           shadowClass;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
     /**
-     * Construct.
+     * Creates a new class object type with shadow disabled.
      * 
      * @param objectTypeClass
      *            Java object class.
      */
     public ClassObjectType(final Class objectTypeClass) {
+        this( objectTypeClass,
+              null );
+    }
+
+    /**
+     * Creates a new class object type with the given class
+     * as its shadow class.
+     * 
+     * @param objectTypeClass
+     *            Java object class.
+     * @param shadowClass
+     *            The shadow class for the given objectTypeClass
+     */
+    public ClassObjectType(final Class objectTypeClass,
+                           final Class shadowClass) {
         this.objectTypeClass = objectTypeClass;
         this.valueType = ValueType.determineValueType( objectTypeClass );
+        if ( shadowClass != null ) {
+            this.shadowClass = shadowClass;
+            this.shadowEnabled = true;
+        }
     }
 
     // ------------------------------------------------------------
@@ -90,6 +116,22 @@ public class ClassObjectType
 
     public ValueType getValueType() {
         return this.valueType;
+    }
+
+    public Object getShadow(Object fact) throws RuntimeDroolsException {
+        ShadowProxy proxy = null;
+        if ( isShadowEnabled() ) {
+            try {
+                proxy = (ShadowProxy) shadowClass.getConstructor( new Class[]{this.objectTypeClass} ).newInstance( new Object[]{fact} );
+            } catch ( Exception e ) {
+                throw new RuntimeDroolsException("Error creating shadow fact for object: "+fact, e);
+            }
+        }
+        return proxy;
+    }
+
+    public boolean isShadowEnabled() {
+        return this.shadowEnabled;
     }
 
     public String toString() {
