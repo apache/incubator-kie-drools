@@ -6,7 +6,6 @@ package org.drools.util;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
-import org.drools.spi.Tuple;
 
 public class FactHashTable extends AbstractHashTable implements ObjectHashTable {
     private static final long serialVersionUID = 320L;    

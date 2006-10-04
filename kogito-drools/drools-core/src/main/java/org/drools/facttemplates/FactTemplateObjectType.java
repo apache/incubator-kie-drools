@@ -96,6 +96,16 @@ public class FactTemplateObjectType
         return ValueType.FACTTEMPLATE_TYPE;
     }
 
+    public Object getShadow(Object fact) {
+        // @TODO: shadow not implemented for templates yet
+        return null;
+    }
+
+    public boolean isShadowEnabled() {
+        // @TODO: shadow not implemented for templates yet
+        return false;
+    }
+    
     public String toString() {
         return "[ClassObjectType class=" + this.factTemplate.getName() + "]";
     }
@@ -126,5 +136,4 @@ public class FactTemplateObjectType
     public int hashCode() {
         return this.factTemplate.hashCode();
     }
-
 }

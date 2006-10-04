@@ -19,10 +19,13 @@ package org.drools.reteoo;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ShadowProxy;
+import org.drools.base.ShadowProxyFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -30,7 +33,6 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
 import org.drools.util.ObjectHashMap;
-import org.drools.util.PrimitiveLongMap;
 
 public class ObjectTypeNodeTest extends DroolsTestCase {
 
@@ -257,5 +259,52 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       sink2.getAsserted().size() );
 
     }
+    
+    public void testAssertObjectWithShadowEnabled() throws Exception {
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
+
+        ReteooRuleBase ruleBase  = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           ruleBase );
+
+        final Rete source = ruleBase.getRete();
+
+        Class shadowClass = ShadowProxyFactory.getProxy( Cheese.class );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( Cheese.class,
+                                                                                       shadowClass ),
+                                                                  source );
+
+        final MockObjectSink sink = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink );
+
+        final Object cheese = new Cheese("muzzarela", 5);
+
+        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.assertObject( cheese );
+
+        // should assert as ObjectType matches
+        objectTypeNode.assertObject( handle1,
+                                     context,
+                                     workingMemory );
+
+        // make sure just string1 was asserted 
+        final List asserted = sink.getAsserted();
+        assertLength( 1,
+                      asserted );
+        assertTrue( ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject() instanceof ShadowProxy );
+        assertEquals( cheese,
+                      ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject() );
+
+        // check asserted object was added to memory
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        assertEquals( 1,
+                      memory.size() );
+        assertTrue( memory.contains( handle1 ) );
+    }
+
+    
 
 }

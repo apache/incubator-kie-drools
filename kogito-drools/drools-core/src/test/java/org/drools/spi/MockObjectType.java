@@ -78,5 +78,13 @@ public class MockObjectType
     public ValueType getValueType() {
         return ValueType.OBJECT_TYPE;
     }
+    
+    public Object getShadow(Object fact) {
+        return null;
+    }
+
+    public boolean isShadowEnabled() {
+        return false;
+    }
 
 }
