@@ -22,40 +22,16 @@ public interface TupleSinkPropagator {
     
     public void propagateRetractTuple(ReteTuple tuple,
                                       PropagationContext context,
-                                      InternalWorkingMemory workingMemory);      
-    
-    public void propagateModifyTuple(ReteTuple tuple,
-                                     InternalFactHandle handle,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory);    
-    
-    public void propagateModifyTuple(ReteTuple tuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory);       
+                                      InternalWorkingMemory workingMemory);            
 
-    public LinkedList createAndPropagateAssertTupleWithMemory(InternalFactHandle handle,
-                                                              PropagationContext context,
-                                                              InternalWorkingMemory workingMemory);
 
-    public void createAndPropagateAssertTuple(InternalFactHandle handle,
+    public ReteTuple createAndPropagateAssertTuple(InternalFactHandle handle,
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory);
 
     public void createAndPropagateRetractTuple(ReteTuple tuple,
                                                PropagationContext context,
                                                InternalWorkingMemory workingMemory);
-
-    public void createAndPropagateRetractTuple(LinkedList list,
-                                               PropagationContext context,
-                                               InternalWorkingMemory workingMemory);
-
-    public void createAndPropagateModifyTuple(ReteTuple tuple,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory);
-
-    public void createAndPropagateModifyTuple(LinkedList list,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory);
 
     public TupleSink[] getSinks();
 

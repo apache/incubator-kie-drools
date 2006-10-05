@@ -39,7 +39,7 @@ public class MockTupleSink extends TupleSource
     private static final long serialVersionUID = -5292603482246485028L;
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();
-    private final List        modified         = new ArrayList();
+  
 
     public MockTupleSink() {
         super( 0 );
@@ -49,24 +49,18 @@ public class MockTupleSink extends TupleSource
         super( id );
     }
 
-    public void assertTuple(final Tuple tuple,
+    public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory) {
         this.asserted.add( new Object[]{tuple, context, workingMemory} );
 
     }
 
-    public void retractTuple(final Tuple tuple,
+    public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory) {
         this.retracted.add( new Object[]{tuple, context, workingMemory} );
 
-    }
-
-    public void modifyTuple(final Tuple tuple,
-                            final PropagationContext context,
-                            final ReteooWorkingMemory workingMemory) {
-        this.modified.add( new Object[]{tuple, context, workingMemory} );
     }
 
     public List getAsserted() {
@@ -75,10 +69,6 @@ public class MockTupleSink extends TupleSource
 
     public List getRetracted() {
         return this.retracted;
-    }
-
-    public List getModified() {
-        return this.modified;
     }
 
     public void ruleAttached() {
@@ -102,8 +92,9 @@ public class MockTupleSink extends TupleSource
 
     }
 
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) throws FactException {
+    public void updateSink(final TupleSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) throws FactException {
         // TODO Auto-generated method stub
 
     }

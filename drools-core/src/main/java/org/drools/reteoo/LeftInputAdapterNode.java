@@ -99,13 +99,13 @@ class LeftInputAdapterNode extends TupleSource
 
     public FieldConstraint[] getConstraints() {
         LinkedList constraints = this.constraints.getConstraints();
-        
-        FieldConstraint[] array = new FieldConstraint[ constraints.size() ];
+
+        FieldConstraint[] array = new FieldConstraint[constraints.size()];
         int i = 0;
-        for ( LinkedListEntry entry = ( LinkedListEntry ) constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
-            array[i++] = ( FieldConstraint ) entry.getObject();
+        for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+            array[i++] = (FieldConstraint) entry.getObject();
         }
-        return array;        
+        return array;
     }
 
     /* (non-Javadoc)
@@ -145,21 +145,17 @@ class LeftInputAdapterNode extends TupleSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         if ( (this.constraints == null) || (this.constraints.isAllowed( handle,
-                                                              null,
-                                                              workingMemory )) ) {
+                                                                        null,
+                                                                        workingMemory )) ) {
+            ReteTuple tuple = this.sink.createAndPropagateAssertTuple( handle,
+                                                                       context,
+                                                                       workingMemory );
+
             if ( this.hasMemory ) {
-                LinkedList list = this.sink.createAndPropagateAssertTupleWithMemory( handle,
-                                                                                     context,
-                                                                                     workingMemory );
                 ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-                // no need to scan, we know it doesn't exist
                 map.put( handle,
-                         list,
+                         tuple,
                          false );
-            } else {
-                this.sink.createAndPropagateAssertTuple( handle,
-                                                         context,
-                                                         workingMemory );
             }
         }
     }
@@ -178,36 +174,32 @@ class LeftInputAdapterNode extends TupleSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
+        ReteTuple tuple = null;
         if ( this.hasMemory ) {
             ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-            LinkedList list = (LinkedList) map.remove( handle );
-            this.sink.createAndPropagateRetractTuple( list,
-                                                      context,
-                                                      workingMemory );
+            tuple = ( ReteTuple ) map.remove( handle );
         } else {
-            ReteTuple tuple = new ReteTuple( handle );
-            this.sink.createAndPropagateRetractTuple( tuple,
-                                                      context,
-                                                      workingMemory );
+            tuple = new ReteTuple( handle );            
         }
+        
+        this.sink.createAndPropagateRetractTuple( tuple,
+                                                  context,
+                                                  workingMemory );
     }
 
     public void updateSink(TupleSink sink,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
         if ( this.hasMemory ) {
-            // We have memory so iterate over all entries making new Tuples and adding them
-            // to the memory before propagating
+            // We have memory so iterate over all entries
             ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
             Iterator it = map.iterator();
-            for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; it.next() ) {
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; it.next() ) {
                 InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-                LinkedList list = (LinkedList) entry.getValue();
-                ReteTuple tuple = new ReteTuple( handle );
-                list.add( new LinkedListEntry( tuple ) );
+                ReteTuple tuple = (ReteTuple) entry.getValue();
                 sink.assertTuple( tuple,
                                   context,
-                                  workingMemory );                
+                                  workingMemory );
             }
         } else {
             ObjectSinkAdapter adapter = new ObjectSinkAdapter( sink );
@@ -267,9 +259,10 @@ class LeftInputAdapterNode extends TupleSource
         implements
         ObjectSink {
         private TupleSink sink;
+
         public ObjectSinkAdapter(TupleSink sink) {
             this.sink = sink;
-        }        
+        }
 
         public void assertObject(InternalFactHandle handle,
                                  PropagationContext context,

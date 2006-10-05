@@ -1,15 +1,8 @@
 package org.drools.reteoo;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
 
 public class CompositeTupleSinkAdapter
     implements
@@ -49,7 +42,7 @@ public class CompositeTupleSinkAdapter
                               context,
                               workingMemory );
         }
-    }
+    }        
 
     public void propagateRetractTuple(ReteTuple tuple,
                                       InternalFactHandle handle,
@@ -62,37 +55,18 @@ public class CompositeTupleSinkAdapter
                                workingMemory );
         }
     }
-
-    public void propagateModifyTuple(ReteTuple tuple,
-                                     InternalFactHandle handle,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
-
+    
+    public void propagateRetractTuple(ReteTuple tuple,
+                                      PropagationContext context,
+                                      InternalWorkingMemory workingMemory) {
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            sink.modifyTuple( new ReteTuple( tuple,
-                                             handle ),
-                              context,
-                              workingMemory );
+            sink.retractTuple( new ReteTuple( tuple ),
+                               context,
+                               workingMemory );
         }
-    }
+    }    
 
-    public LinkedList createAndPropagateAssertTupleWithMemory(InternalFactHandle handle,
-                                                              PropagationContext context,
-                                                              InternalWorkingMemory workingMemory) {
-        LinkedList list = new LinkedList();
-        // while this is the root fact, one branch propagates into one or more TerminalNodes, so we 
-        // have to remember the activations.
-        for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            ReteTuple tuple = new ReteTuple( handle );
-            list.add( new LinkedListEntry( tuple ) );
-            sink.assertTuple( tuple,
-                              context,
-                              workingMemory );
-        }
-        return list;
-    }
-
-    public void createAndPropagateAssertTuple(InternalFactHandle handle,
+    public ReteTuple createAndPropagateAssertTuple(InternalFactHandle handle,
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory) {
         // This is the root fact, so we don't need to clone it.
@@ -102,31 +76,7 @@ public class CompositeTupleSinkAdapter
                               context,
                               workingMemory );
         }
-    }
-
-    public void createAndPropagateRetractTuple(LinkedList list,
-                                               PropagationContext context,
-                                               InternalWorkingMemory workingMemory) {
-        LinkedListEntry entry = (LinkedListEntry) list.getFirst();
-        for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            sink.retractTuple( (ReteTuple) entry.getObject(),
-                               context,
-                               workingMemory );
-            entry = (LinkedListEntry) entry.getNext();
-        }
-    }
-
-    public void createAndPropagateModifyTuple(LinkedList list,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory) {
-        LinkedListEntry entry = (LinkedListEntry) list.getFirst();
-
-        for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            sink.modifyTuple( (ReteTuple) entry.getObject(),
-                              context,
-                              workingMemory );
-            entry = (LinkedListEntry) entry.getNext();
-        }
+        return tuple;
     }
 
     public void createAndPropagateRetractTuple(ReteTuple tuple,
@@ -138,17 +88,7 @@ public class CompositeTupleSinkAdapter
                                workingMemory );
         }
     }
-
-    public void createAndPropagateModifyTuple(ReteTuple tuple,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory) {
-        for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            sink.modifyTuple( tuple,
-                              context,
-                              workingMemory );
-        }
-    }
-
+    
     public TupleSink[] getSinks() {
         TupleSink[] sinkArray = new TupleSink[this.sinks.size()];
 

@@ -16,17 +16,20 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
+import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
+import org.drools.util.ObjectHashMap;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
@@ -53,20 +56,24 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
                                                                        source );
+        Field field =  ObjectSource.class.getDeclaredField( "sink" );
+        field.setAccessible( true );
+        ObjectSinkPropagator sink = ( ObjectSinkPropagator ) field.get( source );
+        
 
         assertEquals( 1,
                       liaNode.getId() );
-
-        assertLength( 0,
-                      source.getObjectSinksAsList() );
+        assertNull( sink );
 
         liaNode.attach();
+        
+        sink = ( ObjectSinkPropagator ) field.get( source );
 
-        assertLength( 1,
-                      source.getObjectSinksAsList() );
+        assertEquals( 1,
+                      sink.getSinks().length );
 
         assertSame( liaNode,
-                    source.getObjectSinks().getLastObjectSink() );
+                    sink.getSinks()[0] );
     }
 
     /**
@@ -74,7 +81,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
-    public void testAssertObject() throws Exception {
+    public void testAssertObjectWithoutMemory() throws Exception {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
@@ -103,15 +110,54 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertSame( string1,
                     workingMemory.getObject( tuple0.get( 0 ) ) );
 
-        // check node memory
-        final Map map = (Map) workingMemory.getNodeMemory( liaNode );
-        final LinkedList list0 = (LinkedList) map.get( f0 );
-        assertEquals( 1,
-                      list0.size() );
-        assertSame( tuple0,
-                    ((LinkedListEntry) list0.getFirst()).getObject() );
+    }
 
-        // check memory stacks correctly
+    /**
+     * Tests the assertion of objects into LeftInputAdapterNode
+     * 
+     * @throws Exception
+     */
+    public void testAssertObjectWithMemory() throws Exception {
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
+
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+
+        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
+                                                                       new MockObjectSource( 15 ) );       
+        
+        final MockTupleSink sink = new MockTupleSink();
+        liaNode.addTupleSink( sink );
+        
+        //force liaNode to have memory
+        Field field =  BaseNode.class.getDeclaredField( "hasMemory" );
+        field.setAccessible( true );
+        field.set( liaNode, new  Boolean( true ) );
+        
+        final Object string1 = "cheese";
+
+        // assert object
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( string1 );
+        liaNode.assertObject( f0,
+                              context,
+                              workingMemory );
+
+        final List asserted = sink.getAsserted();
+        assertLength( 1,
+                      asserted );
+        final Tuple tuple0 = (Tuple) ((Object[]) asserted.get( 0 ))[0];
+        assertSame( string1,
+                    workingMemory.getObject( tuple0.get( 0 ) ) );
+
+        // check node memory
+        final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( liaNode );
+        assertSame( tuple0,
+                    map.get( f0 ) );
+
+        // check memory works with multiple handles
         final DefaultFactHandle f1 = (DefaultFactHandle) workingMemory.assertObject( "test1" );
         liaNode.assertObject( f1,
                               context,
@@ -121,24 +167,21 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                       asserted );
         final Tuple tuple1 = (Tuple) ((Object[]) asserted.get( 1 ))[0];
 
-        final LinkedList list1 = (LinkedList) map.get( f1 );
-        assertEquals( 1,
-                      list1.size() );
         assertSame( tuple1,
-                    ((LinkedListEntry) list1.getFirst()).getObject() );
+                    map.get( f1 ) );
 
         assertNotSame( tuple0,
                        tuple1 );
 
-    }
-
+    }    
+    
     /**
      * Tests the retractions from a LeftInputAdapterNode.
      * Object Assertions result in tuple propagations, so we 
      * test the remove(...) method
      * @throws Exception
      */
-    public void testRetractObject() throws Exception {
+    public void testRetractObjectWithoutMemory() throws Exception {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
@@ -156,7 +199,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( "f1" );
 
-        /* assert object */
+        // assert object 
         liaNode.assertObject( f0,
                               context,
                               workingMemory );
@@ -167,12 +210,56 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                context,
                                workingMemory );
 
-        final Map map = (Map) workingMemory.getNodeMemory( liaNode );
+        assertEquals( tuple,
+                    ((Object[]) sink.getRetracted().get( 0 ))[0] );
+        assertNotSame( tuple,
+                       ((Object[]) sink.getRetracted().get( 0 ))[0] );  
+
+    }
+    
+    public void testRetractObjectWithMemory() throws Exception {
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
+
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+
+        final MockObjectSource source = new MockObjectSource( 15 );
+
+        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
+                                                                       source );
+        //force liaNode to have memory
+        Field field =  BaseNode.class.getDeclaredField( "hasMemory" );
+        field.setAccessible( true );
+        field.set( liaNode, new  Boolean( true ) );
+        
+        final MockTupleSink sink = new MockTupleSink();
+        liaNode.addTupleSink( sink );
+
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( "f1" );
+
+        // assert object
+        liaNode.assertObject( f0,
+                              context,
+                              workingMemory );
+        
+        final Tuple tuple = (Tuple) ((Object[]) sink.getAsserted().get( 0 ))[0];
+        
+        final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( liaNode );
+        assertSame( tuple, map.get( f0 ) );
+
+        liaNode.retractObject( f0,
+                               context,
+                               workingMemory );
+
+
         assertNull( map.get( f0 ) );
 
         assertSame( tuple,
                     ((Object[]) sink.getRetracted().get( 0 ))[0] );
 
-    }
+    }    
 
 }

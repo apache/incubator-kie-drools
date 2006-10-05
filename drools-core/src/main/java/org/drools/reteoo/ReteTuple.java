@@ -139,7 +139,11 @@ public class ReteTuple extends BaseEntry
             return false;
         }
         
-        return this.parent.equals( other.parent );
+        if( this.parent == null ) {
+            return ( other.parent == null );
+        } else {
+            return this.parent.equals( other.parent );   
+        }        
     }
     
     public boolean equals(Object object) {

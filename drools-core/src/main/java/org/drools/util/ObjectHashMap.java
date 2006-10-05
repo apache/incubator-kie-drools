@@ -89,12 +89,12 @@ public class ObjectHashMap extends AbstractHashTable {
                 }
                 current.setNext( null );
                 this.size--;
-                return current;
+                return current.getValue();
             }
             previous = current;
             current = next;
         }
-        return current;
+        return null;
     }
     
     public Entry getBucket(int hashCode) {
