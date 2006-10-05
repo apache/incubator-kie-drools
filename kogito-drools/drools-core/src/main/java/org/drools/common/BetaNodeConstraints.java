@@ -74,7 +74,7 @@ public class BetaNodeConstraints
                 
         for ( LinkedListEntry entry = ( LinkedListEntry ) this.constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
             FieldConstraint constraint = (FieldConstraint) entry.getObject();
-            if ( constraint.isAllowed( handle.getObject(),
+            if ( !constraint.isAllowed( handle.getObject(),
                                        tuple,
                                        workingMemory ) ) {
                 return false;
