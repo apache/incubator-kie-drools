@@ -40,6 +40,10 @@ public class RuleSetLoadTest {
         RuleSetLoadTest test = new RuleSetLoadTest();
         test.testOneThousandLoad();
         
+        test.testOneThousandLoad();
+        
+        test.testOneThousandLoad();
+        
         // generate the drl first to run this test
         //test.testFourThousandLoad();
     }
@@ -63,7 +67,7 @@ public class RuleSetLoadTest {
 
     public void testOneThousandLoad() {
         try {
-            String file = "1000_rules.drl";
+            String file = "500_rules.drl";
             long loadStart = System.currentTimeMillis();
             RuleBase ruleBase = readRule( file );
             long loadEnd = System.currentTimeMillis();
