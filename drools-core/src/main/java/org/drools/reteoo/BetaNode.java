@@ -47,7 +47,8 @@ import org.drools.util.TupleHashTable;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-abstract class BetaNode extends TupleSource implements
+abstract class BetaNode extends TupleSource
+    implements
     TupleSinkNode,
     ObjectSinkNode,
     NodeMemory {
@@ -56,18 +57,18 @@ abstract class BetaNode extends TupleSource implements
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    private final TupleSource    leftInput;
+    private final TupleSource           leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    private final ObjectSource   rightInput;
+    private final ObjectSource          rightInput;
 
     protected final BetaNodeConstraints constraints;
-    
-    private TupleSinkNode previousTupleSinkNode;
-    private TupleSinkNode nextTupleSinkNode;
-    
-    private ObjectSinkNode previousObjectSinkNode;
-    private ObjectSinkNode nextObjectSinkNode;   
+
+    private TupleSinkNode               previousTupleSinkNode;
+    private TupleSinkNode               nextTupleSinkNode;
+
+    private ObjectSinkNode              previousObjectSinkNode;
+    private ObjectSinkNode              nextObjectSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -105,18 +106,18 @@ abstract class BetaNode extends TupleSource implements
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
-        this.constraints = constraints;  
-    }        
+        this.constraints = constraints;
+    }
 
     public FieldConstraint[] getConstraints() {
         LinkedList constraints = this.constraints.getConstraints();
-        
-        FieldConstraint[] array = new FieldConstraint[ constraints.size() ];
+
+        FieldConstraint[] array = new FieldConstraint[constraints.size()];
         int i = 0;
-        for ( LinkedListEntry entry = ( LinkedListEntry ) constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
-            array[i++] = ( FieldConstraint ) entry.getObject();
+        for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+            array[i++] = (FieldConstraint) entry.getObject();
         }
-        return array;        
+        return array;
     }
 
     /* (non-Javadoc)
@@ -137,8 +138,8 @@ abstract class BetaNode extends TupleSource implements
                                                                                       null,
                                                                                       null );
             this.leftInput.updateSink( this,
-                                      propagationContext,
-                                      workingMemory );
+                                       propagationContext,
+                                       workingMemory );
             this.rightInput.updateSink( this,
                                         propagationContext,
                                         workingMemory );
@@ -148,23 +149,23 @@ abstract class BetaNode extends TupleSource implements
 
     public void remove(final BaseNode node,
                        final InternalWorkingMemory[] workingMemories) {
-//        if( !node.isInUse()) {
-//            getTupleSinks().remove( node );
-//        }
-//        removeShare();
-//
-//        if ( ! this.isInUse() ) {
-//            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-//                workingMemories[i].clearNodeMemory( this );
-//            }
-//        }
-//        this.rightInput.remove( this,
-//                                workingMemories );
-//        this.leftInput.remove( this,
-//                               workingMemories );
+        //        if( !node.isInUse()) {
+        //            getTupleSinks().remove( node );
+        //        }
+        //        removeShare();
+        //
+        //        if ( ! this.isInUse() ) {
+        //            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+        //                workingMemories[i].clearNodeMemory( this );
+        //            }
+        //        }
+        //        this.rightInput.remove( this,
+        //                                workingMemories );
+        //        this.leftInput.remove( this,
+        //                               workingMemories );
 
-    }     
-    
+    }
+
     //public abstract TupleSink getTupleSink();
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,29 +208,36 @@ abstract class BetaNode extends TupleSource implements
         // BetaMemory for it. If we don't find one, we create a normal beta memory. We don't need the constraint as we can assume that 
         // anything  returned by the memory already passes that test.
         LinkedList constraints = this.constraints.getConstraints();
-        for ( LinkedListEntry entry = ( LinkedListEntry ) constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
-            FieldConstraint constraint = ( FieldConstraint ) entry.getObject();            
-            if ( constraint.getClass() == VariableConstraint.class ) {
-                VariableConstraint variableConstraint = ( VariableConstraint ) constraint;
-                FieldExtractor extractor = variableConstraint.getFieldExtractor();
-                Evaluator evaluator = variableConstraint.getEvaluator();
-                if ( evaluator.getOperator() == Operator.EQUAL ) {
-                    // remove this entry                    
-                    constraints.remove( entry );                    
-                    BetaMemory memory = new BetaMemory( new TupleHashTable(),
-                                                        new FieldIndexHashTable(extractor, variableConstraint.getRequiredDeclarations()[0]) );
-                    return memory;
-                    
+        BetaMemory memory = null;
+        
+        if ( constraints != null ) {
+            for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+                FieldConstraint constraint = (FieldConstraint) entry.getObject();
+                if ( constraint.getClass() == VariableConstraint.class ) {
+                    VariableConstraint variableConstraint = (VariableConstraint) constraint;
+                    FieldExtractor extractor = variableConstraint.getFieldExtractor();
+                    Evaluator evaluator = variableConstraint.getEvaluator();
+                    if ( evaluator.getOperator() == Operator.EQUAL ) {
+                        // remove this entry                    
+                        constraints.remove( entry );
+                        memory = new BetaMemory( new TupleHashTable(),
+                                                 new FieldIndexHashTable( extractor,
+                                                                          variableConstraint.getRequiredDeclarations()[0] ) );
+                        break;
+
+                    }
                 }
             }
         }
         
-        BetaMemory memory = new BetaMemory( new TupleHashTable(),
-                                            new FactHashTable() );                
+        if ( memory == null )  {
+            memory = new BetaMemory( new TupleHashTable(),
+                                     new FactHashTable() );            
+        }
+        
         return memory;
     }
-         
-    
+
     /**
      * Returns the next node
      * @return
@@ -254,7 +262,7 @@ abstract class BetaNode extends TupleSource implements
      *      The previous TupleSinkNode
      */
     public TupleSinkNode getPreviousTupleSinkNode() {
-       return this.previousTupleSinkNode;
+        return this.previousTupleSinkNode;
     }
 
     /**
@@ -290,7 +298,7 @@ abstract class BetaNode extends TupleSource implements
      *      The previous ObjectSinkNode
      */
     public ObjectSinkNode getPreviousObjectSinkNode() {
-       return this.previousObjectSinkNode;
+        return this.previousObjectSinkNode;
     }
 
     /**
@@ -301,5 +309,5 @@ abstract class BetaNode extends TupleSource implements
     public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
-    
+
 }

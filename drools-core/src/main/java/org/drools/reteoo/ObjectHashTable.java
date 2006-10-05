@@ -14,4 +14,6 @@ public interface ObjectHashTable {
     public boolean remove(InternalFactHandle handle);
     public boolean contains(InternalFactHandle handle);
     
+    public int size();
+    
 }
