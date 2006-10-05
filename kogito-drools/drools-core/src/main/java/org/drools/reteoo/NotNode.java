@@ -179,7 +179,7 @@ public class NotNode extends BetaNode {
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( memory.getObjectMemory().remove( handle ) ) {
+        if ( !memory.getObjectMemory().remove( handle ) ) {
             return;
         }
         

@@ -37,7 +37,7 @@ public class NotNodeTest extends DroolsTestCase {
     ReteooWorkingMemory   workingMemory;
     MockObjectSource      objectSource;
     MockTupleSource       tupleSource;
-    MockObjectSink        sink;
+    MockTupleSink         sink;
     NotNode               node;
     RightInputAdapterNode ria;
     BetaMemory            memory;
@@ -62,13 +62,17 @@ public class NotNodeTest extends DroolsTestCase {
                                  new MockObjectSource( 8 ),
                                  new BetaNodeConstraints( this.constraint ) );
 
-        this.ria = new RightInputAdapterNode( 2,
-                                              0,
-                                              this.node );
-        this.ria.attach();
-
-        this.sink = new MockObjectSink();
-        this.ria.addObjectSink( this.sink );
+        this.sink = new MockTupleSink();
+        this.node.addTupleSink( this.sink );
+        
+        
+//        this.ria = new RightInputAdapterNode( 2,
+//                                              0,
+//                                              this.node );
+//        this.ria.attach();
+//
+//        this.sink = new MockObjectSink();
+//        this.ria.addObjectSink( this.sink );
 
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
     }
@@ -86,8 +90,6 @@ public class NotNodeTest extends DroolsTestCase {
 
         final ReteTuple tuple1 = new ReteTuple( f0 );
 
-        assertNull( tuple1.getLinkedTuples() );
-
         this.node.assertTuple( tuple1,
                                this.context,
                                this.workingMemory );
@@ -99,9 +101,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );
 
-        assertNotNull( tuple1.getLinkedTuples() );
-
-        assertEquals( f0,
+        assertEquals( new ReteTuple( f0 ) ,
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
         // assert will match, so propagated tuple should be retracted
@@ -120,7 +120,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 1,
                       this.sink.getRetracted() );
 
-        assertEquals( f0,
+        assertEquals( new ReteTuple( f0 ),
                       ((Object[]) this.sink.getRetracted().get( 0 ))[0] );
 
         // assert tuple, will have matches, so no propagation
@@ -140,16 +140,16 @@ public class NotNodeTest extends DroolsTestCase {
 
         // check memory sizes
         assertEquals( 2,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 1,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
 
         // When this is retracter both tuples should assert
         this.node.retractObject( f1,
                                  this.context,
                                  this.workingMemory );
 
-        // check no propagations 
+        // check propagations 
         assertLength( 3,
                       this.sink.getAsserted() );
 
@@ -172,8 +172,6 @@ public class NotNodeTest extends DroolsTestCase {
 
         final ReteTuple tuple1 = new ReteTuple( f0 );
 
-        assertNull( tuple1.getLinkedTuples() );
-
         this.node.assertTuple( tuple1,
                                this.context,
                                this.workingMemory );
@@ -185,9 +183,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );
 
-        assertNotNull( tuple1.getLinkedTuples() );
-
-        assertEquals( f0,
+        assertEquals( new  ReteTuple( f0 ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
         // assert will not match, so activation should stay propagated
@@ -246,42 +242,51 @@ public class NotNodeTest extends DroolsTestCase {
 
             // Initially, no objects in right memory
             assertEquals( 0,
-                          this.memory.getRightObjectMemory().size() );
+                          this.memory.getObjectMemory().size() );
             this.node.assertObject( f1,
                                     this.context,
                                     this.workingMemory );
 
             // Now, needs to have 1 object in right memory
             assertEquals( 1,
-                          this.memory.getRightObjectMemory().size() );
+                          this.memory.getObjectMemory().size() );
 
-            this.node.modifyObject( f1,
-                                    this.context,
-                                    this.workingMemory );
+            // simulate modify
+            this.node.retractObject( f1,
+                                     this.context,
+                                     this.workingMemory );
+            this.node.assertObject( f1,
+                                     this.context,
+                                     this.workingMemory );            
             // Memory should not change
             assertEquals( 1,
-                          this.memory.getRightObjectMemory().size() );
+                          this.memory.getObjectMemory().size() );
 
             // When this is retracter both tuples should assert
             this.node.retractObject( f1,
                                      this.context,
                                      this.workingMemory );
             assertEquals( 0,
-                          this.memory.getRightObjectMemory().size() );
+                          this.memory.getObjectMemory().size() );
 
             // check memory sizes
             assertEquals( 1,
-                          this.memory.getLeftTupleMemory().size() );
-            this.node.modifyTuple( tuple1,
+                          this.memory.getTupleMemory().size() );
+
+            // simulate modify
+            this.node.retractTuple( tuple1,
+                                   this.context,
+                                   this.workingMemory );            
+            this.node.assertTuple( tuple1,
                                    this.context,
                                    this.workingMemory );
             assertEquals( 1,
-                          this.memory.getLeftTupleMemory().size() );
+                          this.memory.getTupleMemory().size() );
             this.node.retractTuple( tuple1,
                                     this.context,
                                     this.workingMemory );
             assertEquals( 0,
-                          this.memory.getLeftTupleMemory().size() );
+                          this.memory.getTupleMemory().size() );
         } catch ( final Exception e ) {
             Assert.fail( "No exception should be raised in this procedure, but got: " + e.toString() );
         }
