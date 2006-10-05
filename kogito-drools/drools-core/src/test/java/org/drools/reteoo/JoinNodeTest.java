@@ -342,18 +342,19 @@ public class JoinNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
 
+        // Should be no assertions
         assertLength( 0,
                       this.sink.getAsserted() );
-
-        // check no matches
-        final Map map = tuple1.getTupleMatches();
-        assertLength( 0,
-                      map.keySet() );
-
-        //assertNull( ((ObjectMatches) this.memory.getRightFactHandleMemory().get( f0 )).getFirstTupleMatch() );
+        
+        this.node.retractObject( f0,
+                                 this.context,
+                                 this.workingMemory );
+        // We still propagate all joins for a retract. Later we might apply tests first.
+        assertLength( 1,
+                      this.sink.getRetracted() );                        
     }
 
-    public void testUpdateWithMemory() {
+    public void testUpdateSink() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
@@ -389,34 +390,15 @@ public class JoinNodeTest extends DroolsTestCase {
         // Add the new sink, this should be updated from the re-processed
         // joinnode memory
         final MockTupleSink sink2 = new MockTupleSink( 3 );
-        joinNode.addTupleSink( sink2 );
         assertLength( 0,
                       sink2.getAsserted() );
 
-        joinNode.updateNewNode( workingMemory,
-                                this.context );
+        joinNode.updateSink( sink2,
+                             this.context,
+                             workingMemory);
 
         assertLength( 1,
                       sink2.getAsserted() );
-    }
-
-    /**
-     * @param tuple1
-     * @param matches
-     * @param f3
-     * @return
-     */
-    private ObjectMatches getMatchesFor(final Tuple tuple1,
-                                        final DefaultFactHandle f3) {
-        ObjectMatches matches = null;
-        for ( final Iterator i = this.memory.rightObjectIterator( this.workingMemory,
-                                                                  tuple1 ); i.hasNext(); ) {
-            matches = (ObjectMatches) i.next();
-            if ( matches.getFactHandle().equals( f3 ) ) {
-                break;
-            }
-        }
-        return matches;
     }
 
 }
