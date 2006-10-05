@@ -34,6 +34,7 @@ import org.drools.asm.ClassVisitor;
 import org.drools.asm.FieldVisitor;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
+import org.drools.asm.tree.MethodNode;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
@@ -160,11 +161,11 @@ public class ClassFieldInspector {
                             final int fieldIndex = this.inspector.methods.size();
                             addToMapping( method,
                                           fieldIndex );
-                        }
+                        } 
                     } catch ( final NoSuchMethodException e ) {
                         throw new IllegalStateException( "Error in getting field access method." );
                     }
-                }
+                } 
             }
             return null;
         }
@@ -323,4 +324,5 @@ public class ClassFieldInspector {
         }
 
     }
+
 }
