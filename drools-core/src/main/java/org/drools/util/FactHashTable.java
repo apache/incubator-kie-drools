@@ -119,4 +119,8 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
                           int dataSize) {
         return hashCode & (dataSize - 1);
     }    
+    
+    public boolean isIndexed() {
+        return false;
+    }
 }

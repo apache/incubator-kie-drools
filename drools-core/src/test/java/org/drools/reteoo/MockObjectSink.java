@@ -28,7 +28,6 @@ public class MockObjectSink
     ObjectSinkNode {
     private final List asserted  = new ArrayList();
     private final List retracted = new ArrayList();
-    private final List modified  = new ArrayList();
 
     private ObjectSinkNode        previousObjectSinkNode;
     private ObjectSinkNode        nextObjectSinkNode;
@@ -45,23 +44,12 @@ public class MockObjectSink
         this.retracted.add( new Object[]{handle, context, workingMemory} );
     }
 
-    public void modifyObject(final InternalFactHandle handle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        this.modified.add( new Object[]{handle, context, workingMemory} );
-
-    }
-
     public List getAsserted() {
         return this.asserted;
     }
 
     public List getRetracted() {
         return this.retracted;
-    }
-
-    public List getModified() {
-        return this.modified;
     }
 
     /**

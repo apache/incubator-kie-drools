@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.lang.reflect.Field;
+
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
@@ -38,143 +40,46 @@ public class TupleSourceTest extends DroolsTestCase {
                       source.getAttached() );
     }
 
-    public void testAddTupleSink() {
+    public void testAddTupleSink() throws Exception {
         final MockTupleSource source = new MockTupleSource( 15 );
-        assertLength( 0,
-                      source.getTupleSinks() );
+        
+        // We need to re-assign this var each time the sink changes references
+        Field field =  TupleSource.class.getDeclaredField( "sink" );
+        field.setAccessible( true );
+        TupleSinkPropagator sink = ( TupleSinkPropagator ) field.get( source );        
+        
+        assertNull( sink );
 
-        source.addTupleSink( new MockTupleSink() );
-        assertLength( 1,
-                      source.getTupleSinks() );
+        MockTupleSink sink1 = new MockTupleSink();
+        source.addTupleSink( sink1 );        
+        sink = ( TupleSinkPropagator ) field.get( source );  
+        assertSame( SingleTupleSinkAdapter.class, sink.getClass() );
+        assertEquals( 1,
+                      sink.getSinks().length );
 
-        source.addTupleSink( new MockTupleSink() );
-        assertLength( 2,
-                      source.getTupleSinks() );
-    }
-
-    public void testPropagateAssertTuple() throws Exception {
-        final Rule rule = new Rule( "test-rule" );
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.RETRACTION,
-                                                                       null,
-                                                                       null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase)  RuleBaseFactory.newRuleBase() );
-
-        final MockTupleSource source = new MockTupleSource( 15 );
-        final MockTupleSink sink1 = new MockTupleSink();
-
-        source.addTupleSink( sink1 );
-        assertLength( 0,
-                      sink1.getAsserted() );
-
-        final Tuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
-
-        source.propagateAssertTuple( tuple1,
-                                     context,
-                                     workingMemory );
-
-        assertLength( 1,
-                      sink1.getAsserted() );
-
-        Object[] list = (Object[]) sink1.getAsserted().get( 0 );
-        assertEquals( tuple1,
-                      list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        final Tuple tuple2 = new ReteTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
-
-        final MockTupleSink sink2 = new MockTupleSink();
+        MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
-        // source.ruleAttached();
-
-        source.propagateAssertTuple( tuple2,
-                                     context,
-                                     workingMemory );
-
-        assertLength( 2,
-                      sink1.getAsserted() );
-
-        assertLength( 1,
-                      sink2.getAsserted() );
-
-        list = (Object[]) sink1.getAsserted().get( 0 );
-        assertEquals( tuple1,
-                      list[0] );
-        assertTrue( tuple2.equals( list[0] ) );
-
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink1.getAsserted().get( 1 );
-        assertEquals( tuple2,
-                      list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink2.getAsserted().get( 0 );
-        assertEquals( tuple2,
-                      list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
+        sink = ( TupleSinkPropagator ) field.get( source );
+        assertSame( CompositeTupleSinkAdapter.class, sink.getClass() );
+        assertEquals( 2,
+                      sink.getSinks().length );
+        
+        MockTupleSink sink3 = new MockTupleSink();
+        source.addTupleSink( sink3 );
+        assertSame( CompositeTupleSinkAdapter.class, sink.getClass() );
+        assertEquals( 3,
+                      sink.getSinks().length );  
+        
+        source.removeTupleSink( sink2 );
+        assertSame( CompositeTupleSinkAdapter.class, sink.getClass() );
+        assertEquals( 2,
+                      sink.getSinks().length );      
+        
+        source.removeTupleSink( sink1 );
+        sink = ( TupleSinkPropagator ) field.get( source );
+        assertSame( SingleTupleSinkAdapter.class, sink.getClass() );
+        assertEquals( 1,
+                      sink.getSinks().length );   
     }
-
-    //    public void testAttachNewNode() {
-    //        PropagationContext context = new PropagationContextImpl( 0,
-    //                                                                 PropagationContext.ASSERTION,
-    //                                                                 null,
-    //                                                                 null );
-    //        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-    //
-    //        MockTupleSource source = new MockTupleSource( 15 );
-    //
-    //        // Add two Tuple Sinks
-    //        MockTupleSink sink1 = new MockTupleSink();
-    //        source.addTupleSink( sink1 );
-    //
-    //        MockTupleSink sink2 = new MockTupleSink();
-    //        source.addTupleSink( sink2 );
-    //
-    //        // Only the last added TupleSink should receive facts
-    //        source.attachingNewNode = true;
-    //
-    //        ReteTuple tuple1 = new ReteTuple( new FactHandleImpl( 2 ) );
-    //
-    //        source.propagateAssertTuple( tuple1,
-    //                                     context,
-    //                                     workingMemory );
-    //
-    //        assertLength( 0,
-    //                      sink1.getAsserted() );
-    //        assertLength( 1,
-    //                      sink2.getAsserted() );
-    //
-    //        // Now all sinks should receive values
-    //        source.attachingNewNode = false;
-    //
-    //        ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 3 ) );
-    //
-    //        source.propagateAssertTuple( tuple2,
-    //                                     context,
-    //                                     workingMemory );
-    //
-    //        /* Both sinks receive one object */
-    //        assertLength( 1,
-    //                      sink1.getAsserted() );
-    //        assertLength( 2,
-    //                      sink2.getAsserted() );
-    //
-    //    }
-
+    
 }

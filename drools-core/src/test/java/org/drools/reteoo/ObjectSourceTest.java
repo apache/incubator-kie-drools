@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.lang.reflect.Field;
+
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
@@ -38,160 +40,45 @@ public class ObjectSourceTest extends DroolsTestCase {
                       source.getAttached() );
     }
 
-    public void testAddObjectSink() {
+    public void testAddObjectSink() throws Exception {
         final MockObjectSource source = new MockObjectSource( 15 );
-        assertLength( 0,
-                      source.getObjectSinksAsList() );
+        
+        // We need to re-assign this var each time the sink changes references
+        Field field =  ObjectSource.class.getDeclaredField( "sink" );
+        field.setAccessible( true );
+        ObjectSinkPropagator sink = ( ObjectSinkPropagator ) field.get( source );        
+        
+        assertNull( sink );
 
-        source.addObjectSink( new MockObjectSink() );
-        assertLength( 1,
-                      source.getObjectSinksAsList() );
+        MockObjectSink sink1 = new MockObjectSink();
+        source.addObjectSink( sink1 );        
+        sink = ( ObjectSinkPropagator ) field.get( source );  
+        assertSame( SingleObjectSinkAdapter.class, sink.getClass() );
+        assertEquals( 1,
+                      sink.getSinks().length );
 
-        source.addObjectSink( new MockObjectSink() );
-        assertLength( 2,
-                      source.getObjectSinksAsList() );
-    }
-
-    public void testPropagateAssertObject() throws Exception {
-        final Rule rule = new Rule( "test-rule" );
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
-                                                                       null,
-                                                                       null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-
-        final MockObjectSource source = new MockObjectSource( 15 );
-        final MockObjectSink sink1 = new MockObjectSink();
-        source.addObjectSink( sink1 );
-        assertLength( 0,
-                      sink1.getAsserted() );
-
-        final DefaultFactHandle f1 = (DefaultFactHandle) workingMemory.assertObject( new Integer( 1 ) );
-        source.propagateAssertObject( f1,
-                                      context,
-                                      workingMemory );
-
-        assertLength( 1,
-                      sink1.getAsserted() );
-
-        Object[] list = (Object[]) sink1.getAsserted().get( 0 );
-        assertEquals( new Integer( 1 ),
-                      workingMemory.getObject( (DefaultFactHandle) list[0] ) );
-
-        final MockObjectSink sink2 = new MockObjectSink();
+        MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
-
-        final DefaultFactHandle f2 = (DefaultFactHandle) workingMemory.assertObject( new Integer( 2 ) );
-        source.propagateAssertObject( f2,
-                                      context,
-                                      workingMemory );
-
-        assertLength( 2,
-                      sink1.getAsserted() );
-
-        assertLength( 1,
-                      sink2.getAsserted() );
-
-        list = (Object[]) sink1.getAsserted().get( 0 );
-        assertEquals( new Integer( 1 ),
-                      workingMemory.getObject( (FactHandle) list[0] ) );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink1.getAsserted().get( 1 );
-        assertEquals( new Integer( 2 ),
-                      workingMemory.getObject( (FactHandle) list[0] ) );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink2.getAsserted().get( 0 );
-        assertEquals( new Integer( 2 ),
-                      workingMemory.getObject( (FactHandle) list[0] ) );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-    }
-
-    public void testPropagateRetractObject() throws Exception {
-        final Rule rule = new Rule( "test-rule" );
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.RETRACTION,
-                                                                       null,
-                                                                       null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-
-        final MockObjectSource source = new MockObjectSource( 15 );
-
-        // Test propagation with one ObjectSink
-        final MockObjectSink sink1 = new MockObjectSink();
-        source.addObjectSink( sink1 );
-        assertLength( 0,
-                      sink1.getRetracted() );
-
-        source.propagateRetractObject( new DefaultFactHandle( 2,
-                                                              "cheese" ),
-                                       context,
-                                       workingMemory );
-
-        assertLength( 1,
-                      sink1.getRetracted() );
-
-        Object[] list = (Object[]) sink1.getRetracted().get( 0 );
-        assertEquals( new DefaultFactHandle( 2,
-                                             "cheese" ),
-                      list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        // Test propagation with two ObjectSinks
-        final MockObjectSink sink2 = new MockObjectSink();
-        source.addObjectSink( sink2 );
-
-        source.propagateRetractObject( new DefaultFactHandle( 3,
-                                                              "cheese" ),
-                                       context,
-                                       workingMemory );
-
-        assertLength( 2,
-                      sink1.getRetracted() );
-
-        assertLength( 1,
-                      sink2.getRetracted() );
-
-        list = (Object[]) sink1.getRetracted().get( 0 );
-        assertEquals( new DefaultFactHandle( 2,
-                                             "cheese" ),
-                      list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink1.getRetracted().get( 1 );
-        assertEquals( new DefaultFactHandle( 3,
-                                             "cheese" ),
-                      list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink2.getRetracted().get( 0 );
-        assertEquals( new DefaultFactHandle( 3,
-                                             "cheese" ),
-                      list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
+        sink = ( ObjectSinkPropagator ) field.get( source );
+        assertSame( CompositeObjectSinkAdapter.class, sink.getClass() );
+        assertEquals( 2,
+                      sink.getSinks().length );
+        
+        MockObjectSink sink3 = new MockObjectSink();
+        source.addObjectSink( sink3 );
+        assertSame( CompositeObjectSinkAdapter.class, sink.getClass() );
+        assertEquals( 3,
+                      sink.getSinks().length );  
+        
+        source.removeObjectSink( sink2 );
+        assertSame( CompositeObjectSinkAdapter.class, sink.getClass() );
+        assertEquals( 2,
+                      sink.getSinks().length );      
+        
+        source.removeObjectSink( sink1 );
+        sink = ( ObjectSinkPropagator ) field.get( source );
+        assertSame( SingleObjectSinkAdapter.class, sink.getClass() );
+        assertEquals( 1,
+                      sink.getSinks().length );            
     }
 }
