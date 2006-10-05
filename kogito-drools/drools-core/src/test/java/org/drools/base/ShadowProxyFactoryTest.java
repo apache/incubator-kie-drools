@@ -1,5 +1,8 @@
 package org.drools.base;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -46,7 +49,7 @@ public class ShadowProxyFactoryTest extends TestCase {
             Assert.assertEquals( originalPrice, cheeseProxy.getPrice() );
             
             // reseting proxy
-            ((ShadowProxy) cheeseProxy).resetProxy();
+            ((ShadowProxy) cheeseProxy).updateProxy();
             
             // now proxy see changes
             Assert.assertEquals( actualType, cheese.getType() );
@@ -91,7 +94,7 @@ public class ShadowProxyFactoryTest extends TestCase {
             Assert.assertEquals( originalPrice, cheeseProxy.getPrice() );
             
             // reseting proxy
-            ((ShadowProxy) cheeseProxy).resetProxy();
+            ((ShadowProxy) cheeseProxy).updateProxy();
             
             // now proxy see changes
             Assert.assertEquals( actualType, cheese.getType() );
@@ -100,6 +103,23 @@ public class ShadowProxyFactoryTest extends TestCase {
             Assert.assertEquals( actualPrice, cheese.getPrice() );
             Assert.assertEquals( actualPrice, cheeseProxy.getPrice() );
             Assert.assertFalse( originalPrice == cheeseProxy.getPrice() );
+            
+        } catch ( Exception e ) {
+            fail("Error: "+e.getMessage());
+        }
+    }
+    
+    public void testProxyForAPIClass() {
+        try {
+            // creating original object
+            List list = new ArrayList();
+            
+            // creating proxy
+            Class proxy = ShadowProxyFactory.getProxy( ArrayList.class );
+            List listProxy = (List) proxy.getConstructor( new Class[] { ArrayList.class } ).newInstance( new Object[] { list } );
+
+            // proxy is proxying the values
+            Assert.assertEquals( list, listProxy );
             
         } catch ( Exception e ) {
             fail("Error: "+e.getMessage());

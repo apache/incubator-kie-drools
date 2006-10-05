@@ -17,12 +17,9 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -31,8 +28,6 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.PrimitiveLongMap;
 import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
@@ -140,6 +135,12 @@ class ObjectTypeNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+        
+        // checks if shadow is enabled
+        if(this.objectType.isShadowEnabled()) {
+            // replaces the actual object by its shadow before propagating
+            handle.setObject( this.objectType.getShadow( handle.getObject() ) );
+        }
         // we do not need to check if the fact exists already
         memory.add( handle, false );
         

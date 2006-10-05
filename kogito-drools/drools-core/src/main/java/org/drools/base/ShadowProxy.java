@@ -21,6 +21,6 @@ package org.drools.base;
  */
 public interface ShadowProxy {
     
-    public void resetProxy();
+    public void updateProxy();
 
 }
