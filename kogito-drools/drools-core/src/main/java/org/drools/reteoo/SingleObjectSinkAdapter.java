@@ -10,13 +10,13 @@ public class SingleObjectSinkAdapter
     
     private ObjectSink sink;
     
-    public SingleObjectSinkAdapter(ObjectSink sink) {
+    public SingleObjectSinkAdapter(ObjectSink sink) {    
         this.sink = sink;
     }
 
     public void propagateAssertObject(InternalFactHandle handle,
                                       PropagationContext context,
-                                      InternalWorkingMemory workingMemory) {
+                                      InternalWorkingMemory workingMemory) {              
         this.sink.assertObject( handle, context, workingMemory );
 
     }
