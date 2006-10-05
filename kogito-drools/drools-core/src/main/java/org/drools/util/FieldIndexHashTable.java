@@ -70,6 +70,10 @@ public class FieldIndexHashTable extends AbstractHashTable
         this.hashCodeValueIterator.reset( hashCode );
         return this.iterator();
     }
+    
+    public boolean isIndexed() {
+        return true;
+    }
 
     /**
      * Fast re-usable iterator

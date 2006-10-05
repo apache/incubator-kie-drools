@@ -107,10 +107,12 @@ abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to remove
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
+        assert this.sink == null : "Cannot remove a sink, when the list of sinks is null";
+        
         if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
             this.sink = null;
         } else { 
-            CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) objectSink;
+            CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) this.sink;
             sinkAdapter.removeObjectSink( objectSink );
             if ( sinkAdapter.size() == 1 ) {
                 this.sink = new SingleObjectSinkAdapter( sinkAdapter.getSinks()[0] );
