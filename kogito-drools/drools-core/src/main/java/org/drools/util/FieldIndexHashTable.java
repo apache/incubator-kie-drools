@@ -58,7 +58,7 @@ public class FieldIndexHashTable extends AbstractHashTable
             this.tupleValueIterator = new FieldIndexHashTableIterator();
         }
         FieldIndexEntry entry = ( FieldIndexEntry ) get( tuple );
-        this.tupleValueIterator.reset( entry.first );
+        this.tupleValueIterator.reset( (entry != null) ? entry.first : null );
         return this.tupleValueIterator;
     }
 
@@ -92,8 +92,9 @@ public class FieldIndexHashTable extends AbstractHashTable
          * @see org.drools.util.Iterator#next()
          */
         public Entry next() {
-            this.entry = this.entry.getNext();
-            return this.entry;
+            Entry current = this.entry; 
+            this.entry = ( this.entry != null ) ? this.entry.getNext() : null;
+            return current;
         }
 
         /* (non-Javadoc)
