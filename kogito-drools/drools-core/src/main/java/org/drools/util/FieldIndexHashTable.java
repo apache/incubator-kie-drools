@@ -8,7 +8,6 @@ import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.Tuple;
 
 public class FieldIndexHashTable extends AbstractHashTable
     implements
@@ -59,7 +58,7 @@ public class FieldIndexHashTable extends AbstractHashTable
             this.tupleValueIterator = new FieldIndexHashTableIterator();
         }
         this.tupleValueIterator.reset( get( tuple ) );
-        return this.iterator();
+        return this.tupleValueIterator;
     }
 
     public Iterator iterator(int hashCode) {

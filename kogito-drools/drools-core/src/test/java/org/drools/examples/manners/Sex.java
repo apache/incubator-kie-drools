@@ -15,7 +15,7 @@
  */
 package org.drools.examples.manners;
 
-public final class Sex {
+public class Sex {
     public static final Sex      M       = new Sex( 0 );
     public static final Sex      F       = new Sex( 1 );
 
@@ -23,13 +23,16 @@ public final class Sex {
     public static final String   stringF = "f";
     public static final String[] sexList = new String[]{Sex.stringM, Sex.stringF};
 
-    private final int            sex;
+    private int            sex;
+    
+    public Sex() {
+    }
 
     private Sex(final int sex) {
         this.sex = sex;
     }
 
-    public final String getSex() {
+    public String getSex() {
         return Sex.sexList[this.sex];
     }
 
@@ -43,15 +46,15 @@ public final class Sex {
         }
     }
 
-    public final String toString() {
+    public String toString() {
         return getSex();
     }
 
-    public final boolean equals(final Object object) {
+    public boolean equals(final Object object) {
         return this == object;
     }
 
-    public final int hashCode() {
+    public int hashCode() {
         return this.sex;
     }
 

@@ -15,27 +15,30 @@
  */
 package org.drools.examples.manners;
 
-public final class Count {
+public class Count {
     private int value;
+    
+    public Count() {
+    }
 
     public Count(final int value) {
         super();
         this.value = value;
     }
 
-    public final int getValue() {
+    public int getValue() {
         return this.value;
     }
 
-    public final void setValue(final int value) {
+    public void setValue(final int value) {
         this.value = value;
     }
 
-    public final String toString() {
+    public String toString() {
         return "[Count value=" + this.value + "]";
     }
 
-    public final boolean equals(final Object object) {
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }
@@ -47,7 +50,7 @@ public final class Count {
         return this.value == ((Count) object).value;
     }
 
-    public final int hashCode() {
+    public int hashCode() {
         return this.value;
     }
 

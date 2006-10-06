@@ -30,15 +30,18 @@ public class Hobby {
     public static final Hobby    H4           = new Hobby( 4 );
     public static final Hobby    H5           = new Hobby( 5 );
 
-    private final String         hobbyStr;
-    private final int            hobbyIndex;
+    private String         hobbyStr;
+    private int            hobbyIndex;
+    
+    public Hobby() {
+    }
 
     private Hobby(final int hobby) {
         this.hobbyIndex = hobby - 1;
         this.hobbyStr = Hobby.hobbyStrings[this.hobbyIndex];
     }
 
-    public final String getHobby() {
+    public String getHobby() {
         return this.hobbyStr;
     }
 
@@ -58,15 +61,15 @@ public class Hobby {
         }
     }
 
-    public final String toString() {
+    public String toString() {
         return getHobby();
     }
 
-    public final boolean equals(final Object object) {
+    public boolean equals(final Object object) {
         return (this == object);
     }
 
-    public final int hashCode() {
+    public int hashCode() {
         return this.hobbyIndex;
     }
 

@@ -15,11 +15,14 @@
  */
 package org.drools.examples.manners;
 
-public final class Path {
-    private final int    id;
-    private final String guestName;
-    private final int    seat;
+public class Path {
+    private int    id;
+    private String guestName;
+    private int    seat;
 
+    public Path() {
+    }
+    
     public Path(final int id,
                 final int seat,
                 final String guestName) {
@@ -28,19 +31,19 @@ public final class Path {
         this.guestName = guestName;
     }
 
-    public final int getSeat() {
+    public int getSeat() {
         return this.seat;
     }
 
-    public final String getGuestName() {
+    public String getGuestName() {
         return this.guestName;
     }
 
-    public final int getId() {
+    public int getId() {
         return this.id;
     }
 
-    public final String toString() {
+    public String toString() {
         return "[Path id=" + this.id + ", seat=" + this.seat + ", guest=" + this.guestName + "]";
     }
 

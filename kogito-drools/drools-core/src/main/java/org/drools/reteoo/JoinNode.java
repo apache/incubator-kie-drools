@@ -16,20 +16,12 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactHashTable;
-import org.drools.util.FieldIndexHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
-import org.drools.util.FieldIndexHashTable.FieldIndexEntry;
 
 /**
  * <code>JoinNode</code> extends <code>BetaNode</code> to perform

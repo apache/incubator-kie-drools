@@ -17,7 +17,7 @@ package org.drools.examples.manners;
 
 import java.io.Serializable;
 
-public final class Chosen
+public class Chosen
     implements
     Serializable {
 
@@ -26,12 +26,16 @@ public final class Chosen
      */
     private static final long serialVersionUID = -169447202790860427L;
 
-    private final int         id;
+    private int         id;
 
-    private final String      guestName;
+    private String      guestName;
 
-    private final Hobby       hobby;
+    private Hobby       hobby;
 
+    public Chosen() {
+        
+    }
+    
     public Chosen(final int id,
                   final String guestName,
                   final Hobby hobby) {
@@ -40,19 +44,19 @@ public final class Chosen
         this.hobby = hobby;
     }
 
-    public final int getId() {
+    public int getId() {
         return this.id;
     }
 
-    public final String getGuestName() {
+    public String getGuestName() {
         return this.guestName;
     }
 
-    public final Hobby getHobby() {
+    public Hobby getHobby() {
         return this.hobby;
     }
 
-    public final String toString() {
+    public String toString() {
         return "{Chosen id=" + this.id + ", name=" + this.guestName + ", hobbies=" + this.hobby + "}";
     }
 }
