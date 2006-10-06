@@ -10,7 +10,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
-import org.drools.rule.Package;
 import org.drools.spi.GlobalResolver;
 
 public class ReteooWorkingMemoryTest extends TestCase {

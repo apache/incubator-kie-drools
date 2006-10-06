@@ -178,7 +178,7 @@ class Rete extends ObjectSource
         ObjectTypeNode node = ( ObjectTypeNode  ) objectSink;
         this.objectTypeNodes.put( node.getObjectType(),
                                   node,
-                                  false );
+                                  true );
     }
 
     protected void removeObjectSink(final ObjectSink objectSink) {
