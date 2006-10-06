@@ -57,7 +57,8 @@ public class FieldIndexHashTable extends AbstractHashTable
         if ( this.tupleValueIterator == null ) {
             this.tupleValueIterator = new FieldIndexHashTableIterator();
         }
-        this.tupleValueIterator.reset( get( tuple ) );
+        FieldIndexEntry entry = ( FieldIndexEntry ) get( tuple );
+        this.tupleValueIterator.reset( entry.first );
         return this.tupleValueIterator;
     }
 
