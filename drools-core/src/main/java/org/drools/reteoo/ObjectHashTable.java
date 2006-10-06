@@ -1,7 +1,6 @@
 package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.spi.Tuple;
 import org.drools.util.Iterator;
 
 public interface ObjectHashTable {
