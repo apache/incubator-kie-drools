@@ -35,6 +35,7 @@ import junit.framework.TestCase;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.rule.Column;
@@ -85,13 +86,26 @@ public abstract class BaseMannersTest extends TestCase {
     private Evaluator       booleanNotEqualEvaluator;
 
     protected void setUp() throws Exception {
-        this.contextType = new ClassObjectType( Context.class );
-        this.guestType = new ClassObjectType( Guest.class );
-        this.seatingType = new ClassObjectType( Seating.class );
-        this.lastSeatType = new ClassObjectType( LastSeat.class );
-        this.countType = new ClassObjectType( Count.class );
-        this.pathType = new ClassObjectType( Path.class );
-        this.chosenType = new ClassObjectType( Chosen.class );
+        Class shadow = ShadowProxyFactory.getProxy( Context.class );
+        this.contextType = new ClassObjectType( Context.class, shadow );
+
+        shadow = ShadowProxyFactory.getProxy( Guest.class );
+        this.guestType = new ClassObjectType( Guest.class, shadow );
+        
+        shadow = ShadowProxyFactory.getProxy( Seating.class );
+        this.seatingType = new ClassObjectType( Seating.class, shadow  );
+
+        shadow = ShadowProxyFactory.getProxy( LastSeat.class );
+        this.lastSeatType = new ClassObjectType( LastSeat.class, shadow  );
+
+        shadow = ShadowProxyFactory.getProxy( Count.class );
+        this.countType = new ClassObjectType( Count.class, shadow  );
+
+        shadow = ShadowProxyFactory.getProxy( Path.class );
+        this.pathType = new ClassObjectType( Path.class, shadow  );
+
+        shadow = ShadowProxyFactory.getProxy( Chosen.class );
+        this.chosenType = new ClassObjectType( Chosen.class, shadow  );
 
         this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
         this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
@@ -362,15 +376,16 @@ public abstract class BaseMannersTest extends TestCase {
                              "name",
                              "leftGuestName" );
 
+        leftGuestColumn.addConstraint( getBoundVariableConstraint( rightGuestColumn,
+                                                                   "hobby",
+                                                                   rightGuestHobbyDeclaration,
+                                                                   this.objectEqualEvaluator ) );
+
         leftGuestColumn.addConstraint( getBoundVariableConstraint( leftGuestColumn,
                                                                    "sex",
                                                                    rightGuestSexDeclaration,
                                                                    this.objectNotEqualEvaluator ) );
 
-        leftGuestColumn.addConstraint( getBoundVariableConstraint( rightGuestColumn,
-                                                                   "hobby",
-                                                                   rightGuestHobbyDeclaration,
-                                                                   this.objectEqualEvaluator ) );
         rule.addPattern( leftGuestColumn );
         final Declaration leftGuestNameDeclaration = rule.getDeclaration( "leftGuestName" );
 
@@ -725,9 +740,9 @@ public abstract class BaseMannersTest extends TestCase {
 
                     seating.setPathDone( true );
 
-                    if ( seating.getId() == 6 ) {
-                        System.out.println( "pause" );
-                    }
+//                    if ( seating.getId() == 6 ) {
+//                        System.out.println( "pause" );
+//                    }
                     drools.modifyObject( tuple.get( seatingDeclaration ),
                                          seating );
 

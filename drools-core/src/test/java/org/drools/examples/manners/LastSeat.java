@@ -17,24 +17,27 @@ package org.drools.examples.manners;
 
 import java.io.Serializable;
 
-public final class LastSeat
+public class LastSeat
     implements
     Serializable {
     /**
      * 
      */
     private static final long serialVersionUID = -3331801742327121724L;
-    private final int         seat;
+    private int         seat;
 
+    public LastSeat() {
+    }
+    
     public LastSeat(final int seat) {
         this.seat = seat;
     }
 
-    public final int getSeat() {
+    public int getSeat() {
         return this.seat;
     }
 
-    public final String toString() {
+    public String toString() {
         return "[LastSeat seat=" + this.seat + "]";
     }
 }

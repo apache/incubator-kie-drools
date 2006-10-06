@@ -17,7 +17,7 @@ package org.drools.examples.manners;
 
 import java.io.Serializable;
 
-public final class Seating
+public class Seating
     implements
     Serializable {
     /**
@@ -25,14 +25,17 @@ public final class Seating
      */
     private static final long serialVersionUID = -21267542036195318L;
 
-    private final int         id, pid;
+    private int         id, pid;
 
-    private final int         leftSeat, rightSeat;
+    private int         leftSeat, rightSeat;
 
-    private final String      leftGuestName, rightGuestName;
+    private String      leftGuestName, rightGuestName;
 
     private boolean           pathDone;
 
+    public Seating() {
+    }
+    
     public Seating(final int id,
                    final int pid,
                    final boolean pathDone,
@@ -50,39 +53,39 @@ public final class Seating
         this.rightGuestName = rightGuestName;
     }
 
-    public final boolean isPathDone() {
+    public boolean isPathDone() {
         return this.pathDone;
     }
 
-    public final void setPathDone(final boolean pathDone) {
+    public void setPathDone(final boolean pathDone) {
         this.pathDone = pathDone;
     }
 
-    public final int getId() {
+    public int getId() {
         return this.id;
     }
 
-    public final String getLeftGuestName() {
+    public String getLeftGuestName() {
         return this.leftGuestName;
     }
 
-    public final int getLeftSeat() {
+    public int getLeftSeat() {
         return this.leftSeat;
     }
 
-    public final int getPid() {
+    public int getPid() {
         return this.pid;
     }
 
-    public final String getRightGuestName() {
+    public String getRightGuestName() {
         return this.rightGuestName;
     }
 
-    public final int getRightSeat() {
+    public int getRightSeat() {
         return this.rightSeat;
     }
 
-    public final String toString() {
+    public String toString() {
         return "[Seating id=" + this.id + " , pid=" + this.pid + " , pathDone=" + this.pathDone + " , leftSeat=" + this.leftSeat + ", leftGuestName=" + this.leftGuestName + ", rightSeat=" + this.rightSeat + ", rightGuestName=" + this.rightGuestName
                + "]";
     }
