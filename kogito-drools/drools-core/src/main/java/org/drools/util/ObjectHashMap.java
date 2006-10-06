@@ -89,7 +89,7 @@ public class ObjectHashMap extends AbstractHashTable {
                 }
                 current.setNext( null );
                 this.size--;
-                return current.getValue();
+                return current.value;
             }
             previous = current;
             current = next;

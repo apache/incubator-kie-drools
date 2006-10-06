@@ -17,7 +17,6 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.Iterator;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.AgendaGroupImpl;
@@ -34,6 +33,9 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
+import org.drools.util.Iterator;
+import org.drools.util.ObjectHashMap;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -142,9 +144,8 @@ final class TerminalNode extends BaseNode
                                                                       agenda,
                                                                       context,
                                                                       this.rule );
-
-            if ( this.rule.getActivationGroup() != null ) {
-                final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+            if ( this.rule.getActivationGroup() != null ) {                
                 // Lazy cache activationGroup
                 if ( memory.getActivationGroup() == null ) {
                     memory.setActivationGroup( workingMemory.getAgenda().getActivationGroup( this.rule.getActivationGroup() ) );
@@ -153,7 +154,8 @@ final class TerminalNode extends BaseNode
             }
 
             agenda.scheduleItem( item );
-            tuple.setActivation( item );
+            memory.getTupleMemory().put( tuple, item, false );
+            
             item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
         } else {
@@ -206,7 +208,7 @@ final class TerminalNode extends BaseNode
             // If the AgendaGroup is already in the priority queue it just
             // returns.
             agendaGroup.add( item );
-            tuple.setActivation( item );
+            memory.getTupleMemory().put( tuple, item, false );
             item.setActivated( true );
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
@@ -219,7 +221,8 @@ final class TerminalNode extends BaseNode
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final Activation activation = tuple.getActivation();
+        final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );        
+        final Activation activation = ( Activation ) memory.getTupleMemory().remove( tuple );
         if ( activation.isActivated() ) {
             activation.remove();
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
@@ -228,24 +231,6 @@ final class TerminalNode extends BaseNode
         workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                              context,
                                                                              this.rule );
-    }
-
-    public void modifyTuple(final ReteTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        // We have to remove and assert the new tuple as it has modified facts and thus its tuple is newer
-        boolean fireActivation = true;
-        Activation activation = tuple.getActivation();
-        
-        if ( activation.isActivated() ) {
-            activation.remove();
-            fireActivation = false;
-        }
-
-        assertTuple( tuple,
-                     context,
-                     workingMemory,
-                     fireActivation );
     }
 
     public String toString() {
@@ -270,8 +255,9 @@ final class TerminalNode extends BaseNode
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateNewNode( workingMemory,
-                                            propagationContext );
+            this.tupleSource.updateSink( this,                                         
+                                         propagationContext,
+                                         workingMemory );
         }
     }
 
@@ -280,10 +266,10 @@ final class TerminalNode extends BaseNode
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
 
-            for ( final Iterator it = this.tupleSource.getPropagatedTuples( workingMemory,
-                                                                            this ).iterator(); it.hasNext(); ) {
-                final ReteTuple tuple = (ReteTuple) it.next();
-                final Activation activation = tuple.getActivation();
+            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );     
+            Iterator it = memory.getTupleMemory().iterator();
+            for ( ObjectEntry entry = (ObjectEntry)it.next(); entry != null; entry = (  ObjectEntry ) it.next() ) {
+                final Activation activation = (Activation) entry.getValue();
 
                 if ( activation.isActivated() ) {
                     activation.remove();
@@ -296,18 +282,14 @@ final class TerminalNode extends BaseNode
                                                                                           null );
                 workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                      propagationContext,
-                                                                                     this.rule );
+                                                                                     this.rule );                
             }
+            
             workingMemory.propagateQueuedActions();
         }
 
         this.tupleSource.remove( this,
                                  workingMemories );
-    }
-
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        // There are no child nodes to update, do nothing.
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
@@ -368,11 +350,17 @@ final class TerminalNode extends BaseNode
     }
 
     class TerminalNodeMemory implements Serializable {
-        private static final long serialVersionUID = -2770066307284050292L;
+        private static final long serialVersionUID = 320L;
 
         private AgendaGroupImpl agendaGroup;
 
         private ActivationGroup activationGroup;
+        
+        private ObjectHashMap tupleMemory;
+        
+        public TerminalNodeMemory() {
+            this.tupleMemory = new ObjectHashMap();
+        }
 
         public AgendaGroupImpl getAgendaGroup() {
             return this.agendaGroup;
@@ -389,6 +377,9 @@ final class TerminalNode extends BaseNode
         public void setActivationGroup(final ActivationGroup activationGroup) {
             this.activationGroup = activationGroup;
         }
-
+        
+        public ObjectHashMap getTupleMemory() {
+            return this.tupleMemory;
+        }
     }
 }
