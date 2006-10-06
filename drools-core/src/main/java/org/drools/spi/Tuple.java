@@ -58,6 +58,4 @@ public interface Tuple {
 
     long getRecency();
 
-    void setActivation(Activation activation);
-
 }

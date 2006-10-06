@@ -149,20 +149,20 @@ abstract class BetaNode extends TupleSource
 
     public void remove(final BaseNode node,
                        final InternalWorkingMemory[] workingMemories) {
-        //        if( !node.isInUse()) {
-        //            getTupleSinks().remove( node );
-        //        }
-        //        removeShare();
-        //
-        //        if ( ! this.isInUse() ) {
-        //            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-        //                workingMemories[i].clearNodeMemory( this );
-        //            }
-        //        }
-        //        this.rightInput.remove( this,
-        //                                workingMemories );
-        //        this.leftInput.remove( this,
-        //                               workingMemories );
+                if( !node.isInUse()) {
+                    removeTupleSink( ( TupleSink) node ); 
+                }
+                removeShare();
+        
+                if ( ! this.isInUse() ) {
+                    for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                        workingMemories[i].clearNodeMemory( this );
+                    }
+                }
+                this.rightInput.remove( this,
+                                        workingMemories );
+                this.leftInput.remove( this,
+                                       workingMemories );
 
     }
 

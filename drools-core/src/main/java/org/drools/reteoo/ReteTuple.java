@@ -21,8 +21,6 @@ public class ReteTuple extends BaseEntry
 
     private ReteTuple                parent;
 
-    private Activation               activation;
-
     private long                     recency;    
     
     private int                      hashCode;    
@@ -91,10 +89,6 @@ public class ReteTuple extends BaseEntry
         return get( declaration.getColumn().getIndex() );
     }
 
-    public Activation getActivation() {
-        return this.activation;
-    }
-
     public InternalFactHandle[] getFactHandles() {
         List list = new ArrayList();
         ReteTuple entry = this;
@@ -108,12 +102,7 @@ public class ReteTuple extends BaseEntry
 
     public long getRecency() {
         return this.recency;
-    }
-
-    public void setActivation(Activation activation) {
-        this.activation = activation;
-    }
-        
+    }   
     
     public int hashCode() {
         return this.handle.hashCode();
