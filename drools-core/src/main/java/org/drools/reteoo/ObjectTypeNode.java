@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -138,8 +139,13 @@ class ObjectTypeNode extends ObjectSource
         
         // checks if shadow is enabled
         if(this.objectType.isShadowEnabled()) {
-            // replaces the actual object by its shadow before propagating
-            handle.setObject( this.objectType.getShadow( handle.getObject() ) );
+            // need to improve this
+            if( ! ( handle.getObject() instanceof ShadowProxy) ) {
+                // replaces the actual object by its shadow before propagating
+                handle.setObject( this.objectType.getShadow( handle.getObject() ) );
+            } else {
+                ((ShadowProxy)handle.getObject()).updateProxy();
+            }
         }
         // we do not need to check if the fact exists already
         memory.add( handle, false );
