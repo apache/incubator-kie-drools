@@ -17,6 +17,7 @@ import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.AbstractHashTable.FactEntry;
 import org.drools.util.FieldIndexHashTable.FieldIndexEntry;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FieldIndexHashTableTest extends TestCase {
 
@@ -189,9 +190,7 @@ public class FieldIndexHashTableTest extends TestCase {
         TestClass c1 = new TestClass( 0,
                                       new TestClass( 20,
                                                      "stilton" ) );
-        
-        
-        
+
         InternalFactHandle ch1 = new DefaultFactHandle( 1,
                                                         c1 );
 
@@ -486,6 +485,30 @@ public class FieldIndexHashTableTest extends TestCase {
             }
         }
         return (Entry[]) list.toArray( new Entry[list.size()] );
+    }
+
+    public void testEmptyIterator() {
+        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
+
+        Column column = new Column( 0,
+                                    new ClassObjectType( Cheese.class ) );
+
+        final Declaration declaration = new Declaration( "typeOfCheese",
+                                                         extractor,
+                                                         column );
+
+        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+                                                           declaration );
+
+        Cheese stilton = new Cheese( "stilton", 55 );
+        InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
+                                                                   stilton );
+        
+        Iterator it = map.iterator(  new ReteTuple( stiltonHandle ) );
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            fail( "Map is empty, there should be no iteration" );
+        }
     }
 
 }
