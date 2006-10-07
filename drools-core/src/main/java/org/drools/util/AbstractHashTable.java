@@ -21,7 +21,7 @@ public abstract class AbstractHashTable
     protected Entry[]          table;
 
     
-    private HashTableIterator iterator;
+    private HashTableIterator iterator;   
     
     public AbstractHashTable() {
         this( 16,
@@ -40,6 +40,7 @@ public abstract class AbstractHashTable
         if ( this.iterator == null ) {
             this.iterator = new HashTableIterator( this );            
         }
+        
         this.iterator.reset();
         return this.iterator;
     }    
@@ -194,16 +195,14 @@ public abstract class AbstractHashTable
          */
         public Entry next() {            
             if (  this.entry == null ) {
-                row++;
-                if ( row == length ) {
-                    return null;
-                }
-                this.entry = this.table[row];
-                // We have to do this recursively as we may have sparsely populated tables and 
-                // we need to recurse till we either reach a populated row or the end of the table
-                if ( this.entry == null ) {
-                    this.entry = next();
-                }
+                // keep skipping rows until we come to the end, or find one that is populated
+                while  ( this.entry ==  null ) {
+                    row++;
+                    if ( row == length ) {
+                        return null;
+                    }
+                    this.entry = this.table[row];                    
+                }                
             } else {
                 this.entry = this.entry.getNext();
                 if ( this.entry == null ) {
