@@ -8,7 +8,7 @@ public class ObjectHashMapTest extends TestCase {
 	public void testChechExistsFalse() {
 		ObjectHashMap map = new ObjectHashMap();
 		Cheese stilton = new Cheese("stilton", 5);
-		map.put(new Integer(1), stilton);
+		map.put(new Integer(1), stilton, false);
 		
 		Cheese c = (Cheese) map.get(new Integer(1));
 		assertSame(stilton, c);
@@ -43,9 +43,8 @@ public class ObjectHashMapTest extends TestCase {
     
     public void testChechExistsTrue() {
         ObjectHashMap map = new ObjectHashMap();
-        map.setCheckExists( true );
         Cheese stilton = new Cheese("stilton", 5);
-        map.put(new Integer(1), stilton);
+        map.put(new Integer(1), stilton, true);
         
         Cheese c = (Cheese) map.get(new Integer(1));
         assertSame(stilton, c);
