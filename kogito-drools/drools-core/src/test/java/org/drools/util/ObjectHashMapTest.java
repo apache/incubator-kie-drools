@@ -3,6 +3,7 @@ package org.drools.util;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class ObjectHashMapTest extends TestCase {
 	public void testChechExistsFalse() {
@@ -75,5 +76,13 @@ public class ObjectHashMapTest extends TestCase {
         }
         
         assertEquals( 0, size);          
+    }
+    
+    public void testEmptyIterator() {
+        ObjectHashMap map = new ObjectHashMap();
+        Iterator it = map.iterator();
+        for( ObjectEntry entry =  ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
+            fail( "Map is empty, there should be no iteration" );
+        }
     }
 }
