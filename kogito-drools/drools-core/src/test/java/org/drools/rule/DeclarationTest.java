@@ -35,8 +35,8 @@ public class DeclarationTest extends TestCase {
         
         Column column = new  Column(5, new ClassObjectType( Cheese.class ) );
         
-        /* Bind the extractor to a decleration */
-        /* Declarations know the column they derive their value from */
+        // Bind the extractor to a decleration
+        // Declarations know the column they derive their value from
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
                                                          column );
@@ -67,11 +67,11 @@ public class DeclarationTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        /* Create some facts */
+        // Create some facts
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
-        /* Check we can extract Declarations correctly */
+        // Check we can extract Declarations correctly
         assertEquals( "cheddar",
                       declaration.getValue( cheddar ) );
     }
