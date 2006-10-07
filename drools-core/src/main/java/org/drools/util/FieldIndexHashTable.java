@@ -230,9 +230,9 @@ public class FieldIndexHashTable extends AbstractHashTable
             entry = (FieldIndexEntry) entry.getNext();
         }
 
-        return entry;
+        return entry;           
     }
-
+    
     /**
      * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
      * a get and then a create if the value is null.
@@ -240,7 +240,7 @@ public class FieldIndexHashTable extends AbstractHashTable
      * @param value
      * @return
      */
-    public FieldIndexEntry getOrCreate(Object value) {
+    private FieldIndexEntry getOrCreate(Object value) {
         int hashCode = PRIME * startResult + ((value == null) ? 0 : value.hashCode());
         int index = indexOf( hashCode,
                              table.length );

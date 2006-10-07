@@ -223,14 +223,17 @@ final class TerminalNode extends BaseNode
                              final InternalWorkingMemory workingMemory) {
         final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );        
         final Activation activation = ( Activation ) memory.getTupleMemory().remove( tuple );
-        if ( activation.isActivated() ) {
-            activation.remove();
-            workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
+        //an activation is null if the tuple was never propagated as an assert
+        if ( activation != null ){
+            if ( activation.isActivated() ) {
+                activation.remove();
+                workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
+            }
+    
+            workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
+                                                                                 context,
+                                                                                 this.rule );
         }
-
-        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                             context,
-                                                                             this.rule );
     }
 
     public String toString() {
