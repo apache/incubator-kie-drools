@@ -189,9 +189,12 @@ abstract class BetaNode extends TupleSource
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
-        // return "[JoinNode: common=" + this.commonDeclarations + "; decls=" +
-        // this.tupleDeclarations + "]";
         return "";
+    }
+    
+    public void dumpMemory(InternalWorkingMemory workingMemory) {
+        MemoryVisitor visitor = new MemoryVisitor( workingMemory );
+        visitor.visit( this );           
     }
 
     /* (non-Javadoc)
@@ -237,7 +240,7 @@ abstract class BetaNode extends TupleSource
                     Evaluator evaluator = variableConstraint.getEvaluator();
                     if ( evaluator.getOperator() == Operator.EQUAL ) {
                         // remove this entry                    
-                        constraints.remove( entry );
+                        //constraints.remove( entry );
                         memory = new BetaMemory( new TupleHashTable(),
                                                  new FieldIndexHashTable( extractor,
                                                                           variableConstraint.getRequiredDeclarations()[0] ) );

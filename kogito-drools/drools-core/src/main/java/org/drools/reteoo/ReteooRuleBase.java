@@ -30,6 +30,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
@@ -204,7 +205,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public void retractObject(final FactHandle handle,
                               final PropagationContext context,
                               final ReteooWorkingMemory workingMemory) throws FactException {
-        getRete().retractObject( (DefaultFactHandle) handle,
+        getRete().retractObject( (InternalFactHandle) handle,
                                  context,
                                  workingMemory );
     }
