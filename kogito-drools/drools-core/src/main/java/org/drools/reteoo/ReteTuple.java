@@ -8,7 +8,6 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 import org.drools.util.BaseEntry;
-import org.drools.util.LinkedList;
 
 public class ReteTuple extends BaseEntry
     implements
@@ -20,6 +19,8 @@ public class ReteTuple extends BaseEntry
     private final InternalFactHandle handle;
 
     private ReteTuple                parent;
+
+    private Activation               activation;
 
     private long                     recency;    
     
@@ -89,6 +90,10 @@ public class ReteTuple extends BaseEntry
         return get( declaration.getColumn().getIndex() );
     }
 
+    public Activation getActivation() {
+        return this.activation;
+    }
+
     public InternalFactHandle[] getFactHandles() {
         List list = new ArrayList();
         ReteTuple entry = this;
@@ -102,10 +107,21 @@ public class ReteTuple extends BaseEntry
 
     public long getRecency() {
         return this.recency;
-    }   
+    }
+
+    public void setActivation(Activation activation) {
+        this.activation = activation;
+    }
+        
     
     public int hashCode() {
-        return this.handle.hashCode();
+        return this.hashCode;
+    }
+    
+    public  void release() {
+        this.parent = null;
+        this.activation = null;
+        setNext( null );
     }
     
     /**

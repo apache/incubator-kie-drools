@@ -22,6 +22,7 @@ public class TupleHashTable extends AbstractHashTable {
         int index = indexOf( hashCode,
                              table.length );
 
+        tuple.setNext( this.table[index] );
         this.table[index] = tuple;
 
         if ( this.size++ >= this.threshold ) {

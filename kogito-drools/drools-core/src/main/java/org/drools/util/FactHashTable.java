@@ -52,7 +52,7 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
         // We aren't checking the key exists, or it didn't find the key
         FactEntry entry = new FactEntry( handle,
                                              hashCode );
-        entry.next = (FactEntry) this.table[index];
+        entry.next = this.table[index];
         this.table[index] = entry;
 
         if ( this.size++ >= this.threshold ) {

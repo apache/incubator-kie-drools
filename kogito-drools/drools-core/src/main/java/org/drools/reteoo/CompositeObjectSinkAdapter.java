@@ -334,26 +334,26 @@ public class CompositeObjectSinkAdapter
         }
     }
 
-    public void propagateNewObjectSink(InternalFactHandle handle,
-                                       PropagationContext context,
-                                       InternalWorkingMemory workingMemory) {
-        final ObjectSink sink = this.otherSinks.getLast();
-        sink.assertObject( handle,
-                           context,
-                           workingMemory );
-
-    }
-
     public ObjectSink[] getSinks() {
-        ObjectSink[] sinkArray = new ObjectSink[this.otherSinks.size()];
-
-        int i = 0;
-
-        for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-            sinkArray[i++] = sink;
+        List  list = new ArrayList();
+        
+        if ( this.otherSinks != null ) {
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                list.add( sink );
+            }
+        }
+        
+        if ( this.hashedSinks != null ) {
+            for ( ObjectSinkNode sink = this.hashedSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                list.add( sink );
+            }
+        }
+        
+        if( this.hashedFieldIndexes != null ) {
+            
         }
 
-        return sinkArray;
+        return ( ObjectSink[] ) list.toArray( new ObjectSink[ list.size() ] );
     }
 
     public int size() {

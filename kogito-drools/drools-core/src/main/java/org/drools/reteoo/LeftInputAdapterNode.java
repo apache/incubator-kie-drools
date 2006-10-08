@@ -185,6 +185,7 @@ class LeftInputAdapterNode extends TupleSource
         this.sink.createAndPropagateRetractTuple( tuple,
                                                   context,
                                                   workingMemory );
+        tuple.release();
     }
 
     public void updateSink(TupleSink sink,

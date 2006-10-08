@@ -35,6 +35,7 @@ import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
+import org.drools.util.TupleHashTable;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
@@ -154,7 +155,8 @@ final class TerminalNode extends BaseNode
             }
 
             agenda.scheduleItem( item );
-            memory.getTupleMemory().put( tuple, item, false );
+            tuple.setActivation( item );
+            memory.getTupleMemory().add( tuple );
             
             item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
@@ -208,7 +210,9 @@ final class TerminalNode extends BaseNode
             // If the AgendaGroup is already in the priority queue it just
             // returns.
             agendaGroup.add( item );
-            memory.getTupleMemory().put( tuple, item, false );
+            tuple.setActivation( item );
+            memory.getTupleMemory().add( tuple );
+            
             item.setActivated( true );
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
@@ -218,13 +222,14 @@ final class TerminalNode extends BaseNode
         }
     }
 
-    public void retractTuple(final ReteTuple tuple,
+    public void retractTuple(ReteTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );        
-        final Activation activation = ( Activation ) memory.getTupleMemory().remove( tuple );
+        ReteTuple tuple = ( ReteTuple ) memory.getTupleMemory().remove( leftTuple );
         //an activation is null if the tuple was never propagated as an assert
-        if ( activation != null ){
+        if ( tuple != null && tuple.getActivation() != null ){
+            Activation activation = tuple.getActivation();
             if ( activation.isActivated() ) {
                 activation.remove();
                 workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
@@ -233,7 +238,9 @@ final class TerminalNode extends BaseNode
             workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                  context,
                                                                                  this.rule );
+            tuple.release();
         }
+        leftTuple.release();
     }
 
     public String toString() {
@@ -359,10 +366,10 @@ final class TerminalNode extends BaseNode
 
         private ActivationGroup activationGroup;
         
-        private ObjectHashMap tupleMemory;
+        private TupleHashTable tupleMemory;
         
         public TerminalNodeMemory() {
-            this.tupleMemory = new ObjectHashMap();
+            this.tupleMemory = new TupleHashTable();
         }
 
         public AgendaGroupImpl getAgendaGroup() {
@@ -381,7 +388,7 @@ final class TerminalNode extends BaseNode
             this.activationGroup = activationGroup;
         }
         
-        public ObjectHashMap getTupleMemory() {
+        public TupleHashTable getTupleMemory() {
             return this.tupleMemory;
         }
     }

@@ -139,7 +139,8 @@ class Rete extends ObjectSource
 
         final Object object = handle.getObject();
 
-        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
+        // @todo : this is a nasty hack to make manners  run, fix asap!!!
+        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
         if ( cachedNodes == null ) {
             // it is  possible that there are no ObjectTypeNodes for an  object being retracted
             return;
@@ -198,6 +199,10 @@ class Rete extends ObjectSource
         final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;                        
         removeObjectSink( objectTypeNode );
         //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        
+    }
+    
+    public ObjectHashMap getObjectTypeNodes() {
+        return this.objectTypeNodes;
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
