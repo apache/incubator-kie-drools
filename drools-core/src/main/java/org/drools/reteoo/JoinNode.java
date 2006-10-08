@@ -223,7 +223,7 @@ class JoinNode extends BetaNode {
                 }
             }               
         }
-    }
+    }    
     
     public String toString() {
         ObjectSource source = this.rightInput;
