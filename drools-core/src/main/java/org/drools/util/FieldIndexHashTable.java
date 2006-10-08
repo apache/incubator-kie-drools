@@ -25,6 +25,8 @@ public class FieldIndexHashTable extends AbstractHashTable
     private FieldIndexHashTableIterator tupleValueIterator;
 
     private HashCodeHashTableIterator   hashCodeValueIterator;
+    
+    private int factSize;
 
     public FieldIndexHashTable(FieldExtractor extractor,
                                Declaration declaration) {
@@ -158,6 +160,7 @@ public class FieldIndexHashTable extends AbstractHashTable
     public boolean add(InternalFactHandle handle) {
         FieldIndexEntry entry = getOrCreate( this.extractor.getValue( handle.getObject() ) );
         entry.add( handle );
+        this.factSize++;
         return true;
     }
 
@@ -181,6 +184,7 @@ public class FieldIndexHashTable extends AbstractHashTable
             FieldIndexEntry next = (FieldIndexEntry) current.next;
             if ( hashCode == current.hashCode && value.equals( current.getValue() ) ) {
                 current.remove( handle );
+                this.factSize--;
                 // If the FactEntryIndex is empty, then remove it from the hash map
                 if ( current.first == null ) {
                     if ( previous == current ) {
@@ -265,6 +269,10 @@ public class FieldIndexHashTable extends AbstractHashTable
             }
         }
         return entry;
+    }
+    
+    public int size() {
+        return this.factSize;
     }
 
     public static class FieldIndexEntry

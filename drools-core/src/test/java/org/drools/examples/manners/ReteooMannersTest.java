@@ -23,6 +23,8 @@ import java.util.List;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.MemoryVisitor;
 
 public class ReteooMannersTest extends BaseMannersTest {
 
@@ -30,7 +32,7 @@ public class ReteooMannersTest extends BaseMannersTest {
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
         ruleBase.addPackage( this.pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();        
 
         //        workingMemory.addEventListener( new DefaultAgendaEventListener() {
         //           public void activationCreated(ActivationCreatedEvent event) {
@@ -55,7 +57,7 @@ public class ReteooMannersTest extends BaseMannersTest {
         //           
         //        });
 
-        final InputStream is = getClass().getResourceAsStream( "/manners32.dat" );
+        final InputStream is = getClass().getResourceAsStream( "/manners128.dat" );
         final List list = getInputObjects( is );
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object object = it.next();
@@ -67,6 +69,9 @@ public class ReteooMannersTest extends BaseMannersTest {
         final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
         System.err.println( System.currentTimeMillis() - start );
+        
+        MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
+        visitor.visit( ruleBase );               
 
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
         //        

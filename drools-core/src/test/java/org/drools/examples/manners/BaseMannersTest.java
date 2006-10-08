@@ -518,7 +518,6 @@ public abstract class BaseMannersTest extends TestCase {
                     throw new ConsequenceException( e );
                 }
             }
-
         };
 
         rule.setConsequence( consequence );

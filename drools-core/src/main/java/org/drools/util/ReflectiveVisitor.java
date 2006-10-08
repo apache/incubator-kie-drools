@@ -34,13 +34,14 @@ public abstract class ReflectiveVisitor
     static final String newline = System.getProperty( "line.separator" );
 
     public void visit(final Object object) {
+        Method method = null;
         try {
             if ( object != null ) {
-                final Method method = getMethod( object.getClass() );
+                method = getMethod( object.getClass() );
                 method.invoke( this,
                                new Object[]{object} );
             } else {
-                final Method method = getClass().getMethod( "visitNull",
+                method = getClass().getMethod( "visitNull",
                                                             (Class[]) null );
                 method.invoke( this,
                                (Object[]) null );

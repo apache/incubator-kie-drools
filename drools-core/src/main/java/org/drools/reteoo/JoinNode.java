@@ -190,15 +190,18 @@ class JoinNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( memory.getTupleMemory().remove( leftTuple ) ==  null )  {
+        ReteTuple tuple  = ( ReteTuple ) memory.getTupleMemory().remove( leftTuple );
+        if ( tuple == null)  {
+            leftTuple.release();
             return;
         }
         
         Iterator it = memory.getObjectMemory().iterator( leftTuple );
         for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {
             sink.propagateRetractTuple( leftTuple, entry.getFactHandle(), context, workingMemory );
-        }        
+        }   
+        tuple.release();
+        leftTuple.release();
     }        
 
     /* (non-Javadoc)
@@ -220,5 +223,9 @@ class JoinNode extends BetaNode {
                 }
             }               
         }
+    }
+    
+    public String toString() {
+        return "[JoinNode]";
     }
 }

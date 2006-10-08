@@ -19,7 +19,6 @@ public abstract class AbstractHashTable
     protected ObjectComparator comparator;
 
     protected Entry[]          table;
-
     
     private HashTableIterator iterator;   
     

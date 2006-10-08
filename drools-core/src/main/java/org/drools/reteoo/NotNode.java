@@ -213,27 +213,17 @@ public class NotNode extends BetaNode {
         // Must use the tuple in memory as it has the tuple matches count
         ReteTuple tuple = ( ReteTuple ) memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
+            leftTuple.release();
             return;
-        }
-        
-        int matches =  tuple.getMatches();
-        int previousMatches = matches;
-        
-        Iterator it = memory.getObjectMemory().iterator( tuple );        
-        for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {
-            InternalFactHandle handle = entry.getFactHandle();            
-            if ( this.constraints.isAllowed( handle, tuple, workingMemory ) ) {
-                matches--;
-            }
         }        
         
-        tuple.setMatches( matches );
-        
-        if (previousMatches != 0 && matches == 0 ) {
-            this.sink.propagateRetractTuple( tuple,
+        if ( tuple.getMatches() == 0) {
+            this.sink.propagateRetractTuple( leftTuple,
                                              context,
                                              workingMemory );            
-        }    
+        }   
+        tuple.release();
+        leftTuple.release();        
     }          
     
     /* (non-Javadoc)
@@ -258,5 +248,9 @@ public class NotNode extends BetaNode {
         //        }
         //
         //        this.attachingNewNode = true;
+    }
+    
+    public String toString() {
+        return "[NotNode]";
     }
 }
