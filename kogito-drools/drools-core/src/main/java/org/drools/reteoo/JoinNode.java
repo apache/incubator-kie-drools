@@ -226,6 +226,11 @@ class JoinNode extends BetaNode {
     }
     
     public String toString() {
-        return "[JoinNode]";
+        ObjectSource source = this.rightInput;
+        while ( source.getClass() != ObjectTypeNode.class ) {
+            source = source.objectSource;
+        }
+        
+        return "[JoinNode - " + ((ObjectTypeNode)source).getObjectType()+ "]";
     }
 }
