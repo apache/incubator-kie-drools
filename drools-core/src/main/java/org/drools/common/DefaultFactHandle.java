@@ -106,7 +106,7 @@ public class DefaultFactHandle
      * @see FactHandle
      */
     public String toExternalForm() {
-        return "[fid:" + this.id + ":" + this.recency + "]";
+        return "[fid:" + this.id + ":" + this.recency + ":" + this.object + "]";
     }
 
     /**

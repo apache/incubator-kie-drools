@@ -143,7 +143,7 @@ public abstract class BaseMannersTest extends TestCase {
      *            drools.assert( new Path( count.getValue(), 1, guestName ) );
      *            count.setCount(  count.getValue() + 1 );
      *   
-     *            System.out.println( &quot;seat 1 &quot; + guest.getName() + &quot; );
+     *            System.err.println( &quot;seat 1 &quot; + guest.getName() + &quot; );
      *   
      *            context.setPath( Context.ASSIGN_SEATS );
      *        }
@@ -234,7 +234,7 @@ public abstract class BaseMannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
-                    System.out.println( "assign first seat :  " + seating + " : " + path );
+                    System.err.println( "assign first seat :  " + seating + " : " + path );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();
@@ -276,7 +276,7 @@ public abstract class BaseMannersTest extends TestCase {
      *           drools.assert( new Path( countValue, leftGuestName, newSeat );
      *           drools.assert( new Chosen( id, leftGuestName, rightGuestHobby ) );
      *    
-     *           System.out.println( &quot;seat &quot; + rightSeat + &quot; &quot; + rightSeatName + &quot; &quot; + leftGuestName );
+     *           System.err.println( &quot;seat &quot; + rightSeat + &quot; &quot; + rightSeatName + &quot; &quot; + leftGuestName );
      *    
      *           count.setCount(  countValue + 1 );
      *           context.setPath( Context.MAKE_PATH );
@@ -454,7 +454,7 @@ public abstract class BaseMannersTest extends TestCase {
         // drools.assert( new Path( countValue, leftGuestName, newSeat );
         // drools.assert( new Chosen( id, leftGuestName, rightGuestHobby ) );
         // 
-        // System.out.println( "seat " + rightSeat + " " + rightSeatName + " " +
+        // System.err.println( "seat " + rightSeat + " " + rightSeatName + " " +
         // leftGuestName );
         //
         // count.setCount( countValue + 1 );
@@ -465,8 +465,8 @@ public abstract class BaseMannersTest extends TestCase {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
-                    visitor.visit( workingMemory.getRuleBase() );
+//                    MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
+//                    visitor.visit( workingMemory.getRuleBase() );
                     
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
@@ -516,7 +516,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
-                    System.out.println( "find seating : " + seating + " : " + path + " : " + chosen );
+                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();
@@ -659,7 +659,7 @@ public abstract class BaseMannersTest extends TestCase {
 
                     drools.assertObject( path );
 
-                    //System.out.println( "make path : " + path );
+                    //System.err.println( "make path : " + path );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
@@ -745,7 +745,7 @@ public abstract class BaseMannersTest extends TestCase {
                     seating.setPathDone( true );
 
 //                    if ( seating.getId() == 6 ) {
-//                        System.out.println( "pause" );
+//                        System.err.println( "pause" );
 //                    }
                     drools.modifyObject( tuple.get( seatingDeclaration ),
                                          seating );
@@ -753,7 +753,7 @@ public abstract class BaseMannersTest extends TestCase {
                     context.setState( Context.CHECK_DONE );
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
-                    //System.out.println( "path done" + seating );
+                    //System.err.println( "path done" + seating );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -846,7 +846,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
-                    System.out.println( "We Are Done!!!" );
+                    System.err.println( "We Are Done!!!" );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -910,7 +910,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
-                    //System.out.println( "continue processing" );
+                    //System.err.println( "continue processing" );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
@@ -965,7 +965,7 @@ public abstract class BaseMannersTest extends TestCase {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    System.out.println( "all done" );
+                    System.err.println( "all done" );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }

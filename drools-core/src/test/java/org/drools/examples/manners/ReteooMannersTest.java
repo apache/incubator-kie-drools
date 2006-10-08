@@ -57,7 +57,7 @@ public class ReteooMannersTest extends BaseMannersTest {
         //           
         //        });
 
-        final InputStream is = getClass().getResourceAsStream( "/manners5.dat" );
+        final InputStream is = getClass().getResourceAsStream( "/manners128.dat" );
         final List list = getInputObjects( is );
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object object = it.next();
