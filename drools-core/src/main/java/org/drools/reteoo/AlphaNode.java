@@ -52,9 +52,6 @@ class AlphaNode extends ObjectSource
     /** The <code>FieldConstraint</code> */
     private final FieldConstraint constraint;
 
-    /** The <code>ObjectSource</code> */
-    private final ObjectSource    objectSource;
-
     private ObjectSinkNode        previousObjectSinkNode;
     private ObjectSinkNode        nextObjectSinkNode;
 

@@ -251,6 +251,11 @@ public class NotNode extends BetaNode {
     }
     
     public String toString() {
-        return "[NotNode]";
+        ObjectSource source = this.rightInput;
+        while ( source.getClass() != ObjectTypeNode.class ) {
+            source = source.objectSource;
+        }
+        
+        return "[NotNode - " + ((ObjectTypeNode)source).getObjectType()+ "]";
     }
 }

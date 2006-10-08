@@ -57,10 +57,10 @@ abstract class BetaNode extends TupleSource
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    private final TupleSource           leftInput;
+    protected final TupleSource           leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    private final ObjectSource          rightInput;
+    protected final ObjectSource          rightInput;
 
     protected final BetaNodeConstraints constraints;
 
