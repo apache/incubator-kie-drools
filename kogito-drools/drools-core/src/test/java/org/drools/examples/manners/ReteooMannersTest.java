@@ -57,7 +57,7 @@ public class ReteooMannersTest extends BaseMannersTest {
         //           
         //        });
 
-        final InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
+        final InputStream is = getClass().getResourceAsStream( "/manners5.dat" );
         final List list = getInputObjects( is );
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object object = it.next();
@@ -68,7 +68,10 @@ public class ReteooMannersTest extends BaseMannersTest {
 
         final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
-        System.err.println( System.currentTimeMillis() - start );                   
+        System.err.println( System.currentTimeMillis() - start );
+        
+        MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
+        visitor.visit( ruleBase );               
 
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
         //        

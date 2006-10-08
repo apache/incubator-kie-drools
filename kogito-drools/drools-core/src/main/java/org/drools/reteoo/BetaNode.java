@@ -16,6 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
@@ -128,6 +131,21 @@ abstract class BetaNode extends TupleSource
         this.rightInput.addObjectSink( this );
     }
 
+    public List getRules() {
+        List list = new ArrayList();        
+        
+        TupleSink[] sinks = this.sink.getSinks();
+        for ( int i = 0, length = sinks.length; i < length; i++ ) {                
+            if ( sinks[i].getClass() == TerminalNode.class ) {
+                list.add( ( ( TerminalNode ) sinks[i]).getRule().getName() );
+            } else if  ( sinks[i] instanceof BetaNode )  {
+                list.addAll( ( (BetaNode) sinks[i] ).getRules() );
+            }
+        }        
+        
+        return list;
+    }    
+    
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
