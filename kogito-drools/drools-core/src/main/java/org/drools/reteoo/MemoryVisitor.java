@@ -2,8 +2,10 @@ package org.drools.reteoo;
 
 import java.lang.reflect.Field;
 
+import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.examples.manners.Context;
 import org.drools.reteoo.TerminalNode.TerminalNodeMemory;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.Entry;
@@ -61,8 +63,11 @@ public class MemoryVisitor extends ReflectiveVisitor {
         //            }
     }
 
-    public void visitObjectTypeNode(final ObjectTypeNode node) {
-        System.out.println( indent() + node );
+    public void visitObjectTypeNode(final ObjectTypeNode node) {        
+        if  ( Context.class != ( ( ClassObjectType ) node.getObjectType() ).getClassType() ){
+            return;
+        }
+        System.out.println( indent() + node );        
         
         FactHashTable memory  = ( FactHashTable ) this.workingMemory.getNodeMemory( node );   
         checkObjectHashTable(memory);          

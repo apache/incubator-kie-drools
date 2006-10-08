@@ -38,6 +38,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.MemoryVisitor;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidRuleException;
@@ -199,7 +201,7 @@ public abstract class BaseMannersTest extends TestCase {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
-                try {
+                try {                    
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
@@ -463,6 +465,9 @@ public abstract class BaseMannersTest extends TestCase {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
+                    MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
+                    visitor.visit( workingMemory.getRuleBase() );
+                    
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
@@ -511,7 +516,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
-                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
+                    System.out.println( "find seating : " + seating + " : " + path + " : " + chosen );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();
@@ -841,7 +846,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
-                    System.err.println( "We Are Done!!!" );
+                    System.out.println( "We Are Done!!!" );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -960,7 +965,7 @@ public abstract class BaseMannersTest extends TestCase {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    System.err.println( "all done" );
+                    System.out.println( "all done" );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
