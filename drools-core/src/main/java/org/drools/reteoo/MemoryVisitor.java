@@ -182,7 +182,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
             }
         }
         
-        System.out.println( indent() + map.size()  + ":" + count);
+        System.out.println( "ObjectHashMap: "+ indent() + map.size()  + ":" + count);
         if ( map.size() != count ) {
             System.out.println( indent() + "error" );
         } 
@@ -211,7 +211,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
             }
         }
         
-        System.out.println( indent() + memory.size()  + ":" + count);
+        System.out.println( indent() + "FactHashTable: " +   memory.size()  + ":" + count);
         if ( memory.size() != count ) {
             System.out.println( indent() + "error" );
         }  
@@ -243,7 +243,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
         try {
             Field field =  AbstractHashTable.class.getDeclaredField( "size" );
             field.setAccessible( true );                
-            System.out.println( indent() + ( ( Integer ) field.get( memory ) ).intValue()  + ":" + bucketCount );
+            System.out.println( indent() + "FieldIndexBuckets: "+  ( ( Integer ) field.get( memory ) ).intValue()  + ":" + bucketCount );
             if ( ( ( Integer ) field.get( memory ) ).intValue()  != bucketCount ) {
                 System.out.println( indent() + "error" );    
             }
@@ -251,7 +251,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
             e.printStackTrace();
         }
         
-        System.out.println( indent() + memory.size()  + ":" + factCount);
+        System.out.println( indent() + "FieldIndexFacts: " +  memory.size()  + ":" + factCount);
         if ( memory.size() != factCount ) {
             System.out.println( indent() + "error" );
         }    
@@ -270,7 +270,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
             }
         }
         
-        System.out.println( indent() + memory.size()  + ":" + count);
+        System.out.println( indent() + "TupleMemory: " + memory.size()  + ":" + count);
         if ( memory.size() != count ) {
             System.out.println( indent() + "error" );
         }          
