@@ -25,9 +25,9 @@ public class Seating
      */
     private static final long serialVersionUID = -21267542036195318L;
 
-    private int         id, pid;
+    private Integer         id, pid;
 
-    private int         leftSeat, rightSeat;
+    private Integer         leftSeat, rightSeat;
 
     private String      leftGuestName, rightGuestName;
 
@@ -36,12 +36,12 @@ public class Seating
     public Seating() {
     }
     
-    public Seating(final int id,
-                   final int pid,
+    public Seating(final Integer id,
+                   final Integer pid,
                    final boolean pathDone,
-                   final int leftSeat,
+                   final Integer leftSeat,
                    final String leftGuestName,
-                   final int rightSeat,
+                   final Integer rightSeat,
                    final String rightGuestName) {
         super();
         this.id = id;
@@ -61,7 +61,7 @@ public class Seating
         this.pathDone = pathDone;
     }
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -69,11 +69,11 @@ public class Seating
         return this.leftGuestName;
     }
 
-    public int getLeftSeat() {
+    public Integer getLeftSeat() {
         return this.leftSeat;
     }
 
-    public int getPid() {
+    public Integer getPid() {
         return this.pid;
     }
 
@@ -81,7 +81,7 @@ public class Seating
         return this.rightGuestName;
     }
 
-    public int getRightSeat() {
+    public Integer getRightSeat() {
         return this.rightSeat;
     }
 

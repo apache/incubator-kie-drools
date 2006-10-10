@@ -176,7 +176,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           new Integer( Context.START_UP ),
+                                                           Context.START_UP ,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -220,22 +220,22 @@ public abstract class BaseMannersTest extends TestCase {
                     String guestName = guest.getName();
 
                     Seating seating = new Seating( count.getValue(),
-                                                   0,
+                                                   new Integer(0),
                                                    true,
-                                                   1,
+                                                   new Integer(1),
                                                    guestName,
-                                                   1,
+                                                   new Integer(1),
                                                    guestName );
 
                     drools.assertObject( seating );
 
                     Path path = new Path( count.getValue(),
-                                          1,
+                                          new Integer(1),
                                           guestName );
 
                     drools.assertObject( path );
 
-                    count.setValue( count.getValue() + 1 );
+                    count.setValue( new Integer(count.getValue().intValue() + 1) );
                     drools.modifyObject( tuple.get( countDeclaration ),
                                          count );
 
@@ -309,7 +309,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           new Integer( Context.ASSIGN_SEATS ),
+                                                           Context.ASSIGN_SEATS ,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -481,8 +481,8 @@ public abstract class BaseMannersTest extends TestCase {
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Count count = (Count) drools.get( countDeclaration );
-                    int seatId = ((Integer) drools.get( seatingIdDeclaration )).intValue();
-                    int seatingRightSeat = ((Integer) drools.get( seatingRightSeatDeclaration )).intValue();
+                    Integer seatId = ((Integer) drools.get( seatingIdDeclaration ));
+                    Integer seatingRightSeat = ((Integer) drools.get( seatingRightSeatDeclaration ));
 
                     String leftGuestName = (String) drools.get( leftGuestNameDeclaration );
                     String rightGuestName = (String) drools.get( seatingRightGuestNameDeclaration );
@@ -493,12 +493,12 @@ public abstract class BaseMannersTest extends TestCase {
                                                    false,
                                                    seatingRightSeat,
                                                    rightGuestName,
-                                                   seatingRightSeat + 1,
+                                                   new Integer(seatingRightSeat.intValue() + 1),
                                                    leftGuestName );
                     drools.assertObject( seating );
 
                     Path path = new Path( count.getValue(),
-                                          seatingRightSeat + 1,
+                                          new Integer(seatingRightSeat.intValue() + 1),
                                           leftGuestName );
 
                     drools.assertObject( path );
@@ -508,7 +508,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                 rightGuestHobby );
 
                     drools.assertObject( chosen );
-                    count.setValue( count.getValue() + 1 );
+                    count.setValue( new Integer(count.getValue().intValue() + 1) );
 
                     //                    if ( count.getValue() == 5 ) {
                     //                        drools.retractObject( tuple.getFactHandleForDeclaration( countDeclaration ) );
@@ -573,7 +573,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           new Integer( Context.MAKE_PATH ),
+                                                           Context.MAKE_PATH ,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -657,8 +657,8 @@ public abstract class BaseMannersTest extends TestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-                    int id = ((Integer) drools.get( seatingIdDeclaration )).intValue();
-                    int seat = ((Integer) drools.get( pathSeatDeclaration )).intValue();
+                    Integer id = ((Integer) drools.get( seatingIdDeclaration ));
+                    Integer seat = ((Integer) drools.get( pathSeatDeclaration ));
                     String guestName = (String) drools.get( pathGuestNameDeclaration );
 
                     Path path = new Path( id,
@@ -713,7 +713,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           new Integer( Context.MAKE_PATH ),
+                                                           Context.MAKE_PATH ,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -805,7 +805,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           new Integer( Context.CHECK_DONE ),
+                                                           Context.CHECK_DONE ,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -895,7 +895,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           new Integer( Context.CHECK_DONE ),
+                                                            Context.CHECK_DONE ,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -959,7 +959,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           new Integer( Context.PRINT_RESULTS ),
+                                                           Context.PRINT_RESULTS,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -1029,7 +1029,7 @@ public abstract class BaseMannersTest extends TestCase {
                 if ( !"seat".equals( st.nextToken() ) ) {
                     throw new IOException( "expected 'seat' in: " + line );
                 }
-                list.add( new LastSeat( new Integer( st.nextToken() ).intValue() ) );
+                list.add( new LastSeat( new Integer( st.nextToken() ) ) );
             }
 
             if ( "context".equals( type ) ) {
