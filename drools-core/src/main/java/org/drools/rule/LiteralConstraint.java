@@ -17,15 +17,18 @@ package org.drools.rule;
  */
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.Tuple;
 
 public class LiteralConstraint
     implements
-    FieldConstraint{
+    AlphaNodeFieldConstraint{
 
     /**
      * 
@@ -35,6 +38,8 @@ public class LiteralConstraint
     private final FieldExtractor       extractor;
     
     private final LiteralRestriction   restriction;
+    
+    private final static Declaration[] emptyDeclarations = new Declaration[]{};
 
     public LiteralConstraint(final FieldExtractor extractor,
                              final Evaluator evaluator,
@@ -53,12 +58,16 @@ public class LiteralConstraint
         return this.restriction.getEvaluator();
     }
 
-    public FieldValue getField() {
+    public Object getField() {
         return this.restriction.getField();
     }
 
     public FieldExtractor getFieldExtractor() {
         return this.extractor;
+    }
+    
+    public Declaration[] getRDeclarations(){
+        return emptyDeclarations;
     }
 
     /**
@@ -71,13 +80,13 @@ public class LiteralConstraint
     }
 
     public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        return this.restriction.isAllowed( this.extractor.getValue( object ), tuple, workingMemory );
+                             final InternalWorkingMemory workingMemory) {
+        return this.restriction.isAllowed(  this.extractor.getValue( object ), 
+                                            workingMemory );
     }
 
     public String toString() {
-        return "[LiteralConstraint fieldExtractor=" + this.extractor + " evaluator=" + getEvaluator() + " value=" + getField().getValue() + "]";
+        return "[LiteralConstraint fieldExtractor=" + this.extractor + " evaluator=" + getEvaluator() + " value=" + getField() + "]";
     }
 
     public int hashCode() {
@@ -100,4 +109,29 @@ public class LiteralConstraint
         return this.extractor.equals( other.extractor ) && this.restriction.equals( other.restriction );
     }
 
+    public static class LiteralContextEntry implements ContextEntry {
+        public Object object;    
+        
+        private FieldExtractor extractor;
+        
+        
+        public LiteralContextEntry(FieldExtractor extractor) {
+            this.extractor = extractor;
+        }
+        
+        public ContextEntry getNext() {
+            return null;
+        }
+        
+        public void setNext(ContextEntry  entry) {
+        }
+        
+        public void updateFromFactHandle(InternalFactHandle handle) {
+            this.object = this.extractor.getValue( handle.getObject() );
+            
+        }
+        
+        public void updateFromTuple(ReteTuple tuple) {            
+        }                
+    }    
 }

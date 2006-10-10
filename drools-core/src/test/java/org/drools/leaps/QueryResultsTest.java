@@ -33,7 +33,7 @@ import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
@@ -185,7 +185,7 @@ public class QueryResultsTest extends TestCase {
 
     }
 
-    private FieldConstraint getLiteralConstraint(final Column column,
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
                                                  final String fieldName,
                                                  final Object fieldValue,
                                                  final Evaluator evaluator) {

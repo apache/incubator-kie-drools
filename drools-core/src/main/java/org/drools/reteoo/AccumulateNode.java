@@ -25,7 +25,7 @@ import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Accumulate;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
@@ -44,7 +44,7 @@ public class AccumulateNode extends BetaNode {
     private static final long         serialVersionUID = -4081578178269297948L;
 
     private final Accumulate          accumulate;
-    private final FieldConstraint[]   constraints;
+    private final AlphaNodeFieldConstraint[]   constraints;
     private final BetaNodeConstraints resultsBinder;
 
     /**
@@ -66,7 +66,7 @@ public class AccumulateNode extends BetaNode {
         this( id,
               leftInput,
               rightInput,
-              new FieldConstraint[0],
+              new AlphaNodeFieldConstraint[0],
               new BetaNodeConstraints(),
               new BetaNodeConstraints(),
               accumulate );
@@ -75,7 +75,7 @@ public class AccumulateNode extends BetaNode {
     public AccumulateNode(final int id,
                           final TupleSource leftInput,
                           final ObjectSource rightInput,
-                          final FieldConstraint[] constraints,
+                          final AlphaNodeFieldConstraint[] constraints,
                           final BetaNodeConstraints sourceBinder,
                           final BetaNodeConstraints resultsBinder,
                           final Accumulate accumulate) {

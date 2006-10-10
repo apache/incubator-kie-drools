@@ -27,7 +27,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
@@ -64,7 +64,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node = new JoinNode( 15,
                                   this.tupleSource,
                                   this.objectSource,
-                                  new BetaNodeConstraints( new FieldConstraint[]{this.constraint} ) );
+                                  new BetaNodeConstraints( new AlphaNodeFieldConstraint[]{this.constraint} ) );
 
         this.node.addTupleSink( this.sink );
 

@@ -35,7 +35,7 @@ import org.drools.leaps.LeapsRuleBase;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
@@ -378,7 +378,7 @@ public class OrTest extends TestCase {
                                extractor );
     }
 
-    private FieldConstraint getLiteralConstraint(final Column column,
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
                                                  final String fieldName,
                                                  final Object fieldValue,
                                                  final Evaluator evaluator) throws IntrospectionException {
@@ -397,7 +397,7 @@ public class OrTest extends TestCase {
                                       field );
     }
 
-    private FieldConstraint getBoundVariableConstraint(final Column column,
+    private AlphaNodeFieldConstraint getBoundVariableConstraint(final Column column,
                                                        final String fieldName,
                                                        final Declaration declaration,
                                                        final Evaluator evaluator) throws IntrospectionException {

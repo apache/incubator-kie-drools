@@ -27,9 +27,11 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
@@ -112,13 +114,13 @@ abstract class BetaNode extends TupleSource
         this.constraints = constraints;
     }
 
-    public FieldConstraint[] getConstraints() {
+    public AlphaNodeFieldConstraint[] getConstraints() {
         LinkedList constraints = this.constraints.getConstraints();
 
-        FieldConstraint[] array = new FieldConstraint[constraints.size()];
+        AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];
         int i = 0;
         for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-            array[i++] = (FieldConstraint) entry.getObject();
+            array[i++] = (AlphaNodeFieldConstraint) entry.getObject();
         }
         return array;
     }
@@ -144,7 +146,15 @@ abstract class BetaNode extends TupleSource
         }        
         
         return list;
-    }    
+    } 
+    
+    public ObjectTypeNode  getObjectTypeNode() {
+            ObjectSource source = this.rightInput;
+            while ( source.getClass() != ObjectTypeNode.class ) {
+                source = source.objectSource;
+            }
+            return ((ObjectTypeNode)source);     
+    }
     
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
@@ -233,7 +243,7 @@ abstract class BetaNode extends TupleSource
         
         if ( constraints != null ) {
             for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                FieldConstraint constraint = (FieldConstraint) entry.getObject();
+                BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
                 if ( constraint.getClass() == VariableConstraint.class ) {
                     VariableConstraint variableConstraint = (VariableConstraint) constraint;
                     FieldExtractor extractor = variableConstraint.getFieldExtractor();
@@ -247,7 +257,7 @@ abstract class BetaNode extends TupleSource
                         break;
 
                     }
-                }
+                }                                                     
             }
         }
         

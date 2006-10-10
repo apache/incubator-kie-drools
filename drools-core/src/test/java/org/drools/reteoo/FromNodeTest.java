@@ -22,7 +22,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.DataProvider;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
@@ -57,7 +57,7 @@ public class FromNodeTest extends TestCase {
         FromNode from = new FromNode( 3,
                                       dataProvider,
                                       null,
-                                      new FieldConstraint[]{constraint},
+                                      new AlphaNodeFieldConstraint[]{constraint},
                                       null );
         MockTupleSink sink = new MockTupleSink( 5 );
         from.addTupleSink( sink );
@@ -156,7 +156,7 @@ public class FromNodeTest extends TestCase {
         FromNode from = new FromNode( 3,
                                       dataProvider,
                                       null,
-                                      new FieldConstraint[]{variableConstraint},
+                                      new AlphaNodeFieldConstraint[]{variableConstraint},
                                       null );
         MockTupleSink sink = new MockTupleSink( 5 );
         from.addTupleSink( sink );
@@ -245,7 +245,7 @@ public class FromNodeTest extends TestCase {
         FromNode from = new FromNode( 3,
                                       dataProvider,
                                       null,
-                                      new FieldConstraint[]{constraint},
+                                      new AlphaNodeFieldConstraint[]{constraint},
                                       null );
         MockTupleSink sink = new MockTupleSink( 5 );
         from.addTupleSink( sink );
@@ -317,7 +317,7 @@ public class FromNodeTest extends TestCase {
         FromNode from = new FromNode( 3,
                                       dataProvider,
                                       null,
-                                      new FieldConstraint[]{constraint},
+                                      new AlphaNodeFieldConstraint[]{constraint},
                                       null );
         MockTupleSink sink = new MockTupleSink( 5 );
         from.addTupleSink( sink );

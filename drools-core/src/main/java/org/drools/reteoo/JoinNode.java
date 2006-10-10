@@ -107,11 +107,13 @@ class JoinNode extends BetaNode {
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getTupleMemory().add( leftTuple );
-                
         Iterator it = memory.getObjectMemory().iterator( leftTuple );
+        
+        this.constraints.updateFromTuple( leftTuple );
         for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {
             InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowed( handle, leftTuple, workingMemory ) ) {
+            this.constraints.updateFromFactHandle( handle );
+            if ( this.constraints.isAllowed() ) {
                 sink.propagateAssertTuple( leftTuple, handle, context, workingMemory );
             }
         }        
@@ -142,8 +144,10 @@ class JoinNode extends BetaNode {
         memory.getObjectMemory().add( handle );
         
         Iterator it = memory.getTupleMemory().iterator();
+        this.constraints.updateFromFactHandle( handle );
         for ( ReteTuple tuple = ( ReteTuple ) it.next(); tuple != null; tuple = ( ReteTuple ) it.next() ) {
-            if ( this.constraints.isAllowed( handle, tuple, workingMemory ) ) {
+            this.constraints.updateFromTuple( tuple );
+            if ( this.constraints.isAllowed( ) ) {
                 sink.propagateAssertTuple( tuple, handle, context, workingMemory );
             }
         }
@@ -216,9 +220,11 @@ class JoinNode extends BetaNode {
         Iterator tupleIter = memory.getTupleMemory().iterator();
         for ( ReteTuple tuple = ( ReteTuple ) tupleIter.next(); tuple != null; tuple = ( ReteTuple ) tupleIter.next() ) {
             Iterator objectIter = memory.getObjectMemory().iterator( tuple );
+            this.constraints.updateFromTuple( tuple );
             for ( FactEntry entry = ( FactEntry ) objectIter.next(); entry != null; entry = ( FactEntry ) objectIter.next() ) {
                 InternalFactHandle handle = entry.getFactHandle();
-                if ( this.constraints.isAllowed( handle, tuple, workingMemory ) ) {
+                this.constraints.updateFromFactHandle( handle );
+                if ( this.constraints.isAllowed( ) ) {
                     sink.assertTuple( new ReteTuple( tuple, handle),  context, workingMemory );
                 }
             }               

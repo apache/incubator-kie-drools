@@ -26,7 +26,7 @@ import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Collect;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
@@ -43,7 +43,7 @@ public class CollectNode extends BetaNode
     private static final long         serialVersionUID = -8321568626178187047L;
 
     private final Collect             collect;
-    private final FieldConstraint[]   resultConstraints;
+    private final AlphaNodeFieldConstraint[]   resultConstraints;
     private final BetaNodeConstraints resultsBinder;
 
     /**
@@ -65,7 +65,7 @@ public class CollectNode extends BetaNode
         this( id,
               leftInput,
               rightInput,
-              new FieldConstraint[0],
+              new AlphaNodeFieldConstraint[0],
               new BetaNodeConstraints(),
               new BetaNodeConstraints(),
               collect );
@@ -92,7 +92,7 @@ public class CollectNode extends BetaNode
     public CollectNode(final int id,
                        final TupleSource leftInput,
                        final ObjectSource rightInput,
-                       final FieldConstraint[] resultConstraints,
+                       final AlphaNodeFieldConstraint[] resultConstraints,
                        final BetaNodeConstraints sourceBinder,
                        final BetaNodeConstraints resultsBinder,
                        final Collect collect) {

@@ -35,7 +35,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Not;
 import org.drools.rule.Rule;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 
 /**
@@ -191,7 +191,7 @@ class LeapsBuilder {
                 continue;
             }
 
-            final FieldConstraint fieldConstraint = (FieldConstraint) object;
+            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
                 alphaConstraints.add( fieldConstraint);
             } else {
@@ -200,7 +200,7 @@ class LeapsBuilder {
         }
 
         if ( !predicateConstraints.isEmpty() ) {
-            binder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            binder = new BetaNodeConstraints( (AlphaNodeFieldConstraint[]) predicateConstraints.toArray( new AlphaNodeFieldConstraint[predicateConstraints.size()] ) );
         } else {
             binder = new BetaNodeConstraints();
         }

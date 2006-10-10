@@ -23,7 +23,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.BetaNodeConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Column;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Tuple;
 
 /**
@@ -35,7 +35,7 @@ import org.drools.spi.Tuple;
 public class ColumnConstraints implements Serializable {
     private Object                  classType;
 
-    private final FieldConstraint[] alphaConstraints;
+    private final AlphaNodeFieldConstraint[] alphaConstraints;
 
     private final boolean           alphaPresent;
 
@@ -56,7 +56,7 @@ public class ColumnConstraints implements Serializable {
             this.betaPresent = false;
         }
         if ( alpha != null && alpha.size() > 0 ) {
-            this.alphaConstraints = (FieldConstraint[]) alpha.toArray( new FieldConstraint[0] );
+            this.alphaConstraints = (AlphaNodeFieldConstraint[]) alpha.toArray( new AlphaNodeFieldConstraint[0] );
             this.alphaPresent = true;
         } else {
             this.alphaConstraints = null;
@@ -111,11 +111,11 @@ public class ColumnConstraints implements Serializable {
         return this.alphaPresent;
     }
     
-    protected FieldConstraint[] getAlphaContraints() {
+    protected AlphaNodeFieldConstraint[] getAlphaContraints() {
         return this.alphaConstraints;
     }
     
-    protected FieldConstraint[] getBetaContraints() {
+    protected AlphaNodeFieldConstraint[] getBetaContraints() {
         return this.beta.getConstraints( );
     }
 }
