@@ -24,16 +24,16 @@ public class LastSeat
      * 
      */
     private static final long serialVersionUID = -3331801742327121724L;
-    private int         seat;
+    private Integer         seat;
 
     public LastSeat() {
     }
     
-    public LastSeat(final int seat) {
+    public LastSeat(final Integer seat) {
         this.seat = seat;
     }
 
-    public int getSeat() {
+    public Integer getSeat() {
         return this.seat;
     }
 

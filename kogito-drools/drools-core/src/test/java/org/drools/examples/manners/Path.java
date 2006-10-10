@@ -16,22 +16,22 @@
 package org.drools.examples.manners;
 
 public class Path {
-    private int    id;
+    private Integer    id;
     private String guestName;
-    private int    seat;
+    private Integer    seat;
 
     public Path() {
     }
     
-    public Path(final int id,
-                final int seat,
+    public Path(final Integer id,
+                final Integer seat,
                 final String guestName) {
         this.id = id;
         this.seat = seat;
         this.guestName = guestName;
     }
 
-    public int getSeat() {
+    public Integer getSeat() {
         return this.seat;
     }
 
@@ -39,7 +39,7 @@ public class Path {
         return this.guestName;
     }
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 

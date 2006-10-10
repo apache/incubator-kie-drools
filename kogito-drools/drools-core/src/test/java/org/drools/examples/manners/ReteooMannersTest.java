@@ -67,14 +67,14 @@ public class ReteooMannersTest extends BaseMannersTest {
         
         //workingMemory.addEventListener(listener );
 
-        final InputStream is = getClass().getResourceAsStream( "/manners128.dat" );
+        final InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
         final List list = getInputObjects( is );
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object object = it.next();
             workingMemory.assertObject( object );
         }
 
-        workingMemory.assertObject( new Count( 1 ) );
+        workingMemory.assertObject( new Count( new Integer(1) ) );
 
         final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
