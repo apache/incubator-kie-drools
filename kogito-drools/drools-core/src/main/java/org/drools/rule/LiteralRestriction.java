@@ -17,6 +17,7 @@ package org.drools.rule;
  */
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.Restriction;
@@ -31,7 +32,7 @@ public class LiteralRestriction
      */
     private static final long          serialVersionUID     = 320;
 
-    private final FieldValue           field;
+    private final Object               field;
 
     private final Evaluator            evaluator;
 
@@ -39,7 +40,7 @@ public class LiteralRestriction
 
     public LiteralRestriction(final FieldValue field,
                               final Evaluator evaluator) {
-        this.field = field;
+        this.field = field.getValue();
         this.evaluator = evaluator;
     }
 
@@ -47,9 +48,18 @@ public class LiteralRestriction
         return this.evaluator;
     }
 
-    public FieldValue getField() {
+    public Object getField() {
         return this.field;
     }
+    
+    public boolean isAllowed(Object object,
+                             InternalWorkingMemory workingMemoiry) {
+        return this.evaluator.evaluate( object, field );
+    }
+
+    public boolean isAllowed(ContextEntry context) {
+        throw  new UnsupportedOperationException("cannot call isAllowed(ContextEntry context)");
+    }    
 
     /**
      * Literal constraints cannot have required declarations, so always return an empty array.
@@ -60,15 +70,10 @@ public class LiteralRestriction
         return LiteralRestriction.requiredDeclarations;
     }
 
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        return this.evaluator.evaluate( object,
-                                        this.field.getValue() );
-    }
+
 
     public String toString() {
-        return "[LiteralRestriction evaluator=" + this.evaluator + " value=" + this.field.getValue() + "]";
+        return "[LiteralRestriction evaluator=" + this.evaluator + " value=" + this.field + "]";
     }
 
     public int hashCode() {

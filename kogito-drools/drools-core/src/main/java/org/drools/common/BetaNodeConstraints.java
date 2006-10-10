@@ -24,11 +24,14 @@ import org.drools.WorkingMemory;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ObjectHashTable;
+import org.drools.reteoo.ReteTuple;
+import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
 import org.drools.util.FactHashTable;
@@ -49,36 +52,59 @@ public class BetaNodeConstraints
     public final static BetaNodeConstraints emptyBetaNodeConstraints = new BetaNodeConstraints();
 
     private final LinkedList         constraints;
+    
+    private ContextEntry         contexts;
 
     public BetaNodeConstraints() {
         this.constraints = null;
+        this.contexts = null;
     }
 
-    public BetaNodeConstraints(final FieldConstraint constraint) {
-        this( new FieldConstraint[]{constraint} );
+    public BetaNodeConstraints(final BetaNodeFieldConstraint constraint) {
+        this( new BetaNodeFieldConstraint[]{constraint} );
     }
 
-    public BetaNodeConstraints(final FieldConstraint[] constraints) {
+    public BetaNodeConstraints(final BetaNodeFieldConstraint[] constraints) {
         this.constraints =  new  LinkedList();
+        ContextEntry current  = null;
         for ( int  i  = 0, length = constraints.length; i < length; i++ ) {
             this.constraints.add( new LinkedListEntry( constraints[i] ) );
+            ContextEntry context = constraints[i].getContextEntry();
+            if ( current  ==  null )  {
+                current = context;
+                this.contexts = context;
+            } else {
+                current.setNext( context );    
+            }
+            current = context;
+        }             
+    }
+    
+    public void updateFromTuple(ReteTuple tuple) {
+        for( ContextEntry context = this.contexts; context != null; context = context.getNext() )  {
+            context.updateFromTuple( tuple );
         }        
     }
+    
+    public void updateFromFactHandle(InternalFactHandle handle) {
+        for( ContextEntry context = this.contexts; context != null; context = context.getNext() )  {
+            context.updateFromFactHandle( handle );
+        }                
+    }
 
-    public boolean isAllowed(final InternalFactHandle handle,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
+    public boolean isAllowed() {
         if ( this.constraints == null ) {
             return true;
         }
-                
-        for ( LinkedListEntry entry = ( LinkedListEntry ) this.constraints.getFirst(); entry != null; entry = ( LinkedListEntry ) entry.getNext() ) {
-            FieldConstraint constraint = (FieldConstraint) entry.getObject();
-            if ( !constraint.isAllowed( handle.getObject(),
-                                       tuple,
-                                       workingMemory ) ) {
+              
+        LinkedListEntry entry = ( LinkedListEntry ) this.constraints.getFirst();
+        ContextEntry context = this.contexts;
+        while( entry != null )  {
+            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowed( context ) ) {
                 return false;
             }            
+            entry = ( LinkedListEntry ) entry.getNext() ;
+            context = context.getNext();
         }
         return true;
     }    
@@ -132,5 +158,5 @@ public class BetaNodeConstraints
         
         return this.constraints.equals( other );
     }
-
+    
 }

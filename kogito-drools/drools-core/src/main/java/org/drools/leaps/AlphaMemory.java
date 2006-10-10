@@ -2,7 +2,7 @@ package org.drools.leaps;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Tuple;
 import org.drools.util.IdentityMap;
 
@@ -13,7 +13,7 @@ class AlphaMemory {
 
     }
 
-    boolean checkAlpha( final FieldConstraint alpha,
+    boolean checkAlpha( final AlphaNodeFieldConstraint alpha,
                         final InternalFactHandle factHandle,
                         final Tuple tuple,
                         final WorkingMemory workingMemory ) {

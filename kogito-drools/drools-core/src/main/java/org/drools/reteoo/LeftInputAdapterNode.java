@@ -29,7 +29,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
@@ -58,23 +58,23 @@ class LeftInputAdapterNode extends TupleSource
      */
     private static final long         serialVersionUID = 320L;
     private final ObjectSource        objectSource;
-    private final BetaNodeConstraints constraints;
+//    private final AlphaNodeFieldConstraint    constraints;
 
-    /**
-     * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
-     * parent <code>ObjectSource</code> and adds it to a given column in the resulting Tuples.
-     * 
-     * @param id
-     *      The unique id of this node in the current Rete network
-     * @param source
-     *      The parent node, where Facts are propagated from
-     */
-    public LeftInputAdapterNode(final int id,
-                                final ObjectSource source) {
-        this( id,
-              source,
-              null );
-    }
+//    /**
+//     * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
+//     * parent <code>ObjectSource</code> and adds it to a given column in the resulting Tuples.
+//     * 
+//     * @param id
+//     *      The unique id of this node in the current Rete network
+//     * @param source
+//     *      The parent node, where Facts are propagated from
+//     */
+//    public LeftInputAdapterNode(final int id,
+//                                final ObjectSource source) {
+//        this( id,
+//              source,
+//              null );
+//    }
 
     /**
      * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
@@ -89,24 +89,23 @@ class LeftInputAdapterNode extends TupleSource
      *      a predicate is used in the first column, for instance
      */
     public LeftInputAdapterNode(final int id,
-                                final ObjectSource source,
-                                final BetaNodeConstraints constraints) {
+                                final ObjectSource source) {
         super( id );
         this.objectSource = source;
-        this.constraints = constraints;
+        //this.constraints = constraints;
         setHasMemory( false );
     }
 
-    public FieldConstraint[] getConstraints() {
-        LinkedList constraints = this.constraints.getConstraints();
-
-        FieldConstraint[] array = new FieldConstraint[constraints.size()];
-        int i = 0;
-        for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-            array[i++] = (FieldConstraint) entry.getObject();
-        }
-        return array;
-    }
+//    public AlphaNodeFieldConstraint[] getConstraints() {
+//        LinkedList constraints = this.constraints.getConstraints();
+//
+//        AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];
+//        int i = 0;
+//        for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+//            array[i++] = (AlphaNodeFieldConstraint) entry.getObject();
+//        }
+//        return array;
+//    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
@@ -144,9 +143,8 @@ class LeftInputAdapterNode extends TupleSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if ( (this.constraints == null) || (this.constraints.isAllowed( handle,
-                                                                        null,
-                                                                        workingMemory )) ) {
+//        if ( (this.constraints == null) || (this.constraints.isAllowed( handle.getObject(),
+//                                                                        workingMemory )) ) {
             ReteTuple tuple = this.sink.createAndPropagateAssertTuple( handle,
                                                                        context,
                                                                        workingMemory );
@@ -156,7 +154,7 @@ class LeftInputAdapterNode extends TupleSource
                 map.put( handle,
                          tuple,
                          false );
-            }
+//            }
         }
     }
 
@@ -239,11 +237,11 @@ class LeftInputAdapterNode extends TupleSource
         }
 
         final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
-        if ( this.constraints == null ) {
-            return this.objectSource.equals( other.objectSource ) && other.constraints == null;
-        } else {
-            return this.objectSource.equals( other.objectSource ) && this.constraints.equals( other.constraints );
-        }
+//        if ( this.constraints == null ) {
+//            return this.objectSource.equals( other.objectSource ) && other.constraints == null;
+//        } else {
+            return this.objectSource.equals( other.objectSource ); //&& this.constraints.equals( other.constraints );
+//        }
     }
 
     public Object createMemory(RuleBaseConfiguration config) {

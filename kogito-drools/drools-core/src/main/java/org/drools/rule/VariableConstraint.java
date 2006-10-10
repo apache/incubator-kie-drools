@@ -17,14 +17,18 @@ package org.drools.rule;
  */
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.ReteTuple;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
+import org.drools.util.BaseEntry;
 
 public class VariableConstraint
     implements
-    FieldConstraint {
+    BetaNodeFieldConstraint {
 
     /**
      * 
@@ -59,17 +63,17 @@ public class VariableConstraint
     public Evaluator getEvaluator() {
         return this.restriction.getEvaluator();
     }
-
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        return this.restriction.isAllowed( this.fieldExtractor.getValue( object ),
-                                           tuple,
-                                           workingMemory );
+    
+    public boolean isAllowed(ContextEntry context) {
+        return this.restriction.isAllowed( context );        
     }
 
     public String toString() {
         return "[VariableConstraint fieldExtractor=" + this.fieldExtractor + " declaration=" + getRequiredDeclarations() + "]";
+    }
+    
+    public ContextEntry getContextEntry() {
+        return new  VariableContextEntry(this.fieldExtractor,  this.restriction.getRequiredDeclarations()[0] );
     }
 
     public int hashCode() {
@@ -93,5 +97,39 @@ public class VariableConstraint
 
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
+    
+    
+    public static class VariableContextEntry implements ContextEntry {
+        public Object left;
+        public Object right;        
+        
+        private FieldExtractor extractor;
+        private Declaration declaration;
+        private ContextEntry entry;
+        
+        
+        public VariableContextEntry(FieldExtractor extractor, Declaration declaration) {
+            this.extractor = extractor;
+            this.declaration = declaration;
+        }
+        
+        public ContextEntry getNext() {
+            return this.entry;
+        }
+        
+        public void setNext(ContextEntry  entry) {
+            this.entry = entry;
+        }
+        
+        public void updateFromFactHandle(InternalFactHandle handle) {
+            this.left = this.extractor.getValue( handle.getObject() );
+            
+        }
+        
+        public void updateFromTuple(ReteTuple tuple) {
+            this.right =  this.declaration.getValue( tuple.get( this.declaration ).getObject() );            
+        }                
+    }
+    
 
 }

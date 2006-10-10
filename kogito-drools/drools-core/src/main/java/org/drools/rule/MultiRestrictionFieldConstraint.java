@@ -1,14 +1,14 @@
 package org.drools.rule;
 
 import org.drools.WorkingMemory;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.Tuple;
 
 public class MultiRestrictionFieldConstraint
     implements
-    FieldConstraint {
+    AlphaNodeFieldConstraint {
 
     /**
      * 

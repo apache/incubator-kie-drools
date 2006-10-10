@@ -19,6 +19,8 @@ package org.drools.rule;
 import java.util.Arrays;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Restriction;
 import org.drools.spi.Tuple;
@@ -52,12 +54,11 @@ public class VariableRestriction
     public Evaluator getEvaluator() {
         return this.evaluator;
     }
-
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        return this.evaluator.evaluate( object,
-                                        this.declaration.getValue( tuple.get( this.declaration ).getObject() ) );
+    
+    public boolean isAllowed(ContextEntry context) {
+        VariableContextEntry variableContext = ( VariableContextEntry ) context;
+        return this.evaluator.evaluate( variableContext.left,
+                                        variableContext.right );        
     }
 
     public String toString() {
@@ -91,4 +92,8 @@ public class VariableRestriction
                                                                                                                           other.requiredDeclarations );
     }
 
+    public boolean isAllowed(Object object,
+                             InternalWorkingMemory workingMemoiry) {
+        throw new UnsupportedOperationException("does not support method  call  isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+    }
 }

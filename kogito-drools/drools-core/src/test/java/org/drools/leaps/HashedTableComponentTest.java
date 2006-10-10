@@ -50,7 +50,7 @@ import org.drools.rule.VariableConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
@@ -343,7 +343,7 @@ public class HashedTableComponentTest extends DroolsTestCase {
         return -1;
     }
 
-    private FieldConstraint getLiteralConstraint( final Column column,
+    private AlphaNodeFieldConstraint getLiteralConstraint( final Column column,
                                                   final String fieldName,
                                                   final Object fieldValue,
                                                   final Evaluator evaluator )
@@ -368,7 +368,7 @@ public class HashedTableComponentTest extends DroolsTestCase {
         column.addDeclaration( identifier, extractor );
     }
 
-    private FieldConstraint getBoundVariableConstraint( final Column column,
+    private AlphaNodeFieldConstraint getBoundVariableConstraint( final Column column,
                                                         final String fieldName,
                                                         final Declaration declaration,
                                                         final Evaluator evaluator )

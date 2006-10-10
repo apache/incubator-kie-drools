@@ -50,7 +50,9 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.Constraint;
 import org.drools.spi.FieldValue;
 
 /**
@@ -262,8 +264,7 @@ class ReteooBuilder
                 // a TupleSource using LeftInputAdapterNode
                 if ( this.tupleSource == null ) {
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                             this.objectSource,
-                                                                             binder ) );
+                                                                             this.objectSource ) );
 
                     // objectSource is created by the attachColumn method, if we
                     // adapt this to
@@ -381,7 +382,7 @@ class ReteooBuilder
         BetaNodeConstraints binder;
 
         if ( !predicates.isEmpty() ) {
-            binder = new BetaNodeConstraints( (FieldConstraint[]) predicates.toArray( new FieldConstraint[predicates.size()] ) );
+            binder = new BetaNodeConstraints( (BetaNodeFieldConstraint[]) predicates.toArray( new BetaNodeFieldConstraint[predicates.size()] ) );
         } else {
             binder = new BetaNodeConstraints();
         }
@@ -407,13 +408,13 @@ class ReteooBuilder
                 final Map.Entry entry = (Map.Entry) it.next();
                 final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    predicateConstraints.add( new InstanceNotEqualsConstraint( ((Integer) entry.getValue()).intValue() ) );
+                    predicateConstraints.add( new InstanceNotEqualsConstraint( (Column) entry.getValue()) );
                 }
             }
 
             // Must be added after the checking, otherwise it matches against itself
             this.objectType.put( column.getObjectType(),
-                                 new Integer( column.getFactIndex() ) );
+                                 column );
         }
 
         for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
@@ -427,14 +428,14 @@ class ReteooBuilder
                 continue;
             }
 
-            final FieldConstraint fieldConstraint = (FieldConstraint) object;
-            if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
+            final Constraint constraint = (Constraint) object;
+            if ( constraint.getRequiredDeclarations().length == 0) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
-                                                               fieldConstraint,
+                                                               (AlphaNodeFieldConstraint) constraint,
                                                                this.objectSource ) );
             } else {
-                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
-                predicateConstraints.add( fieldConstraint );
+                checkUnboundDeclarations( ((BetaNodeFieldConstraint) constraint).getRequiredDeclarations() );
+                predicateConstraints.add( (BetaNodeFieldConstraint) constraint );
             }
         }
 
@@ -487,7 +488,7 @@ class ReteooBuilder
                                                                                                        column.getFactIndex(),
                                                                                                        notNode ) );
 
-        BetaNodeConstraints identityBinder = new BetaNodeConstraints( new InstanceEqualsConstraint( column.getFactIndex() ) );
+        BetaNodeConstraints identityBinder = new BetaNodeConstraints( new InstanceEqualsConstraint( column ) );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
                                                      adapter,
@@ -599,7 +600,7 @@ class ReteooBuilder
                 continue;
             }
 
-            final FieldConstraint fieldConstraint = (FieldConstraint) object;
+            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
             if ( fieldConstraint instanceof LiteralConstraint ) {
                 alphaNodeConstraints.add( fieldConstraint );
             } else {
@@ -611,7 +612,7 @@ class ReteooBuilder
         BetaNodeConstraints binder;
 
         if ( !predicateConstraints.isEmpty() ) {
-            binder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            binder = new BetaNodeConstraints( (BetaNodeFieldConstraint[]) predicateConstraints.toArray( new BetaNodeFieldConstraint[predicateConstraints.size()] ) );
         } else {
             binder = new BetaNodeConstraints();
         }
@@ -619,7 +620,7 @@ class ReteooBuilder
         this.tupleSource = attachNode( new FromNode( id++,
                                                      from.getDataProvider(),
                                                      this.tupleSource,
-                                                     (FieldConstraint[]) alphaNodeConstraints.toArray( new FieldConstraint[alphaNodeConstraints.size()] ),
+                                                     (AlphaNodeFieldConstraint[]) alphaNodeConstraints.toArray( new AlphaNodeFieldConstraint[alphaNodeConstraints.size()] ),
                                                      binder ) );
 
     }
@@ -674,7 +675,7 @@ class ReteooBuilder
                 continue;
             }
 
-            final FieldConstraint fieldConstraint = (FieldConstraint) object;
+            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
             if ( fieldConstraint instanceof LiteralConstraint ) {
                 alphaNodeConstraints.add( fieldConstraint );
             } else {
@@ -685,7 +686,7 @@ class ReteooBuilder
 
         BetaNodeConstraints resultsBinder = null;
         if ( !predicateConstraints.isEmpty() ) {
-            resultsBinder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            resultsBinder = new BetaNodeConstraints( (BetaNodeFieldConstraint[]) predicateConstraints.toArray( new BetaNodeFieldConstraint[predicateConstraints.size()] ) );
         } else {
             resultsBinder = new BetaNodeConstraints();
         }
@@ -693,7 +694,7 @@ class ReteooBuilder
         this.tupleSource = attachNode( new AccumulateNode( id++,
                                                            this.tupleSource,
                                                            this.objectSource,
-                                                           (FieldConstraint[]) alphaNodeConstraints.toArray( new FieldConstraint[alphaNodeConstraints.size()] ),
+                                                           (AlphaNodeFieldConstraint[]) alphaNodeConstraints.toArray( new AlphaNodeFieldConstraint[alphaNodeConstraints.size()] ),
                                                            sourceBinder,
                                                            resultsBinder,
                                                            accumulate ) );
@@ -749,7 +750,7 @@ class ReteooBuilder
                 continue;
             }
 
-            final FieldConstraint fieldConstraint = (FieldConstraint) object;
+            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
             if ( fieldConstraint instanceof LiteralConstraint ) {
                 alphaNodeConstraints.add( fieldConstraint );
             } else {
@@ -760,7 +761,7 @@ class ReteooBuilder
 
         BetaNodeConstraints resultsBinder = null;
         if ( !predicateConstraints.isEmpty() ) {
-            resultsBinder = new BetaNodeConstraints( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+            resultsBinder = new BetaNodeConstraints( (BetaNodeFieldConstraint[]) predicateConstraints.toArray( new BetaNodeFieldConstraint[predicateConstraints.size()] ) );
         } else {
             resultsBinder = new BetaNodeConstraints();
         }
@@ -768,7 +769,7 @@ class ReteooBuilder
         this.tupleSource = attachNode( new CollectNode( id++,
                                                         this.tupleSource,
                                                         this.objectSource,
-                                                        (FieldConstraint[]) alphaNodeConstraints.toArray( new FieldConstraint[alphaNodeConstraints.size()] ),
+                                                        (AlphaNodeFieldConstraint[]) alphaNodeConstraints.toArray( new AlphaNodeFieldConstraint[alphaNodeConstraints.size()] ),
                                                         sourceBinder,
                                                         resultsBinder,
                                                         collect ) );

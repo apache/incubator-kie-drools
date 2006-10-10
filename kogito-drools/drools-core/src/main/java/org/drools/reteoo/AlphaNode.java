@@ -22,7 +22,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
@@ -33,7 +33,7 @@ import org.drools.util.AbstractHashTable.FactEntry;
  * to apply <code>FieldConstraint<.code>s on asserted fact 
  * objects where the <code>FieldConstraint</code>s have no dependencies on any other of the facts in the current <code>Rule</code>.
  * 
- *  @see FieldConstraint
+ *  @see AlphaNodeFieldConstraint
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
@@ -50,7 +50,7 @@ class AlphaNode extends ObjectSource
     private static final long     serialVersionUID = 8936511451364612838L;
 
     /** The <code>FieldConstraint</code> */
-    private final FieldConstraint constraint;
+    private final AlphaNodeFieldConstraint constraint;
 
     private ObjectSinkNode        previousObjectSinkNode;
     private ObjectSinkNode        nextObjectSinkNode;
@@ -65,7 +65,7 @@ class AlphaNode extends ObjectSource
      * @param objectSource
      */
     AlphaNode(final int id,
-              final FieldConstraint constraint,
+              final AlphaNodeFieldConstraint constraint,
               final ObjectSource objectSource) {
         this(id, constraint, objectSource, true);
     }
@@ -83,7 +83,7 @@ class AlphaNode extends ObjectSource
      * @param hasMemory true if node shall be configured with local memory. False otherwise.
      */
     AlphaNode(final int id,
-              final FieldConstraint constraint,
+              final AlphaNodeFieldConstraint constraint,
               final ObjectSource objectSource,
               final boolean hasMemory) {
         super( id );
@@ -97,7 +97,7 @@ class AlphaNode extends ObjectSource
      * 
      * @return <code>FieldConstraint</code>
      */
-    public FieldConstraint getConstraint() {
+    public AlphaNodeFieldConstraint getConstraint() {
         return this.constraint;
     }
 
@@ -132,7 +132,6 @@ class AlphaNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) throws FactException {
         if ( this.constraint.isAllowed( handle.getObject(),
-                                        null,
                                         workingMemory ) ) {
             if ( hasMemory() ) {
                 final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );

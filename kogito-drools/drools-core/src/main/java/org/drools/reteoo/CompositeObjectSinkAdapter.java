@@ -8,7 +8,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
@@ -38,7 +38,7 @@ public class CompositeObjectSinkAdapter
     public void addObjectSink(ObjectSink sink) {
         if ( sink.getClass() == AlphaNode.class ) {
             AlphaNode alphaNode = (AlphaNode) sink;
-            FieldConstraint fieldConstraint = alphaNode.getConstraint();
+            AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
             if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
                 LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
@@ -53,7 +53,7 @@ public class CompositeObjectSinkAdapter
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
-                        Object value = literalConstraint.getField().getValue();
+                        Object value = literalConstraint.getField();
                         // no need to check, we know  the sink  does not exist
                         hashedSinkMap.put( new HashKey( index,
                                                         value ),
@@ -81,12 +81,12 @@ public class CompositeObjectSinkAdapter
     public void removeObjectSink(ObjectSink sink) {
         if ( sink.getClass() == AlphaNode.class ) {
             AlphaNode alphaNode = (AlphaNode) sink;
-            FieldConstraint fieldConstraint = alphaNode.getConstraint();
+            AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
             if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
                 LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 Evaluator evaluator = literalConstraint.getEvaluator();
-                Object value = literalConstraint.getField().getValue();
+                Object value = literalConstraint.getField();
 
                 if ( evaluator.getOperator() == Operator.EQUAL ) {
                     int index = literalConstraint.getFieldExtractor().getIndex();
@@ -131,11 +131,11 @@ public class CompositeObjectSinkAdapter
 
         for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
             AlphaNode alphaNode = (AlphaNode) sink;
-            FieldConstraint fieldConstraint = alphaNode.getConstraint();
+            AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
             LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
             Evaluator evaluator = literalConstraint.getEvaluator();
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                Object value = literalConstraint.getField().getValue();
+                Object value = literalConstraint.getField();
                 list.add( sink );
                 hashedSinkMap.put( new HashKey( index,
                                                 value ),
@@ -160,11 +160,11 @@ public class CompositeObjectSinkAdapter
 
         for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
             AlphaNode alphaNode = (AlphaNode) sink;
-            FieldConstraint fieldConstraint = alphaNode.getConstraint();
+            AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
             LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
             Evaluator evaluator = literalConstraint.getEvaluator();
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                Object value = literalConstraint.getField().getValue();
+                Object value = literalConstraint.getField();
                 this.hashKey.setIndex( index );
                 this.hashKey.setValue( value );
                 this.hashableSinks.add( sink );

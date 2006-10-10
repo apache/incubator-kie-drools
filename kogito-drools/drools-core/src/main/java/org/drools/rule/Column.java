@@ -23,8 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.spi.ColumnExtractor;
+import org.drools.spi.Constraint;
 import org.drools.spi.Extractor;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 
 public class Column
@@ -84,7 +85,7 @@ public class Column
         return Collections.unmodifiableList( this.constraints );
     }
 
-    public void addConstraint(final FieldConstraint constraint) {
+    public void addConstraint(final Constraint constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }

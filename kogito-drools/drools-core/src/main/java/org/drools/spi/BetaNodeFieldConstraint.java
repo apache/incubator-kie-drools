@@ -1,8 +1,5 @@
 package org.drools.spi;
 
-import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,9 +16,16 @@ import org.drools.rule.Declaration;
  * limitations under the License.
  */
 
-public interface Constraint
+import org.drools.WorkingMemory;
+import org.drools.rule.ContextEntry;
+import org.drools.rule.Declaration;
+
+public interface BetaNodeFieldConstraint
     extends
-    RuleComponent {
+    Constraint {
     
-    Declaration[] getRequiredDeclarations();
+    public boolean isAllowed(ContextEntry context);
+    
+    public ContextEntry getContextEntry();
+
 }

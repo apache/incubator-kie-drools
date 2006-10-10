@@ -13,7 +13,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.DataProvider;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
 public class FromNode extends TupleSource
@@ -27,13 +27,13 @@ public class FromNode extends TupleSource
 
     private DataProvider        dataProvider;
     private TupleSource         tupleSource;
-    private FieldConstraint[]   constraints;
+    private AlphaNodeFieldConstraint[]   constraints;
     private BetaNodeConstraints binder;
 
     public FromNode(final int id,
                     final DataProvider dataProvider,
                     final TupleSource tupleSource,
-                    final FieldConstraint[] constraints,
+                    final AlphaNodeFieldConstraint[] constraints,
                     final BetaNodeConstraints binder) {
         super( id );
         this.dataProvider = dataProvider;

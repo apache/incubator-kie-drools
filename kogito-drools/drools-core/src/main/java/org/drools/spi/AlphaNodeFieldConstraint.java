@@ -17,14 +17,14 @@ package org.drools.spi;
  */
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 
-public interface FieldConstraint
+public interface AlphaNodeFieldConstraint
     extends
     Constraint {
+    
     public boolean isAllowed(Object object,
-                             Tuple tuple,
-                             WorkingMemory workingMemory);
-
-    Declaration[] getRequiredDeclarations();
+                             InternalWorkingMemory workingMemory);
 }

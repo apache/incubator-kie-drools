@@ -48,10 +48,11 @@ import org.drools.rule.Not;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
@@ -89,25 +90,32 @@ public abstract class BaseMannersTest extends TestCase {
 
     protected void setUp() throws Exception {
         Class shadow = ShadowProxyFactory.getProxy( Context.class );
-        this.contextType = new ClassObjectType( Context.class, shadow );
+        this.contextType = new ClassObjectType( Context.class,
+                                                shadow );
 
         shadow = ShadowProxyFactory.getProxy( Guest.class );
-        this.guestType = new ClassObjectType( Guest.class, shadow );
-        
+        this.guestType = new ClassObjectType( Guest.class,
+                                              shadow );
+
         shadow = ShadowProxyFactory.getProxy( Seating.class );
-        this.seatingType = new ClassObjectType( Seating.class, shadow  );
+        this.seatingType = new ClassObjectType( Seating.class,
+                                                shadow );
 
         shadow = ShadowProxyFactory.getProxy( LastSeat.class );
-        this.lastSeatType = new ClassObjectType( LastSeat.class, shadow  );
+        this.lastSeatType = new ClassObjectType( LastSeat.class,
+                                                 shadow );
 
         shadow = ShadowProxyFactory.getProxy( Count.class );
-        this.countType = new ClassObjectType( Count.class, shadow  );
+        this.countType = new ClassObjectType( Count.class,
+                                              shadow );
 
         shadow = ShadowProxyFactory.getProxy( Path.class );
-        this.pathType = new ClassObjectType( Path.class, shadow  );
+        this.pathType = new ClassObjectType( Path.class,
+                                             shadow );
 
         shadow = ShadowProxyFactory.getProxy( Chosen.class );
-        this.chosenType = new ClassObjectType( Chosen.class, shadow  );
+        this.chosenType = new ClassObjectType( Chosen.class,
+                                               shadow );
 
         this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
         this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
@@ -201,7 +209,7 @@ public abstract class BaseMannersTest extends TestCase {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
-                try {                    
+                try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
@@ -465,9 +473,9 @@ public abstract class BaseMannersTest extends TestCase {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-//                    MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
-//                    visitor.visit( workingMemory.getRuleBase() );
-                    
+                    //                    MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
+                    //                    visitor.visit( workingMemory.getRuleBase() );
+
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
@@ -744,9 +752,9 @@ public abstract class BaseMannersTest extends TestCase {
 
                     seating.setPathDone( true );
 
-//                    if ( seating.getId() == 6 ) {
-//                        System.err.println( "pause" );
-//                    }
+                    //                    if ( seating.getId() == 6 ) {
+                    //                        System.err.println( "pause" );
+                    //                    }
                     drools.modifyObject( tuple.get( seatingDeclaration ),
                                          seating );
 
@@ -1098,10 +1106,10 @@ public abstract class BaseMannersTest extends TestCase {
         return -1;
     }
 
-    private FieldConstraint getLiteralConstraint(final Column column,
-                                                 final String fieldName,
-                                                 final Object fieldValue,
-                                                 final Evaluator evaluator) throws IntrospectionException {
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
+                                                          final String fieldName,
+                                                          final Object fieldValue,
+                                                          final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
@@ -1126,17 +1134,17 @@ public abstract class BaseMannersTest extends TestCase {
                                extractor );
     }
 
-    private FieldConstraint getBoundVariableConstraint(final Column column,
-                                                       final String fieldName,
-                                                       final Declaration declaration,
-                                                       final Evaluator evaluator) throws IntrospectionException {
+    private BetaNodeFieldConstraint getBoundVariableConstraint(final Column column,
+                                                                final String fieldName,
+                                                                final Declaration declaration,
+                                                                final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
 
         return new VariableConstraint( extractor,
-                                            declaration,
-                                            evaluator );
+                                       declaration,
+                                       evaluator );
     }
 }

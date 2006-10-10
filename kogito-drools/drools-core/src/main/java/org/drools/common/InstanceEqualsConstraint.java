@@ -17,8 +17,13 @@
 package org.drools.common;
 
 import org.drools.WorkingMemory;
+import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
+import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
 
 /**
@@ -32,15 +37,15 @@ import org.drools.spi.Tuple;
 
 public class InstanceEqualsConstraint
     implements
-    FieldConstraint { 
+    BetaNodeFieldConstraint { 
 
-    private static final long serialVersionUID = 2986814365490743953L;
+    private static final long serialVersionUID = 320L;
 
     private final Declaration[] declarations     = new Declaration[0];
 
-    private int                 otherColumn;
+    private Column                 otherColumn;
 
-    public InstanceEqualsConstraint(final int otherColumn) {
+    public InstanceEqualsConstraint(final Column otherColumn) {
         this.otherColumn = otherColumn;
     }
 
@@ -48,14 +53,17 @@ public class InstanceEqualsConstraint
         return this.declarations;
     }
     
-    public int getOtherColumn() {
+    public Column getOtherColumn() {
         return this.otherColumn;
     }
-
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        return (tuple.get( this.otherColumn ).getObject() == object);
+    
+    public ContextEntry getContextEntry() {
+        return new InstanceEqualsConstraintContextEntry( this.otherColumn  );
+    }
+    
+    public boolean isAllowed(final ContextEntry entry) {
+        InstanceEqualsConstraintContextEntry context = (InstanceEqualsConstraintContextEntry) entry;
+        return context.left == context.right;
     }
 
     public String toString() {
@@ -63,7 +71,7 @@ public class InstanceEqualsConstraint
     }
 
     public int hashCode() {
-        return this.otherColumn;
+        return this.otherColumn.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -76,7 +84,36 @@ public class InstanceEqualsConstraint
         }
 
         final InstanceEqualsConstraint other = (InstanceEqualsConstraint) object;
-        return this.otherColumn == other.otherColumn;
+        return this.otherColumn.equals( other.otherColumn );
     }
 
+    public static class InstanceEqualsConstraintContextEntry implements ContextEntry {
+        public Object left;
+        public Object right;        
+        
+        private Column column;
+        private ContextEntry entry;
+        
+        
+        public InstanceEqualsConstraintContextEntry(Column column) {
+            this.column = column;
+        }
+        
+        public ContextEntry getNext() {
+            return this.entry;
+        }
+        
+        public void setNext(ContextEntry  entry) {
+            this.entry = entry;
+        }
+        
+        public void updateFromFactHandle(InternalFactHandle handle) {
+            this.left = handle.getObject();
+            
+        }
+        
+        public void updateFromTuple(ReteTuple tuple) {
+            this.right =  tuple.get( this.column.getFactIndex() );            
+        }                
+    }    
 }

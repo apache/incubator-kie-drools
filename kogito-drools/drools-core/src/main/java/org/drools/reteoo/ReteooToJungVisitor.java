@@ -26,7 +26,7 @@ import java.util.Map;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.common.BaseNode;
 import org.drools.rule.LiteralConstraint;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.visualize.ReteooJungViewer.DroolsVertex;
 
@@ -376,7 +376,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    public static String dumpConstraints(final FieldConstraint[] constraints) {
+    public static String dumpConstraints(final AlphaNodeFieldConstraint[] constraints) {
         final StringBuffer buffer = new StringBuffer();
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             buffer.append( constraints[i].toString() + "<br>" );

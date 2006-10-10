@@ -32,7 +32,7 @@ import org.drools.examples.manners.Context;
 import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
@@ -63,7 +63,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         final ArrayList alphas = new ArrayList();
         ColumnConstraints columnConstraints;
-        FieldConstraint constraint;
+        AlphaNodeFieldConstraint constraint;
         final ClassObjectType contextType = new ClassObjectType( Context.class );
         final Column testColumn = new Column( 0,
                                               contextType,
@@ -104,7 +104,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         final ArrayList alphas = new ArrayList();
         ColumnConstraints columnConstraints;
-        FieldConstraint constraint;
+        AlphaNodeFieldConstraint constraint;
         final ClassObjectType contextType = new ClassObjectType( Context.class );
         final Column testColumn = new Column( 0,
                                               contextType,
@@ -134,7 +134,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
 
     }
 
-    private FieldConstraint getLiteralConstraint(final Column column,
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
                                                  final String fieldName,
                                                  final Object fieldValue,
                                                  final Evaluator evaluator) throws IntrospectionException {
