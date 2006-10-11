@@ -38,7 +38,7 @@ public class ShadowProxyFactory {
 
     private static final String BASE_INTERFACE      = Type.getInternalName( ShadowProxy.class );
 
-    private static final String FIELD_NAME_PREFIX   = "__";
+    //private static final String FIELD_NAME_PREFIX   = "__";
 
     private static final String FIELD_SET_FLAG      = "IsSet";
 
@@ -105,21 +105,21 @@ public class ShadowProxyFactory {
         Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
             if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) ) {
-                if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) ) {
+                if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0)) {
                     String fieldName = methods[i].getName();
 
-                    buildField( FIELD_NAME_PREFIX + fieldName,
+                    buildField( /*FIELD_NAME_PREFIX +*/ fieldName,
                                 Type.getDescriptor( methods[i].getReturnType() ),
                                 cw );
-                    fieldTypes.put( FIELD_NAME_PREFIX + fieldName,
+                    fieldTypes.put( /*FIELD_NAME_PREFIX +*/ fieldName,
                                     methods[i].getReturnType() );
 
-                    buildField( FIELD_NAME_PREFIX + fieldName + FIELD_SET_FLAG,
+                    buildField( /*FIELD_NAME_PREFIX +*/ fieldName + FIELD_SET_FLAG,
                                 Type.BOOLEAN_TYPE.getDescriptor(),
                                 cw );
-                    buildGetMethod( FIELD_NAME_PREFIX + fieldName,
+                    buildGetMethod( /*FIELD_NAME_PREFIX +*/ fieldName,
                                     methods[i].getReturnType(),
-                                    FIELD_NAME_PREFIX + fieldName + FIELD_SET_FLAG,
+                                    /*FIELD_NAME_PREFIX +*/ fieldName + FIELD_SET_FLAG,
                                     methods[i],
                                     className,
                                     clazz,
@@ -167,17 +167,17 @@ public class ShadowProxyFactory {
                         ((methods[i].getName().startsWith( "get" )) || (methods[i].getName().startsWith( "is" )))) {
                     String fieldName = methods[i].getName();
 
-                    buildField( FIELD_NAME_PREFIX + fieldName,
+                    buildField( /*FIELD_NAME_PREFIX +*/ fieldName,
                                 Type.getDescriptor( methods[i].getReturnType() ),
                                 cw );
-                    fieldMethods.put( FIELD_NAME_PREFIX + fieldName,
+                    fieldMethods.put( /*FIELD_NAME_PREFIX +*/ fieldName,
                                       methods[i] );
-                    fieldTypes.put( FIELD_NAME_PREFIX + fieldName,
+                    fieldTypes.put( /*FIELD_NAME_PREFIX +*/ fieldName,
                                     methods[i].getReturnType() );
 
-                    buildSimpleGetMethod( FIELD_NAME_PREFIX + fieldName,
+                    buildSimpleGetMethod( /*FIELD_NAME_PREFIX +*/ fieldName,
                                           methods[i].getReturnType(),
-                                          FIELD_NAME_PREFIX + fieldName + FIELD_SET_FLAG,
+                                          /*FIELD_NAME_PREFIX +*/ fieldName + FIELD_SET_FLAG,
                                           methods[i],
                                           className,
                                           clazz,
