@@ -145,6 +145,27 @@ public class LinkedList implements Serializable {
         return node;
     }
 
+    public void insertAfter(LinkedListNode existingNode, LinkedListNode newNode) {
+        if  ( newNode.getPrevious() != null || newNode.getNext() != null ) {
+            //do nothing if this node is already inserted somewhere
+            return;
+        }
+
+        if (existingNode == null ) {
+            // if existing node is null, then insert it as a first node
+            LinkedListNode node = this.firstNode;
+            node.setPrevious( newNode );
+            newNode.setNext( node );
+            this.firstNode = newNode;
+        } else {
+            existingNode.getNext().setPrevious( newNode );
+            newNode.setNext( existingNode.getNext() );
+            existingNode.setNext( newNode );
+            newNode.setPrevious( existingNode );
+        }
+        this.size++;
+    }
+    
     /**
      * Remove the last node from the list. The previous node then becomes the last node. If this is the last 
      * node then both first and last node references are set to null.
