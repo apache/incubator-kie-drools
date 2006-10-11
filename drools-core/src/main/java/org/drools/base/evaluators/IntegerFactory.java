@@ -71,13 +71,11 @@ public class IntegerFactory implements EvaluatorFactory {
         }
 
         public boolean evaluate(final Object object1,
-                                final Object object2) {
-//            return ((Integer) object1).intValue() == ((Integer) object2).intValue(); 
-            
+                                final Object object2) {             
             if ( object1 == null ) {
                 return object2 == null;
             }
-            return ((Number) object1).equals( object2 );
+            return object1.equals( object2 );
         }
 
         public String toString() {
@@ -98,12 +96,11 @@ public class IntegerFactory implements EvaluatorFactory {
         }
 
         public boolean evaluate(final Object object1,
-                                final Object object2) {
-//            return ((Integer) object1).intValue() != ((Integer) object2).intValue();             
+                                final Object object2) {             
             if ( object1 == null ) {
                 return (object2 != null);
             }
-            return !((Number) object1).equals( object2 );
+            return !object1.equals( object2 );
         }
 
         public String toString() {

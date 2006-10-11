@@ -242,6 +242,7 @@ abstract class BetaNode extends TupleSource
         BetaMemory memory = null;
         
         if ( constraints != null ) {
+            
             for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
                 BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
                 if ( constraint.getClass() == VariableConstraint.class ) {
@@ -249,8 +250,11 @@ abstract class BetaNode extends TupleSource
                     FieldExtractor extractor = variableConstraint.getFieldExtractor();
                     Evaluator evaluator = variableConstraint.getEvaluator();
                     if ( evaluator.getOperator() == Operator.EQUAL ) {
-                        // remove this entry                    
-                        //constraints.remove( entry );
+                        // make suret the indexed constraint is first
+                        if  ( constraints.getFirst() != entry  ) {
+                            constraints.remove( entry );
+                            constraints.insertAfter( null, entry );
+                        }
                         memory = new BetaMemory( new TupleHashTable(),
                                                  new FieldIndexHashTable( extractor,
                                                                           variableConstraint.getRequiredDeclarations()[0] ) );
