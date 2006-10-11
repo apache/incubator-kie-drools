@@ -17,6 +17,7 @@
 package org.drools.common;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InstanceNotEqualsConstraint.InstanceNotEqualsConstraintContextEntry;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.ContextEntry;
@@ -61,10 +62,13 @@ public class InstanceEqualsConstraint
         return new InstanceEqualsConstraintContextEntry( this.otherColumn  );
     }
     
-    public boolean isAllowed(final ContextEntry entry) {
-        InstanceEqualsConstraintContextEntry context = (InstanceEqualsConstraintContextEntry) entry;
-        return context.left == context.right;
-    }
+    public boolean isAllowedCachedLeft(ContextEntry context, Object object ) {
+        return ((InstanceNotEqualsConstraintContextEntry)context).left == object;
+    }    
+    
+    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
+        return tuple.get( this.otherColumn.getFactIndex()).getObject() == ((InstanceNotEqualsConstraintContextEntry)context).right ;        
+    }      
 
     public String toString() {
         return "[InstanceEqualsConstraint otherColumn=" + this.otherColumn + " ]";
@@ -107,13 +111,13 @@ public class InstanceEqualsConstraint
             this.entry = entry;
         }
         
-        public void updateFromFactHandle(InternalFactHandle handle) {
-            this.left = handle.getObject();
-            
-        }
-        
         public void updateFromTuple(ReteTuple tuple) {
-            this.right =  tuple.get( this.column.getFactIndex() );            
-        }                
+            this.left =  tuple.get( this.column.getFactIndex() ).getObject();            
+        }           
+        
+        public void updateFromFactHandle(InternalFactHandle handle) {
+            this.right = handle.getObject();
+            
+        }                    
     }    
 }

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.drools.WorkingMemory;
 import org.drools.base.evaluators.Operator;
+import org.drools.common.InstanceNotEqualsConstraint.InstanceNotEqualsConstraintContextEntry;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
@@ -51,9 +52,9 @@ public class BetaNodeConstraints
 
     public final static BetaNodeConstraints emptyBetaNodeConstraints = new BetaNodeConstraints();
 
-    private final LinkedList         constraints;
-    
-    private ContextEntry         contexts;
+    private final LinkedList                constraints;
+
+    private ContextEntry                    contexts;
 
     public BetaNodeConstraints() {
         this.constraints = null;
@@ -65,60 +66,77 @@ public class BetaNodeConstraints
     }
 
     public BetaNodeConstraints(final BetaNodeFieldConstraint[] constraints) {
-        this.constraints =  new  LinkedList();
-        ContextEntry current  = null;
-        for ( int  i  = 0, length = constraints.length; i < length; i++ ) {
+        this.constraints = new LinkedList();
+        ContextEntry current = null;
+        for ( int i = 0, length = constraints.length; i < length; i++ ) {
             this.constraints.add( new LinkedListEntry( constraints[i] ) );
             ContextEntry context = constraints[i].getContextEntry();
-            if ( current  ==  null )  {
+            if ( current == null ) {
                 current = context;
                 this.contexts = context;
             } else {
-                current.setNext( context );    
+                current.setNext( context );
             }
             current = context;
-        }             
-    }
-    
-    public void updateFromTuple(ReteTuple tuple) {
-        for( ContextEntry context = this.contexts; context != null; context = context.getNext() )  {
-            context.updateFromTuple( tuple );
-        }        
-    }
-    
-    public void updateFromFactHandle(InternalFactHandle handle) {
-        for( ContextEntry context = this.contexts; context != null; context = context.getNext() )  {
-            context.updateFromFactHandle( handle );
-        }                
+        }
     }
 
-    public boolean isAllowed() {
+    public void updateFromTuple(ReteTuple tuple) {
+        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
+            context.updateFromTuple( tuple );
+        }
+    }
+
+    public void updateFromFactHandle(InternalFactHandle handle) {
+        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
+            context.updateFromFactHandle( handle );
+        }
+    }
+    
+    public boolean isAllowedCachedLeft(Object object ) {       
         if ( this.constraints == null ) {
             return true;
         }
-              
-        LinkedListEntry entry = ( LinkedListEntry ) this.constraints.getFirst();
+
+        LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
         ContextEntry context = this.contexts;
-        while( entry != null )  {
-            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowed( context ) ) {
+        while ( entry != null ) {
+            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft(context, object ) ) {
                 return false;
-            }            
-            entry = ( LinkedListEntry ) entry.getNext() ;
+            }
+            entry = (LinkedListEntry) entry.getNext();
             context = context.getNext();
         }
-        return true;
+        return true;        
     }    
+    
+    public boolean isAllowedCachedRight(ReteTuple tuple) {
+        if ( this.constraints == null ) {
+            return true;
+        }
 
-//    public Set getRequiredDeclarations() {
-//        final Set declarations = new HashSet();
-//        for ( int i = 0; i < this.constraints.length; i++ ) {
-//            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
-//            for ( int j = 0; j < array.length; j++ ) {
-//                declarations.add( array[j] );
-//            }
-//        }
-//        return declarations;
-//    }
+        LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
+        ContextEntry context = this.contexts;
+        while ( entry != null ) {
+            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedRight(tuple, context ) ) {
+                return false;
+            }
+            entry = (LinkedListEntry) entry.getNext();
+            context = context.getNext();
+        }
+        return true;        
+    }          
+
+    //    public Set getRequiredDeclarations() {
+    //        final Set declarations = new HashSet();
+    //        for ( int i = 0; i < this.constraints.length; i++ ) {
+    //            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
+    //            for ( int j = 0; j < array.length; j++ ) {
+    //                declarations.add( array[j] );
+    //            }
+    //        }
+    //        return declarations;
+    //    }
 
     public int hashCode() {
         return this.constraints.hashCode();
@@ -155,8 +173,8 @@ public class BetaNodeConstraints
         if ( this.constraints.size() != other.constraints.size() ) {
             return false;
         }
-        
+
         return this.constraints.equals( other );
     }
-    
+
 }

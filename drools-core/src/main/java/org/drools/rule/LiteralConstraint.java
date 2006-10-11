@@ -107,31 +107,5 @@ public class LiteralConstraint
         final LiteralConstraint other = (LiteralConstraint) object;
 
         return this.extractor.equals( other.extractor ) && this.restriction.equals( other.restriction );
-    }
-
-    public static class LiteralContextEntry implements ContextEntry {
-        public Object object;    
-        
-        private FieldExtractor extractor;
-        
-        
-        public LiteralContextEntry(FieldExtractor extractor) {
-            this.extractor = extractor;
-        }
-        
-        public ContextEntry getNext() {
-            return null;
-        }
-        
-        public void setNext(ContextEntry  entry) {
-        }
-        
-        public void updateFromFactHandle(InternalFactHandle handle) {
-            this.object = this.extractor.getValue( handle.getObject() );
-            
-        }
-        
-        public void updateFromTuple(ReteTuple tuple) {            
-        }                
-    }    
+    }  
 }

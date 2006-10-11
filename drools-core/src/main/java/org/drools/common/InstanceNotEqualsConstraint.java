@@ -28,13 +28,13 @@ import org.drools.spi.Tuple;
 
 public class InstanceNotEqualsConstraint
     implements
-    BetaNodeFieldConstraint { 
+    BetaNodeFieldConstraint {
 
-    private static final long serialVersionUID = 320L;
+    private static final long   serialVersionUID = 320L;
 
-    private final Declaration[] declarations     = new Declaration[0];
+    private static final Declaration[] declarations     = new Declaration[0];
 
-    private Column                 otherColumn;
+    private Column              otherColumn;
 
     public InstanceNotEqualsConstraint(final Column otherColumn) {
         this.otherColumn = otherColumn;
@@ -43,18 +43,28 @@ public class InstanceNotEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
-    
+
     public Column getOtherColumn() {
         return this.otherColumn;
     }
-    
+
     public ContextEntry getContextEntry() {
-        return new InstanceNotEqualsConstraintContextEntry( this.otherColumn  );
+        return new InstanceNotEqualsConstraintContextEntry( this.otherColumn );
     }
-    
+
     public boolean isAllowed(final ContextEntry entry) {
         InstanceNotEqualsConstraintContextEntry context = (InstanceNotEqualsConstraintContextEntry) entry;
         return context.left != context.right;
+    }
+
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        return ((InstanceNotEqualsConstraintContextEntry) context).left != object;
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        return tuple.get( this.otherColumn.getFactIndex() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
     }
 
     public String toString() {
@@ -78,34 +88,35 @@ public class InstanceNotEqualsConstraint
         return this.otherColumn.equals( other.otherColumn );
     }
 
-    public static class InstanceNotEqualsConstraintContextEntry implements ContextEntry {
-        public Object left;
-        public Object right;        
-        
-        private Column column;
+    public static class InstanceNotEqualsConstraintContextEntry
+        implements
+        ContextEntry {
+        public Object        left;
+        public Object        right;
+
+        private Column       column;
         private ContextEntry entry;
-        
-        
+
         public InstanceNotEqualsConstraintContextEntry(Column column) {
             this.column = column;
         }
-        
+
         public ContextEntry getNext() {
             return this.entry;
         }
-        
-        public void setNext(ContextEntry  entry) {
+
+        public void setNext(ContextEntry entry) {
             this.entry = entry;
+        }
+
+        public void updateFromTuple(ReteTuple tuple) {
+            this.left = tuple.get( this.column.getFactIndex() ).getObject();
         }
         
         public void updateFromFactHandle(InternalFactHandle handle) {
-            this.left = handle.getObject();
-            
+            this.right = handle.getObject();
+
         }
-        
-        public void updateFromTuple(ReteTuple tuple) {
-            this.right =  tuple.get( this.column.getFactIndex() );            
-        }                
-    }  
+    }
 
 }
