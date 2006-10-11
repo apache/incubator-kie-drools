@@ -72,6 +72,8 @@ public class IntegerFactory implements EvaluatorFactory {
 
         public boolean evaluate(final Object object1,
                                 final Object object2) {
+//            return ((Integer) object1).intValue() == ((Integer) object2).intValue(); 
+            
             if ( object1 == null ) {
                 return object2 == null;
             }
@@ -97,6 +99,7 @@ public class IntegerFactory implements EvaluatorFactory {
 
         public boolean evaluate(final Object object1,
                                 final Object object2) {
+//            return ((Integer) object1).intValue() != ((Integer) object2).intValue();             
             if ( object1 == null ) {
                 return (object2 != null);
             }

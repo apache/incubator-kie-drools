@@ -18,6 +18,8 @@ package org.drools.rule;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.Restriction;
@@ -56,11 +58,15 @@ public class LiteralRestriction
                              InternalWorkingMemory workingMemoiry) {
         return this.evaluator.evaluate( object, field );
     }
-
-    public boolean isAllowed(ContextEntry context) {
-        throw  new UnsupportedOperationException("cannot call isAllowed(ContextEntry context)");
+    
+    public boolean isAllowedCachedLeft(ContextEntry context, Object object) {
+        throw  new UnsupportedOperationException("cannot call isAllowed(ContextEntry context)");        
     }    
-
+    
+    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
+        throw  new UnsupportedOperationException("cannot call isAllowed(ContextEntry context)");        
+    }      
+    
     /**
      * Literal constraints cannot have required declarations, so always return an empty array.
      * @return

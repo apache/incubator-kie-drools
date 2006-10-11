@@ -16,15 +16,16 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
+import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
 
 public interface BetaNodeFieldConstraint
     extends
     Constraint {
     
-    public boolean isAllowed(ContextEntry context);
+    public boolean isAllowedCachedLeft(ContextEntry context, Object object );
+    
+    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context);
     
     public ContextEntry getContextEntry();
 

@@ -33,7 +33,7 @@ public class VariableConstraint
     /**
      * 
      */
-    private static final long         serialVersionUID = 320;
+    private static final long         serialVersionUID = 320L;
 
     private final FieldExtractor      fieldExtractor;
     private final VariableRestriction restriction;
@@ -63,11 +63,15 @@ public class VariableConstraint
     public Evaluator getEvaluator() {
         return this.restriction.getEvaluator();
     }
-    
-    public boolean isAllowed(ContextEntry context) {
-        return this.restriction.isAllowed( context );        
-    }
 
+    public boolean isAllowedCachedLeft(ContextEntry context, Object object ) {
+        return this.restriction.isAllowedCachedLeft( context, this.fieldExtractor.getValue( object ) );        
+    }    
+    
+    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
+        return this.restriction.isAllowedCachedRight( tuple, context );        
+    }        
+    
     public String toString() {
         return "[VariableConstraint fieldExtractor=" + this.fieldExtractor + " declaration=" + getRequiredDeclarations() + "]";
     }
@@ -111,7 +115,7 @@ public class VariableConstraint
         public VariableContextEntry(FieldExtractor extractor, Declaration declaration) {
             this.extractor = extractor;
             this.declaration = declaration;
-        }
+        }       
         
         public ContextEntry getNext() {
             return this.entry;
@@ -119,16 +123,16 @@ public class VariableConstraint
         
         public void setNext(ContextEntry  entry) {
             this.entry = entry;
+        }        
+        
+        public void updateFromTuple(ReteTuple tuple) {
+            this.left =  this.declaration.getValue( tuple.get( this.declaration ).getObject() );            
         }
         
         public void updateFromFactHandle(InternalFactHandle handle) {
-            this.left = this.extractor.getValue( handle.getObject() );
+            this.right = this.extractor.getValue( handle.getObject() );
             
-        }
-        
-        public void updateFromTuple(ReteTuple tuple) {
-            this.right =  this.declaration.getValue( tuple.get( this.declaration ).getObject() );            
-        }                
+        }                        
     }
     
 

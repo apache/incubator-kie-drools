@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
 import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Restriction;
@@ -53,13 +54,15 @@ public class VariableRestriction
 
     public Evaluator getEvaluator() {
         return this.evaluator;
-    }
+    }    
     
-    public boolean isAllowed(ContextEntry context) {
-        VariableContextEntry variableContext = ( VariableContextEntry ) context;
-        return this.evaluator.evaluate( variableContext.left,
-                                        variableContext.right );        
-    }
+    public boolean isAllowedCachedLeft(ContextEntry context, Object object) {
+        return this.evaluator.evaluate( ((VariableContextEntry) context).left, object );        
+    }    
+    
+    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
+        return this.evaluator.evaluate( this.declaration.getValue( tuple.get( this.declaration ).getObject() ), ((VariableContextEntry) context).right );        
+    }  
 
     public String toString() {
         return "[VariableRestriction declaration=" + this.declaration + "]";
