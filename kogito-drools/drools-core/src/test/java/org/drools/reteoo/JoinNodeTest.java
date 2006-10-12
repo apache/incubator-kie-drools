@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
-import org.drools.common.BetaNodeConstraints;
+import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -64,7 +64,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node = new JoinNode( 15,
                                   this.tupleSource,
                                   this.objectSource,
-                                  new BetaNodeConstraints( new AlphaNodeFieldConstraint[]{this.constraint} ) );
+                                  new DefaultBetaConstraints( new AlphaNodeFieldConstraint[]{this.constraint} ) );
 
         this.node.addTupleSink( this.sink );
 

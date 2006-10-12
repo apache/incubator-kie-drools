@@ -16,7 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.common.BetaNodeConstraints;
+import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
@@ -77,7 +77,7 @@ class JoinNode extends BetaNode {
     JoinNode(final int id,
              final TupleSource leftInput,
              final ObjectSource rightInput,
-             final BetaNodeConstraints binder) {
+             final BetaConstraints binder) {
         super( id,
                leftInput,
                rightInput,

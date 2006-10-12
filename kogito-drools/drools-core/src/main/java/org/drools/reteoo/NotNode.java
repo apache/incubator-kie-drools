@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BetaNodeConstraints;
+import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
@@ -75,7 +77,7 @@ public class NotNode extends BetaNode {
         super( id,
                leftInput,
                rightInput,
-               new BetaNodeConstraints() );
+               EmptyBetaConstraints.getInstance() );
     }
 
     /**
@@ -89,7 +91,7 @@ public class NotNode extends BetaNode {
     NotNode(final int id,
             final TupleSource leftInput,
             final ObjectSource rightInput,
-            final BetaNodeConstraints joinNodeBinder) {
+            final BetaConstraints joinNodeBinder) {
         super( id,
                leftInput,
                rightInput,

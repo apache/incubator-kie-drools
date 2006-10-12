@@ -22,7 +22,9 @@ import java.util.List;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaNodeConstraints;
+import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -62,12 +64,12 @@ abstract class BetaNode extends TupleSource
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    protected final TupleSource           leftInput;
+    protected final TupleSource         leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    protected final ObjectSource          rightInput;
+    protected final ObjectSource        rightInput;
 
-    protected final BetaNodeConstraints constraints;
+    protected final BetaConstraints constraints;
 
     private TupleSinkNode               previousTupleSinkNode;
     private TupleSinkNode               nextTupleSinkNode;
@@ -93,7 +95,7 @@ abstract class BetaNode extends TupleSource
         this( id,
               leftInput,
               rightInput,
-              BetaNodeConstraints.emptyBetaNodeConstraints );
+              EmptyBetaConstraints.getInstance() );
     }
 
     /**
@@ -107,7 +109,7 @@ abstract class BetaNode extends TupleSource
     BetaNode(final int id,
              final TupleSource leftInput,
              final ObjectSource rightInput,
-             final BetaNodeConstraints constraints) {
+             final BetaConstraints constraints) {
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
@@ -134,28 +136,28 @@ abstract class BetaNode extends TupleSource
     }
 
     public List getRules() {
-        List list = new ArrayList();        
-        
+        List list = new ArrayList();
+
         TupleSink[] sinks = this.sink.getSinks();
-        for ( int i = 0, length = sinks.length; i < length; i++ ) {                
+        for ( int i = 0, length = sinks.length; i < length; i++ ) {
             if ( sinks[i].getClass() == TerminalNode.class ) {
-                list.add( ( ( TerminalNode ) sinks[i]).getRule().getName() );
-            } else if  ( sinks[i] instanceof BetaNode )  {
-                list.addAll( ( (BetaNode) sinks[i] ).getRules() );
+                list.add( ((TerminalNode) sinks[i]).getRule().getName() );
+            } else if ( sinks[i] instanceof BetaNode ) {
+                list.addAll( ((BetaNode) sinks[i]).getRules() );
             }
-        }        
-        
+        }
+
         return list;
-    } 
-    
-    public ObjectTypeNode  getObjectTypeNode() {
-            ObjectSource source = this.rightInput;
-            while ( source.getClass() != ObjectTypeNode.class ) {
-                source = source.objectSource;
-            }
-            return ((ObjectTypeNode)source);     
     }
-    
+
+    public ObjectTypeNode getObjectTypeNode() {
+        ObjectSource source = this.rightInput;
+        while ( source.getClass() != ObjectTypeNode.class ) {
+            source = source.objectSource;
+        }
+        return ((ObjectTypeNode) source);
+    }
+
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
@@ -177,20 +179,20 @@ abstract class BetaNode extends TupleSource
 
     public void remove(final BaseNode node,
                        final InternalWorkingMemory[] workingMemories) {
-                if( !node.isInUse()) {
-                    removeTupleSink( ( TupleSink) node ); 
-                }
-                removeShare();
-        
-                if ( ! this.isInUse() ) {
-                    for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                        workingMemories[i].clearNodeMemory( this );
-                    }
-                }
-                this.rightInput.remove( this,
-                                        workingMemories );
-                this.leftInput.remove( this,
-                                       workingMemories );
+        if ( !node.isInUse() ) {
+            removeTupleSink( (TupleSink) node );
+        }
+        removeShare();
+
+        if ( !this.isInUse() ) {
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
+            }
+        }
+        this.rightInput.remove( this,
+                                workingMemories );
+        this.leftInput.remove( this,
+                               workingMemories );
 
     }
 
@@ -201,10 +203,10 @@ abstract class BetaNode extends TupleSource
     public String toString() {
         return "";
     }
-    
+
     public void dumpMemory(InternalWorkingMemory workingMemory) {
         MemoryVisitor visitor = new MemoryVisitor( workingMemory );
-        visitor.visit( this );           
+        visitor.visit( this );
     }
 
     /* (non-Javadoc)
@@ -235,42 +237,43 @@ abstract class BetaNode extends TupleSource
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        // iterate over all the constraints untill we find one that is indexeable. When we find it we remove it from the list and create the 
-        // BetaMemory for it. If we don't find one, we create a normal beta memory. We don't need the constraint as we can assume that 
-        // anything  returned by the memory already passes that test.
-        LinkedList constraints = this.constraints.getConstraints();
-        BetaMemory memory = null;
-        
-        if ( constraints != null ) {
-            
-            for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
-                if ( constraint.getClass() == VariableConstraint.class ) {
-                    VariableConstraint variableConstraint = (VariableConstraint) constraint;
-                    FieldExtractor extractor = variableConstraint.getFieldExtractor();
-                    Evaluator evaluator = variableConstraint.getEvaluator();
-                    if ( evaluator.getOperator() == Operator.EQUAL ) {
-                        // make suret the indexed constraint is first
-                        if  ( constraints.getFirst() != entry  ) {
-                            constraints.remove( entry );
-                            constraints.insertAfter( null, entry );
-                        }
-                        memory = new BetaMemory( new TupleHashTable(),
-                                                 new FieldIndexHashTable( extractor,
-                                                                          variableConstraint.getRequiredDeclarations()[0] ) );
-                        break;
-
-                    }
-                }                                                     
-            }
-        }
-        
-        if ( memory == null )  {
-            memory = new BetaMemory( new TupleHashTable(),
-                                     new FactHashTable() );            
-        }
-        
-        return memory;
+        return this.constraints.createBetaMemory();
+//        // iterate over all the constraints untill we find one that is indexeable. When we find it we remove it from the list and create the 
+//        // BetaMemory for it. If we don't find one, we create a normal beta memory. We don't need the constraint as we can assume that 
+//        // anything  returned by the memory already passes that test.
+//        LinkedList constraints = this.constraints.getConstraints();
+//        BetaMemory memory = null;
+//
+//        if ( constraints != null ) {
+//            for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+//                BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
+//                if ( constraint.getClass() == VariableConstraint.class ) {
+//                    VariableConstraint variableConstraint = (VariableConstraint) constraint;
+//                    FieldExtractor extractor = variableConstraint.getFieldExtractor();
+//                    Evaluator evaluator = variableConstraint.getEvaluator();
+//                    if ( evaluator.getOperator() == Operator.EQUAL ) {
+//                        // make suret the indexed constraint is first
+//                        if ( constraints.getFirst() != entry ) {
+//                            constraints.remove( entry );
+//                            constraints.insertAfter( null,
+//                                                     entry );
+//                        }
+//                        memory = new BetaMemory( new TupleHashTable(),
+//                                                 new FieldIndexHashTable( extractor,
+//                                                                          variableConstraint.getRequiredDeclarations()[0] ) );
+//                        break;
+//
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( memory == null ) {
+//            memory = new BetaMemory( new TupleHashTable(),
+//                                     new FactHashTable() );
+//        }
+//
+//        return memory;
     }
 
     /**
