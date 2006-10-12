@@ -112,8 +112,8 @@ public class DoubleBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(Object object) {
-        return this.constraint0.isAllowedCachedLeft( context0,
-                                                     object ) && this.constraint1.isAllowedCachedLeft( context1,
+        return ( this.indexed || this.constraint0.isAllowedCachedLeft( context0,
+                                                     object ) ) && this.constraint1.isAllowedCachedLeft( context1,
                                                                                                        object );
     }
 

@@ -17,30 +17,16 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.drools.WorkingMemory;
 import org.drools.base.evaluators.Operator;
-import org.drools.common.InstanceNotEqualsConstraint.InstanceNotEqualsConstraintContextEntry;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Constraint;
-import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.FieldExtractor;
-import org.drools.spi.Tuple;
 import org.drools.util.FactHashTable;
 import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-import org.drools.util.LinkedListNode;
 import org.drools.util.TupleHashTable;
 
 public class SingleBetaConstraints
@@ -96,8 +82,8 @@ public class SingleBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(Object object) {
-        return this.constraint.isAllowedCachedLeft( context,
-                                                    object );
+        return this.indexed || this.constraint.isAllowedCachedLeft( context,
+                                                                    object );
     }
 
     /* (non-Javadoc)
