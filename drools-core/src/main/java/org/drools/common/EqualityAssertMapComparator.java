@@ -15,17 +15,15 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.util.FastComparator;
+import org.drools.util.AbstractHashTable.ObjectComparator;
 
-public class EqualityAssertMapComparator extends FastComparator {
+public class EqualityAssertMapComparator extends ObjectComparator {
     /**
      * 
      */
-    private static final long serialVersionUID = -8541249784769249399L;
+    private static final long serialVersionUID = -320L;
 
     private final Class       factHandleClass;
-
-    private final boolean     _rehash          = FastComparator.REHASH_SYSTEM_HASHCODE;
 
     public EqualityAssertMapComparator(final Class factHandleClass) {
         this.factHandleClass = factHandleClass;

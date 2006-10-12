@@ -26,6 +26,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FastMap;
+import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 
 /**
@@ -39,30 +40,36 @@ import org.drools.util.PrimitiveLongMap;
  *
  */
 public class TruthMaintenanceSystem implements Serializable {
+    
+    private static final long            serialVersionUID = 320L;
 
     private final AbstractWorkingMemory WorkingMemory;
 
-    private final PrimitiveLongMap      justifiedMap = new PrimitiveLongMap( 8,
-                                                                             32 );
+    private final PrimitiveLongMap      justifiedMap;
 
-    private final Map                   assertMap;
+    private final ObjectHashMap         assertMap;
 
     public TruthMaintenanceSystem(final AbstractWorkingMemory workingMemory) {
         this.WorkingMemory = workingMemory;
-        this.assertMap = new FastMap().setKeyComparator( EqualityKeyComparator.getInstance() );
+
+        this.justifiedMap = new PrimitiveLongMap( 8,
+                                                  32 );                
+        this.assertMap = new ObjectHashMap();
+        this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
     }
 
     public PrimitiveLongMap getJustifiedMap() {
         return this.justifiedMap;
     }
 
-    public Map getAssertMap() {
+    public ObjectHashMap getAssertMap() {
         return this.assertMap;
     }
 
     public Object put(final EqualityKey key) {
         return this.assertMap.put( key,
-                                   key );
+                                   key, 
+                                   false );
     }
 
     public EqualityKey get(final EqualityKey key) {

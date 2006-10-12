@@ -21,7 +21,7 @@ import org.drools.rule.Declaration;
 
 public class MockConstraint
     implements
-    AlphaNodeFieldConstraint {
+    BetaNodeFieldConstraint {
 
     /**
      * 

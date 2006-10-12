@@ -160,16 +160,25 @@ public abstract class AbstractHashTable
         return this.size == 0;
     }
 
+//    protected int indexOf(int hashCode,
+//                          int dataSize) {
+//        int index = hashCode % dataSize;
+//        if ( index < 0 ) {
+//            index = index * -1;
+//        }
+//        return index;
+//    }
+    
     protected int indexOf(int hashCode,
                           int dataSize) {
-        int index = hashCode % dataSize;
-        if ( index < 0 ) {
-            index = index * -1;
-        }
-        return index;
-    }
+        return hashCode & (dataSize - 1);
+    }    
+    
+    public abstract Entry getBucket(Object object);
 
     public interface ObjectComparator {
+        public int hashCodeOf(Object object);
+        
         public boolean equal(Object object1,
                              Object object2);
     }
@@ -231,6 +240,15 @@ public abstract class AbstractHashTable
         public static ObjectComparator getInstance() {
             return INSTANCE;
         }
+        
+        public int hashCodeOf(Object key) {
+            int h = key.hashCode();
+            h += ~(h << 9);
+            h ^= (h >>> 14);
+            h += (h << 4);
+            h ^= (h >>> 10);
+            return h;
+        }
 
         private InstanceEquals() {
 
@@ -249,6 +267,15 @@ public abstract class AbstractHashTable
 
         public static ObjectComparator getInstance() {
             return INSTANCE;
+        }
+        
+        public int hashCodeOf(Object key) {
+            int h = key.hashCode();
+            h += ~(h << 9);
+            h ^= (h >>> 14);
+            h += (h << 4);
+            h ^= (h >>> 10);
+            return h;
         }
 
         private EqualityEquals() {

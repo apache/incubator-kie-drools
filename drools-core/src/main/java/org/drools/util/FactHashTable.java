@@ -6,6 +6,7 @@ package org.drools.util;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FactHashTable extends AbstractHashTable implements ObjectHashTable {
     private static final long serialVersionUID = 320L;    
@@ -34,7 +35,7 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
     }
     
     public boolean add(InternalFactHandle handle, boolean checkExists) {
-        int hashCode =  handle.hashCode();
+        int hashCode =  this.comparator.hashCodeOf( handle );
         int index = indexOf( hashCode,
                              table.length );
 
@@ -62,7 +63,7 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
     }
 
     public boolean contains(InternalFactHandle handle) {
-        int hashCode = handle.hashCode();
+        int hashCode = this.comparator.hashCodeOf( handle );
         int index = indexOf( hashCode,
                              table.length );
 
@@ -77,7 +78,7 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
     }
 
     public boolean remove(InternalFactHandle handle) {
-        int hashCode = handle.hashCode();
+        int hashCode = this.comparator.hashCodeOf( handle );
         int index = indexOf( hashCode,
                              table.length );
 
@@ -101,15 +102,13 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
         return false;
     }        
     
-    public Entry getBucket(int hashCode) {
-        int h = hashCode;
-        h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
-        
-        return this.table[ indexOf( h, table.length ) ];
-    }       
+    public Entry getBucket(Object object) {
+        int hashCode = this.comparator.hashCodeOf( object );
+        int index = indexOf( hashCode,
+                             table.length );
+
+        return (ObjectEntry)  this.table[index];          
+    }         
 
     public int hash(Object key) {
         return key.hashCode();
