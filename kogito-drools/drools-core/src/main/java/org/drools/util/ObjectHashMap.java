@@ -24,7 +24,7 @@ public class ObjectHashMap extends AbstractHashTable {
     public Object put(Object key,
                       Object value,
                       boolean checkExists ) {
-        int hashCode = hash( key );
+        int hashCode = this.comparator.hashCodeOf( key );
         int index = indexOf( hashCode,
                              table.length );
 
@@ -56,7 +56,7 @@ public class ObjectHashMap extends AbstractHashTable {
     }
 
     public Object get(Object key) {
-        int hashCode = hash( key );
+        int hashCode = this.comparator.hashCodeOf( key );
         int index = indexOf( hashCode,
                              table.length );
 
@@ -69,10 +69,10 @@ public class ObjectHashMap extends AbstractHashTable {
             current = (ObjectEntry) current.getNext();
         }
         return null;
-    }
+    }    
 
     public Object remove(Object key) {
-        int hashCode = hash( key );
+        int hashCode = this.comparator.hashCodeOf( key );
         int index = indexOf( hashCode,
                              table.length );
 
@@ -97,30 +97,14 @@ public class ObjectHashMap extends AbstractHashTable {
         return null;
     }
     
-    public Entry getBucket(int hashCode) {
-        int h = hashCode;
-        h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
-        
-        return this.table[ indexOf( h, table.length ) ];
+    public Entry getBucket(Object object) {
+        int hashCode = this.comparator.hashCodeOf( object );
+        int index = indexOf( hashCode,
+                             table.length );
+
+        return (ObjectEntry)  this.table[index];        
     }    
-
-    public int hash(Object key) {
-        int h = key.hashCode();
-        h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
-        return h;
-    }
-
-    protected int indexOf(int hashCode,
-                          int dataSize) {
-        return hashCode & (dataSize - 1);
-    }
-
+    
     public static class ObjectEntry
         implements
         Entry {

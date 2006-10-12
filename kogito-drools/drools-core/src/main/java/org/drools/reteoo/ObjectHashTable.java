@@ -6,7 +6,6 @@ import org.drools.util.Iterator;
 
 public interface ObjectHashTable {
     public Iterator iterator();
-    public Iterator iterator(int hashCode);
     public Iterator iterator(ReteTuple tuple);
     
     public boolean add(InternalFactHandle handle, boolean checkExists);

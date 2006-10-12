@@ -50,6 +50,7 @@ import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FastMap;
+import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.concurrent.locks.Lock;
 import org.drools.util.concurrent.locks.ReentrantLock;
@@ -87,7 +88,7 @@ public abstract class AbstractWorkingMemory
     protected final Map                       globals                                       = new HashMap();
 
     /** Object-to-handle mapping. */
-    protected final Map                       assertMap;
+    private final ObjectHashMap               assertMap;
 
     protected Map                             queryResults                                  = Collections.EMPTY_MAP;
 
@@ -142,10 +143,12 @@ public abstract class AbstractWorkingMemory
         this.tms = new TruthMaintenanceSystem( this );
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
+        this.assertMap = new ObjectHashMap();
+        
         if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( conf.getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
-            this.assertMap = new FastMap().setKeyComparator( new IdentityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
+            this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
         } else {
-            this.assertMap = new FastMap().setKeyComparator( new EqualityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
+            this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
         }
 
         // Only takes effect if are using idententity behaviour for assert
@@ -395,7 +398,8 @@ public abstract class AbstractWorkingMemory
     public List getFactHandles() {
         try {
             lock.lock();
-            return new ArrayList( this.assertMap.values() );
+            return  null;
+            //return new ArrayList( this.assertMap.values() );
         } finally {
             lock.unlock();
         }
@@ -409,7 +413,8 @@ public abstract class AbstractWorkingMemory
      * @return
      */
     public Map getFactHandleMap() {
-        return Collections.unmodifiableMap( this.assertMap );
+        return  null;
+        //return Collections.unmodifiableMap( this.assertMap );
     }
 
     /**
@@ -418,22 +423,22 @@ public abstract class AbstractWorkingMemory
     public List getObjects() {
         final List list = new ArrayList( this.assertMap.size() );
 
-        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
-            list.add( ((InternalFactHandle) it.next()).getObject() );
-        }
+//        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
+//            list.add( ((InternalFactHandle) it.next()).getObject() );
+//        }
         return list;
     }
 
     public List getObjects(final Class objectClass) {
         final List list = new ArrayList();
 
-        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
-            final Object object = ((InternalFactHandle) it.next()).getObject();
-
-            if ( objectClass.isInstance( object ) ) {
-                list.add( object );
-            }
-        }
+//        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
+//            final Object object = ((InternalFactHandle) it.next()).getObject();
+//
+//            if ( objectClass.isInstance( object ) ) {
+//                list.add( object );
+//            }
+//        }
 
         return list;
     }
@@ -549,7 +554,8 @@ public abstract class AbstractWorkingMemory
                 // assert
                 handle = this.handleFactory.newFactHandle( object );
                 this.assertMap.put( handle,
-                                    handle );
+                                    handle,
+                                    false );
                 key = new EqualityKey( handle );
                 handle.setEqualityKey( key );
                 this.tms.put( key );
@@ -583,13 +589,15 @@ public abstract class AbstractWorkingMemory
                         handle.setEqualityKey( key );
                         key.addFactHandle( handle );
                         this.assertMap.put( handle,
-                                            handle );
+                                            handle,
+                                            false );
                     }
 
                 } else {
                     handle = this.handleFactory.newFactHandle( object );
                     this.assertMap.put( handle,
-                                        handle );
+                                        handle,
+                                        false );
                     key.addFactHandle( handle );
                     handle.setEqualityKey( key );
                 }

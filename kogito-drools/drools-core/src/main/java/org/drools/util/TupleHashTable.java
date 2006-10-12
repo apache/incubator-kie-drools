@@ -44,11 +44,7 @@ public class TupleHashTable extends AbstractHashTable {
             current = (ReteTuple) current.getNext();
         }
         return null;
-    }
-    
-    public boolean contains(ReteTuple tuple) {
-        return (get(tuple) != null);
-    }
+    }    
 
     public Object remove(ReteTuple tuple) {
         int hashCode = tuple.hashCode();
@@ -73,14 +69,17 @@ public class TupleHashTable extends AbstractHashTable {
             current = next;
         }
         return current;
+    }   
+
+    public Entry getBucket(Object object) {
+        int hashCode = object.hashCode();
+        int index = indexOf( hashCode,
+                             table.length );
+
+        return this.table[index];       
     }
     
-    public Entry getBucket(int hashCode) {
-        return this.table[ indexOf( hashCode, table.length ) ];
-    }    
-
-    protected int indexOf(int hashCode,
-                          int dataSize) {
-        return hashCode & (dataSize - 1);
+    public boolean contains(ReteTuple tuple) {
+        return (get(tuple) != null);
     }
 }

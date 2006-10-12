@@ -38,7 +38,12 @@ public class ReteTuple extends BaseEntry
         this.parent = null;
         this.recency = handle.getRecency();
         this.handle = handle;
-        this.hashCode = handle.hashCode();
+        int h = handle.hashCode();
+        h += ~(h << 9);
+        h ^= (h >>> 14);
+        h += (h << 4);
+        h ^= (h >>> 10);
+        this.hashCode = h;
     }
 
     public ReteTuple(final ReteTuple tuple) {

@@ -15,13 +15,14 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.util.FastComparator;
+import org.drools.util.AbstractHashTable.ObjectComparator;
 
-public class EqualityKeyComparator extends FastComparator {
+public class EqualityKeyComparator implements ObjectComparator {
     /**
      * 
      */
-    private static final long            serialVersionUID = -1368242567003294311L;
+    private static final long            serialVersionUID = 320L;
+    
     private static EqualityKeyComparator instance;
 
     public static EqualityKeyComparator getInstance() {
@@ -31,15 +32,20 @@ public class EqualityKeyComparator extends FastComparator {
 
         return EqualityKeyComparator.instance;
     }
-
-    public int hashCodeOf(final Object obj) {
-        return obj.hashCode();
+    
+    public int hashCodeOf(Object key) {
+        int h = key.hashCode();
+        h += ~(h << 9);
+        h ^= (h >>> 14);
+        h += (h << 4);
+        h ^= (h >>> 10);
+        return h;
     }
 
     /**
      * Equality key  reverses the compare, so  that  the  key  controls the  comparison
      */
-    public boolean areEqual(final Object o1,
+    public boolean equal(final Object o1,
                             final Object o2) {
         return (o1 == null) ? (o2 == null) : (o1 == o2) || o2.equals( o1 );
     }
@@ -50,6 +56,6 @@ public class EqualityKeyComparator extends FastComparator {
     }
 
     public String toString() {
-        return "direct";
+        return "[EqualityKeyComparator]";
     }
 }
