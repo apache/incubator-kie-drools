@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaNodeConstraints;
+import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;

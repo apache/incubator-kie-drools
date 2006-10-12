@@ -22,7 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BetaNodeConstraints;
+import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Collect;
@@ -44,7 +45,7 @@ public class CollectNode extends BetaNode
 
     private final Collect             collect;
     private final AlphaNodeFieldConstraint[]   resultConstraints;
-    private final BetaNodeConstraints resultsBinder;
+    private final BetaConstraints resultsBinder;
 
     /**
      * Constructor.
@@ -66,8 +67,8 @@ public class CollectNode extends BetaNode
               leftInput,
               rightInput,
               new AlphaNodeFieldConstraint[0],
-              new BetaNodeConstraints(),
-              new BetaNodeConstraints(),
+              new DefaultBetaConstraints(),
+              new DefaultBetaConstraints(),
               collect );
     }
 
@@ -93,8 +94,8 @@ public class CollectNode extends BetaNode
                        final TupleSource leftInput,
                        final ObjectSource rightInput,
                        final AlphaNodeFieldConstraint[] resultConstraints,
-                       final BetaNodeConstraints sourceBinder,
-                       final BetaNodeConstraints resultsBinder,
+                       final BetaConstraints sourceBinder,
+                       final BetaConstraints resultsBinder,
                        final Collect collect) {
         super( id,
                leftInput,
@@ -239,7 +240,7 @@ public class CollectNode extends BetaNode
         memory.add( workingMemory,
                     handle );
 
-        final BetaNodeConstraints binder = constraints();
+        final BetaConstraints binder = constraints();
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();

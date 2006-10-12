@@ -31,6 +31,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
@@ -41,35 +42,39 @@ import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
 
-public class BetaNodeConstraints
+public class DefaultBetaConstraints
     implements
-    Serializable {
+    Serializable, BetaConstraints {
 
     /**
      * 
      */
     private static final long               serialVersionUID         = 320L;
 
-    public final static BetaNodeConstraints emptyBetaNodeConstraints = new BetaNodeConstraints();
-
     private final LinkedList                constraints;
 
     private ContextEntry                    contexts;
 
-    public BetaNodeConstraints() {
-        this.constraints = null;
-        this.contexts = null;
-    }
+    private boolean                         indexed;   
 
-    public BetaNodeConstraints(final BetaNodeFieldConstraint constraint) {
+    public DefaultBetaConstraints(final BetaNodeFieldConstraint constraint) {
         this( new BetaNodeFieldConstraint[]{constraint} );
-    }
+    }        
 
-    public BetaNodeConstraints(final BetaNodeFieldConstraint[] constraints) {
+    public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
         this.constraints = new LinkedList();
         ContextEntry current = null;
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
-            this.constraints.add( new LinkedListEntry( constraints[i] ) );
+            // Determine  if this constraint is indexable
+            // it is only indexable if there is already no indexed constraints
+            // An indexed constraint is always the first constraint
+            if ( isIndexable( constraints[i] ) && !indexed ) {
+                this.constraints.insertAfter( null, new LinkedListEntry( constraints[i] ) );
+                this.indexed = true;
+            } else {
+                this.constraints.add( new LinkedListEntry( constraints[i] ) );
+            }
+            //Setup  the  contextEntry cache to be iterated  in the same order
             ContextEntry context = constraints[i].getContextEntry();
             if ( current == null ) {
                 current = context;
@@ -80,24 +85,38 @@ public class BetaNodeConstraints
             current = context;
         }
     }
+    
+    private  boolean isIndexable(final BetaNodeFieldConstraint constraint) {        
+        if ( constraint.getClass() == VariableConstraint.class ) {
+            VariableConstraint variableConstraint = (VariableConstraint) constraint;
+            return ( variableConstraint.getEvaluator().getOperator() == Operator.EQUAL );
+        } else {
+            return false;
+        }
+    }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
+     */
     public void updateFromTuple(ReteTuple tuple) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
             context.updateFromTuple( tuple );
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
+     */
     public void updateFromFactHandle(InternalFactHandle handle) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
             context.updateFromFactHandle( handle );
         }
     }
     
+    /* (non-Javadoc)
+     * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
+     */
     public boolean isAllowedCachedLeft(Object object ) {       
-        if ( this.constraints == null ) {
-            return true;
-        }
-
         LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
         ContextEntry context = this.contexts;
         while ( entry != null ) {
@@ -110,11 +129,10 @@ public class BetaNodeConstraints
         return true;        
     }    
     
+    /* (non-Javadoc)
+     * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
+     */
     public boolean isAllowedCachedRight(ReteTuple tuple) {
-        if ( this.constraints == null ) {
-            return true;
-        }
-
         LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
         ContextEntry context = this.contexts;
         while ( entry != null ) {
@@ -125,7 +143,31 @@ public class BetaNodeConstraints
             context = context.getNext();
         }
         return true;        
-    }          
+    }   
+    
+    public boolean isIndexed() {
+        return this.indexed;
+    }
+    
+    public boolean isEmpty() {
+        return false;   
+    }
+    
+    public BetaMemory createBetaMemory()  {
+        BetaMemory memory;
+        if ( this.indexed ) {
+            Constraint constraint = ( Constraint ) this.constraints.getFirst();
+            VariableConstraint variableConstraint = (VariableConstraint) constraint;
+            memory = new BetaMemory( new TupleHashTable(),
+                                     new FieldIndexHashTable( variableConstraint.getFieldExtractor(),
+                                                              variableConstraint.getRequiredDeclarations()[0] ) );
+        } else  {        
+            memory = new BetaMemory( new TupleHashTable(),
+                                     new FactHashTable() );
+        }
+        
+        return memory;        
+    }    
 
     //    public Set getRequiredDeclarations() {
     //        final Set declarations = new HashSet();
@@ -142,6 +184,9 @@ public class BetaNodeConstraints
         return this.constraints.hashCode();
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.BetaNodeConstraints#getConstraints()
+     */
     public LinkedList getConstraints() {
         return this.constraints;
     }
@@ -164,7 +209,7 @@ public class BetaNodeConstraints
             return false;
         }
 
-        final BetaNodeConstraints other = (BetaNodeConstraints) object;
+        final DefaultBetaConstraints other = (DefaultBetaConstraints) object;
 
         if ( this.constraints == other.constraints ) {
             return true;

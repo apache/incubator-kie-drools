@@ -6,7 +6,8 @@ import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaNodeConstraints;
+import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -28,19 +29,19 @@ public class FromNode extends TupleSource
     private DataProvider        dataProvider;
     private TupleSource         tupleSource;
     private AlphaNodeFieldConstraint[]   constraints;
-    private BetaNodeConstraints binder;
+    private BetaConstraints binder;
 
     public FromNode(final int id,
                     final DataProvider dataProvider,
                     final TupleSource tupleSource,
                     final AlphaNodeFieldConstraint[] constraints,
-                    final BetaNodeConstraints binder) {
+                    final BetaConstraints binder) {
         super( id );
         this.dataProvider = dataProvider;
         this.tupleSource = tupleSource;
         this.constraints = constraints;
         if ( binder == null ) {
-            this.binder = new BetaNodeConstraints();
+            this.binder = new DefaultBetaConstraints();
         } else {
             this.binder = binder;
         }
