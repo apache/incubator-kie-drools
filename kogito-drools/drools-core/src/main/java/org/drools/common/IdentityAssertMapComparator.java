@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,25 +16,25 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.util.FastComparator;
+import org.drools.util.AbstractHashTable.ObjectComparator;
 
-public class IdentityAssertMapComparator extends FastComparator {
+public class IdentityAssertMapComparator
+    implements
+    ObjectComparator {
     /**
      * 
      */
-    private static final long serialVersionUID = -4008762903660457691L;
+    private static final long serialVersionUID = 320L;
 
     private final Class       factHandleClass;
-
-    private final boolean     _rehash          = FastComparator.REHASH_SYSTEM_HASHCODE;
 
     public IdentityAssertMapComparator(final Class factHandleClass) {
         this.factHandleClass = factHandleClass;
     }
 
     public int hashCodeOf(final Object obj) {
-        if (obj.getClass() == this.factHandleClass ) {
-            return ( ( InternalFactHandle ) obj).getObjectHashCode();
+        if ( obj.getClass() == this.factHandleClass ) {
+            return ((InternalFactHandle) obj).getObjectHashCode();
         }
         return obj.hashCode();
     }
@@ -42,12 +43,12 @@ public class IdentityAssertMapComparator extends FastComparator {
      * Special comparator that allows FactHandles to be keys, but always  checks
      * like for like.
      */
-    public boolean areEqual(final Object o1,
-                            final Object o2) {
+    public boolean equal(final Object o1,
+                         final Object o2) {
         if ( o1.getClass() == this.factHandleClass ) {
-            return  ( ( InternalFactHandle ) o1).getObject() == ( ( InternalFactHandle ) o2).getObject();
+            return ((InternalFactHandle) o1).getObject() == ((InternalFactHandle) o2).getObject();
         }
-        
+
         return o1 == ((InternalFactHandle) o2).getObject();
     }
 

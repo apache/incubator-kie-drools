@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
-public class BinaryHeapFifoQueue
+public class BinaryHeapQueue
     implements
     Queue,
     Serializable {
@@ -43,9 +43,9 @@ public class BinaryHeapFifoQueue
      * @param comparator the comparator used to order the elements, null
      *                   means use natural order
      */
-    public BinaryHeapFifoQueue(final Comparator comparator) {
+    public BinaryHeapQueue(final Comparator comparator) {
         this( comparator,
-              BinaryHeapFifoQueue.DEFAULT_CAPACITY );
+              BinaryHeapQueue.DEFAULT_CAPACITY );
     }
 
     /**
@@ -56,7 +56,7 @@ public class BinaryHeapFifoQueue
      * @param capacity   the initial capacity for the heap
      * @throws IllegalArgumentException if <code>capacity</code> is &lt;= <code>0</code>
      */
-    public BinaryHeapFifoQueue(final Comparator comparator,
+    public BinaryHeapQueue(final Comparator comparator,
                                final int capacity) {
         if ( capacity <= 0 ) {
             throw new IllegalArgumentException( "invalid capacity" );

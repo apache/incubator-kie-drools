@@ -7,7 +7,7 @@ import java.util.List;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
-import org.drools.util.BinaryHeapFifoQueue;
+import org.drools.util.BinaryHeapQueue;
 import org.drools.util.Queueable;
 
 public class RuleFlowNode
@@ -21,7 +21,7 @@ public class RuleFlowNode
     private final InternalAgenda      agenda;
 
     /** @todo Maybe this should just be a LinkedList and we sort on use? */
-    private final BinaryHeapFifoQueue queue;
+    private final BinaryHeapQueue queue;
 
     private List                      childNodes       = Collections.EMPTY_LIST;
 
@@ -37,7 +37,7 @@ public class RuleFlowNode
                         final InternalAgenda agenda) {
         this.name = name;
         this.agenda = agenda;
-        this.queue = new BinaryHeapFifoQueue( DepthConflictResolver.getInstance() );
+        this.queue = new BinaryHeapQueue( DepthConflictResolver.getInstance() );
     }
 
     /* (non-Javadoc)
