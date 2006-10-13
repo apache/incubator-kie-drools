@@ -156,7 +156,7 @@ public class ReteTuple
             return false;
         }
         
-        if ( this.handle !=  handle ) {
+        if ( this.handle != other.handle ) {
             return false;
         }
         
