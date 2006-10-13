@@ -296,16 +296,20 @@ public abstract class AbstractHashTable
         public int                hashCode;
 
         public Entry              next;
+        
+//        private LinkedList              list;
 
         public FactEntry(InternalFactHandle handle) {
             this.handle = handle;
             this.hashCode = handle.hashCode();
+//            this.list = new LinkedList();
         }
 
         public FactEntry(InternalFactHandle handle,
                          int hashCode) {
             this.handle = handle;
             this.hashCode = hashCode;
+//            this.list = new LinkedList();
         }
 
         public InternalFactHandle getFactHandle() {
@@ -319,19 +323,20 @@ public abstract class AbstractHashTable
         public void setNext(Entry next) {
             this.next = next;
         }
+//        
+//        void add(final LinkedListEntry tupleMatchEntry) {
+//            this.list.add( tupleMatchEntry );
+//        }
+//        void remove(final LinkedListEntry tupleMatchEntry) {
+//            this.list.remove( tupleMatchEntry );
+//        }        
 
         public int hashCode() {
             return this.hashCode;
         }
 
         public boolean equals(Object object) {
-            if ( object == this ) {
-                return true;
-            }
-
-            // assumes we never have null or wrong class
-            FactEntry other = (FactEntry) object;
-            return this.handle.equals( other.handle );
+            return ( object == this) || (this.handle == ((FactEntry)object).handle);
         }
     }
 }

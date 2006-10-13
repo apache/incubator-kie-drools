@@ -33,7 +33,7 @@ public class DefaultFactHandle
     /**
      * 
      */
-    private static final long serialVersionUID = 1035305202846367106L;
+    private static final long serialVersionUID = 320L;
     /** Handle id. */
     private long        id;
     private long        recency;

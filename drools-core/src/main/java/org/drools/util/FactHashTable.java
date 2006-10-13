@@ -8,8 +8,10 @@ import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
-public class FactHashTable extends AbstractHashTable implements ObjectHashTable {
-    private static final long serialVersionUID = 320L;    
+public class FactHashTable extends AbstractHashTable
+    implements
+    ObjectHashTable {
+    private static final long serialVersionUID = 320L;
 
     public FactHashTable() {
         this( 16,
@@ -20,22 +22,24 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
                          float loadFactor) {
         super( capacity,
                loadFactor );
-    }        
-    
+    }
+
     public Iterator iterator(int hashCode) {
-        throw new UnsupportedOperationException("FactHashTable does not support the method iterator(int hashCode");
-    }      
-    
+        throw new UnsupportedOperationException( "FactHashTable does not support the method iterator(int hashCode" );
+    }
+
     public Iterator iterator(ReteTuple tuple) {
         return iterator();
-    }    
+    }
 
     public boolean add(InternalFactHandle handle) {
-        return add( handle, true);
+        return add( handle,
+                    true );
     }
-    
-    public boolean add(InternalFactHandle handle, boolean checkExists) {
-        int hashCode =  this.comparator.hashCodeOf( handle );
+
+    public boolean add(InternalFactHandle handle,
+                       boolean checkExists) {
+        int hashCode = this.comparator.hashCodeOf( handle );
         int index = indexOf( hashCode,
                              table.length );
 
@@ -43,7 +47,7 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
         if ( checkExists ) {
             FactEntry current = (FactEntry) this.table[index];
             while ( current != null ) {
-                if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() )  {
+                if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() ) {
                     return false;
                 }
                 current = (FactHashTable.FactEntry) current.getNext();
@@ -52,7 +56,7 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
 
         // We aren't checking the key exists, or it didn't find the key
         FactEntry entry = new FactEntry( handle,
-                                             hashCode );
+                                         hashCode );
         entry.next = this.table[index];
         this.table[index] = entry;
 
@@ -100,15 +104,15 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
             current = next;
         }
         return false;
-    }        
-    
+    }
+
     public Entry getBucket(Object object) {
         int hashCode = this.comparator.hashCodeOf( object );
         int index = indexOf( hashCode,
                              table.length );
 
-        return (ObjectEntry)  this.table[index];          
-    }         
+        return (ObjectEntry) this.table[index];
+    }
 
     public int hash(Object key) {
         return key.hashCode();
@@ -117,8 +121,8 @@ public class FactHashTable extends AbstractHashTable implements ObjectHashTable 
     protected int indexOf(int hashCode,
                           int dataSize) {
         return hashCode & (dataSize - 1);
-    }    
-    
+    }
+
     public boolean isIndexed() {
         return false;
     }
