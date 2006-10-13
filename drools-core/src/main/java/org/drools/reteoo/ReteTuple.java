@@ -7,7 +7,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
-import org.drools.util.BaseEntry;
 import org.drools.util.Entry;
 
 public class ReteTuple
