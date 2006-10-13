@@ -8,10 +8,12 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 import org.drools.util.BaseEntry;
+import org.drools.util.Entry;
 
-public class ReteTuple extends BaseEntry
+public class ReteTuple
     implements
-    Tuple {
+    Tuple,
+    Entry {
     private static final long serialVersionUID = 320L;
 
     private int                      index;
@@ -28,7 +30,9 @@ public class ReteTuple extends BaseEntry
     
     private boolean                  fieldIndexed;
     
-    private int                      matches;    
+    private int                      matches;
+    
+    private Entry next;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -70,6 +74,20 @@ public class ReteTuple extends BaseEntry
         }
         return entry.handle;
     }        
+    
+    public void setNext(Entry next) {
+        this.next = next;
+    }
+
+    public Entry getNext() {
+        return this.next;
+    }    
+    
+    public  void release() {
+        this.parent = null;
+        this.activation = null;
+        setNext( null );
+    }    
     
     public boolean isFieldIndexed() {
         return fieldIndexed;
@@ -121,12 +139,6 @@ public class ReteTuple extends BaseEntry
     
     public int hashCode() {
         return this.hashCode;
-    }
-    
-    public  void release() {
-        this.parent = null;
-        this.activation = null;
-        setNext( null );
     }
     
     /**
