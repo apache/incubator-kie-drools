@@ -25,7 +25,6 @@ import org.drools.FactException;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FastMap;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 

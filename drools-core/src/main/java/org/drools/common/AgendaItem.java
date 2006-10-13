@@ -160,7 +160,7 @@ public class AgendaItem
             return true;
         }
 
-        if ( (object == null) || !(object instanceof AgendaItem) ) {
+        if ( object == null || object.getClass() != AgendaItem.class ) {
             return false;
         }
 

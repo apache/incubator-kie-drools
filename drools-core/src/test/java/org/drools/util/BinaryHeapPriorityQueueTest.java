@@ -30,7 +30,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
         final Random random = new Random();
         final List items = new LinkedList();
 
-        final Queue queue = new BinaryHeapFifoQueue( NaturalComparator.INSTANCE,
+        final Queue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
                                                      100000 );
 
         for ( int i = 0; i < 100000; ++i ) {

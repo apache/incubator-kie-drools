@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,7 +18,9 @@ package org.drools.common;
 
 import org.drools.util.AbstractHashTable.ObjectComparator;
 
-public class EqualityAssertMapComparator extends ObjectComparator {
+public class EqualityAssertMapComparator
+    implements
+    ObjectComparator {
     /**
      * 
      */
@@ -30,8 +33,8 @@ public class EqualityAssertMapComparator extends ObjectComparator {
     }
 
     public int hashCodeOf(final Object obj) {
-        if (obj.getClass() == this.factHandleClass ) {
-            return ( ( InternalFactHandle ) obj).getObjectHashCode();
+        if ( obj.getClass() == this.factHandleClass ) {
+            return ((InternalFactHandle) obj).getObjectHashCode();
         }
         return obj.hashCode();
     }
@@ -40,8 +43,8 @@ public class EqualityAssertMapComparator extends ObjectComparator {
      * Special comparator  that  allows FactHandles to  be  keys, but always  checks
      * equals with the  identity of the  objects involved
      */
-    public boolean areEqual(final Object o1,
-                            final Object o2) {
+    public boolean equal(final Object o1,
+                         final Object o2) {
         if ( o1.getClass() == this.factHandleClass ) {
             return o1 == o2;
         }
