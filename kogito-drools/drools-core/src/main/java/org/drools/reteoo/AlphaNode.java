@@ -47,7 +47,7 @@ class AlphaNode extends ObjectSource
     /**
      * 
      */
-    private static final long     serialVersionUID = 8936511451364612838L;
+    private static final long     serialVersionUID = 320L;
 
     /** The <code>FieldConstraint</code> */
     private final AlphaNodeFieldConstraint constraint;
