@@ -16,15 +16,11 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.Tuple;
-import org.drools.util.BaseEntry;
 
 public class VariableConstraint
     implements
@@ -45,12 +41,12 @@ public class VariableConstraint
         this.restriction = new VariableRestriction( declaration,
                                                     evaluator );
     }
-    
+
     public VariableConstraint(final FieldExtractor fieldExtractor,
                               final VariableRestriction restriction) {
         this.fieldExtractor = fieldExtractor;
         this.restriction = restriction;
-    }    
+    }
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
@@ -64,20 +60,25 @@ public class VariableConstraint
         return this.restriction.getEvaluator();
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context, Object object ) {
-        return this.restriction.isAllowedCachedLeft( context, this.fieldExtractor.getValue( object ) );        
-    }    
-    
-    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
-        return this.restriction.isAllowedCachedRight( tuple, context );        
-    }        
-    
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        return this.restriction.isAllowedCachedLeft( context,
+                                                     this.fieldExtractor.getValue( object ) );
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        return this.restriction.isAllowedCachedRight( tuple,
+                                                      context );
+    }
+
     public String toString() {
         return "[VariableConstraint fieldExtractor=" + this.fieldExtractor + " declaration=" + getRequiredDeclarations() + "]";
     }
-    
+
     public ContextEntry getContextEntry() {
-        return new  VariableContextEntry(this.fieldExtractor,  this.restriction.getRequiredDeclarations()[0] );
+        return new VariableContextEntry( this.fieldExtractor,
+                                         this.restriction.getRequiredDeclarations()[0] );
     }
 
     public int hashCode() {
@@ -101,39 +102,39 @@ public class VariableConstraint
 
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
-    
-    
-    public static class VariableContextEntry implements ContextEntry {
-        public Object left;
-        public Object right;        
-        
+
+    public static class VariableContextEntry
+        implements
+        ContextEntry {
+        public Object          left;
+        public Object          right;
+
         private FieldExtractor extractor;
-        private Declaration declaration;
-        private ContextEntry entry;
-        
-        
-        public VariableContextEntry(FieldExtractor extractor, Declaration declaration) {
+        private Declaration    declaration;
+        private ContextEntry   entry;
+
+        public VariableContextEntry(FieldExtractor extractor,
+                                    Declaration declaration) {
             this.extractor = extractor;
             this.declaration = declaration;
-        }       
-        
+        }
+
         public ContextEntry getNext() {
             return this.entry;
         }
-        
-        public void setNext(ContextEntry  entry) {
+
+        public void setNext(ContextEntry entry) {
             this.entry = entry;
-        }        
-        
-        public void updateFromTuple(ReteTuple tuple) {
-            this.left =  this.declaration.getValue( tuple.get( this.declaration ).getObject() );            
         }
-        
+
+        public void updateFromTuple(ReteTuple tuple) {
+            this.left = this.declaration.getValue( tuple.get( this.declaration ).getObject() );
+        }
+
         public void updateFromFactHandle(InternalFactHandle handle) {
             this.right = this.extractor.getValue( handle.getObject() );
-            
-        }                        
+
+        }
     }
-    
 
 }

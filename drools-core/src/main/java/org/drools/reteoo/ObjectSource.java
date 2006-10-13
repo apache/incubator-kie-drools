@@ -120,5 +120,9 @@ abstract class ObjectSource extends BaseNode
         }         
     }
     
-    public abstract void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory);    
+    public abstract void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory);
+    
+    public ObjectSinkPropagator getSinkPropagator() {
+        return this.sink;
+    }
 }
