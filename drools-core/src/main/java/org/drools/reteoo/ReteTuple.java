@@ -140,6 +140,18 @@ public class ReteTuple
         return this.hashCode;
     }
     
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        
+        ReteTuple entry = this;
+        while ( entry != null ) {
+            //buffer.append( entry.handle );
+            buffer.append( entry.handle + "\n" );
+            entry = entry.parent;
+        }
+        return buffer.toString();
+    }
+    
     /**
      * We use this equals method to avoid the cast
      * @param tuple

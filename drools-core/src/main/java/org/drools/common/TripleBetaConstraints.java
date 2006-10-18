@@ -17,7 +17,9 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.WorkingMemory;
@@ -36,12 +38,14 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
+import org.drools.util.CompositeFieldIndexHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.LinkedListNode;
 import org.drools.util.TupleHashTable;
+import org.drools.util.CompositeFieldIndexHashTable.FieldIndex;
 
 public class TripleBetaConstraints
     implements
@@ -61,20 +65,61 @@ public class TripleBetaConstraints
     private ContextEntry                  context1;
     private ContextEntry                  context2;
 
-    private boolean                       indexed;
+    private boolean                       indexed0;
+    private boolean                       indexed1;
+    private boolean                       indexed2;
 
     public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
-        // find the first instrumental
-        for ( int i = 0, length = constraints.length; i < length; i++ ) {
-            if ( isIndexable( constraints[i] ) ) {
-                if ( i > 0) {
-                    // swap the constraint to the first position
-                    BetaNodeFieldConstraint temp = constraints[0];
-                    constraints[0] = constraints[i];
-                    constraints[i] = temp;
-                }
-                this.indexed = true;
-                break;
+        //        // find the first instrumental
+        //        for ( int i = 0, length = constraints.length; i < length; i++ ) {
+        //            if ( isIndexable( constraints[i] ) ) {
+        //                if ( i > 0) {
+        //                    // swap the constraint to the first position
+        //                    BetaNodeFieldConstraint temp = constraints[0];
+        //                    constraints[0] = constraints[i];
+        //                    constraints[i] = temp;
+        //                }
+        //                this.indexed = true;
+        //                break;
+        //            }
+        //        }
+        //
+        //        this.constraint0 = constraints[0];
+        //        this.context0 = this.constraint0.getContextEntry();
+        //
+        //        this.constraint1 = constraints[1];
+        //        this.context1 = this.constraint1.getContextEntry();
+        //        
+        //        this.constraint2 = constraints[2];
+        //        this.context2 = this.constraint2.getContextEntry();     
+
+        boolean i0 = isIndexable( constraints[0] );
+        boolean i1 = isIndexable( constraints[1] );
+        boolean i2 = isIndexable( constraints[2] );
+
+        if ( i0 ) {
+            this.indexed0 = true;
+            if ( i1 ) {
+                this.indexed1 = true;
+            }
+        } else if ( i1 ) {
+            this.indexed0 = true;
+            BetaNodeFieldConstraint temp = constraints[0];
+            constraints[0] = constraints[1];
+            constraints[1] = temp;
+        }
+        
+        if  ( i2 ) {
+            if  (i0) {
+                this.indexed1 = true;
+                BetaNodeFieldConstraint temp = constraints[1];
+                constraints[1] = constraints[2];
+                constraints[2] = temp;                   
+            } else {
+                this.indexed0 = true;
+                BetaNodeFieldConstraint temp = constraints[0];
+                constraints[0] = constraints[2];
+                constraints[2] = temp;                
             }
         }
 
@@ -83,9 +128,9 @@ public class TripleBetaConstraints
 
         this.constraint1 = constraints[1];
         this.context1 = this.constraint1.getContextEntry();
-        
+
         this.constraint2 = constraints[2];
-        this.context2 = this.constraint2.getContextEntry();        
+        this.context2 = this.constraint2.getContextEntry();
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
@@ -119,10 +164,15 @@ public class TripleBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(Object object) {
-        return ( this.indexed || this.constraint0.isAllowedCachedLeft( context0,
-                                                                       object ) ) && this.constraint1.isAllowedCachedLeft( context1,
-                                                                                                       object ) && this.constraint2.isAllowedCachedLeft( context2,
-                                                                                                                                                         object );
+        //        return ( this.indexed0 || this.constraint0.isAllowedCachedLeft( context0,
+        //                                                                       object ) ) && this.constraint1.isAllowedCachedLeft( context1,
+        //                                                                                                       object ) && this.constraint2.isAllowedCachedLeft( context2,
+        //                                                                                                                                                         object );
+
+        return (this.indexed0 || this.constraint0.isAllowedCachedLeft( context0,
+                                                                       object )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( context1,
+                                                                                                                                            object )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( context2,
+                                                                                                                                                                                               object ) );
     }
 
     /* (non-Javadoc)
@@ -136,7 +186,7 @@ public class TripleBetaConstraints
     }
 
     public boolean isIndexed() {
-        return this.indexed;
+        return this.indexed0;
     }
 
     public boolean isEmpty() {
@@ -144,12 +194,48 @@ public class TripleBetaConstraints
     }
 
     public BetaMemory createBetaMemory() {
+        //        BetaMemory memory;
+        //        if ( this.indexed ) {
+        //            VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
+        //            Index  index  = new  Index(variableConstraint.getFieldExtractor(), variableConstraint.getRequiredDeclarations()[0]);
+        //            memory = new BetaMemory( new TupleHashTable(),
+        //                                     new CompositeFieldIndexHashTable( new Index[] { index }  ) );
+        //        } else {
+        //            memory = new BetaMemory( new TupleHashTable(),
+        //                                     new FactHashTable() );
+        //        }
+        //
+        //        return memory;
+
         BetaMemory memory;
-        if ( this.indexed ) {
+
+        List list = new ArrayList( 2 );
+        if ( this.indexed0 ) {
             VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
+            FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                     variableConstraint.getRequiredDeclarations()[0] );
+            list.add( index );
+
+        }
+
+        if ( this.indexed1 ) {
+            VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
+            FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                     variableConstraint.getRequiredDeclarations()[0] );
+            list.add( index );
+        }
+        
+        if ( this.indexed2 ) {
+            VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
+            FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                     variableConstraint.getRequiredDeclarations()[0] );
+            list.add( index );
+        }        
+
+        if ( !list.isEmpty() ) {
+            FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             memory = new BetaMemory( new TupleHashTable(),
-                                     new FieldIndexHashTable( variableConstraint.getFieldExtractor(),
-                                                              variableConstraint.getRequiredDeclarations()[0] ) );
+                                     new CompositeFieldIndexHashTable( indexes ) );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -204,18 +290,18 @@ public class TripleBetaConstraints
 
         final TripleBetaConstraints other = (TripleBetaConstraints) object;
 
-        if  ( this.constraint0 != other.constraint0 && this.constraint0.equals( other.constraint0 ) ) {
+        if ( this.constraint0 != other.constraint0 && this.constraint0.equals( other.constraint0 ) ) {
             return false;
         }
-        
-        if  ( this.constraint1 != other.constraint1 && this.constraint1.equals( other.constraint1 ) ) {
+
+        if ( this.constraint1 != other.constraint1 && this.constraint1.equals( other.constraint1 ) ) {
             return false;
         }
-        
-        if  ( this.constraint2 != other.constraint2 && this.constraint2.equals( other.constraint2 ) ) {
+
+        if ( this.constraint2 != other.constraint2 && this.constraint2.equals( other.constraint2 ) ) {
             return false;
-        }        
-        
+        }
+
         return true;
     }
 

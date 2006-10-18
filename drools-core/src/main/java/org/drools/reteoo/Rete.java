@@ -21,14 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.FactException;
+import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactImpl;
+import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -80,7 +85,7 @@ class Rete extends ObjectSource
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-
+    
     /**
      * This is the entry point into the network for all asserted Facts. Iterates a cache
      * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not

@@ -17,7 +17,9 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.WorkingMemory;
@@ -42,6 +44,8 @@ import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.LinkedListNode;
 import org.drools.util.TupleHashTable;
+import org.drools.util.CompositeFieldIndexHashTable;
+import org.drools.util.CompositeFieldIndexHashTable.FieldIndex;
 
 public class DoubleBetaConstraints
     implements
@@ -59,21 +63,23 @@ public class DoubleBetaConstraints
     private ContextEntry                  context0;
     private ContextEntry                  context1;
 
-    private boolean                       indexed;
+    private boolean                       indexed0;
+    private boolean                       indexed1;
 
     public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
-        // find the first instrumental
-        for ( int i = 0, length = constraints.length; i < length; i++ ) {
-            if ( isIndexable( constraints[i] ) ) {
-                if ( i > 0) {
-                    // swap the constraint to the first position
-                    BetaNodeFieldConstraint temp = constraints[0];
-                    constraints[0] = constraints[i];
-                    constraints[i] = temp;
-                }
-                this.indexed = true;
-                break;
+        boolean i0 = isIndexable( constraints[0] );
+        boolean i1 = isIndexable( constraints[1] );
+
+        if ( i0 ) {
+            this.indexed0 = true;
+            if ( i1 ) {
+                this.indexed1 = true;
             }
+        } else if ( i1 ) {
+            this.indexed0 = true;
+            BetaNodeFieldConstraint temp = constraints[0];
+            constraints[0] = constraints[1];
+            constraints[1] = temp;
         }
 
         this.constraint0 = constraints[0];
@@ -112,9 +118,9 @@ public class DoubleBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(Object object) {
-        return ( this.indexed || this.constraint0.isAllowedCachedLeft( context0,
-                                                     object ) ) && this.constraint1.isAllowedCachedLeft( context1,
-                                                                                                       object );
+        return (this.indexed0 || this.constraint0.isAllowedCachedLeft( context0,
+                                                                       object )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( context1,
+                                                                                                                                            object ));
     }
 
     /* (non-Javadoc)
@@ -127,7 +133,7 @@ public class DoubleBetaConstraints
     }
 
     public boolean isIndexed() {
-        return this.indexed;
+        return this.indexed0;
     }
 
     public boolean isEmpty() {
@@ -136,11 +142,27 @@ public class DoubleBetaConstraints
 
     public BetaMemory createBetaMemory() {
         BetaMemory memory;
-        if ( this.indexed ) {
+
+        List list = new ArrayList( 2 );
+        if ( this.indexed0 ) {
             VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
+            FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                     variableConstraint.getRequiredDeclarations()[0] );
+            list.add( index );
+
+        }
+
+        if ( this.indexed1 ) {
+            VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
+            FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                     variableConstraint.getRequiredDeclarations()[0] );
+            list.add( index );
+        }
+
+        if ( !list.isEmpty() ) {
+            FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             memory = new BetaMemory( new TupleHashTable(),
-                                     new FieldIndexHashTable( variableConstraint.getFieldExtractor(),
-                                                              variableConstraint.getRequiredDeclarations()[0] ) );
+                                     new CompositeFieldIndexHashTable( indexes ) );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -194,14 +216,14 @@ public class DoubleBetaConstraints
 
         final DoubleBetaConstraints other = (DoubleBetaConstraints) object;
 
-        if  ( this.constraint0 != other.constraint0 && this.constraint0.equals( other.constraint0 ) ) {
+        if ( this.constraint0 != other.constraint0 && this.constraint0.equals( other.constraint0 ) ) {
             return false;
         }
-        
-        if  ( this.constraint1 != other.constraint1 && this.constraint1.equals( other.constraint1 ) ) {
+
+        if ( this.constraint1 != other.constraint1 && this.constraint1.equals( other.constraint1 ) ) {
             return false;
         }
-        
+
         return true;
     }
 

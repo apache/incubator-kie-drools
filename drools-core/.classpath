@@ -13,5 +13,6 @@
 	<classpathentry kind="var" path="M2_REPO/jung/jung/1.7.2/jung-1.7.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="jess.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

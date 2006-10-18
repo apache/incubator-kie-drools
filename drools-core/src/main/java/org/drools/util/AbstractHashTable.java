@@ -179,6 +179,8 @@ public abstract class AbstractHashTable
     public interface ObjectComparator {
         public int hashCodeOf(Object object);
         
+        public int rehash(int hashCode);
+        
         public boolean equal(Object object1,
                              Object object2);
     }
@@ -242,12 +244,15 @@ public abstract class AbstractHashTable
         }
         
         public int hashCodeOf(Object key) {
-            int h = key.hashCode();
+            return rehash(  key.hashCode() ); 
+        }
+        
+        public int rehash(int h) {
             h += ~(h << 9);
             h ^= (h >>> 14);
             h += (h << 4);
             h ^= (h >>> 10);
-            return h;
+            return h;            
         }
 
         private InstanceEquals() {
@@ -270,12 +275,15 @@ public abstract class AbstractHashTable
         }
         
         public int hashCodeOf(Object key) {
-            int h = key.hashCode();
+            return rehash( key.hashCode() );
+        }
+        
+        public int rehash(int h) {
             h += ~(h << 9);
             h ^= (h >>> 14);
             h += (h << 4);
             h ^= (h >>> 10);
-            return h;
+            return h;            
         }
 
         private EqualityEquals() {

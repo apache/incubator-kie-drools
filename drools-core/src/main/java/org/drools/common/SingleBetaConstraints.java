@@ -23,11 +23,13 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.util.CompositeFieldIndexHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
+import org.drools.util.CompositeFieldIndexHashTable.FieldIndex;
 
 public class SingleBetaConstraints
     implements
@@ -106,9 +108,9 @@ public class SingleBetaConstraints
         BetaMemory memory;
         if ( this.indexed ) {
             VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
+            FieldIndex  index  = new  FieldIndex(variableConstraint.getFieldExtractor(), variableConstraint.getRequiredDeclarations()[0]);
             memory = new BetaMemory( new TupleHashTable(),
-                                     new FieldIndexHashTable( variableConstraint.getFieldExtractor(),
-                                                              variableConstraint.getRequiredDeclarations()[0] ) );
+                                     new CompositeFieldIndexHashTable( new FieldIndex[] { index }  ) );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
