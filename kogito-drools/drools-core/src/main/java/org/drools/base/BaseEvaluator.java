@@ -47,9 +47,6 @@ public abstract class BaseEvaluator
         return this.type;
     }
 
-    public abstract boolean evaluate(Object object1,
-                                     Object object2);
-
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;

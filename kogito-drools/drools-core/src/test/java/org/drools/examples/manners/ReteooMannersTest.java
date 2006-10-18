@@ -73,7 +73,7 @@ public class ReteooMannersTest extends BaseMannersTest {
             workingMemory.assertObject( object );
         }
 
-        workingMemory.assertObject( new Count( new Integer(1) ) );
+        workingMemory.assertObject( new Count( 1 ) );
 
         final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();

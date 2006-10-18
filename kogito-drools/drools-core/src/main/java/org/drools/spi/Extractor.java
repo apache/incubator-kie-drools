@@ -23,10 +23,27 @@ import org.drools.base.ValueType;
 public interface Extractor
     extends
     Serializable {
-    
+
     public Object getValue(Object object);
 
+    public char getCharValue(Object object);
+
+    public int getIntValue(Object object);
+
+    public byte getByteValue(Object object);
+
+    public short getShortValue(Object object);
+
+    public long getLongValue(Object object);
+
+    public float getFloatValue(Object object);
+
+    public double getDoubleValue(Object object);
+
+    public boolean getBooleanValue(Object object);
+
     public ValueType getValueType();
-    
+
     public Class getExtractToClass();
+
 }

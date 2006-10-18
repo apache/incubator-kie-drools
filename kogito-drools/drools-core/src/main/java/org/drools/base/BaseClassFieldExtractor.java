@@ -38,7 +38,7 @@ abstract public class BaseClassFieldExtractor
         try {
             final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
             this.index = ((Integer) inspector.getFieldNames().get( fieldName ) ).intValue();
-            this.fieldType = wrapPrimitive(  (Class) inspector.getFieldTypes().get( fieldName ) );
+            this.fieldType = (Class) inspector.getFieldTypes().get( fieldName ) ;
             this.valueType = ValueType.determineValueType( this.fieldType );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
@@ -55,37 +55,6 @@ abstract public class BaseClassFieldExtractor
     
     public ValueType  getValueType() {
         return this.valueType;
-    }
-
-    /** This will be implemented by the dynamic classes */
-    abstract public Object getValue(Object object);
-    
-    protected static Class wrapPrimitive(final Class fieldType) {
-        Class returnClass = null;
-        // autobox primitives
-        if ( fieldType.isPrimitive() ) {
-            if ( fieldType == char.class ) {
-                returnClass = Character.class;
-            } else if ( fieldType == byte.class ) {
-                returnClass = Byte.class;
-            } else if ( fieldType == short.class ) {
-                returnClass = Short.class;
-            } else if ( fieldType == int.class ) {
-                returnClass = Integer.class;
-            } else if ( fieldType == long.class ) {
-                returnClass = Long.class;
-            } else if ( fieldType == float.class ) {
-                returnClass = Float.class;
-            } else if ( fieldType == double.class ) {
-                returnClass = Double.class;
-            } else if ( fieldType == boolean.class ) {
-                returnClass = Boolean.class;
-            }
-        } else {
-            returnClass = fieldType;
-        }
-
-        return returnClass;
     }
 
     public int hashCode() {

@@ -18,13 +18,11 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.DoubleFactory.DoubleEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleGreaterEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleLessEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleLessOrEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleNotEqualEvaluator;
+import org.drools.rule.VariableConstraint.ObjectVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
 /**
  * This is the misc "bucket" evaluator factory for objects.
@@ -33,13 +31,17 @@ import org.drools.spi.Evaluator;
  * 
  * @author Michael Neale
  */
-public class StringFactory implements EvaluatorFactory {
-    private static EvaluatorFactory INSTANCE = new StringFactory();
-    
+public class StringFactory
+    implements
+    EvaluatorFactory {
+
+    private static final long       serialVersionUID = -1761752249672590658L;
+    private static EvaluatorFactory INSTANCE         = new StringFactory();
+
     private StringFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
         if ( INSTANCE == null ) {
             INSTANCE = new StringFactory();
@@ -54,9 +56,9 @@ public class StringFactory implements EvaluatorFactory {
             return StringNotEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.MATCHES ) {
             return StringMatchesEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for StringEvaluator" );
-        }    
+        }
     }
 
     static class StringEqualEvaluator extends BaseEvaluator {
@@ -71,12 +73,44 @@ public class StringFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Object value1 = extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 == null;
             }
-            return object1.equals( object2 );
+            return value1.equals( value2 );
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            Object value1 = object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.equals( value2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Object value = context.declaration.getExtractor().getValue( left );
+            if ( value == null ) {
+                return ((ObjectVariableContextEntry) context).right == null;
+            }
+            return value.equals( ((ObjectVariableContextEntry) context).right );
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Object value = context.extractor.getValue( right );
+            if ( ((ObjectVariableContextEntry) context).left == null ) {
+                return value == null;
+            }
+            return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
         public String toString() {
@@ -96,13 +130,44 @@ public class StringFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {
-            if ( object1 == null ) {
-                return !(object2 == null);
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Object value1 = extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 != null;
             }
+            return !value1.equals( value2 );
+        }
 
-            return !object1.equals( object2 );
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            Object value1 = object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            return !value1.equals( value2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Object value = context.declaration.getExtractor().getValue( left );
+            if ( value == null ) {
+                return ((ObjectVariableContextEntry) context).right != null;
+            }
+            return value.equals( ((ObjectVariableContextEntry) context).right );
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Object value = context.extractor.getValue( right );
+            if ( ((ObjectVariableContextEntry) context).left == null ) {
+                return value != null;
+            }
+            return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
         public String toString() {
@@ -122,20 +187,44 @@ public class StringFactory implements EvaluatorFactory {
                    Operator.MATCHES );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {
-            final String pattern = (String) object2;
-            final String target = (String) object1;
-
-            if ( object1 == null ) {
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            String value1 = (String) extractor.getValue( object1 );
+            String value2 = (String) object2.getValue();
+            if ( value1 == null ) {
                 return false;
             }
+            return value1.matches( value2 );
+        }
 
-            //TODO: possibly use a WeakHashMap cache of regex expressions
-            //downside is could cause a lot of hashing if the patterns are dynamic
-            //if the patterns are static, then it will not be a problem. Perhaps compiler can recognise patterns
-            //in the input string using /pattern/ etc.. and precompile it, in which case object2 will be a Pattern.
-            return target.matches( pattern );
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            String value1 = (String) object1.getValue();
+            String value2 = (String) extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return false;
+            }
+            return value1.matches( value2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            String value = (String) context.declaration.getExtractor().getValue( left );
+            if ( value == null ) {
+                return false;
+            }
+            return value.matches( (String) ((ObjectVariableContextEntry) context).right );
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            if ( ((ObjectVariableContextEntry) context).left == null ) {
+                return false;
+            }
+            String value = (String) context.extractor.getValue( right );
+            return ((String) ((ObjectVariableContextEntry) context).left).matches( value );
         }
 
         public String toString() {

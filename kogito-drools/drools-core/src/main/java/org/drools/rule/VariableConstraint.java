@@ -34,6 +34,11 @@ public class VariableConstraint
     private final FieldExtractor      fieldExtractor;
     private final VariableRestriction restriction;
 
+    private static final byte         TYPE_BOOLEAN     = 0;
+    private static final byte         TYPE_FLOAT       = 1;
+    private static final byte         TYPE_INTEGER     = 2;
+    private static final byte         TYPE_OBJECT      = 3;
+
     public VariableConstraint(final FieldExtractor fieldExtractor,
                               final Declaration declaration,
                               final Evaluator evaluator) {
@@ -63,7 +68,7 @@ public class VariableConstraint
     public boolean isAllowedCachedLeft(ContextEntry context,
                                        Object object) {
         return this.restriction.isAllowedCachedLeft( context,
-                                                     this.fieldExtractor.getValue( object ) );
+                                                     object );
     }
 
     public boolean isAllowedCachedRight(ReteTuple tuple,
@@ -77,8 +82,22 @@ public class VariableConstraint
     }
 
     public ContextEntry getContextEntry() {
-        return new VariableContextEntry( this.fieldExtractor,
-                                         this.restriction.getRequiredDeclarations()[0] );
+        Class classType = this.fieldExtractor.getValueType().getClassType();
+        if ( classType.isPrimitive() ) {
+            if ( classType == Boolean.TYPE ) {
+                return new BooleanVariableContextEntry( this.fieldExtractor,
+                                                        this.restriction.getRequiredDeclarations()[0] );
+            } else if ( (classType == Double.TYPE) || (classType == Float.TYPE) ) {
+                return new DoubleVariableContextEntry( this.fieldExtractor,
+                                                       this.restriction.getRequiredDeclarations()[0] );
+            } else {
+                return new LongVariableContextEntry( this.fieldExtractor,
+                                                     this.restriction.getRequiredDeclarations()[0] );
+            }
+        } else {
+            return new ObjectVariableContextEntry( this.fieldExtractor,
+                                                   this.restriction.getRequiredDeclarations()[0] );
+        }
     }
 
     public int hashCode() {
@@ -103,15 +122,12 @@ public class VariableConstraint
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
 
-    public static class VariableContextEntry
+    public static abstract class VariableContextEntry
         implements
         ContextEntry {
-        public Object          left;
-        public Object          right;
-
-        private FieldExtractor extractor;
-        private Declaration    declaration;
-        private ContextEntry   entry;
+        public FieldExtractor extractor;
+        public Declaration    declaration;
+        private ContextEntry  entry;
 
         public VariableContextEntry(FieldExtractor extractor,
                                     Declaration declaration) {
@@ -126,14 +142,81 @@ public class VariableConstraint
         public void setNext(ContextEntry entry) {
             this.entry = entry;
         }
+    }
+
+    public static class ObjectVariableContextEntry extends VariableContextEntry {
+        public Object left;
+        public Object right;
+
+        public ObjectVariableContextEntry(FieldExtractor extractor,
+                                          Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
 
         public void updateFromTuple(ReteTuple tuple) {
-            this.left = this.declaration.getValue( tuple.get( this.declaration ).getObject() );
+            this.left = this.declaration.getExtractor().getValue( tuple.get( this.declaration ).getObject() );
         }
 
         public void updateFromFactHandle(InternalFactHandle handle) {
             this.right = this.extractor.getValue( handle.getObject() );
+        }
+    }
 
+    public static class LongVariableContextEntry extends VariableContextEntry {
+        public long left;
+        public long right;
+
+        public LongVariableContextEntry(FieldExtractor extractor,
+                                        Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(ReteTuple tuple) {
+            this.left = this.declaration.getExtractor().getLongValue( tuple.get( this.declaration ).getObject() );
+        }
+
+        public void updateFromFactHandle(InternalFactHandle handle) {
+            this.right = this.extractor.getLongValue( handle.getObject() );
+        }
+    }
+
+    public static class DoubleVariableContextEntry extends VariableContextEntry {
+        public double left;
+        public double right;
+
+        public DoubleVariableContextEntry(FieldExtractor extractor,
+                                          Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(ReteTuple tuple) {
+            this.left = this.declaration.getExtractor().getDoubleValue( tuple.get( this.declaration ).getObject() );
+        }
+
+        public void updateFromFactHandle(InternalFactHandle handle) {
+            this.right = this.extractor.getDoubleValue( handle.getObject() );
+        }
+    }
+
+    public static class BooleanVariableContextEntry extends VariableContextEntry {
+        public boolean left;
+        public boolean right;
+
+        public BooleanVariableContextEntry(FieldExtractor extractor,
+                                           Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(ReteTuple tuple) {
+            this.left = this.declaration.getExtractor().getBooleanValue( tuple.get( this.declaration ).getObject() );
+        }
+
+        public void updateFromFactHandle(InternalFactHandle handle) {
+            this.right = this.extractor.getBooleanValue( handle.getObject() );
         }
     }
 

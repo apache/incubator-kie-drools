@@ -107,4 +107,36 @@ public class ClassFieldExtractor
 
         return this.extractor.getValueType() == other.getValueType() && this.extractor.getIndex() == other.getIndex();
     }
+
+    public boolean getBooleanValue(Object object) {
+        return this.extractor.getBooleanValue( object );
+    }
+
+    public byte getByteValue(Object object) {
+        return this.extractor.getByteValue( object );
+    }
+
+    public char getCharValue(Object object) {
+        return this.extractor.getCharValue( object );
+    }
+
+    public double getDoubleValue(Object object) {
+        return this.extractor.getDoubleValue( object );
+    }
+
+    public float getFloatValue(Object object) {
+        return this.extractor.getFloatValue( object );
+    }
+
+    public int getIntValue(Object object) {
+        return this.extractor.getIntValue( object );
+    }
+
+    public long getLongValue(Object object) {
+        return this.extractor.getLongValue( object );
+    }
+
+    public short getShortValue(Object object) {
+        return this.extractor.getShortValue( object );
+    }
 }

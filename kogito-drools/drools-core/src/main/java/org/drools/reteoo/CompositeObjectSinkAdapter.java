@@ -6,14 +6,14 @@ import java.util.List;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.examples.manners.Context;
 import org.drools.rule.LiteralConstraint;
-import org.drools.spi.Evaluator;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
 import org.drools.util.LinkedListNode;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -53,7 +53,7 @@ public class CompositeObjectSinkAdapter
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
-                        Object value = literalConstraint.getField();
+                        Object value = literalConstraint.getField().getValue();
                         // no need to check, we know  the sink  does not exist
                         hashedSinkMap.put( new HashKey( index,
                                                         value ),
@@ -86,7 +86,7 @@ public class CompositeObjectSinkAdapter
             if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
                 LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 Evaluator evaluator = literalConstraint.getEvaluator();
-                Object value = literalConstraint.getField();
+                Object value = literalConstraint.getField().getValue();
 
                 if ( evaluator.getOperator() == Operator.EQUAL ) {
                     int index = literalConstraint.getFieldExtractor().getIndex();
@@ -135,7 +135,7 @@ public class CompositeObjectSinkAdapter
             LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
             Evaluator evaluator = literalConstraint.getEvaluator();
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                Object value = literalConstraint.getField();
+                Object value = literalConstraint.getField().getValue();
                 list.add( sink );
                 hashedSinkMap.put( new HashKey( index,
                                                 value ),
@@ -245,6 +245,7 @@ public class CompositeObjectSinkAdapter
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory) {
         Object object = handle.getObject();
+        
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed        
             for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null && fieldIndex.isHashed(); fieldIndex = (FieldIndex) fieldIndex.getNext() ) {

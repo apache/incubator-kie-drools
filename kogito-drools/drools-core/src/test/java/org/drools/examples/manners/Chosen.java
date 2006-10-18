@@ -26,7 +26,7 @@ public class Chosen
      */
     private static final long serialVersionUID = -169447202790860427L;
 
-    private Integer         id;
+    private int         id;
 
     private String      guestName;
 
@@ -36,7 +36,7 @@ public class Chosen
         
     }
     
-    public Chosen(final Integer id,
+    public Chosen(final int id,
                   final String guestName,
                   final Hobby hobby) {
         this.id = id;
@@ -44,7 +44,7 @@ public class Chosen
         this.hobby = hobby;
     }
 
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
 

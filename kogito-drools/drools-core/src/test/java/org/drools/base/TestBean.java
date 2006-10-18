@@ -1,5 +1,8 @@
 package org.drools.base;
 
+import java.util.Collections;
+import java.util.List;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,8 +20,18 @@ package org.drools.base;
  */
 
 public class TestBean {
-    private final String name = "michael";
-    private final int    age  = 42;
+    private final String  name        = "michael";
+    private final int     age         = 42;
+
+    private final boolean booleanAttr = true;
+    private final byte    byteAttr    = 1;
+    private final char    charAttr    = 'a';
+    private final short   shortAttr   = 3;
+    private final int     intAttr     = 4;
+    private final long    longAttr    = 5;
+    private final float   floatAttr   = 6.0f;
+    private final double  doubleAttr  = 7.0;
+    private final List    listAttr    = Collections.EMPTY_LIST;
 
     public String getName() {
         return this.name;
@@ -26,5 +39,41 @@ public class TestBean {
 
     public int getAge() {
         return this.age;
+    }
+
+    public boolean isBooleanAttr() {
+        return booleanAttr;
+    }
+
+    public byte getByteAttr() {
+        return byteAttr;
+    }
+
+    public char getCharAttr() {
+        return charAttr;
+    }
+
+    public double getDoubleAttr() {
+        return doubleAttr;
+    }
+
+    public float getFloatAttr() {
+        return floatAttr;
+    }
+
+    public int getIntAttr() {
+        return intAttr;
+    }
+
+    public List getListAttr() {
+        return listAttr;
+    }
+
+    public long getLongAttr() {
+        return longAttr;
+    }
+
+    public short getShortAttr() {
+        return shortAttr;
     }
 }

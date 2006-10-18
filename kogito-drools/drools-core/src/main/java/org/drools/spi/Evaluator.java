@@ -20,53 +20,54 @@ import java.io.Serializable;
 
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 
 public interface Evaluator
     extends
     Serializable {
-//    // Operators
-//    public static final int EQUAL            = 1;
-//    public static final int NOT_EQUAL        = 10;
-//    public static final int LESS             = 20;
-//    public static final int LESS_OR_EQUAL    = 30;
-//    public static final int GREATER          = 40;
-//    public static final int GREATER_OR_EQUAL = 50;
-//    public static final int CONTAINS         = 60;
-//    public static final int MATCHES          = 70;
-//    public static final int EXCLUDES         = 80;
-//
-//    // Types
-//    public static final int CHAR_TYPE        = 100;
-//    public static final int BYTE_TYPE        = 110;
-//    public static final int SHORT_TYPE       = 120;
-//    public static final int INTEGER_TYPE     = 130;
-//    public static final int LONG_TYPE        = 140;
-//    public static final int FLOAT_TYPE       = 150;
-//    public static final int DOUBLE_TYPE      = 160;
-//    public static final int BOOLEAN_TYPE     = 170;
-//    public static final int STRING_TYPE      = 180;
-//    public static final int DATE_TYPE        = 190;
-//    public static final int ARRAY_TYPE       = 200;
-//    public static final int OBJECT_TYPE      = 210;
-//    public static final int NULL_TYPE        = 300;
 
     public ValueType getValueType();
 
     public Operator getOperator();
 
     /**
-     * This method will apply the evaluator on the objects.
+     * This method will extract the value from the object1 using the 
+     * extractor and compare it with the object2.
      * 
-     * Typically, they follow this form:
-     * Fact(object1 operator object2)
-     * 
-     * Where operator selects the appropraite concrete evaluator, and object1, and object2
-     * are parameters to this method.
-     * 
-     * So Person(age < 42) will have object1==age field (of the Person fact object)
-     * and "42" will be the object2 value.
+     * @param extractor 
+     *        The extractor used to get the source value from the object
+     * @param object1
+     *        The source object to evaluate
+     * @param object2
+     *        The actual value to compare to
+     *        
+     * @return Returns true if evaluation is successfull. false otherwise.
      */
-    public boolean evaluate(Object object1,
+    public boolean evaluate(Extractor extractor,
+                            Object object1,
+                            FieldValue value);
+
+    /**
+     * This method will extract the value from the object2 using the 
+     * extractor and compare it with the object1.
+     * 
+     * @param object1
+     *        The actual value to compare to
+     * @param extractor 
+     *        The extractor used to get the source value from the object
+     * @param object2
+     *        The source object to evaluate
+     *        
+     * @return Returns true if evaluation is successfull. false otherwise.
+     */
+    public boolean evaluate(FieldValue object1,
+                            Extractor extractor,
                             Object object2);
+
+    public boolean evaluateCachedLeft(VariableContextEntry context,
+                                      Object object1);
+
+    public boolean evaluateCachedRight(VariableContextEntry context,
+                                       Object object2);
 
 }

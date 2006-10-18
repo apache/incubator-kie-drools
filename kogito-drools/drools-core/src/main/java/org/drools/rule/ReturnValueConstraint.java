@@ -78,7 +78,8 @@ public class ReturnValueConstraint
     public boolean isAllowed(final Object object,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        return this.restriction.isAllowed( this.fieldExtractor.getValue( object ),
+        return this.restriction.isAllowed( this.fieldExtractor,
+                                           object,
                                            tuple,
                                            workingMemory );
     }

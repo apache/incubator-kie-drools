@@ -25,15 +25,15 @@ public class Context
      * 
      */
     private static final long    serialVersionUID = -5876473269153584875L;
-    public static final Integer      START_UP         = new Integer(0);
-    public static final Integer      ASSIGN_SEATS     = new Integer(1);
-    public static final Integer      MAKE_PATH        = new Integer(2);
-    public static final Integer      CHECK_DONE       = new Integer(3);
-    public static final Integer      PRINT_RESULTS    = new Integer(4);
+    public static final int      START_UP         = 0;
+    public static final int      ASSIGN_SEATS     = 1;
+    public static final int      MAKE_PATH        = 2;
+    public static final int      CHECK_DONE       = 3;
+    public static final int      PRINT_RESULTS    = 4;
 
     public static final String[] stateStrings     = {"START_UP", "ASSIGN_SEATS", "MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS"};
 
-    private Integer                  state;
+    private int                  state;
     
     public Context() {
     }
@@ -46,24 +46,24 @@ public class Context
         }
     }
 
-    public Context(final Integer state) {
+    public Context(final int state) {
         this.state = state;
     }
 
-    public void setState(final Integer state) {
+    public void setState(final int state) {
         this.state = state;
     }
 
-    public boolean isState(final Integer state) {
+    public boolean isState(final int state) {
         return this.state == state;
     }
 
-    public Integer getState() {
+    public int getState() {
         return this.state;
     }
 
     public String getStringValue() {
-        return Context.stateStrings[this.state.intValue()];
+        return Context.stateStrings[this.state];
     }
 
     public String toString() {

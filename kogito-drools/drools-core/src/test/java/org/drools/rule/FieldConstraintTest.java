@@ -29,6 +29,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.spi.Evaluator;
@@ -60,7 +61,7 @@ public class FieldConstraintTest extends TestCase {
      */
     public void testLiteralConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
 
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "type" );
@@ -80,7 +81,6 @@ public class FieldConstraintTest extends TestCase {
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
-                                          null,
                                           workingMemory ) );
 
         final Cheese stilton = new Cheese( "stilton",
@@ -90,7 +90,51 @@ public class FieldConstraintTest extends TestCase {
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle.getObject(),
-                                           null,
+                                           workingMemory ) );
+    }
+
+    /**
+     * <pre>
+     *        
+     *         
+     *                Cheese( price == 5 )
+     *          
+     *         
+     * </pre>
+     * 
+     * @throws IntrospectionException
+     */
+    public void testPrimitiveLiteralConstraint() throws IntrospectionException {
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "price" );
+
+        final FieldValue field = new MockField( new Integer(5) );
+
+        Evaluator evaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
+
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+
+        // check constraint
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+                                          workingMemory ) );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           10 );
+
+        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.assertObject( stilton );
+
+        // check constraint
+        assertFalse( constraint.isAllowed( stiltonHandle.getObject(),
                                            workingMemory ) );
     }
 

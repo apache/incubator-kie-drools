@@ -12,7 +12,7 @@ import org.drools.rule.VariableConstraint.VariableContextEntry;
 public interface Restriction extends Serializable {
     Declaration[] getRequiredDeclarations();
     
-    public boolean isAllowed(Object object, InternalWorkingMemory workingMemoiry);
+    public boolean isAllowed(Extractor extractor, Object object, InternalWorkingMemory workingMemoiry);
     
     public boolean isAllowedCachedLeft(ContextEntry context, Object object);
     

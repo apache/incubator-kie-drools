@@ -22,6 +22,23 @@ public interface FieldValue
     extends
     Serializable {
 
-    Object getValue();
+    public Object getValue();
+
+    public char getCharValue();
+
+    public int getIntValue();
+
+    public byte getByteValue();
+
+    public short getShortValue();
+
+    public long getLongValue();
+
+    public float getFloatValue();
+
+    public double getDoubleValue();
+
+    public boolean getBooleanValue();
+    
 
 }

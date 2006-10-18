@@ -16,24 +16,24 @@
 package org.drools.examples.manners;
 
 public class Sex {
-    public static final Sex      M       = new Sex( new Integer(0) );
-    public static final Sex      F       = new Sex( new Integer(1) );
+    public static final Sex      M       = new Sex( 0 );
+    public static final Sex      F       = new Sex( 1 );
 
     public static final String   stringM = "m";
     public static final String   stringF = "f";
     public static final String[] sexList = new String[]{Sex.stringM, Sex.stringF};
 
-    private Integer            sex;
+    private int            sex;
     
     public Sex() {
     }
 
-    private Sex(final Integer sex) {
+    private Sex(final int sex) {
         this.sex = sex;
     }
 
     public String getSex() {
-        return Sex.sexList[this.sex.intValue()];
+        return Sex.sexList[this.sex];
     }
 
     public final static Sex resolve(final String sex) {
@@ -55,7 +55,7 @@ public class Sex {
     }
 
     public int hashCode() {
-        return this.sex.intValue();
+        return this.sex;
     }
 
 }

@@ -18,21 +18,23 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
+import org.drools.rule.VariableConstraint.DoubleVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
-public class FloatFactory implements EvaluatorFactory {
-    private static EvaluatorFactory INSTANCE = new FloatFactory();
-    
+public class FloatFactory
+    implements
+    EvaluatorFactory {
+
+    private static final long       serialVersionUID = -4254964760901343619L;
+    private static EvaluatorFactory INSTANCE         = new FloatFactory();
+
     private FloatFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
         if ( INSTANCE == null ) {
             INSTANCE = new FloatFactory();
@@ -53,16 +55,13 @@ public class FloatFactory implements EvaluatorFactory {
             return FloatGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return FloatGreaterOrEqualEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for FloatEvaluator" );
-        }    
+        }
     }
 
-
     static class FloatEqualEvaluator extends BaseEvaluator {
-        /**
-         * 
-         */
+
         private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new FloatEqualEvaluator();
 
@@ -71,12 +70,30 @@ public class FloatFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) == object2.getFloatValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
-            }
-            return ((Number) object1).equals( object2 );
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getFloatValue() == extractor.getFloatValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getFloatValue( left ) == ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left == context.extractor.getFloatValue( right );
         }
 
         public String toString() {
@@ -96,12 +113,30 @@ public class FloatFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) != object2.getFloatValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 != null;
-            }
-            return !((Number) object1).equals( object2 );
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getFloatValue() != extractor.getFloatValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getFloatValue( left ) != ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left != context.extractor.getFloatValue( right );
         }
 
         public String toString() {
@@ -121,9 +156,30 @@ public class FloatFactory implements EvaluatorFactory {
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) < object2.getFloatValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).floatValue() < ((Number) object2).floatValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getFloatValue() < extractor.getFloatValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getFloatValue( left ) < ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left < context.extractor.getFloatValue( right );
         }
 
         public String toString() {
@@ -143,9 +199,30 @@ public class FloatFactory implements EvaluatorFactory {
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) <= object2.getFloatValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).floatValue() <= ((Number) object2).floatValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getFloatValue() <= extractor.getFloatValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getFloatValue( left ) <= ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left <= context.extractor.getFloatValue( right );
         }
 
         public String toString() {
@@ -165,9 +242,30 @@ public class FloatFactory implements EvaluatorFactory {
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) > object2.getFloatValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).floatValue() > ((Number) object2).floatValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getFloatValue() > extractor.getFloatValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getFloatValue( left ) > ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left > context.extractor.getFloatValue( right );
         }
 
         public String toString() {
@@ -187,9 +285,30 @@ public class FloatFactory implements EvaluatorFactory {
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) >= object2.getFloatValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).floatValue() >= ((Number) object2).floatValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getFloatValue() >= extractor.getFloatValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getFloatValue( left ) >= ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left >= context.extractor.getFloatValue( right );
         }
 
         public String toString() {
