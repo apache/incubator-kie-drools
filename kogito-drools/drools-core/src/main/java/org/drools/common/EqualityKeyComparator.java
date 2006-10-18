@@ -34,12 +34,15 @@ public class EqualityKeyComparator implements ObjectComparator {
     }
     
     public int hashCodeOf(Object key) {
-        int h = key.hashCode();
+        return rehash( key.hashCode() );
+    }
+    
+    public int rehash(int h) {
         h += ~(h << 9);
         h ^= (h >>> 14);
         h += (h << 4);
         h ^= (h >>> 10);
-        return h;
+        return h;            
     }
 
     /**

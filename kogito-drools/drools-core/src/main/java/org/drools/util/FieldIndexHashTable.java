@@ -161,7 +161,7 @@ public class FieldIndexHashTable extends AbstractHashTable
 
         FieldIndexEntry current = (FieldIndexEntry) this.table[index];
         while ( current != null ) {
-            if ( hashCode == current.hashCode && value.equals( current.getValue() ) ) {
+            if ( hashCode == current.hashCode && this.comparator.equal( value, current.getValue() ) ) {
                 return  true;
             }
             current = (FieldIndexEntry) current.next;
@@ -178,7 +178,7 @@ public class FieldIndexHashTable extends AbstractHashTable
         FieldIndexEntry entry = (FieldIndexEntry) this.table[index];
 
         while ( entry != null ) {
-            if ( hashCode == entry.hashCode && value.equals( entry.getValue() ) ) {
+            if ( hashCode == entry.hashCode && this.comparator.equal( value, entry.getValue() ) ) {
                 return entry;
             }
             entry = (FieldIndexEntry) entry.getNext();
@@ -201,7 +201,8 @@ public class FieldIndexHashTable extends AbstractHashTable
         FieldIndexEntry entry = (FieldIndexEntry) this.table[index];
 
         while ( entry != null ) {
-            if ( hashCode == entry.hashCode && value.equals( entry.getValue() ) ) {
+            
+            if ( hashCode == entry.hashCode && this.comparator.equal( value, entry.getValue() ) ) {
                 return entry;
             }
             entry = (FieldIndexEntry) entry.next;

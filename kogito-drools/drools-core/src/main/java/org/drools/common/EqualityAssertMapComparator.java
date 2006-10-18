@@ -34,9 +34,17 @@ public class EqualityAssertMapComparator
 
     public int hashCodeOf(final Object obj) {
         if ( obj.getClass() == this.factHandleClass ) {
-            return ((InternalFactHandle) obj).getObjectHashCode();
+            return rehash( ((InternalFactHandle) obj).getObjectHashCode() );
         }
-        return obj.hashCode();
+        return rehash( obj.hashCode() );
+    }
+    
+    public int rehash(int h) {
+        h += ~(h << 9);
+        h ^= (h >>> 14);
+        h += (h << 4);
+        h ^= (h >>> 10);
+        return h;            
     }
 
     /**

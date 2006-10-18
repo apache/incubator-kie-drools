@@ -763,6 +763,7 @@ public abstract class BaseMannersTest extends TestCase {
                                          context );
                     //System.err.println( "path done" + seating );
                 } catch ( Exception e ) {
+                    e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
             }

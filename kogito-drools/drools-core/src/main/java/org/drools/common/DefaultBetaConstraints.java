@@ -36,11 +36,13 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
+import org.drools.util.CompositeFieldIndexHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
+import org.drools.util.CompositeFieldIndexHashTable.FieldIndex;
 
 public class DefaultBetaConstraints
     implements
@@ -158,9 +160,9 @@ public class DefaultBetaConstraints
         if ( this.indexed ) {
             Constraint constraint = ( Constraint ) this.constraints.getFirst();
             VariableConstraint variableConstraint = (VariableConstraint) constraint;
+            FieldIndex  index  = new  FieldIndex(variableConstraint.getFieldExtractor(), variableConstraint.getRequiredDeclarations()[0]);
             memory = new BetaMemory( new TupleHashTable(),
-                                     new FieldIndexHashTable( variableConstraint.getFieldExtractor(),
-                                                              variableConstraint.getRequiredDeclarations()[0] ) );
+                                     new CompositeFieldIndexHashTable( new FieldIndex[] { index }  ) );
         } else  {        
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
