@@ -24,21 +24,21 @@ public class Hobby {
 
     public static final String[] hobbyStrings = new String[]{Hobby.stringH1, Hobby.stringH2, Hobby.stringH3, Hobby.stringH4, Hobby.stringH5};
 
-    public static final Hobby    H1           = new Hobby( new Integer(1) );
-    public static final Hobby    H2           = new Hobby( new Integer(2) );
-    public static final Hobby    H3           = new Hobby( new Integer(3) );
-    public static final Hobby    H4           = new Hobby( new Integer(4) );
-    public static final Hobby    H5           = new Hobby( new Integer(5) );
+    public static final Hobby    H1           = new Hobby( 1 );
+    public static final Hobby    H2           = new Hobby( 2 );
+    public static final Hobby    H3           = new Hobby( 3 );
+    public static final Hobby    H4           = new Hobby( 4 );
+    public static final Hobby    H5           = new Hobby( 5 );
 
     private String         hobbyStr;
-    private Integer            hobbyIndex;
+    private int            hobbyIndex;
     
     public Hobby() {
     }
 
-    private Hobby(final Integer hobby) {
-        this.hobbyIndex = new Integer(hobby.intValue() - 1);
-        this.hobbyStr = Hobby.hobbyStrings[this.hobbyIndex.intValue()];
+    private Hobby(final int hobby) {
+        this.hobbyIndex = hobby - 1;
+        this.hobbyStr   = Hobby.hobbyStrings[this.hobbyIndex];
     }
 
     public String getHobby() {
@@ -70,7 +70,7 @@ public class Hobby {
     }
 
     public int hashCode() {
-        return this.hobbyIndex.intValue();
+        return this.hobbyIndex;
     }
 
 }

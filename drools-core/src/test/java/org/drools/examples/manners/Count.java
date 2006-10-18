@@ -16,21 +16,21 @@
 package org.drools.examples.manners;
 
 public class Count {
-    private Integer value;
+    private int value;
     
     public Count() {
     }
 
-    public Count(final Integer value) {
+    public Count(final int value) {
         super();
         this.value = value;
     }
 
-    public Integer getValue() {
+    public int getValue() {
         return this.value;
     }
 
-    public void setValue(final Integer value) {
+    public void setValue(final int value) {
         this.value = value;
     }
 
@@ -51,7 +51,7 @@ public class Count {
     }
 
     public int hashCode() {
-        return this.value.intValue();
+        return this.value;
     }
 
 }

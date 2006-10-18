@@ -38,8 +38,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.MemoryVisitor;
+import org.drools.base.field.BooleanFieldImpl;
+import org.drools.base.field.LongFieldImpl;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidRuleException;
@@ -48,15 +48,14 @@ import org.drools.rule.Not;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
 
 public abstract class BaseMannersTest extends TestCase {
@@ -84,9 +83,9 @@ public abstract class BaseMannersTest extends TestCase {
     private Evaluator       objectEqualEvaluator;
     private Evaluator       objectNotEqualEvaluator;
     private Evaluator       integerEqualEvaluator;
-    private Evaluator       integerNotEqualEvaluator;
+    //private Evaluator       integerNotEqualEvaluator;
     private Evaluator       booleanEqualEvaluator;
-    private Evaluator       booleanNotEqualEvaluator;
+    //private Evaluator       booleanNotEqualEvaluator;
 
     protected void setUp() throws Exception {
         Class shadow = ShadowProxyFactory.getProxy( Context.class );
@@ -117,12 +116,12 @@ public abstract class BaseMannersTest extends TestCase {
         this.chosenType = new ClassObjectType( Chosen.class,
                                                shadow );
 
-        this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
-        this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        this.integerEqualEvaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        //this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
         this.objectEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         this.objectNotEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.NOT_EQUAL );
-        this.booleanEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
-        this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        this.booleanEqualEvaluator = ValueType.PBOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
+        //this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );
 
         this.pkg = new Package( "Miss Manners" );
         this.pkg.addRule( getAssignFirstSeatRule() );
@@ -220,22 +219,22 @@ public abstract class BaseMannersTest extends TestCase {
                     String guestName = guest.getName();
 
                     Seating seating = new Seating( count.getValue(),
-                                                   new Integer(0),
+                                                   0,
                                                    true,
-                                                   new Integer(1),
+                                                   1,
                                                    guestName,
-                                                   new Integer(1),
+                                                   1,
                                                    guestName );
 
                     drools.assertObject( seating );
 
                     Path path = new Path( count.getValue(),
-                                          new Integer(1),
+                                          1,
                                           guestName );
 
                     drools.assertObject( path );
 
-                    count.setValue( new Integer(count.getValue().intValue() + 1) );
+                    count.setValue( count.getValue() );
                     drools.modifyObject( tuple.get( countDeclaration ),
                                          count );
 
@@ -333,7 +332,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
                                                            "pathDone",
-                                                           new Boolean( true ),
+                                                           true,
                                                            this.booleanEqualEvaluator ) );
 
         setFieldDeclaration( seatingColumn,
@@ -481,8 +480,8 @@ public abstract class BaseMannersTest extends TestCase {
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Count count = (Count) drools.get( countDeclaration );
-                    Integer seatId = ((Integer) drools.get( seatingIdDeclaration ));
-                    Integer seatingRightSeat = ((Integer) drools.get( seatingRightSeatDeclaration ));
+                    int seatId = seatingIdDeclaration.getExtractor().getIntValue( tuple.get( seatingIdDeclaration ).getObject() );
+                    int seatingRightSeat = seatingRightSeatDeclaration.getExtractor().getIntValue( tuple.get( seatingRightSeatDeclaration ).getObject() );
 
                     String leftGuestName = (String) drools.get( leftGuestNameDeclaration );
                     String rightGuestName = (String) drools.get( seatingRightGuestNameDeclaration );
@@ -493,12 +492,12 @@ public abstract class BaseMannersTest extends TestCase {
                                                    false,
                                                    seatingRightSeat,
                                                    rightGuestName,
-                                                   new Integer(seatingRightSeat.intValue() + 1),
+                                                   seatingRightSeat + 1,
                                                    leftGuestName );
                     drools.assertObject( seating );
 
                     Path path = new Path( count.getValue(),
-                                          new Integer(seatingRightSeat.intValue() + 1),
+                                          seatingRightSeat + 1,
                                           leftGuestName );
 
                     drools.assertObject( path );
@@ -508,7 +507,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                 rightGuestHobby );
 
                     drools.assertObject( chosen );
-                    count.setValue( new Integer(count.getValue().intValue() + 1) );
+                    count.setValue( count.getValue() + 1 );
 
                     //                    if ( count.getValue() == 5 ) {
                     //                        drools.retractObject( tuple.getFactHandleForDeclaration( countDeclaration ) );
@@ -594,7 +593,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
                                                            "pathDone",
-                                                           new Boolean( false ),
+                                                           false,
                                                            this.booleanEqualEvaluator ) );
 
         rule.addPattern( seatingColumn );
@@ -657,8 +656,8 @@ public abstract class BaseMannersTest extends TestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-                    Integer id = ((Integer) drools.get( seatingIdDeclaration ));
-                    Integer seat = ((Integer) drools.get( pathSeatDeclaration ));
+                    int id = seatingIdDeclaration.getExtractor().getIntValue( tuple.get( seatingIdDeclaration ).getObject() );
+                    int seat = pathSeatDeclaration.getExtractor().getIntValue( tuple.get( pathSeatDeclaration ).getObject() );
                     String guestName = (String) drools.get( pathGuestNameDeclaration );
 
                     Path path = new Path( id,
@@ -728,7 +727,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
                                                            "pathDone",
-                                                           new Boolean( false ),
+                                                           false,
                                                            this.booleanEqualEvaluator ) );
 
         rule.addPattern( seatingColumn );
@@ -1030,7 +1029,7 @@ public abstract class BaseMannersTest extends TestCase {
                 if ( !"seat".equals( st.nextToken() ) ) {
                     throw new IOException( "expected 'seat' in: " + line );
                 }
-                list.add( new LastSeat( new Integer( st.nextToken() ) ) );
+                list.add( new LastSeat( Integer.parseInt( st.nextToken() ) ) );
             }
 
             if ( "context".equals( type ) ) {
@@ -1109,14 +1108,30 @@ public abstract class BaseMannersTest extends TestCase {
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
                                                           final String fieldName,
-                                                          final Object fieldValue,
+                                                          final int fieldValue,
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
 
-        final FieldValue field = new MockField( fieldValue );
+        final FieldValue field = new LongFieldImpl( fieldValue );
+
+        return new LiteralConstraint( extractor,
+                                      evaluator,
+                                      field );
+    }
+
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
+                                                          final String fieldName,
+                                                          final boolean fieldValue,
+                                                          final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
+
+        final FieldValue field = new BooleanFieldImpl( fieldValue );
 
         return new LiteralConstraint( extractor,
                                       evaluator,

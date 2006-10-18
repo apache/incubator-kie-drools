@@ -33,4 +33,44 @@ public class FactTemplateFieldExtractor
     public Class getExtractToClass() {
         return Fact.class;//this.factTemplate.getFieldTemplate( fieldIndex ).getValueType().getClass();
     }
+
+
+    public boolean getBooleanValue(Object object) {
+        return ((Boolean)((Fact) object).getFieldValue( this.fieldIndex )).booleanValue();
+    }
+
+
+    public byte getByteValue(Object object) {
+        return ((Number)((Fact) object).getFieldValue( this.fieldIndex )).byteValue();
+    }
+
+
+    public char getCharValue(Object object) {
+        return ((Character)((Fact) object).getFieldValue( this.fieldIndex )).charValue();
+    }
+
+
+    public double getDoubleValue(Object object) {
+        return ((Number)((Fact) object).getFieldValue( this.fieldIndex )).doubleValue();
+    }
+
+
+    public float getFloatValue(Object object) {
+        return ((Number)((Fact) object).getFieldValue( this.fieldIndex )).floatValue();
+    }
+
+
+    public int getIntValue(Object object) {
+        return ((Number)((Fact) object).getFieldValue( this.fieldIndex )).intValue();
+    }
+
+
+    public long getLongValue(Object object) {
+        return ((Number)((Fact) object).getFieldValue( this.fieldIndex )).longValue();
+    }
+
+
+    public short getShortValue(Object object) {
+        return ((Number)((Fact) object).getFieldValue( this.fieldIndex )).shortValue();
+    }
 }

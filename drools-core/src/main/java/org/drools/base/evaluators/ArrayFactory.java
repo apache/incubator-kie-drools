@@ -20,25 +20,27 @@ import java.util.Arrays;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
+import org.drools.rule.VariableConstraint.ObjectVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
 /**
  * For handling simple (non collection) array types.
  * @author Michael Neale
  */
-public class ArrayFactory implements EvaluatorFactory {
-    private static EvaluatorFactory INSTANCE = new ArrayFactory();
-    
+public class ArrayFactory
+    implements
+    EvaluatorFactory {
+
+    private static final long       serialVersionUID = -5485618486269637287L;
+    private static EvaluatorFactory INSTANCE         = new ArrayFactory();
+
     private ArrayFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
         if ( INSTANCE == null ) {
             INSTANCE = new ArrayFactory();
@@ -53,13 +55,12 @@ public class ArrayFactory implements EvaluatorFactory {
             return ArrayNotEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.LESS ) {
             return ArrayContainsEvaluator.INSTANCE;
-        } else if ( operator == Operator.CONTAINS) {
+        } else if ( operator == Operator.CONTAINS ) {
             return ArrayContainsEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for ArrayEvaluator" );
-        }    
+        }
     }
-    
 
     static class ArrayEqualEvaluator extends BaseEvaluator {
         /**
@@ -73,12 +74,44 @@ public class ArrayFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Object value1 = extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 == null;
             }
-            return object1.equals( object2 );
+            return value1.equals( value2 );
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            Object value1 = object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.equals( value2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Object value = context.declaration.getExtractor().getValue( left );
+            if ( value == null ) {
+                return ((ObjectVariableContextEntry) context).right == null;
+            }
+            return value.equals( ((ObjectVariableContextEntry) context).right );
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Object value = context.extractor.getValue( right );
+            if ( ((ObjectVariableContextEntry) context).left == null ) {
+                return value == null;
+            }
+            return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
         public String toString() {
@@ -98,10 +131,44 @@ public class ArrayFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Object value1 = extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return !value1.equals( value2 );
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return !Arrays.equals( (Object[]) object1,
-                                   (Object[]) object2 );
+            Object value1 = object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return !value1.equals( value2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Object value = context.declaration.getExtractor().getValue( left );
+            if ( value == null ) {
+                return ((ObjectVariableContextEntry) context).right == null;
+            }
+            return !value.equals( ((ObjectVariableContextEntry) context).right );
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Object value = context.extractor.getValue( right );
+            if ( ((ObjectVariableContextEntry) context).left == null ) {
+                return value == null;
+            }
+            return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
         public String toString() {
@@ -121,17 +188,51 @@ public class ArrayFactory implements EvaluatorFactory {
                    Operator.CONTAINS );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Object value = object2.getValue();
+            final Object[] array = (Object[]) extractor.getValue( object1 );
+
+            if ( Arrays.binarySearch( array,
+                                      value ) == -1 ) {
+                return false;
+            }
+            return true;
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object2 == null ) {
+            Object value = extractor.getValue( object2 );
+            final Object[] array = (Object[]) object1.getValue();
+            if ( Arrays.binarySearch( array,
+                                      value ) == -1 ) {
                 return false;
             }
-            if ( Arrays.binarySearch( (Object[]) object1,
-                                      object2 ) == -1 ) {
+            return true;
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Object value = ((ObjectVariableContextEntry) context).right;
+            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( left );
+            if ( Arrays.binarySearch( array,
+                                      value ) == -1 ) {
                 return false;
-            } else {
-                return true;
             }
+            return true;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Object value = context.extractor.getValue( right );
+            final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).left;
+            if ( Arrays.binarySearch( array,
+                                      value ) == -1 ) {
+                return false;
+            }
+            return true;
         }
 
         public String toString() {

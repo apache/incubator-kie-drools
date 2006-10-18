@@ -25,7 +25,7 @@ import org.drools.util.asm.TestAbstractImpl;
 import org.drools.util.asm.TestInterface;
 import org.drools.util.asm.TestInterfaceImpl;
 
-public class ClassFieldExtractorFactoryTest extends TestCase {
+public abstract class ClassFieldExtractorFactoryTest extends TestCase {
 
     public void testIt() throws Exception {
         FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
@@ -67,5 +67,5 @@ public class ClassFieldExtractorFactoryTest extends TestCase {
         assertEquals( "hola",
                       ex.getValue( new BeanInherit() ) );
     }
-
+    
 }

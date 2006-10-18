@@ -18,21 +18,23 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
+import org.drools.rule.VariableConstraint.LongVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
-public class IntegerFactory implements EvaluatorFactory {
+public class IntegerFactory
+    implements
+    EvaluatorFactory {
+
+    private static final long serialVersionUID = -6863552870087722275L;
     private static EvaluatorFactory INSTANCE = new IntegerFactory();
-    
+
     private IntegerFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
         if ( INSTANCE == null ) {
             INSTANCE = new IntegerFactory();
@@ -53,9 +55,9 @@ public class IntegerFactory implements EvaluatorFactory {
             return IntegerGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return IntegerGreaterOrEqualEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for IntegerEvaluator" );
-        }    
+        }
     }
 
     static class IntegerEqualEvaluator extends BaseEvaluator {
@@ -70,17 +72,32 @@ public class IntegerFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {             
-            if ( object1 == null ) {
-                return object2 == null;
-            }
-            return object1.equals( object2 );
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getIntValue( object1 ) == object2.getIntValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            return extractor.getIntValue( object2 ) == object1.getIntValue();
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getIntValue( left ) == ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object object2) {
+            return context.extractor.getIntValue( object2 ) == ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {
             return "Integer ==";
         }
+
     }
 
     static class IntegerNotEqualEvaluator extends BaseEvaluator {
@@ -95,12 +112,26 @@ public class IntegerFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {             
-            if ( object1 == null ) {
-                return (object2 != null);
-            }
-            return !object1.equals( object2 );
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getIntValue( object1 ) != object2.getIntValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            return extractor.getIntValue( object2 ) != object1.getIntValue();
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getIntValue( left ) != ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object object2) {
+            return context.extractor.getIntValue( object2 ) != ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -120,9 +151,26 @@ public class IntegerFactory implements EvaluatorFactory {
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getIntValue( object1 ) < object2.getIntValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).intValue() < ((Number) object2).intValue();
+            return object1.getIntValue() < extractor.getIntValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getIntValue( left ) < ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left < context.extractor.getIntValue( right );
         }
 
         public String toString() {
@@ -142,9 +190,26 @@ public class IntegerFactory implements EvaluatorFactory {
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getIntValue( object1 ) <= object2.getIntValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).intValue() <= ((Number) object2).intValue();
+            return object1.getIntValue() <= extractor.getIntValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getIntValue( left ) <= ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left <= context.extractor.getIntValue( right );
         }
 
         public String toString() {
@@ -164,9 +229,26 @@ public class IntegerFactory implements EvaluatorFactory {
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getIntValue( object1 ) > object2.getIntValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).intValue() > ((Number) object2).intValue();
+            return object1.getIntValue() > extractor.getIntValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getIntValue( left ) > ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left > context.extractor.getIntValue( right );
         }
 
         public String toString() {
@@ -186,9 +268,26 @@ public class IntegerFactory implements EvaluatorFactory {
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getIntValue( object1 ) >= object2.getIntValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).intValue() >= ((Number) object2).intValue();
+            return object1.getIntValue() >= extractor.getIntValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getIntValue( left ) >= ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left >= context.extractor.getIntValue( right );
         }
 
         public String toString() {

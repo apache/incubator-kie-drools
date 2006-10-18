@@ -18,21 +18,23 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
+import org.drools.rule.VariableConstraint.LongVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
-public class LongFactory implements EvaluatorFactory {
-    private static EvaluatorFactory INSTANCE = new LongFactory();
+public class LongFactory
+    implements
+    EvaluatorFactory {
     
+    private static final long       serialVersionUID = 4184811148799115566L;
+    private static EvaluatorFactory INSTANCE         = new LongFactory();
+
     private LongFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
         if ( INSTANCE == null ) {
             INSTANCE = new LongFactory();
@@ -53,11 +55,10 @@ public class LongFactory implements EvaluatorFactory {
             return LongGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return LongGreaterOrEqualEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for LongEvaluator" );
-        }    
+        }
     }
-
 
     static class LongEqualEvaluator extends BaseEvaluator {
         /**
@@ -71,12 +72,26 @@ public class LongFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getLongValue( object1 ) == object2.getLongValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
-            }
-            return ((Number) object1).equals( object2 );
+            return object1.getLongValue() == extractor.getLongValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getLongValue( left ) == ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left == context.extractor.getLongValue( right );
         }
 
         public String toString() {
@@ -96,12 +111,26 @@ public class LongFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getLongValue( object1 ) != object2.getLongValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 != null;
-            }
-            return !((Number) object1).equals( object2 );
+            return object1.getLongValue() != extractor.getLongValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getLongValue( left ) != ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left != context.extractor.getLongValue( right );
         }
 
         public String toString() {
@@ -121,9 +150,26 @@ public class LongFactory implements EvaluatorFactory {
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getLongValue( object1 ) < object2.getLongValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).longValue() < ((Number) object2).longValue();
+            return object1.getLongValue() < extractor.getLongValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getLongValue( left ) < ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left < context.extractor.getLongValue( right );
         }
 
         public String toString() {
@@ -143,9 +189,26 @@ public class LongFactory implements EvaluatorFactory {
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getLongValue( object1 ) <= object2.getLongValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).longValue() <= ((Number) object2).longValue();
+            return object1.getLongValue() <= extractor.getLongValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getLongValue( left ) <= ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left <= context.extractor.getLongValue( right );
         }
 
         public String toString() {
@@ -165,9 +228,26 @@ public class LongFactory implements EvaluatorFactory {
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getLongValue( object1 ) > object2.getLongValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).longValue() > ((Number) object2).longValue();
+            return object1.getLongValue() > extractor.getLongValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getLongValue( left ) > ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left > context.extractor.getLongValue( right );
         }
 
         public String toString() {
@@ -187,9 +267,26 @@ public class LongFactory implements EvaluatorFactory {
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getLongValue( object1 ) >= object2.getLongValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).longValue() >= ((Number) object2).longValue();
+            return object1.getLongValue() >= extractor.getLongValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getLongValue( left ) >= ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left >= context.extractor.getLongValue( right );
         }
 
         public String toString() {

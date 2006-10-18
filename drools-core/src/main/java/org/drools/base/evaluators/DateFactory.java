@@ -22,7 +22,11 @@ import java.util.Date;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.rule.VariableConstraint.ObjectVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
 /**
  * This will generate evaluators that handle dates.
@@ -40,6 +44,7 @@ public class DateFactory
     implements
     EvaluatorFactory {
 
+    private static final long       serialVersionUID    = -9190991797780589450L;
     private static final String     DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
     private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
 
@@ -86,21 +91,58 @@ public class DateFactory
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Date value1 = (Date) extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 == null;
             }
-            if ( object2 == null ) {
+            if ( value2 == null ) {
                 return false;
             }
-            final Date left = (Date) object1;
+            return value1.compareTo( getRightDate( value2 ) ) == 0;
+        }
 
-            if ( left.compareTo( getRightDate( object2 ) ) == 0 ) {
-                return true;
-            } else {
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            Date value1 = (Date) object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            if ( value2 == null ) {
                 return false;
             }
+            return value1.compareTo( getRightDate( value2 ) ) == 0;
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Date value1 = (Date) context.declaration.getExtractor().getValue( left );
+            Object value2 = ((ObjectVariableContextEntry) context).right;
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            if ( value2 == null ) {
+                return false;
+            }
+            return value1.compareTo( getRightDate( value2 ) ) == 0;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
+            Object value2 = context.extractor.getValue( right );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            if ( value2 == null ) {
+                return false;
+            }
+            return value1.compareTo( getRightDate( value2 ) ) == 0;
         }
 
         public String toString() {
@@ -120,20 +162,58 @@ public class DateFactory
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Date value1 = (Date) extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            if ( value2 == null ) {
+                return true;
+            }
+            return value1.compareTo( getRightDate( value2 ) ) != 0;
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 != null;
+            Date value1 = (Date) object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 != null;
             }
-            if ( object2 == null ) {
+            if ( value2 == null ) {
                 return true;
             }
-            final Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) != 0 ) {
-                return true;
-            } else {
-                return false;
+            return value1.compareTo( getRightDate( value2 ) ) != 0;
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Date value1 = (Date) context.declaration.getExtractor().getValue( left );
+            Object value2 = ((ObjectVariableContextEntry) context).right;
+            if ( value1 == null ) {
+                return value2 != null;
             }
+            if ( value2 == null ) {
+                return true;
+            }
+            return value1.compareTo( getRightDate( value2 ) ) != 0;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
+            Object value2 = context.extractor.getValue( right );
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            if ( value2 == null ) {
+                return true;
+            }
+            return value1.compareTo( getRightDate( value2 ) ) != 0;
         }
 
         public String toString() {
@@ -153,14 +233,34 @@ public class DateFactory
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Date value1 = (Date) extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            return value1.compareTo( getRightDate( value2 ) ) < 0;
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            final Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) < 0 ) {
-                return true;
-            } else {
-                return false;
-            }
+            Date value1 = (Date) object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            return value1.compareTo( getRightDate( value2 ) ) < 0;
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Date value1 = (Date) context.declaration.getExtractor().getValue( left );
+            Object value2 = ((ObjectVariableContextEntry) context).right;
+            return value1.compareTo( getRightDate( value2 ) ) < 0;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
+            Object value2 = context.extractor.getValue( right );
+            return value1.compareTo( getRightDate( value2 ) ) < 0;
         }
 
         public String toString() {
@@ -180,14 +280,34 @@ public class DateFactory
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Date value1 = (Date) extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            return value1.compareTo( getRightDate( value2 ) ) <= 0;
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            final Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) <= 0 ) {
-                return true;
-            } else {
-                return false;
-            }
+            Date value1 = (Date) object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            return value1.compareTo( getRightDate( value2 ) ) <= 0;
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Date value1 = (Date) context.declaration.getExtractor().getValue( left );
+            Object value2 = ((ObjectVariableContextEntry) context).right;
+            return value1.compareTo( getRightDate( value2 ) ) <= 0;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
+            Object value2 = context.extractor.getValue( right );
+            return value1.compareTo( getRightDate( value2 ) ) <= 0;
         }
 
         public String toString() {
@@ -207,14 +327,34 @@ public class DateFactory
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Date value1 = (Date) extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            return value1.compareTo( getRightDate( value2 ) ) > 0;
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            final Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) > 0 ) {
-                return true;
-            } else {
-                return false;
-            }
+            Date value1 = (Date) object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            return value1.compareTo( getRightDate( value2 ) ) > 0;
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Date value1 = (Date) context.declaration.getExtractor().getValue( left );
+            Object value2 = ((ObjectVariableContextEntry) context).right;
+            return value1.compareTo( getRightDate( value2 ) ) > 0;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
+            Object value2 = context.extractor.getValue( right );
+            return value1.compareTo( getRightDate( value2 ) ) > 0;
         }
 
         public String toString() {
@@ -234,14 +374,34 @@ public class DateFactory
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Date value1 = (Date) extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            return value1.compareTo( getRightDate( value2 ) ) >= 0;
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            final Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) >= 0 ) {
-                return true;
-            } else {
-                return false;
-            }
+            Date value1 = (Date) object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            return value1.compareTo( getRightDate( value2 ) ) >= 0;
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Date value1 = (Date) context.declaration.getExtractor().getValue( left );
+            Object value2 = ((ObjectVariableContextEntry) context).right;
+            return value1.compareTo( getRightDate( value2 ) ) >= 0;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
+            Object value2 = context.extractor.getValue( right );
+            return value1.compareTo( getRightDate( value2 ) ) >= 0;
         }
 
         public String toString() {

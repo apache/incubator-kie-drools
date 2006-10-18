@@ -21,6 +21,7 @@ import java.util.Arrays;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -89,11 +90,13 @@ public class ReturnValueRestriction
         return this.evaluator;
     }
 
-    public boolean isAllowed(final Object object,
+    public boolean isAllowed(final Extractor extractor,
+                             final Object object,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         try {
-            return this.evaluator.evaluate( object,
+            return this.evaluator.evaluate( extractor,
+                                            object,
                                             this.expression.evaluate( tuple,
                                                                       this.requiredDeclarations,
                                                                       workingMemory ) );

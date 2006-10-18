@@ -18,13 +18,12 @@ package org.drools.rule;
 
 import java.util.Arrays;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
 import org.drools.spi.Restriction;
-import org.drools.spi.Tuple;
 
 public class VariableRestriction
     implements
@@ -57,11 +56,19 @@ public class VariableRestriction
     }    
     
     public boolean isAllowedCachedLeft(ContextEntry context, Object object) {
-        return this.evaluator.evaluate( ((VariableContextEntry) context).left, object );        
+//        return this.evaluator.evaluate( ((VariableContextEntry) context).left, 
+//                                        ((VariableContextEntry) context).extractor,
+//                                        object );        
+        return this.evaluator.evaluateCachedLeft( (VariableContextEntry) context,
+                                        object );        
     }    
     
     public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
-        return this.evaluator.evaluate( this.declaration.getValue( tuple.get( this.declaration ).getObject() ), ((VariableContextEntry) context).right );        
+//        return this.evaluator.evaluate( this.declaration.getExtractor(),
+//                                        tuple.get( this.declaration ).getObject(), 
+//                                        ((VariableContextEntry) context).right );        
+        return this.evaluator.evaluateCachedRight((VariableContextEntry) context, 
+                                        tuple.get( this.declaration ).getObject());        
     }  
 
     public String toString() {
@@ -95,7 +102,8 @@ public class VariableRestriction
                                                                                                                           other.requiredDeclarations );
     }
 
-    public boolean isAllowed(Object object,
+    public boolean isAllowed(Extractor extractor,
+                             Object object,
                              InternalWorkingMemory workingMemoiry) {
         throw new UnsupportedOperationException("does not support method  call  isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }

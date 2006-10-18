@@ -18,13 +18,11 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.DoubleFactory.DoubleEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleGreaterEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleLessEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleLessOrEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleNotEqualEvaluator;
+import org.drools.rule.VariableConstraint.ObjectVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
 /**
  * This is the misc "bucket" evaluator factory for objects.
@@ -33,13 +31,17 @@ import org.drools.spi.Evaluator;
  * 
  * @author Michael Neale
  */
-public class FactTemplateFactory implements EvaluatorFactory {
-    private static EvaluatorFactory INSTANCE = new FactTemplateFactory();
-    
+public class FactTemplateFactory
+    implements
+    EvaluatorFactory {
+
+    private static final long       serialVersionUID = 1384322764502834134L;
+    private static EvaluatorFactory INSTANCE         = new FactTemplateFactory();
+
     private FactTemplateFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
         if ( INSTANCE == null ) {
             INSTANCE = new FactTemplateFactory();
@@ -52,9 +54,9 @@ public class FactTemplateFactory implements EvaluatorFactory {
             return FactTemplateEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.NOT_EQUAL ) {
             return FactTemplateNotEqualEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for FactTemplateEvaluator" );
-        }    
+        }
     }
 
     static class FactTemplateEqualEvaluator extends BaseEvaluator {
@@ -69,12 +71,44 @@ public class FactTemplateFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Object value1 = extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 == null;
             }
-            return object1.equals( object2 );
+            return value1.equals( value2 );
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            Object value1 = object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.equals( value2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Object value = context.declaration.getExtractor().getValue( left );
+            if ( value == null ) {
+                return ((ObjectVariableContextEntry) context).right == null;
+            }
+            return value.equals( ((ObjectVariableContextEntry) context).right );
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Object value = context.extractor.getValue( right );
+            if ( ((ObjectVariableContextEntry) context).left == null ) {
+                return value == null;
+            }
+            return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
         public String toString() {
@@ -94,13 +128,44 @@ public class FactTemplateFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
-                                final Object object2) {
-            if ( object1 == null ) {
-                return !(object2 == null);
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            Object value1 = extractor.getValue( object1 );
+            Object value2 = object2.getValue();
+            if ( value1 == null ) {
+                return value2 != null;
             }
+            return !value1.equals( value2 );
+        }
 
-            return !object1.equals( object2 );
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
+                                final Object object2) {
+            Object value1 = object1.getValue();
+            Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            return !value1.equals( value2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            Object value = context.declaration.getExtractor().getValue( left );
+            if ( value == null ) {
+                return ((ObjectVariableContextEntry) context).right != null;
+            }
+            return !value.equals( ((ObjectVariableContextEntry) context).right );
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            Object value = context.extractor.getValue( right );
+            if ( ((ObjectVariableContextEntry) context).left == null ) {
+                return value != null;
+            }
+            return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
         public String toString() {

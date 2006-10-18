@@ -18,15 +18,23 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.rule.VariableConstraint.DoubleVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
-public class DoubleFactory implements EvaluatorFactory {
-    private static EvaluatorFactory INSTANCE = new DoubleFactory();
-    
+public class DoubleFactory
+    implements
+    EvaluatorFactory {
+
+    private static final long       serialVersionUID = -3853062740291829023L;
+    private static EvaluatorFactory INSTANCE         = new DoubleFactory();
+
     private DoubleFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
         if ( INSTANCE == null ) {
             INSTANCE = new DoubleFactory();
@@ -47,7 +55,7 @@ public class DoubleFactory implements EvaluatorFactory {
             return DoubleGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return DoubleGreaterOrEqualEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for DoubleEvaluator" );
         }
     }
@@ -64,12 +72,30 @@ public class DoubleFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getDoubleValue( object1 ) == object2.getDoubleValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
-            }
-            return ((Number) object1).equals( object2 );
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getDoubleValue() == extractor.getDoubleValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getDoubleValue( left ) == ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left == context.extractor.getDoubleValue( right );
         }
 
         public String toString() {
@@ -89,12 +115,30 @@ public class DoubleFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getDoubleValue( object1 ) != object2.getDoubleValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 != null;
-            }
-            return !((Number) object1).equals( object2 );
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getDoubleValue() != extractor.getDoubleValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getDoubleValue( left ) != ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left != context.extractor.getDoubleValue( right );
         }
 
         public String toString() {
@@ -114,9 +158,30 @@ public class DoubleFactory implements EvaluatorFactory {
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getDoubleValue( object1 ) < object2.getDoubleValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).doubleValue() < ((Number) object2).doubleValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getDoubleValue() < extractor.getDoubleValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getDoubleValue( left ) < ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left < context.extractor.getDoubleValue( right );
         }
 
         public String toString() {
@@ -136,9 +201,30 @@ public class DoubleFactory implements EvaluatorFactory {
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getDoubleValue( object1 ) <= object2.getDoubleValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).doubleValue() <= ((Number) object2).doubleValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getDoubleValue() <= extractor.getDoubleValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getDoubleValue( left ) <= ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left <= context.extractor.getDoubleValue( right );
         }
 
         public String toString() {
@@ -158,9 +244,30 @@ public class DoubleFactory implements EvaluatorFactory {
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getDoubleValue( object1 ) > object2.getDoubleValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).doubleValue() > ((Number) object2).doubleValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getDoubleValue() > extractor.getDoubleValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getDoubleValue( left ) > ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left > context.extractor.getDoubleValue( right );
         }
 
         public String toString() {
@@ -180,9 +287,30 @@ public class DoubleFactory implements EvaluatorFactory {
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getDoubleValue( object1 ) >= object2.getDoubleValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).doubleValue() >= ((Number) object2).doubleValue();
+            // TODO: we are not handling delta right now... maybe we should
+            return object1.getDoubleValue() >= extractor.getDoubleValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            // TODO: we are not handling delta right now... maybe we should
+            return context.declaration.getExtractor().getDoubleValue( left ) >= ((DoubleVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            // TODO: we are not handling delta right now... maybe we should
+            return ((DoubleVariableContextEntry) context).left >= context.extractor.getDoubleValue( right );
         }
 
         public String toString() {

@@ -21,6 +21,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.Restriction;
 import org.drools.spi.Tuple;
@@ -34,7 +35,7 @@ public class LiteralRestriction
      */
     private static final long          serialVersionUID     = 320;
 
-    private final Object               field;
+    private final FieldValue           field;
 
     private final Evaluator            evaluator;
 
@@ -42,7 +43,7 @@ public class LiteralRestriction
 
     public LiteralRestriction(final FieldValue field,
                               final Evaluator evaluator) {
-        this.field = field.getValue();
+        this.field = field;
         this.evaluator = evaluator;
     }
 
@@ -50,13 +51,14 @@ public class LiteralRestriction
         return this.evaluator;
     }
 
-    public Object getField() {
+    public FieldValue getField() {
         return this.field;
     }
     
-    public boolean isAllowed(Object object,
+    public boolean isAllowed(Extractor extractor, 
+                             Object object,
                              InternalWorkingMemory workingMemoiry) {
-        return this.evaluator.evaluate( object, field );
+        return this.evaluator.evaluate( extractor, object, field );
     }
     
     public boolean isAllowedCachedLeft(ContextEntry context, Object object) {
@@ -86,7 +88,7 @@ public class LiteralRestriction
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + this.evaluator.hashCode();
-        result = PRIME * result + this.field.hashCode();
+        result = PRIME * result + this.field.getValue().hashCode();
         return result;
     }
 

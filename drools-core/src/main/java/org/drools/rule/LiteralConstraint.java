@@ -16,15 +16,11 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
-import org.drools.spi.Evaluator;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
-import org.drools.spi.Tuple;
 
 public class LiteralConstraint
     implements
@@ -58,7 +54,7 @@ public class LiteralConstraint
         return this.restriction.getEvaluator();
     }
 
-    public Object getField() {
+    public FieldValue getField() {
         return this.restriction.getField();
     }
 
@@ -81,7 +77,8 @@ public class LiteralConstraint
 
     public boolean isAllowed(final Object object,
                              final InternalWorkingMemory workingMemory) {
-        return this.restriction.isAllowed(  this.extractor.getValue( object ), 
+        return this.restriction.isAllowed(  this.extractor, 
+                                            object, 
                                             workingMemory );
     }
 

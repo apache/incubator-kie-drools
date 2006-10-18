@@ -19,6 +19,10 @@ package org.drools.base;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.drools.base.field.BooleanFieldImpl;
+import org.drools.base.field.DoubleFieldImpl;
+import org.drools.base.field.LongFieldImpl;
+import org.drools.base.field.ObjectFieldImpl;
 import org.drools.spi.FieldValue;
 
 public class FieldFactory {
@@ -40,37 +44,37 @@ public class FieldFactory {
         }
 
         if ( valueType == ValueType.NULL_TYPE ) {
-            field = new FieldImpl( null );
+            field = new ObjectFieldImpl( null );
         } else if ( valueType == ValueType.CHAR_TYPE ) {
-            field = new FieldImpl( new Character( value.charAt( 0 ) ) );
+            field = new LongFieldImpl( value.charAt( 0 ) );
         } else if ( valueType == ValueType.BYTE_TYPE ) {
-            field = new FieldImpl( new Byte( value ) );
+            field = new LongFieldImpl( Long.parseLong( value ) );
         } else if ( valueType == ValueType.SHORT_TYPE ) {
-            field = new FieldImpl( new Short( value ) );
+            field = new LongFieldImpl( Long.parseLong( value )  );
         } else if ( valueType == ValueType.INTEGER_TYPE ) {
-            field = new FieldImpl( new Integer( stripNumericType( value ) ) );
+            field = new LongFieldImpl( Long.parseLong( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.LONG_TYPE ) {
-            field = new FieldImpl( new Long( stripNumericType( value ) ) );
+            field = new LongFieldImpl( Long.parseLong( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.FLOAT_TYPE ) {
-            field = new FieldImpl( new Float( stripNumericType( value ) ) );
+            field = new DoubleFieldImpl( Float.parseFloat( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.DOUBLE_TYPE ) {
-            field = new FieldImpl( new Double( stripNumericType( value ) ) );
+            field = new DoubleFieldImpl( Double.parseDouble( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.BOOLEAN_TYPE ) {
-            field = new FieldImpl( new Boolean( value ) );
+            field = new BooleanFieldImpl( Boolean.valueOf( value ).booleanValue() );
         } else if ( valueType == ValueType.STRING_TYPE ) {
-            field = new FieldImpl( value.intern() );
+            field = new ObjectFieldImpl( value.intern() );
         } else if ( valueType == ValueType.DATE_TYPE ) {
             //MN: I think its fine like this, seems to work !
-            field = new FieldImpl( value );
+            field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.ARRAY_TYPE ) {
             //MN: I think its fine like this.
-            field = new FieldImpl( value );
+            field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.OBJECT_TYPE ) {
-            field = new FieldImpl( value );
+            field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BIG_DECIMAL_TYPE ) {
-        	field = new FieldImpl( new BigDecimal(value) );
+        	field = new ObjectFieldImpl( new BigDecimal(value) );
         } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
-        	field = new FieldImpl( new BigInteger(value) );
+        	field = new ObjectFieldImpl( new BigInteger(value) );
         }
 
         return field;

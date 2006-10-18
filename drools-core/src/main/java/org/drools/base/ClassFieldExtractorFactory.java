@@ -23,6 +23,16 @@ import org.drools.asm.ClassWriter;
 import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
+import org.drools.asm.Type;
+import org.drools.base.extractors.BaseBooleanClassFieldExtractor;
+import org.drools.base.extractors.BaseByteClassFieldExtractor;
+import org.drools.base.extractors.BaseCharClassFieldExtractor;
+import org.drools.base.extractors.BaseDoubleClassFieldExtractor;
+import org.drools.base.extractors.BaseFloatClassFieldExtractor;
+import org.drools.base.extractors.BaseIntClassFieldExtractor;
+import org.drools.base.extractors.BaseLongClassFieldExtractors;
+import org.drools.base.extractors.BaseObjectClassFieldExtractor;
+import org.drools.base.extractors.BaseShortClassFieldExtractor;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
@@ -36,29 +46,20 @@ import org.drools.util.asm.ClassFieldInspector;
 
 public class ClassFieldExtractorFactory {
 
-    private static final String GETTER         = "get";
-
-    private static final String BOOLEAN_GETTER = "is";
-
-    private static final String BASE_PACKAGE   = "org/drools/base";
-
-    private static final String BASE_EXTRACTOR = "org/drools/base/BaseClassFieldExtractor";
+    private static final String BASE_PACKAGE = "org/drools/base";
 
     public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
                                                                  final String fieldName) {
         try {
             final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
             final Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
-            final String originalClassName = clazz.getName().replace( '.',
-                                                                      '/' );
-            final String getterName = ((Method) inspector.getGetterMethods().get( fieldName )).getName();
-            final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + originalClassName + "$" + getterName;
-            final String typeName = getTypeName( fieldType );
+            final Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
+            final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + "$" + getterMethod.getName();
+
             // generating byte array to create target class
-            final byte[] bytes = dump( originalClassName,
+            final byte[] bytes = dump( clazz,
                                        className,
-                                       getterName,
-                                       typeName,
+                                       getterMethod,
                                        fieldType,
                                        clazz.isInterface() );
             // use bytes to get a class 
@@ -74,38 +75,73 @@ public class ClassFieldExtractorFactory {
         }
     }
 
-    private static byte[] dump(final String originalClassName,
+    private static byte[] dump(final Class originalClass,
                                final String className,
-                               final String getterName,
-                               final String typeName,
+                               final Method getterMethod,
                                final Class fieldType,
                                final boolean isInterface) throws Exception {
 
         final ClassWriter cw = new ClassWriter( true );
-        MethodVisitor mv;
 
+        Class superClass = getSuperClassFor( fieldType );
+        buildClassHeader( superClass,
+                          className,
+                          cw );
+
+        buildConstructor( superClass,
+                          className,
+                          cw );
+        
+        buildGetMethod( originalClass, className, superClass, getterMethod, cw );
+
+        cw.visitEnd();
+
+        return cw.toByteArray();
+    }
+
+    /**
+     * Builds the class header
+     *  
+     * @param clazz The class to build the extractor for
+     * @param className The extractor class name
+     * @param cw
+     */
+    protected static void buildClassHeader(final Class superClass,
+                                           final String className,
+                                           final ClassWriter cw) {
         cw.visit( Opcodes.V1_2,
                   Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                   className,
                   null,
-                  ClassFieldExtractorFactory.BASE_EXTRACTOR,
+                  Type.getInternalName( superClass ),
                   null );
 
         cw.visitSource( null,
                         null );
+    }
 
-        // constractor
+    /**
+     * Creates a constructor for the shadow proxy receiving
+     * the actual delegate class as parameter
+     * 
+     * @param originalClassName
+     * @param className
+     * @param cw
+     */
+    private static void buildConstructor(final Class superClazz,
+                                         final String className,
+                                         final ClassWriter cw) {
+        MethodVisitor mv;
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  "<init>",
-                                 "(Ljava/lang/Class;Ljava/lang/String;)V",
+                                 Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                           new Type[]{ Type.getType( Class.class ), Type.getType( String.class )} ),
                                  null,
                                  null );
             mv.visitCode();
             final Label l0 = new Label();
             mv.visitLabel( l0 );
-            mv.visitLineNumber( 10,
-                                l0 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
             mv.visitVarInsn( Opcodes.ALOAD,
@@ -113,13 +149,12 @@ public class ClassFieldExtractorFactory {
             mv.visitVarInsn( Opcodes.ALOAD,
                              2 );
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                ClassFieldExtractorFactory.BASE_EXTRACTOR,
+                                Type.getInternalName( superClazz ),
                                 "<init>",
-                                "(Ljava/lang/Class;Ljava/lang/String;)V" );
+                                Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                          new Type[]{ Type.getType( Class.class ), Type.getType( String.class )} ));
             final Label l1 = new Label();
             mv.visitLabel( l1 );
-            mv.visitLineNumber( 11,
-                                l1 );
             mv.visitInsn( Opcodes.RETURN );
             final Label l2 = new Label();
             mv.visitLabel( l2 );
@@ -130,179 +165,147 @@ public class ClassFieldExtractorFactory {
                                    l2,
                                    0 );
             mv.visitLocalVariable( "clazz",
-                                   "Ljava/lang/Class;",
+                                   Type.getDescriptor( Class.class ),
                                    null,
                                    l0,
                                    l2,
                                    1 );
             mv.visitLocalVariable( "fieldName",
-                                   "Ljava/lang/String;",
+                                   Type.getDescriptor( String.class ),
                                    null,
                                    l0,
                                    l2,
                                    2 );
-            mv.visitMaxs( 3,
-                          3 );
+            mv.visitMaxs( 0,
+                          0 );
             mv.visitEnd();
         }
-
-        // for primitive it's different because we special characters for 
-        // return types and create corresponding Objects (e.g. int -> Integer, boolean -> Boolean, ..)
-        if ( fieldType.isPrimitive() ) {
-            final String primitiveTypeTag = getPrimitiveTag( fieldType );
-
-            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "getValue",
-                                 "(Ljava/lang/Object;)Ljava/lang/Object;",
-                                 null,
-                                 null );
-            mv.visitCode();
-            final Label l0 = new Label();
-            mv.visitLabel( l0 );
-            mv.visitLineNumber( 14,
-                                l0 );
-            mv.visitTypeInsn( Opcodes.NEW,
-                              typeName );
-            mv.visitInsn( Opcodes.DUP );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
-            mv.visitTypeInsn( Opcodes.CHECKCAST,
-                              originalClassName );
-
-            if ( isInterface ) {
-                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                    originalClassName,
-                                    getterName,
-                                    "()" + primitiveTypeTag );
-
-            } else {
-                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    originalClassName,
-                                    getterName,
-                                    "()" + primitiveTypeTag );
-            }
-            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                typeName,
-                                "<init>",
-                                "(" + primitiveTypeTag + ")V" );
-            mv.visitInsn( Opcodes.ARETURN );
-            final Label l1 = new Label();
-            mv.visitLabel( l1 );
-            mv.visitLocalVariable( "this",
-                                   "L" + className + ";",
-                                   null,
-                                   l0,
-                                   l1,
-                                   0 );
-            mv.visitLocalVariable( "object",
-                                   "Ljava/lang/Object;",
-                                   null,
-                                   l0,
-                                   l1,
-                                   1 );
-            mv.visitMaxs( 3,
-                          2 );
-            mv.visitEnd();
-        } else {
-            String typeNotation = fieldType.isArray() ? typeName : "L"+typeName+";";
-            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "getValue",
-                                 "(Ljava/lang/Object;)Ljava/lang/Object;",
-                                 null,
-                                 null );
-            mv.visitCode();
-            final Label l0 = new Label();
-            mv.visitLabel( l0 );
-            mv.visitLineNumber( 15,
-                                l0 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
-            mv.visitTypeInsn( Opcodes.CHECKCAST,
-                              originalClassName );
-            if ( isInterface ) {
-                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                    originalClassName,
-                                    getterName,
-                                    "()" + typeNotation );
-            } else {
-                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    originalClassName,
-                                    getterName,
-                                    "()" + typeNotation );
-            }
-            mv.visitInsn( Opcodes.ARETURN );
-            final Label l1 = new Label();
-            mv.visitLabel( l1 );
-            mv.visitLocalVariable( "this",
-                                   "L" + className + ";",
-                                   null,
-                                   l0,
-                                   l1,
-                                   0 );
-            mv.visitLocalVariable( "object",
-                                   "Ljava/lang/Object;",
-                                   null,
-                                   l0,
-                                   l1,
-                                   1 );
-            mv.visitMaxs( 1,
-                          2 );
-            mv.visitEnd();
-        }
-        cw.visitEnd();
-
-        return cw.toByteArray();
     }
 
-    private static String getTypeName(final Class fieldType) {
-        String ret = null;
+    /**
+     * Creates the proxy reader method for the given method
+     * 
+     * @param fieldName
+     * @param fieldFlag
+     * @param method
+     * @param cw
+     */
+    protected static void buildGetMethod(Class originalClass,
+                                         String className,
+                                         Class superClass,
+                                         Method getterMethod,
+                                         ClassWriter cw) {
+        
+        Class fieldType = getterMethod.getReturnType();
+        Method overridingMethod;
+        try {
+            overridingMethod = superClass.getMethod( getOverridingMethodName( fieldType ), 
+                                                            new Class[] { Object.class } );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("This is a bug. Please report back to JBRules team.", e);
+        }
+        MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                           overridingMethod.getName(),
+                                           Type.getMethodDescriptor( overridingMethod ),
+                                           null,
+                                           null );
+        
+        mv.visitCode();
+        
+        final Label l0 = new Label();
+        mv.visitLabel( l0 );
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         1 );
+        mv.visitTypeInsn( Opcodes.CHECKCAST,
+                          Type.getInternalName( originalClass ) );
+        
+        if ( originalClass.isInterface() ) {
+            mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                Type.getInternalName( originalClass ),
+                                getterMethod.getName(),
+                                Type.getMethodDescriptor( getterMethod ) );
+        } else {
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                Type.getInternalName( originalClass ),
+                                getterMethod.getName(),
+                                Type.getMethodDescriptor( getterMethod ) );
+        }
+        mv.visitInsn( Type.getType( fieldType ).getOpcode( Opcodes.IRETURN ) );
+        final Label l1 = new Label();
+        mv.visitLabel( l1 );
+        mv.visitLocalVariable( "this",
+                               "L" + className + ";",
+                               null,
+                               l0,
+                               l1,
+                               0 );
+        mv.visitLocalVariable( "object",
+                               Type.getDescriptor( Object.class ),
+                               null,
+                               l0,
+                               l1,
+                               1 );
+        mv.visitMaxs( 0,
+                      0 );
+        mv.visitEnd();
+    }
 
+    private static String getOverridingMethodName( Class fieldType ) {
+        String ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {
-                ret = "java/lang/Character";
+                ret = "getCharValue";
             } else if ( fieldType == byte.class ) {
-                ret = "java/lang/Byte";
+                ret = "getByteValue";
             } else if ( fieldType == short.class ) {
-                ret = "java/lang/Short";
+                ret = "getShortValue";
             } else if ( fieldType == int.class ) {
-                ret = "java/lang/Integer";
+                ret = "getIntValue";
             } else if ( fieldType == long.class ) {
-                ret = "java/lang/Long";
+                ret = "getLongValue";
             } else if ( fieldType == float.class ) {
-                ret = "java/lang/Float";
+                ret = "getFloatValue";
             } else if ( fieldType == double.class ) {
-                ret = "java/lang/Double";
+                ret = "getDoubleValue";
             } else if ( fieldType == boolean.class ) {
-                ret = "java/lang/Boolean";
+                ret = "getBooleanValue";
             }
         } else {
-            ret = fieldType.getName().replace( '.',
-                                               '/' );
+            ret = "getValue";
         }
-
         return ret;
     }
 
-    private static String getPrimitiveTag(final Class fieldType) {
-        String ret = null;
-        if ( fieldType == char.class ) {
-            ret = "C";
-        } else if ( fieldType == byte.class ) {
-            ret = "B";
-        } else if ( fieldType == short.class ) {
-            ret = "S";
-        } else if ( fieldType == int.class ) {
-            ret = "I";
-        } else if ( fieldType == long.class ) {
-            ret = "J";
-        } else if ( fieldType == float.class ) {
-            ret = "F";
-        } else if ( fieldType == double.class ) {
-            ret = "D";
-        } else if ( fieldType == boolean.class ) {
-            ret = "Z";
+    /**
+     * Returns the appropriate Base class field extractor class
+     * for the given fieldType
+     * 
+     * @param fieldType
+     * @return
+     */
+    private static Class getSuperClassFor(Class fieldType) {
+        Class ret = null;
+        if ( fieldType.isPrimitive() ) {
+            if ( fieldType == char.class ) {
+                ret = BaseCharClassFieldExtractor.class;
+            } else if ( fieldType == byte.class ) {
+                ret = BaseByteClassFieldExtractor.class;
+            } else if ( fieldType == short.class ) {
+                ret = BaseShortClassFieldExtractor.class;
+            } else if ( fieldType == int.class ) {
+                ret = BaseIntClassFieldExtractor.class;
+            } else if ( fieldType == long.class ) {
+                ret = BaseLongClassFieldExtractors.class;
+            } else if ( fieldType == float.class ) {
+                ret = BaseFloatClassFieldExtractor.class;
+            } else if ( fieldType == double.class ) {
+                ret = BaseDoubleClassFieldExtractor.class;
+            } else if ( fieldType == boolean.class ) {
+                ret = BaseBooleanClassFieldExtractor.class;
+            }
+        } else {
+            ret = BaseObjectClassFieldExtractor.class;
         }
-
         return ret;
     }
 

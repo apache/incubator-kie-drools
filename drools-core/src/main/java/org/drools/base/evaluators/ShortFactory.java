@@ -18,15 +18,15 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.DoubleFactory.DoubleEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleGreaterEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleLessEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleLessOrEqualEvaluator;
-import org.drools.base.evaluators.DoubleFactory.DoubleNotEqualEvaluator;
+import org.drools.rule.VariableConstraint.LongVariableContextEntry;
+import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
+import org.drools.spi.FieldValue;
 
 public class ShortFactory implements EvaluatorFactory {
+
+    private static final long serialVersionUID = -1295210800055648796L;
     private static EvaluatorFactory INSTANCE = new ShortFactory();
     
     private ShortFactory() {
@@ -70,12 +70,26 @@ public class ShortFactory implements EvaluatorFactory {
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getShortValue( object1 ) == object2.getShortValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
-            }
-            return ((Number) object1).equals( object2 );
+            return object1.getShortValue() == extractor.getShortValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getShortValue( left ) == ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left == context.extractor.getShortValue( right );
         }
 
         public String toString() {
@@ -95,12 +109,26 @@ public class ShortFactory implements EvaluatorFactory {
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getShortValue( object1 ) != object2.getShortValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            if ( object1 == null ) {
-                return !(object2 == null);
-            }
-            return !((Number) object1).equals( object2 );
+            return object1.getShortValue() != extractor.getShortValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getShortValue( left ) != ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left != context.extractor.getShortValue( right );
         }
 
         public String toString() {
@@ -120,9 +148,26 @@ public class ShortFactory implements EvaluatorFactory {
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getShortValue( object1 ) < object2.getShortValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).shortValue() < ((Number) object2).shortValue();
+            return object1.getShortValue() < extractor.getShortValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getShortValue( left ) < ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left < context.extractor.getShortValue( right );
         }
 
         public String toString() {
@@ -142,9 +187,26 @@ public class ShortFactory implements EvaluatorFactory {
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getShortValue( object1 ) <= object2.getShortValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).shortValue() <= ((Number) object2).shortValue();
+            return object1.getShortValue() <= extractor.getShortValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getShortValue( left ) <= ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left <= context.extractor.getShortValue( right );
         }
 
         public String toString() {
@@ -164,9 +226,26 @@ public class ShortFactory implements EvaluatorFactory {
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getShortValue( object1 ) > object2.getShortValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).shortValue() > ((Number) object2).shortValue();
+            return object1.getShortValue() > extractor.getShortValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getShortValue( left ) > ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left > context.extractor.getShortValue( right );
         }
 
         public String toString() {
@@ -186,9 +265,26 @@ public class ShortFactory implements EvaluatorFactory {
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Object object1,
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            return extractor.getShortValue( object1 ) >= object2.getShortValue();
+        }
+
+        public boolean evaluate(final FieldValue object1,
+                                final Extractor extractor,
                                 final Object object2) {
-            return ((Number) object1).shortValue() >= ((Number) object2).shortValue();
+            return object1.getShortValue() >= extractor.getShortValue( object2 );
+        }
+
+        public boolean evaluateCachedRight(VariableContextEntry context,
+                                           Object left) {
+            return context.declaration.getExtractor().getShortValue( left ) >= ((LongVariableContextEntry) context).right;
+        }
+
+        public boolean evaluateCachedLeft(VariableContextEntry context,
+                                          Object right) {
+            return ((LongVariableContextEntry) context).left >= context.extractor.getShortValue( right );
         }
 
         public String toString() {
