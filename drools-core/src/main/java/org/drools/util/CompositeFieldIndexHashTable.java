@@ -52,10 +52,7 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
             case 2 :
                 this.index = new DoubleCompositeIndex( index,
                                                        this.startResult,
-                                                       this.comparator );
-//                this.index = new DefaultCompositeIndex( index,
-//                                                        this.startResult,
-//                                                        this.comparator );                    
+                                                       this.comparator );                   
                 break;
             case 3 :
                 this.index = new TripleCompositeIndex( index,
@@ -436,7 +433,8 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
         Index {
         private FieldIndex       index0;
         private FieldIndex       index1;
-
+        
+        
         private int              startResult;
 
         private ObjectComparator comparator;
@@ -457,7 +455,7 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
 
         public int hashCodeOf(Object object) {
             int hashCode = startResult;
-
+            
             Object value = index0.extractor.getValue( object );
             hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
@@ -468,15 +466,15 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
         }
 
         public int hashCodeOf(ReteTuple tuple) {
-            int hashCode = startResult;
+            int hashCode = startResult;           
 
             Object value = index0.declaration.getValue( tuple.get( index0.declaration ).getObject() );
-            hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : this.comparator.hashCodeOf( value ));
+            hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode() );
 
             value = index1.declaration.getValue( tuple.get( index1.declaration ).getObject() );
-            hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : this.comparator.hashCodeOf( value ));
+            hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode() );
 
-            return hashCode;
+            return this.comparator.rehash( hashCode );
         }
 
         //        public void setCachedValue(Object object) {
@@ -518,7 +516,7 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
         }
 
         public boolean equal(Object object1,
-                             Object object2) {
+                             Object object2) {         
             Object value1 = index0.extractor.getValue( object1 );
             Object value2 = index0.extractor.getValue( object2 );
 
@@ -681,11 +679,11 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
         private int              startResult;
         private ObjectComparator comparator;
 
-        public DefaultCompositeIndex(FieldIndex[] fieldIndex,
+        public DefaultCompositeIndex(FieldIndex[] fieldIndexes,
                                      int startResult,
                                      ObjectComparator comparator) {
             this.startResult = startResult;
-            this.indexes = fieldIndex;
+            this.indexes = fieldIndexes;
             this.comparator = comparator;
         }
 
