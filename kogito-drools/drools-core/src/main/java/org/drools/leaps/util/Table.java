@@ -32,7 +32,9 @@ import org.drools.leaps.ColumnConstraints;
  * @author Alexander Bagerman
  * 
  */
-public class Table implements Serializable {
+public class Table
+    implements
+    Serializable {
 
     /**
      * 
@@ -50,42 +52,39 @@ public class Table implements Serializable {
     private int               count            = 0;
 
     public Table(final Comparator comparator) {
-        this.set = new TreeSet( new RecordComparator(comparator) );
+        this.set = new TreeSet( new RecordComparator( comparator ) );
     }
 
     public void clear() {
         this.headRecord = null;
         this.empty = true;
         this.count = 0;
-        this.set.clear( );
+        this.set.clear();
     }
 
     /**
      * @param object
      *            to add
      */
-    public void add( final Object object ) {
+    public void add(final Object object) {
         final TableRecord newRecord = new TableRecord( object );
-        if (this.empty) {
+        if ( this.empty ) {
             this.headRecord = newRecord;
             this.empty = false;
-        }
-        else {
+        } else {
             try {
                 // check on first key should work faster than check on empty
                 // but logically we check on empty
                 // if map empty it will throw exception
-                final TableRecord bufRec = (TableRecord) this.set.headSet( newRecord )
-                                                                 .last( );
-                if (bufRec.right != null) {
+                final TableRecord bufRec = (TableRecord) this.set.headSet( newRecord ).last();
+                if ( bufRec.right != null ) {
                     bufRec.right.left = newRecord;
                 }
                 newRecord.right = bufRec.right;
                 bufRec.right = newRecord;
                 newRecord.left = bufRec;
 
-            }
-            catch (final NoSuchElementException nsee) {
+            } catch ( final NoSuchElementException nsee ) {
                 // means sub map is empty
                 this.headRecord.left = newRecord;
                 newRecord.right = this.headRecord;
@@ -94,7 +93,7 @@ public class Table implements Serializable {
         }
         // check if the new record was added at the end of the list
         // and assign new value to the tail record
-        if (newRecord.right == null) {
+        if ( newRecord.right == null ) {
             this.tailRecord = newRecord;
         }
         //
@@ -109,47 +108,41 @@ public class Table implements Serializable {
      * @param object
      *            to remove from the table
      */
-    public void remove( final Object object ) {
-        if (!this.empty) {
+    public void remove(final Object object) {
+        if ( !this.empty ) {
             try {
-                final TableRecord record = (TableRecord) this.set.tailSet( new TableRecord( object ) )
-                                                                 .first( );
-                if (record != null && record.object == object) {
-                    if (record == this.headRecord ) {
-                        if (record.right != null) {
+                final TableRecord record = (TableRecord) this.set.tailSet( new TableRecord( object ) ).first();
+                if ( record != null && record.object == object ) {
+                    if ( record == this.headRecord ) {
+                        if ( record.right != null ) {
                             this.headRecord = record.right;
                             this.headRecord.left = null;
-                        }
-                        else {
+                        } else {
                             // single element in table being valid
                             // table is empty now
                             this.headRecord = null;
                             this.tailRecord = null;
                             this.empty = true;
                         }
-                    }
-                    else if (record == this.tailRecord) {
+                    } else if ( record == this.tailRecord ) {
                         // single element in the table case is being solved
                         // above in check for headRecord match
                         this.tailRecord = record.left;
                         this.tailRecord.right = null;
-                    }
-                    else {
+                    } else {
                         // left
                         record.left.right = record.right;
                         record.right.left = record.left;
                     }
                     record.left = null;
                     record.right = null;
-                }
-                else {
+                } else {
                     throw new NoSuchElementException();
                 }
                 this.count--;
                 //
                 this.set.remove( record );
-            }
-            catch (final NoSuchElementException nsee) {
+            } catch ( final NoSuchElementException nsee ) {
                 throw nsee;
             }
         }
@@ -159,9 +152,9 @@ public class Table implements Serializable {
      * @param object
      * @return indicator of presence of given object in the table
      */
-    public boolean contains( final Object object ) {
+    public boolean contains(final Object object) {
         boolean ret = false;
-        if (!this.empty) {
+        if ( !this.empty ) {
             ret = this.set.contains( new TableRecord( object ) );
         }
         return ret;
@@ -174,22 +167,24 @@ public class Table implements Serializable {
      */
     public TableIterator iterator() {
         TableIterator ret;
-        if (this.empty) {
-            ret = new IteratorFromPositionToTableStart( null, null );
-        }
-        else {
-            ret = new IteratorFromPositionToTableStart( this.headRecord, this.headRecord );
+        if ( this.empty ) {
+            ret = new IteratorFromPositionToTableStart( null,
+                                                        null );
+        } else {
+            ret = new IteratorFromPositionToTableStart( this.headRecord,
+                                                        this.headRecord );
         }
         return ret;
     }
 
     public TableIterator reverseOrderIterator() {
         TableIterator ret;
-        if (this.empty) {
-            ret = new IteratorFromPositionToTableEnd( null, null );
-        }
-        else {
-            ret = new IteratorFromPositionToTableEnd( this.tailRecord, this.tailRecord );
+        if ( this.empty ) {
+            ret = new IteratorFromPositionToTableEnd( null,
+                                                      null );
+        } else {
+            ret = new IteratorFromPositionToTableEnd( this.tailRecord,
+                                                      this.tailRecord );
         }
         return ret;
     }
@@ -205,10 +200,10 @@ public class Table implements Serializable {
      * @return leaps table iterator
      * @throws TableOutOfBoundException
      */
-    public TableIterator constrainedIteratorFromPositionToTableStart( final WorkingMemory workingMemory,
-                                                                      final ColumnConstraints constraints,
-                                                                      final Object objectAtStart,
-                                                                      final Object objectAtPosition ) {
+    public TableIterator constrainedIteratorFromPositionToTableStart(final WorkingMemory workingMemory,
+                                                                     final ColumnConstraints constraints,
+                                                                     final Object objectAtStart,
+                                                                     final Object objectAtPosition) {
         return getIteratorFromPositionToTableStart( true,
                                                     workingMemory,
                                                     constraints,
@@ -227,8 +222,8 @@ public class Table implements Serializable {
      * @return leaps table iterator
      * @throws TableOutOfBoundException
      */
-    public TableIterator iteratorFromPositionToTableStart( final Object objectAtStart,
-                                                           final Object objectAtPosition ) {
+    public TableIterator iteratorFromPositionToTableStart(final Object objectAtStart,
+                                                          final Object objectAtPosition) {
         return getIteratorFromPositionToTableStart( false,
                                                     null,
                                                     null,
@@ -247,16 +242,15 @@ public class Table implements Serializable {
      * @return leaps table iterator
      * @throws TableOutOfBoundException
      */
-    public TableIterator iteratorFromPositionToTableEnd( final Object objectAtStart ) {
+    public TableIterator iteratorFromPositionToTableEnd(final Object objectAtStart) {
         TableRecord record = null;
         try {
-            record = (TableRecord) this.set.headSet( new TableRecord( objectAtStart ) )
-                                                    .last( );
-        }
-        catch (final NoSuchElementException nsee) {
+            record = (TableRecord) this.set.headSet( new TableRecord( objectAtStart ) ).last();
+        } catch ( final NoSuchElementException nsee ) {
         }
 
-        return new IteratorFromPositionToTableEnd( record, record );
+        return new IteratorFromPositionToTableEnd( record,
+                                                   record );
     }
 
     /**
@@ -266,50 +260,46 @@ public class Table implements Serializable {
      *            upper boundary of the iteration
      * @return Markers structure
      */
-    private TableIterator getIteratorFromPositionToTableStart( final boolean isConstraint, 
-                                                               final WorkingMemory workingMemory,
-                                                               final ColumnConstraints constraints,
-                                                               final Object objectAtStart,
-                                                               final Object objectAtPosition ) {
+    private TableIterator getIteratorFromPositionToTableStart(final boolean isConstraint,
+                                                              final WorkingMemory workingMemory,
+                                                              final ColumnConstraints constraints,
+                                                              final Object objectAtStart,
+                                                              final Object objectAtPosition) {
         TableRecord startRecord = null;
         TableRecord currentRecord = null;
 
-        TableRecord recordAtStart = new TableRecord( objectAtStart );
-        if (!this.empty) { 
+        final TableRecord recordAtStart = new TableRecord( objectAtStart );
+        if ( !this.empty ) {
             try {
                 // check on first key should work faster than check
                 // to see if set has no elements
                 // if set is empty it will throw exception
-                startRecord = (TableRecord) this.set.tailSet( recordAtStart ).first( );
-                if (objectAtStart == objectAtPosition) {
+                startRecord = (TableRecord) this.set.tailSet( recordAtStart ).first();
+                if ( objectAtStart == objectAtPosition ) {
                     currentRecord = startRecord;
-                }
-                else {
+                } else {
                     // rewind to position
                     try {
                         // check on first key should work faster than check
                         // to see if set has no elements
                         // if set is empty it will throw exception
-                        currentRecord = (TableRecord) this.set.tailSet( new TableRecord( objectAtPosition ) )
-                                                              .first( );
-                    }
-                    catch (final NoSuchElementException nsee) {
+                        currentRecord = (TableRecord) this.set.tailSet( new TableRecord( objectAtPosition ) ).first();
+                    } catch ( final NoSuchElementException nsee ) {
                         currentRecord = startRecord;
                     }
                 }
-            }
-            catch (final NoSuchElementException nsee) {
+            } catch ( final NoSuchElementException nsee ) {
             }
         }
 
-        if (isConstraint ) {
+        if ( isConstraint ) {
             return new ConstrainedIteratorFromPositionToTableStart( workingMemory,
-                                                                constraints,
-                                                                startRecord,
-                                                                currentRecord );
-        }
-        else {
-            return new IteratorFromPositionToTableStart( startRecord, currentRecord );
+                                                                    constraints,
+                                                                    startRecord,
+                                                                    currentRecord );
+        } else {
+            return new IteratorFromPositionToTableStart( startRecord,
+                                                         currentRecord );
         }
     }
 
@@ -325,8 +315,8 @@ public class Table implements Serializable {
     public String toString() {
         String ret = "";
 
-        for (final Iterator it = this.iterator( ); it.hasNext( );) {
-            ret = ret + it.next( ) + "\n";
+        for ( final Iterator it = this.iterator(); it.hasNext(); ) {
+            ret = ret + it.next() + "\n";
         }
         return ret;
     }
@@ -343,11 +333,12 @@ public class Table implements Serializable {
         return this.tailRecord.object;
     }
 
-    public static TableIterator singleItemIterator( final Object object ) {
+    public static TableIterator singleItemIterator(final Object object) {
         return new IteratorFromPositionToTableStart( new TableRecord( object ) );
     }
 
     public static TableIterator emptyIterator() {
-        return new IteratorFromPositionToTableStart( null, null );
+        return new IteratorFromPositionToTableStart( null,
+                                                     null );
     }
 }

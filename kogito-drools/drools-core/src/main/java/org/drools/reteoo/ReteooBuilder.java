@@ -368,8 +368,8 @@ class ReteooBuilder
     }
 
     private BetaConstraints attachColumn(final Column column,
-                                        final GroupElement parent,
-                                        final boolean removeIdentities) throws InvalidPatternException {
+                                         final GroupElement parent,
+                                         final boolean removeIdentities) throws InvalidPatternException {
         // Adjusting offset in case a previous Initial-Fact was added to the network
         column.adjustOffset( this.currentOffsetAdjustment );
 
@@ -384,8 +384,8 @@ class ReteooBuilder
         final List predicates = attachAlphaNodes( column,
                                                   removeIdentities );
 
-        BetaConstraints binder = createBetaNodeConstraint( predicates );
-        
+        final BetaConstraints binder = createBetaNodeConstraint( predicates );
+
         return binder;
     }
 
@@ -407,7 +407,7 @@ class ReteooBuilder
                 final Map.Entry entry = (Map.Entry) it.next();
                 final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    betaConstraints.add( new InstanceNotEqualsConstraint( (Column) entry.getValue()) );
+                    betaConstraints.add( new InstanceNotEqualsConstraint( (Column) entry.getValue() ) );
                 }
             }
 
@@ -428,13 +428,13 @@ class ReteooBuilder
             }
 
             final Constraint constraint = (Constraint) object;
-            if ( constraint.getRequiredDeclarations().length == 0) {
+            if ( constraint.getRequiredDeclarations().length == 0 ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
                                                                (AlphaNodeFieldConstraint) constraint,
                                                                this.objectSource ) );
             } else {
                 checkUnboundDeclarations( ((BetaNodeFieldConstraint) constraint).getRequiredDeclarations() );
-                betaConstraints.add( (BetaNodeFieldConstraint) constraint );
+                betaConstraints.add( constraint );
             }
         }
 
@@ -487,7 +487,7 @@ class ReteooBuilder
                                                                                                        column.getFactIndex(),
                                                                                                        notNode ) );
 
-        BetaConstraints identityBinder = new DefaultBetaConstraints( new InstanceEqualsConstraint( column ) );
+        final BetaConstraints identityBinder = new DefaultBetaConstraints( new InstanceEqualsConstraint( column ) );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
                                                      adapter,
@@ -556,7 +556,7 @@ class ReteooBuilder
 
     private void attachFrom(final TupleSource tupleSource,
                             final From from) {
-        Column column = from.getColumn();
+        final Column column = from.getColumn();
 
         // If a tupleSource does not exist then we need to adapt an
         // InitialFact into a a TupleSource using LeftInputAdapterNode
@@ -608,9 +608,9 @@ class ReteooBuilder
             }
         }
 
-        BetaConstraints binder = createBetaNodeConstraint( betaConstraints );
+        final BetaConstraints binder = createBetaNodeConstraint( betaConstraints );
 
-        this.tupleSource = attachNode( new FromNode( id++,
+        this.tupleSource = attachNode( new FromNode( this.id++,
                                                      from.getDataProvider(),
                                                      this.tupleSource,
                                                      (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
@@ -637,10 +637,10 @@ class ReteooBuilder
 
         final Column sourceColumn = accumulate.getSourceColumn();
         final BetaConstraints sourceBinder = attachColumn( sourceColumn,
-                                                          parent,
-                                                          true );
+                                                           parent,
+                                                           true );
 
-        Column column = accumulate.getResultColumn();
+        final Column column = accumulate.getResultColumn();
         // Adjusting offset in case a previous Initial-Fact was added to the network
         column.adjustOffset( this.currentOffsetAdjustment );
 
@@ -677,9 +677,9 @@ class ReteooBuilder
             }
         }
 
-        BetaConstraints resultsBinder = createBetaNodeConstraint( betaConstraints );
+        final BetaConstraints resultsBinder = createBetaNodeConstraint( betaConstraints );
 
-        this.tupleSource = attachNode( new AccumulateNode( id++,
+        this.tupleSource = attachNode( new AccumulateNode( this.id++,
                                                            this.tupleSource,
                                                            this.objectSource,
                                                            (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
@@ -707,10 +707,10 @@ class ReteooBuilder
 
         final Column sourceColumn = collect.getSourceColumn();
         final BetaConstraints sourceBinder = attachColumn( sourceColumn,
-                                                          parent,
-                                                          true );
+                                                           parent,
+                                                           true );
 
-        Column column = collect.getResultColumn();
+        final Column column = collect.getResultColumn();
         // Adjusting offset in case a previous Initial-Fact was added to the network
         column.adjustOffset( this.currentOffsetAdjustment );
 
@@ -747,9 +747,9 @@ class ReteooBuilder
             }
         }
 
-        BetaConstraints resultsBinder = createBetaNodeConstraint( betaConstraints );  
+        final BetaConstraints resultsBinder = createBetaNodeConstraint( betaConstraints );
 
-        this.tupleSource = attachNode( new CollectNode( id++,
+        this.tupleSource = attachNode( new CollectNode( this.id++,
                                                         this.tupleSource,
                                                         this.objectSource,
                                                         (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
@@ -826,24 +826,24 @@ class ReteooBuilder
             throw new InvalidPatternException( "Required Declarations not bound: '" + buffer );
         }
     }
-    
-    public static BetaConstraints createBetaNodeConstraint(List list){
+
+    public static BetaConstraints createBetaNodeConstraint(final List list) {
         BetaConstraints constraints;
-        switch (list.size()) {
-            case 0:
+        switch ( list.size() ) {
+            case 0 :
                 constraints = EmptyBetaConstraints.getInstance();
                 break;
-            case 1:
-                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ) );                
+            case 1 :
+                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ) );
                 break;
-            case 2:
+            case 2 :
                 constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
                 break;
-            case 3:
+            case 3 :
                 constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
                 break;
-                default:
-                    constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
+            default :
+                constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
         }
         return constraints;
     }

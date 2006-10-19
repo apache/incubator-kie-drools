@@ -19,12 +19,6 @@ package org.drools.reteoo;
 import java.lang.reflect.Field;
 
 import org.drools.DroolsTestCase;
-import org.drools.FactHandle;
-import org.drools.RuleBaseFactory;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.PropagationContextImpl;
-import org.drools.rule.Rule;
-import org.drools.spi.PropagationContext;
 
 public class ObjectSourceTest extends DroolsTestCase {
 
@@ -42,43 +36,48 @@ public class ObjectSourceTest extends DroolsTestCase {
 
     public void testAddObjectSink() throws Exception {
         final MockObjectSource source = new MockObjectSource( 15 );
-        
+
         // We need to re-assign this var each time the sink changes references
-        Field field =  ObjectSource.class.getDeclaredField( "sink" );
+        final Field field = ObjectSource.class.getDeclaredField( "sink" );
         field.setAccessible( true );
-        ObjectSinkPropagator sink = ( ObjectSinkPropagator ) field.get( source );        
-        
+        ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( source );
+
         assertNull( sink );
 
-        MockObjectSink sink1 = new MockObjectSink();
-        source.addObjectSink( sink1 );        
-        sink = ( ObjectSinkPropagator ) field.get( source );  
-        assertSame( SingleObjectSinkAdapter.class, sink.getClass() );
+        final MockObjectSink sink1 = new MockObjectSink();
+        source.addObjectSink( sink1 );
+        sink = (ObjectSinkPropagator) field.get( source );
+        assertSame( SingleObjectSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 1,
                       sink.getSinks().length );
 
-        MockObjectSink sink2 = new MockObjectSink();
+        final MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
-        sink = ( ObjectSinkPropagator ) field.get( source );
-        assertSame( CompositeObjectSinkAdapter.class, sink.getClass() );
+        sink = (ObjectSinkPropagator) field.get( source );
+        assertSame( CompositeObjectSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 2,
                       sink.getSinks().length );
-        
-        MockObjectSink sink3 = new MockObjectSink();
+
+        final MockObjectSink sink3 = new MockObjectSink();
         source.addObjectSink( sink3 );
-        assertSame( CompositeObjectSinkAdapter.class, sink.getClass() );
+        assertSame( CompositeObjectSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 3,
-                      sink.getSinks().length );  
-        
+                      sink.getSinks().length );
+
         source.removeObjectSink( sink2 );
-        assertSame( CompositeObjectSinkAdapter.class, sink.getClass() );
+        assertSame( CompositeObjectSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 2,
-                      sink.getSinks().length );      
-        
+                      sink.getSinks().length );
+
         source.removeObjectSink( sink1 );
-        sink = ( ObjectSinkPropagator ) field.get( source );
-        assertSame( SingleObjectSinkAdapter.class, sink.getClass() );
+        sink = (ObjectSinkPropagator) field.get( source );
+        assertSame( SingleObjectSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 1,
-                      sink.getSinks().length );            
+                      sink.getSinks().length );
     }
 }

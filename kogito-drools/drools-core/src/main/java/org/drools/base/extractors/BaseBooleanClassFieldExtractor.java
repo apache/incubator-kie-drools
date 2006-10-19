@@ -28,45 +28,45 @@ import org.drools.base.BaseClassFieldExtractor;
 public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtractor {
 
     private static final long serialVersionUID = 9104214567753008212L;
-    
-    public BaseBooleanClassFieldExtractor(Class clazz,
-                                          String fieldName) {
+
+    public BaseBooleanClassFieldExtractor(final Class clazz,
+                                          final String fieldName) {
         super( clazz,
                fieldName );
     }
 
-    public Object getValue(Object object) {
+    public Object getValue(final Object object) {
         return getBooleanValue( object ) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     public abstract boolean getBooleanValue(Object object);
 
-    public byte getByteValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to byte not supported from boolean");
+    public byte getByteValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to byte not supported from boolean" );
     }
 
-    public char getCharValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to char not supported from boolean");
+    public char getCharValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to char not supported from boolean" );
     }
 
-    public double getDoubleValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to double not supported from boolean");
+    public double getDoubleValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to double not supported from boolean" );
     }
 
-    public float getFloatValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to float not supported from boolean");
+    public float getFloatValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to float not supported from boolean" );
     }
 
-    public int getIntValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to int not supported from boolean");
+    public int getIntValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to int not supported from boolean" );
     }
 
-    public long getLongValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to long not supported from boolean");
+    public long getLongValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to long not supported from boolean" );
     }
 
-    public short getShortValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to short not supported from boolean");
+    public short getShortValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to short not supported from boolean" );
     }
 
 }

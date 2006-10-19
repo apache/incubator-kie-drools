@@ -53,23 +53,25 @@ public class VariableRestriction
 
     public Evaluator getEvaluator() {
         return this.evaluator;
-    }    
-    
-    public boolean isAllowedCachedLeft(ContextEntry context, Object object) {
-//        return this.evaluator.evaluate( ((VariableContextEntry) context).left, 
-//                                        ((VariableContextEntry) context).extractor,
-//                                        object );        
+    }
+
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
+        //        return this.evaluator.evaluate( ((VariableContextEntry) context).left, 
+        //                                        ((VariableContextEntry) context).extractor,
+        //                                        object );        
         return this.evaluator.evaluateCachedLeft( (VariableContextEntry) context,
-                                        object );        
-    }    
-    
-    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
-//        return this.evaluator.evaluate( this.declaration.getExtractor(),
-//                                        tuple.get( this.declaration ).getObject(), 
-//                                        ((VariableContextEntry) context).right );        
-        return this.evaluator.evaluateCachedRight((VariableContextEntry) context, 
-                                        tuple.get( this.declaration ).getObject());        
-    }  
+                                                  object );
+    }
+
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
+        //        return this.evaluator.evaluate( this.declaration.getExtractor(),
+        //                                        tuple.get( this.declaration ).getObject(), 
+        //                                        ((VariableContextEntry) context).right );        
+        return this.evaluator.evaluateCachedRight( (VariableContextEntry) context,
+                                                   tuple.get( this.declaration ).getObject() );
+    }
 
     public String toString() {
         return "[VariableRestriction declaration=" + this.declaration + "]";
@@ -102,9 +104,9 @@ public class VariableRestriction
                                                                                                                           other.requiredDeclarations );
     }
 
-    public boolean isAllowed(Extractor extractor,
-                             Object object,
-                             InternalWorkingMemory workingMemoiry) {
-        throw new UnsupportedOperationException("does not support method  call  isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+    public boolean isAllowed(final Extractor extractor,
+                             final Object object,
+                             final InternalWorkingMemory workingMemoiry) {
+        throw new UnsupportedOperationException( "does not support method  call  isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 }

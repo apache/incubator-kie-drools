@@ -1,6 +1,5 @@
 package org.drools.facttemplates;
 
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -40,7 +39,7 @@ public class FactTemplateObjectType
     private static final long serialVersionUID = 320;
 
     /** FieldTemplate. */
-    protected FactTemplate  factTemplate;
+    protected FactTemplate    factTemplate;
 
     // ------------------------------------------------------------
     // Constructors
@@ -66,7 +65,7 @@ public class FactTemplateObjectType
      * @return The Fact Template
      */
     public FactTemplate getFactTemplate() {
-        return this.factTemplate;        
+        return this.factTemplate;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,18 +84,17 @@ public class FactTemplateObjectType
      */
     public boolean matches(final Object object) {
         if ( object.getClass() == FactImpl.class ) {
-            return this.factTemplate.equals( ( (Fact) object ).getFactTemplate() );
+            return this.factTemplate.equals( ((Fact) object).getFactTemplate() );
         } else {
             return false;
         }
     }
 
-
     public ValueType getValueType() {
         return ValueType.FACTTEMPLATE_TYPE;
     }
 
-    public Object getShadow(Object fact) {
+    public Object getShadow(final Object fact) {
         // @TODO: shadow not implemented for templates yet
         return null;
     }
@@ -105,7 +103,7 @@ public class FactTemplateObjectType
         // @TODO: shadow not implemented for templates yet
         return false;
     }
-    
+
     public String toString() {
         return "[ClassObjectType class=" + this.factTemplate.getName() + "]";
     }
@@ -128,8 +126,8 @@ public class FactTemplateObjectType
             return false;
         }
 
-        FactTemplateObjectType other = ( FactTemplateObjectType ) object;
-        
+        final FactTemplateObjectType other = (FactTemplateObjectType) object;
+
         return this.factTemplate.equals( other.factTemplate );
     }
 

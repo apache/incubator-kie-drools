@@ -28,44 +28,44 @@ import org.drools.base.BaseClassFieldExtractor;
 public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtractor {
 
     private static final long serialVersionUID = 2031113412868487706L;
-    
-    public BaseByteClassFieldExtractor(Class clazz,
-                                       String fieldName) {
+
+    public BaseByteClassFieldExtractor(final Class clazz,
+                                       final String fieldName) {
         super( clazz,
                fieldName );
     }
 
-    public Object getValue(Object object) {
+    public Object getValue(final Object object) {
         return new Long( getByteValue( object ) );
     }
 
-    public boolean getBooleanValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to boolean not supported from byte");
+    public boolean getBooleanValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from byte" );
     }
 
     public abstract byte getByteValue(Object object);
 
-    public char getCharValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to char not supported from byte");
+    public char getCharValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to char not supported from byte" );
     }
 
-    public double getDoubleValue(Object object) {
+    public double getDoubleValue(final Object object) {
         return getByteValue( object );
     }
 
-    public float getFloatValue(Object object) {
+    public float getFloatValue(final Object object) {
         return getByteValue( object );
     }
 
-    public int getIntValue(Object object) {
+    public int getIntValue(final Object object) {
         return getByteValue( object );
     }
 
-    public long getLongValue(Object object) {
+    public long getLongValue(final Object object) {
         return getByteValue( object );
     }
 
-    public short getShortValue(Object object) {
+    public short getShortValue(final Object object) {
         return getByteValue( object );
     }
 

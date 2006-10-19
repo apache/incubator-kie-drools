@@ -111,7 +111,7 @@ public interface WorkingMemory
      * @return application data or null if nothing is set under this name
      */
     Object getGlobal(String name);
-    
+
     /**
      * Delegate used to resolve any global names not found in the global map.
      * @param globalResolver

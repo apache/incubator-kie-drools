@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -33,8 +34,8 @@ public interface InternalRuleBase
     /**
      * @return the id
      */
-    public String getId();  
-    
+    public String getId();
+
     public FactHandleFactory newFactHandleFactory();
 
     public Map getGlobals();

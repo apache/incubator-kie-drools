@@ -39,6 +39,5 @@ public interface FieldValue
     public double getDoubleValue();
 
     public boolean getBooleanValue();
-    
 
 }

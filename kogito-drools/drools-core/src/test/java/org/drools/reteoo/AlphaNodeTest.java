@@ -501,7 +501,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testUpdateSinkWithoutMemory() throws FactException,
-                                          IntrospectionException {
+                                             IntrospectionException {
         // An AlphaNode without memory should try and repropagate from its source
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );

@@ -1,7 +1,5 @@
 package org.drools.reteoo;
 
-import java.util.Map;
-
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
@@ -16,5 +14,5 @@ public interface ObjectSinkPropagator {
                                        InternalWorkingMemory workingMemory,
                                        boolean useHash);
 
-    public ObjectSink[] getSinks(); 
+    public ObjectSink[] getSinks();
 }

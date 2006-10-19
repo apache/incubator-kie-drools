@@ -22,7 +22,7 @@ public class Path {
 
     public Path() {
     }
-    
+
     public Path(final int id,
                 final int seat,
                 final String guestName) {

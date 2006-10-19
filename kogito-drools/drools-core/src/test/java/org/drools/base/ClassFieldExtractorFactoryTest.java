@@ -67,5 +67,5 @@ public abstract class ClassFieldExtractorFactoryTest extends TestCase {
         assertEquals( "hola",
                       ex.getValue( new BeanInherit() ) );
     }
-    
+
 }

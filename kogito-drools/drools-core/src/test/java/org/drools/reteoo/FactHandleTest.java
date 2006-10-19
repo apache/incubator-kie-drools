@@ -70,9 +70,9 @@ public class FactHandleTest extends TestCase {
                                                             "cheese" );
         assertEquals( "cheese".hashCode(),
                       f0.getObjectHashCode() );
-        
+
         assertEquals( 234,
-                      f0.hashCode() );        
+                      f0.hashCode() );
     }
 
     public void testToExternalForm() {

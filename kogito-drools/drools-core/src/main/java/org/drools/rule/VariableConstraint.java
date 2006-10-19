@@ -65,14 +65,14 @@ public class VariableConstraint
         return this.restriction.getEvaluator();
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
         return this.restriction.isAllowedCachedLeft( context,
                                                      object );
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
         return this.restriction.isAllowedCachedRight( tuple,
                                                       context );
     }
@@ -82,7 +82,7 @@ public class VariableConstraint
     }
 
     public ContextEntry getContextEntry() {
-        Class classType = this.fieldExtractor.getValueType().getClassType();
+        final Class classType = this.fieldExtractor.getValueType().getClassType();
         if ( classType.isPrimitive() ) {
             if ( classType == Boolean.TYPE ) {
                 return new BooleanVariableContextEntry( this.fieldExtractor,
@@ -129,8 +129,8 @@ public class VariableConstraint
         public Declaration    declaration;
         private ContextEntry  entry;
 
-        public VariableContextEntry(FieldExtractor extractor,
-                                    Declaration declaration) {
+        public VariableContextEntry(final FieldExtractor extractor,
+                                    final Declaration declaration) {
             this.extractor = extractor;
             this.declaration = declaration;
         }
@@ -139,7 +139,7 @@ public class VariableConstraint
             return this.entry;
         }
 
-        public void setNext(ContextEntry entry) {
+        public void setNext(final ContextEntry entry) {
             this.entry = entry;
         }
     }
@@ -148,17 +148,17 @@ public class VariableConstraint
         public Object left;
         public Object right;
 
-        public ObjectVariableContextEntry(FieldExtractor extractor,
-                                          Declaration declaration) {
+        public ObjectVariableContextEntry(final FieldExtractor extractor,
+                                          final Declaration declaration) {
             super( extractor,
                    declaration );
         }
 
-        public void updateFromTuple(ReteTuple tuple) {
+        public void updateFromTuple(final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalFactHandle handle) {
             this.right = this.extractor.getValue( handle.getObject() );
         }
     }
@@ -167,17 +167,17 @@ public class VariableConstraint
         public long left;
         public long right;
 
-        public LongVariableContextEntry(FieldExtractor extractor,
-                                        Declaration declaration) {
+        public LongVariableContextEntry(final FieldExtractor extractor,
+                                        final Declaration declaration) {
             super( extractor,
                    declaration );
         }
 
-        public void updateFromTuple(ReteTuple tuple) {
+        public void updateFromTuple(final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getLongValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalFactHandle handle) {
             this.right = this.extractor.getLongValue( handle.getObject() );
         }
     }
@@ -186,17 +186,17 @@ public class VariableConstraint
         public double left;
         public double right;
 
-        public DoubleVariableContextEntry(FieldExtractor extractor,
-                                          Declaration declaration) {
+        public DoubleVariableContextEntry(final FieldExtractor extractor,
+                                          final Declaration declaration) {
             super( extractor,
                    declaration );
         }
 
-        public void updateFromTuple(ReteTuple tuple) {
+        public void updateFromTuple(final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getDoubleValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalFactHandle handle) {
             this.right = this.extractor.getDoubleValue( handle.getObject() );
         }
     }
@@ -205,17 +205,17 @@ public class VariableConstraint
         public boolean left;
         public boolean right;
 
-        public BooleanVariableContextEntry(FieldExtractor extractor,
-                                           Declaration declaration) {
+        public BooleanVariableContextEntry(final FieldExtractor extractor,
+                                           final Declaration declaration) {
             super( extractor,
                    declaration );
         }
 
-        public void updateFromTuple(ReteTuple tuple) {
+        public void updateFromTuple(final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getBooleanValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalFactHandle handle) {
             this.right = this.extractor.getBooleanValue( handle.getObject() );
         }
     }

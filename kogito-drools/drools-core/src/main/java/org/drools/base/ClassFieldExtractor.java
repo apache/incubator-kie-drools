@@ -81,7 +81,7 @@ public class ClassFieldExtractor
     public ValueType getValueType() {
         return this.extractor.getValueType();
     }
-    
+
     public Class getExtractToClass() {
         return this.extractor.getExtractToClass();
     }
@@ -108,35 +108,35 @@ public class ClassFieldExtractor
         return this.extractor.getValueType() == other.getValueType() && this.extractor.getIndex() == other.getIndex();
     }
 
-    public boolean getBooleanValue(Object object) {
+    public boolean getBooleanValue(final Object object) {
         return this.extractor.getBooleanValue( object );
     }
 
-    public byte getByteValue(Object object) {
+    public byte getByteValue(final Object object) {
         return this.extractor.getByteValue( object );
     }
 
-    public char getCharValue(Object object) {
+    public char getCharValue(final Object object) {
         return this.extractor.getCharValue( object );
     }
 
-    public double getDoubleValue(Object object) {
+    public double getDoubleValue(final Object object) {
         return this.extractor.getDoubleValue( object );
     }
 
-    public float getFloatValue(Object object) {
+    public float getFloatValue(final Object object) {
         return this.extractor.getFloatValue( object );
     }
 
-    public int getIntValue(Object object) {
+    public int getIntValue(final Object object) {
         return this.extractor.getIntValue( object );
     }
 
-    public long getLongValue(Object object) {
+    public long getLongValue(final Object object) {
         return this.extractor.getLongValue( object );
     }
 
-    public short getShortValue(Object object) {
+    public short getShortValue(final Object object) {
         return this.extractor.getShortValue( object );
     }
 }

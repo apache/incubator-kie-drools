@@ -36,7 +36,7 @@ import org.drools.spi.Tuple;
 
 public class SchedulerTest extends DroolsTestCase {
     public void testScheduledActivation() throws Exception {
-        final RuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         final LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -97,7 +97,7 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testDoLoopScheduledActivation() throws Exception {
-        final RuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         final LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
 

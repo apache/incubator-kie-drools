@@ -24,31 +24,32 @@ import org.drools.spi.FieldValue;
 
 public class LiteralConstraint
     implements
-    AlphaNodeFieldConstraint{
+    AlphaNodeFieldConstraint {
 
     /**
      * 
      */
-    private static final long          serialVersionUID     = 320;
+    private static final long          serialVersionUID  = 320;
 
     private final FieldExtractor       extractor;
-    
+
     private final LiteralRestriction   restriction;
-    
+
     private final static Declaration[] emptyDeclarations = new Declaration[]{};
 
     public LiteralConstraint(final FieldExtractor extractor,
                              final Evaluator evaluator,
                              final FieldValue field) {
         this.extractor = extractor;
-        this.restriction = new LiteralRestriction(field, evaluator);
+        this.restriction = new LiteralRestriction( field,
+                                                   evaluator );
     }
-    
+
     public LiteralConstraint(final FieldExtractor extractor,
                              final LiteralRestriction restriction) {
         this.extractor = extractor;
         this.restriction = restriction;
-    }    
+    }
 
     public Evaluator getEvaluator() {
         return this.restriction.getEvaluator();
@@ -61,9 +62,9 @@ public class LiteralConstraint
     public FieldExtractor getFieldExtractor() {
         return this.extractor;
     }
-    
-    public Declaration[] getRDeclarations(){
-        return emptyDeclarations;
+
+    public Declaration[] getRDeclarations() {
+        return LiteralConstraint.emptyDeclarations;
     }
 
     /**
@@ -77,9 +78,9 @@ public class LiteralConstraint
 
     public boolean isAllowed(final Object object,
                              final InternalWorkingMemory workingMemory) {
-        return this.restriction.isAllowed(  this.extractor, 
-                                            object, 
-                                            workingMemory );
+        return this.restriction.isAllowed( this.extractor,
+                                           object,
+                                           workingMemory );
     }
 
     public String toString() {
@@ -104,5 +105,5 @@ public class LiteralConstraint
         final LiteralConstraint other = (LiteralConstraint) object;
 
         return this.extractor.equals( other.extractor ) && this.restriction.equals( other.restriction );
-    }  
+    }
 }

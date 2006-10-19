@@ -22,11 +22,13 @@ import org.drools.rule.ContextEntry;
 public interface BetaNodeFieldConstraint
     extends
     Constraint {
-    
-    public boolean isAllowedCachedLeft(ContextEntry context, Object object );
-    
-    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context);
-    
+
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object);
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context);
+
     public ContextEntry getContextEntry();
 
 }

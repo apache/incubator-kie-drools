@@ -1,6 +1,5 @@
 package org.drools.spi;
 
-import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 
 /*
@@ -22,6 +21,6 @@ import org.drools.rule.Declaration;
 public interface Constraint
     extends
     RuleComponent {
-    
+
     Declaration[] getRequiredDeclarations();
 }

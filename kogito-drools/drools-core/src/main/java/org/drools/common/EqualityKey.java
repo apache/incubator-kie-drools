@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -28,7 +29,9 @@ import java.util.List;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
-public class EqualityKey implements Serializable {
+public class EqualityKey
+    implements
+    Serializable {
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 

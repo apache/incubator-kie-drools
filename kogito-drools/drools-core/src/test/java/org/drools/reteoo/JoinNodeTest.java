@@ -27,11 +27,9 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
 
@@ -80,14 +78,14 @@ public class JoinNodeTest extends DroolsTestCase {
     }
 
     public void testAttach() throws Exception {
-        Field objectFfield =  ObjectSource.class.getDeclaredField( "sink" );
+        final Field objectFfield = ObjectSource.class.getDeclaredField( "sink" );
         objectFfield.setAccessible( true );
-        ObjectSinkPropagator objectSink = ( ObjectSinkPropagator ) objectFfield.get( this.objectSource );
+        ObjectSinkPropagator objectSink = (ObjectSinkPropagator) objectFfield.get( this.objectSource );
 
-        Field tupleField =  TupleSource.class.getDeclaredField( "sink" );
+        final Field tupleField = TupleSource.class.getDeclaredField( "sink" );
         tupleField.setAccessible( true );
-        TupleSinkPropagator tupleSink = ( TupleSinkPropagator ) tupleField.get( this.tupleSource );
-        
+        TupleSinkPropagator tupleSink = (TupleSinkPropagator) tupleField.get( this.tupleSource );
+
         assertEquals( 15,
                       this.node.getId() );
 
@@ -96,9 +94,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
         this.node.attach();
 
-        objectSink = ( ObjectSinkPropagator ) objectFfield.get( this.objectSource );
-        tupleSink = ( TupleSinkPropagator ) tupleField.get( this.tupleSource );
-        
+        objectSink = (ObjectSinkPropagator) objectFfield.get( this.objectSource );
+        tupleSink = (TupleSinkPropagator) tupleField.get( this.tupleSource );
+
         assertEquals( 1,
                       objectSink.getSinks().length );
 
@@ -106,7 +104,7 @@ public class JoinNodeTest extends DroolsTestCase {
                       tupleSink.getSinks().length );
 
         assertSame( this.node,
-                    objectSink.getSinks()[0]);
+                    objectSink.getSinks()[0] );
 
         assertSame( this.node,
                     tupleSink.getSinks()[0] );
@@ -156,9 +154,9 @@ public class JoinNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         assertEquals( 2,
-                      this.memory.getTupleMemory().size() );        
-        
-        Iterator it = this.memory.getTupleMemory().iterator();
+                      this.memory.getTupleMemory().size() );
+
+        final Iterator it = this.memory.getTupleMemory().iterator();
         assertEquals( tuple0,
                       it.next() );
         assertEquals( tuple1,
@@ -220,36 +218,43 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.assertTuple( tuple1,
                                this.context,
                                this.workingMemory );
-        
-        assertEquals( 1, this.sink.getAsserted().size() );
 
-        assertEquals(  new ReteTuple( tuple1, f0), ((Object[]) this.sink.getAsserted().get( 0 ))[0]);
-        
-        
+        assertEquals( 1,
+                      this.sink.getAsserted().size() );
+
+        assertEquals( new ReteTuple( tuple1,
+                                     f0 ),
+                      ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
+
         final DefaultFactHandle f2 = new DefaultFactHandle( 2,
                                                             "cheese" );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,
                                this.workingMemory );
-        
-        assertEquals( 2, this.sink.getAsserted().size() );  
-        assertEquals(  new ReteTuple( tuple2, f0), ((Object[]) this.sink.getAsserted().get( 1 ))[0]);
 
-        
+        assertEquals( 2,
+                      this.sink.getAsserted().size() );
+        assertEquals( new ReteTuple( tuple2,
+                                     f0 ),
+                      ((Object[]) this.sink.getAsserted().get( 1 ))[0] );
+
         final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory.assertObject( "test2" );
         this.node.assertObject( f3,
                                 this.context,
                                 this.workingMemory );
-        
-        assertEquals( 4, this.sink.getAsserted().size() );                 
-        
-        List tuples = new  ArrayList();
+
+        assertEquals( 4,
+                      this.sink.getAsserted().size() );
+
+        final List tuples = new ArrayList();
         tuples.add( ((Object[]) this.sink.getAsserted().get( 2 ))[0] );
         tuples.add( ((Object[]) this.sink.getAsserted().get( 3 ))[0] );
-        
-        assertTrue( tuples.contains(  new ReteTuple( tuple1, f3) ) );
-        assertTrue( tuples.contains(  new ReteTuple( tuple2, f3) ) );     
+
+        assertTrue( tuples.contains( new ReteTuple( tuple1,
+                                                    f3 ) ) );
+        assertTrue( tuples.contains( new ReteTuple( tuple2,
+                                                    f3 ) ) );
     }
 
     /**
@@ -290,41 +295,43 @@ public class JoinNodeTest extends DroolsTestCase {
         assertLength( 6,
                       this.sink.getAsserted() );
 
-        
         // Double check the item is in memory
-        BetaMemory memory = ( BetaMemory ) this.workingMemory.getNodeMemory( this.node );
+        final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
         assertTrue( memory.getObjectMemory().contains( f0 ) );
-        
+
         // Retract an object, check propagations  and memory
         this.node.retractObject( f0,
                                  this.context,
                                  this.workingMemory );
         assertLength( 2,
                       this.sink.getRetracted() );
-        
-        List tuples = new  ArrayList();
+
+        List tuples = new ArrayList();
         tuples.add( ((Object[]) this.sink.getRetracted().get( 0 ))[0] );
         tuples.add( ((Object[]) this.sink.getRetracted().get( 1 ))[0] );
-        
-        assertTrue( tuples.contains(  new ReteTuple( tuple1, f0) ) );
-        assertTrue( tuples.contains(  new ReteTuple( tuple1, f0) ) );
-          
+
+        assertTrue( tuples.contains( new ReteTuple( tuple1,
+                                                    f0 ) ) );
+        assertTrue( tuples.contains( new ReteTuple( tuple1,
+                                                    f0 ) ) );
+
         // Now check the item  is no longer in memory
         assertFalse( memory.getObjectMemory().contains( f0 ) );
-
 
         this.node.retractTuple( tuple2,
                                 this.context,
                                 this.workingMemory );
         assertEquals( 4,
-                      this.sink.getRetracted().size() );     
-      
-        tuples = new  ArrayList();
+                      this.sink.getRetracted().size() );
+
+        tuples = new ArrayList();
         tuples.add( ((Object[]) this.sink.getRetracted().get( 2 ))[0] );
         tuples.add( ((Object[]) this.sink.getRetracted().get( 3 ))[0] );
-      
-        assertTrue( tuples.contains(  new ReteTuple( tuple2, f3) ) );
-        assertTrue( tuples.contains(  new ReteTuple( tuple2, f4) ) );             
+
+        assertTrue( tuples.contains( new ReteTuple( tuple2,
+                                                    f3 ) ) );
+        assertTrue( tuples.contains( new ReteTuple( tuple2,
+                                                    f4 ) ) );
     }
 
     public void testConstraintPropagations() throws Exception {
@@ -346,13 +353,13 @@ public class JoinNodeTest extends DroolsTestCase {
         // Should be no assertions
         assertLength( 0,
                       this.sink.getAsserted() );
-        
+
         this.node.retractObject( f0,
                                  this.context,
                                  this.workingMemory );
         // We still propagate all joins for a retract. Later we might apply tests first.
         assertLength( 1,
-                      this.sink.getRetracted() );                        
+                      this.sink.getRetracted() );
     }
 
     public void testUpdateSink() {
@@ -396,7 +403,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         joinNode.updateSink( sink2,
                              this.context,
-                             workingMemory);
+                             workingMemory );
 
         assertLength( 1,
                       sink2.getAsserted() );

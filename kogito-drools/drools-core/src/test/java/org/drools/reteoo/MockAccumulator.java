@@ -32,21 +32,21 @@ import org.drools.spi.Tuple;
 public class MockAccumulator
     implements
     Accumulator {
-    
+
     private static final long serialVersionUID = 8959310397185256783L;
-    
-    private Tuple leftTuple = null;
-    private List      matchingObjects = Collections.EMPTY_LIST;
-    private WorkingMemory workingMemory = null;
+
+    private Tuple             leftTuple        = null;
+    private List              matchingObjects  = Collections.EMPTY_LIST;
+    private WorkingMemory     workingMemory    = null;
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.Accumulator#accumulate(org.drools.reteoo.ReteTuple, java.util.List, org.drools.WorkingMemory)
      */
-    public Object accumulate(Tuple leftTuple,
-                             List matchingObjects,
-                             Declaration[] declarations,
-                             Declaration[] inner,
-                             WorkingMemory workingMemory) {
+    public Object accumulate(final Tuple leftTuple,
+                             final List matchingObjects,
+                             final Declaration[] declarations,
+                             final Declaration[] inner,
+                             final WorkingMemory workingMemory) {
         this.leftTuple = leftTuple;
         this.matchingObjects = matchingObjects;
         this.workingMemory = workingMemory;
@@ -54,15 +54,15 @@ public class MockAccumulator
     }
 
     public Tuple getLeftTuple() {
-        return leftTuple;
+        return this.leftTuple;
     }
 
     public List getMatchingObjects() {
-        return matchingObjects;
+        return this.matchingObjects;
     }
 
     public WorkingMemory getWorkingMemory() {
-        return workingMemory;
+        return this.workingMemory;
     }
 
 }

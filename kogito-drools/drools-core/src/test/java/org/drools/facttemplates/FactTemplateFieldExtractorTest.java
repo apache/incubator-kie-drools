@@ -2,8 +2,6 @@ package org.drools.facttemplates;
 
 import junit.framework.TestCase;
 
-import org.drools.Cheese;
-import org.drools.base.ClassObjectType;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
@@ -11,25 +9,25 @@ import org.drools.spi.Extractor;
 
 public class FactTemplateFieldExtractorTest extends TestCase {
     public void testExtractor() {
-        Package pkg = new Package( "org.store" );
+        final Package pkg = new Package( "org.store" );
 
-        FieldTemplate cheeseName = new FieldTemplateImpl( "name",
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
                                                           String.class );
-        FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
                                                            1,
                                                            Integer.class );
-        FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese = new FactTemplateImpl( pkg,
+        final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
+        final FactTemplate cheese = new FactTemplateImpl( pkg,
                                                     "Cheese",
                                                     fields );
 
-        Extractor extractName = new FactTemplateFieldExtractor( cheese,
+        final Extractor extractName = new FactTemplateFieldExtractor( cheese,
                                                                 0 );
-        Extractor extractPrice = new FactTemplateFieldExtractor( cheese,
+        final Extractor extractPrice = new FactTemplateFieldExtractor( cheese,
                                                                  1 );
 
-        Fact stilton = cheese.createFact( 10 );
+        final Fact stilton = cheese.createFact( 10 );
         stilton.setFieldValue( "name",
                                "stilton" );
         stilton.setFieldValue( "price",
@@ -41,7 +39,7 @@ public class FactTemplateFieldExtractorTest extends TestCase {
         assertEquals( new Integer( 200 ),
                       extractPrice.getValue( stilton ) );
 
-        Fact brie = cheese.createFact( 12 );
+        final Fact brie = cheese.createFact( 12 );
         brie.setFieldValue( "name",
                             "brie" );
         brie.setFieldValue( "price",
@@ -55,29 +53,30 @@ public class FactTemplateFieldExtractorTest extends TestCase {
     }
 
     public void testDeclaration() {
-        Package pkg = new Package( "org.store" );
+        final Package pkg = new Package( "org.store" );
 
-        FieldTemplate cheeseName = new FieldTemplateImpl( "name",
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
                                                           String.class );
-        FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
                                                            1,
                                                            Integer.class );
-        FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese = new FactTemplateImpl( pkg,
+        final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
+        final FactTemplate cheese = new FactTemplateImpl( pkg,
                                                     "Cheese",
                                                     fields );
 
-        Extractor extractName = new FactTemplateFieldExtractor( cheese,
+        final Extractor extractName = new FactTemplateFieldExtractor( cheese,
                                                                 0 );
 
-        Column column = new  Column(0, new FactTemplateObjectType( cheese ) );
-        
+        final Column column = new Column( 0,
+                                    new FactTemplateObjectType( cheese ) );
+
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractName,
                                                          column );
 
-        Fact brie = cheese.createFact( 12 );
+        final Fact brie = cheese.createFact( 12 );
         brie.setFieldValue( "name",
                             "brie" );
         brie.setFieldValue( "price",

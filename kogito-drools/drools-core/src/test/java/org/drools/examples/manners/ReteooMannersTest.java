@@ -34,37 +34,38 @@ public class ReteooMannersTest extends BaseMannersTest {
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
         ruleBase.addPackage( this.pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();        
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        DefaultAgendaEventListener listener =new DefaultAgendaEventListener() {
-            private int counter  = 0;
-//           public void activationCreated(ActivationCreatedEvent event) {
-//                super.activationCreated( event );
-//                System.out.println( event );
-//            }
-//           
-//           public void activationCancelled(ActivationCancelledEvent event) {
-//               super.activationCancelled( event );
-//               System.out.println( event );
-//           }
-//           
-//           public void beforeActivationFired(BeforeActivationFiredEvent event) {
-//               super.beforeActivationFired( event );
-//               System.out.println( event );
-//           }           
-           
-           public void afterActivationFired(AfterActivationFiredEvent event) {
-               counter++;
-               //super.afterActivationFired( event );
-               //System.out.println( event );
-           }
-           
-           public String toString()  {
-               return  "fired :  " + this.counter;
-           }
-           
+        final DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
+            private int counter = 0;
+
+            //           public void activationCreated(ActivationCreatedEvent event) {
+            //                super.activationCreated( event );
+            //                System.out.println( event );
+            //            }
+            //           
+            //           public void activationCancelled(ActivationCancelledEvent event) {
+            //               super.activationCancelled( event );
+            //               System.out.println( event );
+            //           }
+            //           
+            //           public void beforeActivationFired(BeforeActivationFiredEvent event) {
+            //               super.beforeActivationFired( event );
+            //               System.out.println( event );
+            //           }           
+
+            public void afterActivationFired(AfterActivationFiredEvent event) {
+                this.counter++;
+                //super.afterActivationFired( event );
+                //System.out.println( event );
+            }
+
+            public String toString() {
+                return "fired :  " + this.counter;
+            }
+
         };
-        
+
         //workingMemory.addEventListener(listener );
         final InputStream is = getClass().getResourceAsStream( "/manners128.dat" );
         final List list = getInputObjects( is );
@@ -78,16 +79,16 @@ public class ReteooMannersTest extends BaseMannersTest {
         final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
         System.err.println( System.currentTimeMillis() - start );
-        
+
         //System.out.println( listener );
-        
-//        while  (1==1){
-//            Thread.yield();
-//            Thread.sleep( 2000 );
-//        }           
-        
-        MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
-        visitor.visit( ruleBase );               
+
+        //        while  (1==1){
+        //            Thread.yield();
+        //            Thread.sleep( 2000 );
+        //        }           
+
+        final MemoryVisitor visitor = new MemoryVisitor( (InternalWorkingMemory) workingMemory );
+        visitor.visit( ruleBase );
 
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
         //        

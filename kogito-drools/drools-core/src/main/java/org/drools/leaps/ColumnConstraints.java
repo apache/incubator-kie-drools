@@ -32,16 +32,18 @@ import org.drools.spi.Tuple;
  * @author Alexander Bagerman
  * 
  */
-public class ColumnConstraints implements Serializable {
-    private Object                  classType;
+public class ColumnConstraints
+    implements
+    Serializable {
+    private Object                           classType;
 
     private final AlphaNodeFieldConstraint[] alphaConstraints;
 
-    private final boolean           alphaPresent;
+    private final boolean                    alphaPresent;
 
-    private final BetaConstraints    beta;
+    private final BetaConstraints            beta;
 
-    private final boolean           betaPresent;
+    private final boolean                    betaPresent;
 
     public ColumnConstraints(final Column column,
                              final List alpha,
@@ -110,12 +112,12 @@ public class ColumnConstraints implements Serializable {
     protected final boolean isAlphaPresent() {
         return this.alphaPresent;
     }
-    
+
     protected AlphaNodeFieldConstraint[] getAlphaContraints() {
         return this.alphaConstraints;
     }
-    
+
     protected AlphaNodeFieldConstraint[] getBetaContraints() {
-        return this.beta.getConstraints( );
+        return this.beta.getConstraints();
     }
 }

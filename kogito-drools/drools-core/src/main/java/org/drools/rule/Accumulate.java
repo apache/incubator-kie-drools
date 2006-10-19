@@ -43,7 +43,7 @@ public class Accumulate extends ConditionalElement {
               resultColumn,
               new Declaration[0],
               new Declaration[0],
-              null);
+              null );
     }
 
     public Accumulate(final Column sourceColumn,
@@ -72,10 +72,10 @@ public class Accumulate extends ConditionalElement {
     }
 
     public Accumulator getAccumulator() {
-        return accumulator;
+        return this.accumulator;
     }
 
-    public void setAccumulator(Accumulator accumulator) {
+    public void setAccumulator(final Accumulator accumulator) {
         this.accumulator = accumulator;
     }
 

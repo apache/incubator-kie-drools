@@ -16,7 +16,6 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -28,16 +27,20 @@ import java.util.Comparator;
  * 
  */
 
-class RecordComparator implements Comparator, Serializable {
+class RecordComparator
+    implements
+    Comparator,
+    Serializable {
     private Comparator objectComparator;
 
-    RecordComparator(Comparator objectComparator) {
+    RecordComparator(final Comparator objectComparator) {
         this.objectComparator = objectComparator;
     }
 
-    public int compare( Object record1, Object record2 ) {
-        return this.objectComparator.compare( ( (TableRecord) record1 ).object,
-                                              ( (TableRecord) record2 ).object );
+    public int compare(final Object record1,
+                       final Object record2) {
+        return this.objectComparator.compare( ((TableRecord) record1).object,
+                                              ((TableRecord) record2).object );
     }
 
 }

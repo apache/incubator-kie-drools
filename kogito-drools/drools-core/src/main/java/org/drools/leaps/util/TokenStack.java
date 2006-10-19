@@ -31,11 +31,13 @@ import org.drools.util.PrimitiveLongMap;
  * 
  */
 
-public class TokenStack implements Serializable {
+public class TokenStack
+    implements
+    Serializable {
 
     protected TableRecord          tailRecord = null;
 
-    private final PrimitiveLongMap map        = new PrimitiveLongMap( );
+    private final PrimitiveLongMap map        = new PrimitiveLongMap();
 
     public TokenStack() {
 
@@ -46,29 +48,27 @@ public class TokenStack implements Serializable {
     }
 
     public Object peek() {
-        if (this.tailRecord != null) {
+        if ( this.tailRecord != null ) {
             return this.tailRecord.object;
-        }
-        else {
-            throw new EmptyStackException( );
+        } else {
+            throw new EmptyStackException();
         }
     }
 
     public Object pop() {
-        if (this.tailRecord != null) {
+        if ( this.tailRecord != null ) {
             final Object ret = this.tailRecord.object;
             final TableRecord buf = this.tailRecord;
             this.tailRecord = buf.left;
-            if (buf.left != null) {
+            if ( buf.left != null ) {
                 this.tailRecord.right = null;
             }
             buf.left = null;
 
-            this.map.remove( ( (Token) ret ).getDominantFactHandle( ).getId( ) );
+            this.map.remove( ((Token) ret).getDominantFactHandle().getId() );
             return ret;
-        }
-        else {
-            throw new EmptyStackException( );
+        } else {
+            throw new EmptyStackException();
         }
     }
 
@@ -78,18 +78,18 @@ public class TokenStack implements Serializable {
      * @param object
      *            to remove from the table
      */
-    public void remove( final long factId ) {
-        if (this.tailRecord != null) {
+    public void remove(final long factId) {
+        if ( this.tailRecord != null ) {
             final TableRecord record = (TableRecord) this.map.remove( factId );
 
-            if (record != null) {
-                if (record == this.tailRecord) {
+            if ( record != null ) {
+                if ( record == this.tailRecord ) {
                     this.tailRecord = record.left;
                 }
-                if (record.left != null) {
+                if ( record.left != null ) {
                     record.left.right = record.right;
                 }
-                if (record.right != null) {
+                if ( record.right != null ) {
                     record.right.left = record.left;
                 }
                 record.left = null;
@@ -98,24 +98,25 @@ public class TokenStack implements Serializable {
         }
     }
 
-    public Object push( final Object item ) {
+    public Object push(final Object item) {
         final TableRecord record = new TableRecord( item );
-        if (this.tailRecord != null) {
+        if ( this.tailRecord != null ) {
             this.tailRecord.right = record;
             record.left = this.tailRecord;
         }
         this.tailRecord = record;
 
-        this.map.put( ( (Token) item ).getDominantFactHandle( ).getId( ), record );
+        this.map.put( ((Token) item).getDominantFactHandle().getId(),
+                      record );
         return item;
     }
 
     public Iterator iterator() {
-        return new Iterator( ) {
-            Iterator it = TokenStack.this.map.values( ).iterator( );
+        return new Iterator() {
+            Iterator it = TokenStack.this.map.values().iterator();
 
             public boolean hasNext() {
-                return this.it.hasNext( );
+                return this.it.hasNext();
             }
 
             public void remove() {
@@ -123,7 +124,7 @@ public class TokenStack implements Serializable {
             }
 
             public Object next() {
-                return this.it.next( );
+                return this.it.next();
             }
         };
     }

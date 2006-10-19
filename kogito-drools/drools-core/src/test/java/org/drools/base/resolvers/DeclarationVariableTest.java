@@ -16,21 +16,21 @@ import org.drools.spi.Tuple;
 
 public class DeclarationVariableTest extends TestCase {
     public void testDeclaration() throws Exception {
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        Package pkg = new Package( "org.test" );
+        final RuleBase rb = RuleBaseFactory.newRuleBase();
+        final Package pkg = new Package( "org.test" );
         rb.addPackage( pkg );
-        WorkingMemory wm = rb.newWorkingMemory();
+        final WorkingMemory wm = rb.newWorkingMemory();
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ),
                                     "stilton" );
-        DeclarationVariable declaration = new DeclarationVariable( column.getDeclaration() );
+        final DeclarationVariable declaration = new DeclarationVariable( column.getDeclaration() );
 
-        Cheese stilton = new Cheese( "stilton",
+        final Cheese stilton = new Cheese( "stilton",
                                      20 );
-        FactHandle stiltonHandle = wm.assertObject( stilton );
+        final FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        final Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
         assertEquals( stilton,
                       declaration.getValue( tuple,
                                             wm ) );

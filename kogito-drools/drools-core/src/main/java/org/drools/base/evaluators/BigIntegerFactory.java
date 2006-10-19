@@ -26,20 +26,22 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 
-public class BigIntegerFactory implements EvaluatorFactory {
+public class BigIntegerFactory
+    implements
+    EvaluatorFactory {
 
-    private static final long serialVersionUID = 4180922947425495749L;
-    private static EvaluatorFactory INSTANCE = new BigIntegerFactory();
-    
+    private static final long       serialVersionUID = 4180922947425495749L;
+    private static EvaluatorFactory INSTANCE         = new BigIntegerFactory();
+
     private BigIntegerFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new BigIntegerFactory();
+        if ( BigIntegerFactory.INSTANCE == null ) {
+            BigIntegerFactory.INSTANCE = new BigIntegerFactory();
         }
-        return INSTANCE;
+        return BigIntegerFactory.INSTANCE;
     }
 
     public Evaluator getEvaluator(final Operator operator) {
@@ -55,7 +57,7 @@ public class BigIntegerFactory implements EvaluatorFactory {
             return BigIntegerGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return BigIntegerGreaterOrEqualEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for BigIntegerEvaluator" );
         }
     }
@@ -75,8 +77,8 @@ public class BigIntegerFactory implements EvaluatorFactory {
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
-            Object value1 = extractor.getValue( object1 );
-            Object value2 = object2.getValue();
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -86,26 +88,26 @@ public class BigIntegerFactory implements EvaluatorFactory {
         public boolean evaluate(final FieldValue object1,
                                 final Extractor extractor,
                                 final Object object2) {
-            Object value1 = object1.getValue();
-            Object value2 = extractor.getValue( object2 );
+            final Object value1 = object1.getValue();
+            final Object value2 = extractor.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
             return value1.equals( value2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
-            Object value = context.declaration.getExtractor().getValue( left );
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right == null;
             }
             return value.equals( ((ObjectVariableContextEntry) context).right );
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
-            Object value = context.extractor.getValue( right );
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
+            final Object value = context.extractor.getValue( right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value == null;
             }
@@ -132,8 +134,8 @@ public class BigIntegerFactory implements EvaluatorFactory {
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
-            Object value1 = extractor.getValue( object1 );
-            Object value2 = object2.getValue();
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -143,26 +145,26 @@ public class BigIntegerFactory implements EvaluatorFactory {
         public boolean evaluate(final FieldValue object1,
                                 final Extractor extractor,
                                 final Object object2) {
-            Object value1 = object1.getValue();
-            Object value2 = extractor.getValue( object2 );
+            final Object value1 = object1.getValue();
+            final Object value2 = extractor.getValue( object2 );
             if ( value1 == null ) {
                 return value2 != null;
             }
             return !value1.equals( value2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
-            Object value = context.declaration.getExtractor().getValue( left );
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right != null;
             }
             return !value.equals( ((ObjectVariableContextEntry) context).right );
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
-            Object value = context.extractor.getValue( right );
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
+            final Object value = context.extractor.getValue( right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value != null;
             }
@@ -200,14 +202,14 @@ public class BigIntegerFactory implements EvaluatorFactory {
             return comp.compareTo( extractor.getValue( object2 ) ) < 0;
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             final BigInteger comp = (BigInteger) context.declaration.getExtractor().getValue( left );
             return comp.compareTo( ((ObjectVariableContextEntry) context).right ) < 0;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).left;
             return comp.compareTo( context.extractor.getValue( right ) ) < 0;
         }
@@ -243,14 +245,14 @@ public class BigIntegerFactory implements EvaluatorFactory {
             return comp.compareTo( extractor.getValue( object2 ) ) <= 0;
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             final BigInteger comp = (BigInteger) context.declaration.getExtractor().getValue( left );
             return comp.compareTo( ((ObjectVariableContextEntry) context).right ) <= 0;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).left;
             return comp.compareTo( context.extractor.getValue( right ) ) <= 0;
         }
@@ -286,14 +288,14 @@ public class BigIntegerFactory implements EvaluatorFactory {
             return comp.compareTo( extractor.getValue( object2 ) ) > 0;
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             final BigInteger comp = (BigInteger) context.declaration.getExtractor().getValue( left );
             return comp.compareTo( ((ObjectVariableContextEntry) context).right ) > 0;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).left;
             return comp.compareTo( context.extractor.getValue( right ) ) > 0;
         }
@@ -329,14 +331,14 @@ public class BigIntegerFactory implements EvaluatorFactory {
             return comp.compareTo( extractor.getValue( object2 ) ) >= 0;
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             final BigInteger comp = (BigInteger) context.declaration.getExtractor().getValue( left );
             return comp.compareTo( ((ObjectVariableContextEntry) context).right ) >= 0;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             final BigInteger comp = (BigInteger) ((ObjectVariableContextEntry) context).left;
             return comp.compareTo( context.extractor.getValue( right ) ) >= 0;
         }

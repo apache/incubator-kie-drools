@@ -49,8 +49,11 @@ class CompositeConflictResolver extends AbstractConflictResolver {
     public final Comparator getFactConflictResolver() {
         return new FactConflictResolver();
     }
-    
-    class FactConflictResolver implements Comparator, Serializable {
+
+    class FactConflictResolver
+        implements
+        Comparator,
+        Serializable {
         public int compare(final Object o1,
                            final Object o2) {
             int ret = 0;
@@ -61,14 +64,17 @@ class CompositeConflictResolver extends AbstractConflictResolver {
                 }
             }
             return ret;
-        }        
+        }
     }
 
     public final Comparator getRuleConflictResolver() {
         return new RuleConflictResolver();
     }
-    
-    class RuleConflictResolver implements Comparator, Serializable {
+
+    class RuleConflictResolver
+        implements
+        Comparator,
+        Serializable {
         public int compare(final Object o1,
                            final Object o2) {
             int ret = 0;
@@ -79,7 +85,7 @@ class CompositeConflictResolver extends AbstractConflictResolver {
                 }
             }
             return ret;
-        }        
+        }
     }
-    
+
 }

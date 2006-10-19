@@ -49,8 +49,8 @@ public class DefaultKnowledgeHelper
         this.tuple = agendaItem.getTuple();
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }
-    
-    public void setActivation(Activation agendaItem) {
+
+    public void setActivation(final Activation agendaItem) {
         this.rule = agendaItem.getRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();

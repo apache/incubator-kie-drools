@@ -47,31 +47,31 @@ public class BooleanFieldImpl
     }
 
     public byte getByteValue() {
-        throw new RuntimeDroolsException( "Conversion to byte not supported for type boolean");
+        throw new RuntimeDroolsException( "Conversion to byte not supported for type boolean" );
     }
 
     public char getCharValue() {
-        throw new RuntimeDroolsException( "Conversion to char not supported for type boolean");
+        throw new RuntimeDroolsException( "Conversion to char not supported for type boolean" );
     }
 
     public double getDoubleValue() {
-        throw new RuntimeDroolsException( "Conversion to double not supported for type boolean");
+        throw new RuntimeDroolsException( "Conversion to double not supported for type boolean" );
     }
 
     public float getFloatValue() {
-        throw new RuntimeDroolsException( "Conversion to float not supported for type boolean");
+        throw new RuntimeDroolsException( "Conversion to float not supported for type boolean" );
     }
 
     public int getIntValue() {
-        throw new RuntimeDroolsException( "Conversion to int not supported for type boolean");
+        throw new RuntimeDroolsException( "Conversion to int not supported for type boolean" );
     }
 
     public long getLongValue() {
-        throw new RuntimeDroolsException( "Conversion to long not supported for type boolean");
+        throw new RuntimeDroolsException( "Conversion to long not supported for type boolean" );
     }
 
     public short getShortValue() {
-        throw new RuntimeDroolsException( "Conversion to short not supported for type boolean");
+        throw new RuntimeDroolsException( "Conversion to short not supported for type boolean" );
     }
 
     public boolean equals(final Object object) {

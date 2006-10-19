@@ -48,10 +48,10 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       objectTypeNode.getId() );
 
-        Field field =  Rete.class.getDeclaredField( "objectTypeNodes" );
+        final Field field = Rete.class.getDeclaredField( "objectTypeNodes" );
         field.setAccessible( true );
-        ObjectHashMap map = ( ObjectHashMap ) field.get( source );
-        
+        final ObjectHashMap map = (ObjectHashMap) field.get( source );
+
         assertEquals( 0,
                       map.size() );
 
@@ -70,7 +70,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        ReteooRuleBase ruleBase  = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
@@ -259,20 +259,20 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       sink2.getAsserted().size() );
 
     }
-    
+
     public void testAssertObjectWithShadowEnabled() throws Exception {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        ReteooRuleBase ruleBase  = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
         final Rete source = ruleBase.getRete();
 
-        Class shadowClass = ShadowProxyFactory.getProxy( Cheese.class );
+        final Class shadowClass = ShadowProxyFactory.getProxy( Cheese.class );
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Cheese.class,
                                                                                        shadowClass ),
@@ -281,7 +281,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
-        final Object cheese = new Cheese("muzzarela", 5);
+        final Object cheese = new Cheese( "muzzarela",
+                                          5 );
 
         final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.assertObject( cheese );
 
@@ -304,7 +305,5 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );
     }
-
-    
 
 }

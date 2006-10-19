@@ -16,48 +16,55 @@ import org.drools.spi.ObjectType;
 public class ColumnTest extends TestCase {
 
     public void testDeclarationsObjectType() throws Exception {
-        ObjectType type = new ClassObjectType(Cheese.class);
-        Column col = new Column(0, type, "foo");
-        Declaration dec = col.getDeclaration();
-        Extractor ext = dec.getExtractor();
-        assertEquals(Cheese.class, ext.getExtractToClass());
-        
-        Cheese stilton = new Cheese("stilton", 42);
-        
-        assertEquals(stilton, dec.getValue( stilton ));
-        
-        
-        
+        final ObjectType type = new ClassObjectType( Cheese.class );
+        final Column col = new Column( 0,
+                                 type,
+                                 "foo" );
+        final Declaration dec = col.getDeclaration();
+        final Extractor ext = dec.getExtractor();
+        assertEquals( Cheese.class,
+                      ext.getExtractToClass() );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                     42 );
+
+        assertEquals( stilton,
+                      dec.getValue( stilton ) );
+
     }
-    
+
     public void testDeclarationsFactTemplate() throws Exception {
-        
-        
-        Package pkg = new Package( "org.store" );
-        FieldTemplate cheeseName = new FieldTemplateImpl( "name",
+
+        final Package pkg = new Package( "org.store" );
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
                                                           String.class );
-        FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
                                                            1,
                                                            Integer.class );
-        FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese = new FactTemplateImpl( pkg,
+        final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
+        final FactTemplate cheese = new FactTemplateImpl( pkg,
                                                     "Cheese",
                                                     fields );
-        
-        ObjectType type = new FactTemplateObjectType(cheese);
-        
-        Column col = new Column(0, type, "foo");
-        Declaration dec = col.getDeclaration();
-        Extractor ext = dec.getExtractor();
-        assertEquals(Fact.class, ext.getExtractToClass());
-        
-        Fact stilton = cheese.createFact( 10 );
-        stilton.setFieldValue( "name", "stilton" );
-        stilton.setFieldValue( "price", new Integer( 200 ) );        
-        
-        assertEquals(stilton, dec.getValue( stilton ));
+
+        final ObjectType type = new FactTemplateObjectType( cheese );
+
+        final Column col = new Column( 0,
+                                 type,
+                                 "foo" );
+        final Declaration dec = col.getDeclaration();
+        final Extractor ext = dec.getExtractor();
+        assertEquals( Fact.class,
+                      ext.getExtractToClass() );
+
+        final Fact stilton = cheese.createFact( 10 );
+        stilton.setFieldValue( "name",
+                               "stilton" );
+        stilton.setFieldValue( "price",
+                               new Integer( 200 ) );
+
+        assertEquals( stilton,
+                      dec.getValue( stilton ) );
     }
-    
-    
+
 }

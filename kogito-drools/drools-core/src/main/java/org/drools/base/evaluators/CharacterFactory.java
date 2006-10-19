@@ -36,10 +36,10 @@ public class CharacterFactory
     }
 
     public static EvaluatorFactory getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new CharacterFactory();
+        if ( CharacterFactory.INSTANCE == null ) {
+            CharacterFactory.INSTANCE = new CharacterFactory();
         }
-        return INSTANCE;
+        return CharacterFactory.INSTANCE;
     }
 
     public Evaluator getEvaluator(final Operator operator) {
@@ -84,13 +84,13 @@ public class CharacterFactory
             return object1.getCharValue() == extractor.getCharValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getCharValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left == context.extractor.getCharValue( right );
         }
 
@@ -123,13 +123,13 @@ public class CharacterFactory
             return object1.getCharValue() != extractor.getCharValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getCharValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left != context.extractor.getCharValue( right );
         }
 
@@ -162,13 +162,13 @@ public class CharacterFactory
             return object1.getCharValue() < extractor.getCharValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getCharValue( left ) < ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left < context.extractor.getCharValue( right );
         }
 
@@ -201,13 +201,13 @@ public class CharacterFactory
             return object1.getCharValue() <= extractor.getCharValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getCharValue( left ) <= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left <= context.extractor.getCharValue( right );
         }
 
@@ -240,13 +240,13 @@ public class CharacterFactory
             return object1.getCharValue() > extractor.getCharValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getCharValue( left ) > ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left > context.extractor.getCharValue( right );
         }
 
@@ -279,13 +279,13 @@ public class CharacterFactory
             return object1.getCharValue() >= extractor.getCharValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getCharValue( left ) >= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left >= context.extractor.getCharValue( right );
         }
 

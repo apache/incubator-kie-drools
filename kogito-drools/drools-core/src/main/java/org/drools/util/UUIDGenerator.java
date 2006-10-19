@@ -1,4 +1,3 @@
-
 /* JUG Java Uuid Generator
  *
  * Copyright (c) 2002- Tatu Saloranta, tatu.saloranta@iki.fi
@@ -26,45 +25,43 @@ import java.util.Random;
  * 
  * @see org.safehaus.jug
  */
-public final class UUIDGenerator
-{
+public final class UUIDGenerator {
     private final static UUIDGenerator sSingleton = new UUIDGenerator();
 
     /**
      * Random-generator, used by various UUID-generation methods:
      */
-    private Random mRnd = null;
+    private Random                     mRnd       = null;
 
     /**
      * MD5 hasher for name-based digests:
      */
-    private MessageDigest mHasher = null;
+    private MessageDigest              mHasher    = null;
 
     /*
-    /////////////////////////////////////////////////////
-    // Life-cycle
-    /////////////////////////////////////////////////////
+     /////////////////////////////////////////////////////
+     // Life-cycle
+     /////////////////////////////////////////////////////
      */
 
     /**
      * Constructor is private to enforce singleton access.
      */
-    private UUIDGenerator() { }
+    private UUIDGenerator() {
+    }
 
     /**
      * Method used for accessing the singleton generator instance.
      */
-    public static UUIDGenerator getInstance()
-    {
-        return sSingleton;
+    public static UUIDGenerator getInstance() {
+        return UUIDGenerator.sSingleton;
     }
-    
-    /*
-    /////////////////////////////////////////////////////
-    // Configuration
-    /////////////////////////////////////////////////////
-     */
 
+    /*
+     /////////////////////////////////////////////////////
+     // Configuration
+     /////////////////////////////////////////////////////
+     */
 
     /**
      * Method for getting the shared random number generator used for
@@ -73,17 +70,16 @@ public final class UUIDGenerator
      * it has to, SecureRandom takes care of it); it might even be good
      * for getting really 'random' stuff to get shared access...
      */
-    public Random getRandomNumberGenerator()
-    {
+    public Random getRandomNumberGenerator() {
         /* Could be synchronized, but since side effects are trivial
          * (ie. possibility of generating more than one SecureRandom,
          * of which all but one are dumped) let's not add synchronization
          * overhead:
          */
-        if (mRnd == null) {
-            mRnd = new SecureRandom();
+        if ( this.mRnd == null ) {
+            this.mRnd = new SecureRandom();
         }
-        return mRnd;
+        return this.mRnd;
     }
 
     /**
@@ -96,9 +92,8 @@ public final class UUIDGenerator
      * of using {@link SecureRandom}, this method has to be called
      * before generating the first random-number based UUID.
      */
-    public void setRandomNumberGenerator(Random r)
-    {
-        mRnd = r;
+    public void setRandomNumberGenerator(final Random r) {
+        this.mRnd = r;
     }
 
     /* Method for getting the shared message digest (hash) algorithm.
@@ -106,27 +101,26 @@ public final class UUIDGenerator
      * adds synchronization overhead (access has to be sync'ed), but
      * using multiple separate digests wastes memory.
      */
-    public MessageDigest getHashAlgorithm()
-    {
+    public MessageDigest getHashAlgorithm() {
         /* Similar to the shared random number generator, it's not necessary
          * to synchronize initialization. However, use of the hash instance
          * HAS to be synchronized by the caller to prevent problems with
          * multiple threads updating digest etc.
          */
-        if (mHasher == null) {
+        if ( this.mHasher == null ) {
             try {
-                mHasher = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException nex) {
-                throw new Error("Couldn't instantiate an MD5 MessageDigest instance: "+nex.toString());
+                this.mHasher = MessageDigest.getInstance( "MD5" );
+            } catch ( final NoSuchAlgorithmException nex ) {
+                throw new Error( "Couldn't instantiate an MD5 MessageDigest instance: " + nex.toString() );
             }
         }
-        return mHasher;
+        return this.mHasher;
     }
 
     /*
-    /////////////////////////////////////////////////////
-    // UUID generation methods
-    /////////////////////////////////////////////////////
+     /////////////////////////////////////////////////////
+     // UUID generation methods
+     /////////////////////////////////////////////////////
      */
 
     /**
@@ -144,9 +138,8 @@ public final class UUIDGenerator
      *
      * @return UUID generated using (pseudo-)random based method
      */
-    public UUID generateRandomBasedUUID()
-    {
-        return generateRandomBasedUUID(getRandomNumberGenerator());
+    public UUID generateRandomBasedUUID() {
+        return generateRandomBasedUUID( getRandomNumberGenerator() );
     }
 
     /**
@@ -161,12 +154,12 @@ public final class UUIDGenerator
      *
      * @return UUID generated using (pseudo-)random based method
      */
-    public UUID generateRandomBasedUUID(Random randomGenerator)
-    {
-        byte[] rnd = new byte[16];
-        
-        randomGenerator.nextBytes(rnd);
-        
-        return new UUID(UUID.TYPE_RANDOM_BASED, rnd);
+    public UUID generateRandomBasedUUID(final Random randomGenerator) {
+        final byte[] rnd = new byte[16];
+
+        randomGenerator.nextBytes( rnd );
+
+        return new UUID( UUID.TYPE_RANDOM_BASED,
+                         rnd );
     }
 }

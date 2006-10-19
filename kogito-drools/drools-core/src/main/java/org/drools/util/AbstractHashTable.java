@@ -19,44 +19,44 @@ public abstract class AbstractHashTable
     protected ObjectComparator comparator;
 
     protected Entry[]          table;
-    
-    private HashTableIterator iterator;   
-    
+
+    private HashTableIterator  iterator;
+
     public AbstractHashTable() {
         this( 16,
               0.75f );
     }
 
-    public AbstractHashTable(int capacity,
-                             float loadFactor) {
+    public AbstractHashTable(final int capacity,
+                             final float loadFactor) {
         this.loadFactor = loadFactor;
         this.threshold = (int) (capacity * loadFactor);
         this.table = new Entry[capacity];
         this.comparator = EqualityEquals.getInstance();
     }
-    
+
     public Iterator iterator() {
         if ( this.iterator == null ) {
-            this.iterator = new HashTableIterator( this );            
+            this.iterator = new HashTableIterator( this );
         }
-        
+
         this.iterator.reset();
         return this.iterator;
-    }    
+    }
 
-    public void setComparator(ObjectComparator comparator) {
+    public void setComparator(final ObjectComparator comparator) {
         this.comparator = comparator;
     }
 
-    protected void resize(int newCapacity) {
-        Entry[] oldTable = this.table;
-        int oldCapacity = oldTable.length;
-        if ( oldCapacity == MAX_CAPACITY ) {
+    protected void resize(final int newCapacity) {
+        final Entry[] oldTable = this.table;
+        final int oldCapacity = oldTable.length;
+        if ( oldCapacity == AbstractHashTable.MAX_CAPACITY ) {
             this.threshold = Integer.MAX_VALUE;
             return;
         }
 
-        Entry[] newTable = new Entry[newCapacity];
+        final Entry[] newTable = new Entry[newCapacity];
 
         for ( int i = 0; i < this.table.length; i++ ) {
             Entry entry = this.table[i];
@@ -68,7 +68,7 @@ public abstract class AbstractHashTable
             while ( entry != null ) {
                 next = entry.getNext();
 
-                int index = indexOf( entry.hashCode(),
+                final int index = indexOf( entry.hashCode(),
                                      newTable.length );
                 entry.setNext( newTable[index] );
                 newTable[index] = entry;
@@ -143,9 +143,9 @@ public abstract class AbstractHashTable
     //        return current;
     //    }
 
-    public Entry getBucket(int hashCode) {
+    public Entry getBucket(final int hashCode) {
         return this.table[indexOf( hashCode,
-                                   table.length )];
+                                   this.table.length )];
     }
 
     public Entry[] getTable() {
@@ -155,74 +155,76 @@ public abstract class AbstractHashTable
     public int size() {
         return this.size;
     }
-    
+
     public boolean isEmpty() {
         return this.size == 0;
     }
 
-//    protected int indexOf(int hashCode,
-//                          int dataSize) {
-//        int index = hashCode % dataSize;
-//        if ( index < 0 ) {
-//            index = index * -1;
-//        }
-//        return index;
-//    }
-    
-    protected int indexOf(int hashCode,
-                          int dataSize) {
+    //    protected int indexOf(int hashCode,
+    //                          int dataSize) {
+    //        int index = hashCode % dataSize;
+    //        if ( index < 0 ) {
+    //            index = index * -1;
+    //        }
+    //        return index;
+    //    }
+
+    protected int indexOf(final int hashCode,
+                          final int dataSize) {
         return hashCode & (dataSize - 1);
-    }    
-    
+    }
+
     public abstract Entry getBucket(Object object);
 
     public interface ObjectComparator {
         public int hashCodeOf(Object object);
-        
+
         public int rehash(int hashCode);
-        
+
         public boolean equal(Object object1,
                              Object object2);
     }
-    
+
     /**
      * Fast re-usable iterator
      *
      */
-    public static class HashTableIterator implements Iterator {
+    public static class HashTableIterator
+        implements
+        Iterator {
         private AbstractHashTable hashTable;
-        private Entry[] table;
-        private int row;
-        private int length;
-        private Entry entry;
-        
-        public HashTableIterator(AbstractHashTable hashTable) {
+        private Entry[]           table;
+        private int               row;
+        private int               length;
+        private Entry             entry;
+
+        public HashTableIterator(final AbstractHashTable hashTable) {
             this.hashTable = hashTable;
         }
-        
+
         /* (non-Javadoc)
          * @see org.drools.util.Iterator#next()
          */
-        public Entry next() {            
-            if (  this.entry == null ) {
+        public Entry next() {
+            if ( this.entry == null ) {
                 // keep skipping rows until we come to the end, or find one that is populated
-                while  ( this.entry ==  null ) {
-                    row++;
-                    if ( row == length ) {
+                while ( this.entry == null ) {
+                    this.row++;
+                    if ( this.row == this.length ) {
                         return null;
                     }
-                    this.entry = this.table[row];                    
-                }                
+                    this.entry = this.table[this.row];
+                }
             } else {
                 this.entry = this.entry.getNext();
                 if ( this.entry == null ) {
                     this.entry = next();
                 }
             }
-            
+
             return this.entry;
         }
-        
+
         /* (non-Javadoc)
          * @see org.drools.util.Iterator#reset()
          */
@@ -232,7 +234,7 @@ public abstract class AbstractHashTable
             this.row = -1;
             this.entry = null;
         }
-    }    
+    }
 
     public static class InstanceEquals
         implements
@@ -240,27 +242,27 @@ public abstract class AbstractHashTable
         public static ObjectComparator INSTANCE = new InstanceEquals();
 
         public static ObjectComparator getInstance() {
-            return INSTANCE;
+            return InstanceEquals.INSTANCE;
         }
-        
-        public int hashCodeOf(Object key) {
-            return rehash(  key.hashCode() ); 
+
+        public int hashCodeOf(final Object key) {
+            return rehash( key.hashCode() );
         }
-        
+
         public int rehash(int h) {
             h += ~(h << 9);
             h ^= (h >>> 14);
             h += (h << 4);
             h ^= (h >>> 10);
-            return h;            
+            return h;
         }
 
         private InstanceEquals() {
 
         }
 
-        public boolean equal(Object object1,
-                             Object object2) {
+        public boolean equal(final Object object1,
+                             final Object object2) {
             return object1 == object2;
         }
     }
@@ -271,27 +273,27 @@ public abstract class AbstractHashTable
         public static ObjectComparator INSTANCE = new EqualityEquals();
 
         public static ObjectComparator getInstance() {
-            return INSTANCE;
+            return EqualityEquals.INSTANCE;
         }
-        
-        public int hashCodeOf(Object key) {
+
+        public int hashCodeOf(final Object key) {
             return rehash( key.hashCode() );
         }
-        
+
         public int rehash(int h) {
             h += ~(h << 9);
             h ^= (h >>> 14);
             h += (h << 4);
             h ^= (h >>> 10);
-            return h;            
+            return h;
         }
 
         private EqualityEquals() {
 
         }
 
-        public boolean equal(Object object1,
-                             Object object2) {
+        public boolean equal(final Object object1,
+                             final Object object2) {
             return object1.equals( object2 );
         }
     }
@@ -304,47 +306,48 @@ public abstract class AbstractHashTable
         public int                hashCode;
 
         public Entry              next;
-        
-//        private LinkedList              list;
 
-        public FactEntry(InternalFactHandle handle) {
+        //        private LinkedList              list;
+
+        public FactEntry(final InternalFactHandle handle) {
             this.handle = handle;
             this.hashCode = handle.hashCode();
-//            this.list = new LinkedList();
+            //            this.list = new LinkedList();
         }
 
-        public FactEntry(InternalFactHandle handle,
-                         int hashCode) {
+        public FactEntry(final InternalFactHandle handle,
+                         final int hashCode) {
             this.handle = handle;
             this.hashCode = hashCode;
-//            this.list = new LinkedList();
+            //            this.list = new LinkedList();
         }
 
         public InternalFactHandle getFactHandle() {
-            return handle;
+            return this.handle;
         }
 
         public Entry getNext() {
             return this.next;
         }
 
-        public void setNext(Entry next) {
+        public void setNext(final Entry next) {
             this.next = next;
         }
-//        
-//        void add(final LinkedListEntry tupleMatchEntry) {
-//            this.list.add( tupleMatchEntry );
-//        }
-//        void remove(final LinkedListEntry tupleMatchEntry) {
-//            this.list.remove( tupleMatchEntry );
-//        }        
+
+        //        
+        //        void add(final LinkedListEntry tupleMatchEntry) {
+        //            this.list.add( tupleMatchEntry );
+        //        }
+        //        void remove(final LinkedListEntry tupleMatchEntry) {
+        //            this.list.remove( tupleMatchEntry );
+        //        }        
 
         public int hashCode() {
             return this.hashCode;
         }
 
-        public boolean equals(Object object) {
-            return ( object == this) || (this.handle == ((FactEntry)object).handle);
+        public boolean equals(final Object object) {
+            return (object == this) || (this.handle == ((FactEntry) object).handle);
         }
     }
 }

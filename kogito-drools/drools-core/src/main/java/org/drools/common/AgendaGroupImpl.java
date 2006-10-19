@@ -37,10 +37,10 @@ import org.drools.util.Queueable;
 public class AgendaGroupImpl
     implements
     AgendaGroup {
-    
-    private static final long        serialVersionUID = 320L;
-    
-    private final String              name;
+
+    private static final long     serialVersionUID = 320L;
+
+    private final String          name;
 
     /** Items in the agenda. */
     private final BinaryHeapQueue queue;

@@ -18,11 +18,8 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
-import org.drools.util.LinkedListNode;
 
 /**
  * Receiver of propagated <code>ReteTuple</code>s from a

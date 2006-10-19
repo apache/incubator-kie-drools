@@ -21,19 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactImpl;
-import org.drools.rule.Rule;
-import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -69,9 +64,9 @@ class Rete extends ObjectSource
     /**
      * 
      */
-    private static final long        serialVersionUID = 320L;
+    private static final long   serialVersionUID = 320L;
     /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
-    private final ObjectHashMap      objectTypeNodes;
+    private final ObjectHashMap objectTypeNodes;
 
     // ------------------------------------------------------------
     // Constructors
@@ -85,7 +80,7 @@ class Rete extends ObjectSource
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    
+
     /**
      * This is the entry point into the network for all asserted Facts. Iterates a cache
      * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
@@ -104,15 +99,15 @@ class Rete extends ObjectSource
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
 
         final Object object = handle.getObject();
-        
+
         Object key = null;
-            
-        if  ( object.getClass() == FactImpl.class ) {
-            key = ( ( Fact ) object ).getFactTemplate().getName();
+
+        if ( object.getClass() == FactImpl.class ) {
+            key = ((Fact) object).getFactTemplate().getName();
         } else {
             key = object.getClass();
         }
-        
+
         ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( key );
         if ( cachedNodes == null ) {
             cachedNodes = getMatchingNodes( object );
@@ -145,12 +140,12 @@ class Rete extends ObjectSource
         final Object object = handle.getObject();
 
         // @todo : this is a nasty hack to make manners  run, fix asap!!!
-        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
+        final ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
         if ( cachedNodes == null ) {
             // it is  possible that there are no ObjectTypeNodes for an  object being retracted
             return;
         }
-        
+
         for ( int i = 0; i < cachedNodes.length; i++ ) {
             cachedNodes[i].retractObject( handle,
                                           context,
@@ -161,16 +156,16 @@ class Rete extends ObjectSource
     private ObjectTypeNode[] getMatchingNodes(final Object object) throws FactException {
         final List cache = new ArrayList();
 
-        Iterator it = this.objectTypeNodes.iterator();
-        for ( ObjectEntry entry = (ObjectEntry)it.next(); entry != null; entry =  (ObjectEntry)it.next() ) {
+        final Iterator it = this.objectTypeNodes.iterator();
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
             if ( node.matches( object ) ) {
                 cache.add( node );
-            }            
+            }
         }
-        
+
         return (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
-    }   
+    }
 
     /**
      * Adds the <code>TupleSink</code> so that it may receive
@@ -181,7 +176,7 @@ class Rete extends ObjectSource
      *            <code>Tuples</code>.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
-        ObjectTypeNode node = ( ObjectTypeNode  ) objectSink;
+        final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.put( node.getObjectType(),
                                   node,
                                   true );
@@ -192,20 +187,20 @@ class Rete extends ObjectSource
     }
 
     public void attach() {
-        throw new UnsupportedOperationException( "cannot call attach() from the root Rete node");
+        throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
-        throw new UnsupportedOperationException( "cannot call attach() from the root Rete node");        
+        throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
     public void remove(final BaseNode node,
                        final InternalWorkingMemory[] workingMemories) {
-        final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;                        
+        final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
         removeObjectSink( objectTypeNode );
         //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        
     }
-    
+
     public ObjectHashMap getObjectTypeNodes() {
         return this.objectTypeNodes;
     }
@@ -231,19 +226,19 @@ class Rete extends ObjectSource
         return this.objectTypeNodes.equals( other.objectTypeNodes );
     }
 
-    public void updateSink(ObjectSink sink,
-                           PropagationContext context,
-                           InternalWorkingMemory workingMemory) {
-        ObjectTypeNode node  = ( ObjectTypeNode) sink;
+    public void updateSink(final ObjectSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
+        final ObjectTypeNode node = (ObjectTypeNode) sink;
         for ( final java.util.Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
             final java.util.Map.Entry entry = (java.util.Map.Entry) i.next();
             final InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-            if ( node.matches( handle.getObject() ) ) {                
+            if ( node.matches( handle.getObject() ) ) {
                 node.assertObject( handle,
                                    context,
                                    workingMemory );
             }
-        }                
+        }
     }
 
 }

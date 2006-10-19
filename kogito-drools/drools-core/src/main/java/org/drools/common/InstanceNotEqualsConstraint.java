@@ -16,32 +16,28 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
-import org.drools.common.InstanceEqualsConstraint.InstanceEqualsConstraintContextEntry;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Tuple;
 
 public class InstanceNotEqualsConstraint
     implements
     BetaNodeFieldConstraint {
 
-    private static final long   serialVersionUID = 320L;
+    private static final long          serialVersionUID = 320L;
 
     private static final Declaration[] declarations     = new Declaration[0];
 
-    private Column              otherColumn;
+    private Column                     otherColumn;
 
     public InstanceNotEqualsConstraint(final Column otherColumn) {
         this.otherColumn = otherColumn;
     }
 
     public Declaration[] getRequiredDeclarations() {
-        return this.declarations;
+        return InstanceNotEqualsConstraint.declarations;
     }
 
     public Column getOtherColumn() {
@@ -53,17 +49,17 @@ public class InstanceNotEqualsConstraint
     }
 
     public boolean isAllowed(final ContextEntry entry) {
-        InstanceNotEqualsConstraintContextEntry context = (InstanceNotEqualsConstraintContextEntry) entry;
+        final InstanceNotEqualsConstraintContextEntry context = (InstanceNotEqualsConstraintContextEntry) entry;
         return context.left != context.right;
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
         return ((InstanceNotEqualsConstraintContextEntry) context).left != object;
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
         return tuple.get( this.otherColumn.getFactIndex() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
     }
 
@@ -97,7 +93,7 @@ public class InstanceNotEqualsConstraint
         private Column       column;
         private ContextEntry entry;
 
-        public InstanceNotEqualsConstraintContextEntry(Column column) {
+        public InstanceNotEqualsConstraintContextEntry(final Column column) {
             this.column = column;
         }
 
@@ -105,15 +101,15 @@ public class InstanceNotEqualsConstraint
             return this.entry;
         }
 
-        public void setNext(ContextEntry entry) {
+        public void setNext(final ContextEntry entry) {
             this.entry = entry;
         }
 
-        public void updateFromTuple(ReteTuple tuple) {
+        public void updateFromTuple(final ReteTuple tuple) {
             this.left = tuple.get( this.column.getFactIndex() ).getObject();
         }
-        
-        public void updateFromFactHandle(InternalFactHandle handle) {
+
+        public void updateFromFactHandle(final InternalFactHandle handle) {
             this.right = handle.getObject();
 
         }

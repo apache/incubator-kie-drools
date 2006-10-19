@@ -14,19 +14,22 @@ import java.util.Map;
  */
 public class ClassFieldExtractorCache {
     private Map cache;
-    
-    public ClassFieldExtractorCache(  ) {
+
+    public ClassFieldExtractorCache() {
         this.cache = new HashMap();
     }
-    
-    public ClassFieldExtractor getExtractor(Class clazz, String fieldName) {
-        String key = clazz.getName() + "|" + fieldName;
-        if (this.cache.containsKey( key )) {
-            return (ClassFieldExtractor) cache.get( key );
+
+    public ClassFieldExtractor getExtractor(final Class clazz,
+                                            final String fieldName) {
+        final String key = clazz.getName() + "|" + fieldName;
+        if ( this.cache.containsKey( key ) ) {
+            return (ClassFieldExtractor) this.cache.get( key );
         } else {
-            ClassFieldExtractor ex = new ClassFieldExtractor(clazz, fieldName);
-            cache.put( key, ex );
+            final ClassFieldExtractor ex = new ClassFieldExtractor( clazz,
+                                                              fieldName );
+            this.cache.put( key,
+                       ex );
             return ex;
-        }        
+        }
     }
 }

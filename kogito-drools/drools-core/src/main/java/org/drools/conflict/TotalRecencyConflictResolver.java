@@ -75,10 +75,10 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
         long leftRecency = 0;
         long rightRecency = 0;
         if ( lhs.getTuple() instanceof ReteTuple ) {
-            leftRecency = ((Tuple) lhs.getTuple()).getRecency();
+            leftRecency = (lhs.getTuple()).getRecency();
         }
         if ( rhs.getTuple() instanceof ReteTuple ) {
-            rightRecency = ((Tuple) rhs.getTuple()).getRecency();
+            rightRecency = (rhs.getTuple()).getRecency();
         }
         return (rightRecency > leftRecency) ? 1 : (rightRecency < leftRecency) ? -1 : 0;
     }

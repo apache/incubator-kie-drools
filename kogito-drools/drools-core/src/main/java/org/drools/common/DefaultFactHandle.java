@@ -35,12 +35,12 @@ public class DefaultFactHandle
      */
     private static final long serialVersionUID = 320L;
     /** Handle id. */
-    private long        id;
-    private long        recency;
-    private Object      object;
-    private EqualityKey key;
-    private int         objectHashCode;
-    
+    private long              id;
+    private long              recency;
+    private Object            object;
+    private EqualityKey       key;
+    private int               objectHashCode;
+
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -90,8 +90,8 @@ public class DefaultFactHandle
 
         return this.id == ((DefaultFactHandle) object).id;
     }
-    
-    public  int getObjectHashCode()  {
+
+    public int getObjectHashCode() {
         return this.objectHashCode;
     }
 
@@ -99,7 +99,7 @@ public class DefaultFactHandle
      * @see Object
      */
     public int hashCode() {
-        return (int)(this.id ^ (this.id >>> 32));
+        return (int) (this.id ^ (this.id >>> 32));
     }
 
     /**

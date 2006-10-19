@@ -183,13 +183,15 @@ class EvalConditionNode extends TupleSource
             memory.add( tuple );
             if ( !exists ) {
                 this.sink.propagateAssertTuple( tuple,
-                                      context,
-                                      workingMemory );
+                                                context,
+                                                workingMemory );
             } else {
-                tuple.modifyChildEntries( context, workingMemory );
+                tuple.modifyChildEntries( context,
+                                          workingMemory );
             }
         } else {
-            tuple.retractChildEntries( context, workingMemory );
+            tuple.retractChildEntries( context,
+                                       workingMemory );
         }
     }
 
@@ -252,14 +254,14 @@ class EvalConditionNode extends TupleSource
             final ReteTuple leftTuple = (ReteTuple) it.next();
             final LinkedList linkedTuples = leftTuple.getChildEntries();
 
-            LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
+            final LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
             propagatedTuples.add( wrapper.getObject() );
         }
         return propagatedTuples;
     }
 
-    public void remove(BaseNode node,
-                       InternalWorkingMemory[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final InternalWorkingMemory[] workingMemories) {
         // FIXME
     }
 

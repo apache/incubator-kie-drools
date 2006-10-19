@@ -14,16 +14,16 @@ public abstract class AbstractCompositeRestriction
 
     protected final Restriction[] restrictions;
 
-    public AbstractCompositeRestriction(Restriction[] restriction) {
+    public AbstractCompositeRestriction(final Restriction[] restriction) {
         this.restrictions = restriction;
     }
 
     public Declaration[] getRequiredDeclarations() {
         // Iterate all restrictions building up a unique list of declarations
         // No need to cache, as this should only be called once at build time
-        Set set = new HashSet();
+        final Set set = new HashSet();
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
-            Declaration[] declarations = this.restrictions[i].getRequiredDeclarations();
+            final Declaration[] declarations = this.restrictions[i].getRequiredDeclarations();
             for ( int j = 0, jlength = declarations.length; j < jlength; j++ ) {
                 set.add( declarations[j] );
             }
@@ -32,9 +32,11 @@ public abstract class AbstractCompositeRestriction
         return (Declaration[]) set.toArray( new Declaration[set.size()] );
     }
 
-    private static int hashCode(Object[] array) {
+    private static int hashCode(final Object[] array) {
         final int PRIME = 31;
-        if ( array == null ) return 0;
+        if ( array == null ) {
+            return 0;
+        }
         int result = 1;
         for ( int index = 0; index < array.length; index++ ) {
             result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -49,7 +51,7 @@ public abstract class AbstractCompositeRestriction
         return result;
     }
 
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if ( this == obj ) {
             return true;
         }

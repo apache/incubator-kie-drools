@@ -32,9 +32,10 @@ public class DeclarationTest extends TestCase {
     public void testDeclaration() throws IntrospectionException {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
-        
-        Column column = new  Column(5, new ClassObjectType( Cheese.class ) );
-        
+
+        final Column column = new Column( 5,
+                                    new ClassObjectType( Cheese.class ) );
+
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value from
         final Declaration declaration = new Declaration( "typeOfCheese",
@@ -59,8 +60,9 @@ public class DeclarationTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Column column = new  Column(5, new ClassObjectType( Cheese.class ) );
-        
+        final Column column = new Column( 5,
+                                    new ClassObjectType( Cheese.class ) );
+
         // Bind the extractor to a decleration 
         // Declarations know the column they derive their value from 
         final Declaration declaration = new Declaration( "typeOfCheese",

@@ -42,12 +42,13 @@ public abstract class ReflectiveVisitor
                                new Object[]{object} );
             } else {
                 method = getClass().getMethod( "visitNull",
-                                                            (Class[]) null );
+                                               (Class[]) null );
                 method.invoke( this,
                                (Object[]) null );
             }
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException(e.toString() + " : " + object, e.getCause());
+            throw new RuntimeDroolsException( e.toString() + " : " + object,
+                                              e.getCause() );
         }
     }
 
@@ -88,7 +89,8 @@ public abstract class ReflectiveVisitor
             } catch ( final Exception e ) {
                 // Shouldn't happen as long as all Visitors extend this class
                 // and this class continues to implement visitObject(Object).
-                throw new RuntimeDroolsException(e.toString() + " : " + clazz, e.getCause());
+                throw new RuntimeDroolsException( e.toString() + " : " + clazz,
+                                                  e.getCause() );
             }
         }
         return method;

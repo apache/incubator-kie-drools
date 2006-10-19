@@ -152,8 +152,8 @@ public class SynchronizedWorkingMemory
     public Map getGlobals() {
         return this.workingMemory.getGlobals();
     }
-    
-    public void setGlobalResolver(GlobalResolver globalResolver) {
+
+    public void setGlobalResolver(final GlobalResolver globalResolver) {
         this.workingMemory.setGlobalResolver( globalResolver );
     }
 

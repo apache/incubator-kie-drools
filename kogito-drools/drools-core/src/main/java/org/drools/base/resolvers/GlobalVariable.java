@@ -12,13 +12,13 @@ public class GlobalVariable
 
     private static final long serialVersionUID = 320L;
 
-    public final String             globalName;
-    public final Class              clazz;
-    
-    
-    private Object cachedValue = ValueHandler.EMPTY;
+    public final String       globalName;
+    public final Class        clazz;
 
-    public GlobalVariable(final String name, final Class clazz) {
+    private Object            cachedValue      = ValueHandler.EMPTY;
+
+    public GlobalVariable(final String name,
+                          final Class clazz) {
         this.globalName = name;
         this.clazz = clazz;
     }
@@ -30,15 +30,15 @@ public class GlobalVariable
         }
         return this.cachedValue;
     }
-    
+
     public Class getExtractToClass() {
         return this.clazz;
-    }    
-    
+    }
+
     public void reset() {
         this.cachedValue = ValueHandler.EMPTY;
-    }    
-    
+    }
+
     public String toString() {
         return "[GlobalVariable name=" + this.globalName + "]";
     }
@@ -50,14 +50,14 @@ public class GlobalVariable
         return result;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
         if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        
+
         final GlobalVariable other = (GlobalVariable) object;
         return this.globalName.equals( other.globalName );
     }

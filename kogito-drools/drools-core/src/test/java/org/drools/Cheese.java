@@ -20,11 +20,13 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
-public class Cheese implements CheeseInterface {
+public class Cheese
+    implements
+    CheeseInterface {
     private String type;
 
     private int    price;
-    
+
     public Cheese() {
     }
 

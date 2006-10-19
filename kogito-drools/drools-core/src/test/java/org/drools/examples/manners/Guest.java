@@ -25,12 +25,12 @@ public class Guest
      */
     private static final long serialVersionUID = 7806377320634586221L;
 
-    private String      name;
+    private String            name;
 
-    private Sex         sex;
+    private Sex               sex;
 
-    private Hobby       hobby;
-    
+    private Hobby             hobby;
+
     public Guest() {
     }
 

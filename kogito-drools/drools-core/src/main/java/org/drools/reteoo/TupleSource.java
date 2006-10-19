@@ -17,17 +17,10 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.drools.common.BaseNode;
-import org.drools.common.DefaultBetaConstraints;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListEntry;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -77,16 +70,16 @@ abstract class TupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addTupleSink(final TupleSink tupleSink) {        
+    protected void addTupleSink(final TupleSink tupleSink) {
         if ( this.sink == null ) {
             this.sink = new SingleTupleSinkAdapter( tupleSink );
         } else if ( this.sink.getClass() == SingleTupleSinkAdapter.class ) {
-            CompositeTupleSinkAdapter sinkAdapter = ( CompositeTupleSinkAdapter ) new CompositeTupleSinkAdapter();
+            final CompositeTupleSinkAdapter sinkAdapter = new CompositeTupleSinkAdapter();
             sinkAdapter.addTupleSink( this.sink.getSinks()[0] );
             sinkAdapter.addTupleSink( tupleSink );
             this.sink = sinkAdapter;
         } else {
-            ( (CompositeTupleSinkAdapter) sink ).addTupleSink( tupleSink );
+            ((CompositeTupleSinkAdapter) this.sink).addTupleSink( tupleSink );
         }
     }
 
@@ -99,15 +92,17 @@ abstract class TupleSource extends BaseNode
     protected void removeTupleSink(final TupleSink tupleSink) {
         if ( this.sink.getClass() == SingleTupleSinkAdapter.class ) {
             this.sink = null;
-        } else { 
-            CompositeTupleSinkAdapter sinkAdapter = ( CompositeTupleSinkAdapter ) tupleSink;
+        } else {
+            final CompositeTupleSinkAdapter sinkAdapter = (CompositeTupleSinkAdapter) tupleSink;
             sinkAdapter.removeTupleSink( tupleSink );
             if ( sinkAdapter.size() == 1 ) {
                 this.sink = new SingleTupleSinkAdapter( sinkAdapter.getSinks()[0] );
             }
-        } 
+        }
     }
-    
-    public abstract void updateSink(TupleSink sink, PropagationContext context, InternalWorkingMemory workingMemory);
+
+    public abstract void updateSink(TupleSink sink,
+                                    PropagationContext context,
+                                    InternalWorkingMemory workingMemory);
 
 }

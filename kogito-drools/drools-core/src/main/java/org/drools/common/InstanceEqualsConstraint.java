@@ -16,16 +16,12 @@
 
 package org.drools.common;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InstanceNotEqualsConstraint.InstanceNotEqualsConstraintContextEntry;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.FieldExtractor;
-import org.drools.spi.Tuple;
 
 /**
  * InstanceEqualsConstraint
@@ -38,13 +34,13 @@ import org.drools.spi.Tuple;
 
 public class InstanceEqualsConstraint
     implements
-    BetaNodeFieldConstraint { 
+    BetaNodeFieldConstraint {
 
-    private static final long serialVersionUID = 320L;
+    private static final long   serialVersionUID = 320L;
 
     private final Declaration[] declarations     = new Declaration[0];
 
-    private Column                 otherColumn;
+    private Column              otherColumn;
 
     public InstanceEqualsConstraint(final Column otherColumn) {
         this.otherColumn = otherColumn;
@@ -53,22 +49,24 @@ public class InstanceEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
-    
+
     public Column getOtherColumn() {
         return this.otherColumn;
     }
-    
+
     public ContextEntry getContextEntry() {
-        return new InstanceEqualsConstraintContextEntry( this.otherColumn  );
+        return new InstanceEqualsConstraintContextEntry( this.otherColumn );
     }
-    
-    public boolean isAllowedCachedLeft(ContextEntry context, Object object ) {
-        return ((InstanceNotEqualsConstraintContextEntry)context).left == object;
-    }    
-    
-    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
-        return tuple.get( this.otherColumn.getFactIndex()).getObject() == ((InstanceNotEqualsConstraintContextEntry)context).right ;        
-    }      
+
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
+        return ((InstanceNotEqualsConstraintContextEntry) context).left == object;
+    }
+
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
+        return tuple.get( this.otherColumn.getFactIndex() ).getObject() == ((InstanceNotEqualsConstraintContextEntry) context).right;
+    }
 
     public String toString() {
         return "[InstanceEqualsConstraint otherColumn=" + this.otherColumn + " ]";
@@ -91,33 +89,34 @@ public class InstanceEqualsConstraint
         return this.otherColumn.equals( other.otherColumn );
     }
 
-    public static class InstanceEqualsConstraintContextEntry implements ContextEntry {
-        public Object left;
-        public Object right;        
-        
-        private Column column;
+    public static class InstanceEqualsConstraintContextEntry
+        implements
+        ContextEntry {
+        public Object        left;
+        public Object        right;
+
+        private Column       column;
         private ContextEntry entry;
-        
-        
-        public InstanceEqualsConstraintContextEntry(Column column) {
+
+        public InstanceEqualsConstraintContextEntry(final Column column) {
             this.column = column;
         }
-        
+
         public ContextEntry getNext() {
             return this.entry;
         }
-        
-        public void setNext(ContextEntry  entry) {
+
+        public void setNext(final ContextEntry entry) {
             this.entry = entry;
         }
-        
-        public void updateFromTuple(ReteTuple tuple) {
-            this.left =  tuple.get( this.column.getFactIndex() ).getObject();            
-        }           
-        
-        public void updateFromFactHandle(InternalFactHandle handle) {
+
+        public void updateFromTuple(final ReteTuple tuple) {
+            this.left = tuple.get( this.column.getFactIndex() ).getObject();
+        }
+
+        public void updateFromFactHandle(final InternalFactHandle handle) {
             this.right = handle.getObject();
-            
-        }                    
-    }    
+
+        }
+    }
 }

@@ -17,19 +17,19 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
+
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.util.CompositeFieldIndexHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
-import org.drools.util.CompositeFieldIndexHashTable.FieldIndex;
+import org.drools.util.FieldIndexHashTable.FieldIndex;
 
 public class SingleBetaConstraints
     implements
@@ -59,7 +59,7 @@ public class SingleBetaConstraints
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint.getClass() == VariableConstraint.class ) {
-            VariableConstraint variableConstraint = (VariableConstraint) constraint;
+            final VariableConstraint variableConstraint = (VariableConstraint) constraint;
             return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
         } else {
             return false;
@@ -69,31 +69,31 @@ public class SingleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(ReteTuple tuple) {
-        context.updateFromTuple( tuple );
+    public void updateFromTuple(final ReteTuple tuple) {
+        this.context.updateFromTuple( tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(InternalFactHandle handle) {
-        context.updateFromFactHandle( handle );
+    public void updateFromFactHandle(final InternalFactHandle handle) {
+        this.context.updateFromFactHandle( handle );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(Object object) {
-        return this.indexed || this.constraint.isAllowedCachedLeft( context,
+    public boolean isAllowedCachedLeft(final Object object) {
+        return this.indexed || this.constraint.isAllowedCachedLeft( this.context,
                                                                     object );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple) {
         return this.constraint.isAllowedCachedRight( tuple,
-                                                     context );
+                                                     this.context );
     }
 
     public boolean isIndexed() {
@@ -107,10 +107,11 @@ public class SingleBetaConstraints
     public BetaMemory createBetaMemory() {
         BetaMemory memory;
         if ( this.indexed ) {
-            VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
-            FieldIndex  index  = new  FieldIndex(variableConstraint.getFieldExtractor(), variableConstraint.getRequiredDeclarations()[0]);
+            final VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
+            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                               variableConstraint.getRequiredDeclarations()[0] );
             memory = new BetaMemory( new TupleHashTable(),
-                                     new CompositeFieldIndexHashTable( new FieldIndex[] { index }  ) );
+                                     new FieldIndexHashTable( new FieldIndex[]{index} ) );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -138,7 +139,7 @@ public class SingleBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#getConstraints()
      */
     public LinkedList getConstraints() {
-        LinkedList list = new LinkedList();
+        final LinkedList list = new LinkedList();
         list.add( new LinkedListEntry( this.constraint ) );
         return list;
     }

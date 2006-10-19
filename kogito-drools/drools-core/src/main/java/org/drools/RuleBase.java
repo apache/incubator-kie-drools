@@ -94,8 +94,9 @@ public interface RuleBase
      * @see org.drools.conflict.DefaultConflictResolver
      * 
      * @return A serialised initialized <code>WorkingMemory</code>.
-     */    
-    WorkingMemory newWorkingMemory(InputStream stream) throws IOException, ClassNotFoundException;
+     */
+    WorkingMemory newWorkingMemory(InputStream stream) throws IOException,
+                                                      ClassNotFoundException;
 
     /**
      * RuleBases handle the returning of a Serialized WorkingMemory
@@ -112,18 +113,19 @@ public interface RuleBase
      * @see org.drools.conflict.DefaultConflictResolver
      * 
      * @return A serialised initialized <code>WorkingMemory</code>.
-     */    
-    WorkingMemory newWorkingMemory(InputStream stream, boolean keepReference ) throws IOException, ClassNotFoundException;    
-    
+     */
+    WorkingMemory newWorkingMemory(InputStream stream,
+                                   boolean keepReference) throws IOException,
+                                                         ClassNotFoundException;
 
     Package[] getPackages();
 
     void addPackage(Package pkg) throws Exception;
-    
+
     void removePackage(String packageName);
-    
+
     void removeRule(String packageName,
-                    String ruleName);      
-    
+                    String ruleName);
+
     public Set getWorkingMemories();
 }

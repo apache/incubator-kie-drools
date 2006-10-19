@@ -34,7 +34,6 @@ import org.drools.asm.ClassVisitor;
 import org.drools.asm.FieldVisitor;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
-import org.drools.asm.tree.MethodNode;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
@@ -58,15 +57,19 @@ public class ClassFieldInspector {
      * @throws IOException
      */
     public ClassFieldInspector(final Class clazz) throws IOException {
-        this(clazz, true);
+        this( clazz,
+              true );
     }
-    
-    public ClassFieldInspector(final Class clazz, final boolean includeFinalMethods) throws IOException {
-        processClass( clazz, includeFinalMethods );
+
+    public ClassFieldInspector(final Class clazz,
+                               final boolean includeFinalMethods) throws IOException {
+        processClass( clazz,
+                      includeFinalMethods );
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
-    private void processClass(final Class clazz, final boolean includeFinalMethods) throws IOException {
+    private void processClass(final Class clazz,
+                              final boolean includeFinalMethods) throws IOException {
         final String name = getResourcePath( clazz );
         final InputStream stream = clazz.getResourceAsStream( name );
         final ClassReader reader = new ClassReader( stream );
@@ -76,12 +79,14 @@ public class ClassFieldInspector {
         reader.accept( visitor,
                        false );
         if ( clazz.getSuperclass() != null ) {
-            processClass( clazz.getSuperclass(), includeFinalMethods );
+            processClass( clazz.getSuperclass(),
+                          includeFinalMethods );
         }
         if ( clazz.isInterface() ) {
             final Class[] interfaces = clazz.getInterfaces();
             for ( int i = 0; i < interfaces.length; i++ ) {
-                processClass( interfaces[i], includeFinalMethods );
+                processClass( interfaces[i],
+                              includeFinalMethods );
             }
         }
     }
@@ -151,7 +156,7 @@ public class ClassFieldInspector {
                                          final String[] exceptions) {
             //only want public methods
             //and have no args, and return a value
-            int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
+            final int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
             if ( (access & mask) == Opcodes.ACC_PUBLIC ) {
                 if ( desc.startsWith( "()" ) && !(name.equals( "<init>" )) ) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
@@ -161,11 +166,11 @@ public class ClassFieldInspector {
                             final int fieldIndex = this.inspector.methods.size();
                             addToMapping( method,
                                           fieldIndex );
-                        } 
+                        }
                     } catch ( final NoSuchMethodException e ) {
                         throw new IllegalStateException( "Error in getting field access method." );
                     }
-                } 
+                }
             }
             return null;
         }
@@ -286,9 +291,9 @@ public class ClassFieldInspector {
         }
 
         private String calcFieldName(String name,
-                                     final int offset) {                      
+                                     final int offset) {
             name = name.substring( offset );
-            return Introspector.decapitalize(name);
+            return Introspector.decapitalize( name );
         }
 
     }

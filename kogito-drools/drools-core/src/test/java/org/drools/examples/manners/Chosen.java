@@ -26,16 +26,16 @@ public class Chosen
      */
     private static final long serialVersionUID = -169447202790860427L;
 
-    private int         id;
+    private int               id;
 
-    private String      guestName;
+    private String            guestName;
 
-    private Hobby       hobby;
+    private Hobby             hobby;
 
     public Chosen() {
-        
+
     }
-    
+
     public Chosen(final int id,
                   final String guestName,
                   final Hobby hobby) {

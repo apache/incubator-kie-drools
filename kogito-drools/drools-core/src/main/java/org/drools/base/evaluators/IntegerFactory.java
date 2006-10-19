@@ -28,18 +28,18 @@ public class IntegerFactory
     implements
     EvaluatorFactory {
 
-    private static final long serialVersionUID = -6863552870087722275L;
-    private static EvaluatorFactory INSTANCE = new IntegerFactory();
+    private static final long       serialVersionUID = -6863552870087722275L;
+    private static EvaluatorFactory INSTANCE         = new IntegerFactory();
 
     private IntegerFactory() {
 
     }
 
     public static EvaluatorFactory getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new IntegerFactory();
+        if ( IntegerFactory.INSTANCE == null ) {
+            IntegerFactory.INSTANCE = new IntegerFactory();
         }
-        return INSTANCE;
+        return IntegerFactory.INSTANCE;
     }
 
     public Evaluator getEvaluator(final Operator operator) {
@@ -84,13 +84,13 @@ public class IntegerFactory
             return extractor.getIntValue( object2 ) == object1.getIntValue();
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getIntValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object object2) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object object2) {
             return context.extractor.getIntValue( object2 ) == ((LongVariableContextEntry) context).left;
         }
 
@@ -124,13 +124,13 @@ public class IntegerFactory
             return extractor.getIntValue( object2 ) != object1.getIntValue();
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getIntValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object object2) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object object2) {
             return context.extractor.getIntValue( object2 ) != ((LongVariableContextEntry) context).left;
         }
 
@@ -163,13 +163,13 @@ public class IntegerFactory
             return object1.getIntValue() < extractor.getIntValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getIntValue( left ) < ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left < context.extractor.getIntValue( right );
         }
 
@@ -202,13 +202,13 @@ public class IntegerFactory
             return object1.getIntValue() <= extractor.getIntValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getIntValue( left ) <= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left <= context.extractor.getIntValue( right );
         }
 
@@ -241,13 +241,13 @@ public class IntegerFactory
             return object1.getIntValue() > extractor.getIntValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getIntValue( left ) > ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left > context.extractor.getIntValue( right );
         }
 
@@ -280,13 +280,13 @@ public class IntegerFactory
             return object1.getIntValue() >= extractor.getIntValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getIntValue( left ) >= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left >= context.extractor.getIntValue( right );
         }
 

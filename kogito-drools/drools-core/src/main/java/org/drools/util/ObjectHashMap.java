@@ -4,37 +4,39 @@
 package org.drools.util;
 
 public class ObjectHashMap extends AbstractHashTable {
-    
+
     public ObjectHashMap() {
         this( 16,
               0.75f );
     }
 
-    public ObjectHashMap(int capacity,
-                         float loadFactor) {
+    public ObjectHashMap(final int capacity,
+                         final float loadFactor) {
         super( capacity,
                loadFactor );
     }
-    
-    public Object put(Object key,
-                      Object value) {
-        return put(key, value, true);
-    }    
 
-    public Object put(Object key,
-                      Object value,
-                      boolean checkExists ) {
-        int hashCode = this.comparator.hashCodeOf( key );
-        int index = indexOf( hashCode,
-                             table.length );
+    public Object put(final Object key,
+                      final Object value) {
+        return put( key,
+                    value,
+                    true );
+    }
+
+    public Object put(final Object key,
+                      final Object value,
+                      final boolean checkExists) {
+        final int hashCode = this.comparator.hashCodeOf( key );
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         // scan the linked entries to see if it exists
         if ( checkExists ) {
             ObjectEntry current = (ObjectEntry) this.table[index];
             while ( current != null ) {
-                if ( hashCode == current.hashCode && comparator.equal( key,
+                if ( hashCode == current.hashCode && this.comparator.equal( key,
                                                                        current.key ) ) {
-                    Object oldValue = current.value;
+                    final Object oldValue = current.value;
                     current.value = value;
                     return oldValue;
                 }
@@ -43,7 +45,7 @@ public class ObjectHashMap extends AbstractHashTable {
         }
 
         // We aren't checking the key exists, or it didn't find the key
-        ObjectEntry entry = new ObjectEntry( key,
+        final ObjectEntry entry = new ObjectEntry( key,
                                              value,
                                              hashCode );
         entry.next = this.table[index];
@@ -55,32 +57,32 @@ public class ObjectHashMap extends AbstractHashTable {
         return null;
     }
 
-    public Object get(Object key) {
-        int hashCode = this.comparator.hashCodeOf( key );
-        int index = indexOf( hashCode,
-                             table.length );
+    public Object get(final Object key) {
+        final int hashCode = this.comparator.hashCodeOf( key );
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         ObjectEntry current = (ObjectEntry) this.table[index];
         while ( current != null ) {
-            if ( hashCode == current.hashCode && comparator.equal( key,
+            if ( hashCode == current.hashCode && this.comparator.equal( key,
                                                                    current.key ) ) {
                 return current.value;
             }
             current = (ObjectEntry) current.getNext();
         }
         return null;
-    }    
+    }
 
-    public Object remove(Object key) {
-        int hashCode = this.comparator.hashCodeOf( key );
-        int index = indexOf( hashCode,
-                             table.length );
+    public Object remove(final Object key) {
+        final int hashCode = this.comparator.hashCodeOf( key );
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         ObjectEntry previous = (ObjectEntry) this.table[index];
         ObjectEntry current = previous;
         while ( current != null ) {
-            ObjectEntry next = (ObjectEntry) current.getNext();
-            if ( hashCode == current.hashCode && comparator.equal( key,
+            final ObjectEntry next = (ObjectEntry) current.getNext();
+            if ( hashCode == current.hashCode && this.comparator.equal( key,
                                                                    current.key ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
@@ -96,15 +98,15 @@ public class ObjectHashMap extends AbstractHashTable {
         }
         return null;
     }
-    
-    public Entry getBucket(Object object) {
-        int hashCode = this.comparator.hashCodeOf( object );
-        int index = indexOf( hashCode,
-                             table.length );
 
-        return (ObjectEntry)  this.table[index];        
-    }    
-    
+    public Entry getBucket(final Object object) {
+        final int hashCode = this.comparator.hashCodeOf( object );
+        final int index = indexOf( hashCode,
+                             this.table.length );
+
+        return this.table[index];
+    }
+
     public static class ObjectEntry
         implements
         Entry {
@@ -114,30 +116,29 @@ public class ObjectHashMap extends AbstractHashTable {
 
         private int    hashCode;
 
-        private Entry next;
+        private Entry  next;
 
-        public ObjectEntry(Object key,
-                           Object value,
-                           int hashCode) {
+        public ObjectEntry(final Object key,
+                           final Object value,
+                           final int hashCode) {
             this.key = key;
             this.value = value;
             this.hashCode = hashCode;
         }
 
         public Object getValue() {
-            return value;
+            return this.value;
         }
 
-
         public Object getKey() {
-            return key;
+            return this.key;
         }
 
         public Entry getNext() {
             return this.next;
         }
 
-        public void setNext(Entry next) {
+        public void setNext(final Entry next) {
             this.next = next;
         }
 
@@ -145,14 +146,14 @@ public class ObjectHashMap extends AbstractHashTable {
             return this.key.hashCode() ^ this.value.hashCode();
         }
 
-        public boolean equals(Object object) {
+        public boolean equals(final Object object) {
             if ( object == this ) {
                 return true;
             }
 
             // assumes we never have null or wrong class
 
-            ObjectEntry other = (ObjectEntry) object;
+            final ObjectEntry other = (ObjectEntry) object;
             return this.key.equals( other.key ) && this.value.equals( other.value );
         }
     }

@@ -40,29 +40,28 @@ public class ConstrainedIteratorFromPositionToTableStart extends IteratorFromPos
     private TableRecord     currentTableRecord;
 
     protected ConstrainedIteratorFromPositionToTableStart(final WorkingMemory workingMemory,
-            final ColumnConstraints constraints,
-            final TableRecord startRecord,
-            final TableRecord currentRecord) {
+                                                          final ColumnConstraints constraints,
+                                                          final TableRecord startRecord,
+                                                          final TableRecord currentRecord) {
         super( null );
         this.workingMemory = workingMemory;
         this.constraints = constraints;
         this.currentTableRecord = startRecord;
         boolean done = false;
         boolean reachCurrentRecord = false;
-        while (!done && this.currentTableRecord != null && !this.finishInitialPass) {
-            if (!reachCurrentRecord && this.currentTableRecord == currentRecord) {
+        while ( !done && this.currentTableRecord != null && !this.finishInitialPass ) {
+            if ( !reachCurrentRecord && this.currentTableRecord == currentRecord ) {
                 reachCurrentRecord = true;
-            }
-            else {
-                if (this.constraints.isAllowedAlpha( (InternalFactHandle) this.currentTableRecord.object,
-                                                     null,
-                                                     this.workingMemory )) {
+            } else {
+                if ( this.constraints.isAllowedAlpha( (InternalFactHandle) this.currentTableRecord.object,
+                                                      null,
+                                                      this.workingMemory ) ) {
                     this.add( this.currentTableRecord.object );
                 }
-                if (reachCurrentRecord && !this.isEmpty( )) {
+                if ( reachCurrentRecord && !this.isEmpty() ) {
                     done = true;
                 }
-                if (this.currentTableRecord.right == null) {
+                if ( this.currentTableRecord.right == null ) {
                     this.finishInitialPass = true;
                 }
                 this.currentTableRecord = this.currentTableRecord.right;
@@ -70,13 +69,12 @@ public class ConstrainedIteratorFromPositionToTableStart extends IteratorFromPos
         }
     }
 
-    private void add( final Object object ) {
+    private void add(final Object object) {
         final TableRecord record = new TableRecord( object );
-        if (this.firstRecord == null) {
+        if ( this.firstRecord == null ) {
             this.firstRecord = record;
             this.currentRecord = record;
-        }
-        else {
+        } else {
             this.currentRecord.right = record;
             record.left = this.currentRecord;
             this.currentRecord = record;
@@ -86,30 +84,28 @@ public class ConstrainedIteratorFromPositionToTableStart extends IteratorFromPos
     }
 
     public boolean hasNext() {
-        if (!this.finishInitialPass) {
-            if (this.nextRecord == null) {
+        if ( !this.finishInitialPass ) {
+            if ( this.nextRecord == null ) {
                 boolean found = false;
-                while (!found && this.currentTableRecord != null) {
-                    if (this.constraints.isAllowedAlpha( (InternalFactHandle) this.currentTableRecord.object,
-                                                         null,
-                                                         this.workingMemory )) {
+                while ( !found && this.currentTableRecord != null ) {
+                    if ( this.constraints.isAllowedAlpha( (InternalFactHandle) this.currentTableRecord.object,
+                                                          null,
+                                                          this.workingMemory ) ) {
                         this.add( this.currentTableRecord.object );
                         found = true;
                     }
-                    if (this.currentTableRecord == null) {
+                    if ( this.currentTableRecord == null ) {
                         this.finishInitialPass = true;
                     }
                     this.currentTableRecord = this.currentTableRecord.right;
                 }
 
                 return found;
-            }
-            else {
+            } else {
                 return true;
             }
-        }
-        else {
-            return super.hasNext( );
+        } else {
+            return super.hasNext();
         }
     }
 }

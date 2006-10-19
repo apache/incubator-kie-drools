@@ -50,7 +50,7 @@ public class MockTupleSource extends TupleSource {
         return this.updated;
     }
 
-    public void updateSink(TupleSink sink,
+    public void updateSink(final TupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         this.updated++;

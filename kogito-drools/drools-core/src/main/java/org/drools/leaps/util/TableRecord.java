@@ -23,7 +23,9 @@ import java.io.Serializable;
  * @author Alexander Bagerman
  * 
  */
-public class TableRecord implements Serializable {
+public class TableRecord
+    implements
+    Serializable {
     /**
      * 
      */
@@ -45,14 +47,13 @@ public class TableRecord implements Serializable {
     }
 
     public int hashCode() {
-        return this.object.hashCode( );
+        return this.object.hashCode();
     }
 
-    public boolean equals( final Object that ) {
-        if (this.object != null) {
-            return this.object.equals( ( (TableRecord) that ).object );
-        }
-        else {
+    public boolean equals(final Object that) {
+        if ( this.object != null ) {
+            return this.object.equals( ((TableRecord) that).object );
+        } else {
             return that == null;
         }
     }

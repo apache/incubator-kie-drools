@@ -31,10 +31,10 @@ import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
@@ -383,9 +383,9 @@ public class LeapsRuleBaseTest extends DroolsTestCase {
     }
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
-                                                 final String fieldName,
-                                                 final Object fieldValue,
-                                                 final Evaluator evaluator) {
+                                                          final String fieldName,
+                                                          final Object fieldValue,
+                                                          final Evaluator evaluator) {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,

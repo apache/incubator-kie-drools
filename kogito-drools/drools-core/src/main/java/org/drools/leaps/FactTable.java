@@ -19,13 +19,13 @@ package org.drools.leaps;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import org.apache.commons.collections.map.IdentityMap;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.Table;
 import org.drools.leaps.util.TableIterator;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.IdentityMap;
 
 /**
  * Implementation of a container to store data elements used throughout the
@@ -66,11 +66,11 @@ class FactTable extends Table {
      * @param ruleConflictResolver
      */
     public FactTable(final ConflictResolver conflictResolver) {
-        super( conflictResolver.getFactConflictResolver( ) );
-        this.rules = new RuleTable( conflictResolver.getRuleConflictResolver( ) );
+        super( conflictResolver.getFactConflictResolver() );
+        this.rules = new RuleTable( conflictResolver.getRuleConflictResolver() );
         this.tuples = new IdentityMap();
-        this.comparator = conflictResolver.getFactConflictResolver( );
-        this.notAndExistsHashedTables = new IdentityMap( );
+        this.comparator = conflictResolver.getFactConflictResolver();
+        this.notAndExistsHashedTables = new IdentityMap();
     }
 
     /**
@@ -79,9 +79,9 @@ class FactTable extends Table {
      * @param workingMemory
      * @param ruleHandle
      */
-    public void addRule( final LeapsWorkingMemory workingMemory,
-                         final LeapsRuleHandle ruleHandle ) {
-        if (!this.rules.contains( ruleHandle )) {
+    public void addRule(final LeapsWorkingMemory workingMemory,
+                        final LeapsRuleHandle ruleHandle) {
+        if ( !this.rules.contains( ruleHandle ) ) {
             this.rules.add( ruleHandle );
             // push facts back to stack if needed
             this.checkAndAddFactsToStack( workingMemory );
@@ -93,13 +93,13 @@ class FactTable extends Table {
      * 
      * @param ruleHandle
      */
-    public void removeRule( final LeapsWorkingMemory workingMemory,
-                            final LeapsRuleHandle ruleHandle ) {
+    public void removeRule(final LeapsWorkingMemory workingMemory,
+                           final LeapsRuleHandle ruleHandle) {
         this.rules.remove( ruleHandle );
         // remove tuples that are still there
-        for (final Iterator it = this.getTuplesIterator( ); it.hasNext( );) {
-            final LeapsTuple tuple = (LeapsTuple) it.next( );
-            if (ruleHandle.getLeapsRule( ).getRule( ) == tuple.getLeapsRule( ).getRule( )) {
+        for ( final Iterator it = this.getTuplesIterator(); it.hasNext(); ) {
+            final LeapsTuple tuple = (LeapsTuple) it.next();
+            if ( ruleHandle.getLeapsRule().getRule() == tuple.getLeapsRule().getRule() ) {
                 this.tuples.remove( tuple );
             }
         }
@@ -114,24 +114,26 @@ class FactTable extends Table {
      *            memory
      * 
      */
-    private void checkAndAddFactsToStack( final LeapsWorkingMemory workingMemory ) {
-        if (this.reseededStack) {
+    private void checkAndAddFactsToStack(final LeapsWorkingMemory workingMemory) {
+        if ( this.reseededStack ) {
             this.setReseededStack( false );
 
-            final PropagationContextImpl context = new PropagationContextImpl( workingMemory.nextPropagationIdCounter( ),
+            final PropagationContextImpl context = new PropagationContextImpl( workingMemory.nextPropagationIdCounter(),
                                                                                PropagationContext.ASSERTION,
                                                                                null,
                                                                                null );
 
             // let's only add facts below waterline - added before rule is added
             // rest would be added to stack automatically
-            final DefaultFactHandle startFactHandle = new DefaultFactHandle( workingMemory.getIdLastFireAllAt( ),
-                                                                             new Object( ) );
-            for (final Iterator it = this.iteratorFromPositionToTableStart( startFactHandle, startFactHandle ); it.hasNext( );) {
-                final LeapsFactHandle handle = (LeapsFactHandle) it.next( );
-                workingMemory.pushTokenOnStack( handle, new Token( workingMemory,
-                                                                   handle,
-                                                                   context ) );
+            final DefaultFactHandle startFactHandle = new DefaultFactHandle( workingMemory.getIdLastFireAllAt(),
+                                                                             new Object() );
+            for ( final Iterator it = this.iteratorFromPositionToTableStart( startFactHandle,
+                                                                             startFactHandle ); it.hasNext(); ) {
+                final LeapsFactHandle handle = (LeapsFactHandle) it.next();
+                workingMemory.pushTokenOnStack( handle,
+                                                new Token( workingMemory,
+                                                           handle,
+                                                           context ) );
             }
         }
     }
@@ -142,7 +144,7 @@ class FactTable extends Table {
      * @param new
      *            value
      */
-    public void setReseededStack( final boolean reseeded ) {
+    public void setReseededStack(final boolean reseeded) {
         this.reseededStack = reseeded;
     }
 
@@ -153,106 +155,108 @@ class FactTable extends Table {
      * @return iterator of positive rule handles
      */
     public Iterator getRulesIterator() {
-        return this.rules.iterator( );
+        return this.rules.iterator();
     }
 
     /**
      * @see java.lang.Object
      */
     public String toString() {
-        final StringBuffer ret = new StringBuffer( );
+        final StringBuffer ret = new StringBuffer();
 
-        for (final Iterator it = this.iterator( ); it.hasNext( );) {
-            final LeapsFactHandle handle = (LeapsFactHandle) it.next( );
-            ret.append( "\n" + handle + "[" + handle.getObject( ) + "]" );
+        for ( final Iterator it = this.iterator(); it.hasNext(); ) {
+            final LeapsFactHandle handle = (LeapsFactHandle) it.next();
+            ret.append( "\n" + handle + "[" + handle.getObject() + "]" );
         }
 
         ret.append( "\nTuples :" );
 
-        for (final Iterator it = this.tuples.values( ).iterator( ); it.hasNext( );) {
-            ret.append( "\n" + it.next( ) );
+        for ( final Iterator it = this.tuples.values().iterator(); it.hasNext(); ) {
+            ret.append( "\n" + it.next() );
         }
 
         ret.append( "\nRules :" );
 
-        for (final Iterator it = this.rules.iterator( ); it.hasNext( );) {
-            final LeapsRuleHandle handle = (LeapsRuleHandle) it.next( );
-            ret.append( "\n\t" + handle.getLeapsRule( ).getRule( ).getName( )
-                    + "[dominant - " + handle.getDominantPosition( ) + "]" );
+        for ( final Iterator it = this.rules.iterator(); it.hasNext(); ) {
+            final LeapsRuleHandle handle = (LeapsRuleHandle) it.next();
+            ret.append( "\n\t" + handle.getLeapsRule().getRule().getName() + "[dominant - " + handle.getDominantPosition() + "]" );
         }
 
-        return ret.toString( );
+        return ret.toString();
     }
 
     protected Iterator getTuplesIterator() {
-        return this.tuples.values( ).iterator( );
+        return this.tuples.values().iterator();
     }
 
-    protected void addTuple( final LeapsTuple tuple ) {
-        this.tuples.put( tuple,tuple );
+    protected void addTuple(final LeapsTuple tuple) {
+        this.tuples.put( tuple,
+                         tuple );
     }
 
-    protected void removeTuple( final LeapsTuple tuple ) {
+    protected void removeTuple(final LeapsTuple tuple) {
         this.tuples.remove( tuple );
     }
-    
+
     private final IdentityMap notAndExistsHashedTables;
 
     private final Comparator  comparator;
-    
-    public void add( Object object ) {
+
+    public void add(final Object object) {
         super.add( object );
-        for (Iterator it = this.notAndExistsHashedTables.values( ).iterator( ); it.hasNext( );) {
+        for ( final Iterator it = this.notAndExistsHashedTables.values().iterator(); it.hasNext(); ) {
             // this will also add link to hash into the leapsfacthandle
-            ((HashedTableComponent)it.next( )).add( (LeapsFactHandle)object );
+            ((HashedTableComponent) it.next()).add( (LeapsFactHandle) object );
         }
     }
 
-    public void remove( Object object ) {
+    public void remove(final Object object) {
         super.remove( object );
         // during modify we need to directly remove facts from participating 
         // hashes because modify can throw us off
-        ((LeapsFactHandle)object ).removeFromHash();
+        ((LeapsFactHandle) object).removeFromHash();
     }
 
-    protected void createHashedSubTable(ColumnConstraints constraint) {
-        this.notAndExistsHashedTables.put( constraint, new HashedTableComponent( constraint,
-                        this.comparator ) );
+    protected void createHashedSubTable(final ColumnConstraints constraint) {
+        this.notAndExistsHashedTables.put( constraint,
+                                           new HashedTableComponent( constraint,
+                                                                     this.comparator ) );
     }
 
-    protected TableIterator reverseOrderIterator( Tuple tuple, ColumnConstraints constraint ) {
-        TableIterator ret = ( (HashedTableComponent) this.notAndExistsHashedTables.get( constraint ) ).reverseOrderIterator( tuple ); 
-        if (ret == null){
-            ret = Table.emptyIterator( );
+    protected TableIterator reverseOrderIterator(final Tuple tuple,
+                                                 final ColumnConstraints constraint) {
+        TableIterator ret = ((HashedTableComponent) this.notAndExistsHashedTables.get( constraint )).reverseOrderIterator( tuple );
+        if ( ret == null ) {
+            ret = Table.emptyIterator();
         }
         return ret;
     }
 
-    protected TableIterator iteratorFromPositionToTableStart( Tuple tuple,
-                                                              ColumnConstraints constraint,
-                                                              LeapsFactHandle startFactHandle,
-                                                              LeapsFactHandle currentFactHandle ) {
-        TableIterator ret = ( (HashedTableComponent) this.notAndExistsHashedTables.get( constraint ) ).iteratorFromPositionToTableStart( tuple,
-                                                                                                                                         startFactHandle,
-                                                                                                                                         currentFactHandle );
-        if (ret == null) {
-            ret = Table.emptyIterator( );
+    protected TableIterator iteratorFromPositionToTableStart(final Tuple tuple,
+                                                             final ColumnConstraints constraint,
+                                                             final LeapsFactHandle startFactHandle,
+                                                             final LeapsFactHandle currentFactHandle) {
+        TableIterator ret = ((HashedTableComponent) this.notAndExistsHashedTables.get( constraint )).iteratorFromPositionToTableStart( tuple,
+                                                                                                                                       startFactHandle,
+                                                                                                                                       currentFactHandle );
+        if ( ret == null ) {
+            ret = Table.emptyIterator();
         }
         return ret;
     }
 
-    protected TableIterator iteratorFromPositionToTableEnd( Tuple tuple,
-                                                            ColumnConstraints constraint,
-                                                            LeapsFactHandle startFactHandle ) {
-        TableIterator ret = ( (HashedTableComponent) this.notAndExistsHashedTables.get( constraint ) ).iteratorFromPositionToTableEnd( tuple,
-                                                                                                                                       startFactHandle );
-        if (ret == null) {
-            ret = Table.emptyIterator( );
+    protected TableIterator iteratorFromPositionToTableEnd(final Tuple tuple,
+                                                           final ColumnConstraints constraint,
+                                                           final LeapsFactHandle startFactHandle) {
+        TableIterator ret = ((HashedTableComponent) this.notAndExistsHashedTables.get( constraint )).iteratorFromPositionToTableEnd( tuple,
+                                                                                                                                     startFactHandle );
+        if ( ret == null ) {
+            ret = Table.emptyIterator();
         }
         return ret;
     }
-    
-    protected Iterator getHashedConstraints(){
-        return this.notAndExistsHashedTables.keySet( ).iterator( );
+
+    protected Iterator getHashedConstraints() {
+        return this.notAndExistsHashedTables.keySet().iterator();
     }
 }

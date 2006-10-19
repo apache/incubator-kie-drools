@@ -11,7 +11,7 @@ import java.util.List;
 public interface CompiledInvoker
     extends
     Invoker {
-    
+
     /**
      * Generated code should be able to return a List which represents the bytecode.
      * The elements in the list will be used to compare one semantic invoker

@@ -19,7 +19,6 @@ package org.drools.facttemplates;
 import java.io.Serializable;
 import java.util.Arrays;
 
-
 //import woolfel.engine.rule.Rule;
 
 /**
@@ -28,11 +27,16 @@ import java.util.Arrays;
  * Deffact is a concrete implementation of Fact interface. It is
  * equivalent to deffact in CLIPS.
  */
-public class FactImpl implements Fact, Serializable {
+public class FactImpl
+    implements
+    Fact,
+    Serializable {
 
-    private static int hashCode(Object[] array) {
+    private static int hashCode(final Object[] array) {
         final int PRIME = 31;
-        if ( array == null ) return 0;
+        if ( array == null ) {
+            return 0;
+        }
         int result = 1;
         for ( int index = 0; index < array.length; index++ ) {
             result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -41,61 +45,63 @@ public class FactImpl implements Fact, Serializable {
     }
 
     private FactTemplate factTemplate = null;
-    private Object[] values = null;
-    private int hashCode;
-    
+    private Object[]     values       = null;
+    private int          hashCode;
+
     /**
      * the Fact id must be unique, since we use it for the indexes
      */
-    private long id;
-    
+    private long         id;
+
     /**
      * this is the default constructor
      * @param instance
      * @param values
      */
-    public FactImpl(FactTemplate template, Object[] values, long id){
+    public FactImpl(final FactTemplate template,
+                    final Object[] values,
+                    final long id) {
         this.factTemplate = template;
-        this.values= values;
+        this.values = values;
         this.id = id;
     }
 
-    public FactImpl(FactTemplate template, long id){
+    public FactImpl(final FactTemplate template,
+                    final long id) {
         this.factTemplate = template;
-        this.values= new Object[ template.getNumberOfFields() ];
+        this.values = new Object[template.getNumberOfFields()];
         this.id = id;
-    }    
-    
+    }
+
     /**
      * Method returns the value of the given slot at the
      * id.
      * @param id
      * @return
      */
-    public Object getFieldValue(int index){
-        return this.values[ index ];
+    public Object getFieldValue(final int index) {
+        return this.values[index];
     }
-    
-    public Object getFieldValue(String name){
-        return this.values[ this.factTemplate.getFieldTemplateIndex( name ) ];
+
+    public Object getFieldValue(final String name) {
+        return this.values[this.factTemplate.getFieldTemplateIndex( name )];
     }
-    
-    
-    
-    public void setFieldValue(String name, Object value) {
+
+    public void setFieldValue(final String name,
+                              final Object value) {
         setFieldValue( this.factTemplate.getFieldTemplateIndex( name ),
                        value );
     }
-    
-    public void setFieldValue(int index, Object value) {
-        this.values[ index ] = value;
+
+    public void setFieldValue(final int index,
+                              final Object value) {
+        this.values[index] = value;
     }
-     
 
     /**
      * Return the long factId
      */
-    public long getFactId(){
+    public long getFactId() {
         return this.id;
     }
 
@@ -104,49 +110,49 @@ public class FactImpl implements Fact, Serializable {
      * assert the same fact again, we reset the id to the existing one.
      * @param fact
      */
-    protected void resetId(Fact fact) {
-    	this.id = fact.getFactId();
+    protected void resetId(final Fact fact) {
+        this.id = fact.getFactId();
     }
-        
+
     /**
      * Return the deftemplate for the fact
      */
-    public FactTemplate getFactTemplate(){
+    public FactTemplate getFactTemplate() {
         return this.factTemplate;
-    }       
-    
+    }
+
     public int hashCode() {
-        if ( hashCode == 0 )  {
+        if ( this.hashCode == 0 ) {
             final int PRIME = 31;
             int result = 1;
             result = PRIME * result + this.factTemplate.hashCode();
             result = PRIME * result + FactImpl.hashCode( this.values );
-            hashCode = result;
-            
+            this.hashCode = result;
+
         }
         return this.hashCode;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
-        
+
         if ( object == null || FactImpl.class != object.getClass() ) {
             return false;
         }
-        
-        final FactImpl other = ( FactImpl ) object;
+
+        final FactImpl other = (FactImpl) object;
 
         if ( !this.factTemplate.equals( other.factTemplate ) ) {
             return false;
         }
-        
+
         if ( !Arrays.equals( this.values,
                              other.values ) ) {
             return false;
         }
-        
+
         return true;
-    }    
+    }
 }

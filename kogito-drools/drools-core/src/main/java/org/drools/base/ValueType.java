@@ -111,9 +111,9 @@ public class ValueType
     private final Class            classType;
     private final EvaluatorFactory evaluatorFactory;
 
-    private ValueType(String name,
-                      Class classType,
-                      EvaluatorFactory evaluatorFactory) {
+    private ValueType(final String name,
+                      final Class classType,
+                      final EvaluatorFactory evaluatorFactory) {
         this.name = name;
         this.classType = classType;
         this.evaluatorFactory = evaluatorFactory;
@@ -131,11 +131,11 @@ public class ValueType
         return this.classType;
     }
 
-    public Evaluator getEvaluator(Operator operator) {
+    public Evaluator getEvaluator(final Operator operator) {
         return this.evaluatorFactory.getEvaluator( operator );
     }
 
-    public static ValueType determineValueType(Class clazz) {
+    public static ValueType determineValueType(final Class clazz) {
         if ( clazz == null ) {
             return ValueType.NULL_TYPE;
         }
@@ -199,7 +199,7 @@ public class ValueType
         return this.name.hashCode();
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }
@@ -212,13 +212,8 @@ public class ValueType
     }
 
     public boolean isNumber() {
-        return (Number.class.isAssignableFrom( this.classType )) || 
-               (this.classType == Byte.TYPE) || 
-               (this.classType == Short.TYPE) || 
-               (this.classType == Integer.TYPE) || 
-               (this.classType == Long.TYPE) || 
-               (this.classType == Float.TYPE) || 
-               (this.classType == Double.TYPE);
+        return (Number.class.isAssignableFrom( this.classType )) || (this.classType == Byte.TYPE) || (this.classType == Short.TYPE) || (this.classType == Integer.TYPE) || (this.classType == Long.TYPE) || (this.classType == Float.TYPE)
+               || (this.classType == Double.TYPE);
     }
 
     public boolean isChar() {

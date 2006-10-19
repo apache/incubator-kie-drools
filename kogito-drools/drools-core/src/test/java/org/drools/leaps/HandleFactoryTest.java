@@ -84,7 +84,7 @@ public class HandleFactoryTest extends TestCase {
         final long nextId = this.factory.getNextId() + 1;
         assertEquals( nextId,
                       ((DefaultFactHandle) this.factory.newFactHandle( 984393L,
-                                                            new Object() )).getId() );
+                                                                       new Object() )).getId() );
 
     }
 

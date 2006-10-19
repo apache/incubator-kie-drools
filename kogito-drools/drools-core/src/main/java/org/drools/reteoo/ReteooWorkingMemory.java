@@ -23,11 +23,9 @@ import java.util.List;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.QueryResults;
-import org.drools.WorkingMemory;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
-import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
@@ -136,12 +134,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
         public void propagate() {
 
-            PropagationContext context = new PropagationContextImpl( ReteooWorkingMemory.this.propagationIdCounter++,
+            final PropagationContext context = new PropagationContextImpl( ReteooWorkingMemory.this.propagationIdCounter++,
                                                                      PropagationContext.ASSERTION,
                                                                      this.ruleOrigin,
                                                                      this.activationOrigin );
-            ReteooWorkingMemory.this.ruleBase.assertObject( factHandle,
-                                                            factHandle.getObject(),
+            ReteooWorkingMemory.this.ruleBase.assertObject( this.factHandle,
+                                                            this.factHandle.getObject(),
                                                             context,
                                                             ReteooWorkingMemory.this );
         }

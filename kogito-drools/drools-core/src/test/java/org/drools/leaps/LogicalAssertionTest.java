@@ -71,7 +71,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                     new ArrayList(),
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList()  );
+                                                    new ArrayList() );
 
         final LeapsFactHandle[] factHandles = new LeapsFactHandle[1];
         PropagationContext context1;
@@ -130,7 +130,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final LeapsRule leapsRule1 = new LeapsRule( rule1,
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList(), 
+                                                    new ArrayList(),
                                                     new ArrayList() );
 
         final LeapsFactHandle[] factHandles = new LeapsFactHandle[1];
@@ -152,22 +152,25 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                      false,
                                                                      true,
                                                                      null,
-                                                                     this.workingMemory.getAgenda( )
-                                                                                       .getActivations( )[0] );
+                                                                     this.workingMemory.getAgenda().getActivations()[0] );
 
         String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = this.workingMemory.assertObject( logicalString2 );
 
         // Should keep the same handle when overriding
-        assertSame( logicalHandle1, logicalHandle2 );
+        assertSame( logicalHandle1,
+                    logicalHandle2 );
 
         // so while new STATED assertion is equal
-        assertEquals( logicalString1, this.workingMemory.getObject( logicalHandle2 ) );
+        assertEquals( logicalString1,
+                      this.workingMemory.getObject( logicalHandle2 ) );
         // they are not - not identity same - leaps can not store two objects if
         // handles are the same
-        assertNotSame( logicalString1, this.workingMemory.getObject( logicalHandle2 ) );
-        
-        assertSame( logicalString2, this.workingMemory.getObject( logicalHandle2 ) );
+        assertNotSame( logicalString1,
+                       this.workingMemory.getObject( logicalHandle2 ) );
+
+        assertSame( logicalString2,
+                    this.workingMemory.getObject( logicalHandle2 ) );
 
         // Test that a logical assertion cannot override a STATED assertion
         factHandles[0] = (LeapsFactHandle) logicalHandle2;
@@ -225,7 +228,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final LeapsRule leapsRule1 = new LeapsRule( rule1,
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList(), 
+                                                    new ArrayList(),
                                                     new ArrayList() );
 
         final LeapsFactHandle tuple1FactHandle = (LeapsFactHandle) this.workingMemory.assertObject( "tuple1 object" );
@@ -298,7 +301,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final LeapsRule leapsRule1 = new LeapsRule( rule1,
                                                     new ArrayList(),
                                                     new ArrayList(),
-                                                    new ArrayList(), 
+                                                    new ArrayList(),
                                                     new ArrayList() );
 
         final LeapsFactHandle tuple1Fact = (LeapsFactHandle) this.workingMemory.assertObject( "tuple1 object" );

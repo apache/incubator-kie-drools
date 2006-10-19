@@ -3,7 +3,6 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
 
 public interface TupleSinkPropagator {
     public void propagateAssertTuple(ReteTuple tuple,
@@ -14,20 +13,19 @@ public interface TupleSinkPropagator {
     public void propagateAssertTuple(ReteTuple tuple,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);
-    
+
     public void propagateRetractTuple(ReteTuple tuple,
                                       InternalFactHandle handle,
                                       PropagationContext context,
-                                      InternalWorkingMemory workingMemory);  
-    
+                                      InternalWorkingMemory workingMemory);
+
     public void propagateRetractTuple(ReteTuple tuple,
                                       PropagationContext context,
-                                      InternalWorkingMemory workingMemory);            
-
+                                      InternalWorkingMemory workingMemory);
 
     public ReteTuple createAndPropagateAssertTuple(InternalFactHandle handle,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory);
+                                                   PropagationContext context,
+                                                   InternalWorkingMemory workingMemory);
 
     public void createAndPropagateRetractTuple(ReteTuple tuple,
                                                PropagationContext context,

@@ -27,7 +27,6 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class MockTupleSink extends TupleSource
     implements
@@ -39,7 +38,6 @@ public class MockTupleSink extends TupleSource
     private static final long serialVersionUID = -5292603482246485028L;
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();
-  
 
     public MockTupleSink() {
         super( 0 );

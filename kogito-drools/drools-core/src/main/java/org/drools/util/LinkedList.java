@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.drools.reteoo.CompositeObjectSinkAdapter.FieldIndex;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -45,13 +43,15 @@ import org.drools.reteoo.CompositeObjectSinkAdapter.FieldIndex;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class LinkedList implements Serializable {
+public class LinkedList
+    implements
+    Serializable {
     private static final long serialVersionUID = 320;
-    
-    private LinkedListNode firstNode;
-    private LinkedListNode lastNode;
 
-    private int            size;
+    private LinkedListNode    firstNode;
+    private LinkedListNode    lastNode;
+
+    private int               size;
 
     /**
      * Construct an empty <code>LinkedList</code>
@@ -145,15 +145,16 @@ public class LinkedList implements Serializable {
         return node;
     }
 
-    public void insertAfter(LinkedListNode existingNode, LinkedListNode newNode) {
-        if  ( newNode.getPrevious() != null || newNode.getNext() != null ) {
+    public void insertAfter(final LinkedListNode existingNode,
+                            final LinkedListNode newNode) {
+        if ( newNode.getPrevious() != null || newNode.getNext() != null ) {
             //do nothing if this node is already inserted somewhere
             return;
         }
 
-        if (existingNode == null ) {
+        if ( existingNode == null ) {
             // if existing node is null, then insert it as a first node
-            LinkedListNode node = this.firstNode;
+            final LinkedListNode node = this.firstNode;
             node.setPrevious( newNode );
             newNode.setNext( node );
             this.firstNode = newNode;
@@ -165,7 +166,7 @@ public class LinkedList implements Serializable {
         }
         this.size++;
     }
-    
+
     /**
      * Remove the last node from the list. The previous node then becomes the last node. If this is the last 
      * node then both first and last node references are set to null.
@@ -187,7 +188,7 @@ public class LinkedList implements Serializable {
         }
         this.size--;
         return node;
-    }    
+    }
 
     /**
      * @return
@@ -212,32 +213,32 @@ public class LinkedList implements Serializable {
     public final int size() {
         return this.size;
     }
-    
-    public int hashCode()  {
+
+    public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        for ( LinkedListNode node = this.firstNode; node  != null; node =  node.getNext()  ) {
-            result = PRIME * result + node.hashCode();    
+        for ( LinkedListNode node = this.firstNode; node != null; node = node.getNext() ) {
+            result = PRIME * result + node.hashCode();
         }
-        return result;        
+        return result;
     }
-    
-    public boolean equals(Object object) {
+
+    public boolean equals(final Object object) {
         if ( object == this ) {
-            return  true;
+            return true;
         }
-        
+
         if ( object == null || object.getClass() != LinkedList.class ) {
             return false;
         }
-        
-        LinkedList other = ( LinkedList ) object;
-        
+
+        final LinkedList other = (LinkedList) object;
+
         if ( this.size() != other.size() ) {
             return false;
         }
-        
-        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode  != null && otherNode != null; thisNode =  thisNode.getNext(), otherNode = otherNode.getNext()  ) {
+
+        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode != null && otherNode != null; thisNode = thisNode.getNext(), otherNode = otherNode.getNext() ) {
             if ( !thisNode.equals( otherNode ) ) {
                 return false;
             }
@@ -277,6 +278,6 @@ public class LinkedList implements Serializable {
                 }
             }
         };
-    }        
+    }
 
 }

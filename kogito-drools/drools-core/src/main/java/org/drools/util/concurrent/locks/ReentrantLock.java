@@ -25,7 +25,9 @@ public class ReentrantLock
 
     private final NonfairSync sync;
 
-    final static class NonfairSync implements Serializable {
+    final static class NonfairSync
+        implements
+        Serializable {
         private static final long  serialVersionUID = 7316153563782823691L;
 
         protected transient Thread owner_           = null;

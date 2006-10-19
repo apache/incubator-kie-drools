@@ -20,7 +20,9 @@ import java.io.Serializable;
 
 import org.drools.rule.Rule;
 
-public interface PropagationContext extends Serializable {
+public interface PropagationContext
+    extends
+    Serializable {
 
     public static final int ASSERTION     = 0;
     public static final int RETRACTION    = 1;

@@ -42,38 +42,38 @@ public class TestBean {
     }
 
     public boolean isBooleanAttr() {
-        return booleanAttr;
+        return this.booleanAttr;
     }
 
     public byte getByteAttr() {
-        return byteAttr;
+        return this.byteAttr;
     }
 
     public char getCharAttr() {
-        return charAttr;
+        return this.charAttr;
     }
 
     public double getDoubleAttr() {
-        return doubleAttr;
+        return this.doubleAttr;
     }
 
     public float getFloatAttr() {
-        return floatAttr;
+        return this.floatAttr;
     }
 
     public int getIntAttr() {
-        return intAttr;
+        return this.intAttr;
     }
 
     public List getListAttr() {
-        return listAttr;
+        return this.listAttr;
     }
 
     public long getLongAttr() {
-        return longAttr;
+        return this.longAttr;
     }
 
     public short getShortAttr() {
-        return shortAttr;
+        return this.shortAttr;
     }
 }

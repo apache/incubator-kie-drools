@@ -19,12 +19,6 @@ package org.drools.reteoo;
 import java.lang.reflect.Field;
 
 import org.drools.DroolsTestCase;
-import org.drools.RuleBaseFactory;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.PropagationContextImpl;
-import org.drools.rule.Rule;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class TupleSourceTest extends DroolsTestCase {
 
@@ -42,44 +36,49 @@ public class TupleSourceTest extends DroolsTestCase {
 
     public void testAddTupleSink() throws Exception {
         final MockTupleSource source = new MockTupleSource( 15 );
-        
+
         // We need to re-assign this var each time the sink changes references
-        Field field =  TupleSource.class.getDeclaredField( "sink" );
+        final Field field = TupleSource.class.getDeclaredField( "sink" );
         field.setAccessible( true );
-        TupleSinkPropagator sink = ( TupleSinkPropagator ) field.get( source );        
-        
+        TupleSinkPropagator sink = (TupleSinkPropagator) field.get( source );
+
         assertNull( sink );
 
-        MockTupleSink sink1 = new MockTupleSink();
-        source.addTupleSink( sink1 );        
-        sink = ( TupleSinkPropagator ) field.get( source );  
-        assertSame( SingleTupleSinkAdapter.class, sink.getClass() );
+        final MockTupleSink sink1 = new MockTupleSink();
+        source.addTupleSink( sink1 );
+        sink = (TupleSinkPropagator) field.get( source );
+        assertSame( SingleTupleSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 1,
                       sink.getSinks().length );
 
-        MockTupleSink sink2 = new MockTupleSink();
+        final MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
-        sink = ( TupleSinkPropagator ) field.get( source );
-        assertSame( CompositeTupleSinkAdapter.class, sink.getClass() );
+        sink = (TupleSinkPropagator) field.get( source );
+        assertSame( CompositeTupleSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 2,
                       sink.getSinks().length );
-        
-        MockTupleSink sink3 = new MockTupleSink();
+
+        final MockTupleSink sink3 = new MockTupleSink();
         source.addTupleSink( sink3 );
-        assertSame( CompositeTupleSinkAdapter.class, sink.getClass() );
+        assertSame( CompositeTupleSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 3,
-                      sink.getSinks().length );  
-        
+                      sink.getSinks().length );
+
         source.removeTupleSink( sink2 );
-        assertSame( CompositeTupleSinkAdapter.class, sink.getClass() );
+        assertSame( CompositeTupleSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 2,
-                      sink.getSinks().length );      
-        
+                      sink.getSinks().length );
+
         source.removeTupleSink( sink1 );
-        sink = ( TupleSinkPropagator ) field.get( source );
-        assertSame( SingleTupleSinkAdapter.class, sink.getClass() );
+        sink = (TupleSinkPropagator) field.get( source );
+        assertSame( SingleTupleSinkAdapter.class,
+                    sink.getClass() );
         assertEquals( 1,
-                      sink.getSinks().length );   
+                      sink.getSinks().length );
     }
-    
+
 }

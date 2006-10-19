@@ -24,21 +24,23 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 
-public class ShortFactory implements EvaluatorFactory {
+public class ShortFactory
+    implements
+    EvaluatorFactory {
 
-    private static final long serialVersionUID = -1295210800055648796L;
-    private static EvaluatorFactory INSTANCE = new ShortFactory();
-    
+    private static final long       serialVersionUID = -1295210800055648796L;
+    private static EvaluatorFactory INSTANCE         = new ShortFactory();
+
     private ShortFactory() {
-        
+
     }
-    
+
     public static EvaluatorFactory getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new ShortFactory();
+        if ( ShortFactory.INSTANCE == null ) {
+            ShortFactory.INSTANCE = new ShortFactory();
         }
-        return INSTANCE;
-    }        
+        return ShortFactory.INSTANCE;
+    }
 
     public Evaluator getEvaluator(final Operator operator) {
         if ( operator == Operator.EQUAL ) {
@@ -53,17 +55,17 @@ public class ShortFactory implements EvaluatorFactory {
             return ShortGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return ShortGreaterOrEqualEvaluator.INSTANCE;
-        }  else {
+        } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
-        }    
+        }
     }
-    
+
     static class ShortEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
         private static final long serialVersionUID = 320;
-        private static Evaluator  INSTANCE = new ShortEqualEvaluator();
+        private static final Evaluator  INSTANCE         = new ShortEqualEvaluator();
 
         private ShortEqualEvaluator() {
             super( ValueType.SHORT_TYPE,
@@ -82,13 +84,13 @@ public class ShortFactory implements EvaluatorFactory {
             return object1.getShortValue() == extractor.getShortValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getShortValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left == context.extractor.getShortValue( right );
         }
 
@@ -102,8 +104,8 @@ public class ShortFactory implements EvaluatorFactory {
          * 
          */
         private static final long serialVersionUID = 320;
-        private static Evaluator  INSTANCE = new ShortNotEqualEvaluator();
-        
+        private static final Evaluator  INSTANCE         = new ShortNotEqualEvaluator();
+
         private ShortNotEqualEvaluator() {
             super( ValueType.SHORT_TYPE,
                    Operator.NOT_EQUAL );
@@ -121,13 +123,13 @@ public class ShortFactory implements EvaluatorFactory {
             return object1.getShortValue() != extractor.getShortValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getShortValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left != context.extractor.getShortValue( right );
         }
 
@@ -141,7 +143,7 @@ public class ShortFactory implements EvaluatorFactory {
          * 
          */
         private static final long serialVersionUID = 320;
-        private static Evaluator  INSTANCE = new ShortLessEvaluator();
+        private static final Evaluator  INSTANCE         = new ShortLessEvaluator();
 
         private ShortLessEvaluator() {
             super( ValueType.SHORT_TYPE,
@@ -160,13 +162,13 @@ public class ShortFactory implements EvaluatorFactory {
             return object1.getShortValue() < extractor.getShortValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getShortValue( left ) < ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left < context.extractor.getShortValue( right );
         }
 
@@ -180,7 +182,7 @@ public class ShortFactory implements EvaluatorFactory {
          * 
          */
         private static final long serialVersionUID = 320;
-        private static Evaluator  INSTANCE = new ShortLessOrEqualEvaluator();
+        private static final Evaluator  INSTANCE         = new ShortLessOrEqualEvaluator();
 
         private ShortLessOrEqualEvaluator() {
             super( ValueType.SHORT_TYPE,
@@ -199,13 +201,13 @@ public class ShortFactory implements EvaluatorFactory {
             return object1.getShortValue() <= extractor.getShortValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getShortValue( left ) <= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left <= context.extractor.getShortValue( right );
         }
 
@@ -219,7 +221,7 @@ public class ShortFactory implements EvaluatorFactory {
          * 
          */
         private static final long serialVersionUID = 320;
-        private static Evaluator  INSTANCE = new ShortGreaterEvaluator();
+        private static final Evaluator  INSTANCE         = new ShortGreaterEvaluator();
 
         private ShortGreaterEvaluator() {
             super( ValueType.SHORT_TYPE,
@@ -238,13 +240,13 @@ public class ShortFactory implements EvaluatorFactory {
             return object1.getShortValue() > extractor.getShortValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getShortValue( left ) > ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left > context.extractor.getShortValue( right );
         }
 
@@ -258,7 +260,7 @@ public class ShortFactory implements EvaluatorFactory {
          * 
          */
         private static final long serialVersionUID = 320;
-        private static Evaluator  INSTANCE = new ShortGreaterOrEqualEvaluator();
+        private static final Evaluator  INSTANCE         = new ShortGreaterOrEqualEvaluator();
 
         private ShortGreaterOrEqualEvaluator() {
             super( ValueType.SHORT_TYPE,
@@ -277,13 +279,13 @@ public class ShortFactory implements EvaluatorFactory {
             return object1.getShortValue() >= extractor.getShortValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getShortValue( left ) >= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left >= context.extractor.getShortValue( right );
         }
 

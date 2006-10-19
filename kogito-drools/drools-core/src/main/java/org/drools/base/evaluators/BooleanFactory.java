@@ -28,18 +28,18 @@ public class BooleanFactory
     implements
     EvaluatorFactory {
 
-    private static final long serialVersionUID = -1463529133869380215L;
-    private static EvaluatorFactory INSTANCE = new BooleanFactory();
+    private static final long       serialVersionUID = -1463529133869380215L;
+    private static EvaluatorFactory INSTANCE         = new BooleanFactory();
 
     private BooleanFactory() {
 
     }
 
     public static EvaluatorFactory getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new BooleanFactory();
+        if ( BooleanFactory.INSTANCE == null ) {
+            BooleanFactory.INSTANCE = new BooleanFactory();
         }
-        return INSTANCE;
+        return BooleanFactory.INSTANCE;
     }
 
     public Evaluator getEvaluator(final Operator operator) {
@@ -76,13 +76,13 @@ public class BooleanFactory
             return extractor.getBooleanValue( object2 ) == object1.getBooleanValue();
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getBooleanValue( left ) == ((BooleanVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object object2) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object object2) {
             return context.extractor.getBooleanValue( object2 ) == ((BooleanVariableContextEntry) context).left;
         }
 
@@ -115,13 +115,13 @@ public class BooleanFactory
             return extractor.getBooleanValue( object2 ) != object1.getBooleanValue();
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getBooleanValue( left ) != ((BooleanVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object object2) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object object2) {
             return context.extractor.getBooleanValue( object2 ) != ((BooleanVariableContextEntry) context).left;
         }
 

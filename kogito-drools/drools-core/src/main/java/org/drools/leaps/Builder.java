@@ -83,7 +83,8 @@ class Builder {
                 evalConditions.add( eval );
             } else {
                 if ( object instanceof Column ) {
-                    constraints = Builder.processColumn( (Column) object, true );
+                    constraints = Builder.processColumn( (Column) object,
+                                                         true );
                     // create column constraints
                 } else {
                     // NOTS and EXISTS
@@ -91,7 +92,8 @@ class Builder {
                     while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
                         ce = (GroupElement) ce.getChildren().get( 0 );
                     }
-                    constraints = Builder.processColumn( (Column) ce.getChildren().get( 0 ) , false);
+                    constraints = Builder.processColumn( (Column) ce.getChildren().get( 0 ),
+                                                         false );
                 }
                 if ( object instanceof Not ) {
                     notCols.add( constraints );
@@ -156,39 +158,40 @@ class Builder {
      * @return leaps packaged ColumnConstraints
      */
     final private static ColumnConstraints processColumn(final Column column,
-                                                         final boolean removeIdentities ) {
+                                                         final boolean removeIdentities) {
         BetaConstraints binder;
-        final List alphaConstraints = new ArrayList( );
-        final List predicateConstraints = new ArrayList( );
+        final List alphaConstraints = new ArrayList();
+        final List predicateConstraints = new ArrayList();
 
-        final List constraints = column.getConstraints( );
+        final List constraints = column.getConstraints();
 
-        Map declarations = new HashMap( );
+        final Map declarations = new HashMap();
 
-        if (column.getDeclaration( ) != null) {
-            final Declaration declaration = column.getDeclaration( );
+        if ( column.getDeclaration() != null ) {
+            final Declaration declaration = column.getDeclaration();
             // Add the declaration the map of previously bound declarations
-            declarations.put( declaration.getIdentifier( ), declaration );
+            declarations.put( declaration.getIdentifier(),
+                              declaration );
         }
 
-        for (final Iterator it = constraints.iterator( ); it.hasNext( );) {
-            final Object object = it.next( );
+        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             // Check if its a declaration
-            if (object instanceof Declaration) {
+            if ( object instanceof Declaration ) {
                 final Declaration declaration = (Declaration) object;
                 // Add the declaration the map of previously bound declarations
-                declarations.put( declaration.getIdentifier( ), declaration );
+                declarations.put( declaration.getIdentifier(),
+                                  declaration );
                 continue;
             }
 
             final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
-                alphaConstraints.add( fieldConstraint);
+                alphaConstraints.add( fieldConstraint );
             } else {
                 predicateConstraints.add( fieldConstraint );
             }
         }
-
 
         if ( !predicateConstraints.isEmpty() ) {
             binder = new DefaultBetaConstraints( (AlphaNodeFieldConstraint[]) predicateConstraints.toArray( new AlphaNodeFieldConstraint[predicateConstraints.size()] ) );
@@ -200,13 +203,15 @@ class Builder {
                                       alphaConstraints,
                                       binder );
     }
+
     /**
      * Make sure the required declarations are previously bound
      * 
      * @param declarations
      * @throws InvalidPatternException
      */
-    private static void checkUnboundDeclarations(final Map declarations, final Declaration[] requiredDeclarations) throws InvalidPatternException {
+    private static void checkUnboundDeclarations(final Map declarations,
+                                                 final Declaration[] requiredDeclarations) throws InvalidPatternException {
         final List list = new ArrayList();
         for ( int i = 0, length = requiredDeclarations.length; i < length; i++ ) {
             if ( declarations.get( requiredDeclarations[i].getIdentifier() ) == null ) {

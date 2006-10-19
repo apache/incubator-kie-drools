@@ -30,7 +30,7 @@ public class LeapsFactHandleTest extends TestCase {
      */
     public void testGetId() {
         final LeapsFactHandle handle = new LeapsFactHandle( 123456789,
-                                          new String( "test124" ) );
+                                                            new String( "test124" ) );
         assertEquals( handle.getId(),
                       123456789 );
         assertEquals( handle.getObject(),

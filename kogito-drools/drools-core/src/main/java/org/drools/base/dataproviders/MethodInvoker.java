@@ -31,14 +31,14 @@ public class MethodInvoker
     /**
      * Method invoker for static method
      */
-    public MethodInvoker(String methodName,
-                         Class clazz,
-                         ValueHandler[] valueHandlers) {
+    public MethodInvoker(final String methodName,
+                         final Class clazz,
+                         final ValueHandler[] valueHandlers) {
         this.instanceValueHandler = null;
         this.valueHandlers = valueHandlers;
 
         // determine required declarations
-        List list = new ArrayList( 1 );
+        final List list = new ArrayList( 1 );
 
         for ( int i = 0, length = valueHandlers.length; i < length; i++ ) {
             if ( valueHandlers[i].getClass() == DeclarationVariable.class ) {
@@ -47,7 +47,7 @@ public class MethodInvoker
         }
 
         if ( list.isEmpty() ) {
-            this.requiredDeclarations = EMPTY_DECLARATIONS;
+            this.requiredDeclarations = MethodInvoker.EMPTY_DECLARATIONS;
         } else {
             this.requiredDeclarations = (Declaration[]) list.toArray( new Declaration[list.size()] );
         }
@@ -64,14 +64,14 @@ public class MethodInvoker
     /**
      * Method invoker for an instance
      */
-    public MethodInvoker(String methodName,
-                         ValueHandler instanceValueHandler,
-                         ValueHandler[] valueHandlers) {
+    public MethodInvoker(final String methodName,
+                         final ValueHandler instanceValueHandler,
+                         final ValueHandler[] valueHandlers) {
         this.instanceValueHandler = instanceValueHandler;
         this.valueHandlers = valueHandlers;
 
         // determine required declarations
-        List list = new ArrayList( 1 );
+        final List list = new ArrayList( 1 );
         if ( instanceValueHandler != null && instanceValueHandler.getClass() == DeclarationVariable.class ) {
             list.add( ((DeclarationVariable) instanceValueHandler).getDeclaration() );
         }
@@ -83,7 +83,7 @@ public class MethodInvoker
         }
 
         if ( list.isEmpty() ) {
-            this.requiredDeclarations = EMPTY_DECLARATIONS;
+            this.requiredDeclarations = MethodInvoker.EMPTY_DECLARATIONS;
         } else {
             this.requiredDeclarations = (Declaration[]) list.toArray( new Declaration[list.size()] );
         }
@@ -99,10 +99,10 @@ public class MethodInvoker
     /**
      * work out what method we will be calling at runtime, based on the name and number of parameters.
      */
-    private static Method configureMethod(Class clazz,
-                                          String methodName,
-                                          int numOfArgs) {
-        Method[] methods = clazz.getMethods();
+    private static Method configureMethod(final Class clazz,
+                                          final String methodName,
+                                          final int numOfArgs) {
+        final Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
             if ( methods[i].getName().equals( methodName ) ) {
                 if ( methods[i].getParameterTypes().length == numOfArgs ) {
@@ -114,15 +114,15 @@ public class MethodInvoker
     }
 
     public Declaration[] getRequiredDeclarations() {
-        return requiredDeclarations;
+        return this.requiredDeclarations;
     }
 
-    public Object invoke(Tuple tuple,
-                         WorkingMemory wm,
-                         PropagationContext ctx) {
+    public Object invoke(final Tuple tuple,
+                         final WorkingMemory wm,
+                         final PropagationContext ctx) {
 
         //get the instance that we are operating on
-        Object instance = this.instanceValueHandler.getValue( tuple,
+        final Object instance = this.instanceValueHandler.getValue( tuple,
                                                               wm );
 
         if ( instance == null ) {
@@ -130,15 +130,15 @@ public class MethodInvoker
         }
 
         //the args values that we will pass
-        Object[] args = new Object[this.valueHandlers.length];
+        final Object[] args = new Object[this.valueHandlers.length];
 
         //now we need to set all the values, convert if literal
         for ( int i = 0; i < this.valueHandlers.length; i++ ) {
-            ValueHandler handler = valueHandlers[i];
+            final ValueHandler handler = this.valueHandlers[i];
             if ( handler instanceof LiteralValue ) {
-                String text = (String) handler.getValue( tuple,
+                final String text = (String) handler.getValue( tuple,
                                                          wm );
-                Class type = parameterTypes[i];
+                final Class type = this.parameterTypes[i];
                 if ( type == String.class ) {
                     args[i] = text;
                 } else {
@@ -157,11 +157,11 @@ public class MethodInvoker
             result = this.method.invoke( instance,
                                          args );
             // @todo : should wrap and return an exception that the user understands
-        } catch ( IllegalArgumentException e ) {
+        } catch ( final IllegalArgumentException e ) {
             throw new RuntimeDroolsException( e );
-        } catch ( IllegalAccessException e ) {
+        } catch ( final IllegalAccessException e ) {
             throw new RuntimeDroolsException( e );
-        } catch ( InvocationTargetException e ) {
+        } catch ( final InvocationTargetException e ) {
             throw new RuntimeDroolsException( e );
         }
 
@@ -171,8 +171,8 @@ public class MethodInvoker
     /** 
      * Attempt to convert text to the target class type 
      */
-    private static Object convert(String text,
-                                  Class type) {
+    private static Object convert(final String text,
+                                  final Class type) {
         if ( type == Integer.class || type == int.class ) {
             return new Integer( text );
         } else if ( text == "null" ) {

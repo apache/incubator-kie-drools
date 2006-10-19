@@ -34,7 +34,6 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
 import org.drools.util.TupleHashTable;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
@@ -61,9 +60,9 @@ final class TerminalNode extends BaseNode
     /** The rule to invoke upon match. */
     private final Rule        rule;
     private final TupleSource tupleSource;
-    
-    private TupleSinkNode previousTupleSinkNode;
-    private TupleSinkNode nextTupleSinkNode;
+
+    private TupleSinkNode     previousTupleSinkNode;
+    private TupleSinkNode     nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -102,9 +101,9 @@ final class TerminalNode extends BaseNode
     // org.drools.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    public void assertTuple(ReteTuple tuple,
+    public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {        
+                            final InternalWorkingMemory workingMemory) {
         assertTuple( tuple,
                      context,
                      workingMemory,
@@ -127,9 +126,8 @@ final class TerminalNode extends BaseNode
                             final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
         //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
-        ReteTuple cloned = new ReteTuple( tuple );
-        
-        
+        final ReteTuple cloned = new ReteTuple( tuple );
+
         // if the current Rule is no-loop and the origin rule is the same then
         // return
         if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
@@ -146,7 +144,7 @@ final class TerminalNode extends BaseNode
                                                                       context,
                                                                       this.rule );
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-            if ( this.rule.getActivationGroup() != null ) {                
+            if ( this.rule.getActivationGroup() != null ) {
                 // Lazy cache activationGroup
                 if ( memory.getActivationGroup() == null ) {
                     memory.setActivationGroup( workingMemory.getAgenda().getActivationGroup( this.rule.getActivationGroup() ) );
@@ -157,7 +155,7 @@ final class TerminalNode extends BaseNode
             agenda.scheduleItem( item );
             tuple.setActivation( item );
             memory.getTupleMemory().add( tuple );
-            
+
             item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
         } else {
@@ -212,7 +210,7 @@ final class TerminalNode extends BaseNode
             agendaGroup.add( item );
             tuple.setActivation( item );
             memory.getTupleMemory().add( tuple );
-            
+
             item.setActivated( true );
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
@@ -222,19 +220,19 @@ final class TerminalNode extends BaseNode
         }
     }
 
-    public void retractTuple(ReteTuple leftTuple,
+    public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );        
-        ReteTuple tuple = ( ReteTuple ) memory.getTupleMemory().remove( leftTuple );
+        final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+        final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
         //an activation is null if the tuple was never propagated as an assert
-        if ( tuple != null && tuple.getActivation() != null ){
-            Activation activation = tuple.getActivation();
+        if ( tuple != null && tuple.getActivation() != null ) {
+            final Activation activation = tuple.getActivation();
             if ( activation.isActivated() ) {
                 activation.remove();
                 workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
             }
-    
+
             workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                  context,
                                                                                  this.rule );
@@ -265,7 +263,7 @@ final class TerminalNode extends BaseNode
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this,                                         
+            this.tupleSource.updateSink( this,
                                          propagationContext,
                                          workingMemory );
         }
@@ -276,9 +274,9 @@ final class TerminalNode extends BaseNode
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
 
-            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );     
-            Iterator it = memory.getTupleMemory().iterator();
-            for ( ObjectEntry entry = (ObjectEntry)it.next(); entry != null; entry = (  ObjectEntry ) it.next() ) {
+            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+            final Iterator it = memory.getTupleMemory().iterator();
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final Activation activation = (Activation) entry.getValue();
 
                 if ( activation.isActivated() ) {
@@ -292,9 +290,9 @@ final class TerminalNode extends BaseNode
                                                                                           null );
                 workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                      propagationContext,
-                                                                                     this.rule );                
+                                                                                     this.rule );
             }
-            
+
             workingMemory.propagateQueuedActions();
         }
 
@@ -305,7 +303,7 @@ final class TerminalNode extends BaseNode
     public Object createMemory(final RuleBaseConfiguration config) {
         return new TerminalNodeMemory();
     }
-    
+
     /**
      * Returns the next node
      * @return
@@ -320,7 +318,7 @@ final class TerminalNode extends BaseNode
      * @param next
      *      The next TupleSinkNode
      */
-    public void setNextTupleSinkNode(TupleSinkNode next) {
+    public void setNextTupleSinkNode(final TupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
 
@@ -330,7 +328,7 @@ final class TerminalNode extends BaseNode
      *      The previous TupleSinkNode
      */
     public TupleSinkNode getPreviousTupleSinkNode() {
-       return this.previousTupleSinkNode;
+        return this.previousTupleSinkNode;
     }
 
     /**
@@ -338,9 +336,9 @@ final class TerminalNode extends BaseNode
      * @param previous
      *      The previous TupleSinkNode
      */
-    public void setPreviousTupleSinkNode(TupleSinkNode previous) {
+    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
-    }    
+    }
 
     public int hashCode() {
         return this.rule.hashCode();
@@ -359,15 +357,17 @@ final class TerminalNode extends BaseNode
         return this.rule.equals( other.rule );
     }
 
-    class TerminalNodeMemory implements Serializable {
+    class TerminalNodeMemory
+        implements
+        Serializable {
         private static final long serialVersionUID = 320L;
 
-        private AgendaGroupImpl agendaGroup;
+        private AgendaGroupImpl   agendaGroup;
 
-        private ActivationGroup activationGroup;
-        
-        private TupleHashTable tupleMemory;
-        
+        private ActivationGroup   activationGroup;
+
+        private TupleHashTable    tupleMemory;
+
         public TerminalNodeMemory() {
             this.tupleMemory = new TupleHashTable();
         }
@@ -387,7 +387,7 @@ final class TerminalNode extends BaseNode
         public void setActivationGroup(final ActivationGroup activationGroup) {
             this.activationGroup = activationGroup;
         }
-        
+
         public TupleHashTable getTupleMemory() {
             return this.tupleMemory;
         }

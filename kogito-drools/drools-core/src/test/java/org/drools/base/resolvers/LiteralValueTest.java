@@ -14,18 +14,18 @@ import org.drools.spi.Tuple;
 
 public class LiteralValueTest extends TestCase {
     public void testLiteral() throws Exception {
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        Package pkg = new Package( "org.test" );
+        final RuleBase rb = RuleBaseFactory.newRuleBase();
+        final Package pkg = new Package( "org.test" );
         rb.addPackage( pkg );
-        WorkingMemory wm = rb.newWorkingMemory();
+        final WorkingMemory wm = rb.newWorkingMemory();
 
-        LiteralValue literal = new LiteralValue( "literal" );
+        final LiteralValue literal = new LiteralValue( "literal" );
 
-        Cheese stilton = new Cheese( "stilton",
+        final Cheese stilton = new Cheese( "stilton",
                                      20 );
-        FactHandle stiltonHandle = wm.assertObject( stilton );
+        final FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
+        final Tuple tuple = new ReteTuple( (DefaultFactHandle) stiltonHandle );
         assertEquals( "literal",
                       literal.getValue( tuple,
                                         wm ) );

@@ -81,9 +81,9 @@ public class PredicateConstraint
     }
 
     public String toString() {
-        return "[PredicateConstraint declarations=" + this.requiredDeclarations  + "]";
-    }    
-    
+        return "[PredicateConstraint declarations=" + this.requiredDeclarations + "]";
+    }
+
     public boolean isAllowed(final Object object,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {

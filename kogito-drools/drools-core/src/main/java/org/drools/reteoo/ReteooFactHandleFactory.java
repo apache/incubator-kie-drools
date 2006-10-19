@@ -22,7 +22,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
-    
+
     private static final long serialVersionUID = 300;
 
     /* (non-Javadoc)
@@ -42,7 +42,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     public FactHandleFactory newInstance() {
         return new ReteooFactHandleFactory();
     }
-    
+
     public Class getFactHandleType() {
         return DefaultFactHandle.class;
     }

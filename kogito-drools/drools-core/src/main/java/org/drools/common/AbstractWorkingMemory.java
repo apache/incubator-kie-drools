@@ -143,7 +143,7 @@ public abstract class AbstractWorkingMemory
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
         this.assertMap = new ObjectHashMap();
-        
+
         if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( conf.getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
             this.assertMap.setComparator( new IdentityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
         } else {
@@ -163,61 +163,61 @@ public abstract class AbstractWorkingMemory
     // Instance methods
     // ------------------------------------------------------------
 
-    void setRuleBase(InternalRuleBase ruleBase) {
+    void setRuleBase(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 
     public void addEventListener(final WorkingMemoryEventListener listener) {
         try {
-            lock.lock();
+            this.lock.lock();
             this.workingMemoryEventSupport.addEventListener( listener );
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
     public void removeEventListener(final WorkingMemoryEventListener listener) {
         try {
-            lock.lock();
+            this.lock.lock();
             this.workingMemoryEventSupport.removeEventListener( listener );
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
     public List getWorkingMemoryEventListeners() {
         try {
-            lock.lock();
+            this.lock.lock();
             return this.workingMemoryEventSupport.getEventListeners();
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
     public void addEventListener(final AgendaEventListener listener) {
         try {
-            lock.lock();
+            this.lock.lock();
             this.agendaEventSupport.addEventListener( listener );
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
     public void removeEventListener(final AgendaEventListener listener) {
         try {
-            lock.lock();
+            this.lock.lock();
             this.agendaEventSupport.removeEventListener( listener );
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
     public List getAgendaEventListeners() {
         try {
-            lock.lock();
+            this.lock.lock();
             return this.agendaEventSupport.getEventListeners();
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
@@ -230,10 +230,10 @@ public abstract class AbstractWorkingMemory
      */
     public Map getGlobals() {
         try {
-            lock.lock();
+            this.lock.lock();
             return this.globals;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
@@ -241,14 +241,14 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public void setGlobal(final String name,
-                          Object value) {
+                          final Object value) {
         // Cannot set null values
         if ( value == null ) {
             return;
         }
 
         try {
-            lock.lock();
+            this.lock.lock();
             // Make sure the global has been declared in the RuleBase
             final Map globalDefintions = this.ruleBase.getGlobals();
             final Class type = (Class) globalDefintions.get( name );
@@ -262,11 +262,11 @@ public abstract class AbstractWorkingMemory
                                   value );
             }
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
-    public void setGlobalResolver(GlobalResolver globalResolver) {
+    public void setGlobalResolver(final GlobalResolver globalResolver) {
         this.globalResolver = globalResolver;
     }
 
@@ -279,14 +279,14 @@ public abstract class AbstractWorkingMemory
      */
     public Object getGlobal(final String name) {
         try {
-            lock.lock();
+            this.lock.lock();
             Object object = this.globals.get( name );
             if ( object == null && this.globalResolver != null ) {
                 object = this.globalResolver.resolve( name );
             }
             return object;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
@@ -365,17 +365,17 @@ public abstract class AbstractWorkingMemory
      */
     public Object getObject(final FactHandle handle) {
         try {
-            lock.lock();
+            this.lock.lock();
             // you must always take the value from the assertMap, incase the handle
             // is not from this WorkingMemory
-            InternalFactHandle factHandle = (InternalFactHandle) this.assertMap.get( handle );
+            final InternalFactHandle factHandle = (InternalFactHandle) this.assertMap.get( handle );
             if ( factHandle != null ) {
                 return factHandle.getObject();
             }
 
             return null;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
 
     }
@@ -385,22 +385,22 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle getFactHandle(final Object object) {
         try {
-            lock.lock();
+            this.lock.lock();
             final FactHandle factHandle = (FactHandle) this.assertMap.get( object );
 
             return factHandle;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
     public List getFactHandles() {
         try {
-            lock.lock();
-            return  null;
+            this.lock.lock();
+            return null;
             //return new ArrayList( this.assertMap.values() );
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
@@ -412,7 +412,7 @@ public abstract class AbstractWorkingMemory
      * @return
      */
     public Map getFactHandleMap() {
-        return  null;
+        return null;
         //return Collections.unmodifiableMap( this.assertMap );
     }
 
@@ -422,22 +422,22 @@ public abstract class AbstractWorkingMemory
     public List getObjects() {
         final List list = new ArrayList( this.assertMap.size() );
 
-//        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
-//            list.add( ((InternalFactHandle) it.next()).getObject() );
-//        }
+        //        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
+        //            list.add( ((InternalFactHandle) it.next()).getObject() );
+        //        }
         return list;
     }
 
     public List getObjects(final Class objectClass) {
         final List list = new ArrayList();
 
-//        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
-//            final Object object = ((InternalFactHandle) it.next()).getObject();
-//
-//            if ( objectClass.isInstance( object ) ) {
-//                list.add( object );
-//            }
-//        }
+        //        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
+        //            final Object object = ((InternalFactHandle) it.next()).getObject();
+        //
+        //            if ( objectClass.isInstance( object ) ) {
+        //                list.add( object );
+        //            }
+        //        }
 
         return list;
     }
@@ -814,10 +814,10 @@ public abstract class AbstractWorkingMemory
      * 
      * @see WorkingMemory
      */
-    public void modifyObject( final FactHandle factHandle,
-                              final Object object,
-                              final Rule rule,
-                              final Activation activation ) throws FactException {
+    public void modifyObject(final FactHandle factHandle,
+                             final Object object,
+                             final Rule rule,
+                             final Activation activation) throws FactException {
         try {
             this.lock.lock();
             final int status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
@@ -864,11 +864,14 @@ public abstract class AbstractWorkingMemory
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
                                                                                       activation );
-            doRetract( handle, propagationContext );
+            doRetract( handle,
+                       propagationContext );
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
-            doAssertObject( handle, object, propagationContext );
+            doAssertObject( handle,
+                            object,
+                            propagationContext );
 
             this.workingMemoryEventSupport.fireObjectModified( propagationContext,
                                                                factHandle,
@@ -892,7 +895,7 @@ public abstract class AbstractWorkingMemory
 
     }
 
-    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
+    public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
         this.factQueue.add( action );
     }
 

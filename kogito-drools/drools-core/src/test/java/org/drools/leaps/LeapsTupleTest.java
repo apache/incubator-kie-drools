@@ -26,7 +26,7 @@ import org.drools.common.AgendaItem;
  */
 public class LeapsTupleTest extends TestCase {
 
-    LeapsTuple     tuple;
+    LeapsTuple      tuple;
 
     LeapsFactHandle h1;
 
@@ -41,20 +41,20 @@ public class LeapsTupleTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         this.h1 = new LeapsFactHandle( 1,
-                                      "one" );
+                                       "one" );
         this.h2 = new LeapsFactHandle( 2,
-                                      "two" );
+                                       "two" );
         this.h3 = new LeapsFactHandle( 3,
-                                      "three" );
+                                       "three" );
         this.h4 = new LeapsFactHandle( 4,
-                                      "four" );
+                                       "four" );
         final LeapsFactHandle arr[] = {this.h1, this.h2, this.h3, this.h4};
         this.tuple = new LeapsTuple( arr,
                                      null,
                                      null );
 
         this.hOutsider = new LeapsFactHandle( 9876,
-                                             "outsider" );
+                                              "outsider" );
     }
 
     /*

@@ -45,24 +45,27 @@ public class Collect extends ConditionalElement {
     }
 
     public Column getResultColumn() {
-        return resultColumn;
+        return this.resultColumn;
     }
 
     public Column getSourceColumn() {
-        return sourceColumn;
+        return this.sourceColumn;
     }
 
     public Collection instantiateResultObject() throws RuntimeDroolsException {
         try {
             // Collect can only be used with a Collection implementation, so
             // FactTemplateObject type is not allowed
-            return (Collection) ((ClassObjectType)resultColumn.getObjectType()).getClassType().newInstance();
-        } catch (ClassCastException cce) {
-            throw new RuntimeDroolsException("Collect CE requires a Collection implementation as return type", cce);
-        } catch ( InstantiationException e ) {
-            throw new RuntimeDroolsException("Collect CE requires a non-argument constructor for the return type", e);
-        } catch ( IllegalAccessException e ) {
-            throw new RuntimeDroolsException("Collect CE requires an accessible constructor for the return type", e);
+            return (Collection) ((ClassObjectType) this.resultColumn.getObjectType()).getClassType().newInstance();
+        } catch ( final ClassCastException cce ) {
+            throw new RuntimeDroolsException( "Collect CE requires a Collection implementation as return type",
+                                              cce );
+        } catch ( final InstantiationException e ) {
+            throw new RuntimeDroolsException( "Collect CE requires a non-argument constructor for the return type",
+                                              e );
+        } catch ( final IllegalAccessException e ) {
+            throw new RuntimeDroolsException( "Collect CE requires an accessible constructor for the return type",
+                                              e );
         }
     }
 

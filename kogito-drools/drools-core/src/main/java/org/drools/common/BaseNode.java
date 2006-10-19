@@ -16,8 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.spi.PropagationContext;
-
 /**
  * The base class for all Rete nodes.
  * 
@@ -30,9 +28,9 @@ public abstract class BaseNode
     NetworkNode {
     protected final int id;
 
-    protected boolean   hasMemory        = false;
+    protected boolean   hasMemory   = false;
 
-    protected int       sharedCount      = 0;
+    protected int       sharedCount = 0;
 
     /**
      * All nodes have a unique id, set in the constructor.
@@ -84,19 +82,19 @@ public abstract class BaseNode
     public abstract void remove(BaseNode node,
                                 InternalWorkingMemory[] workingMemories);
 
-//    /**
-//     * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
-//     * This new propagation may result in one or more assertions, so a PropagationContext and the workingMemory for the facts
-//     * must be provided.
-//     * 
-//     * @param workingMemory
-//     *      The WorkingMemory
-//     * @param context
-//     *      The PropagationContext
-//     *      
-//     */
-//    public abstract void updateNewNode(InternalWorkingMemory workingMemory,
-//                                       PropagationContext context);    
+    //    /**
+    //     * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
+    //     * This new propagation may result in one or more assertions, so a PropagationContext and the workingMemory for the facts
+    //     * must be provided.
+    //     * 
+    //     * @param workingMemory
+    //     *      The WorkingMemory
+    //     * @param context
+    //     *      The PropagationContext
+    //     *      
+    //     */
+    //    public abstract void updateNewNode(InternalWorkingMemory workingMemory,
+    //                                       PropagationContext context);    
 
     /**
      * Each time a node is shared a counter is increased.
@@ -148,5 +146,5 @@ public abstract class BaseNode
 
     public String toString() {
         return "[" + this.getClass().getName() + "(" + this.id + ")]";
-    }  
+    }
 }
