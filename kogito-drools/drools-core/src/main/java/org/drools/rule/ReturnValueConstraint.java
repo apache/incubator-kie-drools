@@ -16,16 +16,18 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
-import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.RuntimeDroolsException;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ReturnValueExpression;
-import org.drools.spi.Tuple;
 
 public class ReturnValueConstraint
     implements
-    AlphaNodeFieldConstraint {
+    BetaNodeFieldConstraint {
 
     /**
      * 
@@ -75,15 +77,6 @@ public class ReturnValueConstraint
         return this.restriction.getEvaluator();
     }
 
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        return this.restriction.isAllowed( this.fieldExtractor,
-                                           object,
-                                           tuple,
-                                           workingMemory );
-    }
-
     public String toString() {
         return "[ReturnValueConstraint fieldExtractor=" + this.fieldExtractor + " evaluator=" + getEvaluator() + " declarations=" + getRequiredDeclarations() + "]";
     }
@@ -109,4 +102,70 @@ public class ReturnValueConstraint
 
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
+
+    public ContextEntry getContextEntry() {
+        return new ReturnValueContextEntry();
+    }
+
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        try {
+            ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
+            return this.restriction.isAllowed( this.fieldExtractor,
+                                               object,
+                                               ctx.leftTuple,
+                                               ctx.workingMemory );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction,
+                                              e );
+        }
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        try {
+            ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
+            return this.restriction.isAllowed( this.fieldExtractor,
+                                               ctx.rightObject,
+                                               tuple,
+                                               ctx.workingMemory );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction,
+                                              e );
+        }
+    }
+
+    public static class ReturnValueContextEntry
+        implements
+        ContextEntry {
+        public ReteTuple             leftTuple;
+        public Object                rightObject;
+        public InternalWorkingMemory workingMemory;
+
+        private ContextEntry         entry;
+
+        public ReturnValueContextEntry() {
+        }
+
+        public ContextEntry getNext() {
+            return this.entry;
+        }
+
+        public void setNext(final ContextEntry entry) {
+            this.entry = entry;
+        }
+
+        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+                                         InternalFactHandle handle) {
+            this.workingMemory = workingMemory;
+            this.rightObject = handle.getObject();
+        }
+
+        public void updateFromTuple(InternalWorkingMemory workingMemory,
+                                    ReteTuple tuple) {
+            this.workingMemory = workingMemory;
+            this.leftTuple = tuple;
+        }
+    }
+
 }

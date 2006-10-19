@@ -17,6 +17,7 @@ package org.drools.rule;
  */
 
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
@@ -26,18 +27,10 @@ public class VariableConstraint
     implements
     BetaNodeFieldConstraint {
 
-    /**
-     * 
-     */
     private static final long         serialVersionUID = 320L;
 
     private final FieldExtractor      fieldExtractor;
     private final VariableRestriction restriction;
-
-    private static final byte         TYPE_BOOLEAN     = 0;
-    private static final byte         TYPE_FLOAT       = 1;
-    private static final byte         TYPE_INTEGER     = 2;
-    private static final byte         TYPE_OBJECT      = 3;
 
     public VariableConstraint(final FieldExtractor fieldExtractor,
                               final Declaration declaration,
@@ -154,11 +147,11 @@ public class VariableConstraint
                    declaration );
         }
 
-        public void updateFromTuple(final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
             this.right = this.extractor.getValue( handle.getObject() );
         }
     }
@@ -173,11 +166,11 @@ public class VariableConstraint
                    declaration );
         }
 
-        public void updateFromTuple(final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getLongValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
             this.right = this.extractor.getLongValue( handle.getObject() );
         }
     }
@@ -192,11 +185,11 @@ public class VariableConstraint
                    declaration );
         }
 
-        public void updateFromTuple(final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getDoubleValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
             this.right = this.extractor.getDoubleValue( handle.getObject() );
         }
     }
@@ -211,11 +204,11 @@ public class VariableConstraint
                    declaration );
         }
 
-        public void updateFromTuple(final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
             this.left = this.declaration.getExtractor().getBooleanValue( tuple.get( this.declaration ).getObject() );
         }
 
-        public void updateFromFactHandle(final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
             this.right = this.extractor.getBooleanValue( handle.getObject() );
         }
     }

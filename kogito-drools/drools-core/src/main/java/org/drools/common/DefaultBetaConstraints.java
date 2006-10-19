@@ -90,18 +90,18 @@ public class DefaultBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final ReteTuple tuple) {
+    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.updateFromTuple( tuple );
+            context.updateFromTuple( workingMemory, tuple );
         }
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalFactHandle handle) {
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.updateFromFactHandle( handle );
+            context.updateFromFactHandle( workingMemory, handle );
         }
     }
 

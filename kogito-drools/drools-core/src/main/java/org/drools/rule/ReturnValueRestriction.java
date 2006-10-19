@@ -20,6 +20,8 @@ import java.util.Arrays;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.Restriction;
@@ -107,6 +109,22 @@ public class ReturnValueRestriction
         }
     }
 
+    public boolean isAllowed(Extractor extractor,
+                             Object object,
+                             InternalWorkingMemory workingMemoiry) {
+        throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+    }
+
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+    }
+    
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -138,4 +156,5 @@ public class ReturnValueRestriction
 
         return this.expression.equals( other.expression );
     }
+
 }

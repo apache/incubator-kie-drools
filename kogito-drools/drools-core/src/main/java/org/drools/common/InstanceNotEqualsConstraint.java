@@ -105,11 +105,11 @@ public class InstanceNotEqualsConstraint
             this.entry = entry;
         }
 
-        public void updateFromTuple(final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
             this.left = tuple.get( this.column.getFactIndex() ).getObject();
         }
 
-        public void updateFromFactHandle(final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
             this.right = handle.getObject();
 
         }
