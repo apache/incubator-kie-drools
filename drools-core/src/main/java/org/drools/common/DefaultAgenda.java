@@ -32,7 +32,6 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.util.LinkedListNode;
 import org.drools.util.Queueable;
 
@@ -99,7 +98,7 @@ public class DefaultAgenda
      */
     public DefaultAgenda(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
-        this.knowledgeHelper = new DefaultKnowledgeHelper(this.workingMemory);
+        this.knowledgeHelper = new DefaultKnowledgeHelper( this.workingMemory );
         this.agendaGroups = new HashMap();
         this.activationGroups = new HashMap();
         this.focusStack = new LinkedList();
@@ -435,8 +434,8 @@ public class DefaultAgenda
         activation.setActivated( false );
 
         try {
-            knowledgeHelper.setActivation(activation);
-            activation.getRule().getConsequence().evaluate( knowledgeHelper,
+            this.knowledgeHelper.setActivation( activation );
+            activation.getRule().getConsequence().evaluate( this.knowledgeHelper,
                                                             this.workingMemory );
         } catch ( final Exception e ) {
             //e.printStackTrace();

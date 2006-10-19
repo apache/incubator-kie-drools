@@ -37,8 +37,9 @@ public class IteratorFromPositionToTableEnd extends IteratorFromPositionToTableS
      * @see IteratorFromPositionToTableStart
      */
     protected IteratorFromPositionToTableEnd(final TableRecord startRecord,
-            final TableRecord currentRecord) {
-        super( startRecord, currentRecord );
+                                             final TableRecord currentRecord) {
+        super( startRecord,
+               currentRecord );
     }
 
     /**
@@ -51,10 +52,9 @@ public class IteratorFromPositionToTableEnd extends IteratorFromPositionToTableS
 
     public Object next() {
         this.currentRecord = this.nextRecord;
-        if (this.currentRecord != null) {
+        if ( this.currentRecord != null ) {
             this.nextRecord = this.currentRecord.left;
-        }
-        else {
+        } else {
             throw new NoSuchElementException( "No more elements to return" );
         }
         return this.currentRecord.object;

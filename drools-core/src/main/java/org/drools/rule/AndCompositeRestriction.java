@@ -8,7 +8,7 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
 
     private static final long serialVersionUID = 320;
 
-    public AndCompositeRestriction(Restriction[] restriction) {
+    public AndCompositeRestriction(final Restriction[] restriction) {
         super( restriction );
     }
 
@@ -17,7 +17,7 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
                              final WorkingMemory workingMemory) {
 
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
-            if ( !restrictions[i].isAllowed( object,
+            if ( !this.restrictions[i].isAllowed( object,
                                              tuple,
                                              workingMemory ) ) {
                 return false;

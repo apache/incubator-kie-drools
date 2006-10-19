@@ -30,15 +30,15 @@ public class Hobby {
     public static final Hobby    H4           = new Hobby( 4 );
     public static final Hobby    H5           = new Hobby( 5 );
 
-    private String         hobbyStr;
-    private int            hobbyIndex;
-    
+    private String               hobbyStr;
+    private int                  hobbyIndex;
+
     public Hobby() {
     }
 
     private Hobby(final int hobby) {
         this.hobbyIndex = hobby - 1;
-        this.hobbyStr   = Hobby.hobbyStrings[this.hobbyIndex];
+        this.hobbyStr = Hobby.hobbyStrings[this.hobbyIndex];
     }
 
     public String getHobby() {

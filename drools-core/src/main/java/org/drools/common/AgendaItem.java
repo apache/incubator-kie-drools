@@ -18,7 +18,6 @@ package org.drools.common;
 
 import java.io.Serializable;
 
-import org.drools.FactHandle;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;

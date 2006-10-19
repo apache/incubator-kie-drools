@@ -25,17 +25,17 @@ public class Seating
      */
     private static final long serialVersionUID = -21267542036195318L;
 
-    private int         id, pid;
+    private int               id, pid;
 
-    private int         leftSeat, rightSeat;
+    private int               leftSeat, rightSeat;
 
-    private String      leftGuestName, rightGuestName;
+    private String            leftGuestName, rightGuestName;
 
     private boolean           pathDone;
 
     public Seating() {
     }
-    
+
     public Seating(final int id,
                    final int pid,
                    final boolean pathDone,

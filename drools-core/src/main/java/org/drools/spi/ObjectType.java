@@ -54,7 +54,7 @@ public interface ObjectType
      * if shadow facts are disabled
      */
     Object getShadow(Object fact);
-    
+
     /**
      * Returns true in case shadow facts are enabled
      * @return true if shadow facts are enabled, false otherwise

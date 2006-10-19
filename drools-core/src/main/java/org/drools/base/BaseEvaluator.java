@@ -29,7 +29,7 @@ public abstract class BaseEvaluator
     implements
     Evaluator {
 
-    private final Operator operator;
+    private final Operator  operator;
 
     private final ValueType type;
 
@@ -54,8 +54,8 @@ public abstract class BaseEvaluator
         if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        
-        Evaluator other = ( Evaluator ) object;        
+
+        final Evaluator other = (Evaluator) object;
         return this.getOperator() == other.getOperator() && this.getValueType() == other.getValueType();
     }
 

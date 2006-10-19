@@ -25,28 +25,28 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
                                                          column );
 
-        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
                                                            declaration );
 
-        Cheese cheddar = new Cheese( "cheddar",
+        final Cheese cheddar = new Cheese( "cheddar",
                                      10 );
-        InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 0,
+        final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 0,
                                                                    cheddar );
 
         assertEquals( 0,
                       map.size() );
         assertNull( map.get( new ReteTuple( cheddarHandle1 ) ) );
 
-        Cheese stilton1 = new Cheese( "stilton",
+        final Cheese stilton1 = new Cheese( "stilton",
                                       35 );
-        InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
+        final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                    stilton1 );
         map.add( stiltonHandle1 );
 
@@ -55,12 +55,12 @@ public class FieldIndexHashTableTest extends TestCase {
         assertEquals( 1,
                       tablePopulationSize( map ) );
 
-        Cheese stilton2 = new Cheese( "stilton",
+        final Cheese stilton2 = new Cheese( "stilton",
                                       80 );
-        InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
+        final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                    stilton2 );
 
-        FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle2 ) );
+        final FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle2 ) );
         assertSame( stiltonHandle1,
                     stiltonEntry.getFirst().getFactHandle() );
         assertNull( stiltonEntry.getFirst().getNext() );
@@ -70,28 +70,28 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
                                                          column );
 
-        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
                       map.size() );
 
-        Cheese stilton1 = new Cheese( "stilton",
+        final Cheese stilton1 = new Cheese( "stilton",
                                       35 );
-        InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
+        final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                    stilton1 );
         map.add( stiltonHandle1 );
 
-        Cheese cheddar1 = new Cheese( "cheddar",
+        final Cheese cheddar1 = new Cheese( "cheddar",
                                       35 );
-        InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
+        final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
                                                                    cheddar1 );
         map.add( cheddarHandle1 );
 
@@ -100,20 +100,20 @@ public class FieldIndexHashTableTest extends TestCase {
         assertEquals( 2,
                       tablePopulationSize( map ) );
 
-        Cheese stilton2 = new Cheese( "stilton",
+        final Cheese stilton2 = new Cheese( "stilton",
                                       77 );
-        InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
+        final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                    stilton2 );
-        FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle2 ) );
+        final FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle2 ) );
         assertSame( stiltonHandle1,
                     stiltonEntry.getFirst().getFactHandle() );
         assertNull( stiltonEntry.getFirst().getNext() );
 
-        Cheese cheddar2 = new Cheese( "cheddar",
+        final Cheese cheddar2 = new Cheese( "cheddar",
                                       5 );
-        InternalFactHandle cheddarHandle2 = new DefaultFactHandle( 2,
+        final InternalFactHandle cheddarHandle2 = new DefaultFactHandle( 2,
                                                                    cheddar2 );
-        FieldIndexEntry cheddarEntry = map.get( new ReteTuple( cheddarHandle2 ) );
+        final FieldIndexEntry cheddarEntry = map.get( new ReteTuple( cheddarHandle2 ) );
         assertSame( cheddarHandle1,
                     cheddarEntry.getFirst().getFactHandle() );
         assertNull( cheddarEntry.getFirst().getNext() );
@@ -123,34 +123,34 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
                                                          column );
 
-        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
                       map.size() );
 
-        Cheese stilton1 = new Cheese( "stilton",
+        final Cheese stilton1 = new Cheese( "stilton",
                                       35 );
-        InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
+        final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                    stilton1 );
         map.add( stiltonHandle1 );
 
-        Cheese cheddar1 = new Cheese( "cheddar",
+        final Cheese cheddar1 = new Cheese( "cheddar",
                                       35 );
-        InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
+        final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
                                                                    cheddar1 );
         map.add( cheddarHandle1 );
 
-        Cheese stilton2 = new Cheese( "stilton",
+        final Cheese stilton2 = new Cheese( "stilton",
                                       81 );
-        InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 3,
+        final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 3,
                                                                    stilton2 );
         map.add( stiltonHandle2 );
 
@@ -161,12 +161,12 @@ public class FieldIndexHashTableTest extends TestCase {
                       tablePopulationSize( map ) );
 
         // Check they are correctly chained to the same FieldIndexEntry
-        Cheese stilton3 = new Cheese( "stilton",
+        final Cheese stilton3 = new Cheese( "stilton",
                                       89 );
-        InternalFactHandle stiltonHandle3 = new DefaultFactHandle( 4,
+        final InternalFactHandle stiltonHandle3 = new DefaultFactHandle( 4,
                                                                    stilton2 );
 
-        FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle3 ) );
+        final FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle3 ) );
         assertSame( stiltonHandle2,
                     stiltonEntry.getFirst().getFactHandle() );
         assertSame( stiltonHandle1,
@@ -177,29 +177,29 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( TestClass.class,
                                                                   "object" );
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( TestClass.class ) );
 
         final Declaration declaration = new Declaration( "theObject",
                                                          extractor,
                                                          column );
 
-        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
                                                            declaration );
 
-        TestClass c1 = new TestClass( 0,
+        final TestClass c1 = new TestClass( 0,
                                       new TestClass( 20,
                                                      "stilton" ) );
 
-        InternalFactHandle ch1 = new DefaultFactHandle( 1,
+        final InternalFactHandle ch1 = new DefaultFactHandle( 1,
                                                         c1 );
 
         map.add( ch1 );
 
-        TestClass c2 = new TestClass( 0,
+        final TestClass c2 = new TestClass( 0,
                                       new TestClass( 20,
                                                      "cheddar" ) );
-        InternalFactHandle ch2 = new DefaultFactHandle( 2,
+        final InternalFactHandle ch2 = new DefaultFactHandle( 2,
                                                         c2 );
         map.add( ch2 );
 
@@ -212,7 +212,7 @@ public class FieldIndexHashTableTest extends TestCase {
                       tablePopulationSize( map ) );
 
         // this table bucket will have two FieldIndexEntries, as they are actually two different values
-        FieldIndexEntry entry = (FieldIndexEntry) getEntries( map )[0];
+        final FieldIndexEntry entry = (FieldIndexEntry) getEntries( map )[0];
 
         assertEquals( c2.getObject(),
                       entry.getValue() );
@@ -224,34 +224,34 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
                                                          column );
 
-        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
                       map.size() );
 
-        Cheese stilton1 = new Cheese( "stilton",
+        final Cheese stilton1 = new Cheese( "stilton",
                                       35 );
-        InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
+        final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                    stilton1 );
         map.add( stiltonHandle1 );
 
-        Cheese cheddar1 = new Cheese( "cheddar",
+        final Cheese cheddar1 = new Cheese( "cheddar",
                                       35 );
-        InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
+        final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
                                                                    cheddar1 );
         map.add( cheddarHandle1 );
 
-        Cheese stilton2 = new Cheese( "stilton",
+        final Cheese stilton2 = new Cheese( "stilton",
                                       81 );
-        InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 3,
+        final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 3,
                                                                    stilton2 );
         map.add( stiltonHandle2 );
 
@@ -288,95 +288,95 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
                                                          column );
 
-        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
                       map.size() );
 
-        Cheese stilton1 = new Cheese( "stilton",
+        final Cheese stilton1 = new Cheese( "stilton",
                                       35 );
         map.add( new DefaultFactHandle( 1,
                                         stilton1 ) );
 
-        Cheese stilton2 = new Cheese( "stilton",
+        final Cheese stilton2 = new Cheese( "stilton",
                                       81 );
         map.add( new DefaultFactHandle( 2,
                                         stilton2 ) );
 
-        Cheese cheddar1 = new Cheese( "cheddar",
+        final Cheese cheddar1 = new Cheese( "cheddar",
                                       35 );
         map.add( new DefaultFactHandle( 3,
                                         cheddar1 ) );
 
-        Cheese cheddar2 = new Cheese( "cheddar",
+        final Cheese cheddar2 = new Cheese( "cheddar",
                                       38 );
         map.add( new DefaultFactHandle( 4,
                                         cheddar2 ) );
 
-        Cheese brie = new Cheese( "brie",
+        final Cheese brie = new Cheese( "brie",
                                   293 );
         map.add( new DefaultFactHandle( 5,
                                         brie ) );
 
-        Cheese mozerella = new Cheese( "mozerella",
+        final Cheese mozerella = new Cheese( "mozerella",
                                        15 );
         map.add( new DefaultFactHandle( 6,
                                         mozerella ) );
 
-        Cheese dolcelatte = new Cheese( "dolcelatte",
+        final Cheese dolcelatte = new Cheese( "dolcelatte",
                                         284 );
         map.add( new DefaultFactHandle( 7,
                                         dolcelatte ) );
 
-        Cheese camembert1 = new Cheese( "camembert",
+        final Cheese camembert1 = new Cheese( "camembert",
                                         924 );
         map.add( new DefaultFactHandle( 8,
                                         camembert1 ) );
 
-        Cheese camembert2 = new Cheese( "camembert",
+        final Cheese camembert2 = new Cheese( "camembert",
                                         765 );
         map.add( new DefaultFactHandle( 9,
                                         camembert2 ) );
 
-        Cheese redLeicestor = new Cheese( "red leicestor",
+        final Cheese redLeicestor = new Cheese( "red leicestor",
                                           23 );
         map.add( new DefaultFactHandle( 10,
                                         redLeicestor ) );
 
-        Cheese wensleydale = new Cheese( "wensleydale",
+        final Cheese wensleydale = new Cheese( "wensleydale",
                                          20 );
         map.add( new DefaultFactHandle( 11,
                                         wensleydale ) );
 
-        Cheese edam = new Cheese( "edam",
+        final Cheese edam = new Cheese( "edam",
                                   12 );
         map.add( new DefaultFactHandle( 12,
                                         edam ) );
 
-        Cheese goude1 = new Cheese( "goude",
+        final Cheese goude1 = new Cheese( "goude",
                                     93 );
         map.add( new DefaultFactHandle( 13,
                                         goude1 ) );
 
-        Cheese goude2 = new Cheese( "goude",
+        final Cheese goude2 = new Cheese( "goude",
                                     88 );
         map.add( new DefaultFactHandle( 14,
                                         goude2 ) );
 
-        Cheese gruyere = new Cheese( "gruyere",
+        final Cheese gruyere = new Cheese( "gruyere",
                                      82 );
         map.add( new DefaultFactHandle( 15,
                                         gruyere ) );
 
-        Cheese emmental = new Cheese( "emmental",
+        final Cheese emmental = new Cheese( "emmental",
                                       98 );
         map.add( new DefaultFactHandle( 16,
                                         emmental ) );
@@ -391,7 +391,7 @@ public class FieldIndexHashTableTest extends TestCase {
         assertEquals( 16,
                       table.length );
 
-        Cheese feta = new Cheese( "feta",
+        final Cheese feta = new Cheese( "feta",
                                   48 );
         map.add( new DefaultFactHandle( 2,
                                         feta ) );
@@ -401,16 +401,16 @@ public class FieldIndexHashTableTest extends TestCase {
         assertEquals( 13,
                       map.size() );
 
-        table = (Entry[]) map.getTable();
+        table = map.getTable();
         assertEquals( 32,
                       table.length );
 
-        Cheese haloumi = new Cheese( "haloumi",
+        final Cheese haloumi = new Cheese( "haloumi",
                                      48 );
         map.add( new DefaultFactHandle( 2,
                                         haloumi ) );
 
-        Cheese chevre = new Cheese( "chevre",
+        final Cheese chevre = new Cheese( "chevre",
                                     48 );
         map.add( new DefaultFactHandle( 2,
                                         chevre ) );
@@ -425,8 +425,8 @@ public class FieldIndexHashTableTest extends TestCase {
 
         }
 
-        public TestClass(int hashCode,
-                         Object object) {
+        public TestClass(final int hashCode,
+                         final Object object) {
             this.hashCode = hashCode;
             this.object = object;
         }
@@ -435,11 +435,11 @@ public class FieldIndexHashTableTest extends TestCase {
             return this.object;
         }
 
-        public void setObject(Object object) {
+        public void setObject(final Object object) {
             this.object = object;
         }
 
-        public void setHashCode(int hashCode) {
+        public void setHashCode(final int hashCode) {
             this.hashCode = hashCode;
         }
 
@@ -447,23 +447,33 @@ public class FieldIndexHashTableTest extends TestCase {
             return this.hashCode;
         }
 
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+        public boolean equals(final Object obj) {
+            if ( this == obj ) {
+                return true;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            if ( getClass() != obj.getClass() ) {
+                return false;
+            }
             final TestClass other = (TestClass) obj;
 
             if ( this.object == null ) {
-                if ( other.object != null ) return false;
-            } else if ( !this.object.equals( other.object ) ) return false;
+                if ( other.object != null ) {
+                    return false;
+                }
+            } else if ( !this.object.equals( other.object ) ) {
+                return false;
+            }
             return true;
         }
     }
 
-    private int tablePopulationSize(AbstractHashTable map) throws Exception {
-        Field field = AbstractHashTable.class.getDeclaredField( "table" );
+    private int tablePopulationSize(final AbstractHashTable map) throws Exception {
+        final Field field = AbstractHashTable.class.getDeclaredField( "table" );
         field.setAccessible( true );
-        Entry[] array = (Entry[]) field.get( map );
+        final Entry[] array = (Entry[]) field.get( map );
         int size = 0;
         for ( int i = 0, length = array.length; i < length; i++ ) {
             if ( array[i] != null ) {
@@ -473,12 +483,12 @@ public class FieldIndexHashTableTest extends TestCase {
         return size;
     }
 
-    private Entry[] getEntries(AbstractHashTable map) throws Exception {
-        Field field = AbstractHashTable.class.getDeclaredField( "table" );
+    private Entry[] getEntries(final AbstractHashTable map) throws Exception {
+        final Field field = AbstractHashTable.class.getDeclaredField( "table" );
         field.setAccessible( true );
-        List list = new ArrayList();
+        final List list = new ArrayList();
 
-        Entry[] array = (Entry[]) field.get( map );
+        final Entry[] array = (Entry[]) field.get( map );
         for ( int i = 0, length = array.length; i < length; i++ ) {
             if ( array[i] != null ) {
                 list.add( array[i] );
@@ -491,21 +501,22 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
                                                          column );
 
-        FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
                                                            declaration );
 
-        Cheese stilton = new Cheese( "stilton", 55 );
-        InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
-                                                                   stilton );
-        
-        Iterator it = map.iterator(  new ReteTuple( stiltonHandle ) );
+        final Cheese stilton = new Cheese( "stilton",
+                                     55 );
+        final InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
+                                                                  stilton );
+
+        final Iterator it = map.iterator( new ReteTuple( stiltonHandle ) );
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             fail( "Map is empty, there should be no iteration" );
         }

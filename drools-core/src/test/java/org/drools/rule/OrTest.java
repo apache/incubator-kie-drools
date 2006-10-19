@@ -32,10 +32,10 @@ import org.drools.base.evaluators.Operator;
 import org.drools.examples.waltz.Edge;
 import org.drools.examples.waltz.Stage;
 import org.drools.leaps.LeapsRuleBase;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
@@ -143,7 +143,7 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
 
-        final org.drools.leaps.LeapsRuleBase ruleBase =(LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
+        final org.drools.leaps.LeapsRuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
@@ -379,9 +379,9 @@ public class OrTest extends TestCase {
     }
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
-                                                 final String fieldName,
-                                                 final Object fieldValue,
-                                                 final Evaluator evaluator) throws IntrospectionException {
+                                                          final String fieldName,
+                                                          final Object fieldValue,
+                                                          final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final int index = getIndex( clazz,
@@ -398,17 +398,17 @@ public class OrTest extends TestCase {
     }
 
     private AlphaNodeFieldConstraint getBoundVariableConstraint(final Column column,
-                                                       final String fieldName,
-                                                       final Declaration declaration,
-                                                       final Evaluator evaluator) throws IntrospectionException {
+                                                                final String fieldName,
+                                                                final Declaration declaration,
+                                                                final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
 
         return new VariableConstraint( extractor,
-                                            declaration,
-                                            evaluator );
+                                       declaration,
+                                       evaluator );
     }
 
     public static int getIndex(final Class clazz,

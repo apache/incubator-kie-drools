@@ -11,13 +11,13 @@ public interface InternalAgenda
     Agenda {
 
     public void fireActivation(final Activation activation) throws ConsequenceException;
-    
+
     public void removeScheduleItem(final ScheduledAgendaItem item);
-    
+
     public boolean fireNextItem(AgendaFilter filter) throws ConsequenceException;
-    
+
     public void scheduleItem(final ScheduledAgendaItem item);
-    
+
     public void addAgendaGroup(final AgendaGroup agendaGroup);
 
 }

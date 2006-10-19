@@ -19,7 +19,6 @@ package org.drools.common;
 import java.io.Serializable;
 import java.util.TimerTask;
 
-import org.drools.FactHandle;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
@@ -56,7 +55,7 @@ public class ScheduledAgendaItem extends TimerTask
     /** The rule. */
     private final Rule               rule;
 
-    private final InternalAgenda    agenda;
+    private final InternalAgenda     agenda;
 
     private final PropagationContext context;
 

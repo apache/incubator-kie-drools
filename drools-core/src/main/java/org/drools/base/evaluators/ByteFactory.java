@@ -36,10 +36,10 @@ public class ByteFactory
     }
 
     public static EvaluatorFactory getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new ByteFactory();
+        if ( ByteFactory.INSTANCE == null ) {
+            ByteFactory.INSTANCE = new ByteFactory();
         }
-        return INSTANCE;
+        return ByteFactory.INSTANCE;
     }
 
     public Evaluator getEvaluator(final Operator operator) {
@@ -84,13 +84,13 @@ public class ByteFactory
             return object1.getByteValue() == extractor.getByteValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getByteValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left == context.extractor.getByteValue( right );
         }
 
@@ -123,13 +123,13 @@ public class ByteFactory
             return object1.getByteValue() != extractor.getByteValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getByteValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( right );
         }
 
@@ -162,13 +162,13 @@ public class ByteFactory
             return object1.getByteValue() < extractor.getByteValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getByteValue( left ) < ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left < context.extractor.getByteValue( right );
         }
 
@@ -201,13 +201,13 @@ public class ByteFactory
             return object1.getByteValue() <= extractor.getByteValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getByteValue( left ) <= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left <= context.extractor.getByteValue( right );
         }
 
@@ -240,13 +240,13 @@ public class ByteFactory
             return object1.getByteValue() > extractor.getByteValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getByteValue( left ) > ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left > context.extractor.getByteValue( right );
         }
 
@@ -279,13 +279,13 @@ public class ByteFactory
             return object1.getByteValue() >= extractor.getByteValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             return context.declaration.getExtractor().getByteValue( left ) >= ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             return ((LongVariableContextEntry) context).left >= context.extractor.getByteValue( right );
         }
 

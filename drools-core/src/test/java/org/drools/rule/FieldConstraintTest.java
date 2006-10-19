@@ -68,8 +68,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = new MockField( "cheddar" );
 
-        Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
-        
+        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -111,10 +111,10 @@ public class FieldConstraintTest extends TestCase {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
 
-        final FieldValue field = new MockField( new Integer(5) );
+        final FieldValue field = new MockField( new Integer( 5 ) );
 
-        Evaluator evaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
-        
+        final Evaluator evaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
+
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -157,17 +157,18 @@ public class FieldConstraintTest extends TestCase {
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
 
-        Column column = new  Column(0, new ClassObjectType( Cheese.class ) );
-        
+        Column column = new Column( 0,
+                                    new ClassObjectType( Cheese.class ) );
+
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
         final Declaration price1Declaration = new Declaration( "price1",
                                                                priceExtractor,
                                                                column );
 
-        
-        column = new  Column(1, new ClassObjectType( Cheese.class ) );
-        
+        column = new Column( 1,
+                             new ClassObjectType( Cheese.class ) );
+
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
         final Declaration price2Declaration = new Declaration( "price2",
@@ -181,7 +182,7 @@ public class FieldConstraintTest extends TestCase {
              */
             private static final long serialVersionUID = -7805842671538257493L;
 
-            public boolean evaluate(Object  object,
+            public boolean evaluate(Object object,
                                     Tuple tuple,
                                     Declaration declaration,
                                     Declaration[] declarations,
@@ -234,8 +235,9 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
-        
-        Column column = new  Column(0, new ClassObjectType( Cheese.class ) );
+
+        final Column column = new Column( 0,
+                                    new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form

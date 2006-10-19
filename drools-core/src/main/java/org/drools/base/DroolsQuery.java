@@ -31,20 +31,20 @@ public class DroolsQuery {
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+        result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
         return result;
     }
 
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(final Object object) {
+        if ( this == object ) {
             return true;
         }
-        
-        if (object == null || getClass() != object.getClass()) {
+
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        
+
         final DroolsQuery other = (DroolsQuery) object;
-        return name.equals(other.name);
-    }       
+        return this.name.equals( other.name );
+    }
 }

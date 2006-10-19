@@ -14,18 +14,18 @@ public class RuleFlowNode
     implements
     AgendaGroup {
 
-    private static final long         serialVersionUID = 320L;
+    private static final long     serialVersionUID = 320L;
 
-    private final String              name;
+    private final String          name;
 
-    private final InternalAgenda      agenda;
+    private final InternalAgenda  agenda;
 
     /** @todo Maybe this should just be a LinkedList and we sort on use? */
     private final BinaryHeapQueue queue;
 
-    private List                      childNodes       = Collections.EMPTY_LIST;
+    private List                  childNodes       = Collections.EMPTY_LIST;
 
-    private Object                    lock;
+    private final Object                lock;
 
     /**
      * Construct an <code>RuleFlowNode</code> with the given name.
@@ -47,14 +47,14 @@ public class RuleFlowNode
         return this.name;
     }
 
-    public void addChildNode(RuleFlowNode child) {
+    public void addChildNode(final RuleFlowNode child) {
         if ( this.childNodes == Collections.EMPTY_LIST ) {
             this.childNodes = new ArrayList( 1 );
         }
         this.childNodes.add( child );
     }
 
-    public boolean removeChildNode(RuleFlowNode child) {
+    public boolean removeChildNode(final RuleFlowNode child) {
         return this.childNodes.remove( child );
     }
 
@@ -120,11 +120,11 @@ public class RuleFlowNode
         }
 
         // Make a runnable execution so we can fire all the activations
-        ExecuteRuleFlowNode execute = new ExecuteRuleFlowNode( this.agenda,
+        final ExecuteRuleFlowNode execute = new ExecuteRuleFlowNode( this.agenda,
                                                                (RuleFlowNode[]) this.childNodes.toArray( new RuleFlowNode[this.childNodes.size()] ),
                                                                activations );
-        Thread thread = new Thread( execute );
-        thread.start();        
+        final Thread thread = new Thread( execute );
+        thread.start();
     }
 
     public String toString() {
@@ -155,7 +155,7 @@ public class RuleFlowNode
         private final Activation[]   activations;
 
         public ExecuteRuleFlowNode(final InternalAgenda agenda,
-                                   RuleFlowNode[] nodes,
+                                   final RuleFlowNode[] nodes,
                                    final Activation[] activations) {
             this.agenda = agenda;
             this.nodes = nodes;
@@ -163,11 +163,11 @@ public class RuleFlowNode
         }
 
         public void run() {
-            for ( int i = 0, length = activations.length; i < length; i++ ) {
+            for ( int i = 0, length = this.activations.length; i < length; i++ ) {
                 this.agenda.fireActivation( this.activations[i] );
             }
 
-            for ( int i = 0, length = nodes.length; i < length; i++ ) {
+            for ( int i = 0, length = this.nodes.length; i < length; i++ ) {
                 this.nodes[i].activate();
             }
         }

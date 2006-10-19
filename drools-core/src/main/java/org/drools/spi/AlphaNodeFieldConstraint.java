@@ -16,15 +16,12 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
 
 public interface AlphaNodeFieldConstraint
     extends
     Constraint {
-    
+
     public boolean isAllowed(Object object,
                              InternalWorkingMemory workingMemory);
 }

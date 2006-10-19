@@ -23,8 +23,8 @@ public class Sex {
     public static final String   stringF = "f";
     public static final String[] sexList = new String[]{Sex.stringM, Sex.stringF};
 
-    private int            sex;
-    
+    private int                  sex;
+
     public Sex() {
     }
 

@@ -15,7 +15,7 @@ public class LongFieldImpl
     }
 
     public Object getValue() {
-        return new Long(this.value);
+        return new Long( this.value );
     }
 
     public String toString() {
@@ -23,7 +23,7 @@ public class LongFieldImpl
     }
 
     public boolean getBooleanValue() {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported for type long");
+        throw new RuntimeDroolsException( "Conversion to boolean not supported for type long" );
     }
 
     public byte getByteValue() {
@@ -35,11 +35,11 @@ public class LongFieldImpl
     }
 
     public double getDoubleValue() {
-        return (double) this.value;
+        return this.value;
     }
 
     public float getFloatValue() {
-        return (float) this.value;
+        return this.value;
     }
 
     public int getIntValue() {
@@ -47,7 +47,7 @@ public class LongFieldImpl
     }
 
     public long getLongValue() {
-        return (long) this.value;
+        return this.value;
     }
 
     public short getShortValue() {

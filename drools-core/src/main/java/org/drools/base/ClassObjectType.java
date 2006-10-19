@@ -16,8 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.ObjectType;
 
@@ -118,13 +116,14 @@ public class ClassObjectType
         return this.valueType;
     }
 
-    public Object getShadow(Object fact) throws RuntimeDroolsException {
+    public Object getShadow(final Object fact) throws RuntimeDroolsException {
         ShadowProxy proxy = null;
         if ( isShadowEnabled() ) {
             try {
-                proxy = (ShadowProxy) shadowClass.getConstructor( new Class[]{this.objectTypeClass} ).newInstance( new Object[]{fact} );
-            } catch ( Exception e ) {
-                throw new RuntimeDroolsException("Error creating shadow fact for object: "+fact, e);
+                proxy = (ShadowProxy) this.shadowClass.getConstructor( new Class[]{this.objectTypeClass} ).newInstance( new Object[]{fact} );
+            } catch ( final Exception e ) {
+                throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,
+                                                  e );
             }
         }
         return proxy;

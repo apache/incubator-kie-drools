@@ -17,7 +17,7 @@ package org.drools.examples.manners;
 
 public class Count {
     private int value;
-    
+
     public Count() {
     }
 

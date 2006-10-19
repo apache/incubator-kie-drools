@@ -32,11 +32,13 @@ import org.drools.common.DefaultFactHandle;
 public class LeapsRuleHandle extends DefaultFactHandle {
 
     // ce position for which handle is created
-    private final int         dominantPosition;
+    private final int dominantPosition;
 
-    public LeapsRuleHandle(final long id, final LeapsRule rule,
+    public LeapsRuleHandle(final long id,
+                           final LeapsRule rule,
                            final int dominantPosition) {
-        super( id, rule );
+        super( id,
+               rule );
         this.dominantPosition = dominantPosition;
     }
 

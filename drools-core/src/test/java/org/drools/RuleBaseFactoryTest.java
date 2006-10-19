@@ -26,36 +26,36 @@ public class RuleBaseFactoryTest extends TestCase {
         final RuleBase rb = RuleBaseFactory.newRuleBase();
         assertTrue( rb instanceof org.drools.reteoo.ReteooRuleBase );
 
-        assertTrue( !"default".equals( ( ( InternalRuleBase ) rb).getId() ) );
-        assertTrue( !"".equals( ( ( InternalRuleBase ) rb).getId() ) );
-        assertNotNull( ( ( InternalRuleBase ) rb).getId() );        
-        
+        assertTrue( !"default".equals( ((InternalRuleBase) rb).getId() ) );
+        assertTrue( !"".equals( ((InternalRuleBase) rb).getId() ) );
+        assertNotNull( ((InternalRuleBase) rb).getId() );
+
         final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
         assertTrue( rb2 instanceof org.drools.reteoo.ReteooRuleBase );
         assertNotSame( rb2,
                        rb );
-        
-        assertTrue( !"default".equals( ( ( InternalRuleBase ) rb2).getId() ) );
-        assertTrue( !"".equals( ( ( InternalRuleBase ) rb2).getId() ) );
-        assertNotNull( ( ( InternalRuleBase ) rb2).getId() );
+
+        assertTrue( !"default".equals( ((InternalRuleBase) rb2).getId() ) );
+        assertTrue( !"".equals( ((InternalRuleBase) rb2).getId() ) );
+        assertNotNull( ((InternalRuleBase) rb2).getId() );
     }
 
     public void testLeaps() {
         final RuleBase rb = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         assertTrue( rb instanceof org.drools.leaps.LeapsRuleBase );
-        assertTrue( !"default".equals( ( ( InternalRuleBase ) rb).getId() ) );
-        assertTrue( !"".equals( ( ( InternalRuleBase ) rb).getId() ) );
-        assertNotNull( ( ( InternalRuleBase ) rb).getId() );        
-        
+        assertTrue( !"default".equals( ((InternalRuleBase) rb).getId() ) );
+        assertTrue( !"".equals( ((InternalRuleBase) rb).getId() ) );
+        assertNotNull( ((InternalRuleBase) rb).getId() );
+
         final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         assertTrue( rb2 instanceof org.drools.leaps.LeapsRuleBase );
         assertNotSame( rb2,
                        rb );
-        
-        assertTrue( !"default".equals( ( ( InternalRuleBase ) rb2).getId() ) );
-        assertTrue( !"".equals( ( ( InternalRuleBase ) rb2).getId() ) );
-        assertNotNull( ( ( InternalRuleBase ) rb2).getId() );        
+
+        assertTrue( !"default".equals( ((InternalRuleBase) rb2).getId() ) );
+        assertTrue( !"".equals( ((InternalRuleBase) rb2).getId() ) );
+        assertNotNull( ((InternalRuleBase) rb2).getId() );
     }
-        
+
 }

@@ -57,7 +57,7 @@ public class BinaryHeapQueue
      * @throws IllegalArgumentException if <code>capacity</code> is &lt;= <code>0</code>
      */
     public BinaryHeapQueue(final Comparator comparator,
-                               final int capacity) {
+                           final int capacity) {
         if ( capacity <= 0 ) {
             throw new IllegalArgumentException( "invalid capacity" );
         }

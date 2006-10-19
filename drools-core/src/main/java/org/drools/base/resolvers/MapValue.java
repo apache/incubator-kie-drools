@@ -5,7 +5,6 @@ package org.drools.base.resolvers;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
@@ -14,12 +13,12 @@ import org.drools.spi.Tuple;
 public class MapValue
     implements
     ValueHandler {
-    
-    private static final long serialVersionUID = 320L;
+
+    private static final long    serialVersionUID = 320L;
 
     private final KeyValuePair[] pairs;
-    
-    private Object cachedValue = ValueHandler.EMPTY;    
+
+    private Object               cachedValue      = ValueHandler.EMPTY;
 
     public MapValue(final KeyValuePair[] pairs) {
         this.pairs = pairs;
@@ -27,9 +26,9 @@ public class MapValue
 
     public Object getValue(final Tuple tuple,
                            final WorkingMemory wm) {
-        if ( this.cachedValue == ValueHandler.EMPTY ) {            
+        if ( this.cachedValue == ValueHandler.EMPTY ) {
             final Map map = new HashMap();
-    
+
             for ( int i = 0, length = this.pairs.length; i < length; i++ ) {
                 final ValueHandler key = this.pairs[i].getKey();
                 final ValueHandler value = this.pairs[i].getValue();
@@ -43,20 +42,22 @@ public class MapValue
 
         return this.cachedValue;
     }
-    
+
     public Class getExtractToClass() {
         return Map.class;
-    }     
+    }
 
     public void reset() {
         this.cachedValue = ValueHandler.EMPTY;
-    }    
-    
-    public static class KeyValuePair implements Serializable {
+    }
+
+    public static class KeyValuePair
+        implements
+        Serializable {
         private static final long serialVersionUID = 320L;
-        
-        private ValueHandler key;
-        private ValueHandler value;
+
+        private ValueHandler      key;
+        private ValueHandler      value;
 
         public KeyValuePair(final ValueHandler key,
                             final ValueHandler value) {
@@ -79,7 +80,7 @@ public class MapValue
         public ValueHandler getValue() {
             return this.value;
         }
-        
+
         public String toString() {
             return this.key + "/" + this.value;
         }
@@ -90,31 +91,30 @@ public class MapValue
             result = PRIME * result + this.key.hashCode();
             result = PRIME * result + this.value.hashCode();
             return result;
-        }                
+        }
 
-        public boolean equals(Object object) {
+        public boolean equals(final Object object) {
             if ( this == object ) {
                 return true;
             }
-            
-            if ( object == null ||  getClass() != object.getClass() ) {
+
+            if ( object == null || getClass() != object.getClass() ) {
                 return false;
             }
             final KeyValuePair other = (KeyValuePair) object;
             return this.key.equals( other.key ) && this.value.equals( other.value );
-        }                        
+        }
     }
-    
+
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append( "MapValue pairs=" );
         for ( int i = 0, length = this.pairs.length; i < length; i++ ) {
-            buffer.append( this.pairs[i] );            
+            buffer.append( this.pairs[i] );
         }
         buffer.append( "]" );
-        
+
         return buffer.toString();
     }
-    
-    
+
 }

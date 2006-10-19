@@ -12,9 +12,9 @@ public class FieldTemplateImpl
     private final int         index;
     private final ValueType   valueType;
 
-    public FieldTemplateImpl(String name,
-                             int index,
-                             Class clazz) {
+    public FieldTemplateImpl(final String name,
+                             final int index,
+                             final Class clazz) {
         this.name = name;
         this.index = index;
         this.valueType = ValueType.determineValueType( clazz );
@@ -50,19 +50,18 @@ public class FieldTemplateImpl
         return result;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
-        
+
         if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        
+
         final FieldTemplateImpl other = (FieldTemplateImpl) object;
-        
+
         return this.index == other.index && this.name.equals( other.name ) && this.valueType.equals( other.valueType );
     }
 
-    
 }

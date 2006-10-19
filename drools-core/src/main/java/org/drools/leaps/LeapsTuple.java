@@ -34,11 +34,11 @@ class LeapsTuple
     implements
     Tuple,
     Serializable {
-    private static final long      serialVersionUID       = 1L;
+    private static final long       serialVersionUID       = 1L;
 
-    private PropagationContext     context;
+    private PropagationContext      context;
 
-    private boolean                readyForActivation;
+    private boolean                 readyForActivation;
 
     private final LeapsFactHandle[] factHandles;
 
@@ -46,11 +46,12 @@ class LeapsTuple
 
     private LeapsFactHandle[]       existsFactHandles      = null;
 
-    private Activation             activation;
+    private Activation              activation;
 
     private final LeapsRule         leapsRule;
 
     private boolean                 wasFired               = false;
+
     /**
      * agendaItem parts
      */
@@ -275,10 +276,10 @@ class LeapsTuple
     }
 
     public boolean isWasFired() {
-        return wasFired;
+        return this.wasFired;
     }
 
-    public void setWasFired( boolean wasFired ) {
+    public void setWasFired(final boolean wasFired) {
         this.wasFired = wasFired;
     }
 }

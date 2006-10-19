@@ -8,14 +8,14 @@ public class DoubleFieldImpl
     FieldValue {
 
     private static final long serialVersionUID = 320;
-    private double              value;
+    private double            value;
 
     public DoubleFieldImpl(final double value) {
         this.value = value;
     }
 
     public Object getValue() {
-        return new Double(this.value);
+        return new Double( this.value );
     }
 
     public String toString() {
@@ -23,7 +23,7 @@ public class DoubleFieldImpl
     }
 
     public boolean getBooleanValue() {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported for type double");
+        throw new RuntimeDroolsException( "Conversion to boolean not supported for type double" );
     }
 
     public byte getByteValue() {
@@ -35,7 +35,7 @@ public class DoubleFieldImpl
     }
 
     public double getDoubleValue() {
-        return (double) this.value;
+        return this.value;
     }
 
     public float getFloatValue() {

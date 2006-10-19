@@ -34,7 +34,7 @@ public class Context
     public static final String[] stateStrings     = {"START_UP", "ASSIGN_SEATS", "MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS"};
 
     private int                  state;
-    
+
     public Context() {
     }
 

@@ -20,7 +20,7 @@ package org.drools.base;
  * A markup interface for shadow fact proxies
  */
 public interface ShadowProxy {
-    
+
     public void updateProxy();
 
 }

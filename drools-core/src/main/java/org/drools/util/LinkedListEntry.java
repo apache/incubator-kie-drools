@@ -30,13 +30,13 @@ public class LinkedListEntry extends AbstractBaseLinkedListNode {
 
     public Object getObject() {
         return this.object;
-    }    
-    
-    public int hashCode() {
-        return object.hashCode();
     }
-    
-    public boolean equals(Object other)  {
+
+    public int hashCode() {
+        return this.object.hashCode();
+    }
+
+    public boolean equals(final Object other) {
         return this.object.equals( other );
     }
 }

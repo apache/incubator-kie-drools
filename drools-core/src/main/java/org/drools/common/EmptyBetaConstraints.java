@@ -17,90 +17,72 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.drools.WorkingMemory;
-import org.drools.base.evaluators.Operator;
-import org.drools.common.InstanceNotEqualsConstraint.InstanceNotEqualsConstraintContextEntry;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Constraint;
-import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.FieldExtractor;
-import org.drools.spi.Tuple;
 import org.drools.util.FactHashTable;
-import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
-import org.drools.util.LinkedListNode;
 import org.drools.util.TupleHashTable;
 
 public class EmptyBetaConstraints
     implements
-    Serializable, BetaConstraints {
+    Serializable,
+    BetaConstraints {
 
     private static final BetaConstraints INSTANCE = new EmptyBetaConstraints();
-    
+
     public static BetaConstraints getInstance() {
-        return INSTANCE;
+        return EmptyBetaConstraints.INSTANCE;
     }
-    
+
     /**
      * 
      */
-    private static final long               serialVersionUID         = 320L;   
-    
+    private static final long serialVersionUID = 320L;
+
     private EmptyBetaConstraints() {
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(ReteTuple tuple) {
+    public void updateFromTuple(final ReteTuple tuple) {
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(InternalFactHandle handle) {
+    public void updateFromFactHandle(final InternalFactHandle handle) {
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(Object object ) {
+    public boolean isAllowedCachedLeft(final Object object) {
         return true;
-    }    
-    
+    }
+
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple) {
         return true;
-    }   
-    
+    }
+
     public boolean isIndexed() {
         return false;
     }
-    
+
     public boolean isEmpty() {
-        return true;   
+        return true;
     }
-    
-    public BetaMemory createBetaMemory()  {
-        BetaMemory memory = new BetaMemory( new TupleHashTable(),
+
+    public BetaMemory createBetaMemory() {
+        final BetaMemory memory = new BetaMemory( new TupleHashTable(),
                                             new FactHashTable() );
-        
-        return memory;        
-    }    
+
+        return memory;
+    }
 
     public int hashCode() {
         return 1;
@@ -110,7 +92,7 @@ public class EmptyBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#getConstraints()
      */
     public LinkedList getConstraints() {
-        LinkedList list =  new LinkedList();
+        final LinkedList list = new LinkedList();
         return list;
     }
 
@@ -128,7 +110,7 @@ public class EmptyBetaConstraints
             return true;
         }
 
-        return ( object != null && getClass() == object.getClass() );
+        return (object != null && getClass() == object.getClass());
     }
 
 }

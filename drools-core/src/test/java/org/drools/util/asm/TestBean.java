@@ -18,9 +18,9 @@ package org.drools.util.asm;
 
 public class TestBean {
 
-    private String  something;
-    private int     number;
-    private boolean blah;
+    private String   something;
+    private int      number;
+    private boolean  blah;
     private Object[] objArray;
 
     public boolean isBlah() {
@@ -60,10 +60,10 @@ public class TestBean {
     }
 
     public Object[] getObjArray() {
-        return objArray;
+        return this.objArray;
     }
 
-    public void setObjArray(Object[] objArray) {
+    public void setObjArray(final Object[] objArray) {
         this.objArray = objArray;
     }
 

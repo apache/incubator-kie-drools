@@ -30,7 +30,9 @@ import org.drools.common.DefaultAgenda;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public interface AgendaGroup extends Serializable {
+public interface AgendaGroup
+    extends
+    Serializable {
 
     /**
      * Static reference to determine the default <code>AgendaGroup</code> name.

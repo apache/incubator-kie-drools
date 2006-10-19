@@ -13,7 +13,7 @@ public interface ValueHandler
     Serializable {
 
     public static final Object EMPTY = new Serializable() {
-                                    };
+                                     };
 
     /**
      * Returns a value resolved. Declarations are resolved from the tuple, globals from the working memory and literals are just returned as is.
@@ -25,8 +25,8 @@ public interface ValueHandler
      */
     public Object getValue(Tuple tuple,
                            WorkingMemory wm);
-    
-    public Class getExtractToClass() ;
+
+    public Class getExtractToClass();
 
     /**
      * NULL the cached value

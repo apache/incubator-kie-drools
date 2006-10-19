@@ -41,17 +41,15 @@ public class LeapsAgenda extends DefaultAgenda {
         this.workingMemory = workingMemory;
     }
 
-    public synchronized void fireActivation( final Activation activation )
-            throws ConsequenceException {
-        if (activation.getRule( ) instanceof Query) {
+    public synchronized void fireActivation(final Activation activation) throws ConsequenceException {
+        if ( activation.getRule() instanceof Query ) {
             // put query results to the working memory location
-            this.workingMemory.addToQueryResults( activation.getRule( ).getName( ),
-                                                  activation.getTuple( ) );
-        }
-        else {
+            this.workingMemory.addToQueryResults( activation.getRule().getName(),
+                                                  activation.getTuple() );
+        } else {
             // fire regular rule
             super.fireActivation( activation );
-            ( (LeapsTuple) activation.getTuple( ) ).setWasFired( true );
+            ((LeapsTuple) activation.getTuple()).setWasFired( true );
         }
     }
 
@@ -63,7 +61,7 @@ public class LeapsAgenda extends DefaultAgenda {
      * 
      */
     public Activation[] getActivations() {
-        final List list = this.workingMemory.getActivations( );
-        return (Activation[]) list.toArray( new Activation[list.size( )] );
+        final List list = this.workingMemory.getActivations();
+        return (Activation[]) list.toArray( new Activation[list.size()] );
     }
 }

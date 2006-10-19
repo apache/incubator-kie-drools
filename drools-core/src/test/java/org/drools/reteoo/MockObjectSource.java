@@ -34,7 +34,7 @@ public class MockObjectSource extends ObjectSource {
     private int               attached;
 
     private int               updated;
-    
+
     private List              facts;
 
     public MockObjectSource(final int id) {
@@ -54,8 +54,8 @@ public class MockObjectSource extends ObjectSource {
     public int getUdated() {
         return this.updated;
     }
-    
-    public void addFact(InternalFactHandle handle) {
+
+    public void addFact(final InternalFactHandle handle) {
         this.facts.add( handle );
     }
 
@@ -63,9 +63,11 @@ public class MockObjectSource extends ObjectSource {
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         this.updated++;
-        for(Iterator it = this.facts.iterator(); it.hasNext(); ) {
-            InternalFactHandle handle = (InternalFactHandle) it.next();
-            sink.assertObject( handle, context, workingMemory );
+        for ( final Iterator it = this.facts.iterator(); it.hasNext(); ) {
+            final InternalFactHandle handle = (InternalFactHandle) it.next();
+            sink.assertObject( handle,
+                               context,
+                               workingMemory );
         }
     }
 

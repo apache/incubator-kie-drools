@@ -84,11 +84,10 @@ abstract public class AbstractRuleBase
     /** Special value when adding to the underlying map. */
     protected static final Object                   PRESENT = new Object();
 
-    
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it 
      * will result in an invalid state for the instance.
-     */    
+     */
     public AbstractRuleBase() {
 
     }
@@ -301,7 +300,6 @@ abstract public class AbstractRuleBase
                               final Package newPkg) throws PackageIntegrationException {
         final Map globals = pkg.getGlobals();
         final List imports = pkg.getImports();
-        
 
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
@@ -329,13 +327,13 @@ abstract public class AbstractRuleBase
             }
         }
         globals.putAll( newPkg.getGlobals() );
-        
+
         //Add rules into the RuleBase package
         //as this is needed for individual rule removal later on
-        Rule[] newRules = newPkg.getRules();
+        final Rule[] newRules = newPkg.getRules();
         for ( int i = 0; i < newRules.length; i++ ) {
-            Rule newRule = newRules[i];
-            if (pkg.getRule( newRule.getName() ) == null) {
+            final Rule newRule = newRules[i];
+            if ( pkg.getRule( newRule.getName() ) == null ) {
                 pkg.addRule( newRule );
             }
         }
@@ -429,20 +427,20 @@ abstract public class AbstractRuleBase
         return this.config;
     }
 
-    public WorkingMemory newWorkingMemory(InputStream stream) throws IOException,
+    public WorkingMemory newWorkingMemory(final InputStream stream) throws IOException,
                                                              ClassNotFoundException {
         return newWorkingMemory( stream,
                                  true );
     }
 
-    public WorkingMemory newWorkingMemory(InputStream stream,
-                                          boolean keepReference) throws IOException,
+    public WorkingMemory newWorkingMemory(final InputStream stream,
+                                          final boolean keepReference) throws IOException,
                                                                 ClassNotFoundException {
 
         final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( stream,
                                                                                               this.packageClassLoader );
 
-        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
         workingMemory.setRuleBase( this );
 
         return workingMemory;

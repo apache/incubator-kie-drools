@@ -19,11 +19,9 @@ package org.drools.leaps;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.drools.DroolsTestCase;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -31,14 +29,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
-import org.drools.common.DefaultFactHandle;
-import org.drools.examples.manners.Chosen;
-import org.drools.examples.manners.Context;
-import org.drools.examples.manners.Count;
-import org.drools.examples.manners.Guest;
-import org.drools.examples.manners.LastSeat;
 import org.drools.examples.manners.Path;
-import org.drools.examples.manners.Seating;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidRuleException;
@@ -47,10 +38,10 @@ import org.drools.rule.Not;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
@@ -66,9 +57,7 @@ public class HashedTableComponentTest extends DroolsTestCase {
 
     protected Package       pkg;
 
-
     private ClassObjectType pathType;
-
 
     private Evaluator       objectEqualEvaluator;
 
@@ -86,11 +75,21 @@ public class HashedTableComponentTest extends DroolsTestCase {
 
     protected void setUp() throws Exception {
 
-        this.p1Alex = new Path( 1, 1, "Alex" );
-        this.p2John = new Path( 2, 1, "John" );
-        this.p3Mike = new Path( 3, 1, "Mike" );
-        this.p4Alex = new Path( 4, 1, "Alex" );
-        this.p5Alex = new Path( 1, 4, "Alex" );
+        this.p1Alex = new Path( 1,
+                                1,
+                                "Alex" );
+        this.p2John = new Path( 2,
+                                1,
+                                "John" );
+        this.p3Mike = new Path( 3,
+                                1,
+                                "Mike" );
+        this.p4Alex = new Path( 4,
+                                1,
+                                "Alex" );
+        this.p5Alex = new Path( 1,
+                                4,
+                                "Alex" );
         this.pathType = new ClassObjectType( Path.class );
 
         this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
@@ -106,11 +105,11 @@ public class HashedTableComponentTest extends DroolsTestCase {
      */
     public void testHashedTableComponentNoAlpha() throws Exception {
 
-        Rule r = this.getMakePathNoAlpha( );
+        final Rule r = this.getMakePathNoAlpha();
         this.pkg.addRule( r );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( this.pkg );
-        final LeapsWorkingMemory wm = (LeapsWorkingMemory) ruleBase.newWorkingMemory( );
+        final LeapsWorkingMemory wm = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
         wm.assertObject( this.p1Alex );
         wm.assertObject( this.p2John );
         wm.assertObject( this.p3Mike );
@@ -119,30 +118,39 @@ public class HashedTableComponentTest extends DroolsTestCase {
 
         Iterator it;
         Tuple tuple;
-        FactTable ft = wm.getFactTable( Path.class );
-        ColumnConstraints notConstraint = (ColumnConstraints) ft.getHashedConstraints( )
-                                                                .next( );
-        LeapsFactHandle[] fh = new LeapsFactHandle[1];
-        fh[0] = new LeapsFactHandle( 99, p1Alex );
-        tuple = new LeapsTuple( fh, null, null );
+        final FactTable ft = wm.getFactTable( Path.class );
+        final ColumnConstraints notConstraint = (ColumnConstraints) ft.getHashedConstraints().next();
+        final LeapsFactHandle[] fh = new LeapsFactHandle[1];
+        fh[0] = new LeapsFactHandle( 99,
+                                     this.p1Alex );
+        tuple = new LeapsTuple( fh,
+                                null,
+                                null );
 
-        it = ft.reverseOrderIterator( tuple, notConstraint );
+        it = ft.reverseOrderIterator( tuple,
+                                      notConstraint );
         assertSame( "Expected matching",
-                    ( (LeapsFactHandle) it.next( ) ).getObject( ),
-                    p1Alex );
+                    ((LeapsFactHandle) it.next()).getObject(),
+                    this.p1Alex );
         assertSame( "Expected matching",
-                    ( (LeapsFactHandle) it.next( ) ).getObject( ),
-                    p5Alex );
-        assertFalse( "Did not expect any more data", it.hasNext( ) );
+                    ((LeapsFactHandle) it.next()).getObject(),
+                    this.p5Alex );
+        assertFalse( "Did not expect any more data",
+                     it.hasNext() );
 
-        fh[0] = new LeapsFactHandle( 99, p3Mike );
-        tuple = new LeapsTuple( fh, null, null );
+        fh[0] = new LeapsFactHandle( 99,
+                                     this.p3Mike );
+        tuple = new LeapsTuple( fh,
+                                null,
+                                null );
 
-        it = ft.reverseOrderIterator( tuple, notConstraint );
+        it = ft.reverseOrderIterator( tuple,
+                                      notConstraint );
         assertSame( "Expected matching",
-                    ( (LeapsFactHandle) it.next( ) ).getObject( ),
-                    p3Mike );
-        assertFalse( "Did not expect any more data", it.hasNext( ) );
+                    ((LeapsFactHandle) it.next()).getObject(),
+                    this.p3Mike );
+        assertFalse( "Did not expect any more data",
+                     it.hasNext() );
     }
 
     /*
@@ -152,11 +160,11 @@ public class HashedTableComponentTest extends DroolsTestCase {
      */
     public void testHashedTableComponentAlpha() throws Exception {
 
-        Rule r = this.getMakePathAlpha( );
+        final Rule r = this.getMakePathAlpha();
         this.pkg.addRule( r );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( this.pkg );
-        final LeapsWorkingMemory wm = (LeapsWorkingMemory) ruleBase.newWorkingMemory( );
+        final LeapsWorkingMemory wm = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
 
         wm.assertObject( this.p1Alex );
         wm.assertObject( this.p2John );
@@ -166,24 +174,33 @@ public class HashedTableComponentTest extends DroolsTestCase {
 
         Iterator it;
         Tuple tuple;
-        FactTable ft = wm.getFactTable( Path.class );
-        ColumnConstraints notConstraint = (ColumnConstraints) ft.getHashedConstraints( )
-                                                                .next( );
-        LeapsFactHandle[] fh = new LeapsFactHandle[1];
-        fh[0] = new LeapsFactHandle( 99, p1Alex );
-        tuple = new LeapsTuple( fh, null, null );
+        final FactTable ft = wm.getFactTable( Path.class );
+        final ColumnConstraints notConstraint = (ColumnConstraints) ft.getHashedConstraints().next();
+        final LeapsFactHandle[] fh = new LeapsFactHandle[1];
+        fh[0] = new LeapsFactHandle( 99,
+                                     this.p1Alex );
+        tuple = new LeapsTuple( fh,
+                                null,
+                                null );
 
-        it = ft.reverseOrderIterator( tuple, notConstraint );
-        assertFalse( "Did not expect any more data", it.hasNext( ) );
+        it = ft.reverseOrderIterator( tuple,
+                                      notConstraint );
+        assertFalse( "Did not expect any more data",
+                     it.hasNext() );
 
-        fh[0] = new LeapsFactHandle( 99, p3Mike );
-        tuple = new LeapsTuple( fh, null, null );
+        fh[0] = new LeapsFactHandle( 99,
+                                     this.p3Mike );
+        tuple = new LeapsTuple( fh,
+                                null,
+                                null );
 
-        it = ft.reverseOrderIterator( tuple, notConstraint );
+        it = ft.reverseOrderIterator( tuple,
+                                      notConstraint );
         assertSame( "Expected matching",
-                    ( (LeapsFactHandle) it.next( ) ).getObject( ),
-                    p3Mike );
-        assertFalse( "Did not expect any more data", it.hasNext( ) );
+                    ((LeapsFactHandle) it.next()).getObject(),
+                    this.p3Mike );
+        assertFalse( "Did not expect any more data",
+                     it.hasNext() );
     }
 
     /**
@@ -206,15 +223,21 @@ public class HashedTableComponentTest extends DroolsTestCase {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getMakePathAlpha() throws IntrospectionException, InvalidRuleException {
+    private Rule getMakePathAlpha() throws IntrospectionException,
+                                   InvalidRuleException {
         final Rule rule = new Rule( "makePathNoAlpha" );
         // -----------
         // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         // -----------
-        final Column pathColumn = new Column( 0, this.pathType );
-        setFieldDeclaration( pathColumn, "id", "pathId" );
+        final Column pathColumn = new Column( 0,
+                                              this.pathType );
+        setFieldDeclaration( pathColumn,
+                             "id",
+                             "pathId" );
 
-        setFieldDeclaration( pathColumn, "guestName", "pathGuestName" );
+        setFieldDeclaration( pathColumn,
+                             "guestName",
+                             "pathGuestName" );
 
         rule.addPattern( pathColumn );
 
@@ -223,7 +246,8 @@ public class HashedTableComponentTest extends DroolsTestCase {
         // -------------
         // (not Path( id == seatingId, guestName == pathGuestName )
         // -------------
-        final Column notPathColumn = new Column( 3, this.pathType );
+        final Column notPathColumn = new Column( 3,
+                                                 this.pathType );
 
         notPathColumn.addConstraint( getLiteralConstraint( notPathColumn,
                                                            "guestName",
@@ -239,7 +263,7 @@ public class HashedTableComponentTest extends DroolsTestCase {
                                                                  pathGuestNameDeclaration,
                                                                  this.objectEqualEvaluator ) );
 
-        final Not not = new Not( );
+        final Not not = new Not();
 
         not.addChild( notPathColumn );
 
@@ -248,10 +272,10 @@ public class HashedTableComponentTest extends DroolsTestCase {
         // ------------
         // drools.assert( new Path( id, pathName, pathSeat ) );
         // ------------
-        final Consequence consequence = new Consequence( ) {
+        final Consequence consequence = new Consequence() {
 
-            public void evaluate( KnowledgeHelper drools, WorkingMemory workingMemory )
-                    throws ConsequenceException {
+            public void evaluate(KnowledgeHelper drools,
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 // empty
             }
         };
@@ -281,15 +305,21 @@ public class HashedTableComponentTest extends DroolsTestCase {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getMakePathNoAlpha() throws IntrospectionException, InvalidRuleException {
+    private Rule getMakePathNoAlpha() throws IntrospectionException,
+                                     InvalidRuleException {
         final Rule rule = new Rule( "makePathNoAlpha" );
         // -----------
         // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         // -----------
-        final Column pathColumn = new Column( 0, this.pathType );
-        setFieldDeclaration( pathColumn, "id", "pathId" );
+        final Column pathColumn = new Column( 0,
+                                              this.pathType );
+        setFieldDeclaration( pathColumn,
+                             "id",
+                             "pathId" );
 
-        setFieldDeclaration( pathColumn, "guestName", "pathGuestName" );
+        setFieldDeclaration( pathColumn,
+                             "guestName",
+                             "pathGuestName" );
 
         rule.addPattern( pathColumn );
 
@@ -298,7 +328,8 @@ public class HashedTableComponentTest extends DroolsTestCase {
         // -------------
         // (not Path( id == seatingId, guestName == pathGuestName )
         // -------------
-        final Column notPathColumn = new Column( 3, this.pathType );
+        final Column notPathColumn = new Column( 3,
+                                                 this.pathType );
 
         notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
                                                                  "id",
@@ -309,7 +340,7 @@ public class HashedTableComponentTest extends DroolsTestCase {
                                                                  pathGuestNameDeclaration,
                                                                  this.objectEqualEvaluator ) );
 
-        final Not not = new Not( );
+        final Not not = new Not();
 
         not.addChild( notPathColumn );
 
@@ -318,10 +349,10 @@ public class HashedTableComponentTest extends DroolsTestCase {
         // ------------
         // drools.assert( new Path( id, pathName, pathSeat ) );
         // ------------
-        final Consequence consequence = new Consequence( ) {
+        final Consequence consequence = new Consequence() {
 
-            public void evaluate( KnowledgeHelper drools, WorkingMemory workingMemory )
-                    throws ConsequenceException {
+            public void evaluate(KnowledgeHelper drools,
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 // empty
             }
         };
@@ -331,53 +362,57 @@ public class HashedTableComponentTest extends DroolsTestCase {
         return rule;
     }
 
-    public static int getIndex( final Class clazz, final String name )
-            throws IntrospectionException {
-        final PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz )
-                                                             .getPropertyDescriptors( );
-        for (int i = 0; i < descriptors.length; i++) {
-            if (descriptors[i].getName( ).equals( name )) {
+    public static int getIndex(final Class clazz,
+                               final String name) throws IntrospectionException {
+        final PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+        for ( int i = 0; i < descriptors.length; i++ ) {
+            if ( descriptors[i].getName().equals( name ) ) {
                 return i;
             }
         }
         return -1;
     }
 
-    private AlphaNodeFieldConstraint getLiteralConstraint( final Column column,
-                                                  final String fieldName,
-                                                  final Object fieldValue,
-                                                  final Evaluator evaluator )
-            throws IntrospectionException {
-        final Class clazz = ( (ClassObjectType) column.getObjectType( ) ).getClassType( );
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
+                                                          final String fieldName,
+                                                          final Object fieldValue,
+                                                          final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = new ClassFieldExtractor( clazz, fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
         final FieldValue field = new MockField( fieldValue );
 
-        return new LiteralConstraint( extractor, evaluator, field );
+        return new LiteralConstraint( extractor,
+                                      evaluator,
+                                      field );
     }
 
-    private void setFieldDeclaration( final Column column,
-                                      final String fieldName,
-                                      final String identifier )
-            throws IntrospectionException {
-        final Class clazz = ( (ClassObjectType) column.getObjectType( ) ).getClassType( );
+    private void setFieldDeclaration(final Column column,
+                                     final String fieldName,
+                                     final String identifier) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = new ClassFieldExtractor( clazz, fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
-        column.addDeclaration( identifier, extractor );
+        column.addDeclaration( identifier,
+                               extractor );
     }
 
-    private AlphaNodeFieldConstraint getBoundVariableConstraint( final Column column,
-                                                        final String fieldName,
-                                                        final Declaration declaration,
-                                                        final Evaluator evaluator )
-            throws IntrospectionException {
-        final Class clazz = ( (ClassObjectType) column.getObjectType( ) ).getClassType( );
+    private AlphaNodeFieldConstraint getBoundVariableConstraint(final Column column,
+                                                                final String fieldName,
+                                                                final Declaration declaration,
+                                                                final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = new ClassFieldExtractor( clazz, fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
-        return new VariableConstraint( extractor, declaration, evaluator );
+        return new VariableConstraint( extractor,
+                                       declaration,
+                                       evaluator );
     }
 
 }

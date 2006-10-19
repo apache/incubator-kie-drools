@@ -17,51 +17,40 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.drools.WorkingMemory;
 import org.drools.base.evaluators.Operator;
-import org.drools.common.InstanceNotEqualsConstraint.InstanceNotEqualsConstraintContextEntry;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
-import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.FieldExtractor;
-import org.drools.spi.Tuple;
-import org.drools.util.CompositeFieldIndexHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
-import org.drools.util.CompositeFieldIndexHashTable.FieldIndex;
+import org.drools.util.FieldIndexHashTable.FieldIndex;
 
 public class DefaultBetaConstraints
     implements
-    Serializable, BetaConstraints {
+    Serializable,
+    BetaConstraints {
 
     /**
      * 
      */
-    private static final long               serialVersionUID         = 320L;
+    private static final long serialVersionUID = 320L;
 
-    private final LinkedList                constraints;
+    private final LinkedList  constraints;
 
-    private ContextEntry                    contexts;
+    private ContextEntry      contexts;
 
-    private boolean                         indexed;   
+    private boolean           indexed;
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint constraint) {
         this( new BetaNodeFieldConstraint[]{constraint} );
-    }        
+    }
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
         this.constraints = new LinkedList();
@@ -70,14 +59,15 @@ public class DefaultBetaConstraints
             // Determine  if this constraint is indexable
             // it is only indexable if there is already no indexed constraints
             // An indexed constraint is always the first constraint
-            if ( isIndexable( constraints[i] ) && !indexed ) {
-                this.constraints.insertAfter( null, new LinkedListEntry( constraints[i] ) );
+            if ( isIndexable( constraints[i] ) && !this.indexed ) {
+                this.constraints.insertAfter( null,
+                                              new LinkedListEntry( constraints[i] ) );
                 this.indexed = true;
             } else {
                 this.constraints.add( new LinkedListEntry( constraints[i] ) );
             }
             //Setup  the  contextEntry cache to be iterated  in the same order
-            ContextEntry context = constraints[i].getContextEntry();
+            final ContextEntry context = constraints[i].getContextEntry();
             if ( current == null ) {
                 current = context;
                 this.contexts = context;
@@ -87,11 +77,11 @@ public class DefaultBetaConstraints
             current = context;
         }
     }
-    
-    private  boolean isIndexable(final BetaNodeFieldConstraint constraint) {        
+
+    private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint.getClass() == VariableConstraint.class ) {
-            VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            return ( variableConstraint.getEvaluator().getOperator() == Operator.EQUAL );
+            final VariableConstraint variableConstraint = (VariableConstraint) constraint;
+            return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
         } else {
             return false;
         }
@@ -100,7 +90,7 @@ public class DefaultBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(ReteTuple tuple) {
+    public void updateFromTuple(final ReteTuple tuple) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
             context.updateFromTuple( tuple );
         }
@@ -109,67 +99,70 @@ public class DefaultBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(InternalFactHandle handle) {
+    public void updateFromFactHandle(final InternalFactHandle handle) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
             context.updateFromFactHandle( handle );
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(Object object ) {       
+    public boolean isAllowedCachedLeft(final Object object) {
         LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
         ContextEntry context = this.contexts;
         while ( entry != null ) {
-            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft(context, object ) ) {
+            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft( context,
+                                                                                     object ) ) {
                 return false;
             }
             entry = (LinkedListEntry) entry.getNext();
             context = context.getNext();
         }
-        return true;        
-    }    
-    
+        return true;
+    }
+
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple) {
         LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
         ContextEntry context = this.contexts;
         while ( entry != null ) {
-            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedRight(tuple, context ) ) {
+            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedRight( tuple,
+                                                                                      context ) ) {
                 return false;
             }
             entry = (LinkedListEntry) entry.getNext();
             context = context.getNext();
         }
-        return true;        
-    }   
-    
+        return true;
+    }
+
     public boolean isIndexed() {
         return this.indexed;
     }
-    
+
     public boolean isEmpty() {
-        return false;   
+        return false;
     }
-    
-    public BetaMemory createBetaMemory()  {
+
+    public BetaMemory createBetaMemory() {
         BetaMemory memory;
         if ( this.indexed ) {
-            Constraint constraint = ( Constraint ) this.constraints.getFirst();
-            VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            FieldIndex  index  = new  FieldIndex(variableConstraint.getFieldExtractor(), variableConstraint.getRequiredDeclarations()[0]);
+            final Constraint constraint = (Constraint) this.constraints.getFirst();
+            final VariableConstraint variableConstraint = (VariableConstraint) constraint;
+            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                               variableConstraint.getRequiredDeclarations()[0] );
             memory = new BetaMemory( new TupleHashTable(),
-                                     new CompositeFieldIndexHashTable( new FieldIndex[] { index }  ) );
-        } else  {        
+                                     new FieldIndexHashTable( new FieldIndex[]{index} ) );
+        } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
         }
-        
-        return memory;        
-    }    
+
+        return memory;
+    }
 
     //    public Set getRequiredDeclarations() {
     //        final Set declarations = new HashSet();

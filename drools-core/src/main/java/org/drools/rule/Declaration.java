@@ -84,7 +84,7 @@ public class Declaration
 
     private final Extractor   extractor;
 
-    private Column               column;
+    private Column            column;
 
     // ------------------------------------------------------------
     // Constructors
@@ -170,7 +170,7 @@ public class Declaration
         result = PRIME * this.identifier.hashCode();
         return result;
     }
-      
+
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
@@ -180,8 +180,8 @@ public class Declaration
             return false;
         }
 
-        final Declaration other = (Declaration) object;               
-        
+        final Declaration other = (Declaration) object;
+
         return this.column.getFactIndex() == other.column.getFactIndex() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
     }
 

@@ -47,13 +47,13 @@ class AlphaNode extends ObjectSource
     /**
      * 
      */
-    private static final long     serialVersionUID = 320L;
+    private static final long              serialVersionUID = 320L;
 
     /** The <code>FieldConstraint</code> */
     private final AlphaNodeFieldConstraint constraint;
 
-    private ObjectSinkNode        previousObjectSinkNode;
-    private ObjectSinkNode        nextObjectSinkNode;
+    private ObjectSinkNode                 previousObjectSinkNode;
+    private ObjectSinkNode                 nextObjectSinkNode;
 
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
@@ -67,7 +67,10 @@ class AlphaNode extends ObjectSource
     AlphaNode(final int id,
               final AlphaNodeFieldConstraint constraint,
               final ObjectSource objectSource) {
-        this(id, constraint, objectSource, true);
+        this( id,
+              constraint,
+              objectSource,
+              true );
     }
 
     /**
@@ -138,7 +141,7 @@ class AlphaNode extends ObjectSource
                 memory.add( handle,
                             false );
             }
-            sink.propagateAssertObject( handle,
+            this.sink.propagateAssertObject( handle,
                                         context,
                                         workingMemory );
         }
@@ -159,23 +162,25 @@ class AlphaNode extends ObjectSource
                                               true );
         }
     }
-    
-    public void updateSink(ObjectSink sink,
-                           PropagationContext context,
-                           InternalWorkingMemory workingMemory) {
+
+    public void updateSink(final ObjectSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
         FactHashTable memory = null;
-        
+
         if ( !hasMemory() ) {
             // get the objects from the parent
-            this.objectSource.updateSink( sink, context, workingMemory );
+            this.objectSource.updateSink( sink,
+                                          context,
+                                          workingMemory );
         } else {
             // if already has memory, just iterate and propagate
             memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            Iterator it = memory.iterator();            
-            for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {
+            final Iterator it = memory.iterator();
+            for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
                 sink.assertObject( entry.getFactHandle(),
                                    context,
-                                   workingMemory );                
+                                   workingMemory );
             }
         }
     }
@@ -244,7 +249,7 @@ class AlphaNode extends ObjectSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextObjectSinkNode(ObjectSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
@@ -262,8 +267,8 @@ class AlphaNode extends ObjectSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
-      
+
 }

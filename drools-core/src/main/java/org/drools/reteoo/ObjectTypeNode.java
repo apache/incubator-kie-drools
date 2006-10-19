@@ -136,21 +136,24 @@ class ObjectTypeNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-        
+
         // checks if shadow is enabled
-        if(this.objectType.isShadowEnabled()) {
+        if ( this.objectType.isShadowEnabled() ) {
             // need to improve this
-            if( ! ( handle.getObject() instanceof ShadowProxy) ) {
+            if ( !(handle.getObject() instanceof ShadowProxy) ) {
                 // replaces the actual object by its shadow before propagating
                 handle.setObject( this.objectType.getShadow( handle.getObject() ) );
             } else {
-                ((ShadowProxy)handle.getObject()).updateProxy();
+                ((ShadowProxy) handle.getObject()).updateProxy();
             }
         }
         // we do not need to check if the fact exists already
-        memory.add( handle, false );
-        
-        this.sink.propagateAssertObject( handle, context, workingMemory );
+        memory.add( handle,
+                    false );
+
+        this.sink.propagateAssertObject( handle,
+                                         context,
+                                         workingMemory );
     }
 
     /**
@@ -170,16 +173,23 @@ class ObjectTypeNode extends ObjectSource
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
         memory.remove( handle );
 
-        this.sink.propagateRetractObject( handle, context, workingMemory, true );
-    }   
-    
-    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );        
-        Iterator it =  memory.iterator();
-        for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {            
-            sink.assertObject( entry.getFactHandle(), context, workingMemory );
+        this.sink.propagateRetractObject( handle,
+                                          context,
+                                          workingMemory,
+                                          true );
+    }
+
+    public void updateSink(final ObjectSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+        final Iterator it = memory.iterator();
+        for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
+            sink.assertObject( entry.getFactHandle(),
+                               context,
+                               workingMemory );
         }
-    }    
+    }
 
     /**
      * Rete needs to know that this ObjectTypeNode has been added
@@ -208,8 +218,8 @@ class ObjectTypeNode extends ObjectSource
 
     public void remove(final BaseNode node,
                        final InternalWorkingMemory[] workingMemories) {
-        if( !node.isInUse()) {
-            removeObjectSink( ( ObjectSink ) node );
+        if ( !node.isInUse() ) {
+            removeObjectSink( (ObjectSink) node );
         }
         removeShare();
         if ( !this.isInUse() ) {
@@ -238,7 +248,7 @@ class ObjectTypeNode extends ObjectSource
     }
 
     public String toString() {
-        return "[ObjectTypeNode("+this.id+") objectType=" + this.objectType + "]";
+        return "[ObjectTypeNode(" + this.id + ") objectType=" + this.objectType + "]";
     }
 
     /**
@@ -261,5 +271,5 @@ class ObjectTypeNode extends ObjectSource
 
         return this.objectType.equals( other.objectType );
     }
-    
+
 }

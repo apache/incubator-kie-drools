@@ -39,61 +39,61 @@ public class ObjectFieldImpl
     }
 
     public boolean getBooleanValue() {
-        if( this.value instanceof Boolean ) {
-            return ((Boolean)this.value).booleanValue(); 
+        if ( this.value instanceof Boolean ) {
+            return ((Boolean) this.value).booleanValue();
         }
-        throw new RuntimeDroolsException("Conversion to boolean not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + this.value.getClass() );
     }
 
     public byte getByteValue() {
-        if( this.value instanceof Number ) {
-            return ((Number)this.value).byteValue(); 
+        if ( this.value instanceof Number ) {
+            return ((Number) this.value).byteValue();
         }
-        throw new RuntimeDroolsException("Conversion to byte not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + this.value.getClass() );
     }
 
     public char getCharValue() {
-        if( this.value instanceof Character ) {
-            return ((Character)this.value).charValue(); 
+        if ( this.value instanceof Character ) {
+            return ((Character) this.value).charValue();
         }
-        throw new RuntimeDroolsException("Conversion to char not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to char not supported for type: " + this.value.getClass() );
     }
 
     public double getDoubleValue() {
-        if( this.value instanceof Number ) {
-            return ((Number)this.value).doubleValue(); 
+        if ( this.value instanceof Number ) {
+            return ((Number) this.value).doubleValue();
         }
-        throw new RuntimeDroolsException("Conversion to double not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to double not supported for type: " + this.value.getClass() );
     }
 
     public float getFloatValue() {
-        if( this.value instanceof Number ) {
-            return ((Number)this.value).floatValue(); 
+        if ( this.value instanceof Number ) {
+            return ((Number) this.value).floatValue();
         }
-        throw new RuntimeDroolsException("Conversion to float not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to float not supported for type: " + this.value.getClass() );
     }
 
     public int getIntValue() {
-        if( this.value instanceof Number ) {
-            return ((Number)this.value).intValue(); 
+        if ( this.value instanceof Number ) {
+            return ((Number) this.value).intValue();
         }
-        throw new RuntimeDroolsException("Conversion to int not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to int not supported for type: " + this.value.getClass() );
     }
 
     public long getLongValue() {
-        if( this.value instanceof Number ) {
-            return ((Number)this.value).longValue(); 
+        if ( this.value instanceof Number ) {
+            return ((Number) this.value).longValue();
         }
-        throw new RuntimeDroolsException("Conversion to long not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to long not supported for type: " + this.value.getClass() );
     }
 
     public short getShortValue() {
-        if( this.value instanceof Number ) {
-            return ((Number)this.value).shortValue(); 
+        if ( this.value instanceof Number ) {
+            return ((Number) this.value).shortValue();
         }
-        throw new RuntimeDroolsException("Conversion to short not supported for type: "+this.value.getClass());
+        throw new RuntimeDroolsException( "Conversion to short not supported for type: " + this.value.getClass() );
     }
-    
+
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;

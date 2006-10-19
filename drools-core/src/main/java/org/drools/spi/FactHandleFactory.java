@@ -53,6 +53,6 @@ public interface FactHandleFactory
      * @return a fresh instance of the fact handle factory, with any IDs reset etc.
      */
     public FactHandleFactory newInstance();
-    
+
     public Class getFactHandleType();
 }

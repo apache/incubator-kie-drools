@@ -16,8 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  * 
@@ -26,7 +24,9 @@ import java.io.Serializable;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public interface TupleSinkNode extends TupleSink {
+public interface TupleSinkNode
+    extends
+    TupleSink {
 
     /**
      * Returns the next node

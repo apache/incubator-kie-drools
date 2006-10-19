@@ -6,43 +6,43 @@ import org.drools.base.BaseClassFieldExtractor;
 public abstract class BaseShortClassFieldExtractor extends BaseClassFieldExtractor {
 
     private static final long serialVersionUID = 2031113412843487706L;
-    
-    public BaseShortClassFieldExtractor(Class clazz,
-                                       String fieldName) {
+
+    public BaseShortClassFieldExtractor(final Class clazz,
+                                        final String fieldName) {
         super( clazz,
                fieldName );
     }
 
-    public Object getValue(Object object) {
+    public Object getValue(final Object object) {
         return new Long( getShortValue( object ) );
     }
 
-    public boolean getBooleanValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to boolean not supported from short");
+    public boolean getBooleanValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from short" );
     }
 
-    public byte getByteValue(Object object) {
+    public byte getByteValue(final Object object) {
         return (byte) getShortValue( object );
-        
+
     }
 
-    public char getCharValue(Object object) {
-        throw new RuntimeDroolsException("Conversion to char not supported from short");
+    public char getCharValue(final Object object) {
+        throw new RuntimeDroolsException( "Conversion to char not supported from short" );
     }
 
-    public double getDoubleValue(Object object) {
+    public double getDoubleValue(final Object object) {
         return getShortValue( object );
     }
 
-    public float getFloatValue(Object object) {
+    public float getFloatValue(final Object object) {
         return getShortValue( object );
     }
 
-    public int getIntValue(Object object) {
+    public int getIntValue(final Object object) {
         return getShortValue( object );
     }
 
-    public long getLongValue(Object object) {
+    public long getLongValue(final Object object) {
         return getShortValue( object );
     }
 

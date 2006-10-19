@@ -43,31 +43,33 @@ import java.io.Serializable;
  */
 
 public class UUID
-    implements Serializable, Cloneable, Comparable
-{
-    private final static String kHexChars = "0123456789abcdefABCDEF";
+    implements
+    Serializable,
+    Cloneable,
+    Comparable {
+    private final static String kHexChars            = "0123456789abcdefABCDEF";
 
-    public final static byte INDEX_CLOCK_HI = 6;
-    public final static byte INDEX_CLOCK_MID = 4;
-    public final static byte INDEX_CLOCK_LO = 0;
+    public final static byte    INDEX_CLOCK_HI       = 6;
+    public final static byte    INDEX_CLOCK_MID      = 4;
+    public final static byte    INDEX_CLOCK_LO       = 0;
 
-    public final static byte INDEX_TYPE = 6;
+    public final static byte    INDEX_TYPE           = 6;
     // Clock seq. & variant are multiplexed...
-    public final static byte INDEX_CLOCK_SEQUENCE = 8;
-    public final static byte INDEX_VARIATION = 8;
+    public final static byte    INDEX_CLOCK_SEQUENCE = 8;
+    public final static byte    INDEX_VARIATION      = 8;
 
-    public final static byte TYPE_NULL = 0;
-    public final static byte TYPE_TIME_BASED = 1;
-    public final static byte TYPE_DCE = 2; // Not used
-    public final static byte TYPE_NAME_BASED = 3;
-    public final static byte TYPE_RANDOM_BASED = 4;
+    public final static byte    TYPE_NULL            = 0;
+    public final static byte    TYPE_TIME_BASED      = 1;
+    public final static byte    TYPE_DCE             = 2;                                     // Not used
+    public final static byte    TYPE_NAME_BASED      = 3;
+    public final static byte    TYPE_RANDOM_BASED    = 4;
 
     /* 'Standard' namespaces defined (suggested) by UUID specs:
      */
-    public final static String NAMESPACE_DNS = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
-    public final static String NAMESPACE_URL = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
-    public final static String NAMESPACE_OID = "6ba7b812-9dad-11d1-80b4-00c04fd430c8";
-    public final static String NAMESPACE_X500 = "6ba7b814-9dad-11d1-80b4-00c04fd430c8";
+    public final static String  NAMESPACE_DNS        = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
+    public final static String  NAMESPACE_URL        = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
+    public final static String  NAMESPACE_OID        = "6ba7b812-9dad-11d1-80b4-00c04fd430c8";
+    public final static String  NAMESPACE_X500       = "6ba7b814-9dad-11d1-80b4-00c04fd430c8";
 
     /* By default let's cache desc, can be turned off. For hash code
      * there's no point in turning it off (since the int is already
@@ -75,7 +77,7 @@ public class UUID
      * those 4 bytes (or possibly bit more if alignment is bad) just
      * comment out hash caching.
      */
-    private static boolean sDescCaching = true;
+    private static boolean      sDescCaching         = true;
 
     /**
      * The shared null UUID. Would be nice to do lazy instantiation, but
@@ -85,12 +87,12 @@ public class UUID
      * assuming creation of the null UUID (plus wasted space if it's
      * not needed) can be ignored.
      */
-    private final static UUID sNullUUID = new UUID();
+    private final static UUID   sNullUUID            = new UUID();
 
-    private final byte[] mId = new byte[16];
+    private final byte[]        mId                  = new byte[16];
     // Both string presentation and hash value may be cached...
-    private transient String mDesc = null;
-    private transient int mHashCode = 0;
+    private transient String    mDesc                = null;
+    private transient int       mHashCode            = 0;
 
     /* *** Object creation: *** */
 
@@ -101,13 +103,12 @@ public class UUID
      * Note that the clearing of array is actually unnecessary as
      * JVMs are required to clear up the allocated arrays by default.
      */
-    public UUID()
-    {
+    public UUID() {
         /*
-          for (int i = 0; i < 16; ++i) {
-          mId[i] = (byte)0;
-          }
-        */
+         for (int i = 0; i < 16; ++i) {
+         mId[i] = (byte)0;
+         }
+         */
     }
 
     /**
@@ -117,14 +118,13 @@ public class UUID
      *
      * @param data array that contains the binary representation of UUID
      */
-    public UUID(byte[] data)
-    {
+    public UUID(final byte[] data) {
         /* Could call the other constructor... and/or use System.arraycopy.
          * However, it's likely that those would make this slower to use,
          * and initialization is really simple as is in any case.
          */
-        for (int i = 0; i < 16; ++i) {
-            mId[i] = data[i];
+        for ( int i = 0; i < 16; ++i ) {
+            this.mId[i] = data[i];
         }
     }
 
@@ -137,10 +137,10 @@ public class UUID
      * @param data array that contains the binary representation of UUID
      * @param start byte offset where UUID starts
      */
-    public UUID(byte[] data, int start)
-    {
-        for (int i = 0; i < 16; ++i) {
-            mId[i] = data[start + i];
+    public UUID(final byte[] data,
+                final int start) {
+        for ( int i = 0; i < 16; ++i ) {
+            this.mId[i] = data[start + i];
         }
     }
 
@@ -150,17 +150,17 @@ public class UUID
      * @param type UUID type
      * @param data 16 byte UUID contents
      */
-    UUID(int type, byte[] data)
-    {
-        for (int i = 0; i < 16; ++i) {
-            mId[i] = data[i];
+    UUID(final int type,
+         final byte[] data) {
+        for ( int i = 0; i < 16; ++i ) {
+            this.mId[i] = data[i];
         }
         // Type is multiplexed with time_hi:
-        mId[INDEX_TYPE] &= (byte) 0x0F;
-        mId[INDEX_TYPE] |= (byte) (type << 4);
+        this.mId[UUID.INDEX_TYPE] &= (byte) 0x0F;
+        this.mId[UUID.INDEX_TYPE] |= (byte) (type << 4);
         // Variant masks first two bits of the clock_seq_hi:
-        mId[INDEX_VARIATION] &= (byte) 0x3F;
-        mId[INDEX_VARIATION] |= (byte) 0x80;
+        this.mId[UUID.INDEX_VARIATION] &= (byte) 0x3F;
+        this.mId[UUID.INDEX_VARIATION] |= (byte) 0x80;
     }
 
     /**
@@ -176,51 +176,49 @@ public class UUID
      *   Hex-chars may be in upper-case too; UUID class will always output
      *   them in lowercase.
      */
-    public UUID(String id)
-        throws NumberFormatException
-    {
-        if (id == null) {
+    public UUID(final String id) throws NumberFormatException {
+        if ( id == null ) {
             throw new NullPointerException();
         }
-        if (id.length() != 36) {
-            throw new NumberFormatException("UUID has to be represented by the standard 36-char representation");
+        if ( id.length() != 36 ) {
+            throw new NumberFormatException( "UUID has to be represented by the standard 36-char representation" );
         }
 
-        for (int i = 0, j = 0; i < 36; ++j) {
+        for ( int i = 0, j = 0; i < 36; ++j ) {
             // Need to bypass hyphens:
-            switch (i) {
-            case 8:
-            case 13:
-            case 18:
-            case 23:
-                if (id.charAt(i) != '-') {
-                    throw new NumberFormatException("UUID has to be represented by the standard 36-char representation");
-                }
-                ++i;
+            switch ( i ) {
+                case 8 :
+                case 13 :
+                case 18 :
+                case 23 :
+                    if ( id.charAt( i ) != '-' ) {
+                        throw new NumberFormatException( "UUID has to be represented by the standard 36-char representation" );
+                    }
+                    ++i;
             }
-            int index;
-            char c = id.charAt(i);
+            final int index;
+            char c = id.charAt( i );
 
-            if (c >= '0' && c <= '9') {
-                mId[j] = (byte) ((c - '0') << 4);
-            } else if (c >= 'a' && c <= 'f') {
-                mId[j] = (byte) ((c - 'a' + 10) << 4);
-            } else if (c >= 'A' && c <= 'F') {
-                mId[j] = (byte) ((c - 'A' + 10) << 4);
+            if ( c >= '0' && c <= '9' ) {
+                this.mId[j] = (byte) ((c - '0') << 4);
+            } else if ( c >= 'a' && c <= 'f' ) {
+                this.mId[j] = (byte) ((c - 'a' + 10) << 4);
+            } else if ( c >= 'A' && c <= 'F' ) {
+                this.mId[j] = (byte) ((c - 'A' + 10) << 4);
             } else {
-                throw new NumberFormatException("Non-hex character '"+c+"'");
+                throw new NumberFormatException( "Non-hex character '" + c + "'" );
             }
 
-            c = id.charAt(++i);
+            c = id.charAt( ++i );
 
-            if (c >= '0' && c <= '9') {
-                mId[j] |= (byte) (c - '0');
-            } else if (c >= 'a' && c <= 'f') {
-                mId[j] |= (byte) (c - 'a' + 10);
-            } else if (c >= 'A' && c <= 'F') {
-                mId[j] |= (byte) (c - 'A' + 10);
+            if ( c >= '0' && c <= '9' ) {
+                this.mId[j] |= (byte) (c - '0');
+            } else if ( c >= 'a' && c <= 'f' ) {
+                this.mId[j] |= (byte) (c - 'a' + 10);
+            } else if ( c >= 'A' && c <= 'F' ) {
+                this.mId[j] |= (byte) (c - 'A' + 10);
             } else {
-                throw new NumberFormatException("Non-hex character '"+c+"'");
+                throw new NumberFormatException( "Non-hex character '" + c + "'" );
             }
             ++i;
         }
@@ -232,20 +230,18 @@ public class UUID
      * Could clear out cached string presentation, but there's
      * probably no point in doing that.
      */
-    public Object clone()
-    {
+    public Object clone() {
         try {
             return super.clone();
-        } catch (CloneNotSupportedException e) {
+        } catch ( final CloneNotSupportedException e ) {
             // shouldn't happen
             return null;
         }
     }
 
     /* *** Configuration: *** */
-    public static void setDescCaching(boolean state)
-    {
-        sDescCaching = state;
+    public static void setDescCaching(final boolean state) {
+        UUID.sDescCaching = state;
     }
 
     /* *** Accessors: *** */
@@ -255,23 +251,21 @@ public class UUID
      *
      * @return the shared null UUID
      */
-    public static UUID getNullUUID()
-    {
-        return sNullUUID;
+    public static UUID getNullUUID() {
+        return UUID.sNullUUID;
     }
 
-    public boolean isNullUUID()
-    {
+    public boolean isNullUUID() {
         // Assuming null uuid is usually used for nulls:
-        if (this == sNullUUID) {
+        if ( this == UUID.sNullUUID ) {
             return true;
         }
         // Could also check hash code; null uuid has -1 as hash?
-        byte[] data = mId;
-        int i = mId.length;
-        byte zero = (byte) 0;
-        while (--i >= 0) {
-            if (data[i] != zero) {
+        final byte[] data = this.mId;
+        int i = this.mId.length;
+        final byte zero = (byte) 0;
+        while ( --i >= 0 ) {
+            if ( data[i] != zero ) {
                 return false;
             }
         }
@@ -284,9 +278,8 @@ public class UUID
      *
      * @return UUID type
      */
-    public int getType()
-    {
-        return (mId[INDEX_TYPE] & 0xFF) >> 4;
+    public int getType() {
+        return (this.mId[UUID.INDEX_TYPE] & 0xFF) >> 4;
     }
 
     /**
@@ -295,10 +288,9 @@ public class UUID
      * @return 16-byte byte array that contains UUID bytes in the network
      *   byte order
      */
-    public byte[] asByteArray()
-    {
-        byte[] result = new byte[16];
-        toByteArray(result);
+    public byte[] asByteArray() {
+        final byte[] result = new byte[16];
+        toByteArray( result );
         return result;
     }
 
@@ -309,21 +301,26 @@ public class UUID
      * @param dst Byte array to fill
      * @param pos Offset in the array
      */
-    public void toByteArray(byte[] dst, int pos)
-    {
-        byte[] src = mId;
-        for (int i = 0; i < 16; ++i) {
-            dst[pos+i] = src[i];
+    public void toByteArray(final byte[] dst,
+                            final int pos) {
+        final byte[] src = this.mId;
+        for ( int i = 0; i < 16; ++i ) {
+            dst[pos + i] = src[i];
         }
     }
 
-    public void toByteArray(byte[] dst) { toByteArray(dst, 0); }
+    public void toByteArray(final byte[] dst) {
+        toByteArray( dst,
+                     0 );
+    }
 
     /**
      * 'Synonym' for 'asByteArray'
      */
-    public byte[] toByteArray() { return asByteArray(); }
-    
+    public byte[] toByteArray() {
+        return asByteArray();
+    }
+
     /* *** Standard methods from Object overridden: *** */
 
     /**
@@ -339,24 +336,21 @@ public class UUID
      * Is this a good hash? ... one of these days I better read more about
      * basic hashing techniques I swear!
      */
-    private final static int[] kShifts = {
-        3, 7, 17, 21, 29, 4, 9
-    };
+    private final static int[] kShifts = {3, 7, 17, 21, 29, 4, 9};
 
-    public int hashCode()
-    {
-        if (mHashCode == 0) {
+    public int hashCode() {
+        if ( this.mHashCode == 0 ) {
             // Let's handle first and last byte separately:
-            int result = mId[0] & 0xFF;
-	    
+            int result = this.mId[0] & 0xFF;
+
             result |= (result << 16);
             result |= (result << 8);
-	    
-            for (int i = 1; i < 15; i += 2) {
-                int curr = (mId[i] & 0xFF) << 8 | (mId[i+1] & 0xFF);
-                int shift = kShifts[i >> 1];
-		
-                if (shift > 16) {
+
+            for ( int i = 1; i < 15; i += 2 ) {
+                final int curr = (this.mId[i] & 0xFF) << 8 | (this.mId[i + 1] & 0xFF);
+                final int shift = UUID.kShifts[i >> 1];
+
+                if ( shift > 16 ) {
                     result ^= (curr << shift) | (curr >>> (32 - shift));
                 } else {
                     result ^= (curr << shift);
@@ -364,60 +358,54 @@ public class UUID
             }
 
             // and then the last byte:
-            int last = mId[15] & 0xFF;
+            final int last = this.mId[15] & 0xFF;
             result ^= (last << 3);
             result ^= (last << 13);
 
             result ^= (last << 27);
             // Let's not accept hash 0 as it indicates 'not hashed yet':
-            if (result == 0) {
-                mHashCode = -1;
+            if ( result == 0 ) {
+                this.mHashCode = -1;
             } else {
-                mHashCode = result;
+                this.mHashCode = result;
             }
         }
-        return mHashCode;
+        return this.mHashCode;
     }
 
-    public String toString()
-    {
+    public String toString() {
         /* Could be synchronized, but there isn't much harm in just taking
          * our chances (ie. in the worst case we'll form the string more
          * than once... but result is the same)
          */
 
-        if (mDesc == null) {
-            StringBuffer b = new StringBuffer(36);
-	    
-            for (int i = 0; i < 16; ++i) {
+        if ( this.mDesc == null ) {
+            final StringBuffer b = new StringBuffer( 36 );
+
+            for ( int i = 0; i < 16; ++i ) {
                 // Need to bypass hyphens:
-                switch (i) {
-                case 4:
-                case 6:
-                case 8:
-                case 10:
-                    b.append('-');
+                switch ( i ) {
+                    case 4 :
+                    case 6 :
+                    case 8 :
+                    case 10 :
+                        b.append( '-' );
                 }
-                int hex = mId[i] & 0xFF;
-                b.append(kHexChars.charAt(hex >> 4));
-                b.append(kHexChars.charAt(hex & 0x0f));
+                final int hex = this.mId[i] & 0xFF;
+                b.append( UUID.kHexChars.charAt( hex >> 4 ) );
+                b.append( UUID.kHexChars.charAt( hex & 0x0f ) );
             }
-            if (!sDescCaching) {
+            if ( !UUID.sDescCaching ) {
                 return b.toString();
             }
-            mDesc = b.toString();
+            this.mDesc = b.toString();
         }
-        return mDesc;
+        return this.mDesc;
     }
 
     /* *** Comparison methods: *** */
 
-    private final static int[] sTimeCompare = new int[] {
-        INDEX_CLOCK_HI, INDEX_CLOCK_HI + 1,
-        INDEX_CLOCK_MID, INDEX_CLOCK_MID + 1,
-        INDEX_CLOCK_LO, INDEX_CLOCK_LO + 1,
-        INDEX_CLOCK_LO + 2, INDEX_CLOCK_LO + 3,
-    };
+    private final static int[] sTimeCompare = new int[]{UUID.INDEX_CLOCK_HI, UUID.INDEX_CLOCK_HI + 1, UUID.INDEX_CLOCK_MID, UUID.INDEX_CLOCK_MID + 1, UUID.INDEX_CLOCK_LO, UUID.INDEX_CLOCK_LO + 1, UUID.INDEX_CLOCK_LO + 2, UUID.INDEX_CLOCK_LO + 3,};
 
     /**
      * Let's also make UUIDs sortable. This will mostly/only be useful with
@@ -444,18 +432,17 @@ public class UUID
      *
      * @throws ClassCastException if o is not a UUID.
      */
-    public int compareTo(Object o)
-    {
-        UUID other = (UUID) o;
+    public int compareTo(final Object o) {
+        final UUID other = (UUID) o;
 
-        int thisType = getType();
-        int thatType = other.getType();
+        final int thisType = getType();
+        final int thatType = other.getType();
 
         /* Let's first order by type:
          */
-        if (thisType > thatType) {
+        if ( thisType > thatType ) {
             return 1;
-        } else if (thisType < thatType) {
+        } else if ( thisType < thatType ) {
             return -1;
         }
 
@@ -463,24 +450,23 @@ public class UUID
          * then the rest... For all other types, we'll just do straight
          * byte-by-byte comparison.
          */
-        byte[] thisId = mId;
-        byte[] thatId = other.mId;
+        final byte[] thisId = this.mId;
+        final byte[] thatId = other.mId;
         int i = 0;
-        if (thisType == TYPE_TIME_BASED) {
-            for (; i < 8; ++i) {
-                int index = sTimeCompare[i];
-                int cmp = (((int) thisId[index]) & 0xFF)
-                    - (((int) thatId[index]) & 0xFF);
-                if (cmp != 0) {
+        if ( thisType == UUID.TYPE_TIME_BASED ) {
+            for ( ; i < 8; ++i ) {
+                final int index = UUID.sTimeCompare[i];
+                final int cmp = ((thisId[index]) & 0xFF) - ((thatId[index]) & 0xFF);
+                if ( cmp != 0 ) {
                     return cmp;
                 }
             }
             // Let's fall down to full comparison otherwise
         }
 
-        for (; i < 16; ++i) {
-            int cmp = (((int) thisId[i]) & 0xFF) - (((int) thatId[i]) & 0xFF);
-            if (cmp != 0) {
+        for ( ; i < 16; ++i ) {
+            final int cmp = ((thisId[i]) & 0xFF) - ((thatId[i]) & 0xFF);
+            if ( cmp != 0 ) {
                 return cmp;
             }
         }
@@ -492,15 +478,14 @@ public class UUID
      * Checking equality of UUIDs is easy; just compare the 128-bit
      * number.
      */
-    public boolean equals(Object o)
-    {
-        if (!(o instanceof UUID)) {
+    public boolean equals(final Object o) {
+        if ( !(o instanceof UUID) ) {
             return false;
         }
-        byte[] otherId = ((UUID) o).mId;
-        byte[] thisId = mId;
-        for (int i = 0; i < 16; ++i) {
-            if (otherId[i] != thisId[i]) {
+        final byte[] otherId = ((UUID) o).mId;
+        final byte[] thisId = this.mId;
+        for ( int i = 0; i < 16; ++i ) {
+            if ( otherId[i] != thisId[i] ) {
                 return false;
             }
         }
@@ -519,10 +504,8 @@ public class UUID
      *
      * @throws NumberFormatException if 'id' is invalid UUID
      */
-    public static UUID valueOf(String id)
-        throws NumberFormatException
-    {
-        return new UUID(id);
+    public static UUID valueOf(final String id) throws NumberFormatException {
+        return new UUID( id );
     }
 
     /**
@@ -535,9 +518,10 @@ public class UUID
      * @param src Byte array that contains the UUID definition
      * @param start Offset in the array where the UUID starts
      */
-    public static UUID valueOf(byte[] src, int start)
-    {
-        return new UUID(src, start);
+    public static UUID valueOf(final byte[] src,
+                               final int start) {
+        return new UUID( src,
+                         start );
     }
 
     /**
@@ -549,21 +533,19 @@ public class UUID
      *
      * @param src Byte array that contains the UUID definition
      */
-    public static UUID valueOf(byte[] src)
-    {
-        return new UUID(src);
+    public static UUID valueOf(final byte[] src) {
+        return new UUID( src );
     }
-    
-    private void copyFrom(UUID src)
-    {
-        byte[] srcB = src.mId;
-        byte[] dstB = mId;
-	
-        for (int i = 0; i < 16; ++i) {
+
+    private void copyFrom(final UUID src) {
+        final byte[] srcB = src.mId;
+        final byte[] dstB = this.mId;
+
+        for ( int i = 0; i < 16; ++i ) {
             dstB[i] = srcB[i];
         }
 
-        mDesc = sDescCaching ? src.mDesc : null;
+        this.mDesc = UUID.sDescCaching ? src.mDesc : null;
     }
 
 }

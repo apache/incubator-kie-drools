@@ -11,16 +11,16 @@ public class TupleHashTable extends AbstractHashTable {
               0.75f );
     }
 
-    public TupleHashTable(int capacity,
-                         float loadFactor) {
+    public TupleHashTable(final int capacity,
+                          final float loadFactor) {
         super( capacity,
                loadFactor );
     }
 
-    public Object add(ReteTuple tuple) {
-        int hashCode = tuple.hashCode();
-        int index = indexOf( hashCode,
-                             table.length );
+    public Object add(final ReteTuple tuple) {
+        final int hashCode = tuple.hashCode();
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         tuple.setNext( this.table[index] );
         this.table[index] = tuple;
@@ -29,12 +29,12 @@ public class TupleHashTable extends AbstractHashTable {
             resize( 2 * this.table.length );
         }
         return null;
-    }    
+    }
 
-    public Object get(ReteTuple tuple) {
-        int hashCode = tuple.hashCode();
-        int index = indexOf( hashCode,
-                             table.length );
+    public Object get(final ReteTuple tuple) {
+        final int hashCode = tuple.hashCode();
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         ReteTuple current = (ReteTuple) this.table[index];
         while ( current != null ) {
@@ -44,17 +44,17 @@ public class TupleHashTable extends AbstractHashTable {
             current = (ReteTuple) current.getNext();
         }
         return null;
-    }    
+    }
 
-    public Object remove(ReteTuple tuple) {
-        int hashCode = tuple.hashCode();
-        int index = indexOf( hashCode,
-                             table.length );
+    public Object remove(final ReteTuple tuple) {
+        final int hashCode = tuple.hashCode();
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         ReteTuple previous = (ReteTuple) this.table[index];
         ReteTuple current = previous;
         while ( current != null ) {
-            ReteTuple next = (ReteTuple) current.getNext();
+            final ReteTuple next = (ReteTuple) current.getNext();
             if ( hashCode == current.hashCode() && tuple.equals( current ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
@@ -69,17 +69,17 @@ public class TupleHashTable extends AbstractHashTable {
             current = next;
         }
         return current;
-    }   
-
-    public Entry getBucket(Object object) {
-        int hashCode = object.hashCode();
-        int index = indexOf( hashCode,
-                             table.length );
-
-        return this.table[index];       
     }
-    
-    public boolean contains(ReteTuple tuple) {
-        return (get(tuple) != null);
+
+    public Entry getBucket(final Object object) {
+        final int hashCode = object.hashCode();
+        final int index = indexOf( hashCode,
+                             this.table.length );
+
+        return this.table[index];
+    }
+
+    public boolean contains(final ReteTuple tuple) {
+        return (get( tuple ) != null);
     }
 }

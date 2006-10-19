@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,12 +18,14 @@ package org.drools.common;
 
 import org.drools.util.AbstractHashTable.ObjectComparator;
 
-public class EqualityKeyComparator implements ObjectComparator {
+public class EqualityKeyComparator
+    implements
+    ObjectComparator {
     /**
      * 
      */
     private static final long            serialVersionUID = 320L;
-    
+
     private static EqualityKeyComparator instance;
 
     public static EqualityKeyComparator getInstance() {
@@ -32,24 +35,24 @@ public class EqualityKeyComparator implements ObjectComparator {
 
         return EqualityKeyComparator.instance;
     }
-    
-    public int hashCodeOf(Object key) {
+
+    public int hashCodeOf(final Object key) {
         return rehash( key.hashCode() );
     }
-    
+
     public int rehash(int h) {
         h += ~(h << 9);
         h ^= (h >>> 14);
         h += (h << 4);
         h ^= (h >>> 10);
-        return h;            
+        return h;
     }
 
     /**
      * Equality key  reverses the compare, so  that  the  key  controls the  comparison
      */
     public boolean equal(final Object o1,
-                            final Object o2) {
+                         final Object o2) {
         return (o1 == null) ? (o2 == null) : (o1 == o2) || o2.equals( o1 );
     }
 

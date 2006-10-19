@@ -16,7 +16,6 @@
  */
 package org.drools.facttemplates;
 
-
 /**
  * @author Peter Lin
  * 
@@ -30,12 +29,14 @@ public interface Fact {
      * @return
      */
     Object getFieldValue(int index);
-    
+
     Object getFieldValue(String name);
-    
-    void setFieldValue(String name, Object value);
-    
-    void setFieldValue(int index, Object value);
+
+    void setFieldValue(String name,
+                       Object value);
+
+    void setFieldValue(int index,
+                       Object value);
 
     /**
      * Return the unique ID for the fact

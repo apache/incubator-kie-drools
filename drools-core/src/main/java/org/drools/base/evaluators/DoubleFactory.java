@@ -36,10 +36,10 @@ public class DoubleFactory
     }
 
     public static EvaluatorFactory getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new DoubleFactory();
+        if ( DoubleFactory.INSTANCE == null ) {
+            DoubleFactory.INSTANCE = new DoubleFactory();
         }
-        return INSTANCE;
+        return DoubleFactory.INSTANCE;
     }
 
     public Evaluator getEvaluator(final Operator operator) {
@@ -86,14 +86,14 @@ public class DoubleFactory
             return object1.getDoubleValue() == extractor.getDoubleValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) == ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left == context.extractor.getDoubleValue( right );
         }
@@ -129,14 +129,14 @@ public class DoubleFactory
             return object1.getDoubleValue() != extractor.getDoubleValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) != ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left != context.extractor.getDoubleValue( right );
         }
@@ -172,14 +172,14 @@ public class DoubleFactory
             return object1.getDoubleValue() < extractor.getDoubleValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) < ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left < context.extractor.getDoubleValue( right );
         }
@@ -215,14 +215,14 @@ public class DoubleFactory
             return object1.getDoubleValue() <= extractor.getDoubleValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) <= ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left <= context.extractor.getDoubleValue( right );
         }
@@ -258,14 +258,14 @@ public class DoubleFactory
             return object1.getDoubleValue() > extractor.getDoubleValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) > ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left > context.extractor.getDoubleValue( right );
         }
@@ -301,14 +301,14 @@ public class DoubleFactory
             return object1.getDoubleValue() >= extractor.getDoubleValue( object2 );
         }
 
-        public boolean evaluateCachedRight(VariableContextEntry context,
-                                           Object left) {
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) >= ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(VariableContextEntry context,
-                                          Object right) {
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left >= context.extractor.getDoubleValue( right );
         }

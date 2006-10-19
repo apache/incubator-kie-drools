@@ -30,9 +30,11 @@ public class ReturnValueRestriction
     implements
     Restriction {
 
-    private static int hashCode(Object[] array) {
+    private static int hashCode(final Object[] array) {
         final int PRIME = 31;
-        if ( array == null ) return 0;
+        if ( array == null ) {
+            return 0;
+        }
         int result = 1;
         for ( int index = 0; index < array.length; index++ ) {
             result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -114,7 +116,7 @@ public class ReturnValueRestriction
         return result;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }

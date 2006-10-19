@@ -28,17 +28,16 @@ package org.drools.leaps;
  */
 
 class FactHandleTupleAssembly {
-    final LeapsTuple tuple;
+    final LeapsTuple        tuple;
 
-    final int        index;
-    
-    final int type;
+    final int               index;
+
+    final int               type;
 
     public final static int EXISTS = 1;
-    
-    public final static int NOT = 2;
-    
-    
+
+    public final static int NOT    = 2;
+
     FactHandleTupleAssembly(final int type,
                             final LeapsTuple tuple,
                             final int index) {
@@ -56,6 +55,6 @@ class FactHandleTupleAssembly {
     }
 
     public int getType() {
-        return type;
+        return this.type;
     }
 }

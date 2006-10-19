@@ -78,8 +78,8 @@ public class MockObjectType
     public ValueType getValueType() {
         return ValueType.OBJECT_TYPE;
     }
-    
-    public Object getShadow(Object fact) {
+
+    public Object getShadow(final Object fact) {
         return null;
     }
 

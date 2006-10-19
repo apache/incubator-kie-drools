@@ -42,10 +42,10 @@ import org.drools.rule.Or;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.MockField;
@@ -89,15 +89,15 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
         this.edgeType = new ClassObjectType( Edge.class );
         this.junctionType = new ClassObjectType( Junction.class );
         // evaluators
-        
+
         this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
         this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
         this.integerGreaterEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
-        this.integerLessEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.LESS );        
+        this.integerLessEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.LESS );
         this.objectEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         this.objectNotEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.NOT_EQUAL );
         this.booleanEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
-        this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );        
+        this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );
 
         // rules
         this.pkg = new Package( "Waltz" );
@@ -3742,9 +3742,9 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
     }
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
-                                                 final String fieldName,
-                                                 final Object fieldValue,
-                                                 final Evaluator evaluator) throws IntrospectionException {
+                                                          final String fieldName,
+                                                          final Object fieldValue,
+                                                          final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( clazz,
@@ -3770,16 +3770,16 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
     }
 
     private AlphaNodeFieldConstraint getBoundVariableConstraint(final Column column,
-                                                       final String fieldName,
-                                                       final Declaration declaration,
-                                                       final Evaluator evaluator) throws IntrospectionException {
+                                                                final String fieldName,
+                                                                final Declaration declaration,
+                                                                final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( clazz,
                                                                                             fieldName );
 
         return new VariableConstraint( extractor,
-                                            declaration,
-                                            evaluator );
+                                       declaration,
+                                       evaluator );
     }
 }

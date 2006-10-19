@@ -20,27 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
-import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Evaluator;
 import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactHashTable;
-import org.drools.util.FieldIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-import org.drools.util.TupleHashTable;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -64,18 +53,18 @@ abstract class BetaNode extends TupleSource
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    protected final TupleSource         leftInput;
+    protected final TupleSource     leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    protected final ObjectSource        rightInput;
+    protected final ObjectSource    rightInput;
 
     protected final BetaConstraints constraints;
 
-    private TupleSinkNode               previousTupleSinkNode;
-    private TupleSinkNode               nextTupleSinkNode;
+    private TupleSinkNode           previousTupleSinkNode;
+    private TupleSinkNode           nextTupleSinkNode;
 
-    private ObjectSinkNode              previousObjectSinkNode;
-    private ObjectSinkNode              nextObjectSinkNode;
+    private ObjectSinkNode          previousObjectSinkNode;
+    private ObjectSinkNode          nextObjectSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -117,9 +106,9 @@ abstract class BetaNode extends TupleSource
     }
 
     public AlphaNodeFieldConstraint[] getConstraints() {
-        LinkedList constraints = this.constraints.getConstraints();
+        final LinkedList constraints = this.constraints.getConstraints();
 
-        AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];
+        final AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];
         int i = 0;
         for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
             array[i++] = (AlphaNodeFieldConstraint) entry.getObject();
@@ -136,9 +125,9 @@ abstract class BetaNode extends TupleSource
     }
 
     public List getRules() {
-        List list = new ArrayList();
+        final List list = new ArrayList();
 
-        TupleSink[] sinks = this.sink.getSinks();
+        final TupleSink[] sinks = this.sink.getSinks();
         for ( int i = 0, length = sinks.length; i < length; i++ ) {
             if ( sinks[i].getClass() == TerminalNode.class ) {
                 list.add( ((TerminalNode) sinks[i]).getRule().getName() );
@@ -204,8 +193,8 @@ abstract class BetaNode extends TupleSource
         return "";
     }
 
-    public void dumpMemory(InternalWorkingMemory workingMemory) {
-        MemoryVisitor visitor = new MemoryVisitor( workingMemory );
+    public void dumpMemory(final InternalWorkingMemory workingMemory) {
+        final MemoryVisitor visitor = new MemoryVisitor( workingMemory );
         visitor.visit( this );
     }
 
@@ -238,42 +227,42 @@ abstract class BetaNode extends TupleSource
      */
     public Object createMemory(final RuleBaseConfiguration config) {
         return this.constraints.createBetaMemory();
-//        // iterate over all the constraints untill we find one that is indexeable. When we find it we remove it from the list and create the 
-//        // BetaMemory for it. If we don't find one, we create a normal beta memory. We don't need the constraint as we can assume that 
-//        // anything  returned by the memory already passes that test.
-//        LinkedList constraints = this.constraints.getConstraints();
-//        BetaMemory memory = null;
-//
-//        if ( constraints != null ) {
-//            for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-//                BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
-//                if ( constraint.getClass() == VariableConstraint.class ) {
-//                    VariableConstraint variableConstraint = (VariableConstraint) constraint;
-//                    FieldExtractor extractor = variableConstraint.getFieldExtractor();
-//                    Evaluator evaluator = variableConstraint.getEvaluator();
-//                    if ( evaluator.getOperator() == Operator.EQUAL ) {
-//                        // make suret the indexed constraint is first
-//                        if ( constraints.getFirst() != entry ) {
-//                            constraints.remove( entry );
-//                            constraints.insertAfter( null,
-//                                                     entry );
-//                        }
-//                        memory = new BetaMemory( new TupleHashTable(),
-//                                                 new FieldIndexHashTable( extractor,
-//                                                                          variableConstraint.getRequiredDeclarations()[0] ) );
-//                        break;
-//
-//                    }
-//                }
-//            }
-//        }
-//
-//        if ( memory == null ) {
-//            memory = new BetaMemory( new TupleHashTable(),
-//                                     new FactHashTable() );
-//        }
-//
-//        return memory;
+        //        // iterate over all the constraints untill we find one that is indexeable. When we find it we remove it from the list and create the 
+        //        // BetaMemory for it. If we don't find one, we create a normal beta memory. We don't need the constraint as we can assume that 
+        //        // anything  returned by the memory already passes that test.
+        //        LinkedList constraints = this.constraints.getConstraints();
+        //        BetaMemory memory = null;
+        //
+        //        if ( constraints != null ) {
+        //            for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+        //                BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
+        //                if ( constraint.getClass() == VariableConstraint.class ) {
+        //                    VariableConstraint variableConstraint = (VariableConstraint) constraint;
+        //                    FieldExtractor extractor = variableConstraint.getFieldExtractor();
+        //                    Evaluator evaluator = variableConstraint.getEvaluator();
+        //                    if ( evaluator.getOperator() == Operator.EQUAL ) {
+        //                        // make suret the indexed constraint is first
+        //                        if ( constraints.getFirst() != entry ) {
+        //                            constraints.remove( entry );
+        //                            constraints.insertAfter( null,
+        //                                                     entry );
+        //                        }
+        //                        memory = new BetaMemory( new TupleHashTable(),
+        //                                                 new FieldIndexHashTable( extractor,
+        //                                                                          variableConstraint.getRequiredDeclarations()[0] ) );
+        //                        break;
+        //
+        //                    }
+        //                }
+        //            }
+        //        }
+        //
+        //        if ( memory == null ) {
+        //            memory = new BetaMemory( new TupleHashTable(),
+        //                                     new FactHashTable() );
+        //        }
+        //
+        //        return memory;
     }
 
     /**
@@ -290,7 +279,7 @@ abstract class BetaNode extends TupleSource
      * @param next
      *      The next TupleSinkNode
      */
-    public void setNextTupleSinkNode(TupleSinkNode next) {
+    public void setNextTupleSinkNode(final TupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
 
@@ -308,7 +297,7 @@ abstract class BetaNode extends TupleSource
      * @param previous
      *      The previous TupleSinkNode
      */
-    public void setPreviousTupleSinkNode(TupleSinkNode previous) {
+    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
 
@@ -326,7 +315,7 @@ abstract class BetaNode extends TupleSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextObjectSinkNode(ObjectSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
@@ -344,7 +333,7 @@ abstract class BetaNode extends TupleSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 

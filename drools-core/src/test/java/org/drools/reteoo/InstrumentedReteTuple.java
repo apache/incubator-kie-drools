@@ -19,7 +19,6 @@ package org.drools.reteoo;
 import org.drools.FactHandle;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.spi.Tuple;
 
 public class InstrumentedReteTuple extends ReteTuple {
     /**

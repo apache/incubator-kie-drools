@@ -9,6 +9,6 @@ public interface Invoker {
     public Object invoke(Tuple tuple,
                          WorkingMemory wm,
                          PropagationContext ctx);
-    
+
     public Declaration[] getRequiredDeclarations();
 }

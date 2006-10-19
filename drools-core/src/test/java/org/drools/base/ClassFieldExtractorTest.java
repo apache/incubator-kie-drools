@@ -29,7 +29,7 @@ import org.drools.util.asm.TestInterfaceImpl;
 public class ClassFieldExtractorTest extends TestCase {
 
     public void testBasic() throws Exception {
-        Object[] objArray = new Object[1];
+        final Object[] objArray = new Object[1];
 
         final TestBean obj = new TestBean();
         obj.setBlah( false );

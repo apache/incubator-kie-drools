@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.facttemplates.FactTemplate;
-import org.drools.spi.TypeResolver;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -69,7 +68,7 @@ public class Package
     private Map                    rules;
 
     private List                   imports;
-    
+
     private List                   functions;
 
     private List                   functionImports;
@@ -227,15 +226,15 @@ public class Package
         }
         this.functionImports.add( functionImport );
     }
-    
-    public void addFunction(String functionName) {
+
+    public void addFunction(final String functionName) {
         if ( this.functions == Collections.EMPTY_LIST ) {
             this.functions = new ArrayList( 1 );
         }
-        
+
         this.functions.add( functionName );
-    }    
-    
+    }
+
     public List getFunctions() {
         return this.functions;
     }
@@ -274,7 +273,7 @@ public class Package
         return (FactTemplate) this.factTemplates.get( name );
     }
 
-    public void addFactTemplate(FactTemplate factTemplate) {
+    public void addFactTemplate(final FactTemplate factTemplate) {
         if ( this.factTemplates == Collections.EMPTY_MAP ) {
             this.factTemplates = new HashMap( 1 );
         }

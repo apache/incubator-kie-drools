@@ -36,7 +36,7 @@ public class FieldFactory {
 
     }
 
-    public static FieldValue getFieldValue(String value,
+    public static FieldValue getFieldValue(final String value,
                                            ValueType valueType) {
         FieldValue field = null;
         if ( value == null ) {
@@ -50,7 +50,7 @@ public class FieldFactory {
         } else if ( valueType == ValueType.BYTE_TYPE ) {
             field = new LongFieldImpl( Long.parseLong( value ) );
         } else if ( valueType == ValueType.SHORT_TYPE ) {
-            field = new LongFieldImpl( Long.parseLong( value )  );
+            field = new LongFieldImpl( Long.parseLong( value ) );
         } else if ( valueType == ValueType.INTEGER_TYPE ) {
             field = new LongFieldImpl( Long.parseLong( stripNumericType( value ) ) );
         } else if ( valueType == ValueType.LONG_TYPE ) {
@@ -72,20 +72,21 @@ public class FieldFactory {
         } else if ( valueType == ValueType.OBJECT_TYPE ) {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BIG_DECIMAL_TYPE ) {
-        	field = new ObjectFieldImpl( new BigDecimal(value) );
+            field = new ObjectFieldImpl( new BigDecimal( value ) );
         } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
-        	field = new ObjectFieldImpl( new BigInteger(value) );
+            field = new ObjectFieldImpl( new BigInteger( value ) );
         }
 
         return field;
     }
-    
+
     private static String stripNumericType(String value) {
         // incase a user adds a f or l, strip it as its not needed
-        if ( Character.getType( value.charAt( value.length() -1 ) ) != Character.DECIMAL_DIGIT_NUMBER ) {
-            value = value.substring( 0, value.length() -1 );
+        if ( Character.getType( value.charAt( value.length() - 1 ) ) != Character.DECIMAL_DIGIT_NUMBER ) {
+            value = value.substring( 0,
+                                     value.length() - 1 );
         }
-        
+
         return value;
     }
 

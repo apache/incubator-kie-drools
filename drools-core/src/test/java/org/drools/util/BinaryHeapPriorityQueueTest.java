@@ -31,7 +31,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
         final List items = new LinkedList();
 
         final Queue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
-                                                     100000 );
+                                                 100000 );
 
         for ( int i = 0; i < 100000; ++i ) {
             items.add( new LongQueueable( random.nextLong() ) );

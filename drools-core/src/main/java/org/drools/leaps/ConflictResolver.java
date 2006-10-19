@@ -26,7 +26,9 @@ import java.util.Comparator;
  * @author Alexander Bagerman
  * 
  */
-public interface ConflictResolver extends Serializable {
+public interface ConflictResolver
+    extends
+    Serializable {
     public Comparator getFactConflictResolver();
 
     public Comparator getRuleConflictResolver();

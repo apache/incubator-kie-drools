@@ -25,7 +25,9 @@ import java.util.NoSuchElementException;
  * @author Alexander Bagerman
  * 
  */
-public class IteratorFromPositionToTableStart implements TableIterator {
+public class IteratorFromPositionToTableStart
+    implements
+    TableIterator {
     /**
      * interator that was not initialized as "empty" iterator (one or another
      * record was submitted to constractor) will set it to false
@@ -51,7 +53,7 @@ public class IteratorFromPositionToTableStart implements TableIterator {
     }
 
     public IteratorFromPositionToTableStart(final TableRecord startRecord,
-            final TableRecord currentRecord) {
+                                            final TableRecord currentRecord) {
         this.firstRecord = startRecord;
         this.nextRecord = currentRecord;
         this.currentRecord = null;
@@ -72,10 +74,9 @@ public class IteratorFromPositionToTableStart implements TableIterator {
 
     public Object next() {
         this.currentRecord = this.nextRecord;
-        if (this.currentRecord != null) {
+        if ( this.currentRecord != null ) {
             this.nextRecord = this.currentRecord.right;
-        }
-        else {
+        } else {
             throw new NoSuchElementException( "No more elements to return" );
         }
         return this.currentRecord.object;

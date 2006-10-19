@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 import org.drools.rule.Package;
 
-
 /**
  * @author Peter Lin
  *
@@ -31,9 +30,9 @@ import org.drools.rule.Package;
 public interface FactTemplate
     extends
     Serializable {
-    
+
     Package getPackage();
-    
+
     /**
      * The name of the template may be the fully qualified
      * class name, or an alias.
@@ -73,6 +72,6 @@ public interface FactTemplate
      * @return
      */
     int getFieldTemplateIndex(String name);
-    
+
     Fact createFact(long id);
 }

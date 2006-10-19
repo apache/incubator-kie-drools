@@ -13,7 +13,7 @@ public class ReteTuple
     implements
     Tuple,
     Entry {
-    private static final long serialVersionUID = 320L;
+    private static final long        serialVersionUID = 320L;
 
     private int                      index;
 
@@ -23,15 +23,15 @@ public class ReteTuple
 
     private Activation               activation;
 
-    private long                     recency;    
-    
-    private int                      hashCode;    
-    
+    private long                     recency;
+
+    private int                      hashCode;
+
     private boolean                  fieldIndexed;
-    
+
     private int                      matches;
-    
-    private Entry next;    
+
+    private Entry                    next;
 
     // ------------------------------------------------------------
     // Constructors
@@ -63,44 +63,44 @@ public class ReteTuple
         this.parent = parentTuple;
         this.recency = parentTuple.recency + handle.getRecency();
         this.handle = handle;
-        this.hashCode = parentTuple.hashCode ^( handle.hashCode() * 31 );
+        this.hashCode = parentTuple.hashCode ^ (handle.hashCode() * 31);
     }
 
-    public InternalFactHandle get(int index) {
+    public InternalFactHandle get(final int index) {
         ReteTuple entry = this;
         while ( entry.index != index ) {
             entry = entry.parent;
         }
         return entry.handle;
-    }        
-    
-    public void setNext(Entry next) {
+    }
+
+    public void setNext(final Entry next) {
         this.next = next;
     }
 
     public Entry getNext() {
         return this.next;
-    }    
-    
-    public  void release() {
+    }
+
+    public void release() {
         this.parent = null;
         this.activation = null;
         setNext( null );
-    }    
-    
-    public boolean isFieldIndexed() {
-        return fieldIndexed;
     }
 
-    public void setIsFieldIndexHashCode(boolean fieldIndexed) {
+    public boolean isFieldIndexed() {
+        return this.fieldIndexed;
+    }
+
+    public void setIsFieldIndexHashCode(final boolean fieldIndexed) {
         this.fieldIndexed = fieldIndexed;
-    }        
+    }
 
     public int getMatches() {
-        return matches;
+        return this.matches;
     }
 
-    public void setMatches(int matches) {
+    public void setMatches(final int matches) {
         this.matches = matches;
     }
 
@@ -108,7 +108,7 @@ public class ReteTuple
         return this.handle;
     }
 
-    public InternalFactHandle get(Declaration declaration) {
+    public InternalFactHandle get(final Declaration declaration) {
         return get( declaration.getColumn().getIndex() );
     }
 
@@ -117,7 +117,7 @@ public class ReteTuple
     }
 
     public InternalFactHandle[] getFactHandles() {
-        List list = new ArrayList();
+        final List list = new ArrayList();
         ReteTuple entry = this;
         while ( entry != null ) {
             list.add( entry.handle );
@@ -131,18 +131,17 @@ public class ReteTuple
         return this.recency;
     }
 
-    public void setActivation(Activation activation) {
+    public void setActivation(final Activation activation) {
         this.activation = activation;
     }
-        
-    
+
     public int hashCode() {
         return this.hashCode;
     }
-    
+
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
-        
+        final StringBuffer buffer = new StringBuffer();
+
         ReteTuple entry = this;
         while ( entry != null ) {
             //buffer.append( entry.handle );
@@ -151,36 +150,36 @@ public class ReteTuple
         }
         return buffer.toString();
     }
-    
+
     /**
      * We use this equals method to avoid the cast
      * @param tuple
      * @return
      */
-    public boolean equals(ReteTuple other) {
+    public boolean equals(final ReteTuple other) {
         // we know the object is never null and always of the  type ReteTuple
         if ( other == this ) {
             return true;
         }
-        
+
         // A ReteTuple is  only the same if it has the same hashCode, factId and parent
         if ( this.hashCode != other.hashCode ) {
             return false;
         }
-        
+
         if ( this.handle != other.handle ) {
             return false;
         }
-        
-        if( this.parent == null ) {
-            return ( other.parent == null );
+
+        if ( this.parent == null ) {
+            return (other.parent == null);
         } else {
-            return this.parent.equals( other.parent );   
-        }        
+            return this.parent.equals( other.parent );
+        }
     }
-    
-    public boolean equals(Object object) {
+
+    public boolean equals(final Object object) {
         // we know the object is never null and always of the  type ReteTuple    
-        return equals((ReteTuple)object);
+        return equals( (ReteTuple) object );
     }
 }

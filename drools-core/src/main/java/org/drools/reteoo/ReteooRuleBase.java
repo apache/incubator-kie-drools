@@ -106,7 +106,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * @param rete
      *            The rete network.
      */
-    public ReteooRuleBase(String id,
+    public ReteooRuleBase(final String id,
                           final RuleBaseConfiguration config,
                           final FactHandleFactory factHandleFactory) {
         super( id,
@@ -122,7 +122,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this.globals = new HashMap();
         this.workingMemories = new WeakHashMap();
 
-        this.rete = new Rete( );
+        this.rete = new Rete();
         this.reteooBuilder = new ReteooBuilder( this );
     }
 

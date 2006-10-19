@@ -16,22 +16,12 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.common.BetaConstraints;
-import org.drools.common.DefaultBetaConstraints;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListEntry;
 import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
@@ -58,7 +48,7 @@ public class NotNode extends BetaNode {
     private static final long serialVersionUID = 320L;
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
-    
+
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -115,19 +105,19 @@ public class NotNode extends BetaNode {
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getTupleMemory().add( leftTuple );
-                
-        Iterator it = memory.getObjectMemory().iterator( leftTuple );
+
+        final Iterator it = memory.getObjectMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( leftTuple );
         int matches = 0;
-        for ( FactEntry entry = ( FactEntry ) it.next(); entry != null; entry = ( FactEntry ) it.next() ) {
-            InternalFactHandle handle = entry.getFactHandle();  
+        for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
+            final InternalFactHandle handle = entry.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
                 matches++;
             }
         }
-        
+
         leftTuple.setMatches( matches );
-        
+
         if ( matches == 0 ) {
             this.sink.propagateAssertTuple( leftTuple,
                                             context,
@@ -152,17 +142,19 @@ public class NotNode extends BetaNode {
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getObjectMemory().add( handle );
-        
-        Iterator it = memory.getTupleMemory().iterator();
+
+        final Iterator it = memory.getTupleMemory().iterator();
         this.constraints.updateFromFactHandle( handle );
-        for ( ReteTuple tuple = ( ReteTuple ) it.next(); tuple != null; tuple = ( ReteTuple ) it.next() ) {
+        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                int matches = tuple.getMatches();
+                final int matches = tuple.getMatches();
                 tuple.setMatches( matches + 1 );
-                this.sink.propagateRetractTuple( tuple, context, workingMemory );
-//                if ( matches == 0 ) {
-//                    this.sink.propagateRetractTuple( tuple, context, workingMemory );
-//                }
+                this.sink.propagateRetractTuple( tuple,
+                                                 context,
+                                                 workingMemory );
+                //                if ( matches == 0 ) {
+                //                    this.sink.propagateRetractTuple( tuple, context, workingMemory );
+                //                }
             }
         }
     }
@@ -187,17 +179,19 @@ public class NotNode extends BetaNode {
         if ( !memory.getObjectMemory().remove( handle ) ) {
             return;
         }
-        
-        Iterator it = memory.getTupleMemory().iterator();
+
+        final Iterator it = memory.getTupleMemory().iterator();
         this.constraints.updateFromFactHandle( handle );
-        for ( ReteTuple tuple = ( ReteTuple ) it.next(); tuple != null; tuple = ( ReteTuple ) it.next() ) {
+        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 tuple.setMatches( tuple.getMatches() - 1 );
                 if ( tuple.getMatches() == 0 ) {
-                    this.sink.propagateAssertTuple( tuple, context, workingMemory );
+                    this.sink.propagateAssertTuple( tuple,
+                                                    context,
+                                                    workingMemory );
                 }
             }
-        }        
+        }
     }
 
     /**
@@ -215,23 +209,23 @@ public class NotNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         // Must use the tuple in memory as it has the tuple matches count
-        ReteTuple tuple = ( ReteTuple ) memory.getTupleMemory().remove( leftTuple );
+        final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
             leftTuple.release();
             return;
-        }        
-        
-        if ( tuple.getMatches() == 0) {
+        }
+
+        if ( tuple.getMatches() == 0 ) {
             this.sink.propagateRetractTuple( leftTuple,
                                              context,
-                                             workingMemory );            
-        }   
+                                             workingMemory );
+        }
         tuple.release();
-        leftTuple.release();        
-    }          
-    
+        leftTuple.release();
+    }
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
@@ -255,13 +249,13 @@ public class NotNode extends BetaNode {
         //
         //        this.attachingNewNode = true;
     }
-    
+
     public String toString() {
         ObjectSource source = this.rightInput;
         while ( source.getClass() != ObjectTypeNode.class ) {
             source = source.objectSource;
         }
-        
-        return "[NotNode - " + ((ObjectTypeNode)source).getObjectType()+ "]";
+
+        return "[NotNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
 }

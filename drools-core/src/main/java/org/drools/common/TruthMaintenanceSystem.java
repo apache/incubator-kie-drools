@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -18,7 +19,6 @@ package org.drools.common;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.FactException;
@@ -38,9 +38,11 @@ import org.drools.util.PrimitiveLongMap;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
-public class TruthMaintenanceSystem implements Serializable {
-    
-    private static final long            serialVersionUID = 320L;
+public class TruthMaintenanceSystem
+    implements
+    Serializable {
+
+    private static final long           serialVersionUID = 320L;
 
     private final AbstractWorkingMemory WorkingMemory;
 
@@ -52,7 +54,7 @@ public class TruthMaintenanceSystem implements Serializable {
         this.WorkingMemory = workingMemory;
 
         this.justifiedMap = new PrimitiveLongMap( 8,
-                                                  32 );                
+                                                  32 );
         this.assertMap = new ObjectHashMap();
         this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
     }
@@ -67,7 +69,7 @@ public class TruthMaintenanceSystem implements Serializable {
 
     public Object put(final EqualityKey key) {
         return this.assertMap.put( key,
-                                   key, 
+                                   key,
                                    false );
     }
 
@@ -104,17 +106,17 @@ public class TruthMaintenanceSystem implements Serializable {
         for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
             final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
             final Set set = (Set) this.justifiedMap.get( handle.getId() );
-            if (set != null) {
+            if ( set != null ) {
                 set.remove( node );
-                if (set.isEmpty( )) {
-                    this.justifiedMap.remove( handle.getId( ) );
+                if ( set.isEmpty() ) {
+                    this.justifiedMap.remove( handle.getId() );
                     // this needs to be scheduled so we don't upset the current
                     // working memory operation
                     this.WorkingMemory.queueRetractAction( handle,
                                                            false,
                                                            true,
-                                                           context.getRuleOrigin( ),
-                                                           context.getActivationOrigin( ) );
+                                                           context.getRuleOrigin(),
+                                                           context.getActivationOrigin() );
                 }
             }
         }

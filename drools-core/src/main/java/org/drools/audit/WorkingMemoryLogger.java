@@ -217,10 +217,10 @@ public abstract class WorkingMemoryLogger
         final Declaration[] declarations = activation.getRule().getDeclarations();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             final Declaration declaration = declarations[i];
-            final FactHandle handle = tuple.get( declaration );            
+            final FactHandle handle = tuple.get( declaration );
             if ( handle instanceof InternalFactHandle ) {
                 final InternalFactHandle handleImpl = (InternalFactHandle) handle;
-                if  ( handleImpl.getId() == -1 ) {
+                if ( handleImpl.getId() == -1 ) {
                     // This handle is now invalid, probably due to an fact retraction
                     continue;
                 }

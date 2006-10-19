@@ -64,15 +64,14 @@ public class NotNodeTest extends DroolsTestCase {
 
         this.sink = new MockTupleSink();
         this.node.addTupleSink( this.sink );
-        
-        
-//        this.ria = new RightInputAdapterNode( 2,
-//                                              0,
-//                                              this.node );
-//        this.ria.attach();
-//
-//        this.sink = new MockObjectSink();
-//        this.ria.addObjectSink( this.sink );
+
+        //        this.ria = new RightInputAdapterNode( 2,
+        //                                              0,
+        //                                              this.node );
+        //        this.ria.attach();
+        //
+        //        this.sink = new MockObjectSink();
+        //        this.ria.addObjectSink( this.sink );
 
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
     }
@@ -101,7 +100,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );
 
-        assertEquals( new ReteTuple( f0 ) ,
+        assertEquals( new ReteTuple( f0 ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
         // assert will match, so propagated tuple should be retracted
@@ -183,7 +182,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );
 
-        assertEquals( new  ReteTuple( f0 ),
+        assertEquals( new ReteTuple( f0 ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
         // assert will not match, so activation should stay propagated
@@ -256,8 +255,8 @@ public class NotNodeTest extends DroolsTestCase {
                                      this.context,
                                      this.workingMemory );
             this.node.assertObject( f1,
-                                     this.context,
-                                     this.workingMemory );            
+                                    this.context,
+                                    this.workingMemory );
             // Memory should not change
             assertEquals( 1,
                           this.memory.getObjectMemory().size() );
@@ -275,8 +274,8 @@ public class NotNodeTest extends DroolsTestCase {
 
             // simulate modify
             this.node.retractTuple( tuple1,
-                                   this.context,
-                                   this.workingMemory );            
+                                    this.context,
+                                    this.workingMemory );
             this.node.assertTuple( tuple1,
                                    this.context,
                                    this.workingMemory );

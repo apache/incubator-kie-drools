@@ -67,8 +67,8 @@ public class LeapsRuleBase extends AbstractRuleBase {
         this( id,
               null,
               new LeapsFactHandleFactory() );
-    }    
-    
+    }
+
     /**
      * Construct.
      * 
@@ -103,7 +103,7 @@ public class LeapsRuleBase extends AbstractRuleBase {
      * @see RuleBase
      */
     public WorkingMemory newWorkingMemory(final boolean keepReference) {
-        final LeapsWorkingMemory workingMemory = new LeapsWorkingMemory( this.workingMemoryCounter++, 
+        final LeapsWorkingMemory workingMemory = new LeapsWorkingMemory( this.workingMemoryCounter++,
                                                                          this );
         // add all rules added so far
         for ( final Iterator it = this.leapsRules.values().iterator(); it.hasNext(); ) {
@@ -168,9 +168,9 @@ public class LeapsRuleBase extends AbstractRuleBase {
                                                       ClassNotFoundException {
         doReadExternal( stream,
                         new Object[0] );
-        
+
         this.leapsRules = new HashMap();
-        
+
         for ( int i = 0; i < this.getPackages().length; i++ ) {
             final Rule[] rules = this.getPackages()[i].getRules();
 

@@ -18,6 +18,8 @@ import java.io.Serializable;
  * limitations under the License.
  */
 
-public interface InitialFact extends Serializable {
+public interface InitialFact
+    extends
+    Serializable {
 
 }

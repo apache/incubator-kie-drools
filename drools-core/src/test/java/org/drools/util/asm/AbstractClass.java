@@ -4,10 +4,10 @@ public abstract class AbstractClass {
     public String HTML;
 
     public AbstractClass() {
-        
+
     }
-    
-    public AbstractClass(String HTML) {
+
+    public AbstractClass(final String HTML) {
         super();
         this.HTML = HTML;
     }
@@ -22,10 +22,8 @@ public abstract class AbstractClass {
     /**
      * @param uri the uRI to set
      */
-    public void setHTML(String HTML) {
+    public void setHTML(final String HTML) {
         this.HTML = HTML;
     }
-    
-    
-    
+
 }

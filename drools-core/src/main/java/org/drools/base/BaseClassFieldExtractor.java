@@ -27,18 +27,18 @@ import org.drools.util.asm.ClassFieldInspector;
 abstract public class BaseClassFieldExtractor
     implements
     FieldExtractor {
-    private final int             index;
+    private final int       index;
 
-    private final Class           fieldType;
-    
-    private final ValueType       valueType;    
+    private final Class     fieldType;
+
+    private final ValueType valueType;
 
     public BaseClassFieldExtractor(final Class clazz,
                                    final String fieldName) {
         try {
             final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-            this.index = ((Integer) inspector.getFieldNames().get( fieldName ) ).intValue();
-            this.fieldType = (Class) inspector.getFieldTypes().get( fieldName ) ;
+            this.index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
+            this.fieldType = (Class) inspector.getFieldTypes().get( fieldName );
             this.valueType = ValueType.determineValueType( this.fieldType );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
@@ -52,8 +52,8 @@ abstract public class BaseClassFieldExtractor
     public Class getExtractToClass() {
         return this.fieldType;
     }
-    
-    public ValueType  getValueType() {
+
+    public ValueType getValueType() {
         return this.valueType;
     }
 
@@ -75,5 +75,5 @@ abstract public class BaseClassFieldExtractor
         }
         final BaseClassFieldExtractor other = (BaseClassFieldExtractor) object;
         return this.fieldType == other.fieldType && this.index == other.index;
-    }       
+    }
 }

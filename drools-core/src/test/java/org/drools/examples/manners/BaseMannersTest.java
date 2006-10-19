@@ -85,6 +85,7 @@ public abstract class BaseMannersTest extends TestCase {
     private Evaluator       integerEqualEvaluator;
     //private Evaluator       integerNotEqualEvaluator;
     private Evaluator       booleanEqualEvaluator;
+
     //private Evaluator       booleanNotEqualEvaluator;
 
     protected void setUp() throws Exception {
@@ -175,7 +176,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           Context.START_UP ,
+                                                           Context.START_UP,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -308,7 +309,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           Context.ASSIGN_SEATS ,
+                                                           Context.ASSIGN_SEATS,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -572,7 +573,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           Context.MAKE_PATH ,
+                                                           Context.MAKE_PATH,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -712,7 +713,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           Context.MAKE_PATH ,
+                                                           Context.MAKE_PATH,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -805,7 +806,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                           Context.CHECK_DONE ,
+                                                           Context.CHECK_DONE,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -895,7 +896,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
-                                                            Context.CHECK_DONE ,
+                                                           Context.CHECK_DONE,
                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextColumn );
@@ -1151,9 +1152,9 @@ public abstract class BaseMannersTest extends TestCase {
     }
 
     private BetaNodeFieldConstraint getBoundVariableConstraint(final Column column,
-                                                                final String fieldName,
-                                                                final Declaration declaration,
-                                                                final Evaluator evaluator) throws IntrospectionException {
+                                                               final String fieldName,
+                                                               final Declaration declaration,
+                                                               final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,

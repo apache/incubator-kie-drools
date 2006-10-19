@@ -186,6 +186,5 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
                       this.ruleBase.getGlobals().values() );
 
     }
-    
 
 }

@@ -25,7 +25,6 @@ import java.util.List;
 import org.drools.spi.ColumnExtractor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Extractor;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 
 public class Column
@@ -161,21 +160,21 @@ public class Column
         return result;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
-        
+
         if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        
+
         final Column other = (Column) object;
 
         if ( !this.constraints.equals( other.constraints ) ) {
             return false;
         }
-        
+
         if ( this.declaration == null ) {
             if ( other.declaration != null ) {
                 return false;
@@ -183,12 +182,11 @@ public class Column
         } else if ( !this.declaration.equals( other.declaration ) ) {
             return false;
         }
-        
+
         if ( this.index != other.index ) {
             return false;
         }
-        
-        
+
         if ( !this.objectType.equals( other.objectType ) ) {
             return false;
         }
@@ -197,7 +195,5 @@ public class Column
         }
         return true;
     }
-    
-    
 
 }

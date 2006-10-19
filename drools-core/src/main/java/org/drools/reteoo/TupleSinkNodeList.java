@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.drools.util.LinkedListNode;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -45,13 +43,15 @@ import org.drools.util.LinkedListNode;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class TupleSinkNodeList implements Serializable {
+public class TupleSinkNodeList
+    implements
+    Serializable {
     private static final long serialVersionUID = 320;
-    
-    private TupleSinkNode firstNode;
-    private TupleSinkNode lastNode;
 
-    private int            size;
+    private TupleSinkNode     firstNode;
+    private TupleSinkNode     lastNode;
+
+    private int               size;
 
     /**
      * Construct an empty <code>LinkedList</code>

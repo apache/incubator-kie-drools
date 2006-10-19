@@ -16,15 +16,12 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.Restriction;
-import org.drools.spi.Tuple;
 
 public class LiteralRestriction
     implements
@@ -54,21 +51,25 @@ public class LiteralRestriction
     public FieldValue getField() {
         return this.field;
     }
-    
-    public boolean isAllowed(Extractor extractor, 
-                             Object object,
-                             InternalWorkingMemory workingMemoiry) {
-        return this.evaluator.evaluate( extractor, object, field );
+
+    public boolean isAllowed(final Extractor extractor,
+                             final Object object,
+                             final InternalWorkingMemory workingMemoiry) {
+        return this.evaluator.evaluate( extractor,
+                                        object,
+                                        this.field );
     }
-    
-    public boolean isAllowedCachedLeft(ContextEntry context, Object object) {
-        throw  new UnsupportedOperationException("cannot call isAllowed(ContextEntry context)");        
-    }    
-    
-    public boolean isAllowedCachedRight(ReteTuple tuple, ContextEntry context) {
-        throw  new UnsupportedOperationException("cannot call isAllowed(ContextEntry context)");        
-    }      
-    
+
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
+        throw new UnsupportedOperationException( "cannot call isAllowed(ContextEntry context)" );
+    }
+
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
+        throw new UnsupportedOperationException( "cannot call isAllowed(ContextEntry context)" );
+    }
+
     /**
      * Literal constraints cannot have required declarations, so always return an empty array.
      * @return
@@ -77,8 +78,6 @@ public class LiteralRestriction
     public Declaration[] getRequiredDeclarations() {
         return LiteralRestriction.requiredDeclarations;
     }
-
-
 
     public String toString() {
         return "[LiteralRestriction evaluator=" + this.evaluator + " value=" + this.field + "]";

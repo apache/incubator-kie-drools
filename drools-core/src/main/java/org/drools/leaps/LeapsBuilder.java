@@ -87,29 +87,27 @@ class LeapsBuilder {
                 evalConditions.add( eval );
             } else {
                 if ( object instanceof Column ) {
-                    constraints = LeapsBuilder.processColumn( (Column) object  );
+                    constraints = LeapsBuilder.processColumn( (Column) object );
                     // create column constraints
-                } else if ( object instanceof From ){
-                    constraints = LeapsBuilder.processColumn( ((From) object).getColumn( )  );
-                }
-                else {
+                } else if ( object instanceof From ) {
+                    constraints = LeapsBuilder.processColumn( ((From) object).getColumn() );
+                } else {
                     // NOTS and EXISTS
                     GroupElement ce = (GroupElement) object;
                     while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
                         ce = (GroupElement) ce.getChildren().get( 0 );
                     }
-                    constraints = LeapsBuilder.processColumn( (Column) ce.getChildren().get( 0 )  );
+                    constraints = LeapsBuilder.processColumn( (Column) ce.getChildren().get( 0 ) );
                 }
-                if (object.getClass( ) == Not.class) {
+                if ( object.getClass() == Not.class ) {
                     notCols.add( constraints );
-                }
-                else if (object.getClass( ) == Exists.class) {
+                } else if ( object.getClass() == Exists.class ) {
                     existsCols.add( constraints );
-                }
-                else if (object.getClass( ) == From.class) {
-                    cols.add( new FromConstraint(((From)object).getColumn( ), ((From)object).getDataProvider( ), constraints ));
-                }       
-                else {
+                } else if ( object.getClass() == From.class ) {
+                    cols.add( new FromConstraint( ((From) object).getColumn(),
+                                                  ((From) object).getDataProvider(),
+                                                  constraints ) );
+                } else {
                     cols.add( constraints );
                 }
             }
@@ -123,7 +121,7 @@ class LeapsBuilder {
                                        cols,
                                        notCols,
                                        existsCols,
-                                       evalConditions) );
+                                       evalConditions ) );
 
         return leapsRules;
     }
@@ -167,34 +165,36 @@ class LeapsBuilder {
      * @param and
      * @return leaps packaged ColumnConstraints
      */
-    final private static ColumnConstraints processColumn(final Column column ) {
+    final private static ColumnConstraints processColumn(final Column column) {
         BetaConstraints binder;
-        final List alphaConstraints = new ArrayList( );
-        final List predicateConstraints = new ArrayList( );
+        final List alphaConstraints = new ArrayList();
+        final List predicateConstraints = new ArrayList();
 
-        final List constraints = column.getConstraints( );
+        final List constraints = column.getConstraints();
 
-        Map declarations = new HashMap( );
+        final Map declarations = new HashMap();
 
-        if (column.getDeclaration( ) != null) {
-            final Declaration declaration = column.getDeclaration( );
+        if ( column.getDeclaration() != null ) {
+            final Declaration declaration = column.getDeclaration();
             // Add the declaration the map of previously bound declarations
-            declarations.put( declaration.getIdentifier( ), declaration );
+            declarations.put( declaration.getIdentifier(),
+                              declaration );
         }
 
-        for (final Iterator it = constraints.iterator( ); it.hasNext( );) {
-            final Object object = it.next( );
+        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             // Check if its a declaration
-            if (object instanceof Declaration) {
+            if ( object instanceof Declaration ) {
                 final Declaration declaration = (Declaration) object;
                 // Add the declaration the map of previously bound declarations
-                declarations.put( declaration.getIdentifier( ), declaration );
+                declarations.put( declaration.getIdentifier(),
+                                  declaration );
                 continue;
             }
 
             final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
-                alphaConstraints.add( fieldConstraint);
+                alphaConstraints.add( fieldConstraint );
             } else {
                 predicateConstraints.add( fieldConstraint );
             }
@@ -210,13 +210,15 @@ class LeapsBuilder {
                                       alphaConstraints,
                                       binder );
     }
+
     /**
      * Make sure the required declarations are previously bound
      * 
      * @param declarations
      * @throws InvalidPatternException
      */
-    private static void checkUnboundDeclarations(final Map declarations, final Declaration[] requiredDeclarations) throws InvalidPatternException {
+    private static void checkUnboundDeclarations(final Map declarations,
+                                                 final Declaration[] requiredDeclarations) throws InvalidPatternException {
         final List list = new ArrayList();
         for ( int i = 0, length = requiredDeclarations.length; i < length; i++ ) {
             if ( declarations.get( requiredDeclarations[i].getIdentifier() ) == null ) {
@@ -236,21 +238,19 @@ class LeapsBuilder {
         }
 
     }
-    
-    public static Object getLeapsClassType(Object o) {
-        if(o instanceof org.drools.facttemplates.Fact) {
-           return ((org.drools.facttemplates.Fact)o).getFactTemplate( ).getName( );
-        }
-        else {
-            return o.getClass( );
+
+    public static Object getLeapsClassType(final Object o) {
+        if ( o instanceof org.drools.facttemplates.Fact ) {
+            return ((org.drools.facttemplates.Fact) o).getFactTemplate().getName();
+        } else {
+            return o.getClass();
         }
     }
-    
-    public static Object getLeapsClassType(ObjectType ot) {
-        if(ot.getClass( ) == FactTemplateObjectType.class) {
-            return ((FactTemplateObjectType) ot).getFactTemplate( ).getName( );
-        }
-        else {
+
+    public static Object getLeapsClassType(final ObjectType ot) {
+        if ( ot.getClass() == FactTemplateObjectType.class ) {
+            return ((FactTemplateObjectType) ot).getFactTemplate().getName();
+        } else {
             // we assume that it's classobject type
             return ((ClassObjectType) ot).getClassType();
         }

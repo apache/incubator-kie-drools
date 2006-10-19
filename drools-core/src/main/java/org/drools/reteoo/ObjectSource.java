@@ -46,8 +46,8 @@ abstract class ObjectSource extends BaseNode
 
     /** The destination for <code>FactHandleImpl</code>. */
     protected ObjectSinkPropagator sink;
-    
-    protected ObjectSource objectSource;   
+
+    protected ObjectSource         objectSource;
 
     // ------------------------------------------------------------
     // Constructors
@@ -91,12 +91,12 @@ abstract class ObjectSource extends BaseNode
         if ( this.sink == null ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
         } else if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
-            CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) new CompositeObjectSinkAdapter();
+            final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter();
             sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
             sinkAdapter.addObjectSink( objectSink );
             this.sink = sinkAdapter;
         } else {
-            ( (CompositeObjectSinkAdapter) sink ).addObjectSink( objectSink );
+            ((CompositeObjectSinkAdapter) this.sink).addObjectSink( objectSink );
         }
     }
 
@@ -119,9 +119,11 @@ abstract class ObjectSource extends BaseNode
             }
         }         
     }
-    
-    public abstract void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory);
-    
+
+    public abstract void updateSink(ObjectSink sink,
+                                    PropagationContext context,
+                                    InternalWorkingMemory workingMemory);
+
     public ObjectSinkPropagator getSinkPropagator() {
         return this.sink;
     }

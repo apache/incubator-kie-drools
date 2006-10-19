@@ -36,8 +36,7 @@ public class ClassFieldInspectorTest extends TestCase {
                       ((Method) ext.getPropertyGetters().get( 1 )).getName() );
         assertEquals( "getName",
                       ((Method) ext.getPropertyGetters().get( 2 )).getName() );
- 
-        
+
         final Map names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 7,
@@ -49,7 +48,7 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals( 2,
                       ((Integer) names.get( "name" )).intValue() );
         assertNull( names.get( "nAme" ) );
-        
+
     }
 
     public void testInterface() throws Exception {
@@ -96,18 +95,21 @@ public class ClassFieldInspectorTest extends TestCase {
         ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
         assertEquals( 5,
                       ext.getPropertyGetters().size() );
-        
+
         ext = new ClassFieldInspector( InterfaceChildImpl.class );
         assertEquals( 8,
                       ext.getPropertyGetters().size() );
         // test inheritence from abstract class
-        assertEquals( 4, ( (Integer) ext.getFieldNames().get( "HTML" )).intValue() );
-        
+        assertEquals( 4,
+                      ((Integer) ext.getFieldNames().get( "HTML" )).intValue() );
+
         // check normal field on child class
-        assertEquals( 1, ( (Integer) ext.getFieldNames().get( "baz" )).intValue() );
-        
+        assertEquals( 1,
+                      ((Integer) ext.getFieldNames().get( "baz" )).intValue() );
+
         // test inheritence from an interface
-        assertEquals( 3, ( (Integer) ext.getFieldNames().get( "URI" )).intValue() );
+        assertEquals( 3,
+                      ((Integer) ext.getFieldNames().get( "URI" )).intValue() );
     }
 
     public void testIntefaceInheritance() throws Exception {
@@ -115,7 +117,7 @@ public class ClassFieldInspectorTest extends TestCase {
         final Map fields = ext.getFieldNames();
         assertTrue( fields.containsKey( "foo" ) );
         assertTrue( fields.containsKey( "bar" ) );
-        assertTrue( fields.containsKey( "baz" ) );        
+        assertTrue( fields.containsKey( "baz" ) );
         assertTrue( fields.containsKey( "URI" ) );
     }
 
@@ -161,7 +163,7 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals( "getName",
                       ((Method) methods.get( "name" )).getName() );
         // test case sensitive
-        assertNull( methods.get( "nAme" ));        
+        assertNull( methods.get( "nAme" ) );
         assertEquals( "getAge",
                       ((Method) methods.get( "age" )).getName() );
 
@@ -180,14 +182,14 @@ public class ClassFieldInspectorTest extends TestCase {
                       ext.getFieldTypes().get( "foo" ) );
 
     }
-    
+
     public void testWierdCapsForField() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
         final Map methods = ext.getGetterMethods();
         assertEquals( "getURI",
                       ((Method) methods.get( "URI" )).getName() );
         assertEquals( 7,
-                      methods.size() );        
+                      methods.size() );
     }
 
     static class NonGetter {
@@ -253,13 +255,13 @@ public class ClassFieldInspectorTest extends TestCase {
         public String getAlsoBad(final String s) {
             return "ignored";
         }
-        
+
         //this should show up, as its a getter, but all CAPS
         public String getURI() {
             return this.URI;
         }
-        
-        public void setURI(String URI) {
+
+        public void setURI(final String URI) {
             this.URI = URI;
         }
     }

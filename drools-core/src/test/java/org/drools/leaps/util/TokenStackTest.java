@@ -15,7 +15,7 @@ public class TokenStackTest extends TestCase {
         assertTrue( stack.empty() );
         final Token token = new Token( null,
                                        new LeapsFactHandle( 3,
-                                                           new Object() ),
+                                                            new Object() ),
                                        null );
         stack.push( token );
         assertFalse( stack.empty() );
@@ -30,37 +30,37 @@ public class TokenStackTest extends TestCase {
         final Object object = new Object();
         final Token token1 = new Token( null,
                                         new LeapsFactHandle( 1,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token1 );
         final Token token2 = new Token( null,
                                         new LeapsFactHandle( 2,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token2 );
         final Token token10 = new Token( null,
                                          new LeapsFactHandle( 10,
-                                                             object ),
+                                                              object ),
                                          null );
         stack.push( token10 );
         final Token token8 = new Token( null,
                                         new LeapsFactHandle( 8,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token8 );
         final Token token6 = new Token( null,
                                         new LeapsFactHandle( 6,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token6 );
         final Token token3 = new Token( null,
                                         new LeapsFactHandle( 3,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token3 );
         final Token token4 = new Token( null,
                                         new LeapsFactHandle( 4,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token4 );
 
@@ -80,37 +80,37 @@ public class TokenStackTest extends TestCase {
         final Object object = new Object();
         final Token token1 = new Token( null,
                                         new LeapsFactHandle( 1,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token1 );
         final Token token2 = new Token( null,
                                         new LeapsFactHandle( 2,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token2 );
         final Token token10 = new Token( null,
                                          new LeapsFactHandle( 10,
-                                                             object ),
+                                                              object ),
                                          null );
         stack.push( token10 );
         final Token token8 = new Token( null,
                                         new LeapsFactHandle( 8,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token8 );
         final Token token6 = new Token( null,
                                         new LeapsFactHandle( 6,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token6 );
         final Token token3 = new Token( null,
                                         new LeapsFactHandle( 3,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token3 );
         final Token token4 = new Token( null,
                                         new LeapsFactHandle( 4,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token4 );
 
@@ -140,37 +140,37 @@ public class TokenStackTest extends TestCase {
         final Object object = new Object();
         final Token token1 = new Token( null,
                                         new LeapsFactHandle( 1,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token1 );
         final Token token2 = new Token( null,
                                         new LeapsFactHandle( 2,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token2 );
         final Token token10 = new Token( null,
                                          new LeapsFactHandle( 10,
-                                                             object ),
+                                                              object ),
                                          null );
         stack.push( token10 );
         final Token token8 = new Token( null,
                                         new LeapsFactHandle( 8,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token8 );
         final Token token6 = new Token( null,
                                         new LeapsFactHandle( 6,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token6 );
         final Token token3 = new Token( null,
                                         new LeapsFactHandle( 3,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token3 );
         final Token token4 = new Token( null,
                                         new LeapsFactHandle( 4,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token4 );
 
@@ -198,37 +198,37 @@ public class TokenStackTest extends TestCase {
         final Object object = new Object();
         final Token token1 = new Token( null,
                                         new LeapsFactHandle( 1,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token1 );
         final Token token2 = new Token( null,
                                         new LeapsFactHandle( 2,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token2 );
         final Token token10 = new Token( null,
                                          new LeapsFactHandle( 10,
-                                                             object ),
+                                                              object ),
                                          null );
         stack.push( token10 );
         final Token token8 = new Token( null,
                                         new LeapsFactHandle( 8,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token8 );
         final Token token6 = new Token( null,
                                         new LeapsFactHandle( 6,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token6 );
         final Token token3 = new Token( null,
                                         new LeapsFactHandle( 3,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token3 );
         final Token token4 = new Token( null,
                                         new LeapsFactHandle( 4,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token4 );
 
@@ -258,37 +258,37 @@ public class TokenStackTest extends TestCase {
         final Object object = new Object();
         final Token token1 = new Token( null,
                                         new LeapsFactHandle( 1,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token1 );
         final Token token2 = new Token( null,
                                         new LeapsFactHandle( 2,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token2 );
         final Token token10 = new Token( null,
                                          new LeapsFactHandle( 10,
-                                                             object ),
+                                                              object ),
                                          null );
         stack.push( token10 );
         final Token token8 = new Token( null,
                                         new LeapsFactHandle( 8,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token8 );
         final Token token6 = new Token( null,
                                         new LeapsFactHandle( 6,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token6 );
         final Token token3 = new Token( null,
                                         new LeapsFactHandle( 3,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token3 );
         final Token token4 = new Token( null,
                                         new LeapsFactHandle( 4,
-                                                            object ),
+                                                             object ),
                                         null );
         stack.push( token4 );
 

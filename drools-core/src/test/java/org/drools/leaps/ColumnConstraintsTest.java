@@ -31,8 +31,8 @@ import org.drools.base.evaluators.Operator;
 import org.drools.examples.manners.Context;
 import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
-import org.drools.spi.Evaluator;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
@@ -90,7 +90,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
                                                  null,
                                                  null );
         assertTrue( columnConstraints.isAllowed( new LeapsFactHandle( 23,
-                                                                     new Context( Context.START_UP ) ),
+                                                                      new Context( Context.START_UP ) ),
                                                  tuple,
                                                  ruleBase.newWorkingMemory() ) );
     }
@@ -128,16 +128,16 @@ public class ColumnConstraintsTest extends DroolsTestCase {
                                                    null );
 
         assertFalse( columnConstraints.isAllowed( new LeapsFactHandle( 23,
-                                                                      new Context( Context.START_UP ) ),
+                                                                       new Context( Context.START_UP ) ),
                                                   null,
                                                   ruleBase.newWorkingMemory() ) );
 
     }
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
-                                                 final String fieldName,
-                                                 final Object fieldValue,
-                                                 final Evaluator evaluator) throws IntrospectionException {
+                                                          final String fieldName,
+                                                          final Object fieldValue,
+                                                          final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldValue field = new MockField( fieldValue );

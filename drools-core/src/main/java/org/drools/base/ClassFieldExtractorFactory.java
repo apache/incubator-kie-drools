@@ -83,7 +83,7 @@ public class ClassFieldExtractorFactory {
 
         final ClassWriter cw = new ClassWriter( true );
 
-        Class superClass = getSuperClassFor( fieldType );
+        final Class superClass = getSuperClassFor( fieldType );
         buildClassHeader( superClass,
                           className,
                           cw );
@@ -91,8 +91,12 @@ public class ClassFieldExtractorFactory {
         buildConstructor( superClass,
                           className,
                           cw );
-        
-        buildGetMethod( originalClass, className, superClass, getterMethod, cw );
+
+        buildGetMethod( originalClass,
+                        className,
+                        superClass,
+                        getterMethod,
+                        cw );
 
         cw.visitEnd();
 
@@ -136,7 +140,7 @@ public class ClassFieldExtractorFactory {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  "<init>",
                                  Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           new Type[]{ Type.getType( Class.class ), Type.getType( String.class )} ),
+                                                           new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ),
                                  null,
                                  null );
             mv.visitCode();
@@ -152,7 +156,7 @@ public class ClassFieldExtractorFactory {
                                 Type.getInternalName( superClazz ),
                                 "<init>",
                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          new Type[]{ Type.getType( Class.class ), Type.getType( String.class )} ));
+                                                          new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ) );
             final Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitInsn( Opcodes.RETURN );
@@ -190,35 +194,36 @@ public class ClassFieldExtractorFactory {
      * @param method
      * @param cw
      */
-    protected static void buildGetMethod(Class originalClass,
-                                         String className,
-                                         Class superClass,
-                                         Method getterMethod,
-                                         ClassWriter cw) {
-        
-        Class fieldType = getterMethod.getReturnType();
+    protected static void buildGetMethod(final Class originalClass,
+                                         final String className,
+                                         final Class superClass,
+                                         final Method getterMethod,
+                                         final ClassWriter cw) {
+
+        final Class fieldType = getterMethod.getReturnType();
         Method overridingMethod;
         try {
-            overridingMethod = superClass.getMethod( getOverridingMethodName( fieldType ), 
-                                                            new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report back to JBRules team.", e);
+            overridingMethod = superClass.getMethod( getOverridingMethodName( fieldType ),
+                                                     new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report back to JBRules team.",
+                                              e );
         }
-        MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+        final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                            overridingMethod.getName(),
                                            Type.getMethodDescriptor( overridingMethod ),
                                            null,
                                            null );
-        
+
         mv.visitCode();
-        
+
         final Label l0 = new Label();
         mv.visitLabel( l0 );
         mv.visitVarInsn( Opcodes.ALOAD,
                          1 );
         mv.visitTypeInsn( Opcodes.CHECKCAST,
                           Type.getInternalName( originalClass ) );
-        
+
         if ( originalClass.isInterface() ) {
             mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
                                 Type.getInternalName( originalClass ),
@@ -250,7 +255,7 @@ public class ClassFieldExtractorFactory {
         mv.visitEnd();
     }
 
-    private static String getOverridingMethodName( Class fieldType ) {
+    private static String getOverridingMethodName(final Class fieldType) {
         String ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {
@@ -283,7 +288,7 @@ public class ClassFieldExtractorFactory {
      * @param fieldType
      * @return
      */
-    private static Class getSuperClassFor(Class fieldType) {
+    private static Class getSuperClassFor(final Class fieldType) {
         Class ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {

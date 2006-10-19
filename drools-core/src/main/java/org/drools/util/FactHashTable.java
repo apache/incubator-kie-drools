@@ -18,30 +18,30 @@ public class FactHashTable extends AbstractHashTable
               0.75f );
     }
 
-    public FactHashTable(int capacity,
-                         float loadFactor) {
+    public FactHashTable(final int capacity,
+                         final float loadFactor) {
         super( capacity,
                loadFactor );
     }
 
-    public Iterator iterator(int hashCode) {
+    public Iterator iterator(final int hashCode) {
         throw new UnsupportedOperationException( "FactHashTable does not support the method iterator(int hashCode" );
     }
 
-    public Iterator iterator(ReteTuple tuple) {
+    public Iterator iterator(final ReteTuple tuple) {
         return iterator();
     }
 
-    public boolean add(InternalFactHandle handle) {
+    public boolean add(final InternalFactHandle handle) {
         return add( handle,
                     true );
     }
 
-    public boolean add(InternalFactHandle handle,
-                       boolean checkExists) {
-        int hashCode = this.comparator.hashCodeOf( handle );
-        int index = indexOf( hashCode,
-                             table.length );
+    public boolean add(final InternalFactHandle handle,
+                       final boolean checkExists) {
+        final int hashCode = this.comparator.hashCodeOf( handle );
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         // scan the linked entries to see if it exists
         if ( checkExists ) {
@@ -55,7 +55,7 @@ public class FactHashTable extends AbstractHashTable
         }
 
         // We aren't checking the key exists, or it didn't find the key
-        FactEntry entry = new FactEntry( handle,
+        final FactEntry entry = new FactEntry( handle,
                                          hashCode );
         entry.next = this.table[index];
         this.table[index] = entry;
@@ -66,10 +66,10 @@ public class FactHashTable extends AbstractHashTable
         return true;
     }
 
-    public boolean contains(InternalFactHandle handle) {
-        int hashCode = this.comparator.hashCodeOf( handle );
-        int index = indexOf( hashCode,
-                             table.length );
+    public boolean contains(final InternalFactHandle handle) {
+        final int hashCode = this.comparator.hashCodeOf( handle );
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         FactEntry current = (FactEntry) this.table[index];
         while ( current != null ) {
@@ -81,15 +81,15 @@ public class FactHashTable extends AbstractHashTable
         return false;
     }
 
-    public boolean remove(InternalFactHandle handle) {
-        int hashCode = this.comparator.hashCodeOf( handle );
-        int index = indexOf( hashCode,
-                             table.length );
+    public boolean remove(final InternalFactHandle handle) {
+        final int hashCode = this.comparator.hashCodeOf( handle );
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
         FactEntry previous = (FactEntry) this.table[index];
         FactEntry current = previous;
         while ( current != null ) {
-            FactEntry next = (FactEntry) current.getNext();
+            final FactEntry next = (FactEntry) current.getNext();
             if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() ) {
                 if ( previous == current ) {
                     this.table[index] = next;
@@ -106,20 +106,20 @@ public class FactHashTable extends AbstractHashTable
         return false;
     }
 
-    public Entry getBucket(Object object) {
-        int hashCode = this.comparator.hashCodeOf( object );
-        int index = indexOf( hashCode,
-                             table.length );
+    public Entry getBucket(final Object object) {
+        final int hashCode = this.comparator.hashCodeOf( object );
+        final int index = indexOf( hashCode,
+                             this.table.length );
 
-        return (ObjectEntry) this.table[index];
+        return this.table[index];
     }
 
-    public int hash(Object key) {
+    public int hash(final Object key) {
         return key.hashCode();
     }
 
-    protected int indexOf(int hashCode,
-                          int dataSize) {
+    protected int indexOf(final int hashCode,
+                          final int dataSize) {
         return hashCode & (dataSize - 1);
     }
 
