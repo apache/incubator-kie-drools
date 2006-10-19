@@ -6,9 +6,9 @@ import org.drools.util.LinkedList;
 
 public interface BetaConstraints {
 
-    public void updateFromTuple(ReteTuple tuple);
+    public void updateFromTuple(InternalWorkingMemory workingMemory, ReteTuple tuple);
 
-    public void updateFromFactHandle(InternalFactHandle handle);
+    public void updateFromFactHandle(InternalWorkingMemory workingMemory, InternalFactHandle handle);
 
     public boolean isAllowedCachedLeft(Object object);
 

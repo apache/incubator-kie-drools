@@ -38,6 +38,7 @@ public class RuleFlowNode
         this.name = name;
         this.agenda = agenda;
         this.queue = new BinaryHeapQueue( DepthConflictResolver.getInstance() );
+        this.lock = new Object();
     }
 
     /* (non-Javadoc)

@@ -69,15 +69,15 @@ public class SingleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final ReteTuple tuple) {
-        this.context.updateFromTuple( tuple );
+    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
+        this.context.updateFromTuple( workingMemory, tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalFactHandle handle) {
-        this.context.updateFromFactHandle( handle );
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
+        this.context.updateFromFactHandle( workingMemory, handle );
     }
 
     /* (non-Javadoc)

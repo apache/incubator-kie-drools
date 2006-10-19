@@ -46,13 +46,13 @@ public class EmptyBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final ReteTuple tuple) {
+    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalFactHandle handle) {
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
     }
 
     /* (non-Javadoc)

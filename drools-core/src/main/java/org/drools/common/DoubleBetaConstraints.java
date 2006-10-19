@@ -87,17 +87,17 @@ public class DoubleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final ReteTuple tuple) {
-        this.context0.updateFromTuple( tuple );
-        this.context1.updateFromTuple( tuple );
+    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
+        this.context0.updateFromTuple( workingMemory, tuple );
+        this.context1.updateFromTuple( workingMemory, tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalFactHandle handle) {
-        this.context0.updateFromFactHandle( handle );
-        this.context1.updateFromFactHandle( handle );
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
+        this.context0.updateFromFactHandle( workingMemory, handle );
+        this.context1.updateFromFactHandle( workingMemory, handle );
     }
 
     /* (non-Javadoc)

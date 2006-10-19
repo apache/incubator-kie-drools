@@ -17,14 +17,15 @@ package org.drools.rule;
  */
 
 import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
-import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PredicateExpression;
-import org.drools.spi.Tuple;
 
 public class PredicateConstraint
     implements
-    AlphaNodeFieldConstraint {
+    BetaNodeFieldConstraint {
 
     /**
      * 
@@ -84,21 +85,6 @@ public class PredicateConstraint
         return "[PredicateConstraint declarations=" + this.requiredDeclarations + "]";
     }
 
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        try {
-            return this.expression.evaluate( object,
-                                             tuple,
-                                             this.declaration,
-                                             this.requiredDeclarations,
-                                             workingMemory );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
-        }
-
-    }
-
     public int hashCode() {
         return this.expression.hashCode();
     }
@@ -138,4 +124,70 @@ public class PredicateConstraint
 
         return this.expression.equals( other.expression );
     }
-};
+
+    public ContextEntry getContextEntry() {
+        return new PredicateContextEntry();
+    }
+
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        try {
+            PredicateContextEntry ctx = (PredicateContextEntry) context;
+            return this.expression.evaluate( object,
+                                      ctx.leftTuple,
+                                      declaration,
+                                      requiredDeclarations,
+                                      ctx.workingMemory );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("Exception executing predicate "+this.expression, e);
+        }
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        try {
+            PredicateContextEntry ctx = (PredicateContextEntry) context;
+            return this.expression.evaluate( ctx.rightObject,
+                                      tuple,
+                                      declaration,
+                                      requiredDeclarations,
+                                      ctx.workingMemory );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("Exception executing predicate "+this.expression, e);
+        }
+    }
+
+    public static class PredicateContextEntry
+        implements
+        ContextEntry {
+        public ReteTuple             leftTuple;
+        public Object                rightObject;
+        public InternalWorkingMemory workingMemory;
+        
+        private ContextEntry         entry;
+
+        public PredicateContextEntry() {
+        }
+
+        public ContextEntry getNext() {
+            return this.entry;
+        }
+
+        public void setNext(final ContextEntry entry) {
+            this.entry = entry;
+        }
+
+        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+                                         InternalFactHandle handle) {
+            this.workingMemory = workingMemory;
+            this.rightObject = handle.getObject();
+        }
+
+        public void updateFromTuple(InternalWorkingMemory workingMemory,
+                                    ReteTuple tuple) {
+            this.workingMemory = workingMemory;
+            this.leftTuple = tuple;
+        }
+    }
+
+}
