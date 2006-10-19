@@ -10,7 +10,7 @@ public abstract class AbstractCompositeRestriction
     implements
     Restriction {
 
-    private static final long     serialVersionUID = 320;
+    private static final long     serialVersionUID = 320L;
 
     protected final Restriction[] restrictions;
 
