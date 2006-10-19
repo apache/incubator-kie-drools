@@ -8,7 +8,6 @@ import org.drools.reteoo.ObjectHashTable;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
-import org.drools.util.AbstractHashTable.ObjectComparator;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class CompositeFieldIndexHashTable extends AbstractHashTable
@@ -345,12 +344,6 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
 
         public int hashCodeOf(Object object);
 
-        //        public void setCachedValue(Object object);
-        //
-        //        public void setCachedValue(ReteTuple tuple);
-
-        //        public boolean equal(Object object);
-
         public boolean equal(Object object1,
                              Object object2);
 
@@ -395,19 +388,6 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
             return this.comparator.rehash( hashCode );
         }
 
-        //        public void setCachedValue(Object object) {
-        //            this.cachedValue = extractor.getValue( object );
-        //        }
-        //
-        //        public void setCachedValue(ReteTuple tuple) {
-        //            this.cachedValue = declaration.getValue( tuple.get( declaration ).getObject() );
-        //        }
-        //
-        //        public boolean equal(Object object) {
-        //            return this.comparator.equal( this.cachedValue,
-        //                                          this.extractor.getValue( object ) );
-        //        }
-
         public boolean equal(Object object1,
                              ReteTuple tuple) {
             Object value1 = this.extractor.getValue( object1 );
@@ -433,14 +413,10 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
         Index {
         private FieldIndex       index0;
         private FieldIndex       index1;
-        
-        
+                
         private int              startResult;
 
         private ObjectComparator comparator;
-
-        //        private Object           cachedValue0;
-        //        private Object           cachedValue1;
 
         public DoubleCompositeIndex(FieldIndex[] indexes,
                                     int startResult,
@@ -476,23 +452,6 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
 
             return this.comparator.rehash( hashCode );
         }
-
-        //        public void setCachedValue(Object object) {
-        //            this.cachedValue0 = index0.getExtractor().getValue( object );
-        //            this.cachedValue1 = index1.getExtractor().getValue( object );
-        //        }
-        //
-        //        public void setCachedValue(ReteTuple tuple) {
-        //            this.cachedValue0 = index0.getDeclaration().getValue( tuple.get( index0.getDeclaration() ).getObject() );
-        //            this.cachedValue1 = index1.getDeclaration().getValue( tuple.get( index1.getDeclaration() ).getObject() );
-        //        }
-        //
-        //        public boolean equal(Object object) {
-        //
-        //            return this.comparator.equal( cachedValue0,
-        //                                          index0.getExtractor().getValue( object ) ) && this.comparator.equal( cachedValue1,
-        //                                                                                                               index1.getExtractor().getValue( object ) );
-        //        }
 
         public boolean equal(Object object1,
                              ReteTuple tuple) {
@@ -548,10 +507,6 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
 
         private ObjectComparator comparator;
 
-        //        private Object           cachedValue0;
-        //        private Object           cachedValue1;
-        //        private Object           cachedValue2;
-
         public TripleCompositeIndex(FieldIndex[] indexes,
                                     int startResult,
                                     ObjectComparator comparator) {
@@ -567,13 +522,13 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
         public int hashCodeOf(Object object) {
             int hashCode = startResult;
 
-            Object value = index0.getExtractor().getValue( object );
+            Object value = index0.extractor.getValue( object );
             hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
-            value = index1.getExtractor().getValue( object );
+            value = index1.extractor.getValue( object );
             hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
-            value = index2.getExtractor().getValue( object );
+            value = index2.extractor.getValue( object );
             hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             return this.comparator.rehash( hashCode );
@@ -582,36 +537,17 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
         public int hashCodeOf(ReteTuple tuple) {
             int hashCode = startResult;
 
-            Object value = index0.getDeclaration().getValue( tuple.get( index0.getDeclaration() ).getObject() );
+            Object value = index0.declaration.getValue( tuple.get( index0.declaration ).getObject() );
             hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
-            value = index1.getDeclaration().getValue( tuple.get( index1.getDeclaration() ).getObject() );
+            value = index1.declaration.getValue( tuple.get( index1.declaration ).getObject() );
             hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
-            value = index2.getDeclaration().getValue( tuple.get( index2.getDeclaration() ).getObject() );
+            value = index2.declaration.getValue( tuple.get( index2.declaration ).getObject() );
             hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             return this.comparator.rehash( hashCode );
         }
-
-        //        public void setCachedValue(Object object) {
-        //            this.cachedValue0 = index0.getExtractor().getValue( object );
-        //            this.cachedValue1 = index1.getExtractor().getValue( object );
-        //            this.cachedValue2 = index2.getExtractor().getValue( object );
-        //        }
-        //
-        //        public void setCachedValue(ReteTuple tuple) {
-        //            this.cachedValue0 = index0.getDeclaration().getValue( tuple.get( index0.getDeclaration() ).getObject() );
-        //            this.cachedValue1 = index1.getDeclaration().getValue( tuple.get( index1.getDeclaration() ).getObject() );
-        //            this.cachedValue2 = index2.getDeclaration().getValue( tuple.get( index2.getDeclaration() ).getObject() );
-        //        }
-        //
-        //        public boolean equal(Object object) {
-        //            return this.comparator.equal( cachedValue0,
-        //                                          index0.getExtractor().getValue( object ) ) && this.comparator.equal( cachedValue1,
-        //                                                                                                               index1.getExtractor().getValue( object ) ) && this.comparator.equal( cachedValue2,
-        //                                                                                                                                                                                    index2.getExtractor().getValue( object ) );
-        //        }
 
         public boolean equal(Object object1,
                              ReteTuple tuple) {
@@ -668,66 +604,6 @@ public class CompositeFieldIndexHashTable extends AbstractHashTable
                 return false;
             }
 
-            return true;
-        }
-    }
-
-    private static class DefaultCompositeIndex
-        implements
-        Index {
-        private FieldIndex[]     indexes;
-        private int              startResult;
-        private ObjectComparator comparator;
-
-        public DefaultCompositeIndex(FieldIndex[] fieldIndexes,
-                                     int startResult,
-                                     ObjectComparator comparator) {
-            this.startResult = startResult;
-            this.indexes = fieldIndexes;
-            this.comparator = comparator;
-        }
-
-        public int hashCodeOf(Object object) {
-            int hashCode = startResult;
-            for ( int i = 0, length = this.indexes.length; i < length; i++ ) {
-                Object value = indexes[i].getExtractor().getValue( object );
-                hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode() );
-            }
-            return this.comparator.rehash( hashCode );
-        }
-
-        public int hashCodeOf(ReteTuple tuple) {
-            int hashCode = startResult;
-            for ( int i = 0, length = this.indexes.length; i < length; i++ ) {
-                Object value = indexes[i].declaration.getValue( tuple.get( indexes[i].declaration ).getObject() );
-                hashCode += CompositeFieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode() );
-            }
-            return this.comparator.rehash( hashCode );
-        }
-
-        public boolean equal(Object object1,
-                             ReteTuple tuple) {
-            for ( int i = 0, length = this.indexes.length; i < length; i++ ) {
-                Object value1 = indexes[i].extractor.getValue( object1 );
-                Object value2 = indexes[i].declaration.getValue( tuple.get( indexes[i].declaration ).getObject() );
-                if ( !this.comparator.equal( value1,
-                                             value2 ) ) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public boolean equal(Object object1,
-                             Object object2) {
-            for ( int i = 0, length = this.indexes.length; i < length; i++ ) {
-                Object value1 = indexes[i].getExtractor().getValue( object1 );
-                Object value2 = indexes[i].getExtractor().getValue( object2 );
-                if ( !this.comparator.equal( value1,
-                                             value2 ) ) {
-                    return false;
-                }
-            }
             return true;
         }
     }
