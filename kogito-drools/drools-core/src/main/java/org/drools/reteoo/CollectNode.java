@@ -16,22 +16,16 @@
 
 package org.drools.reteoo;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.common.BetaConstraints;
-import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Collect;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
+import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
@@ -130,7 +124,7 @@ public class CollectNode extends BetaNode
         memory.getTupleMemory().add( leftTuple );
 
         final Collection result = this.collect.instantiateResultObject();
-        final org.drools.util.Iterator it = memory.getObjectMemory().iterator( leftTuple );
+        final Iterator it = memory.getObjectMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory, leftTuple );
         
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
@@ -167,33 +161,31 @@ public class CollectNode extends BetaNode
     public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.getTupleMemory().remove( leftTuple );
-        
-        
-        
-
-        final Map matches = leftTuple.getTupleMatches();
-
-        if ( !matches.isEmpty() ) {
-            for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
-                final CompositeTupleMatch compositeTupleMatch = (CompositeTupleMatch) it.next();
-                compositeTupleMatch.getObjectMatches().remove( compositeTupleMatch );
-                it.remove();
-            }
-        }
-
-        // if tuple was propagated
-        if ( (leftTuple.getChildEntries() != null) && (leftTuple.getChildEntries().size() > 0) ) {
-            // Need to store the collection result object for later disposal
-            final InternalFactHandle lastHandle = ((ReteTuple) ((LinkedListEntry) leftTuple.getChildEntries().getFirst()).getObject()).getLastHandle();
-
-            leftTuple.retractChildEntries( context,
-                                           workingMemory );
-
-            // Destroying the acumulate result object 
-            workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
-        }
+        // FIXME
+//        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+//        memory.getTupleMemory().remove( leftTuple );
+//        
+//        final Map matches = leftTuple.getTupleMatches();
+//
+//        if ( !matches.isEmpty() ) {
+//            for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
+//                final CompositeTupleMatch compositeTupleMatch = (CompositeTupleMatch) it.next();
+//                compositeTupleMatch.getObjectMatches().remove( compositeTupleMatch );
+//                it.remove();
+//            }
+//        }
+//
+//        // if tuple was propagated
+//        if ( (leftTuple.getChildEntries() != null) && (leftTuple.getChildEntries().size() > 0) ) {
+//            // Need to store the collection result object for later disposal
+//            final InternalFactHandle lastHandle = ((ReteTuple) ((LinkedListEntry) leftTuple.getChildEntries().getFirst()).getObject()).getLastHandle();
+//
+//            leftTuple.retractChildEntries( context,
+//                                           workingMemory );
+//
+//            // Destroying the acumulate result object 
+//            workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
+//        }
     }
 
     /**
@@ -210,23 +202,16 @@ public class CollectNode extends BetaNode
                              final InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.add( workingMemory,
-                    handle );
+        memory.getObjectMemory().add( handle );
 
-        final BetaConstraints binder = constraints();
-        for ( final Iterator it = memory.leftTupleIterator( workingMemory,
-                                                            handle ); it.hasNext(); ) {
-            final ReteTuple leftTuple = (ReteTuple) it.next();
-
-            if ( binder.isAllowed( handle,
-                                   leftTuple,
-                                   workingMemory ) ) {
-                this.modifyTuple( leftTuple,
-                                  context,
-                                  workingMemory );
+        final Iterator it = memory.getTupleMemory().iterator();
+        this.constraints.updateFromFactHandle( workingMemory, handle );
+        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+            if ( this.constraints.isAllowedCachedRight( tuple ) ) {
+                this.retractTuple( tuple, context, workingMemory );
+                this.assertTuple( tuple, context, workingMemory );
             }
         }
-
     }
 
     /**
@@ -240,18 +225,7 @@ public class CollectNode extends BetaNode
                               final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        // Remove the FactHandle from memory
-        final ObjectMatches objectMatches = memory.remove( workingMemory,
-                                                           handle );
-
-        for ( CompositeTupleMatch compositeTupleMatch = objectMatches.getFirstTupleMatch(); compositeTupleMatch != null; compositeTupleMatch = (CompositeTupleMatch) compositeTupleMatch.getNext() ) {
-            final ReteTuple leftTuple = compositeTupleMatch.getTuple();
-            leftTuple.removeMatch( handle );
-
-            this.modifyTuple( leftTuple,
-                              context,
-                              workingMemory );
-        }
+        // FIXME
     }
 
     public String toString() {
@@ -261,8 +235,22 @@ public class CollectNode extends BetaNode
     public void updateSink(TupleSink sink,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        final Iterator tupleIter = memory.getTupleMemory().iterator();
+        for ( ReteTuple tuple = (ReteTuple) tupleIter.next(); tuple != null; tuple = (ReteTuple) tupleIter.next() ) {
+            final Iterator objectIter = memory.getObjectMemory().iterator( tuple );
+            this.constraints.updateFromTuple( workingMemory, tuple );
+            for ( FactEntry entry = (FactEntry) objectIter.next(); entry != null; entry = (FactEntry) objectIter.next() ) {
+                final InternalFactHandle handle = entry.getFactHandle();
+                if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+                    sink.assertTuple( new ReteTuple( tuple,
+                                                     handle ),
+                                      context,
+                                      workingMemory );
+                }
+            }
+        }
     }
 
 }
