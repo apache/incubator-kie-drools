@@ -17,7 +17,6 @@
 package org.drools.reteoo;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
@@ -28,6 +27,7 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * @author etirelli
@@ -252,9 +252,10 @@ public class CollectNode extends BetaNode
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        final Iterator it = memory.getCreatedHandles().iterator();
 
-        for ( java.util.Iterator it = memory.getCreatedHandles().entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
             sink.assertTuple( new ReteTuple( (ReteTuple)entry.getKey(),
                                              (InternalFactHandle) entry.getValue()),
                               context,
