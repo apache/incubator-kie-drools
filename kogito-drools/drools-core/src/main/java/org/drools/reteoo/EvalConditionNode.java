@@ -16,8 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
@@ -27,8 +27,6 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -102,8 +100,9 @@ class EvalConditionNode extends TupleSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateNewNode( workingMemory,
-                                            propagationContext );
+            this.tupleSource.updateSink( this,
+                                         propagationContext,
+                                         workingMemory );
         }
     }
 
@@ -142,7 +141,7 @@ class EvalConditionNode extends TupleSource
                                                           workingMemory );
 
         if ( allowed ) {
-            final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+            final List memory = (LinkedList) workingMemory.getNodeMemory( this );
             memory.add( tuple );
 
             this.sink.propagateAssertTuple( tuple,
@@ -154,60 +153,14 @@ class EvalConditionNode extends TupleSource
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+        final List memory = (LinkedList) workingMemory.getNodeMemory( this );
 
-        // checks if the tuple is attach to tuple
-        if ( tuple.getChildEntries() != null && !tuple.getChildEntries().isEmpty() ) {
-            memory.remove( tuple );
-
-            tuple.retractChildEntries( context,
-                                       workingMemory );
-        }
-    }
-
-    public void modifyTuple(final ReteTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        boolean exists = (tuple.getChildEntries() != null && !tuple.getChildEntries().isEmpty());
-
-        if ( exists ) {
-            // Remove the tuple so it can be readded to the top of the list
-            memory.remove( tuple );
-        }
-
-        final boolean allowed = this.condition.isAllowed( tuple,
-                                                          workingMemory );
-
-        if ( allowed ) {
-            memory.add( tuple );
-            if ( !exists ) {
-                this.sink.propagateAssertTuple( tuple,
-                                                context,
-                                                workingMemory );
-            } else {
-                tuple.modifyChildEntries( context,
-                                          workingMemory );
-            }
-        } else {
-            tuple.retractChildEntries( context,
-                                       workingMemory );
-        }
-    }
-
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        this.attachingNewNode = true;
-
-        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-
-        for ( final Iterator it = memory.iterator(); it.hasNext(); ) {
-            final ReteTuple tuple = (ReteTuple) it.next();
-            this.sink.propagateNewTupleSink( (ReteTuple) tuple.getChildEntries().getFirst(),
+        // can we improve that?
+        if ( memory.remove( tuple ) ) {
+            this.sink.propagateRetractTuple( tuple,
                                              context,
                                              workingMemory );
         }
-        this.attachingNewNode = false;
     }
 
     /**
@@ -216,7 +169,7 @@ class EvalConditionNode extends TupleSource
      * @return The debug string.
      */
     public String toString() {
-        return "[ConditionNode: cond=" + this.condition + "]";
+        return "[EvalConditionNode: cond=" + this.condition + "]";
     }
 
     public int hashCode() {
@@ -241,28 +194,37 @@ class EvalConditionNode extends TupleSource
         return new LinkedList();
     }
 
-    /**
-     * @inheritDoc
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public List getPropagatedTuples(final InternalWorkingMemory workingMemory,
-                                    final TupleSink sink) {
-        // FIXME
-        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        final List propagatedTuples = new ArrayList();
+    public void updateSink(final TupleSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
 
-        for ( final Iterator it = memory.iterator(); it.hasNext(); ) {
-            final ReteTuple leftTuple = (ReteTuple) it.next();
-            final LinkedList linkedTuples = leftTuple.getChildEntries();
+        final List memory = (List) workingMemory.getNodeMemory( this );
 
-            final LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
-            propagatedTuples.add( wrapper.getObject() );
+        for ( Iterator tupleIter = memory.iterator(); tupleIter.hasNext(); ) {
+            ReteTuple tuple = (ReteTuple) tupleIter.next();
+            sink.assertTuple( tuple,
+                              context,
+                              workingMemory );
         }
-        return propagatedTuples;
     }
 
-    public void remove(final BaseNode node,
-                       final InternalWorkingMemory[] workingMemories) {
-        // FIXME
+    public void remove(BaseNode node,
+                       InternalWorkingMemory[] workingMemories) {
+        if ( !node.isInUse() ) {
+            removeTupleSink( (TupleSink) node );
+        }
+        removeShare();
+        if ( !this.isInUse() ) {
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
+            }
+        }
+        this.tupleSource.remove( this,
+                                 workingMemories );
+
     }
 
 }
