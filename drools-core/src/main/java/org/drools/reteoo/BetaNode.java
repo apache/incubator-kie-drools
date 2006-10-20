@@ -227,42 +227,6 @@ abstract class BetaNode extends TupleSource
      */
     public Object createMemory(final RuleBaseConfiguration config) {
         return this.constraints.createBetaMemory();
-        //        // iterate over all the constraints untill we find one that is indexeable. When we find it we remove it from the list and create the 
-        //        // BetaMemory for it. If we don't find one, we create a normal beta memory. We don't need the constraint as we can assume that 
-        //        // anything  returned by the memory already passes that test.
-        //        LinkedList constraints = this.constraints.getConstraints();
-        //        BetaMemory memory = null;
-        //
-        //        if ( constraints != null ) {
-        //            for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-        //                BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
-        //                if ( constraint.getClass() == VariableConstraint.class ) {
-        //                    VariableConstraint variableConstraint = (VariableConstraint) constraint;
-        //                    FieldExtractor extractor = variableConstraint.getFieldExtractor();
-        //                    Evaluator evaluator = variableConstraint.getEvaluator();
-        //                    if ( evaluator.getOperator() == Operator.EQUAL ) {
-        //                        // make suret the indexed constraint is first
-        //                        if ( constraints.getFirst() != entry ) {
-        //                            constraints.remove( entry );
-        //                            constraints.insertAfter( null,
-        //                                                     entry );
-        //                        }
-        //                        memory = new BetaMemory( new TupleHashTable(),
-        //                                                 new FieldIndexHashTable( extractor,
-        //                                                                          variableConstraint.getRequiredDeclarations()[0] ) );
-        //                        break;
-        //
-        //                    }
-        //                }
-        //            }
-        //        }
-        //
-        //        if ( memory == null ) {
-        //            memory = new BetaMemory( new TupleHashTable(),
-        //                                     new FactHashTable() );
-        //        }
-        //
-        //        return memory;
     }
 
     /**
