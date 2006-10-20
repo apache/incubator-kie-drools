@@ -1,14 +1,12 @@
 package org.drools.reteoo;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.drools.util.ObjectHashMap;
 import org.drools.util.TupleHashTable;
 
 public class BetaMemory {
     private TupleHashTable  tupleMemory;
     private ObjectHashTable objectMemory;
-    private Map         createdHandles;
+    private ObjectHashMap   createdHandles;
 
     public BetaMemory(final TupleHashTable tupleMemory,
                       final ObjectHashTable objectMemory) {
@@ -24,9 +22,9 @@ public class BetaMemory {
         return this.tupleMemory;
     }
     
-    public Map getCreatedHandles() {
+    public ObjectHashMap getCreatedHandles() {
         if(createdHandles == null) {
-            createdHandles = new HashMap();
+            createdHandles = new ObjectHashMap();
         }
         return createdHandles;
     }
