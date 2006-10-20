@@ -17,6 +17,7 @@
 package org.drools.reteoo;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
