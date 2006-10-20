@@ -140,8 +140,7 @@ final class QueryTerminalNode extends BaseNode
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateNewNode( workingMemory,
-                                            propagationContext );
+            this.tupleSource.updateSink( this, propagationContext, workingMemory );
         }
     }
 

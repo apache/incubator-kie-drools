@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Collect;
@@ -31,6 +32,7 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
+import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
  * @author etirelli
@@ -67,8 +69,8 @@ public class CollectNode extends BetaNode
               leftInput,
               rightInput,
               new AlphaNodeFieldConstraint[0],
-              new DefaultBetaConstraints(),
-              new DefaultBetaConstraints(),
+              EmptyBetaConstraints.getInstance(),
+              EmptyBetaConstraints.getInstance(),
               collect );
     }
 
@@ -125,22 +127,15 @@ public class CollectNode extends BetaNode
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        memory.add( workingMemory,
-                    leftTuple );
-
-        //final BetaNodeBinder binder = getJoinNodeBinder();
+        memory.getTupleMemory().add( leftTuple );
 
         final Collection result = this.collect.instantiateResultObject();
-        for ( final Iterator it = memory.rightObjectIterator( workingMemory,
-                                                              leftTuple ); it.hasNext(); ) {
-            final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            final InternalFactHandle handle = objectMatches.getFactHandle();
-
-            if ( attemptJoin( leftTuple,
-                              handle,
-                              objectMatches,
-                              this.resultsBinder,
-                              workingMemory ) != null ) {
+        final org.drools.util.Iterator it = memory.getObjectMemory().iterator( leftTuple );
+        this.constraints.updateFromTuple( workingMemory, leftTuple );
+        
+        for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
+            final InternalFactHandle handle = entry.getFactHandle();
+            if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
                 result.add( handle.getObject() );
             }
         }
@@ -149,7 +144,6 @@ public class CollectNode extends BetaNode
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( result,
-                                                       leftTuple,
                                                        workingMemory ) ) {
                 isAllowed = false;
                 break;
@@ -158,9 +152,7 @@ public class CollectNode extends BetaNode
         if ( isAllowed ) {
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
 
-            if ( this.resultsBinder.isAllowed( handle,
-                                               leftTuple,
-                                               workingMemory ) ) {
+            if ( this.resultsBinder.isAllowedCachedLeft( result ) ) {
                 this.sink.propagateAssertTuple( leftTuple,
                                                 handle,
                                                 context,
@@ -171,34 +163,15 @@ public class CollectNode extends BetaNode
 
     /**
      * @inheritDoc
-     * 
-     * As the collect node will propagate the tuple,
-     * but will recalculate the collection result object every time,
-     * a modify is really a retract + assert. 
-     * 
-     */
-    public void modifyTuple(final ReteTuple leftTuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-
-        this.retractTuple( leftTuple,
-                           context,
-                           workingMemory );
-        this.assertTuple( leftTuple,
-                          context,
-                          workingMemory );
-
-    }
-
-    /**
-     * @inheritDoc
      */
     public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.remove( workingMemory,
-                       leftTuple );
+        memory.getTupleMemory().remove( leftTuple );
+        
+        
+        
 
         final Map matches = leftTuple.getTupleMatches();
 
@@ -257,38 +230,6 @@ public class CollectNode extends BetaNode
     }
 
     /**
-     * @inheritDoc
-     * 
-     * If an object is modified, iterate over all matching tuples
-     * and propagate a modify tuple for them.
-     * 
-     * NOTE: a modify tuple for collect node is exactly the 
-     * same as a retract+assert tuple, since the collection object changes.
-     * So, a modify object is in fact a retract+assert object.
-     * 
-     */
-    public void modifyObject(final InternalFactHandle handle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        // Remove the FactHandle from memory
-        final ObjectMatches objectMatches = memory.remove( workingMemory,
-                                                           handle );
-
-        // remove references from tuple to the handle
-        for ( CompositeTupleMatch compositeTupleMatch = objectMatches.getFirstTupleMatch(); compositeTupleMatch != null; compositeTupleMatch = (CompositeTupleMatch) compositeTupleMatch.getNext() ) {
-            final ReteTuple leftTuple = compositeTupleMatch.getTuple();
-            leftTuple.removeMatch( handle );
-        }
-
-        // reassert object modifying appropriate tuples
-        this.assertObject( handle,
-                           context,
-                           workingMemory );
-    }
-
-    /**
      *  @inheritDoc
      *  
      *  If an object is retract, call modify tuple for each
@@ -313,44 +254,15 @@ public class CollectNode extends BetaNode
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public List getPropagatedTuples(final InternalWorkingMemory workingMemory,
-                                    final TupleSink sink) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        final List propagatedTuples = new ArrayList();
-
-        for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
-            final ReteTuple leftTuple = (ReteTuple) it.next();
-            final LinkedList linkedTuples = leftTuple.getChildEntries();
-
-            final LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
-            propagatedTuples.add( wrapper.getObject() );
-        }
-        return propagatedTuples;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        this.attachingNewNode = true;
-
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
-            final ReteTuple leftTuple = (ReteTuple) it.next();
-            this.sink.propagateNewTupleSink( (ReteTuple) leftTuple.getChildEntries().getFirst(),
-                                             context,
-                                             workingMemory );
-        }
-        this.attachingNewNode = false;
-    }
-
     public String toString() {
         return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
+    }
+
+    public void updateSink(TupleSink sink,
+                           PropagationContext context,
+                           InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
