@@ -5,6 +5,8 @@ package org.drools.util;
 
 public class ObjectHashMap extends AbstractHashTable {
 
+    private static final long serialVersionUID = 929633553699602561L;
+
     public ObjectHashMap() {
         this( 16,
               0.75f );
