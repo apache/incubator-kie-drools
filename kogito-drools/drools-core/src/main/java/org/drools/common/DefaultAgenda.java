@@ -373,7 +373,7 @@ public class DefaultAgenda
      */
     public void clearActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        final Iterator it = activationGroup.iterator();
+        final java.util.Iterator it = activationGroup.iterator();
         for ( ActivationGroupNode node = (ActivationGroupNode) it.next() ; node != null; node = (ActivationGroupNode) it.next()) {
             final Activation activation = node.getActivation();
             activation.setActivationGroupNode( null );

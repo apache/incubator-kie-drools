@@ -48,9 +48,13 @@ public class SingleBetaConstraints
     private boolean                       indexed;
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint) {
+        this( constraint, true );
+    }
+    
+    public SingleBetaConstraints(final BetaNodeFieldConstraint constraint, boolean index ) {
         this.constraint = constraint;
         // Determine  if this constraint is indexable
-        if ( isIndexable( constraint ) ) {
+        if ( index  && isIndexable( constraint ) ) {
             this.indexed = true;
         }
 
@@ -119,17 +123,6 @@ public class SingleBetaConstraints
 
         return memory;
     }
-
-    //    public Set getRequiredDeclarations() {
-    //        final Set declarations = new HashSet();
-    //        for ( int i = 0; i < this.constraints.length; i++ ) {
-    //            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
-    //            for ( int j = 0; j < array.length; j++ ) {
-    //                declarations.add( array[j] );
-    //            }
-    //        }
-    //        return declarations;
-    //    }
 
     public int hashCode() {
         return this.constraint.hashCode();

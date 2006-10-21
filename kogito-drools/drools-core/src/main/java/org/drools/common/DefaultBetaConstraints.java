@@ -17,6 +17,9 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
@@ -46,28 +49,40 @@ public class DefaultBetaConstraints
 
     private ContextEntry      contexts;
 
-    private boolean           indexed;
-
-    public DefaultBetaConstraints(final BetaNodeFieldConstraint constraint) {
-        this( new BetaNodeFieldConstraint[]{constraint} );
-    }
+    private int               indexed;
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
+        this( constraints, true );
+    }
+
+    public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index ) {
         this.constraints = new LinkedList();
         ContextEntry current = null;
+
+        // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
-            // it is only indexable if there is already no indexed constraints
-            // An indexed constraint is always the first constraint
-            if ( isIndexable( constraints[i] ) && !this.indexed ) {
-                this.constraints.insertAfter( null,
-                                              new LinkedListEntry( constraints[i] ) );
-                this.indexed = true;
+            if ( index && isIndexable( constraints[i] ) ) {
+                if ( indexed == 0 ) {
+                    // first index, so just add to the front
+                    this.constraints.insertAfter( null,
+                                                  new LinkedListEntry( constraints[i] ) );
+                    indexed++;
+                } else {
+                    // insert this index after  the previous index
+                    this.constraints.insertAfter( findNode( indexed++ ),
+                                                  new LinkedListEntry( constraints[i] ) );
+                }
             } else {
+                // not indexed, so just add to the  end
                 this.constraints.add( new LinkedListEntry( constraints[i] ) );
             }
-            //Setup  the  contextEntry cache to be iterated  in the same order
-            final ContextEntry context = constraints[i].getContextEntry();
+        }
+
+        // Now create the ContextEntries  in the same order the constraints
+        for ( LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+            BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
+            final ContextEntry context = constraint.getContextEntry();
             if ( current == null ) {
                 current = context;
                 this.contexts = context;
@@ -76,6 +91,14 @@ public class DefaultBetaConstraints
             }
             current = context;
         }
+    }
+
+    private LinkedListEntry findNode(int pos) {
+        LinkedListEntry current = (LinkedListEntry) this.constraints.getFirst();
+        for ( int i = 0; i < pos; i++ ) {
+            current = (LinkedListEntry) current.getNext();
+        }
+        return current;
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
@@ -90,18 +113,22 @@ public class DefaultBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
+    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                final ReteTuple tuple) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.updateFromTuple( workingMemory, tuple );
+            context.updateFromTuple( workingMemory,
+                                     tuple );
         }
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                     final InternalFactHandle handle) {
         for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.updateFromFactHandle( workingMemory, handle );
+            context.updateFromFactHandle( workingMemory,
+                                          handle );
         }
     }
 
@@ -140,7 +167,7 @@ public class DefaultBetaConstraints
     }
 
     public boolean isIndexed() {
-        return this.indexed;
+        return this.indexed > 0;
     }
 
     public boolean isEmpty() {
@@ -149,13 +176,21 @@ public class DefaultBetaConstraints
 
     public BetaMemory createBetaMemory() {
         BetaMemory memory;
-        if ( this.indexed ) {
-            final Constraint constraint = (Constraint) this.constraints.getFirst();
-            final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0] );
+        if ( this.indexed > 0 ) {
+            LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
+            List list = new ArrayList();
+            
+            for ( int pos = 0; pos < this.indexed; pos++ ) {
+                final Constraint constraint = (Constraint) entry.getNext();
+                final VariableConstraint variableConstraint = (VariableConstraint) constraint;
+                final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                                         variableConstraint.getRequiredDeclarations()[0] );
+                list.add( index );
+            }
+            
+            FieldIndex[] indexes = ( FieldIndex[] ) list.toArray( new FieldIndex[ list.size() ] );
             memory = new BetaMemory( new TupleHashTable(),
-                                     new FieldIndexHashTable( new FieldIndex[]{index} ) );
+                                     new FieldIndexHashTable( indexes ) );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -163,17 +198,6 @@ public class DefaultBetaConstraints
 
         return memory;
     }
-
-    //    public Set getRequiredDeclarations() {
-    //        final Set declarations = new HashSet();
-    //        for ( int i = 0; i < this.constraints.length; i++ ) {
-    //            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
-    //            for ( int j = 0; j < array.length; j++ ) {
-    //                declarations.add( array[j] );
-    //            }
-    //        }
-    //        return declarations;
-    //    }
 
     public int hashCode() {
         return this.constraints.hashCode();

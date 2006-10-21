@@ -56,32 +56,12 @@ public class TripleBetaConstraints
     private boolean                       indexed2;
 
     public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
-        //        // find the first instrumental
-        //        for ( int i = 0, length = constraints.length; i < length; i++ ) {
-        //            if ( isIndexable( constraints[i] ) ) {
-        //                if ( i > 0) {
-        //                    // swap the constraint to the first position
-        //                    BetaNodeFieldConstraint temp = constraints[0];
-        //                    constraints[0] = constraints[i];
-        //                    constraints[i] = temp;
-        //                }
-        //                this.indexed = true;
-        //                break;
-        //            }
-        //        }
-        //
-        //        this.constraint0 = constraints[0];
-        //        this.context0 = this.constraint0.getContextEntry();
-        //
-        //        this.constraint1 = constraints[1];
-        //        this.context1 = this.constraint1.getContextEntry();
-        //        
-        //        this.constraint2 = constraints[2];
-        //        this.context2 = this.constraint2.getContextEntry();     
-
-        final boolean i0 = isIndexable( constraints[0] );
-        final boolean i1 = isIndexable( constraints[1] );
-        final boolean i2 = isIndexable( constraints[2] );
+        this( constraints, true );
+    }
+    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index) {
+        final boolean i0 = index && isIndexable( constraints[0] );
+        final boolean i1 = index && isIndexable( constraints[1] );
+        final boolean i2 = index && isIndexable( constraints[2] );
 
         if ( i0 ) {
             this.indexed0 = true;
@@ -180,18 +160,6 @@ public class TripleBetaConstraints
     }
 
     public BetaMemory createBetaMemory() {
-        //        BetaMemory memory;
-        //        if ( this.indexed ) {
-        //            VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
-        //            Index  index  = new  Index(variableConstraint.getFieldExtractor(), variableConstraint.getRequiredDeclarations()[0]);
-        //            memory = new BetaMemory( new TupleHashTable(),
-        //                                     new CompositeFieldIndexHashTable( new Index[] { index }  ) );
-        //        } else {
-        //            memory = new BetaMemory( new TupleHashTable(),
-        //                                     new FactHashTable() );
-        //        }
-        //
-        //        return memory;
 
         BetaMemory memory;
 
@@ -229,17 +197,6 @@ public class TripleBetaConstraints
 
         return memory;
     }
-
-    //    public Set getRequiredDeclarations() {
-    //        final Set declarations = new HashSet();
-    //        for ( int i = 0; i < this.constraints.length; i++ ) {
-    //            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
-    //            for ( int j = 0; j < array.length; j++ ) {
-    //                declarations.add( array[j] );
-    //            }
-    //        }
-    //        return declarations;
-    //    }
 
     public int hashCode() {
         return this.constraint0.hashCode() ^ this.constraint0.hashCode() ^ this.constraint0.hashCode();

@@ -53,8 +53,12 @@ public class DoubleBetaConstraints
     private boolean                       indexed1;
 
     public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
-        final boolean i0 = isIndexable( constraints[0] );
-        final boolean i1 = isIndexable( constraints[1] );
+        this( constraints, true );
+    }
+    
+    public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index) {
+        final boolean i0 = index && isIndexable( constraints[0] );
+        final boolean i1 = index && isIndexable( constraints[1] );
 
         if ( i0 ) {
             this.indexed0 = true;
@@ -156,17 +160,6 @@ public class DoubleBetaConstraints
 
         return memory;
     }
-
-    //    public Set getRequiredDeclarations() {
-    //        final Set declarations = new HashSet();
-    //        for ( int i = 0; i < this.constraints.length; i++ ) {
-    //            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
-    //            for ( int j = 0; j < array.length; j++ ) {
-    //                declarations.add( array[j] );
-    //            }
-    //        }
-    //        return declarations;
-    //    }
 
     public int hashCode() {
         return this.constraint0.hashCode() ^ this.constraint0.hashCode();
