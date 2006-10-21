@@ -116,6 +116,9 @@ public class ReteTuple
         return this.activation;
     }
 
+    /**
+     * Returns the fact handles in reverse order
+     */
     public InternalFactHandle[] getFactHandles() {
         final List list = new ArrayList();
         ReteTuple entry = this;
