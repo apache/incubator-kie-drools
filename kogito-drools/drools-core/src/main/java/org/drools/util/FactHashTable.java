@@ -113,16 +113,7 @@ public class FactHashTable extends AbstractHashTable
 
         return this.table[index];
     }
-
-    public int hash(final Object key) {
-        return key.hashCode();
-    }
-
-    protected int indexOf(final int hashCode,
-                          final int dataSize) {
-        return hashCode & (dataSize - 1);
-    }
-
+    
     public boolean isIndexed() {
         return false;
     }
