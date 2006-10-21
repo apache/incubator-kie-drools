@@ -1,6 +1,6 @@
 package org.drools.spi;
 
-import java.util.Iterator;
+import org.drools.util.Iterator;
 
 public interface ActivationGroup {
     public String getName();

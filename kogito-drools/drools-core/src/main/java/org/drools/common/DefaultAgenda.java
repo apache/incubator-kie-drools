@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +31,7 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedListNode;
 import org.drools.util.Queueable;
 
@@ -262,7 +262,7 @@ public class DefaultAgenda
      */
     public int focusStackSize() {
         int size = 0;
-        for ( final Iterator iterator = this.focusStack.iterator(); iterator.hasNext(); ) {
+        for ( final java.util.Iterator iterator = this.focusStack.iterator(); iterator.hasNext(); ) {
             final AgendaGroup group = (AgendaGroupImpl) iterator.next();
             size += group.size();
         }
@@ -274,7 +274,7 @@ public class DefaultAgenda
      */
     public int agendaSize() {
         int size = 0;
-        for ( final Iterator iterator = this.agendaGroups.values().iterator(); iterator.hasNext(); ) {
+        for ( final java.util.Iterator iterator = this.agendaGroups.values().iterator(); iterator.hasNext(); ) {
             final AgendaGroup group = (AgendaGroupImpl) iterator.next();
             size += group.size();
         }
@@ -286,7 +286,7 @@ public class DefaultAgenda
      */
     public Activation[] getActivations() {
         final List list = new ArrayList();
-        for ( final Iterator it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
+        for ( final java.util.Iterator it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
             final AgendaGroup group = (AgendaGroup) it.next();
             list.addAll( Arrays.asList( group.getActivations() ) );
         }
@@ -309,7 +309,7 @@ public class DefaultAgenda
      */
     public void clearAgenda() {
         // Cancel all items and fire a Cancelled event for each Activation
-        for ( final Iterator agendaGroupIterator = this.agendaGroups.values().iterator(); agendaGroupIterator.hasNext(); ) {
+        for ( final java.util.Iterator agendaGroupIterator = this.agendaGroups.values().iterator(); agendaGroupIterator.hasNext(); ) {
             final AgendaGroupImpl group = (AgendaGroupImpl) agendaGroupIterator.next();
             clearAgendaGroup( group );
         }
@@ -373,8 +373,9 @@ public class DefaultAgenda
      */
     public void clearActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        for ( final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
-            final Activation activation = ((ActivationGroupNode) it.next()).getActivation();
+        final Iterator it = activationGroup.iterator();
+        for ( ActivationGroupNode node = (ActivationGroupNode) it.next() ; node != null; node = (ActivationGroupNode) it.next()) {
+            final Activation activation = node.getActivation();
             activation.setActivationGroupNode( null );
 
             if ( activation.isActivated() ) {
