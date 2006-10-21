@@ -146,6 +146,7 @@ public class CollectNode extends BetaNode
             }
         }
         if ( isAllowed ) {
+            this.resultsBinder.updateFromTuple( workingMemory, leftTuple );
             if ( this.resultsBinder.isAllowedCachedLeft( result ) ) {
                 final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
                 memory.getCreatedHandles().put( leftTuple,
@@ -245,10 +246,6 @@ public class CollectNode extends BetaNode
         }
     }
 
-    public String toString() {
-        return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
-    }
-
     public void updateSink(TupleSink sink,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
@@ -262,6 +259,10 @@ public class CollectNode extends BetaNode
                               context,
                               workingMemory );
         }
+    }
+
+    public String toString() {
+        return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
     }
 
 }

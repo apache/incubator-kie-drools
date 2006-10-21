@@ -17,19 +17,18 @@
 package org.drools.reteoo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.common.BetaConstraints;
-import org.drools.common.DefaultBetaConstraints;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Accumulate;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
+import org.drools.util.Iterator;
+import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * AccumulateNode
@@ -45,8 +44,8 @@ public class AccumulateNode extends BetaNode {
     private static final long                serialVersionUID = -4081578178269297948L;
 
     private final Accumulate                 accumulate;
-    private final AlphaNodeFieldConstraint[] constraints;
-    private final BetaConstraints            resultsBinder;
+    private final AlphaNodeFieldConstraint[] resultConstraints;
+    private final BetaConstraints            resultBinder;
 
     /**
      * Construct.
@@ -68,24 +67,24 @@ public class AccumulateNode extends BetaNode {
               leftInput,
               rightInput,
               new AlphaNodeFieldConstraint[0],
-              new DefaultBetaConstraints(),
-              new DefaultBetaConstraints(),
+              EmptyBetaConstraints.getInstance(),
+              EmptyBetaConstraints.getInstance(),
               accumulate );
     }
 
     public AccumulateNode(final int id,
                           final TupleSource leftInput,
                           final ObjectSource rightInput,
-                          final AlphaNodeFieldConstraint[] constraints,
+                          final AlphaNodeFieldConstraint[] resultConstraints,
                           final BetaConstraints sourceBinder,
-                          final BetaConstraints resultsBinder,
+                          final BetaConstraints resultBinder,
                           final Accumulate accumulate) {
         super( id,
                leftInput,
                rightInput,
                sourceBinder );
-        this.resultsBinder = resultsBinder;
-        this.constraints = constraints;
+        this.resultBinder = resultBinder;
+        this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
     }
 
@@ -114,73 +113,48 @@ public class AccumulateNode extends BetaNode {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        memory.add( workingMemory,
-                    leftTuple );
-
-        //final BetaNodeBinder binder = getJoinNodeBinder();
+        memory.getTupleMemory().add( leftTuple );
 
         final List matchingObjects = new ArrayList();
-        for ( final Iterator it = memory.rightObjectIterator( workingMemory,
-                                                              leftTuple ); it.hasNext(); ) {
-            final ObjectMatches objectMatches = (ObjectMatches) it.next();
-            final InternalFactHandle handle = objectMatches.getFactHandle();
+        
+        final Iterator it = memory.getObjectMemory().iterator( leftTuple );
+        this.constraints.updateFromTuple( workingMemory,
+                                          leftTuple );
 
-            if ( attemptJoin( leftTuple,
-                              handle,
-                              objectMatches,
-                              this.resultsBinder,
-                              workingMemory ) != null ) {
+        for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
+            final InternalFactHandle handle = entry.getFactHandle();
+            if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
                 matchingObjects.add( handle.getObject() );
             }
         }
 
         final Object result = this.accumulate.accumulate( leftTuple,
-                                                    matchingObjects,
-                                                    workingMemory );
-
+                                                          matchingObjects,
+                                                          workingMemory );
         // First alpha node filters
         boolean isAllowed = true;
-        for ( int i = 0, length = this.constraints.length; i < length; i++ ) {
-            if ( !this.constraints[i].isAllowed( result,
-                                                 leftTuple,
-                                                 workingMemory ) ) {
+        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
+            if ( !this.resultConstraints[i].isAllowed( result,
+                                                       workingMemory ) ) {
                 isAllowed = false;
                 break;
             }
         }
         if ( isAllowed ) {
-            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
-
-            if ( this.resultsBinder.isAllowed( handle,
-                                               leftTuple,
-                                               workingMemory ) ) {
-                this.sink.propagateAssertTuple( leftTuple,
+            this.resultBinder.updateFromTuple( workingMemory, leftTuple );
+            if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
+                final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
+                memory.getCreatedHandles().put( leftTuple,
                                                 handle,
-                                                context,
-                                                workingMemory );
+                                                false );
+
+                sink.propagateAssertTuple( leftTuple,
+                                           handle,
+                                           context,
+                                           workingMemory );
             }
         }
-    }
-
-    /**
-     * @inheritDoc
-     * 
-     * As the accumulate node will propagate the tuple,
-     * but will recalculate the accumulated result object every time,
-     * a modify is really a retract + assert. 
-     * 
-     */
-    public void modifyTuple(final ReteTuple leftTuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-
-        this.retractTuple( leftTuple,
-                           context,
-                           workingMemory );
-        this.assertTuple( leftTuple,
-                          context,
-                          workingMemory );
-
+        
     }
 
     /**
@@ -194,29 +168,19 @@ public class AccumulateNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.remove( workingMemory,
-                       leftTuple );
-
-        final Map matches = leftTuple.getTupleMatches();
-
-        if ( !matches.isEmpty() ) {
-            for ( final Iterator it = matches.values().iterator(); it.hasNext(); ) {
-                final CompositeTupleMatch compositeTupleMatch = (CompositeTupleMatch) it.next();
-                compositeTupleMatch.getObjectMatches().remove( compositeTupleMatch );
-                it.remove();
-            }
-        }
+        memory.getTupleMemory().remove( leftTuple );
+        final InternalFactHandle handle = (InternalFactHandle) memory.getCreatedHandles().remove( leftTuple );
 
         // if tuple was propagated
-        if ( (leftTuple.getChildEntries() != null) && (leftTuple.getChildEntries().size() > 0) ) {
-            // Need to store the accumulate result object for later disposal
-            final InternalFactHandle lastHandle = ((ReteTuple) ((LinkedListEntry) leftTuple.getChildEntries().getFirst()).getObject()).getLastHandle();
+        if ( handle != null ) {
 
-            leftTuple.retractChildEntries( context,
-                                           workingMemory );
+            this.sink.propagateRetractTuple( leftTuple,
+                                             handle,
+                                             context,
+                                             workingMemory );
 
             // Destroying the acumulate result object 
-            workingMemory.getFactHandleFactory().destroyFactHandle( lastHandle );
+            workingMemory.getFactHandleFactory().destroyFactHandle( handle );
         }
     }
 
@@ -234,55 +198,21 @@ public class AccumulateNode extends BetaNode {
                              final InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.add( workingMemory,
-                    handle );
+        memory.getObjectMemory().add( handle );
 
-        final BetaConstraints binder = constraints();
-        for ( final Iterator it = memory.leftTupleIterator( workingMemory,
-                                                            handle ); it.hasNext(); ) {
-            final ReteTuple leftTuple = (ReteTuple) it.next();
-
-            if ( binder.isAllowed( handle,
-                                   leftTuple,
-                                   workingMemory ) ) {
-                this.modifyTuple( leftTuple,
+        final Iterator it = memory.getTupleMemory().iterator();
+        this.constraints.updateFromFactHandle( workingMemory,
+                                               handle );
+        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+            if ( this.constraints.isAllowedCachedRight( tuple ) ) {
+                this.retractTuple( tuple,
+                                   context,
+                                   workingMemory );
+                this.assertTuple( tuple,
                                   context,
                                   workingMemory );
             }
         }
-
-    }
-
-    /**
-     * @inheritDoc
-     * 
-     * If an object is modified, iterate over all matching tuples
-     * and propagate a modify tuple for them.
-     * 
-     * NOTE: a modify tuple for accumulate node is exactly the 
-     * same as a retract+assert tuple, since the calculated object changes.
-     * So, a modify object is in fact a retract+assert object.
-     * 
-     */
-    public void modifyObject(final InternalFactHandle handle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        // Remove the FactHandle from memory
-        final ObjectMatches objectMatches = memory.remove( workingMemory,
-                                                           handle );
-
-        // remove references from tuple to the handle
-        for ( CompositeTupleMatch compositeTupleMatch = objectMatches.getFirstTupleMatch(); compositeTupleMatch != null; compositeTupleMatch = (CompositeTupleMatch) compositeTupleMatch.getNext() ) {
-            final ReteTuple leftTuple = compositeTupleMatch.getTuple();
-            leftTuple.removeMatch( handle );
-        }
-
-        // reassert object modifying appropriate tuples
-        this.assertObject( handle,
-                           context,
-                           workingMemory );
     }
 
     /**
@@ -295,61 +225,43 @@ public class AccumulateNode extends BetaNode {
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        if ( !memory.getObjectMemory().remove( handle ) ) {
+            return;
+        }
 
-        // Remove the FactHandle from memory
-        final ObjectMatches objectMatches = memory.remove( workingMemory,
-                                                           handle );
+        final Iterator it = memory.getTupleMemory().iterator();
+        this.constraints.updateFromFactHandle( workingMemory,
+                                               handle );
+        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+            if ( this.constraints.isAllowedCachedRight( tuple ) ) {
+                this.retractTuple( tuple,
+                                   context,
+                                   workingMemory );
+                this.assertTuple( tuple,
+                                  context,
+                                  workingMemory );
+            }
+        }
+    }
 
-        for ( CompositeTupleMatch compositeTupleMatch = objectMatches.getFirstTupleMatch(); compositeTupleMatch != null; compositeTupleMatch = (CompositeTupleMatch) compositeTupleMatch.getNext() ) {
-            final ReteTuple leftTuple = compositeTupleMatch.getTuple();
-            leftTuple.removeMatch( handle );
+    public void updateSink(TupleSink sink,
+                           PropagationContext context,
+                           InternalWorkingMemory workingMemory) {
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        final Iterator it = memory.getCreatedHandles().iterator();
 
-            this.modifyTuple( leftTuple,
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
+            sink.assertTuple( new ReteTuple( (ReteTuple)entry.getKey(),
+                                             (InternalFactHandle) entry.getValue()),
                               context,
                               workingMemory );
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    public List getPropagatedTuples(final InternalWorkingMemory workingMemory,
-                                    final TupleSink sink) {
-        // FIXME
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        final List propagatedTuples = new ArrayList();
-
-        for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
-            final ReteTuple leftTuple = (ReteTuple) it.next();
-            final LinkedList linkedTuples = leftTuple.getChildEntries();
-
-            final LinkedListEntry wrapper = (LinkedListEntry) linkedTuples.getFirst();
-            propagatedTuples.add( wrapper.getObject() );
-        }
-        return propagatedTuples;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        // FIXME
-        this.attachingNewNode = true;
-
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
-            final ReteTuple leftTuple = (ReteTuple) it.next();
-            this.sink.propagateNewTupleSink( (ReteTuple) leftTuple.getChildEntries().getFirst(),
-                                             context,
-                                             workingMemory );
-        }
-        this.attachingNewNode = false;
-    }
-
+    
     public String toString() {
         return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
     }
+
 
 }
