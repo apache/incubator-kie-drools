@@ -34,8 +34,8 @@ public class ActivationGroupImpl
         activation.setActivationGroupNode( null );
     }
 
-    public Iterator iterator() {
-        return this.list.iterator();
+    public java.util.Iterator iterator() {
+        return this.list.javaUtilIterator();
     }
 
     public boolean isEmpty() {
