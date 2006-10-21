@@ -23,6 +23,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.Entry;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
 
@@ -128,12 +129,12 @@ public class ScheduledAgendaItem extends TimerTask
         return this.activationNumber;
     }
 
-    public LinkedListNode getNext() {
+    public Entry getNext() {
         return this.next;
     }
 
-    public void setNext(final LinkedListNode next) {
-        this.next = next;
+    public void setNext(final Entry next) {
+        this.next = (LinkedListNode) next;
     }
 
     public LinkedListNode getPrevious() {

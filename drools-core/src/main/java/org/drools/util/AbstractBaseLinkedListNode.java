@@ -27,6 +27,9 @@ package org.drools.util;
 public class AbstractBaseLinkedListNode
     implements
     LinkedListNode {
+
+    private static final long serialVersionUID = -3926700105253864146L;
+
     private LinkedListNode previous;
 
     private LinkedListNode next;
@@ -40,15 +43,15 @@ public class AbstractBaseLinkedListNode
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#getNext()
      */
-    public LinkedListNode getNext() {
+    public Entry getNext() {
         return this.next;
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#setNext(org.drools.reteoo.LinkedListNode)
      */
-    public void setNext(final LinkedListNode next) {
-        this.next = next;
+    public void setNext(final Entry next) {
+        this.next = (LinkedListNode) next;
     }
 
     /* (non-Javadoc)

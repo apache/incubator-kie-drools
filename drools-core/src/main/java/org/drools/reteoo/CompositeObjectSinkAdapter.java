@@ -11,6 +11,7 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
+import org.drools.util.Entry;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -415,6 +416,7 @@ public class CompositeObjectSinkAdapter
     public static class FieldIndex
         implements
         LinkedListNode {
+        private static final long serialVersionUID = 3853708964744065172L;
         private final int      index;
         private FieldExtractor fieldExtactor;
 
@@ -463,7 +465,7 @@ public class CompositeObjectSinkAdapter
             this.count--;
         }
 
-        public LinkedListNode getNext() {
+        public Entry getNext() {
             return this.next;
         }
 
@@ -471,8 +473,8 @@ public class CompositeObjectSinkAdapter
             return this.previous;
         }
 
-        public void setNext(final LinkedListNode next) {
-            this.next = next;
+        public void setNext(final Entry next) {
+            this.next = (LinkedListNode) next;
 
         }
 

@@ -18,7 +18,6 @@ package org.drools.common;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.evaluators.Operator;
