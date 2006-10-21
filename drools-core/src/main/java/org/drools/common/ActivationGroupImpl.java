@@ -1,9 +1,8 @@
 package org.drools.common;
 
-import java.util.Iterator;
-
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 
 public class ActivationGroupImpl
