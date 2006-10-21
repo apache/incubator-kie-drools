@@ -1,8 +1,6 @@
 package org.drools.util;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -53,11 +51,13 @@ public class LinkedList
 
     private int               size;
 
+    private LinkedListIterator iterator;
+    
     /**
      * Construct an empty <code>LinkedList</code>
      */
     public LinkedList() {
-
+        this.iterator = new LinkedListIterator();
     }
 
     /**
@@ -246,38 +246,31 @@ public class LinkedList
         return true;
     }
 
+    public Iterator iterator() {
+        this.iterator.reset( this );
+        return this.iterator();
+    }
+    
     /**
      * Returns a list iterator
      * @return
      */
-    public Iterator iterator() {
-        return new Iterator() {
-            private LinkedListNode currentNode = null;
-            private LinkedListNode nextNode    = getFirst();
-
-            public boolean hasNext() {
-                return (this.nextNode != null);
+    public class LinkedListIterator {
+        private LinkedList list;
+        private LinkedListNode current;
+        
+        public  void  reset( LinkedList list) {
+            this.list = list;
+        }
+        
+        public LinkedListNode next() {
+            if (  this.current == null ) {
+               this.current = this.list.firstNode;
             }
-
-            public Object next() {
-                this.currentNode = this.nextNode;
-                if ( this.currentNode != null ) {
-                    this.nextNode = this.currentNode.getNext();
-                } else {
-                    throw new NoSuchElementException( "No more elements to return" );
-                }
-                return this.currentNode;
-            }
-
-            public void remove() {
-                if ( this.currentNode != null ) {
-                    LinkedList.this.remove( this.currentNode );
-                    this.currentNode = null;
-                } else {
-                    throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
-                }
-            }
-        };
+            LinkedListNode node  = this.current;
+            current = current.getNext();
+            return node;
+        }
     }
 
 }
