@@ -149,7 +149,8 @@ public class CollectNode extends BetaNode
             if ( this.resultsBinder.isAllowedCachedLeft( result ) ) {
                 final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
                 memory.getCreatedHandles().put( leftTuple,
-                                                handle );
+                                                handle,
+                                                false );
 
                 sink.propagateAssertTuple( leftTuple,
                                            handle,
