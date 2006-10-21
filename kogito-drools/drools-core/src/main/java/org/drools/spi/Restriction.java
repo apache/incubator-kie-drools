@@ -14,7 +14,7 @@ public interface Restriction
 
     public boolean isAllowed(Extractor extractor,
                              Object object,
-                             InternalWorkingMemory workingMemoiry);
+                             InternalWorkingMemory workingMemory);
 
     public boolean isAllowedCachedLeft(ContextEntry context,
                                        Object object);

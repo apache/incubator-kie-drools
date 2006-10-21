@@ -90,7 +90,7 @@ public class LinkedList
     public void remove(final LinkedListNode node) {
         if ( (this.firstNode != node) && (this.lastNode != node) ) {
             node.getPrevious().setNext( node.getNext() );
-            node.getNext().setPrevious( node.getPrevious() );
+            ((LinkedListNode)node.getNext()).setPrevious( node.getPrevious() );
             this.size--;
             node.setPrevious( null );
             node.setNext( null );
@@ -134,7 +134,7 @@ public class LinkedList
             return null;
         }
         final LinkedListNode node = this.firstNode;
-        this.firstNode = node.getNext();
+        this.firstNode = (LinkedListNode) node.getNext();
         node.setNext( null );
         if ( this.firstNode != null ) {
             this.firstNode.setPrevious( null );
@@ -159,7 +159,7 @@ public class LinkedList
             newNode.setNext( node );
             this.firstNode = newNode;
         } else {
-            existingNode.getNext().setPrevious( newNode );
+            ((LinkedListNode)existingNode.getNext()).setPrevious( newNode );
             newNode.setNext( existingNode.getNext() );
             existingNode.setNext( newNode );
             newNode.setPrevious( existingNode );
@@ -217,7 +217,7 @@ public class LinkedList
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        for ( LinkedListNode node = this.firstNode; node != null; node = node.getNext() ) {
+        for ( LinkedListNode node = this.firstNode; node != null; node = (LinkedListNode)node.getNext() ) {
             result = PRIME * result + node.hashCode();
         }
         return result;
@@ -238,7 +238,7 @@ public class LinkedList
             return false;
         }
 
-        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode != null && otherNode != null; thisNode = thisNode.getNext(), otherNode = otherNode.getNext() ) {
+        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode != null && otherNode != null; thisNode = (LinkedListNode)thisNode.getNext(), otherNode = (LinkedListNode)otherNode.getNext() ) {
             if ( !thisNode.equals( otherNode ) ) {
                 return false;
             }
@@ -248,27 +248,28 @@ public class LinkedList
 
     public Iterator iterator() {
         this.iterator.reset( this );
-        return this.iterator();
+        return this.iterator;
     }
     
     /**
      * Returns a list iterator
      * @return
      */
-    public class LinkedListIterator {
+    public class LinkedListIterator implements Iterator {
         private LinkedList list;
         private LinkedListNode current;
         
         public  void  reset( LinkedList list) {
             this.list = list;
+            this.current = this.list.firstNode;
         }
         
-        public LinkedListNode next() {
-            if (  this.current == null ) {
-               this.current = this.list.firstNode;
+        public Entry next() {
+            if( this.current == null ){
+                return null;
             }
             LinkedListNode node  = this.current;
-            current = current.getNext();
+            current = (LinkedListNode) current.getNext();
             return node;
         }
     }

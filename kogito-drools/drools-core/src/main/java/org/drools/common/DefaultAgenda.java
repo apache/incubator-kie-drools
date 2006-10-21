@@ -298,7 +298,7 @@ public class DefaultAgenda
      */
     public Activation[] getScheduledActivations() {
         final List list = new ArrayList( this.scheduledActivations.size() );
-        for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
+        for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = (LinkedListNode) node.getNext() ) {
             list.add( node );
         }
         return (Activation[]) list.toArray( new Activation[list.size()] );
@@ -373,7 +373,7 @@ public class DefaultAgenda
      */
     public void clearActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        final java.util.Iterator it = activationGroup.iterator();
+        final Iterator it = activationGroup.iterator();
         for ( ActivationGroupNode node = (ActivationGroupNode) it.next() ; node != null; node = (ActivationGroupNode) it.next()) {
             final Activation activation = node.getActivation();
             activation.setActivationGroupNode( null );
