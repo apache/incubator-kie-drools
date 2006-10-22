@@ -17,8 +17,6 @@ package org.drools.rule;
  */
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
@@ -41,7 +39,8 @@ public class ReturnValueConstraint
                                  final Declaration[] declarations,
                                  final Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
-        this.restriction = new ReturnValueRestriction( declarations,
+        this.restriction = new ReturnValueRestriction( fieldExtractor,
+                                                       declarations,
                                                        evaluator );
     }
 
@@ -50,7 +49,8 @@ public class ReturnValueConstraint
                                  final Declaration[] declarations,
                                  final Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
-        this.restriction = new ReturnValueRestriction( expression,
+        this.restriction = new ReturnValueRestriction( fieldExtractor,
+                                                       expression,
                                                        declarations,
                                                        evaluator );
     }
@@ -104,7 +104,7 @@ public class ReturnValueConstraint
     }
 
     public ContextEntry getContextEntry() {
-        return new ReturnValueContextEntry();
+        return this.restriction.getContextEntry();
     }
 
     public boolean isAllowedCachedLeft(ContextEntry context,
@@ -113,8 +113,8 @@ public class ReturnValueConstraint
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
             return this.restriction.isAllowed( this.fieldExtractor,
                                                object,
-                                               ctx.leftTuple,
-                                               ctx.workingMemory );
+                                               ctx.getTuple(),
+                                               ctx.getWorkingMemory() );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction,
                                               e );
@@ -126,45 +126,12 @@ public class ReturnValueConstraint
         try {
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
             return this.restriction.isAllowed( this.fieldExtractor,
-                                               ctx.rightObject,
+                                               ctx.getObject(),
                                                tuple,
-                                               ctx.workingMemory );
+                                               ctx.getWorkingMemory() );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction,
                                               e );
-        }
-    }
-
-    public static class ReturnValueContextEntry
-        implements
-        ContextEntry {
-        public ReteTuple             leftTuple;
-        public Object                rightObject;
-        public InternalWorkingMemory workingMemory;
-
-        private ContextEntry         entry;
-
-        public ReturnValueContextEntry() {
-        }
-
-        public ContextEntry getNext() {
-            return this.entry;
-        }
-
-        public void setNext(final ContextEntry entry) {
-            this.entry = entry;
-        }
-
-        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
-                                         InternalFactHandle handle) {
-            this.workingMemory = workingMemory;
-            this.rightObject = handle.getObject();
-        }
-
-        public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                    ReteTuple tuple) {
-            this.workingMemory = workingMemory;
-            this.leftTuple = tuple;
         }
     }
 
