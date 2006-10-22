@@ -16,10 +16,12 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.Restriction;
 
@@ -27,9 +29,6 @@ public class LiteralRestriction
     implements
     Restriction {
 
-    /**
-     * 
-     */
     private static final long          serialVersionUID     = 320;
 
     private final FieldValue           field;
@@ -38,10 +37,14 @@ public class LiteralRestriction
 
     private static final Declaration[] requiredDeclarations = new Declaration[0];
 
+    private final LiteralContextEntry  contextEntry;
+
     public LiteralRestriction(final FieldValue field,
-                              final Evaluator evaluator) {
+                              final Evaluator evaluator,
+                              final FieldExtractor fieldExtractor) {
         this.field = field;
         this.evaluator = evaluator;
+        this.contextEntry = new LiteralContextEntryImpl( fieldExtractor );
     }
 
     public Evaluator getEvaluator() {
@@ -62,12 +65,16 @@ public class LiteralRestriction
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final Object object) {
-        throw new UnsupportedOperationException( "cannot call isAllowed(ContextEntry context)" );
+        return this.evaluator.evaluate( ((LiteralContextEntry) context).getFieldExtractor(),
+                                        object,
+                                        this.field );
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
-        throw new UnsupportedOperationException( "cannot call isAllowed(ContextEntry context)" );
+        return this.evaluator.evaluate( ((LiteralContextEntry) context).getFieldExtractor(),
+                                        ((LiteralContextEntry) context).getObject(),
+                                        this.field );
     }
 
     /**
@@ -103,4 +110,47 @@ public class LiteralRestriction
         return this.field.equals( other.field ) && this.evaluator.equals( other.evaluator );
     }
 
-};
+    public ContextEntry getContextEntry() {
+        return contextEntry;
+    }
+
+    private static class LiteralContextEntryImpl
+        implements
+        LiteralContextEntry {
+        private FieldExtractor extractor;
+        private Object         object;
+        private ContextEntry   next;
+
+        public LiteralContextEntryImpl(FieldExtractor extractor) {
+            this.extractor = extractor;
+        }
+
+        public FieldExtractor getFieldExtractor() {
+            return this.extractor;
+        }
+
+        public Object getObject() {
+            return this.object;
+        }
+
+        public ContextEntry getNext() {
+            return this.next;
+        }
+
+        public void setNext(ContextEntry entry) {
+            this.next = entry;
+        }
+
+        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+                                         InternalFactHandle handle) {
+            this.object = handle.getObject();
+        }
+
+        public void updateFromTuple(InternalWorkingMemory workingMemory,
+                                    ReteTuple tuple) {
+            // nothing to do
+        }
+
+    }
+
+}

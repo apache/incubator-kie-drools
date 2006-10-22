@@ -18,8 +18,8 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.rule.VariableConstraint.ObjectVariableContextEntry;
-import org.drools.rule.VariableConstraint.VariableContextEntry;
+import org.drools.rule.VariableContextEntry;
+import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
@@ -95,7 +95,7 @@ public class FactTemplateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( left );
+            final Object value = context.getVariableDeclaration().getExtractor().getValue( left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right == null;
             }
@@ -104,7 +104,7 @@ public class FactTemplateFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
+            final Object value = context.getFieldExtractor().getValue( right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value == null;
             }
@@ -152,7 +152,7 @@ public class FactTemplateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( left );
+            final Object value = context.getVariableDeclaration().getExtractor().getValue( left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right != null;
             }
@@ -161,7 +161,7 @@ public class FactTemplateFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
+            final Object value = context.getFieldExtractor().getValue( right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value != null;
             }

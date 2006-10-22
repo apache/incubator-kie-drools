@@ -11,7 +11,6 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.PropagationContext;
-import org.drools.util.Entry;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -465,7 +464,7 @@ public class CompositeObjectSinkAdapter
             this.count--;
         }
 
-        public Entry getNext() {
+        public LinkedListNode getNext() {
             return this.next;
         }
 
@@ -473,8 +472,8 @@ public class CompositeObjectSinkAdapter
             return this.previous;
         }
 
-        public void setNext(final Entry next) {
-            this.next = (LinkedListNode) next;
+        public void setNext(final LinkedListNode next) {
+            this.next = next;
 
         }
 

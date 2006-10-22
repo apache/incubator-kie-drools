@@ -15,7 +15,6 @@ import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
-import org.drools.util.LinkedList.LinkedListIterator;
 
 public class FromNode extends TupleSource
     implements
@@ -105,8 +104,7 @@ public class FromNode extends TupleSource
         LinkedList list = (LinkedList) memory.getCreatedHandles().remove( tuple );
         // if tuple was propagated
         if ( list != null ) {
-            LinkedListIterator it = (LinkedListIterator) list.iterator();
-            for ( LinkedListEntry entry = (LinkedListEntry) it.next(); entry != null; entry = (LinkedListEntry) it.next() ) {
+            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
                 InternalFactHandle handle = (InternalFactHandle) entry.getObject();
                 this.sink.propagateRetractTuple( leftTuple,
                                                  handle,
@@ -165,8 +163,7 @@ public class FromNode extends TupleSource
             if ( list == null ) {
                 continue;
             }
-            Iterator it = list.iterator();
-            for ( LinkedListEntry entry = (LinkedListEntry) it.next(); entry != null; entry = (LinkedListEntry) it.next() ) {
+            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
                 InternalFactHandle handle = (InternalFactHandle) entry.getObject();
                 this.sink.propagateRetractTuple( tuple,
                                                  handle,

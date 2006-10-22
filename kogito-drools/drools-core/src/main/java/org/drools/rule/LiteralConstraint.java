@@ -42,7 +42,8 @@ public class LiteralConstraint
                              final FieldValue field) {
         this.extractor = extractor;
         this.restriction = new LiteralRestriction( field,
-                                                   evaluator );
+                                                   evaluator,
+                                                   extractor );
     }
 
     public LiteralConstraint(final FieldExtractor extractor,

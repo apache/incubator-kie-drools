@@ -18,8 +18,8 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.rule.VariableConstraint.BooleanVariableContextEntry;
-import org.drools.rule.VariableConstraint.VariableContextEntry;
+import org.drools.rule.VariableContextEntry;
+import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
@@ -78,12 +78,12 @@ public class BooleanFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.declaration.getExtractor().getBooleanValue( left ) == ((BooleanVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getBooleanValue( left ) == ((BooleanVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
-            return context.extractor.getBooleanValue( object2 ) == ((BooleanVariableContextEntry) context).left;
+            return context.getFieldExtractor().getBooleanValue( object2 ) == ((BooleanVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -117,12 +117,12 @@ public class BooleanFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.declaration.getExtractor().getBooleanValue( left ) != ((BooleanVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getBooleanValue( left ) != ((BooleanVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
-            return context.extractor.getBooleanValue( object2 ) != ((BooleanVariableContextEntry) context).left;
+            return context.getFieldExtractor().getBooleanValue( object2 ) != ((BooleanVariableContextEntry) context).left;
         }
 
         public String toString() {

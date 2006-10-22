@@ -20,8 +20,8 @@ import java.util.Arrays;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.rule.VariableConstraint.ObjectVariableContextEntry;
-import org.drools.rule.VariableConstraint.VariableContextEntry;
+import org.drools.rule.VariableContextEntry;
+import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
@@ -98,7 +98,7 @@ public class ArrayFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( left );
+            final Object value = context.getVariableDeclaration().getExtractor().getValue( left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right == null;
             }
@@ -107,7 +107,7 @@ public class ArrayFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
+            final Object value = context.getFieldExtractor().getValue( right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value == null;
             }
@@ -155,7 +155,7 @@ public class ArrayFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( left );
+            final Object value = context.getVariableDeclaration().getExtractor().getValue( left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right == null;
             }
@@ -164,7 +164,7 @@ public class ArrayFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
+            final Object value = context.getFieldExtractor().getValue( right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value == null;
             }
@@ -216,7 +216,7 @@ public class ArrayFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = ((ObjectVariableContextEntry) context).right;
-            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( left );
+            final Object[] array = (Object[]) context.getVariableDeclaration().getExtractor().getValue( left );
             if ( Arrays.binarySearch( array,
                                       value ) == -1 ) {
                 return false;
@@ -226,7 +226,7 @@ public class ArrayFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
+            final Object value = context.getFieldExtractor().getValue( right );
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).left;
             if ( Arrays.binarySearch( array,
                                       value ) == -1 ) {

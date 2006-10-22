@@ -16,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
@@ -36,7 +34,8 @@ public class VariableConstraint
                               final Declaration declaration,
                               final Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
-        this.restriction = new VariableRestriction( declaration,
+        this.restriction = new VariableRestriction( fieldExtractor,
+                                                    declaration,
                                                     evaluator );
     }
 
@@ -75,22 +74,7 @@ public class VariableConstraint
     }
 
     public ContextEntry getContextEntry() {
-        final Class classType = this.fieldExtractor.getValueType().getClassType();
-        if ( classType.isPrimitive() ) {
-            if ( classType == Boolean.TYPE ) {
-                return new BooleanVariableContextEntry( this.fieldExtractor,
-                                                        this.restriction.getRequiredDeclarations()[0] );
-            } else if ( (classType == Double.TYPE) || (classType == Float.TYPE) ) {
-                return new DoubleVariableContextEntry( this.fieldExtractor,
-                                                       this.restriction.getRequiredDeclarations()[0] );
-            } else {
-                return new LongVariableContextEntry( this.fieldExtractor,
-                                                     this.restriction.getRequiredDeclarations()[0] );
-            }
-        } else {
-            return new ObjectVariableContextEntry( this.fieldExtractor,
-                                                   this.restriction.getRequiredDeclarations()[0] );
-        }
+        return this.restriction.getContextEntry();
     }
 
     public int hashCode() {
@@ -115,102 +99,5 @@ public class VariableConstraint
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
 
-    public static abstract class VariableContextEntry
-        implements
-        ContextEntry {
-        public FieldExtractor extractor;
-        public Declaration    declaration;
-        private ContextEntry  entry;
-
-        public VariableContextEntry(final FieldExtractor extractor,
-                                    final Declaration declaration) {
-            this.extractor = extractor;
-            this.declaration = declaration;
-        }
-
-        public ContextEntry getNext() {
-            return this.entry;
-        }
-
-        public void setNext(final ContextEntry entry) {
-            this.entry = entry;
-        }
-    }
-
-    public static class ObjectVariableContextEntry extends VariableContextEntry {
-        public Object left;
-        public Object right;
-
-        public ObjectVariableContextEntry(final FieldExtractor extractor,
-                                          final Declaration declaration) {
-            super( extractor,
-                   declaration );
-        }
-
-        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-            this.left = this.declaration.getExtractor().getValue( tuple.get( this.declaration ).getObject() );
-        }
-
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
-            this.right = this.extractor.getValue( handle.getObject() );
-        }
-    }
-
-    public static class LongVariableContextEntry extends VariableContextEntry {
-        public long left;
-        public long right;
-
-        public LongVariableContextEntry(final FieldExtractor extractor,
-                                        final Declaration declaration) {
-            super( extractor,
-                   declaration );
-        }
-
-        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-            this.left = this.declaration.getExtractor().getLongValue( tuple.get( this.declaration ).getObject() );
-        }
-
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
-            this.right = this.extractor.getLongValue( handle.getObject() );
-        }
-    }
-
-    public static class DoubleVariableContextEntry extends VariableContextEntry {
-        public double left;
-        public double right;
-
-        public DoubleVariableContextEntry(final FieldExtractor extractor,
-                                          final Declaration declaration) {
-            super( extractor,
-                   declaration );
-        }
-
-        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-            this.left = this.declaration.getExtractor().getDoubleValue( tuple.get( this.declaration ).getObject() );
-        }
-
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
-            this.right = this.extractor.getDoubleValue( handle.getObject() );
-        }
-    }
-
-    public static class BooleanVariableContextEntry extends VariableContextEntry {
-        public boolean left;
-        public boolean right;
-
-        public BooleanVariableContextEntry(final FieldExtractor extractor,
-                                           final Declaration declaration) {
-            super( extractor,
-                   declaration );
-        }
-
-        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-            this.left = this.declaration.getExtractor().getBooleanValue( tuple.get( this.declaration ).getObject() );
-        }
-
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
-            this.right = this.extractor.getBooleanValue( handle.getObject() );
-        }
-    }
 
 }
