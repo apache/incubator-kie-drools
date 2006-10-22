@@ -20,10 +20,12 @@ import java.util.Arrays;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -32,21 +34,6 @@ public class ReturnValueRestriction
     implements
     Restriction {
 
-    private static int hashCode(final Object[] array) {
-        final int PRIME = 31;
-        if ( array == null ) {
-            return 0;
-        }
-        int result = 1;
-        for ( int index = 0; index < array.length; index++ ) {
-            result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
-        }
-        return result;
-    }
-
-    /**
-     * 
-     */
     private static final long          serialVersionUID       = 320;
 
     private ReturnValueExpression      expression;
@@ -56,15 +43,20 @@ public class ReturnValueRestriction
     private final Evaluator            evaluator;
 
     private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
+    
+    private final ReturnValueContextEntry contextEntry;
 
-    public ReturnValueRestriction(final Declaration[] declarations,
+    public ReturnValueRestriction(final FieldExtractor fieldExtractor,
+                                  final Declaration[] declarations,
                                   final Evaluator evaluator) {
-        this( null,
+        this( fieldExtractor,
+              null,
               declarations,
               evaluator );
     }
 
-    public ReturnValueRestriction(final ReturnValueExpression returnValueExpression,
+    public ReturnValueRestriction(final FieldExtractor fieldExtractor,
+                                  final ReturnValueExpression returnValueExpression,
                                   final Declaration[] declarations,
                                   final Evaluator evaluator) {
         this.expression = returnValueExpression;
@@ -76,6 +68,7 @@ public class ReturnValueRestriction
         }
 
         this.evaluator = evaluator;
+        this.contextEntry = new ReturnValueContextEntryImpl(fieldExtractor, requiredDeclarations);
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -124,7 +117,7 @@ public class ReturnValueRestriction
                                         ContextEntry context) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
-    
+
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -155,6 +148,94 @@ public class ReturnValueRestriction
         }
 
         return this.expression.equals( other.expression );
+    }
+
+    private static int hashCode(final Object[] array) {
+        final int PRIME = 31;
+        if ( array == null ) {
+            return 0;
+        }
+        int result = 1;
+        for ( int index = 0; index < array.length; index++ ) {
+            result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+        }
+        return result;
+    }
+
+    public ContextEntry getContextEntry() {
+        return this.contextEntry;
+    }
+
+    public static class ReturnValueContextEntryImpl
+        implements
+        ReturnValueContextEntry {
+        private FieldExtractor        fieldExtractor;
+        private Object                object;
+        private ReteTuple             leftTuple;
+        private InternalWorkingMemory workingMemory;
+        private Declaration[]         requiredDeclarations;
+
+        private ContextEntry          entry;
+
+        public ReturnValueContextEntryImpl(FieldExtractor fieldExtractor, Declaration[] requiredDeclarations) {
+            this.fieldExtractor = fieldExtractor;
+            this.requiredDeclarations = requiredDeclarations;
+        }
+
+        public ContextEntry getNext() {
+            return this.entry;
+        }
+
+        public void setNext(final ContextEntry entry) {
+            this.entry = entry;
+        }
+
+        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+                                         InternalFactHandle handle) {
+            this.workingMemory = workingMemory;
+            this.object = handle.getObject();
+        }
+
+        public void updateFromTuple(InternalWorkingMemory workingMemory,
+                                    ReteTuple tuple) {
+            this.workingMemory = workingMemory;
+            this.leftTuple = tuple;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.rule.ReturnValueContextEntry#getFieldExtractor()
+         */
+        public FieldExtractor getFieldExtractor() {
+            return this.fieldExtractor;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.rule.ReturnValueContextEntry#getTuple()
+         */
+        public ReteTuple getTuple() {
+            return this.leftTuple;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.rule.ReturnValueContextEntry#getObject()
+         */
+        public Object getObject() {
+            return this.object;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.rule.ReturnValueContextEntry#getRequiredDeclarations()
+         */
+        public Declaration[] getRequiredDeclarations() {
+            return this.requiredDeclarations;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.rule.ReturnValueContextEntry#getWorkingMemory()
+         */
+        public InternalWorkingMemory getWorkingMemory() {
+            return this.workingMemory;
+        }
     }
 
 }

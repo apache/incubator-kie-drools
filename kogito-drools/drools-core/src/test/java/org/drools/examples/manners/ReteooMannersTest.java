@@ -87,8 +87,8 @@ public class ReteooMannersTest extends BaseMannersTest {
         //            Thread.sleep( 2000 );
         //        }           
 
-        final MemoryVisitor visitor = new MemoryVisitor( (InternalWorkingMemory) workingMemory );
-        visitor.visit( ruleBase );
+//        final MemoryVisitor visitor = new MemoryVisitor( (InternalWorkingMemory) workingMemory );
+//        visitor.visit( ruleBase );
 
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
         //        
