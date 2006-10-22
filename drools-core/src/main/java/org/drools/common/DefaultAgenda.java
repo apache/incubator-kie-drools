@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,6 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
-import org.drools.util.Iterator;
 import org.drools.util.LinkedListNode;
 import org.drools.util.Queueable;
 
@@ -373,8 +373,9 @@ public class DefaultAgenda
      */
     public void clearActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        final Iterator it = activationGroup.iterator();
-        for ( ActivationGroupNode node = (ActivationGroupNode) it.next() ; node != null; node = (ActivationGroupNode) it.next()) {
+        
+        for ( final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
+            ActivationGroupNode node = (ActivationGroupNode) it.next() ;             
             final Activation activation = node.getActivation();
             activation.setActivationGroupNode( null );
 

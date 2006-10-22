@@ -1,6 +1,7 @@
 package org.drools.util;
 
 import java.io.Serializable;
+import java.util.NoSuchElementException;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -246,16 +247,20 @@ public class LinkedList
         return true;
     }
 
-    public Iterator iterator() {
+    public LinkedListIterator iterator() {
         this.iterator.reset( this );
         return this.iterator;
+    }
+    
+    public java.util.Iterator javaUtilIterator() {
+        return new JavaUtilIterator( this );
     }
     
     /**
      * Returns a list iterator
      * @return
      */
-    public class LinkedListIterator implements Iterator {
+    public class LinkedListIterator {
         private LinkedList list;
         private LinkedListNode current;
         
@@ -264,14 +269,58 @@ public class LinkedList
             this.current = this.list.firstNode;
         }
         
-        public Entry next() {
+        public LinkedListNode next() {
             if( this.current == null ){
                 return null;
             }
             LinkedListNode node  = this.current;
-            current = (LinkedListNode) current.getNext();
+            current = current.getNext();
             return node;
         }
     }
+    
+    public static class JavaUtilIterator implements java.util.Iterator {
+        private LinkedList list;
+         private LinkedListNode currentNode;
+         private LinkedListNode nextNode;
+         private boolean immutable;
+
+         public JavaUtilIterator(LinkedList list) {
+             this(list, true);
+         }
+
+         public JavaUtilIterator(LinkedList list, boolean immutable) {
+             this.list = list;
+             this.currentNode = this.list.getFirst();
+             this.immutable = immutable;
+         }
+
+         public boolean hasNext() {
+             return (this.nextNode != null);
+         }
+
+         public Object next() {
+             this.currentNode = this.nextNode;
+             if ( this.currentNode != null ) {
+                 this.nextNode = this.currentNode.getNext();
+             } else {
+                 throw new NoSuchElementException( "No more elements to return" );
+             }
+             return this.currentNode;
+         }
+
+         public void remove() {
+             if ( this.immutable ) {
+                 throw new UnsupportedOperationException( "This  Iterator is immutable, you cannot call remove()" );
+             } 
+
+             if ( this.currentNode != null ) {
+                 this.list.remove( this.currentNode );
+                 this.currentNode = null;
+             } else {
+                 throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
+             }
+         }  
+   }    
 
 }

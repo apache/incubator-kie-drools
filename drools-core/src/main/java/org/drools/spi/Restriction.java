@@ -21,4 +21,7 @@ public interface Restriction
 
     public boolean isAllowedCachedRight(ReteTuple tuple,
                                         ContextEntry context);
+    
+    public ContextEntry getContextEntry();
+    
 }

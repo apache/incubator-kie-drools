@@ -22,6 +22,8 @@ package org.drools.util;
  * where the node can have different previous and next nodes in each list.
  */
 public class LinkedListEntry extends AbstractBaseLinkedListNode {
+
+    private static final long serialVersionUID = 4631711292464775664L;
     private Object object;
 
     public LinkedListEntry(final Object object) {

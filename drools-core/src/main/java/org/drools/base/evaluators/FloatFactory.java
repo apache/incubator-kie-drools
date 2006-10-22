@@ -18,8 +18,8 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.rule.VariableConstraint.DoubleVariableContextEntry;
-import org.drools.rule.VariableConstraint.VariableContextEntry;
+import org.drools.rule.VariableContextEntry;
+import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
@@ -87,13 +87,13 @@ public class FloatFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) == ((DoubleVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getFloatValue( left ) == ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left == context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left == context.getFieldExtractor().getFloatValue( right );
         }
 
         public String toString() {
@@ -130,13 +130,13 @@ public class FloatFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) != ((DoubleVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getFloatValue( left ) != ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left != context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left != context.getFieldExtractor().getFloatValue( right );
         }
 
         public String toString() {
@@ -173,13 +173,13 @@ public class FloatFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) < ((DoubleVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getFloatValue( left ) < ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left < context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left < context.getFieldExtractor().getFloatValue( right );
         }
 
         public String toString() {
@@ -216,13 +216,13 @@ public class FloatFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) <= ((DoubleVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getFloatValue( left ) <= ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left <= context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left <= context.getFieldExtractor().getFloatValue( right );
         }
 
         public String toString() {
@@ -259,13 +259,13 @@ public class FloatFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) > ((DoubleVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getFloatValue( left ) > ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left > context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left > context.getFieldExtractor().getFloatValue( right );
         }
 
         public String toString() {
@@ -302,13 +302,13 @@ public class FloatFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) >= ((DoubleVariableContextEntry) context).right;
+            return context.getVariableDeclaration().getExtractor().getFloatValue( left ) >= ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left >= context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left >= context.getFieldExtractor().getFloatValue( right );
         }
 
         public String toString() {

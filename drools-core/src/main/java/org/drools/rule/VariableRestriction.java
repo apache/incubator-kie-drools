@@ -18,20 +18,18 @@ package org.drools.rule;
 
 import java.util.Arrays;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.VariableConstraint.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 
 public class VariableRestriction
     implements
     Restriction {
 
-    /**
-     * 
-     */
     private static final long   serialVersionUID = 320;
 
     private final Declaration   declaration;
@@ -39,12 +37,16 @@ public class VariableRestriction
     private final Declaration[] requiredDeclarations;
 
     private final Evaluator     evaluator;
+    
+    private final VariableContextEntry contextEntry;
 
-    public VariableRestriction(final Declaration declaration,
+    public VariableRestriction(final FieldExtractor fieldExtractor,
+                               final Declaration declaration,
                                final Evaluator evaluator) {
         this.declaration = declaration;
         this.requiredDeclarations = new Declaration[]{declaration};
         this.evaluator = evaluator;
+        this.contextEntry = this.createContextEntry( fieldExtractor );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -58,9 +60,9 @@ public class VariableRestriction
     public boolean isAllowed(final Extractor extractor,
                              final Object object,
                              final InternalWorkingMemory workingMemoiry) {
-        throw new UnsupportedOperationException( "does not support method  call  isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+        throw new UnsupportedOperationException( "does not support method call isAllowed(Extractor extractor, Object object, InternalWorkingMemory workingMemoiry)" );
     }
-    
+
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final Object object) {
         return this.evaluator.evaluateCachedLeft( (VariableContextEntry) context,
@@ -102,6 +104,162 @@ public class VariableRestriction
 
         return this.declaration.equals( other.declaration ) && this.evaluator.equals( other.evaluator ) && Arrays.equals( this.requiredDeclarations,
                                                                                                                           other.requiredDeclarations );
+    }
+    
+    private final VariableContextEntry createContextEntry(FieldExtractor fieldExtractor) {
+        final Class classType = fieldExtractor.getValueType().getClassType();
+        if ( classType.isPrimitive() ) {
+            if ( classType == Boolean.TYPE ) {
+                return new BooleanVariableContextEntry( fieldExtractor,
+                                                        this.declaration );
+            } else if ( (classType == Double.TYPE) || (classType == Float.TYPE) ) {
+                return new DoubleVariableContextEntry( fieldExtractor,
+                                                       this.declaration );
+            } else {
+                return new LongVariableContextEntry( fieldExtractor,
+                                                     this.declaration );
+            }
+        } else {
+            return new ObjectVariableContextEntry( fieldExtractor,
+                                                   this.declaration );
+        }
+    }
+
+    public ContextEntry getContextEntry() {
+        return this.contextEntry;
+    }
+
+    public static abstract class VariableContextEntryImpl
+        implements
+        VariableContextEntry {
+        protected FieldExtractor extractor;
+        protected Object         object;
+        protected Declaration    declaration;
+        protected ReteTuple      reteTuple;
+        protected ContextEntry   entry;
+
+        public VariableContextEntryImpl(final FieldExtractor extractor,
+                                        final Declaration declaration) {
+            this.extractor = extractor;
+            this.declaration = declaration;
+        }
+
+        public ContextEntry getNext() {
+            return this.entry;
+        }
+
+        public void setNext(final ContextEntry entry) {
+            this.entry = entry;
+        }
+
+        public FieldExtractor getFieldExtractor() {
+            return this.extractor;
+        }
+
+        public Object getObject() {
+            return this.object;
+        }
+
+        public ReteTuple getTuple() {
+            return this.reteTuple;
+        }
+
+        public Declaration getVariableDeclaration() {
+            return this.declaration;
+        }
+
+    }
+
+    public static class ObjectVariableContextEntry extends VariableContextEntryImpl {
+        public Object left;
+        public Object right;
+
+        public ObjectVariableContextEntry(final FieldExtractor extractor,
+                                          final Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
+            this.reteTuple = tuple;
+            this.left = this.declaration.getExtractor().getValue( tuple.get( this.declaration ).getObject() );
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject();
+            this.right = this.extractor.getValue( handle.getObject() );
+        }
+    }
+
+    public static class LongVariableContextEntry extends VariableContextEntryImpl {
+        public long left;
+        public long right;
+
+        public LongVariableContextEntry(final FieldExtractor extractor,
+                                        final Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
+            this.reteTuple = tuple;
+            this.left = this.declaration.getExtractor().getLongValue( tuple.get( this.declaration ).getObject() );
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject();
+            this.right = this.extractor.getLongValue( handle.getObject() );
+        }
+    }
+
+    public static class DoubleVariableContextEntry extends VariableContextEntryImpl {
+        public double left;
+        public double right;
+
+        public DoubleVariableContextEntry(final FieldExtractor extractor,
+                                          final Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
+            this.reteTuple = tuple;
+            this.left = this.declaration.getExtractor().getDoubleValue( tuple.get( this.declaration ).getObject() );
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject();
+            this.right = this.extractor.getDoubleValue( handle.getObject() );
+        }
+    }
+
+    public static class BooleanVariableContextEntry extends VariableContextEntryImpl {
+        public boolean left;
+        public boolean right;
+
+        public BooleanVariableContextEntry(final FieldExtractor extractor,
+                                           final Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
+            this.reteTuple = tuple;
+            this.left = this.declaration.getExtractor().getBooleanValue( tuple.get( this.declaration ).getObject() );
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject();
+            this.right = this.extractor.getBooleanValue( handle.getObject() );
+        }
     }
 
 }

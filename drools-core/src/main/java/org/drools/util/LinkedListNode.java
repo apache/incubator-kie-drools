@@ -28,21 +28,21 @@ import java.io.Serializable;
  */
 public interface LinkedListNode
     extends
-    Entry, Serializable {
+    Serializable {
 
     /**
      * Returns the next node
      * @return
      *      The next LinkedListNode
      */
-    public Entry getNext();
+    public LinkedListNode getNext();
 
     /**
      * Sets the next node 
      * @param next
      *      The next LinkedListNode
      */
-    public void setNext(Entry next);
+    public void setNext(LinkedListNode next);
 
     /**
      * Returns the previous node
