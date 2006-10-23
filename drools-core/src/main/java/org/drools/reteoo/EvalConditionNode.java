@@ -45,7 +45,7 @@ import org.drools.spi.PropagationContext;
  */
 class EvalConditionNode extends TupleSource
     implements
-    TupleSink,
+    TupleSinkNode,
     NodeMemory {
     // ------------------------------------------------------------
     // Instance members
@@ -61,6 +61,9 @@ class EvalConditionNode extends TupleSource
 
     /** The source of incoming <code>Tuples</code>. */
     private final TupleSource   tupleSource;
+    
+    private TupleSinkNode           previousTupleSinkNode;
+    private TupleSinkNode           nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -225,6 +228,43 @@ class EvalConditionNode extends TupleSource
         this.tupleSource.remove( this,
                                  workingMemories );
 
+    }
+
+    
+    /**
+     * Returns the next node
+     * @return
+     *      The next TupleSinkNode
+     */
+    public TupleSinkNode getNextTupleSinkNode() {
+        return this.nextTupleSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next TupleSinkNode
+     */
+    public void setNextTupleSinkNode(final TupleSinkNode next) {
+        this.nextTupleSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous TupleSinkNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode() {
+        return this.previousTupleSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous TupleSinkNode
+     */
+    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+        this.previousTupleSinkNode = previous;
     }
 
 }
