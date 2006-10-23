@@ -60,7 +60,7 @@ public class <invokerClassName> implements org.drools.spi.ReturnValueExpression,
 {
     private static final long serialVersionUID  = 320L;
     
-    public Object evaluate(org.drools.spi.Tuple tuple,
+    public org.drools.spi.FieldValue evaluate(org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 

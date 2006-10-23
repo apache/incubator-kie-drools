@@ -1,8 +1,8 @@
 group javaMethods;
 
 returnValueMethod(declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static Object <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)><if(declarations)>,<endif><endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
-    return ( <text> );
+public static org.drools.spi.FieldValue <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)><if(declarations)>,<endif><endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+    return org.drools.base.FieldFactory.getFieldValue( <text> );
 }
 >>
 
