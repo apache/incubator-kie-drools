@@ -53,8 +53,6 @@ public class ArrayFactory
             return ArrayEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.NOT_EQUAL ) {
             return ArrayNotEqualEvaluator.INSTANCE;
-        } else if ( operator == Operator.LESS ) {
-            return ArrayContainsEvaluator.INSTANCE;
         } else if ( operator == Operator.CONTAINS ) {
             return ArrayContainsEvaluator.INSTANCE;
         } else {
@@ -79,17 +77,6 @@ public class ArrayFactory
                                 final FieldValue object2) {
             final Object value1 = extractor.getValue( object1 );
             final Object value2 = object2.getValue();
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            return value1.equals( value2 );
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -136,17 +123,6 @@ public class ArrayFactory
                                 final FieldValue object2) {
             final Object value1 = extractor.getValue( object1 );
             final Object value2 = object2.getValue();
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            return !value1.equals( value2 );
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -201,22 +177,10 @@ public class ArrayFactory
             return true;
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value = extractor.getValue( object2 );
-            final Object[] array = (Object[]) object1.getValue();
-            if ( Arrays.binarySearch( array,
-                                      value ) == -1 ) {
-                return false;
-            }
-            return true;
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Object value = ((ObjectVariableContextEntry) context).right;
-            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( left );
+            final Object value = context.declaration.getExtractor().getValue( left );
+            final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
             if ( Arrays.binarySearch( array,
                                       value ) == -1 ) {
                 return false;
@@ -226,8 +190,8 @@ public class ArrayFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
-            final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).left;
+            final Object value = ((ObjectVariableContextEntry) context).left;
+            final Object[] array = (Object[]) context.extractor.getValue( right );
             if ( Arrays.binarySearch( array,
                                       value ) == -1 ) {
                 return false;

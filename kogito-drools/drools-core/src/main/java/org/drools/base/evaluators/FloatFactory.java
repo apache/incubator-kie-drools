@@ -77,13 +77,6 @@ public class FloatFactory
             return extractor.getFloatValue( object1 ) == object2.getFloatValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            // TODO: we are not handling delta right now... maybe we should
-            return object1.getFloatValue() == extractor.getFloatValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
@@ -118,13 +111,6 @@ public class FloatFactory
                                 final FieldValue object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getFloatValue( object1 ) != object2.getFloatValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            // TODO: we are not handling delta right now... maybe we should
-            return object1.getFloatValue() != extractor.getFloatValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
@@ -163,13 +149,6 @@ public class FloatFactory
             return extractor.getFloatValue( object1 ) < object2.getFloatValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            // TODO: we are not handling delta right now... maybe we should
-            return object1.getFloatValue() < extractor.getFloatValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
@@ -204,13 +183,6 @@ public class FloatFactory
                                 final FieldValue object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getFloatValue( object1 ) <= object2.getFloatValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            // TODO: we are not handling delta right now... maybe we should
-            return object1.getFloatValue() <= extractor.getFloatValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
@@ -249,13 +221,6 @@ public class FloatFactory
             return extractor.getFloatValue( object1 ) > object2.getFloatValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            // TODO: we are not handling delta right now... maybe we should
-            return object1.getFloatValue() > extractor.getFloatValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
@@ -290,13 +255,6 @@ public class FloatFactory
                                 final FieldValue object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getFloatValue( object1 ) >= object2.getFloatValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            // TODO: we are not handling delta right now... maybe we should
-            return object1.getFloatValue() >= extractor.getFloatValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,

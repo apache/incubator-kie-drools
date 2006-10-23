@@ -78,12 +78,6 @@ public class IntegerFactory
             return extractor.getIntValue( object1 ) == object2.getIntValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return extractor.getIntValue( object2 ) == object1.getIntValue();
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             return context.declaration.getExtractor().getIntValue( left ) == ((LongVariableContextEntry) context).right;
@@ -116,12 +110,6 @@ public class IntegerFactory
                                 final Object object1,
                                 final FieldValue object2) {
             return extractor.getIntValue( object1 ) != object2.getIntValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return extractor.getIntValue( object2 ) != object1.getIntValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
@@ -157,12 +145,6 @@ public class IntegerFactory
             return extractor.getIntValue( object1 ) < object2.getIntValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getIntValue() < extractor.getIntValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             return ((LongVariableContextEntry) context).right <  context.declaration.getExtractor().getIntValue( left );
@@ -194,12 +176,6 @@ public class IntegerFactory
                                 final Object object1,
                                 final FieldValue object2) {
             return extractor.getIntValue( object1 ) <= object2.getIntValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getIntValue() <= extractor.getIntValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
@@ -235,12 +211,6 @@ public class IntegerFactory
             return extractor.getIntValue( object1 ) > object2.getIntValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getIntValue() > extractor.getIntValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getIntValue( left );
@@ -272,12 +242,6 @@ public class IntegerFactory
                                 final Object object1,
                                 final FieldValue object2) {
             return extractor.getIntValue( object1 ) >= object2.getIntValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getIntValue() >= extractor.getIntValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,

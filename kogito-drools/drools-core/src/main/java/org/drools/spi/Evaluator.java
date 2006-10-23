@@ -47,23 +47,6 @@ public interface Evaluator
                             Object object1,
                             FieldValue value);
 
-    /**
-     * This method will extract the value from the object2 using the 
-     * extractor and compare it with the object1.
-     * 
-     * @param object1
-     *        The actual value to compare to
-     * @param extractor 
-     *        The extractor used to get the source value from the object
-     * @param object2
-     *        The source object to evaluate
-     *        
-     * @return Returns true if evaluation is successfull. false otherwise.
-     */
-    public boolean evaluate(FieldValue object1,
-                            Extractor extractor,
-                            Object object2);
-
     public boolean evaluateCachedLeft(VariableContextEntry context,
                                       Object object1);
 

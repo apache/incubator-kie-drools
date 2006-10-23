@@ -100,17 +100,6 @@ public class ObjectFactory
             return value1.equals( value2 );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            return value1.equals( value2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
@@ -158,17 +147,6 @@ public class ObjectFactory
             return !value1.equals( value2 );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 != null;
-            }
-            return !value1.equals( value2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
@@ -208,23 +186,16 @@ public class ObjectFactory
             return comp.compareTo( object2.getValue() ) < 0;
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Comparable comp = (Comparable) object1.getValue();
-            return comp.compareTo( extractor.getValue( object2 ) ) < 0;
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Comparable comp = (Comparable) context.declaration.getExtractor().getValue( left );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).right ) < 0;
+            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
+            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) < 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).left;
-            return comp.compareTo( context.extractor.getValue( right ) ) < 0;
+            final Comparable comp = (Comparable) context.extractor.getValue( right );
+            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) < 0;
         }
 
         public String toString() {
@@ -251,23 +222,16 @@ public class ObjectFactory
             return comp.compareTo( object2.getValue() ) <= 0;
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Comparable comp = (Comparable) object1.getValue();
-            return comp.compareTo( extractor.getValue( object2 ) ) <= 0;
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Comparable comp = (Comparable) context.declaration.getExtractor().getValue( left );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).right ) <= 0;
+            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
+            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) <= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).left;
-            return comp.compareTo( context.extractor.getValue( right ) ) <= 0;
+            final Comparable comp = (Comparable) context.extractor.getValue( right );
+            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) <= 0;
         }
 
         public String toString() {
@@ -291,26 +255,19 @@ public class ObjectFactory
                                 final Object object1,
                                 final FieldValue object2) {
             final Comparable comp = (Comparable) extractor.getValue( object1 );
-            return comp.compareTo( object2.getValue() ) >= 0;
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Comparable comp = (Comparable) object1.getValue();
-            return comp.compareTo( extractor.getValue( object2 ) ) >= 0;
+            return comp.compareTo( object2.getValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Comparable comp = (Comparable) context.declaration.getExtractor().getValue( left );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).right ) >= 0;
+            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
+            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) > 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).left;
-            return comp.compareTo( context.extractor.getValue( right ) ) >= 0;
+            final Comparable comp = (Comparable) context.extractor.getValue( right );
+            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) > 0;
         }
 
         public String toString() {
@@ -337,23 +294,16 @@ public class ObjectFactory
             return comp.compareTo( object2.getValue() ) >= 0;
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Comparable comp = (Comparable) object1.getValue();
-            return comp.compareTo( extractor.getValue( object2 ) ) >= 0;
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Comparable comp = (Comparable) context.declaration.getExtractor().getValue( left );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).right ) >= 0;
+            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
+            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) >= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).left;
-            return comp.compareTo( context.extractor.getValue( right ) ) >= 0;
+            final Comparable comp = (Comparable) context.extractor.getValue( right );
+            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) >= 0;
         }
 
         public String toString() {
@@ -381,25 +331,17 @@ public class ObjectFactory
             return col.contains( value );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value = extractor.getValue( object2 );
-            final Collection col = (Collection) object1.getValue();
-            return col.contains( value );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Object value = ((ObjectVariableContextEntry) context).right;
-            final Collection col = (Collection) context.declaration.getExtractor().getValue( left );
+            final Object value = context.declaration.getExtractor().getValue( left );
+            final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
             return col.contains( value );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
-            final Collection col = (Collection) ((ObjectVariableContextEntry) context).left;
+            final Object value = ((ObjectVariableContextEntry) context).left;
+            final Collection col = (Collection) context.extractor.getValue( right );
             return col.contains( value );
         }
 
@@ -428,25 +370,17 @@ public class ObjectFactory
             return !col.contains( value );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value = extractor.getValue( object2 );
-            final Collection col = (Collection) object1.getValue();
-            return !col.contains( value );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Object value = ((ObjectVariableContextEntry) context).right;
-            final Collection col = (Collection) context.declaration.getExtractor().getValue( left );
+            final Object value = context.declaration.getExtractor().getValue( left );
+            final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
             return !col.contains( value );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            final Object value = context.extractor.getValue( right );
-            final Collection col = (Collection) ((ObjectVariableContextEntry) context).left;
+            final Object value = ((ObjectVariableContextEntry) context).left;
+            final Collection col = (Collection) context.extractor.getValue( right );
             return !col.contains( value );
         }
 
