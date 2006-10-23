@@ -1,8 +1,9 @@
 package org.drools.rule;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
+import org.drools.spi.Extractor;
 import org.drools.spi.Restriction;
-import org.drools.spi.Tuple;
 
 public class AndCompositeRestriction extends AbstractCompositeRestriction {
 
@@ -12,18 +13,42 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         super( restriction );
     }
 
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-
+    public boolean isAllowed(Extractor extractor,
+                             Object object,
+                             InternalWorkingMemory workingMemory) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
-            if ( !this.restrictions[i].isAllowed( object,
-                                             tuple,
-                                             workingMemory ) ) {
+            if ( !this.restrictions[i].isAllowed( extractor,
+                                                  object,
+                                                  workingMemory ) ) {
                 return false;
             }
         }
         return true;
+    }
 
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
+            if ( !this.restrictions[i].isAllowedCachedLeft( this.contextEntry.contextEntries[i],
+                                                            object ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
+            if ( !this.restrictions[i].isAllowedCachedRight( tuple,
+                                                             this.contextEntry.contextEntries[i] ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public ContextEntry getContextEntry() {
+        return this.contextEntry;
     }
 }

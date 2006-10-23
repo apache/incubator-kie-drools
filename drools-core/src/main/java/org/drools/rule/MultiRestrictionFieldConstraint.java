@@ -1,10 +1,9 @@
 package org.drools.rule;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
-import org.drools.spi.Tuple;
 
 public class MultiRestrictionFieldConstraint
     implements
@@ -33,14 +32,6 @@ public class MultiRestrictionFieldConstraint
         return this.restrictions.getRequiredDeclarations();
     }
 
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-        return this.restrictions.isAllowed( this.extractor.getValue( object ),
-                                            tuple,
-                                            workingMemory );
-    }
-
     public String toString() {
         return "[MultiRestrictionConstraint fieldExtractor=" + this.extractor + " restrictions =" + this.restrictions + "]";
     }
@@ -63,6 +54,11 @@ public class MultiRestrictionFieldConstraint
         final MultiRestrictionFieldConstraint other = (MultiRestrictionFieldConstraint) object;
 
         return this.extractor.equals( other.extractor ) && this.restrictions.equals( other.restrictions );
+    }
+
+    public boolean isAllowed(Object object,
+                             InternalWorkingMemory workingMemory) {
+        return this.restrictions.isAllowed( extractor, object, workingMemory );
     }
 
 }

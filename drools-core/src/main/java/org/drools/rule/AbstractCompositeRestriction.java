@@ -4,18 +4,23 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Restriction;
 
 public abstract class AbstractCompositeRestriction
     implements
     Restriction {
 
-    private static final long     serialVersionUID = 320L;
+    private static final long             serialVersionUID = 320L;
 
-    protected final Restriction[] restrictions;
+    protected final Restriction[]         restrictions;
+    protected final CompositeContextEntry contextEntry;
 
     public AbstractCompositeRestriction(final Restriction[] restriction) {
         this.restrictions = restriction;
+        this.contextEntry = new CompositeContextEntry( this.restrictions );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -67,4 +72,47 @@ public abstract class AbstractCompositeRestriction
         }
         return true;
     }
+
+    public ContextEntry getContextEntry() {
+        return this.contextEntry;
+    }
+
+    public static class CompositeContextEntry
+        implements
+        ContextEntry {
+        public ContextEntry[]        contextEntries;
+
+        private ContextEntry         entry;
+
+        public CompositeContextEntry(Restriction[] restrictions) {
+            ContextEntry[] contextEntries = new ContextEntry[restrictions.length];
+            for(int i = 0; i < restrictions.length; i++) {
+                contextEntries[i] = restrictions[i].getContextEntry();
+            }
+        }
+
+        public ContextEntry getNext() {
+            return this.entry;
+        }
+
+        public void setNext(final ContextEntry entry) {
+            this.entry = entry;
+        }
+
+        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+                                         InternalFactHandle handle) {
+            for(int i = 0, length = contextEntries.length ; i < length; i++) {
+                contextEntries[i].updateFromFactHandle( workingMemory, handle );
+            }
+        }
+
+        public void updateFromTuple(InternalWorkingMemory workingMemory,
+                                    ReteTuple tuple) {
+            for(int i = 0, length = contextEntries.length ; i < length; i++) {
+                contextEntries[i].updateFromTuple( workingMemory, tuple );
+            }
+        }
+
+    }
+
 }

@@ -1,11 +1,9 @@
 package org.drools.rule;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Extractor;
 import org.drools.spi.Restriction;
-import org.drools.spi.Tuple;
 
 public class OrCompositeRestriction extends AbstractCompositeRestriction {
 
@@ -15,37 +13,42 @@ public class OrCompositeRestriction extends AbstractCompositeRestriction {
         super( restriction );
     }
 
-    public boolean isAllowed(final Object object,
-                             final Tuple tuple,
-                             final WorkingMemory workingMemory) {
-
+    public boolean isAllowed(Extractor extractor,
+                             Object object,
+                             InternalWorkingMemory workingMemory) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
-            if ( this.restrictions[i].isAllowed( object,
-                                            tuple,
-                                            workingMemory ) ) {
+            if ( this.restrictions[i].isAllowed( extractor,
+                                                 object,
+                                                 workingMemory ) ) {
                 return true;
             }
         }
-        return false;
-
-    }
-
-    public boolean isAllowed(Extractor extractor,
-                             Object object,
-                             InternalWorkingMemory workingMemoiry) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public boolean isAllowedCachedLeft(ContextEntry context,
                                        Object object) {
-        // TODO Auto-generated method stub
+        for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
+            if ( this.restrictions[i].isAllowedCachedLeft( this.contextEntry.contextEntries[i],
+                                                           object ) ) {
+                return true;
+            }
+        }
         return false;
     }
 
     public boolean isAllowedCachedRight(ReteTuple tuple,
                                         ContextEntry context) {
-        // TODO Auto-generated method stub
+        for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
+            if ( this.restrictions[i].isAllowedCachedRight( tuple,
+                                                            this.contextEntry.contextEntries[i] ) ) {
+                return true;
+            }
+        }
         return false;
+    }
+
+    public ContextEntry getContextEntry() {
+        return this.contextEntry;
     }
 }
