@@ -16,7 +16,6 @@
 
 package org.drools.common;
 
-import org.drools.common.InstanceNotEqualsConstraint.InstanceNotEqualsConstraintContextEntry;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.ContextEntry;
@@ -60,12 +59,12 @@ public class InstanceEqualsConstraint
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final Object object) {
-        return ((InstanceNotEqualsConstraintContextEntry) context).left == object;
+        return ((InstanceEqualsConstraintContextEntry) context).left == object;
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
-        return tuple.get( this.otherColumn.getFactIndex() ).getObject() == ((InstanceNotEqualsConstraintContextEntry) context).right;
+        return tuple.get( this.otherColumn.getFactIndex() ).getObject() == ((InstanceEqualsConstraintContextEntry) context).right;
     }
 
     public String toString() {
