@@ -913,64 +913,65 @@ public class RuleBuilder {
     }
 
     private From build(final FromDescr fromDescr) {
-        final Column column = build( fromDescr.getReturnedColumn() );
-
-        final DeclarativeInvokerDescr invokerDescr = fromDescr.getDataSource();
-
-        DataProvider dataProvider = null;
-
-        if ( invokerDescr.getClass() == MethodAccessDescr.class ) {
-            final MethodAccessDescr methodAccessor = (MethodAccessDescr) invokerDescr;
-
-            ValueHandler instanceValueHandler = null;
-            final String variableName = methodAccessor.getVariableName();
-            if ( this.declarations.containsKey( variableName ) ) {
-                instanceValueHandler = new DeclarationVariable( (Declaration) this.declarations.get( variableName ) );
-            } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
-                instanceValueHandler = new GlobalVariable( variableName,
-                                                           (Class) this.pkg.getGlobals().get( variableName ) );
-            } else {
-                throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
-            }
-
-            final List arguments = ((MethodAccessDescr) invokerDescr).getArguments();
-            final List valueHandlers = new ArrayList();
-
-            for ( final Iterator iter = arguments.iterator(); iter.hasNext(); ) {
-                valueHandlers.add( buildValueHandler( (ArgumentValueDescr) iter.next() ) );
-            }
-
-            final MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(),
-                                                             instanceValueHandler,
-                                                             (ValueHandler[]) valueHandlers.toArray( new ValueHandler[valueHandlers.size()] ) );
-            dataProvider = new MethodDataProvider( invoker );
-        } else if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
-            final FieldAccessDescr fieldAccessor = (FieldAccessDescr) invokerDescr;
-
-            ValueHandler instanceValueHandler = null;
-            final String variableName = fieldAccessor.getVariableName();
-            if ( this.declarations.containsKey( variableName ) ) {
-                instanceValueHandler = new DeclarationVariable( (Declaration) this.declarations.get( variableName ) );
-            } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
-                instanceValueHandler = new GlobalVariable( variableName,
-                                                           (Class) this.pkg.getGlobals().get( variableName ) );
-            } else {
-                throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
-            }
-            ArgumentValueDescr arg = ((FieldAccessDescr) invokerDescr).getArgument();
-            ValueHandler valueHandler = null;
-            if ( arg != null ) {
-                valueHandler = buildValueHandler( arg );
-            }
-
-            final FieldGetter getter = new FieldGetter( fieldAccessor.getFieldName(),
-                                                        instanceValueHandler,
-                                                        valueHandler );
-            dataProvider = new MethodDataProvider( getter );
-        }
-
-        return new From( column,
-                         dataProvider );
+    	// @todo: waiting for JFDI so we can impl this properly
+//        final Column column = build( fromDescr.getReturnedColumn() );
+//
+//        final DeclarativeInvokerDescr invokerDescr = fromDescr.getDataSource();
+//
+//        DataProvider dataProvider = null;
+//
+//        if ( invokerDescr.getClass() == MethodAccessDescr.class ) {
+//            final MethodAccessDescr methodAccessor = (MethodAccessDescr) invokerDescr;
+//
+//            ValueHandler instanceValueHandler = null;
+//            final String variableName = methodAccessor.getVariableName();
+//            if ( this.declarations.containsKey( variableName ) ) {
+//                instanceValueHandler = new DeclarationVariable( (Declaration) this.declarations.get( variableName ) );
+//            } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
+//                instanceValueHandler = new GlobalVariable( variableName,
+//                                                           (Class) this.pkg.getGlobals().get( variableName ) );
+//            } else {
+//                throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
+//            }
+//
+//            final List arguments = ((MethodAccessDescr) invokerDescr).getArguments();
+//            final List valueHandlers = new ArrayList();
+//
+//            for ( final Iterator iter = arguments.iterator(); iter.hasNext(); ) {
+//                valueHandlers.add( buildValueHandler( (ArgumentValueDescr) iter.next() ) );
+//            }
+//
+//            final MethodInvoker invoker = new MethodInvoker( methodAccessor.getMethodName(),
+//                                                             instanceValueHandler,
+//                                                             (ValueHandler[]) valueHandlers.toArray( new ValueHandler[valueHandlers.size()] ) );
+//            dataProvider = new MethodDataProvider( invoker );
+//        } else if ( invokerDescr.getClass() == FieldAccessDescr.class ) {
+//            final FieldAccessDescr fieldAccessor = (FieldAccessDescr) invokerDescr;
+//
+//            ValueHandler instanceValueHandler = null;
+//            final String variableName = fieldAccessor.getVariableName();
+//            if ( this.declarations.containsKey( variableName ) ) {
+//                instanceValueHandler = new DeclarationVariable( (Declaration) this.declarations.get( variableName ) );
+//            } else if ( this.pkg.getGlobals().containsKey( variableName ) ) {
+//                instanceValueHandler = new GlobalVariable( variableName,
+//                                                           (Class) this.pkg.getGlobals().get( variableName ) );
+//            } else {
+//                throw new IllegalArgumentException( "The variable name [" + variableName + "] was not a global or declaration." );
+//            }
+//            ArgumentValueDescr arg = ((FieldAccessDescr) invokerDescr).getArgument();
+//            ValueHandler valueHandler = null;
+//            if ( arg != null ) {
+//                valueHandler = buildValueHandler( arg );
+//            }
+//
+//            final FieldGetter getter = new FieldGetter( fieldAccessor.getFieldName(),
+//                                                        instanceValueHandler,
+//                                                        valueHandler );
+//            dataProvider = new MethodDataProvider( getter );
+//        }
+//
+//        return new From( column,
+//                         dataProvider );
 
     }
 
