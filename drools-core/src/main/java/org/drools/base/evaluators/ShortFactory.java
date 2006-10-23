@@ -164,12 +164,12 @@ public class ShortFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.declaration.getExtractor().getShortValue( left ) < ((LongVariableContextEntry) context).right;
+            return  ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left < context.extractor.getShortValue( right );
+            return  context.extractor.getShortValue( right ) < ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -203,12 +203,12 @@ public class ShortFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.declaration.getExtractor().getShortValue( left ) <= ((LongVariableContextEntry) context).right;
+            return  ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left <= context.extractor.getShortValue( right );
+            return  context.extractor.getShortValue( right ) <= ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -242,12 +242,12 @@ public class ShortFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.declaration.getExtractor().getShortValue( left ) > ((LongVariableContextEntry) context).right;
+            return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left > context.extractor.getShortValue( right );
+            return context.extractor.getShortValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -281,12 +281,12 @@ public class ShortFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.declaration.getExtractor().getShortValue( left ) >= ((LongVariableContextEntry) context).right;
+            return ((LongVariableContextEntry) context).right  >= context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left >= context.extractor.getShortValue( right );
+            return context.extractor.getShortValue( right ) >= ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {

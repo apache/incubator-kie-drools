@@ -175,13 +175,13 @@ public class DoubleFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getDoubleValue( left ) < ((DoubleVariableContextEntry) context).right;
+            return ((DoubleVariableContextEntry) context).right < context.declaration.getExtractor().getDoubleValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left < context.extractor.getDoubleValue( right );
+            return context.extractor.getDoubleValue( right ) < ((DoubleVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -218,13 +218,13 @@ public class DoubleFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getDoubleValue( left ) <= ((DoubleVariableContextEntry) context).right;
+            return ((DoubleVariableContextEntry) context).right <= context.declaration.getExtractor().getDoubleValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left <= context.extractor.getDoubleValue( right );
+            return context.extractor.getDoubleValue( right ) <= ((DoubleVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -261,13 +261,13 @@ public class DoubleFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getDoubleValue( left ) > ((DoubleVariableContextEntry) context).right;
+            return ((DoubleVariableContextEntry) context).right > context.declaration.getExtractor().getDoubleValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left > context.extractor.getDoubleValue( right );
+            return context.extractor.getDoubleValue( right ) > ((DoubleVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -304,13 +304,13 @@ public class DoubleFactory
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getDoubleValue( left ) >= ((DoubleVariableContextEntry) context).right;
+            return ((DoubleVariableContextEntry) context).right >= context.declaration.getExtractor().getDoubleValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left >= context.extractor.getDoubleValue( right );
+            return context.extractor.getDoubleValue( right ) >= ((DoubleVariableContextEntry) context).left;
         }
 
         public String toString() {
