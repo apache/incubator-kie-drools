@@ -78,12 +78,6 @@ public class CharacterFactory
             return extractor.getCharValue( object1 ) == object2.getCharValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getCharValue() == extractor.getCharValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             return context.declaration.getExtractor().getCharValue( left ) == ((LongVariableContextEntry) context).right;
@@ -115,12 +109,6 @@ public class CharacterFactory
                                 final Object object1,
                                 final FieldValue object2) {
             return extractor.getCharValue( object1 ) != object2.getCharValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getCharValue() != extractor.getCharValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
@@ -156,12 +144,6 @@ public class CharacterFactory
             return extractor.getCharValue( object1 ) < object2.getCharValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getCharValue() < extractor.getCharValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getCharValue( left );
@@ -193,12 +175,6 @@ public class CharacterFactory
                                 final Object object1,
                                 final FieldValue object2) {
             return extractor.getCharValue( object1 ) <= object2.getCharValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getCharValue() <= extractor.getCharValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
@@ -234,12 +210,6 @@ public class CharacterFactory
             return extractor.getCharValue( object1 ) > object2.getCharValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getCharValue() > extractor.getCharValue( object2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getCharValue( left );
@@ -271,12 +241,6 @@ public class CharacterFactory
                                 final Object object1,
                                 final FieldValue object2) {
             return extractor.getCharValue( object1 ) >= object2.getCharValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return object1.getCharValue() >= extractor.getCharValue( object2 );
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,

@@ -84,17 +84,6 @@ public class StringFactory
             return value1.equals( value2 );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            return value1.equals( value2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
@@ -135,17 +124,6 @@ public class StringFactory
                                 final FieldValue object2) {
             final Object value1 = extractor.getValue( object1 );
             final Object value2 = object2.getValue();
-            if ( value1 == null ) {
-                return value2 != null;
-            }
-            return !value1.equals( value2 );
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -198,33 +176,22 @@ public class StringFactory
             return value1.matches( value2 );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final String value1 = (String) object1.getValue();
-            final String value2 = (String) extractor.getValue( object2 );
-            if ( value1 == null ) {
-                return false;
-            }
-            return value1.matches( value2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final String value = (String) context.declaration.getExtractor().getValue( left );
+            final String value = (String) ((ObjectVariableContextEntry) context).right;
             if ( value == null ) {
                 return false;
             }
-            return value.matches( (String) ((ObjectVariableContextEntry) context).right );
+            return value.matches( (String) context.declaration.getExtractor().getValue( left ) );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            if ( ((ObjectVariableContextEntry) context).left == null ) {
+            final String value = (String) context.extractor.getValue( right );
+            if ( value == null ) {
                 return false;
             }
-            final String value = (String) context.extractor.getValue( right );
-            return ((String) ((ObjectVariableContextEntry) context).left).matches( value );
+            return value.matches( (String) ((ObjectVariableContextEntry) context).left);
         }
 
         public String toString() {

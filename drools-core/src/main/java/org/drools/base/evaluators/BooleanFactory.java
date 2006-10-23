@@ -70,12 +70,6 @@ public class BooleanFactory
             return extractor.getBooleanValue( object1 ) == object2.getBooleanValue();
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return extractor.getBooleanValue( object2 ) == object1.getBooleanValue();
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             return context.declaration.getExtractor().getBooleanValue( left ) == ((BooleanVariableContextEntry) context).right;
@@ -107,12 +101,6 @@ public class BooleanFactory
                                 final Object object1,
                                 final FieldValue object2) {
             return extractor.getBooleanValue( object1 ) != object2.getBooleanValue();
-        }
-
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            return extractor.getBooleanValue( object2 ) != object1.getBooleanValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
