@@ -140,7 +140,7 @@ class Rete extends ObjectSource
         final Object object = handle.getObject();
 
         // @todo : this is a nasty hack to make manners  run, fix asap!!!
-        final ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
+        final ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
         if ( cachedNodes == null ) {
             // it is  possible that there are no ObjectTypeNodes for an  object being retracted
             return;

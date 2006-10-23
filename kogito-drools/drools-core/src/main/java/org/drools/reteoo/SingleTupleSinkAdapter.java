@@ -49,21 +49,18 @@ public class SingleTupleSinkAdapter
                                 workingMemory );
     }
 
-    public ReteTuple createAndPropagateAssertTuple(final InternalFactHandle handle,
-                                                   final PropagationContext context,
-                                                   final InternalWorkingMemory workingMemory) {
-        // This is the root fact, so we don't need to clone it.
-        final ReteTuple tuple = new ReteTuple( handle );
-        this.sink.assertTuple( tuple,
+    public void createAndPropagateAssertTuple(final InternalFactHandle handle,
+                                              final PropagationContext context,
+                                              final InternalWorkingMemory workingMemory) {
+        this.sink.assertTuple( new ReteTuple( handle ),
                                context,
                                workingMemory );
-        return tuple;
     }
 
-    public void createAndPropagateRetractTuple(final ReteTuple tuple,
+    public void createAndPropagateRetractTuple(final InternalFactHandle handle,
                                                final PropagationContext context,
                                                final InternalWorkingMemory workingMemory) {
-        this.sink.retractTuple( tuple,
+        this.sink.retractTuple( new ReteTuple( handle ),
                                 context,
                                 workingMemory );
     }

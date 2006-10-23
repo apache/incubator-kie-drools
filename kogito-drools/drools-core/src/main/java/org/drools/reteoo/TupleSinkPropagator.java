@@ -23,11 +23,11 @@ public interface TupleSinkPropagator {
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory);
 
-    public ReteTuple createAndPropagateAssertTuple(InternalFactHandle handle,
-                                                   PropagationContext context,
-                                                   InternalWorkingMemory workingMemory);
+    public void createAndPropagateAssertTuple(InternalFactHandle handle,
+                                              PropagationContext context,
+                                              InternalWorkingMemory workingMemory);
 
-    public void createAndPropagateRetractTuple(ReteTuple tuple,
+    public void createAndPropagateRetractTuple(InternalFactHandle handle,
                                                PropagationContext context,
                                                InternalWorkingMemory workingMemory);
 
