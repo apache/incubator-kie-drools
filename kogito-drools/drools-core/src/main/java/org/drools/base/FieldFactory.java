@@ -96,6 +96,42 @@ public class FieldFactory {
         return field;
     }
 
+    public static FieldValue getFieldValue(final Object value) {
+        return new ObjectFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final byte value) {
+        return new LongFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final short value) {
+        return new LongFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final char value) {
+        return new LongFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final int value) {
+        return new LongFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final long value) {
+        return new LongFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final boolean value) {
+        return new BooleanFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final float value) {
+        return new DoubleFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final double value) {
+        return new DoubleFieldImpl( value );
+    }
+
     private static String stripNumericType(String value) {
         // incase a user adds a f or l, strip it as its not needed
         if ( Character.getType( value.charAt( value.length() - 1 ) ) != Character.DECIMAL_DIGIT_NUMBER ) {
