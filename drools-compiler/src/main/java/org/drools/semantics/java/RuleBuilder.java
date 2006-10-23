@@ -913,6 +913,7 @@ public class RuleBuilder {
     }
 
     private From build(final FromDescr fromDescr) {
+    	return null;
     	// @todo: waiting for JFDI so we can impl this properly
 //        final Column column = build( fromDescr.getReturnedColumn() );
 //
