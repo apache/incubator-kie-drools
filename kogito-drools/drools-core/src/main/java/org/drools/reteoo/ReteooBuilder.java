@@ -487,7 +487,7 @@ class ReteooBuilder
                                                                                                        column.getFactIndex(),
                                                                                                        notNode ) );
 
-        final BetaConstraints identityBinder = new DefaultBetaConstraints( new BetaNodeFieldConstraint[] { new InstanceEqualsConstraint( column ) } );
+        final BetaConstraints identityBinder = new SingleBetaConstraints( new InstanceEqualsConstraint( column ) );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
                                                      adapter,
