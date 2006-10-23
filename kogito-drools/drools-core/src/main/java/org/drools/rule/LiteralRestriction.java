@@ -94,7 +94,7 @@ public class LiteralRestriction
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + this.evaluator.hashCode();
-        result = PRIME * result + this.field.getValue().hashCode();
+        result = PRIME * result + ( ( this.field.getValue() != null ) ? this.field.getValue().hashCode() : 0 );
         return result;
     }
 
