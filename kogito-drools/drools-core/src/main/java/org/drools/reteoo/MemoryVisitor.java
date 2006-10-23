@@ -2,9 +2,7 @@ package org.drools.reteoo;
 
 import java.lang.reflect.Field;
 
-import org.drools.base.ClassObjectType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.examples.manners.Context;
 import org.drools.reteoo.TerminalNode.TerminalNodeMemory;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.Entry;
@@ -62,9 +60,6 @@ public class MemoryVisitor extends ReflectiveVisitor {
     }
 
     public void visitObjectTypeNode(final ObjectTypeNode node) {
-        if ( Context.class != ((ClassObjectType) node.getObjectType()).getClassType() ) {
-            return;
-        }
         System.out.println( indent() + node );
 
         final FactHashTable memory = (FactHashTable) this.workingMemory.getNodeMemory( node );
@@ -181,20 +176,20 @@ public class MemoryVisitor extends ReflectiveVisitor {
         checkTupleMemory( memory.getTupleMemory() );
     }
 
-    private void checkObjectHashMap(final ObjectHashMap map) {
-        final Entry[] entries = map.getTable();
-        int count = 0;
-        for ( int i = 0, length = entries.length; i < length; i++ ) {
-            if ( entries[i] != null ) {
-                count++;
-            }
-        }
-
-        System.out.println( "ObjectHashMap: " + indent() + map.size() + ":" + count );
-        if ( map.size() != count ) {
-            System.out.println( indent() + "error" );
-        }
-    }
+//    private void checkObjectHashMap(final ObjectHashMap map) {
+//        final Entry[] entries = map.getTable();
+//        int count = 0;
+//        for ( int i = 0, length = entries.length; i < length; i++ ) {
+//            if ( entries[i] != null ) {
+//                count++;
+//            }
+//        }
+//
+//        System.out.println( "ObjectHashMap: " + indent() + map.size() + ":" + count );
+//        if ( map.size() != count ) {
+//            System.out.println( indent() + "error" );
+//        }
+//    }
 
     private void checkObjectHashTable(final ObjectHashTable memory) {
         if ( memory instanceof FactHashTable ) {
