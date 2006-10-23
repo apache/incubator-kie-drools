@@ -156,6 +156,38 @@ public class Declaration
         return this.extractor.getValue( object );
     }
 
+    public char getCharValue(Object object) {
+        return this.extractor.getCharValue( object );
+    }
+
+    public int getIntValue(Object object) {
+        return this.extractor.getIntValue( object );
+    }
+
+    public byte getByteValue(Object object) {
+        return this.extractor.getByteValue( object );
+    }
+
+    public short getShortValue(Object object) {
+        return this.extractor.getShortValue( object );
+    }
+
+    public long getLongValue(Object object) {
+        return this.extractor.getLongValue( object );
+    }
+
+    public float getFloatValue(Object object) {
+        return this.extractor.getFloatValue( object );
+    }
+
+    public double getDoubleValue(Object object) {
+        return this.extractor.getDoubleValue( object );
+    }
+
+    public boolean getBooleanValue(Object object) {
+        return this.extractor.getBooleanValue( object );
+    }
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
