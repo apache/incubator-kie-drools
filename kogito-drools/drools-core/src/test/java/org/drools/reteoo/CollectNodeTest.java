@@ -18,7 +18,6 @@ package org.drools.reteoo;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 import junit.framework.Assert;
 
@@ -88,9 +87,9 @@ public class CollectNodeTest extends DroolsTestCase {
 
         // check memories are empty
         assertEquals( 0,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
     }
 
     /* (non-Javadoc)
@@ -101,8 +100,7 @@ public class CollectNodeTest extends DroolsTestCase {
     }
 
     public void testUpdateNewNode() {
-        this.node.updateNewNode( this.workingMemory,
-                                 this.context );
+        this.node.updateSink( this.sink, this.context, this.workingMemory );
         Assert.assertEquals( "No tuple should be propagated",
                              0,
                              this.sink.getAsserted().size() );
@@ -121,39 +119,11 @@ public class CollectNodeTest extends DroolsTestCase {
         final MockTupleSink otherSink = new MockTupleSink();
 
         this.node.addTupleSink( otherSink );
-        this.node.updateNewNode( this.workingMemory,
-                                 this.context );
+        this.node.updateSink( otherSink, this.context, this.workingMemory );
 
         Assert.assertEquals( "Two tuples should have been propagated",
                              2,
                              otherSink.getAsserted().size() );
-    }
-
-    public void testGetPropagatedTuples() {
-
-        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" ) ),
-                               this.context,
-                               this.workingMemory );
-        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" ) ),
-                               this.context,
-                               this.workingMemory );
-
-        Assert.assertEquals( "Two tuples should have been propagated",
-                             2,
-                             this.sink.getAsserted().size() );
-
-        final Tuple t1 = (Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0];
-        final Tuple t2 = (Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0];
-
-        final List propagated = this.node.getPropagatedTuples( this.workingMemory,
-                                                         this.sink );
-        Assert.assertEquals( "Wrong Tuple propagated",
-                             t1,
-                             propagated.get( 0 ) );
-        Assert.assertEquals( "Wrong Tuple propagated",
-                             t2,
-                             propagated.get( 1 ) );
-
     }
 
     public void testAssertTuple() {
@@ -166,9 +136,9 @@ public class CollectNodeTest extends DroolsTestCase {
                                this.workingMemory );
         // check memories 
         assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
         Assert.assertTrue( "An empty collection should be propagated",
                            ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).isEmpty() );
 
@@ -180,12 +150,11 @@ public class CollectNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         assertEquals( 2,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         Assert.assertTrue( "An empty collection should be propagated",
                            ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0]).get( 1 )).getObject()).isEmpty() );
 
-        final ReteTuple tuple = (ReteTuple) this.memory.getLeftTupleMemory().iterator( this.workingMemory,
-                                                                                       f0 ).next();
+        final ReteTuple tuple = (ReteTuple) this.memory.getTupleMemory().iterator( ).next();
         assertEquals( tuple0,
                       tuple );
         assertEquals( tuple1,
@@ -215,9 +184,9 @@ public class CollectNodeTest extends DroolsTestCase {
                                this.workingMemory );
         // check memories 
         assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 2,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).size() );
@@ -228,13 +197,12 @@ public class CollectNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         assertEquals( 2,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0]).get( 1 )).getObject()).size() );
 
-        final ReteTuple tuple = (ReteTuple) this.memory.getLeftTupleMemory().iterator( this.workingMemory,
-                                                                                       f0 ).next();
+        final ReteTuple tuple = (ReteTuple) this.memory.getTupleMemory().iterator( ).next();
         assertEquals( tuple0,
                       tuple );
         assertEquals( tuple1,
@@ -243,36 +211,6 @@ public class CollectNodeTest extends DroolsTestCase {
         Assert.assertEquals( "Two tuples should have been propagated",
                              2,
                              this.sink.getAsserted().size() );
-    }
-
-    public void testModifyTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-
-        final ReteTuple tuple0 = new ReteTuple( f0 );
-
-        // assert tuple, should add one to left memory
-        this.node.assertTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
-        // check memories 
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 0,
-                      this.memory.getRightObjectMemory().size() );
-        Assert.assertTrue( "An empty collection should be propagated",
-                           ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).isEmpty() );
-
-        this.node.modifyTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 1,
-                      this.sink.getRetracted().size() );
-        assertEquals( 2,
-                      this.sink.getAsserted().size() );
-        Assert.assertTrue( "An empty collection should be propagated",
-                           ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0]).get( 1 )).getObject()).isEmpty() );
     }
 
     public void testRetractTuple() {
@@ -286,9 +224,9 @@ public class CollectNodeTest extends DroolsTestCase {
                                this.workingMemory );
         // check memories 
         assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
         Assert.assertTrue( "An empty collection should be propagated",
                            ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).isEmpty() );
 
@@ -296,7 +234,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 0,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 1,
                       this.sink.getRetracted().size() );
         assertEquals( 1,
@@ -316,7 +254,7 @@ public class CollectNodeTest extends DroolsTestCase {
 
         // check memory 
         assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 1,
                       this.sink.getAsserted().size() );
         Assert.assertTrue( "An empty collection should be propagated",
@@ -326,7 +264,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 1,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
         assertEquals( 2,
                       this.sink.getAsserted().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
@@ -338,63 +276,12 @@ public class CollectNodeTest extends DroolsTestCase {
                                 this.workingMemory );
 
         assertEquals( 2,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
         assertEquals( 3,
                       this.sink.getAsserted().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 2 ))[0]).get( 1 )).getObject()).size() );
-
-    }
-
-    public void testModifyObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
-
-        final ReteTuple tuple0 = new ReteTuple( f0 );
-
-        this.node.assertObject( f0,
-                                this.context,
-                                this.workingMemory );
-        this.node.assertObject( f1,
-                                this.context,
-                                this.workingMemory );
-
-        // assert tuple, should add one to left memory
-        this.node.assertTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
-        // check memories 
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 2,
-                      this.memory.getRightObjectMemory().size() );
-        assertEquals( 1,
-                      this.sink.getAsserted().size() );
-        assertEquals( 0,
-                      this.sink.getRetracted().size() );
-        Assert.assertEquals( "Wrong number of elements in matching objects list ",
-                             2,
-                             ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).size() );
-
-        // assert tuple, should add left memory 
-        this.node.modifyObject( f0,
-                                this.context,
-                                this.workingMemory );
-        assertEquals( 2,
-                      this.memory.getRightObjectMemory().size() );
-        assertEquals( 2,
-                      this.sink.getAsserted().size() );
-        assertEquals( 1,
-                      this.sink.getRetracted().size() );
-        Assert.assertEquals( "Wrong number of elements in matching objects list ",
-                             2,
-                             ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0]).get( 1 )).getObject()).size() );
-
-        final Tuple tuple = (Tuple) this.memory.getLeftTupleMemory().iterator( this.workingMemory,
-                                                                               f0 ).next();
-        assertEquals( tuple0,
-                      tuple );
 
     }
 
@@ -411,7 +298,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 2,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
 
         // assert tuple, should add one to left memory
         this.node.assertTuple( tuple0,
@@ -420,7 +307,7 @@ public class CollectNodeTest extends DroolsTestCase {
 
         // check memory 
         assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
+                      this.memory.getTupleMemory().size() );
         assertEquals( 0,
                       this.sink.getRetracted().size() );
         assertEquals( 1,
@@ -433,7 +320,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                  this.context,
                                  this.workingMemory );
         assertEquals( 1,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
         assertEquals( 1,
                       this.sink.getRetracted().size() );
         assertEquals( 2,
@@ -446,7 +333,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                  this.context,
                                  this.workingMemory );
         assertEquals( 0,
-                      this.memory.getRightObjectMemory().size() );
+                      this.memory.getObjectMemory().size() );
         assertEquals( 2,
                       this.sink.getRetracted().size() );
         assertEquals( 3,
@@ -455,31 +342,6 @@ public class CollectNodeTest extends DroolsTestCase {
                              0,
                              ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 2 ))[0]).get( 1 )).getObject()).size() );
 
-    }
-
-    public void testAttach() throws Exception {
-        assertEquals( 15,
-                      this.node.getId() );
-
-        assertLength( 0,
-                      this.objectSource.getObjectSinksAsList() );
-
-        assertLength( 0,
-                      this.tupleSource.getTupleSinks() );
-
-        this.node.attach();
-
-        assertLength( 1,
-                      this.objectSource.getObjectSinksAsList() );
-
-        assertLength( 1,
-                      this.tupleSource.getTupleSinks() );
-
-        assertSame( this.node,
-                    this.objectSource.getObjectSinks().getLastObjectSink() );
-
-        assertSame( this.node,
-                    this.tupleSource.getTupleSinks().get( 0 ) );
     }
 
     public void testMemory() {

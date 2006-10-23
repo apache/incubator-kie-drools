@@ -1,5 +1,7 @@
 package org.drools.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 
@@ -95,4 +97,11 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to short not supported from " + value.getClass().getName() );
     }
 
+    public Method getNativeReadMethod() {
+        try {
+            return this.getClass().getDeclaredMethod( "getValue", new Class[] { Object.class } );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+        }
+    }
 }

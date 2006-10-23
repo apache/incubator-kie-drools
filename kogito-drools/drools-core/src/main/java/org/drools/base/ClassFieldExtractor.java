@@ -18,6 +18,7 @@ package org.drools.base;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
@@ -138,5 +139,9 @@ public class ClassFieldExtractor
 
     public short getShortValue(final Object object) {
         return this.extractor.getShortValue( object );
+    }
+    
+    public Method getNativeReadMethod() {
+        return this.extractor.getNativeReadMethod();
     }
 }

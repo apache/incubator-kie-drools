@@ -23,7 +23,7 @@ public static <resultType> <methodName>(org.drools.rule.Declaration[] innerDecla
     <initCode>
     for( java.util.Iterator it = matchingObjects.iterator(); it.hasNext(); ) {
       Object __itNextElem__ = it.next();
-      <innerDeclarations:{ declr | <declr.extractor.extractToClass.name> <declr.identifier> = (<declr.extractor.extractToClass.name>) innerDeclarations[<i0>].getValue( __itNextElem__ );}; separator="\n">
+      <innerDeclarations:{ declr | <declr.extractor.extractToClass.name> <declr.identifier> = (<declr.extractor.extractToClass.name>) innerDeclarations[<i0>].<declr.extractor.nativeReadMethod.name>( __itNextElem__ );}; separator="\n">
       <actionCode>
     }
     return ( <resultCode> );

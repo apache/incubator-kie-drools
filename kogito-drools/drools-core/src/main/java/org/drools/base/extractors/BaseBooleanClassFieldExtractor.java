@@ -16,6 +16,8 @@
 
 package org.drools.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 
@@ -67,6 +69,14 @@ public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtra
 
     public short getShortValue(final Object object) {
         throw new RuntimeDroolsException( "Conversion to short not supported from boolean" );
+    }
+    
+    public Method getNativeReadMethod() {
+        try {
+            return this.getClass().getDeclaredMethod( "getBooleanValue", new Class[] { Object.class } );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+        }
     }
 
 }

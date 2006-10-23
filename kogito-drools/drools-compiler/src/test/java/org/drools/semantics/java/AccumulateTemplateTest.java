@@ -10,6 +10,7 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.drools.Cheese;
+import org.drools.Person;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
@@ -30,7 +31,7 @@ public class AccumulateTemplateTest extends TestCase {
                                                                  AngleBracketTemplateLexer.class );
         StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateMethod" );
 
-        final String[] declarationTypes = new String[]{"String", "Integer"};
+        final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
                                                                               null,
                                                                               null ), 
@@ -69,7 +70,7 @@ public class AccumulateTemplateTest extends TestCase {
         accMethod.setAttribute( "resultCode",
                                 "x + 10" );
 
-//        System.out.println( accMethod.toString() );
+        System.out.println( accMethod.toString() );
     }
 
     public void testInvokerGeneration() {
@@ -77,11 +78,11 @@ public class AccumulateTemplateTest extends TestCase {
                                                                  AngleBracketTemplateLexer.class );
         StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateInvoker" );
 
-        final String[] declarationTypes = new String[]{"String", "Integer"};
+        final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              null,
+                                                                              new ClassFieldExtractor(Person.class, "name"),
                                                                               null ), new Declaration( "age",
-                                                                                                       null,
+                                                                                                       new ClassFieldExtractor(Person.class, "age"),
                                                                                                        null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -105,6 +106,6 @@ public class AccumulateTemplateTest extends TestCase {
         accMethod.setAttribute( "hashCode",
                                 new Integer(13) );
 
-//        System.out.println( accMethod.toString() );
+        System.out.println( accMethod.toString() );
     }
 }

@@ -17,8 +17,10 @@ package org.drools.rule;
  */
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -26,7 +28,8 @@ import org.drools.spi.ReturnValueExpression;
 
 public class ReturnValueConstraint
     implements
-    BetaNodeFieldConstraint {
+    BetaNodeFieldConstraint,
+    AlphaNodeFieldConstraint {
 
     /**
      * 
@@ -108,6 +111,20 @@ public class ReturnValueConstraint
         return this.restriction.getContextEntry();
     }
 
+    public boolean isAllowed(Object object,
+                             InternalWorkingMemory workingMemory) {
+        try {
+            return this.restriction.isAllowed( this.fieldExtractor,
+                                               object,
+                                               null,
+                                               workingMemory );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction +
+                                              " : "+e.getMessage(),
+                                              e );
+        }
+    }
+
     public boolean isAllowedCachedLeft(ContextEntry context,
                                        Object object) {
         try {
@@ -117,7 +134,8 @@ public class ReturnValueConstraint
                                                ctx.getTuple(),
                                                ctx.getWorkingMemory() );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction,
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction +
+                                              " : "+e.getMessage(),
                                               e );
         }
     }
@@ -131,9 +149,11 @@ public class ReturnValueConstraint
                                                tuple,
                                                ctx.getWorkingMemory() );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction,
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction +
+                                              " : "+e.getMessage(),
                                               e );
         }
     }
+
 
 }
