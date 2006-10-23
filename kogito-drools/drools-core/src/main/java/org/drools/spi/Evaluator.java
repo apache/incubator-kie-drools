@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
-import org.drools.rule.VariableContextEntry;
+import org.drools.rule.VariableRestriction.VariableContextEntry;
 
 public interface Evaluator
     extends

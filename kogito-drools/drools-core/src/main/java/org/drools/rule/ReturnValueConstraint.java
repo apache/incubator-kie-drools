@@ -18,6 +18,7 @@ package org.drools.rule;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;

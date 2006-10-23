@@ -22,8 +22,8 @@ import java.util.Date;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.rule.VariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
@@ -121,7 +121,7 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Date value1 = (Date) context.getVariableDeclaration().getExtractor().getValue( left );
+            final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             if ( value1 == null ) {
                 return value2 == null;
@@ -135,7 +135,7 @@ public class DateFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
-            final Object value2 = context.getFieldExtractor().getValue( right );
+            final Object value2 = context.extractor.getValue( right );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -192,7 +192,7 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Date value1 = (Date) context.getVariableDeclaration().getExtractor().getValue( left );
+            final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             if ( value1 == null ) {
                 return value2 != null;
@@ -206,7 +206,7 @@ public class DateFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
-            final Object value2 = context.getFieldExtractor().getValue( right );
+            final Object value2 = context.extractor.getValue( right );
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -251,7 +251,7 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Date value1 = (Date) context.getVariableDeclaration().getExtractor().getValue( left );
+            final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return value1.compareTo( getRightDate( value2 ) ) < 0;
         }
@@ -259,7 +259,7 @@ public class DateFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
-            final Object value2 = context.getFieldExtractor().getValue( right );
+            final Object value2 = context.extractor.getValue( right );
             return value1.compareTo( getRightDate( value2 ) ) < 0;
         }
 
@@ -298,7 +298,7 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Date value1 = (Date) context.getVariableDeclaration().getExtractor().getValue( left );
+            final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return value1.compareTo( getRightDate( value2 ) ) <= 0;
         }
@@ -306,7 +306,7 @@ public class DateFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
-            final Object value2 = context.getFieldExtractor().getValue( right );
+            final Object value2 = context.extractor.getValue( right );
             return value1.compareTo( getRightDate( value2 ) ) <= 0;
         }
 
@@ -345,7 +345,7 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Date value1 = (Date) context.getVariableDeclaration().getExtractor().getValue( left );
+            final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return value1.compareTo( getRightDate( value2 ) ) > 0;
         }
@@ -353,7 +353,7 @@ public class DateFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
-            final Object value2 = context.getFieldExtractor().getValue( right );
+            final Object value2 = context.extractor.getValue( right );
             return value1.compareTo( getRightDate( value2 ) ) > 0;
         }
 
@@ -392,7 +392,7 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            final Date value1 = (Date) context.getVariableDeclaration().getExtractor().getValue( left );
+            final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return value1.compareTo( getRightDate( value2 ) ) >= 0;
         }
@@ -400,7 +400,7 @@ public class DateFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
-            final Object value2 = context.getFieldExtractor().getValue( right );
+            final Object value2 = context.extractor.getValue( right );
             return value1.compareTo( getRightDate( value2 ) ) >= 0;
         }
 

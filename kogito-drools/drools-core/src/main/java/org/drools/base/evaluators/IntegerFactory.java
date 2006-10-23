@@ -18,8 +18,8 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.rule.VariableContextEntry;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
+import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
@@ -86,12 +86,12 @@ public class IntegerFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getIntValue( left ) == ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getIntValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
-            return context.getFieldExtractor().getIntValue( object2 ) == ((LongVariableContextEntry) context).left;
+            return context.extractor.getIntValue( object2 ) == ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -126,12 +126,12 @@ public class IntegerFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getIntValue( left ) != ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getIntValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
-            return context.getFieldExtractor().getIntValue( object2 ) != ((LongVariableContextEntry) context).left;
+            return context.extractor.getIntValue( object2 ) != ((LongVariableContextEntry) context).left;
         }
 
         public String toString() {
@@ -165,12 +165,12 @@ public class IntegerFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getIntValue( left ) < ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getIntValue( left ) < ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left < context.getFieldExtractor().getIntValue( right );
+            return ((LongVariableContextEntry) context).left < context.extractor.getIntValue( right );
         }
 
         public String toString() {
@@ -204,12 +204,12 @@ public class IntegerFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getIntValue( left ) <= ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getIntValue( left ) <= ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left <= context.getFieldExtractor().getIntValue( right );
+            return ((LongVariableContextEntry) context).left <= context.extractor.getIntValue( right );
         }
 
         public String toString() {
@@ -243,12 +243,12 @@ public class IntegerFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getIntValue( left ) > ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getIntValue( left ) > ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left > context.getFieldExtractor().getIntValue( right );
+            return ((LongVariableContextEntry) context).left > context.extractor.getIntValue( right );
         }
 
         public String toString() {
@@ -282,12 +282,12 @@ public class IntegerFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getIntValue( left ) >= ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getIntValue( left ) >= ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left >= context.getFieldExtractor().getIntValue( right );
+            return ((LongVariableContextEntry) context).left >= context.extractor.getIntValue( right );
         }
 
         public String toString() {

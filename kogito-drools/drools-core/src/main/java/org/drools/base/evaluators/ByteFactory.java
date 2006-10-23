@@ -18,8 +18,8 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.rule.VariableContextEntry;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
+import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
@@ -86,12 +86,12 @@ public class ByteFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getByteValue( left ) == ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left == context.getFieldExtractor().getByteValue( right );
+            return ((LongVariableContextEntry) context).left == context.extractor.getByteValue( right );
         }
 
         public String toString() {
@@ -125,12 +125,12 @@ public class ByteFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getByteValue( left ) != ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left != context.getFieldExtractor().getByteValue( right );
+            return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( right );
         }
 
         public String toString() {
@@ -164,12 +164,12 @@ public class ByteFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getByteValue( left ) < ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( left ) < ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left < context.getFieldExtractor().getByteValue( right );
+            return ((LongVariableContextEntry) context).left < context.extractor.getByteValue( right );
         }
 
         public String toString() {
@@ -203,12 +203,12 @@ public class ByteFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getByteValue( left ) <= ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( left ) <= ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left <= context.getFieldExtractor().getByteValue( right );
+            return ((LongVariableContextEntry) context).left <= context.extractor.getByteValue( right );
         }
 
         public String toString() {
@@ -242,12 +242,12 @@ public class ByteFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getByteValue( left ) > ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( left ) > ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left > context.getFieldExtractor().getByteValue( right );
+            return ((LongVariableContextEntry) context).left > context.extractor.getByteValue( right );
         }
 
         public String toString() {
@@ -281,12 +281,12 @@ public class ByteFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.getVariableDeclaration().getExtractor().getByteValue( left ) >= ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( left ) >= ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return ((LongVariableContextEntry) context).left >= context.getFieldExtractor().getByteValue( right );
+            return ((LongVariableContextEntry) context).left >= context.extractor.getByteValue( right );
         }
 
         public String toString() {
