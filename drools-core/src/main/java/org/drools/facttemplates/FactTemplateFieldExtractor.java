@@ -1,5 +1,8 @@
 package org.drools.facttemplates;
 
+import java.lang.reflect.Method;
+
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
 import org.drools.spi.FieldExtractor;
 
@@ -64,4 +67,13 @@ public class FactTemplateFieldExtractor
     public short getShortValue(final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).shortValue();
     }
+    
+    public Method getNativeReadMethod() {
+        try {
+            return this.getClass().getDeclaredMethod( "getValue", new Class[] { Object.class } );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+        }
+    }
+    
 }

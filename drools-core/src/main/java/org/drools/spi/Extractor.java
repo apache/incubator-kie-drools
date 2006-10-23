@@ -17,6 +17,7 @@ package org.drools.spi;
  */
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import org.drools.base.ValueType;
 
@@ -45,5 +46,7 @@ public interface Extractor
     public ValueType getValueType();
 
     public Class getExtractToClass();
+    
+    public Method getNativeReadMethod();
 
 }

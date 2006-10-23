@@ -64,7 +64,7 @@ public class <invokerClassName> implements org.drools.spi.ReturnValueExpression,
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
@@ -93,8 +93,8 @@ public class <invokerClassName> implements org.drools.spi.PredicateExpression, o
                             org.drools.rule.Declaration declaration,
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
-		<declarationType> <declaration.identifier> = (<declarationType>) declaration.getValue( object );
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
+		<declarationType> <declaration.identifier> = (<declarationType>) declaration.<declaration.extractor.nativeReadMethod.name>( object );
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
@@ -127,7 +127,7 @@ public class <invokerClassName> implements org.drools.spi.EvalExpression, org.dr
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
@@ -160,7 +160,7 @@ public class <invokerClassName> implements org.drools.spi.Accumulator, org.drool
                               org.drools.rule.Declaration[] innerDeclarations,
                               org.drools.WorkingMemory workingMemory) throws Exception {                               
 
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>(
@@ -194,7 +194,7 @@ public class <invokerClassName> implements org.drools.spi.Consequence
 
         <declarations, indexes:{ declr, index| org.drools.common.InternalFactHandle <declr.identifier>__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( declarations[<index>] );<\n>}>
 
-        <declarationTypes, declarations, indexes :{ type, declr, index| <type> <declr.identifier> = ( <type> )  declarations[<index>].getValue( <declr.identifier>__Handle__.getObject() );<\n>}>
+        <declarationTypes, declarations, indexes :{ type, declr, index| <type> <declr.identifier> = ( <type> )  declarations[<index>].<declr.extractor.nativeReadMethod.name>( <declr.identifier>__Handle__.getObject() );<\n>}>
         
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         

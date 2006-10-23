@@ -58,21 +58,6 @@ public class ReteooBuilderTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) getRuleBase();
         ruleBase.addPackage( pkg );
 
-        if ( this.showRete ) {
-            final ReteooJungViewer viewer = new ReteooJungViewer( ruleBase );
-
-            javax.swing.SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                    viewer.showGUI();
-                }
-            } );
-
-            while ( viewer.isRunning() ) {
-                Thread.yield();
-                Thread.sleep( 100 );
-            }
-        }
-
         if ( this.writeTree ) {
             writeRuleBase( ruleBase,
                            name );

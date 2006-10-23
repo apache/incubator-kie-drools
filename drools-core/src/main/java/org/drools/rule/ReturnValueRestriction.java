@@ -121,8 +121,8 @@ public class ReturnValueRestriction
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = this.evaluator.hashCode();
-        result = this.expression.hashCode();
+        result = PRIME * result + this.evaluator.hashCode();
+        result = PRIME * result + ( ( this.expression != null ) ? this.expression.hashCode() : 0 );
         result = PRIME * result + ReturnValueRestriction.hashCode( this.requiredDeclarations );
         return result;
     }

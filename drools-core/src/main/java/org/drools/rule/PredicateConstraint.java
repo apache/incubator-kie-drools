@@ -20,12 +20,14 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PredicateExpression;
 
 public class PredicateConstraint
     implements
-    BetaNodeFieldConstraint {
+    BetaNodeFieldConstraint,
+    AlphaNodeFieldConstraint {
 
     /**
      * 
@@ -129,17 +131,32 @@ public class PredicateConstraint
         return new PredicateContextEntry();
     }
 
+    public boolean isAllowed(Object object,
+                             InternalWorkingMemory workingMemory) {
+        try {
+            return this.expression.evaluate( object,
+                                             null,
+                                             declaration,
+                                             requiredDeclarations,
+                                             workingMemory );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
+                                              e );
+        }
+    }
+
     public boolean isAllowedCachedLeft(ContextEntry context,
                                        Object object) {
         try {
             PredicateContextEntry ctx = (PredicateContextEntry) context;
             return this.expression.evaluate( object,
-                                      ctx.leftTuple,
-                                      declaration,
-                                      requiredDeclarations,
-                                      ctx.workingMemory );
+                                             ctx.leftTuple,
+                                             declaration,
+                                             requiredDeclarations,
+                                             ctx.workingMemory );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException("Exception executing predicate "+this.expression, e);
+            throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
+                                              e );
         }
     }
 
@@ -148,12 +165,13 @@ public class PredicateConstraint
         try {
             PredicateContextEntry ctx = (PredicateContextEntry) context;
             return this.expression.evaluate( ctx.rightObject,
-                                      tuple,
-                                      declaration,
-                                      requiredDeclarations,
-                                      ctx.workingMemory );
+                                             tuple,
+                                             declaration,
+                                             requiredDeclarations,
+                                             ctx.workingMemory );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException("Exception executing predicate "+this.expression, e);
+            throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
+                                              e );
         }
     }
 
@@ -163,7 +181,7 @@ public class PredicateConstraint
         public ReteTuple             leftTuple;
         public Object                rightObject;
         public InternalWorkingMemory workingMemory;
-        
+
         private ContextEntry         entry;
 
         public PredicateContextEntry() {

@@ -45,22 +45,38 @@ public class FieldFactory {
 
         if ( valueType == ValueType.NULL_TYPE ) {
             field = new ObjectFieldImpl( null );
-        } else if ( valueType == ValueType.CHAR_TYPE ) {
+        } else if ( valueType == ValueType.PCHAR_TYPE ) {
             field = new LongFieldImpl( value.charAt( 0 ) );
-        } else if ( valueType == ValueType.BYTE_TYPE ) {
+        } else if ( valueType == ValueType.PBYTE_TYPE ) {
             field = new LongFieldImpl( Long.parseLong( value ) );
-        } else if ( valueType == ValueType.SHORT_TYPE ) {
+        } else if ( valueType == ValueType.PSHORT_TYPE ) {
             field = new LongFieldImpl( Long.parseLong( value ) );
-        } else if ( valueType == ValueType.INTEGER_TYPE ) {
+        } else if ( valueType == ValueType.PINTEGER_TYPE ) {
             field = new LongFieldImpl( Long.parseLong( stripNumericType( value ) ) );
-        } else if ( valueType == ValueType.LONG_TYPE ) {
+        } else if ( valueType == ValueType.PLONG_TYPE ) {
             field = new LongFieldImpl( Long.parseLong( stripNumericType( value ) ) );
-        } else if ( valueType == ValueType.FLOAT_TYPE ) {
+        } else if ( valueType == ValueType.PFLOAT_TYPE ) {
             field = new DoubleFieldImpl( Float.parseFloat( stripNumericType( value ) ) );
-        } else if ( valueType == ValueType.DOUBLE_TYPE ) {
+        } else if ( valueType == ValueType.PDOUBLE_TYPE ) {
             field = new DoubleFieldImpl( Double.parseDouble( stripNumericType( value ) ) );
-        } else if ( valueType == ValueType.BOOLEAN_TYPE ) {
+        } else if ( valueType == ValueType.PBOOLEAN_TYPE ) {
             field = new BooleanFieldImpl( Boolean.valueOf( value ).booleanValue() );
+        } else if ( valueType == ValueType.CHAR_TYPE ) {
+            field = new ObjectFieldImpl( new Character( value.charAt( 0 ) ) );
+        } else if ( valueType == ValueType.BYTE_TYPE ) {
+            field = new ObjectFieldImpl( new Byte( value ) );
+        } else if ( valueType == ValueType.SHORT_TYPE ) {
+            field = new ObjectFieldImpl( new Short( value ) );
+        } else if ( valueType == ValueType.INTEGER_TYPE ) {
+            field = new ObjectFieldImpl( new Integer( stripNumericType( value ) ) );
+        } else if ( valueType == ValueType.LONG_TYPE ) {
+            field = new ObjectFieldImpl( new Long( stripNumericType( value ) ) );
+        } else if ( valueType == ValueType.FLOAT_TYPE ) {
+            field = new ObjectFieldImpl( new Float( stripNumericType( value ) ) );
+        } else if ( valueType == ValueType.DOUBLE_TYPE ) {
+            field = new ObjectFieldImpl( new Double( stripNumericType( value ) ) );
+        } else if ( valueType == ValueType.BOOLEAN_TYPE ) {
+            field = new ObjectFieldImpl( Boolean.valueOf( value ) );
         } else if ( valueType == ValueType.STRING_TYPE ) {
             field = new ObjectFieldImpl( value.intern() );
         } else if ( valueType == ValueType.DATE_TYPE ) {

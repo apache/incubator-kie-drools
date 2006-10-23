@@ -45,8 +45,8 @@ rule "reverse edges"
 		$line : Line ( $p1:p1, $p2:p2 )
 	then 
 		System.out.println("Draw "+$p1+" "+$p2);
-		assert( new Edge ( $p1.intValue(), $p2.intValue(), false, Edge.NIL, false ) );
-		assert( new Edge ( $p2.intValue(), $p1.intValue(), false, Edge.NIL, false ) );
+		assert( new Edge ( $p1, $p2, false, Edge.NIL, false ) );
+		assert( new Edge ( $p2, $p1, false, Edge.NIL, false ) );
 		retract( $line ); 
 end
 
@@ -73,7 +73,7 @@ rule "make 3 junction" salience 10
         $edge2: Edge( p1==$basePoint, $edge2P2:p2 != $edge1P2, joined == false )
         $edge3: Edge( p1==$basePoint, $edge3P2:p2 != $edge1P2, p2 != $edge2P2, joined == false )
 	then
-	    Junction junction = WaltzUtil.make_3_junction ( $basePoint.intValue(), $edge1P2.intValue(), $edge2P2.intValue(), $edge3P2.intValue() );
+	    Junction junction = WaltzUtil.make_3_junction ( $basePoint, $edge1P2, $edge2P2, $edge3P2 );
 	    assert( junction );
 	    $edge1.setJoined(true);
 	    $edge2.setJoined(true);
@@ -92,7 +92,7 @@ rule "make L"
         $edge2: Edge( p1==$basePoint, $edge2P2:p2 != $edge1P2, joined == false )
         not Edge( p1==$basePoint, p2 != $edge1P2, p2 != $edge2P2 )
 	then
-	    assert( new Junction($edge1P2.intValue(), $edge2P2.intValue(), 0, $basePoint.intValue(), Junction.L) );
+	    assert( new Junction($edge1P2, $edge2P2, 0, $basePoint, Junction.L) );
 	    $edge1.setJoined(true);
 	    $edge2.setJoined(true);
 	    modify( $edge1 );

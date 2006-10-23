@@ -1,5 +1,7 @@
 package org.drools.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 
@@ -48,4 +50,11 @@ public abstract class BaseIntClassFieldExtractor extends BaseClassFieldExtractor
         return (short) getIntValue( object );
     }
 
+    public Method getNativeReadMethod() {
+        try {
+            return this.getClass().getDeclaredMethod( "getIntValue", new Class[] { Object.class } );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+        }
+    }
 }

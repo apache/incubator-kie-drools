@@ -1,5 +1,7 @@
 package org.drools.spi;
 
+import java.lang.reflect.Method;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
@@ -110,6 +112,14 @@ public class ColumnExtractor
             return ((Number) object).shortValue();
         }
         throw new RuntimeDroolsException( "Conversion to short not supported for type: " + object.getClass() );
+    }
+
+    public Method getNativeReadMethod() {
+        try {
+            return this.getClass().getDeclaredMethod( "getValue", new Class[] { Object.class } );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+        }
     }
 
 }

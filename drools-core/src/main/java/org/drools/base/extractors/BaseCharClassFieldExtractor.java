@@ -1,5 +1,7 @@
 package org.drools.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 
@@ -22,29 +24,36 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
     }
 
     public byte getByteValue(final Object object) {
-        throw new RuntimeDroolsException( "Conversion to byte not supported from char" );
+        return (byte) getCharValue( object );
     }
 
     public abstract char getCharValue(Object object);
 
     public double getDoubleValue(final Object object) {
-        throw new RuntimeDroolsException( "Conversion to double not supported from char" );
+        return (double) getCharValue( object );
     }
 
     public float getFloatValue(final Object object) {
-        throw new RuntimeDroolsException( "Conversion to float not supported from char" );
+        return (float) getCharValue( object );
     }
 
     public int getIntValue(final Object object) {
-        throw new RuntimeDroolsException( "Conversion to int not supported from char" );
+        return (int) getCharValue( object );
     }
 
     public long getLongValue(final Object object) {
-        throw new RuntimeDroolsException( "Conversion to long not supported from char" );
+        return (long) getCharValue( object );
     }
 
     public short getShortValue(final Object object) {
-        throw new RuntimeDroolsException( "Conversion to short not supported from char" );
+        return (short) getCharValue( object );
     }
 
+    public Method getNativeReadMethod() {
+        try {
+            return this.getClass().getDeclaredMethod( "getCharValue", new Class[] { Object.class } );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+        }
+    }
 }
