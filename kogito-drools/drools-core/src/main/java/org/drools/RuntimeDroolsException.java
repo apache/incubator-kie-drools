@@ -52,7 +52,7 @@ public class RuntimeDroolsException extends RuntimeException {
      */
     public RuntimeDroolsException(final String message,
                                   final Throwable cause) {
-        super( message );
+        super( message, cause );
     }
 
     /**
