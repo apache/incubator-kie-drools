@@ -129,16 +129,16 @@ public class VariableRestriction
         return this.contextEntry;
     }
 
-    public static abstract class VariableContextEntryImpl
+    public static abstract class VariableContextEntry
         implements
-        VariableContextEntry {
-        protected FieldExtractor extractor;
-        protected Object         object;
-        protected Declaration    declaration;
-        protected ReteTuple      reteTuple;
-        protected ContextEntry   entry;
+        ContextEntry {
+        public FieldExtractor extractor;
+        public Object         object;
+        public Declaration    declaration;
+        public ReteTuple      reteTuple;
+        public ContextEntry   entry;
 
-        public VariableContextEntryImpl(final FieldExtractor extractor,
+        public VariableContextEntry(final FieldExtractor extractor,
                                         final Declaration declaration) {
             this.extractor = extractor;
             this.declaration = declaration;
@@ -170,7 +170,7 @@ public class VariableRestriction
 
     }
 
-    public static class ObjectVariableContextEntry extends VariableContextEntryImpl {
+    public static class ObjectVariableContextEntry extends VariableContextEntry {
         public Object left;
         public Object right;
 
@@ -193,7 +193,7 @@ public class VariableRestriction
         }
     }
 
-    public static class LongVariableContextEntry extends VariableContextEntryImpl {
+    public static class LongVariableContextEntry extends VariableContextEntry {
         public long left;
         public long right;
 
@@ -216,7 +216,7 @@ public class VariableRestriction
         }
     }
 
-    public static class DoubleVariableContextEntry extends VariableContextEntryImpl {
+    public static class DoubleVariableContextEntry extends VariableContextEntry {
         public double left;
         public double right;
 
@@ -239,7 +239,7 @@ public class VariableRestriction
         }
     }
 
-    public static class BooleanVariableContextEntry extends VariableContextEntryImpl {
+    public static class BooleanVariableContextEntry extends VariableContextEntry {
         public boolean left;
         public boolean right;
 

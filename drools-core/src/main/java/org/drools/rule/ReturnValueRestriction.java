@@ -68,7 +68,7 @@ public class ReturnValueRestriction
         }
 
         this.evaluator = evaluator;
-        this.contextEntry = new ReturnValueContextEntryImpl(fieldExtractor, requiredDeclarations);
+        this.contextEntry = new ReturnValueContextEntry(fieldExtractor, requiredDeclarations);
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -166,18 +166,18 @@ public class ReturnValueRestriction
         return this.contextEntry;
     }
 
-    public static class ReturnValueContextEntryImpl
+    public static class ReturnValueContextEntry
         implements
-        ReturnValueContextEntry {
-        private FieldExtractor        fieldExtractor;
-        private Object                object;
-        private ReteTuple             leftTuple;
-        private InternalWorkingMemory workingMemory;
-        private Declaration[]         requiredDeclarations;
+        ContextEntry {
+        public FieldExtractor        fieldExtractor;
+        public Object                object;
+        public ReteTuple             leftTuple;
+        public InternalWorkingMemory workingMemory;
+        public Declaration[]         requiredDeclarations;
 
         private ContextEntry          entry;
 
-        public ReturnValueContextEntryImpl(FieldExtractor fieldExtractor, Declaration[] requiredDeclarations) {
+        public ReturnValueContextEntry(FieldExtractor fieldExtractor, Declaration[] requiredDeclarations) {
             this.fieldExtractor = fieldExtractor;
             this.requiredDeclarations = requiredDeclarations;
         }

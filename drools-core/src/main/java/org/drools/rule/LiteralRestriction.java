@@ -44,7 +44,7 @@ public class LiteralRestriction
                               final FieldExtractor fieldExtractor) {
         this.field = field;
         this.evaluator = evaluator;
-        this.contextEntry = new LiteralContextEntryImpl( fieldExtractor );
+        this.contextEntry = new LiteralContextEntry( fieldExtractor );
     }
 
     public Evaluator getEvaluator() {
@@ -114,14 +114,14 @@ public class LiteralRestriction
         return contextEntry;
     }
 
-    private static class LiteralContextEntryImpl
+    private static class LiteralContextEntry
         implements
-        LiteralContextEntry {
-        private FieldExtractor extractor;
-        private Object         object;
-        private ContextEntry   next;
+        ContextEntry {
+        public FieldExtractor extractor;
+        public Object         object;
+        public ContextEntry   next;
 
-        public LiteralContextEntryImpl(FieldExtractor extractor) {
+        public LiteralContextEntry(FieldExtractor extractor) {
             this.extractor = extractor;
         }
 
