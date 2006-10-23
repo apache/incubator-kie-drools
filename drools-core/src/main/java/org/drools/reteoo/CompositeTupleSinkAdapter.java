@@ -66,24 +66,21 @@ public class CompositeTupleSinkAdapter
         }
     }
 
-    public ReteTuple createAndPropagateAssertTuple(final InternalFactHandle handle,
-                                                   final PropagationContext context,
-                                                   final InternalWorkingMemory workingMemory) {
-        // This is the root fact, so we don't need to clone it.
-        final ReteTuple tuple = new ReteTuple( handle );
+    public void createAndPropagateAssertTuple(final InternalFactHandle handle,
+                                              final PropagationContext context,
+                                              final InternalWorkingMemory workingMemory) {
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            sink.assertTuple( tuple,
+            sink.assertTuple( new ReteTuple( handle ),
                               context,
                               workingMemory );
         }
-        return tuple;
     }
 
-    public void createAndPropagateRetractTuple(final ReteTuple tuple,
+    public void createAndPropagateRetractTuple(final InternalFactHandle handle,
                                                final PropagationContext context,
                                                final InternalWorkingMemory workingMemory) {
         for ( TupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextTupleSinkNode() ) {
-            sink.retractTuple( tuple,
+            sink.retractTuple( new ReteTuple( handle ),
                                context,
                                workingMemory );
         }

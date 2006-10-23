@@ -23,9 +23,9 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.ObjectHashMap.ObjectEntry;
+import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Column
@@ -48,9 +48,9 @@ class LeftInputAdapterNode extends TupleSource
     private static final long  serialVersionUID = 320L;
     private final ObjectSource objectSource;
 
-    private ObjectSinkNode                 previousObjectSinkNode;
-    private ObjectSinkNode                 nextObjectSinkNode;
-    
+    private ObjectSinkNode     previousObjectSinkNode;
+    private ObjectSinkNode     nextObjectSinkNode;
+
     //    private final AlphaNodeFieldConstraint    constraints;
 
     //    /**
@@ -136,18 +136,15 @@ class LeftInputAdapterNode extends TupleSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        //        if ( (this.constraints == null) || (this.constraints.isAllowed( handle.getObject(),
-        //                                                                        workingMemory )) ) {
-        final ReteTuple tuple = this.sink.createAndPropagateAssertTuple( handle,
-                                                                   context,
-                                                                   workingMemory );
+
+        this.sink.createAndPropagateAssertTuple( handle,
+                                                 context,
+                                                 workingMemory );
 
         if ( this.hasMemory ) {
-            final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-            map.put( handle,
-                     tuple,
-                     false );
-            //            }
+            final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+            memory.add( handle,
+                        false );
         }
     }
 
@@ -165,18 +162,17 @@ class LeftInputAdapterNode extends TupleSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        ReteTuple tuple = null;
+        boolean propagate = true;
         if ( this.hasMemory ) {
-            final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-            tuple = (ReteTuple) map.remove( handle );
-        } else {
-            tuple = new ReteTuple( handle );
-        }
+            final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+            propagate = memory.remove( handle );
+        } 
 
-        this.sink.createAndPropagateRetractTuple( tuple,
-                                                  context,
-                                                  workingMemory );
-        tuple.release();
+        if( propagate ) {
+            this.sink.createAndPropagateRetractTuple( handle,
+                                                      context,
+                                                      workingMemory );
+        }
     }
 
     public void updateSink(final TupleSink sink,
@@ -184,12 +180,11 @@ class LeftInputAdapterNode extends TupleSource
                            final InternalWorkingMemory workingMemory) {
         if ( this.hasMemory ) {
             // We have memory so iterate over all entries
-            final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
-            final Iterator it = map.iterator();
-            for ( final ObjectEntry entry = (ObjectEntry) it.next(); entry != null; it.next() ) {
-                //final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-                final ReteTuple tuple = (ReteTuple) entry.getValue();
-                sink.assertTuple( tuple,
+            final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+            final Iterator it = memory.iterator();
+            for ( final FactEntry entry = (FactEntry) it.next(); entry != null; it.next() ) {
+                final InternalFactHandle handle = (InternalFactHandle) entry.getFactHandle();
+                sink.assertTuple( new ReteTuple(handle),
                                   context,
                                   workingMemory );
             }
@@ -251,7 +246,7 @@ class LeftInputAdapterNode extends TupleSource
     public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
-    
+
     public int hashCode() {
         return this.objectSource.hashCode();
     }
@@ -274,7 +269,7 @@ class LeftInputAdapterNode extends TupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new ObjectHashMap();
+        return new FactHashTable();
     }
 
     /**

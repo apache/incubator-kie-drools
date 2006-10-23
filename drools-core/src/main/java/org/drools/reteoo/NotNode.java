@@ -218,7 +218,7 @@ public class NotNode extends BetaNode {
         }
 
         if ( tuple.getMatches() == 0 ) {
-            this.sink.propagateRetractTuple( leftTuple,
+            this.sink.propagateRetractTuple( tuple,
                                              context,
                                              workingMemory );
         }
