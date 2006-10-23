@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.dataproviders.MethodResolver;
 import org.drools.base.resolvers.LiteralValue;
 import org.drools.rule.Declaration;
 import org.drools.spi.AvailableVariables;
