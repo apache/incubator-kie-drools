@@ -39,7 +39,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  */
 class LeftInputAdapterNode extends TupleSource
     implements
-    ObjectSink,
+    ObjectSinkNode,
     NodeMemory {
 
     /**
@@ -48,6 +48,9 @@ class LeftInputAdapterNode extends TupleSource
     private static final long  serialVersionUID = 320L;
     private final ObjectSource objectSource;
 
+    private ObjectSinkNode                 previousObjectSinkNode;
+    private ObjectSinkNode                 nextObjectSinkNode;
+    
     //    private final AlphaNodeFieldConstraint    constraints;
 
     //    /**
@@ -184,7 +187,7 @@ class LeftInputAdapterNode extends TupleSource
             final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( this );
             final Iterator it = map.iterator();
             for ( final ObjectEntry entry = (ObjectEntry) it.next(); entry != null; it.next() ) {
-                final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
+                //final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
                 final ReteTuple tuple = (ReteTuple) entry.getValue();
                 sink.assertTuple( tuple,
                                   context,
@@ -213,6 +216,42 @@ class LeftInputAdapterNode extends TupleSource
                                   workingMemories );
     }
 
+    /**
+     * Returns the next node
+     * @return
+     *      The next ObjectSinkNode
+     */
+    public ObjectSinkNode getNextObjectSinkNode() {
+        return this.nextObjectSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next ObjectSinkNode
+     */
+    public void setNextObjectSinkNode(final ObjectSinkNode next) {
+        this.nextObjectSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous ObjectSinkNode
+     */
+    public ObjectSinkNode getPreviousObjectSinkNode() {
+        return this.previousObjectSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous ObjectSinkNode
+     */
+    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
+        this.previousObjectSinkNode = previous;
+    }
+    
     public int hashCode() {
         return this.objectSource.hashCode();
     }
@@ -274,4 +313,5 @@ class LeftInputAdapterNode extends TupleSource
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
     }
+
 }
