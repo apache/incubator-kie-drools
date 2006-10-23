@@ -32,9 +32,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.FieldImpl;
 import org.drools.base.ValueType;
-import org.drools.base.dataproviders.FieldGetter;
 import org.drools.base.dataproviders.MethodDataProvider;
 import org.drools.base.dataproviders.MethodInvoker;
 import org.drools.base.evaluators.Operator;
@@ -52,6 +50,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -66,7 +65,6 @@ import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
@@ -430,6 +428,7 @@ public class RuleBuilder {
         } else {
             try {
                 //clazz = Class.forName( columnDescr.getObjectType() );
+                // TODO: add support to shadow facts
                 objectType = new ClassObjectType( this.typeResolver.resolveType( columnDescr.getObjectType() ) );
             } catch ( final ClassNotFoundException e ) {
                 this.errors.add( new RuleError( this.rule,
@@ -693,7 +692,8 @@ public class RuleBuilder {
             return null;
         }
 
-        return new VariableRestriction( declaration,
+        return new VariableRestriction( extractor, 
+                                        declaration,
                                         evaluator );
     }
 
@@ -708,7 +708,7 @@ public class RuleBuilder {
             final String fieldName = literalRestrictionDescr.getText().substring( lastDot + 1 );
             try {
                 final Class staticClass = this.typeResolver.resolveType( className );
-                field = new FieldImpl( staticClass.getField( fieldName ).get( null ) );
+                field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ).toString(), extractor.getValueType() );
             } catch ( final ClassNotFoundException e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 literalRestrictionDescr,
@@ -741,7 +741,8 @@ public class RuleBuilder {
         }
 
         return new LiteralRestriction( field,
-                                       evaluator );
+                                       evaluator,
+                                       extractor );
     }
 
     private ReturnValueRestriction buildRestriction(final FieldExtractor extractor,
@@ -765,7 +766,8 @@ public class RuleBuilder {
             return null;
         }
 
-        final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( declarations,
+        final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( extractor,
+                                                                                          declarations,
                                                                                           evaluator );
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "returnValueMethod" );
