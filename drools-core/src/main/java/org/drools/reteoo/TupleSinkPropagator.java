@@ -1,10 +1,12 @@
 package org.drools.reteoo;
 
+import java.io.Serializable;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
-public interface TupleSinkPropagator {
+public interface TupleSinkPropagator extends Serializable {
     public void propagateAssertTuple(ReteTuple tuple,
                                      InternalFactHandle handle,
                                      PropagationContext context,

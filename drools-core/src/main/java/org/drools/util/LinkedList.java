@@ -264,7 +264,7 @@ public class LinkedList
      * Returns a list iterator
      * @return
      */
-    public class LinkedListIterator {
+    public class LinkedListIterator implements Serializable {
         private LinkedList list;
         private LinkedListNode current;
         
@@ -283,7 +283,7 @@ public class LinkedList
         }
     }
     
-    public static class JavaUtilIterator implements java.util.Iterator {
+    public static class JavaUtilIterator implements java.util.Iterator, Serializable {
         private LinkedList list;
          private LinkedListNode currentNode;
          private LinkedListNode nextNode;

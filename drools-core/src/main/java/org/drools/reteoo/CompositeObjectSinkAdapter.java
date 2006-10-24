@@ -1,5 +1,6 @@
 package org.drools.reteoo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -369,7 +370,7 @@ public class CompositeObjectSinkAdapter
         return size;
     }
 
-    public static class HashKey {
+    public static class HashKey implements Serializable {
         private int    index;
         private Object value;
 
