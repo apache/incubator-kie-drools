@@ -1,13 +1,16 @@
 package com.sample
 
+import org.drools.Person
+import org.drools.Cheese
+import org.drools.State
+
 global java.util.List results
 
 rule "MyRule"	
 	when
-		(Integer() ||
-		Long())
-		s: String()
+		(State() || Cheese())
+		p: Person()
 	then 
-		//System.out.println("result is " + s);
-		results.add(s);		
+		System.out.println("result is " + p);
+		//results.add(p);		
 end
