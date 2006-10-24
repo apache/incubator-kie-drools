@@ -1,10 +1,12 @@
 package org.drools.common;
 
+import java.io.Serializable;
+
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.LinkedList;
 
-public interface BetaConstraints {
+public interface BetaConstraints extends Serializable {
 
     public void updateFromTuple(InternalWorkingMemory workingMemory, ReteTuple tuple);
 

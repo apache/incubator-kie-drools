@@ -176,7 +176,7 @@ public abstract class AbstractHashTable
 
     public abstract Entry getBucket(Object object);
 
-    public interface ObjectComparator {
+    public interface ObjectComparator extends Serializable {
         public int hashCodeOf(Object object);
 
         public int rehash(int hashCode);

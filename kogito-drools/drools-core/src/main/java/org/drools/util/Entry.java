@@ -3,7 +3,9 @@
  */
 package org.drools.util;
 
-public interface Entry {
+import java.io.Serializable;
+
+public interface Entry extends Serializable {
     public void setNext(Entry next);
 
     public Entry getNext();
