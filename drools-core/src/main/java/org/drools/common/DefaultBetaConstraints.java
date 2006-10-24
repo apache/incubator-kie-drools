@@ -180,11 +180,12 @@ public class DefaultBetaConstraints
             List list = new ArrayList();
             
             for ( int pos = 0; pos < this.indexed; pos++ ) {
-                final Constraint constraint = (Constraint) entry.getNext();
+                final Constraint constraint = (Constraint) entry.getObject();
                 final VariableConstraint variableConstraint = (VariableConstraint) constraint;
                 final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                          variableConstraint.getRequiredDeclarations()[0] );
                 list.add( index );
+                entry = (LinkedListEntry) entry.getNext();
             }
             
             FieldIndex[] indexes = ( FieldIndex[] ) list.toArray( new FieldIndex[ list.size() ] );
