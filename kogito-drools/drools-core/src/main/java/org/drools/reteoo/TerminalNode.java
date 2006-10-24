@@ -35,7 +35,6 @@ import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.TupleHashTable;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -236,9 +235,7 @@ final class TerminalNode extends BaseNode
             workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                  context,
                                                                                  this.rule );
-            tuple.release();
         }
-        leftTuple.release();
     }
 
     public String toString() {

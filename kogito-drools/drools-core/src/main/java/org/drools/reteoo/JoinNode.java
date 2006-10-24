@@ -206,7 +206,6 @@ class JoinNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
-            leftTuple.release();
             return;
         }
 
@@ -221,8 +220,6 @@ class JoinNode extends BetaNode {
                                             workingMemory );
             }
         }
-        tuple.release();
-        leftTuple.release();
     }
 
     /* (non-Javadoc)
