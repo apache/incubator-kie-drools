@@ -36,6 +36,7 @@ public class ShadowProxyFactoryTest extends TestCase {
                                  cheeseProxy.getType() );
             Assert.assertEquals( originalPrice,
                                  cheeseProxy.getPrice() );
+            Assert.assertSame( cheese, ((ShadowProxy)cheeseProxy).getShadowedObject() );
 
             // changing original values
             final String actualType = "rotten stilton";
@@ -92,6 +93,7 @@ public class ShadowProxyFactoryTest extends TestCase {
                                  cheeseProxy.getType() );
             Assert.assertEquals( originalPrice,
                                  cheeseProxy.getPrice() );
+            Assert.assertSame( cheese, ((ShadowProxy)cheeseProxy).getShadowedObject() );
 
             // changing original values
             final String actualType = "rotten stilton";
@@ -143,6 +145,7 @@ public class ShadowProxyFactoryTest extends TestCase {
             // proxy is proxying the values
             Assert.assertEquals( list,
                                  listProxy );
+            Assert.assertSame( list, ((ShadowProxy)listProxy).getShadowedObject() );
 
         } catch ( final Exception e ) {
             fail( "Error: " + e.getMessage() );

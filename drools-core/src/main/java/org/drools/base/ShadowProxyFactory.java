@@ -42,7 +42,7 @@ public class ShadowProxyFactory {
 
     private static final String FIELD_SET_FLAG      = "IsSet";
 
-    private static final String DELEGATE_FIELD_NAME = "__delegate";
+    private static final String DELEGATE_FIELD_NAME = "delegate";
 
     public static Class getProxy(final Class clazz) {
         try {
@@ -100,6 +100,15 @@ public class ShadowProxyFactory {
         buildField( ShadowProxyFactory.DELEGATE_FIELD_NAME,
                     Type.getDescriptor( clazz ),
                     cw );
+
+        Method getShadowed = ShadowProxy.class.getDeclaredMethod( "getShadowedObject",
+                                                                  new Class[]{} );
+        buildSimpleGetMethod( ShadowProxyFactory.DELEGATE_FIELD_NAME,
+                              clazz,
+                              getShadowed,
+                              className,
+                              clazz,
+                              cw );
 
         final Map fieldTypes = new HashMap();
         final Method[] methods = clazz.getMethods();
@@ -176,7 +185,6 @@ public class ShadowProxyFactory {
 
                     buildSimpleGetMethod( /*FIELD_NAME_PREFIX +*/fieldName,
                                           methods[i].getReturnType(),
-                                          /*FIELD_NAME_PREFIX +*/fieldName + ShadowProxyFactory.FIELD_SET_FLAG,
                                           methods[i],
                                           className,
                                           clazz,
@@ -445,10 +453,10 @@ public class ShadowProxyFactory {
         final Class[] exceptionTypes = method.getExceptionTypes();
         final String[] exceptions = getExceptionArrayAsString( exceptionTypes );
         final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                           method.getName(),
-                                           Type.getMethodDescriptor( method ),
-                                           null,
-                                           exceptions );
+                                                 method.getName(),
+                                                 Type.getMethodDescriptor( method ),
+                                                 null,
+                                                 exceptions );
         mv.visitCode();
 
         // if ( ! _fieldIsSet ) {
@@ -537,19 +545,19 @@ public class ShadowProxyFactory {
      */
     protected static void buildSimpleGetMethod(final String fieldName,
                                                final Class fieldType,
-                                               final String fieldFlag,
                                                final Method method,
                                                final String className,
                                                final Class clazz,
                                                final ClassWriter cw) {
-        // method signature 
+
         final Class[] exceptionTypes = method.getExceptionTypes();
-        final String[] exceptions = getExceptionArrayAsString( exceptionTypes );
+        String[] exceptions = getExceptionArrayAsString( exceptionTypes );
+        // method signature 
         final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                           method.getName(),
-                                           Type.getMethodDescriptor( method ),
-                                           null,
-                                           exceptions );
+                                                 method.getName(),
+                                                 Type.getMethodDescriptor( method ),
+                                                 null,
+                                                 exceptions );
         mv.visitCode();
 
         // return __field;
@@ -583,11 +591,11 @@ public class ShadowProxyFactory {
                                                       final String className,
                                                       final ClassWriter cw) {
         final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                           ShadowProxyFactory.UPDATE_PROXY,
-                                           Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                                     new Type[]{} ),
-                                           null,
-                                           null );
+                                                 ShadowProxyFactory.UPDATE_PROXY,
+                                                 Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                                           new Type[]{} ),
+                                                 null,
+                                                 null );
         mv.visitCode();
         final Label l0 = new Label();
         mv.visitLabel( l0 );
@@ -645,11 +653,11 @@ public class ShadowProxyFactory {
                                                  final String className,
                                                  final ClassWriter cw) {
         final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                           ShadowProxyFactory.UPDATE_PROXY,
-                                           Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                                     new Type[]{} ),
-                                           null,
-                                           null );
+                                                 ShadowProxyFactory.UPDATE_PROXY,
+                                                 Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                                           new Type[]{} ),
+                                                 null,
+                                                 null );
         mv.visitCode();
         final Label l0 = new Label();
         mv.visitLabel( l0 );
@@ -713,10 +721,10 @@ public class ShadowProxyFactory {
         // creating method visitor
         final String[] exceptions = getExceptionArrayAsString( method.getExceptionTypes() );
         final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                           method.getName(),
-                                           Type.getMethodDescriptor( method ),
-                                           null,
-                                           exceptions );
+                                                 method.getName(),
+                                                 Type.getMethodDescriptor( method ),
+                                                 null,
+                                                 exceptions );
         mv.visitCode();
 
         // return this.delegate.method(...);

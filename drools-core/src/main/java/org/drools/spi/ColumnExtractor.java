@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.facttemplates.Fact;
 
@@ -38,7 +39,7 @@ public class ColumnExtractor
     }
 
     public Object getValue(final Object object) {
-        return object;
+        return ( object instanceof ShadowProxy ) ? ((ShadowProxy)object).getShadowedObject() : object;
     }
 
     public ObjectType getObjectType() {
