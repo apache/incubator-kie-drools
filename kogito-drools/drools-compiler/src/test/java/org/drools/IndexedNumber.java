@@ -30,6 +30,9 @@ public class IndexedNumber {
     private int number = 0;
     
     private int index = 0;
+    
+    public IndexedNumber() {
+    }
 
     /**
      * @param pNb
