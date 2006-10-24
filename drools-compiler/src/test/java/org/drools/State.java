@@ -9,6 +9,10 @@ public class State {
     private String                state;
     private boolean               flag;
 
+    public State() {
+    	
+    }
+    
     public State(final String state) {
         this.state = state;
     }

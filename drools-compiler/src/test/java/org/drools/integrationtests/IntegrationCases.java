@@ -194,6 +194,12 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
+        
+        workingMemory.assertObject( new Cheese( "brie", 33 ) );
+        
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
     }
 
     public void testHelloWorld() throws Exception {
@@ -362,8 +368,14 @@ public abstract class IntegrationCases extends TestCase {
                                                  null,
                                                  12 );
         bill.setBigDecimal( new BigDecimal( "42" ) );
-        workingMemory.assertObject( new BigDecimal( "43" ) );
+
+        final PersonInterface ben = new Person( "ben",
+                null,
+                13 );
+        ben.setBigDecimal( new BigDecimal( "43" ) );        
+        
         workingMemory.assertObject( bill );
+        workingMemory.assertObject( ben );
         workingMemory.fireAllRules();
 
         assertEquals( 1,

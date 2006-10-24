@@ -27,6 +27,10 @@ public class Message {
     private int     number   = 0;
     private Date    birthday = new Date();
     private boolean fired    = false;
+    
+    public Message() {
+    	
+    }
 
     public boolean isFired() {
         return this.fired;

@@ -12,7 +12,7 @@ public class Person
      * 
      */
     private static final long serialVersionUID = 2640286967578736742L;
-    private final String      name;
+    private String      name;
     private String            likes;
     private int               age;
     private BigDecimal        bigDecimal;
@@ -25,6 +25,10 @@ public class Person
 
     private String            status;
 
+    public Person() {
+    	
+    }
+    
     public Person(final String name) {
         this( name,
               "",
