@@ -39,6 +39,7 @@ import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
+import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.rule.Accumulate;
@@ -842,6 +843,9 @@ class ReteooBuilder
             case 3 :
                 constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
                 break;
+            case 4 :
+                constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
+                break;                
             default :
                 constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
         }

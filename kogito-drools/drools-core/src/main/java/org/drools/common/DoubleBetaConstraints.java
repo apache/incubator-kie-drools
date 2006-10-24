@@ -62,14 +62,15 @@ public class DoubleBetaConstraints
 
         if ( i0 ) {
             this.indexed0 = true;
-            if ( i1 ) {
-                this.indexed1 = true;
-            }
-        } else if ( i1 ) {
-            this.indexed0 = true;
-            final BetaNodeFieldConstraint temp = constraints[0];
-            constraints[0] = constraints[1];
-            constraints[1] = temp;
+        }
+        
+        if ( i1 ) {
+        	if ( !i0 ) {
+                this.indexed0 = true;
+                swap( constraints, 1, 0 );
+        	} else {
+        		this.indexed1 = true;
+        	}
         }
 
         this.constraint0 = constraints[0];
@@ -78,6 +79,13 @@ public class DoubleBetaConstraints
         this.constraint1 = constraints[1];
         this.context1 = this.constraint1.getContextEntry();
     }
+    
+    private void swap(BetaNodeFieldConstraint[] constraints, int p1, int p2) {
+        final BetaNodeFieldConstraint temp = constraints[p2];
+        constraints[p2] = constraints[p1];
+        constraints[p1] = temp;    	
+    }
+    
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint.getClass() == VariableConstraint.class ) {

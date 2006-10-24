@@ -33,7 +33,7 @@ import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
 import org.drools.util.FieldIndexHashTable.FieldIndex;
 
-public class TripleBetaConstraints
+public class QuadroupleBetaConstraints
     implements
     Serializable,
     BetaConstraints {
@@ -46,22 +46,26 @@ public class TripleBetaConstraints
     private final BetaNodeFieldConstraint constraint0;
     private final BetaNodeFieldConstraint constraint1;
     private final BetaNodeFieldConstraint constraint2;
+    private final BetaNodeFieldConstraint constraint3;
 
     private final ContextEntry                  context0;
     private final ContextEntry                  context1;
     private final ContextEntry                  context2;
+    private final ContextEntry                  context3;
 
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
+    private boolean                       indexed3;
 
-    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
+    public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
         this( constraints, true );
     }
-    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index) {
+    public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index) {
         final boolean i0 = index && isIndexable( constraints[0] );
         final boolean i1 = index && isIndexable( constraints[1] );
         final boolean i2 = index && isIndexable( constraints[2] );
+        final boolean i3 = index && isIndexable( constraints[3] );
 
         if ( i0 ) {
             this.indexed0 = true;
@@ -86,8 +90,22 @@ public class TripleBetaConstraints
         	} else {
         		this.indexed2 = true;
         	}
-        }        
+        }   
 
+        if ( i3 ) {
+        	if ( !i0 ) {
+                this.indexed0 = true;
+                swap( constraints, 3, 0 );
+        	} else if ( !i0 && !i1) {
+        		this.indexed1 = true;
+        		swap( constraints, 3, 1 );
+        	} else if ( !i0 && !i1 && !i2) {
+        		this.indexed2 = true;
+        		swap( constraints, 3, 2 );        		
+        	} else {
+        		this.indexed3 = true;
+        	}
+        }           
         this.constraint0 = constraints[0];
         this.context0 = this.constraint0.getContextEntry();
 
@@ -96,13 +114,17 @@ public class TripleBetaConstraints
 
         this.constraint2 = constraints[2];
         this.context2 = this.constraint2.getContextEntry();
+        
+        this.constraint3 = constraints[3];
+        this.context3 = this.constraint3.getContextEntry();        
     }
     
     private void swap(BetaNodeFieldConstraint[] constraints, int p1, int p2) {
         final BetaNodeFieldConstraint temp = constraints[p2];
         constraints[p2] = constraints[p1];
-        constraints[p1] = temp;    	
+        constraints[p1] = temp;     	
     }
+    
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint.getClass() == VariableConstraint.class ) {
@@ -236,7 +258,7 @@ public class TripleBetaConstraints
             return false;
         }
 
-        final TripleBetaConstraints other = (TripleBetaConstraints) object;
+        final QuadroupleBetaConstraints other = (QuadroupleBetaConstraints) object;
 
         if ( this.constraint0 != other.constraint0 && this.constraint0.equals( other.constraint0 ) ) {
             return false;
