@@ -276,8 +276,8 @@ final class TerminalNode extends BaseNode
 
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
             final Iterator it = memory.getTupleMemory().iterator();
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                final Activation activation = (Activation) entry.getValue();
+            for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+                final Activation activation = (Activation) tuple.getActivation();
 
                 if ( activation.isActivated() ) {
                     activation.remove();

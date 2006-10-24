@@ -61,6 +61,7 @@ abstract class ObjectSource extends BaseNode
     ObjectSource(final int id) {
         this( id,
               null );
+        this.sink = EmptyObjectSinkAdapter.getInstance();
     }
 
     /**
@@ -88,7 +89,7 @@ abstract class ObjectSource extends BaseNode
      *            <code>FactHandleImpl</code>.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
-        if ( this.sink == null ) {
+        if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
         } else if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
             final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter();
@@ -107,12 +108,12 @@ abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to remove
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
-        if (  this.sink == null ){
+        if (  this.sink == EmptyObjectSinkAdapter.getInstance() ){
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );            
         }
         
         if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
-            this.sink = null;
+            this.sink = EmptyObjectSinkAdapter.getInstance();
         } else { 
             CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) this.sink;
             sinkAdapter.removeObjectSink( objectSink );

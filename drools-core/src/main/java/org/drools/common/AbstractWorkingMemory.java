@@ -411,9 +411,8 @@ public abstract class AbstractWorkingMemory
      * 
      * @return
      */
-    public Map getFactHandleMap() {
-        return null;
-        //return Collections.unmodifiableMap( this.assertMap );
+    public ObjectHashMap getFactHandleMap() {
+        return this.assertMap;
     }
 
     /**
