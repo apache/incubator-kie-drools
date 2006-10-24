@@ -523,10 +523,11 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        workingMemory.assertObject( "foo" );
+        Person foo = new Person( "foo" );
+        workingMemory.assertObject( foo );
         workingMemory.fireAllRules();
 
-        assertEquals( "foo",
+        assertEquals( foo,
                       list.get( 0 ) );
     }
 

@@ -18,7 +18,7 @@ end
 
 rule "This is fine"
 	when
-		String()
+		Cheese()
 	then
 		//System.out.println("hello");
 end
