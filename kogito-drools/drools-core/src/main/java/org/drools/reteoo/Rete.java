@@ -230,8 +230,8 @@ class Rete extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-        for ( final java.util.Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
-            final java.util.Map.Entry entry = (java.util.Map.Entry) i.next();
+        Iterator it = workingMemory.getFactHandleMap().iterator();
+        for (  ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry =  ( ObjectEntry ) it.next() ) {   	
             final InternalFactHandle handle = (InternalFactHandle) entry.getValue();
             if ( node.matches( handle.getObject() ) ) {
                 node.assertObject( handle,

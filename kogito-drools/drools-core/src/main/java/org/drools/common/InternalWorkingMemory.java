@@ -5,6 +5,7 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.event.AgendaEventSupport;
 import org.drools.spi.FactHandleFactory;
+import org.drools.util.ObjectHashMap;
 
 public interface InternalWorkingMemory
     extends
@@ -17,7 +18,7 @@ public interface InternalWorkingMemory
 
     public long getNextPropagationIdCounter();
 
-    public Map getFactHandleMap();
+    public ObjectHashMap getFactHandleMap();
 
     public AgendaEventSupport getAgendaEventSupport();
 
