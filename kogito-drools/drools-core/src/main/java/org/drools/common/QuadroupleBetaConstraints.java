@@ -48,20 +48,22 @@ public class QuadroupleBetaConstraints
     private final BetaNodeFieldConstraint constraint2;
     private final BetaNodeFieldConstraint constraint3;
 
-    private final ContextEntry                  context0;
-    private final ContextEntry                  context1;
-    private final ContextEntry                  context2;
-    private final ContextEntry                  context3;
+    private final ContextEntry            context0;
+    private final ContextEntry            context1;
+    private final ContextEntry            context2;
+    private final ContextEntry            context3;
 
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
-    private boolean                       indexed3;
 
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
-        this( constraints, true );
+        this( constraints,
+              true );
     }
-    public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index) {
+
+    public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                     boolean index) {
         final boolean i0 = index && isIndexable( constraints[0] );
         final boolean i1 = index && isIndexable( constraints[1] );
         final boolean i2 = index && isIndexable( constraints[2] );
@@ -70,42 +72,54 @@ public class QuadroupleBetaConstraints
         if ( i0 ) {
             this.indexed0 = true;
         }
-        
+
         if ( i1 ) {
-        	if ( !i0 ) {
+            if ( !i0 ) {
                 this.indexed0 = true;
-                swap( constraints, 1, 0 );
-        	} else {
-        		this.indexed1 = true;
-        	}
+                swap( constraints,
+                      1,
+                      0 );
+            } else {
+                this.indexed1 = true;
+            }
         }
-        
+
         if ( i2 ) {
-        	if ( !i0 ) {
+            if ( !i0 ) {
                 this.indexed0 = true;
-                swap( constraints, 2, 0 );
-        	} else if ( !i0 && !i1) {
-        		this.indexed1 = true;
-        		swap( constraints, 2, 1 );
-        	} else {
-        		this.indexed2 = true;
-        	}
-        }   
+                swap( constraints,
+                      2,
+                      0 );
+            } else if ( !i0 && !i1 ) {
+                this.indexed1 = true;
+                swap( constraints,
+                      2,
+                      1 );
+            } else {
+                this.indexed2 = true;
+            }
+        }
 
         if ( i3 ) {
-        	if ( !i0 ) {
+            if ( !i0 ) {
                 this.indexed0 = true;
-                swap( constraints, 3, 0 );
-        	} else if ( !i0 && !i1) {
-        		this.indexed1 = true;
-        		swap( constraints, 3, 1 );
-        	} else if ( !i0 && !i1 && !i2) {
-        		this.indexed2 = true;
-        		swap( constraints, 3, 2 );        		
-        	} else {
-        		this.indexed3 = true;
-        	}
-        }           
+                swap( constraints,
+                      3,
+                      0 );
+            } else if ( !i0 && !i1 ) {
+                this.indexed1 = true;
+                swap( constraints,
+                      3,
+                      1 );
+            } else if ( !i0 && !i1 && !i2 ) {
+                this.indexed2 = true;
+                swap( constraints,
+                      3,
+                      2 );
+            } else {
+                throw new IllegalArgumentException( "There cannot be more than 3 index" );
+            }
+        }
         this.constraint0 = constraints[0];
         this.context0 = this.constraint0.getContextEntry();
 
@@ -114,17 +128,18 @@ public class QuadroupleBetaConstraints
 
         this.constraint2 = constraints[2];
         this.context2 = this.constraint2.getContextEntry();
-        
+
         this.constraint3 = constraints[3];
-        this.context3 = this.constraint3.getContextEntry();        
+        this.context3 = this.constraint3.getContextEntry();
     }
-    
-    private void swap(BetaNodeFieldConstraint[] constraints, int p1, int p2) {
+
+    private void swap(BetaNodeFieldConstraint[] constraints,
+                      int p1,
+                      int p2) {
         final BetaNodeFieldConstraint temp = constraints[p2];
         constraints[p2] = constraints[p1];
-        constraints[p1] = temp;     	
+        constraints[p1] = temp;
     }
-    
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint.getClass() == VariableConstraint.class ) {
@@ -138,19 +153,31 @@ public class QuadroupleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-        this.context0.updateFromTuple( workingMemory, tuple );
-        this.context1.updateFromTuple( workingMemory, tuple );
-        this.context2.updateFromTuple( workingMemory, tuple );
+    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                final ReteTuple tuple) {
+        this.context0.updateFromTuple( workingMemory,
+                                       tuple );
+        this.context1.updateFromTuple( workingMemory,
+                                       tuple );
+        this.context2.updateFromTuple( workingMemory,
+                                       tuple );
+        this.context3.updateFromTuple( workingMemory,
+                                       tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
-        this.context0.updateFromFactHandle( workingMemory, handle );
-        this.context1.updateFromFactHandle( workingMemory, handle );
-        this.context2.updateFromFactHandle( workingMemory, handle );
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                     final InternalFactHandle handle) {
+        this.context0.updateFromFactHandle( workingMemory,
+                                            handle );
+        this.context1.updateFromFactHandle( workingMemory,
+                                            handle );
+        this.context2.updateFromFactHandle( workingMemory,
+                                            handle );
+        this.context3.updateFromFactHandle( workingMemory,
+                                            handle );
     }
 
     /* (non-Javadoc)
@@ -165,7 +192,9 @@ public class QuadroupleBetaConstraints
         return (this.indexed0 || this.constraint0.isAllowedCachedLeft( this.context0,
                                                                        object )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
                                                                                                                                             object )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
-                                                                                                                                                                                                                 object ));
+                                                                                                                                                                                                                 object ))
+               && this.constraint3.isAllowedCachedLeft( this.context3,
+                                                        object );
     }
 
     /* (non-Javadoc)
@@ -174,8 +203,9 @@ public class QuadroupleBetaConstraints
     public boolean isAllowedCachedRight(final ReteTuple tuple) {
         return this.constraint0.isAllowedCachedRight( tuple,
                                                       this.context0 ) && this.constraint1.isAllowedCachedRight( tuple,
-                                                                                                           this.context1 ) && this.constraint1.isAllowedCachedRight( tuple,
-                                                                                                                                                                this.context1 );
+                                                                                                                this.context1 ) && this.constraint2.isAllowedCachedRight( tuple,
+                                                                                                                                                                          this.context2 ) && this.constraint3.isAllowedCachedRight( tuple,
+                                                                                                                                                                                                                                    this.context3 );
     }
 
     public boolean isIndexed() {
@@ -194,7 +224,7 @@ public class QuadroupleBetaConstraints
         if ( this.indexed0 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0] );
             list.add( index );
 
         }
@@ -202,14 +232,14 @@ public class QuadroupleBetaConstraints
         if ( this.indexed1 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0] );
             list.add( index );
         }
 
         if ( this.indexed2 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0] );
             list.add( index );
         }
 
