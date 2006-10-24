@@ -82,12 +82,6 @@ public class ReteTuple
         return this.next;
     }
 
-    public void release() {
-        this.parent = null;
-        this.activation = null;
-        setNext( null );
-    }
-
     public boolean isFieldIndexed() {
         return this.fieldIndexed;
     }

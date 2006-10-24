@@ -213,7 +213,6 @@ public class NotNode extends BetaNode {
         // Must use the tuple in memory as it has the tuple matches count
         final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
-            leftTuple.release();
             return;
         }
 
@@ -222,8 +221,6 @@ public class NotNode extends BetaNode {
                                              context,
                                              workingMemory );
         }
-        tuple.release();
-        leftTuple.release();
     }
 
     /* (non-Javadoc)
