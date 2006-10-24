@@ -35,5 +35,5 @@ public interface FactHandle
      * 
      * @return The external string form.
      */
-    String toExternalForm();
+    String toExternalForm();   
 }

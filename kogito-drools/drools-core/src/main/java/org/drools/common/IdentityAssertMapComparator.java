@@ -16,6 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.base.ShadowProxy;
 import org.drools.util.AbstractHashTable.ObjectComparator;
 
 public class IdentityAssertMapComparator
@@ -57,7 +58,9 @@ public class IdentityAssertMapComparator
             return ((InternalFactHandle) o1).getObject() == ((InternalFactHandle) o2).getObject();
         }
 
-        return o1 == ((InternalFactHandle) o2).getObject();
+        InternalFactHandle handle = ((InternalFactHandle) o2);
+        
+        return o1 == ( ( handle.isShadowFact() ) ? ((ShadowProxy) handle.getObject() ).getShadowedObject() : handle.getObject() );
     }
 
     public int compare(final Object o1,
