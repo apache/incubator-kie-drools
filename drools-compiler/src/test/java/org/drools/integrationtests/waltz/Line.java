@@ -26,6 +26,10 @@ public class Line {
 
     private int p2;
 
+    public Line() {
+        
+    }
+    
     public Line(final int p1,
                 final int p2) {
         this.p1 = p1;

@@ -51,6 +51,10 @@ public class Stage
 
     private int               value;
 
+    public Stage() {
+        
+    }
+    
     public Stage(final int value) {
         this.value = value;
     }
