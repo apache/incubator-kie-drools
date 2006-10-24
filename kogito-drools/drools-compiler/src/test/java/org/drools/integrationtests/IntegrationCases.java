@@ -2447,10 +2447,10 @@ public abstract class IntegrationCases extends TestCase {
 
         List list;
 
-        final String a = new String( "a" );
-        final Integer i = new Integer( 1 );
-        workingMemory.setGlobal( "i",
-                                 i );
+        final Person a = new Person( "a" );
+        final Cheese cheese = new Cheese( "brie", 1 );
+        workingMemory.setGlobal( "cheese",
+                                 cheese );
 
         workingMemory.fireAllRules();
         list = workingMemory.getObjects();
@@ -2458,7 +2458,7 @@ public abstract class IntegrationCases extends TestCase {
                       1,
                       list.size() );
         assertEquals( "i was not asserted by not a => i.",
-                      i,
+                      cheese,
                       list.get( 0 ) );
 
         final FactHandle h = workingMemory.assertObject( a );
@@ -2473,7 +2473,7 @@ public abstract class IntegrationCases extends TestCase {
                       a,
                       list.get( 0 ) );
         assertFalse( "i was not rectracted.",
-                     list.contains( i ) );
+                     list.contains( cheese ) );
 
         // no rules should fire, but nevertheless...
         // workingMemory.fireAllRules();
@@ -2488,7 +2488,7 @@ public abstract class IntegrationCases extends TestCase {
                       1,
                       list.size() );
         assertEquals( "i was not asserted by not a => i.",
-                      i,
+                      cheese,
                       list.get( 0 ) );
     }
 
