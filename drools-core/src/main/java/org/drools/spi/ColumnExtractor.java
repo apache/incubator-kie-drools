@@ -39,6 +39,7 @@ public class ColumnExtractor
     }
 
     public Object getValue(final Object object) {
+        //return object;
         return ( this.objectType.isShadowEnabled() ) ? ((ShadowProxy)object).getShadowedObject() : object;
     }
 

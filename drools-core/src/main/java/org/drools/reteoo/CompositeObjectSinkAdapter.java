@@ -363,10 +363,10 @@ public class CompositeObjectSinkAdapter
     }
 
     public int size() {
-    	int size;
-        size =+ ( ( otherSinks != null ) ? otherSinks.size() : 0);
-        size =+ (( hashableSinks != null ) ? hashableSinks.size() : 0);
-        size =+ ( ( hashedSinkMap != null ) ? hashedSinkMap.size() : 0);
+    	int size = 0;
+        size += ( ( otherSinks != null ) ? otherSinks.size() : 0);
+        size += ( ( hashableSinks != null ) ? hashableSinks.size() : 0);
+        size += ( ( hashedSinkMap != null ) ? hashedSinkMap.size() : 0);
         return size;
     }
 
