@@ -1,13 +1,13 @@
 package org.drools.test;
 
-import java.lang.String;
-import java.lang.Integer;
+import org.drools.Cheese
+import org.drools.Person
 
-global java.lang.Integer i;
+global Cheese cheese
 
 rule "r"
     when
-        not String()
+        not Person()
     then
-   		assertLogical(i);
+   		assertLogical(cheese);
 end
