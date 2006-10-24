@@ -39,7 +39,11 @@ public class Junction {
     private int          basePoint;
 
     private String       type;
-
+    
+    public Junction() {
+        
+    }
+    
     public Junction(final int p1,
                     final int p2,
                     final int p3,

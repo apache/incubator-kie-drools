@@ -56,10 +56,15 @@ public abstract class Waltz extends TestCase {
             //            workingMemory.addEventListener( agendaListener );
 
             //go !     
-            //this.loadLines( workingMemory, "waltz12.dat" );
+            this.loadLines( workingMemory,
+                            "waltz50.dat" );
 
-            final Stage stage = new Stage( Stage.START );
-            workingMemory.assertObject( stage );
+            //final Stage stage = new Stage( Stage.START );
+            //workingMemory.assertObject( stage );
+            
+            Stage stage = new Stage(Stage.DUPLICATE);
+            workingMemory.assertObject( stage );            
+            
             workingMemory.fireAllRules();
         } catch ( final Throwable t ) {
             t.printStackTrace();
@@ -100,7 +105,7 @@ public abstract class Waltz extends TestCase {
             final Matcher m = pat.matcher( line );
             if ( m.matches() ) {
                 final Line l = new Line( Integer.parseInt( m.group( 1 ) ),
-                                   Integer.parseInt( m.group( 2 ) ) );
+                                         Integer.parseInt( m.group( 2 ) ) );
                 wm.assertObject( l );
             }
             line = reader.readLine();
