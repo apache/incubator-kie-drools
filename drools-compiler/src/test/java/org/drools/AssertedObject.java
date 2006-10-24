@@ -15,5 +15,8 @@ public class AssertedObject {
         this.value = value;
     }
     
+    public AssertedObject() {
+    }
+    
     
 } 
