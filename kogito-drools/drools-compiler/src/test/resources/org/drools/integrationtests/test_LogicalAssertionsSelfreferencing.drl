@@ -1,11 +1,13 @@
 package org.drools.test;
 
-global java.lang.String b;
-import java.lang.String;
+import org.drools.Person;
 
-rule "String => b"
+global Person b;
+
+
+rule "Person => b"
     when
-        s : String()
+        s : Person()
     then
 		assertLogical( b );
 end

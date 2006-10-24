@@ -1,14 +1,14 @@
 package org.drools.test;
 
-import java.lang.String;
+import org.drools.Person;
 import java.util.List;
 
-global java.lang.String a;
-global java.util.List l;
+global Person a;
+global List l;
 
 rule "r"
     when
-        not String()
+        not Person()
     then
     	if (l.size() < 10)
     	{
