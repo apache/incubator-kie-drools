@@ -1,28 +1,28 @@
 package org.drools.test;
 
-import java.lang.String;
-import java.lang.Integer;
 import java.util.List;
+import org.drools.Person
+import org.drools.Cheese
 
-global java.lang.Integer i;
-global java.lang.String s;
-global java.util.List l;
+global Cheese cheese;
+global Person person;
+global java.util.List list;
 
-rule "not s then i"
+rule "not person then cheese"
     when
-        not String()
+        not Person()
     then
-    	if (l.size() < 10) {
-    		l.add(new Integer(0));
-	   		assertLogical(i);
+    	if (list.size() < 10) {
+    		list.add(new Integer(0));
+	   		assertLogical( cheese );
 	   	}
 end
-rule "i then s"
+rule "if cheese then person"
 	when
-		Integer()
+		Cheese()
 	then
-    	if (l.size() < 10) {
-	   		l.add(new Integer(0));
-			assertLogical(s);
+    	if (list.size() < 10) {
+	   		list.add(new Integer(0));
+			assertLogical( person );
 	   	}
 end
