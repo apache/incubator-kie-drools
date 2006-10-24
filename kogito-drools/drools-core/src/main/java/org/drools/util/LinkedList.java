@@ -159,6 +159,10 @@ public class LinkedList
             node.setPrevious( newNode );
             newNode.setNext( node );
             this.firstNode = newNode;
+        } else if ( existingNode == this.lastNode ) {
+        	existingNode.setNext(newNode);
+        	newNode.setPrevious( existingNode );
+        	this.lastNode = newNode;
         } else {
             ((LinkedListNode)existingNode.getNext()).setPrevious( newNode );
             newNode.setNext( existingNode.getNext() );

@@ -52,6 +52,7 @@ public class DefaultBetaConstraints
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
         this( constraints, true );
+        this.indexed = -1;
     }
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index ) {
@@ -62,7 +63,7 @@ public class DefaultBetaConstraints
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
             if ( index && isIndexable( constraints[i] ) ) {
-                if ( indexed == 0 ) {
+                if ( indexed == -1 ) {
                     // first index, so just add to the front
                     this.constraints.insertAfter( null,
                                                   new LinkedListEntry( constraints[i] ) );
