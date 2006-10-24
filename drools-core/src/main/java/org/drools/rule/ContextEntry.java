@@ -1,10 +1,12 @@
 package org.drools.rule;
 
+import java.io.Serializable;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 
-public interface ContextEntry {
+public interface ContextEntry extends Serializable {
 
     public ContextEntry getNext();
 
