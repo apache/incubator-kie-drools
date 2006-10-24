@@ -295,7 +295,7 @@ public class LinkedList
 
          public JavaUtilIterator(LinkedList list, boolean immutable) {
              this.list = list;
-             this.currentNode = this.list.getFirst();
+             this.nextNode = this.list.getFirst();
              this.immutable = immutable;
          }
 
