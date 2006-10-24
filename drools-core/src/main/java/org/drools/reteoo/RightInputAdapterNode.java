@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.Column;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -39,7 +40,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     private final TupleSource tupleSource;
 
-    private final int         column;
+    private final Column         column;
 
     /**
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
@@ -53,7 +54,7 @@ public class RightInputAdapterNode extends ObjectSource
      *      The <code>TupleSource</code> which propagates the received <code>ReteTuple</code>
      */
     public RightInputAdapterNode(final int id,
-                                 final int column,
+                                 final Column column,
                                  final TupleSource source) {
 
         super( id );
@@ -75,7 +76,7 @@ public class RightInputAdapterNode extends ObjectSource
     public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-        this.sink.propagateAssertObject( tuple.get( this.column ),
+        this.sink.propagateAssertObject( tuple.get( this.column.getFactIndex() ),
                                          context,
                                          workingMemory );
     }
@@ -86,7 +87,7 @@ public class RightInputAdapterNode extends ObjectSource
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        this.sink.propagateRetractObject( tuple.get( this.column ),
+        this.sink.propagateRetractObject( tuple.get( this.column.getFactIndex() ),
                                           context,
                                           workingMemory,
                                           true );
@@ -111,7 +112,7 @@ public class RightInputAdapterNode extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         this.tupleSource.updateSink( new TupleSinkAdapter( sink,
-                                                           this.column ),
+                                                           this.column.getFactIndex() ),
                                      context,
                                      workingMemory );
     }
