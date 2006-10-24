@@ -143,6 +143,7 @@ class ObjectTypeNode extends ObjectSource
             if ( !(handle.getObject() instanceof ShadowProxy) ) {
                 // replaces the actual object by its shadow before propagating
                 handle.setObject( this.objectType.getShadow( handle.getObject() ) );
+                handle.setShadowFact( true );
             } else {
                 ((ShadowProxy) handle.getObject()).updateProxy();
             }

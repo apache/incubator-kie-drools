@@ -37,6 +37,7 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
+import org.drools.base.ShadowProxy;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
@@ -51,6 +52,7 @@ import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 import org.drools.util.concurrent.locks.Lock;
 import org.drools.util.concurrent.locks.ReentrantLock;
 
@@ -421,23 +423,26 @@ public abstract class AbstractWorkingMemory
     public List getObjects() {
         final List list = new ArrayList( this.assertMap.size() );
 
-        //        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
-        //            list.add( ((InternalFactHandle) it.next()).getObject() );
-        //        }
+        org.drools.util.Iterator it = this.assertMap.iterator();
+        for ( ObjectEntry entry = (ObjectEntry)it.next(); entry != null; entry = (ObjectEntry)it.next() ) {
+            InternalFactHandle  handle  = (InternalFactHandle) entry.getKey();
+            Object object = ( handle.isShadowFact() ) ? ((ShadowProxy)handle.getObject()).getShadowedObject() : handle.getObject();
+            list.add( object );
+        }
         return list;
     }
 
     public List getObjects(final Class objectClass) {
-        final List list = new ArrayList();
+        final List list = new ArrayList( this.assertMap.size() );
 
-        //        for ( final Iterator it = this.assertMap.keySet().iterator(); it.hasNext(); ) {
-        //            final Object object = ((InternalFactHandle) it.next()).getObject();
-        //
-        //            if ( objectClass.isInstance( object ) ) {
-        //                list.add( object );
-        //            }
-        //        }
-
+        org.drools.util.Iterator it = this.assertMap.iterator();
+        for ( ObjectEntry entry = (ObjectEntry)it.next(); entry != null; entry = (ObjectEntry)it.next() ) {
+            InternalFactHandle  handle  = (InternalFactHandle) entry.getKey();
+            Object object = ( handle.isShadowFact() ) ? ((ShadowProxy)handle.getObject()).getShadowedObject() : handle.getObject();
+            if ( objectClass.isInstance( object ) ) {
+                list.add( object );
+            }       
+        }
         return list;
     }
 

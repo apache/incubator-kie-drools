@@ -40,6 +40,7 @@ public class DefaultFactHandle
     private Object            object;
     private EqualityKey       key;
     private int               objectHashCode;
+    private boolean           shadowFact;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -133,6 +134,14 @@ public class DefaultFactHandle
         this.object = null;
     }
 
+    public boolean isShadowFact() {
+        return this.shadowFact;
+    }
+
+    public void setShadowFact(boolean shadowFact) {
+        this.shadowFact = shadowFact;        
+    }    
+    
     public Object getObject() {
         return this.object;
     }

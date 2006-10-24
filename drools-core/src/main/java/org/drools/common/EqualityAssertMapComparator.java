@@ -16,6 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.base.ShadowProxy;
 import org.drools.util.AbstractHashTable.ObjectComparator;
 
 public class EqualityAssertMapComparator
@@ -52,12 +53,16 @@ public class EqualityAssertMapComparator
      * equals with the  identity of the  objects involved
      */
     public boolean equal(final Object o1,
-                         final Object o2) {
+                         Object o2) {
         if ( o1.getClass() == this.factHandleClass ) {
             return o1 == o2;
         }
 
-        return o1 == ((InternalFactHandle) o2).getObject() || o1.equals( ((InternalFactHandle) o2).getObject() );
+        InternalFactHandle handle = ((InternalFactHandle) o2);
+        
+        o2 = ( handle.isShadowFact() ) ? ((ShadowProxy) handle.getObject() ).getShadowedObject() : handle.getObject();
+        
+        return o1 == o2 || o1.equals( o2 );
     }
 
     public int compare(final Object o1,
