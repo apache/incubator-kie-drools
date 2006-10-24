@@ -32,9 +32,8 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
+import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
-import org.drools.base.dataproviders.MethodDataProvider;
-import org.drools.base.dataproviders.MethodInvoker;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.resolvers.DeclarationVariable;
 import org.drools.base.resolvers.GlobalVariable;
@@ -54,15 +53,12 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.DeclarativeInvokerDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.FieldAccessDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -97,7 +93,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.spi.AvailableVariables;
-import org.drools.spi.DataProvider;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
@@ -427,9 +422,9 @@ public class RuleBuilder {
             objectType = new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                //clazz = Class.forName( columnDescr.getObjectType() );
-                // TODO: add support to shadow facts
-                objectType = new ClassObjectType( this.typeResolver.resolveType( columnDescr.getObjectType() ) );
+                Class userProvidedClass = this.typeResolver.resolveType( columnDescr.getObjectType() );
+                Class shadowClass = ShadowProxyFactory.getProxy( userProvidedClass );
+                objectType = new ClassObjectType( userProvidedClass, shadowClass );
             } catch ( final ClassNotFoundException e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 columnDescr,
