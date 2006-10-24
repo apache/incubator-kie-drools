@@ -2739,16 +2739,21 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        workingMemory.assertObject( new State( "x" ) );
-
         Person hola = new Person( "hola" );
         workingMemory.assertObject( hola );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 0,
+                      list.size() );
+        workingMemory.assertObject( new State( "x" ) );
+
 
         workingMemory.fireAllRules();
-
-        assertTrue( list.contains( hola ) );
+        
         assertEquals( 1,
                       list.size() );
+        assertTrue( list.contains( hola ) );
 
     }
 
