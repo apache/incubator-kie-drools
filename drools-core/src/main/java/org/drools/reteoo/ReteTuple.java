@@ -109,7 +109,7 @@ public class ReteTuple
     }
 
     public InternalFactHandle get(final Declaration declaration) {
-        return get( declaration.getColumn().getIndex() );
+        return get( declaration.getColumn().getFactIndex() );
     }
 
     public Activation getActivation() {
