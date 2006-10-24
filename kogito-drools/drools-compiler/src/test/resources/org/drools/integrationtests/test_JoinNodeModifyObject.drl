@@ -15,10 +15,9 @@ salience 210
 		n2 : IndexedNumber(number < $nb1);
 		eval(n1.getIndex() < n2.getIndex());
 	then
-	    System.out.println(" R1 : "+n1.toString()+" , "+n2.toString() );
 		if ( ! (n1.getIndex() < n2.getIndex())) {
 		    errors.add("{1} Shouldn't fire for: " + n1 + " " + n2);
-       }
+        }
 end		
 
 rule "Order2"
@@ -28,18 +27,12 @@ salience 200
 		n1 : IndexedNumber($nb1 : number, $index : index);
 		n2 : IndexedNumber(number < $nb1, index > $index );
 	then
-	    System.out.println(" R2 : "+n1.toString()+" , "+n2.toString() );
 		if ( ! (n1.getIndex() < n2.getIndex())) {
 		    errors.add("{2} Shouldn't fire for: " + n1 + " " + n2);
         }
 		swap(n1, n2);
-	    System.out.println(" AS : "+n1.toString()+" , "+n2.toString() );
-		retract(n1);
-		retract(n2);	    
-		assert(n1);
-		assert(n2);	    		
-		//modify(n1);
-		//modify(n2);
+		modify(n1);
+		modify(n2);
 end		
 
 rule "Debug"
@@ -48,7 +41,6 @@ salience 10
 		n : IndexedNumber($idx : index);
 		not IndexedNumber(index < $idx);
 	then
-	    System.out.println(" R3 : "+n.toString() );
 		orderedNumbers.add(n);
 		retract(n);
 end
