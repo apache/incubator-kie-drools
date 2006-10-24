@@ -2505,25 +2505,23 @@ public abstract class IntegrationCases extends TestCase {
         // workingMemory.addEventListener(new
         // DebugWorkingMemoryEventListener());
 
-        final List list;
+        final List list = new ArrayList();
 
-        final List l = new ArrayList();
-
-        final String s = new String( "s" );
-        final Integer i = new Integer( 1 );
-        workingMemory.setGlobal( "i",
-                                 i );
-        workingMemory.setGlobal( "s",
-                                 s );
-        workingMemory.setGlobal( "l",
-                                 l );
+        final Person person = new Person( "person" );
+        final Cheese cheese = new Cheese( "cheese", 0 );
+        workingMemory.setGlobal( "cheese",
+                                 cheese );
+        workingMemory.setGlobal( "person",
+                                 person );
+        workingMemory.setGlobal( "list",
+                                 list );
 
         workingMemory.fireAllRules();
 
         // not sure about desired state of working memory.
         assertEquals( "Rules have not fired (looped) expected number of times",
                       10,
-                      l.size() );
+                      list.size() );
     }
 
     public void testLogicalAssertionsDynamicRule() throws Exception {
@@ -2560,13 +2558,16 @@ public abstract class IntegrationCases extends TestCase {
         final FactHandle h = workingMemory.assertObject( c2 );
         workingMemory.assertObject( c3 );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects( c1.getType().getClass() );
+        
+        //  Check logical assertions where made for  c2 and c3
+        list = workingMemory.getObjects( Person.class );
         assertEquals( 2,
-                      list.size() );
-        assertFalse( list.contains( c1.getType() ) );
-        assertTrue( list.contains( c2.getType() ) );
-        assertTrue( list.contains( c3.getType() ) );
+                      list.size() );     
+        assertFalse( list.contains( new  Person( c1.getType() ) ) );
+        assertTrue( list.contains( new Person( c2.getType() ) ) );
+        assertTrue( list.contains( new Person( c3.getType() ) ) );
 
+        // this rule will make a logical assertion for c1 too
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsDynamicRule2.drl" ) );
         builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
@@ -2575,13 +2576,15 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.fireAllRules();
 
-        list = workingMemory.getObjects( c1.getType().getClass() );
+        // check all now have just one logical assertion  each
+        list = workingMemory.getObjects( Person.class );
         assertEquals( 3,
                       list.size() );
-        assertTrue( list.contains( c1.getType() ) );
-        assertTrue( list.contains( c2.getType() ) );
-        assertTrue( list.contains( c3.getType() ) );
+        assertTrue( list.contains( new Person( c1.getType() ) ) );
+        assertTrue( list.contains( new Person( c2.getType() ) ) );
+        assertTrue( list.contains( new Person( c3.getType() ) ) );
 
+        // check the packages  are correctly populated
         assertEquals( "org.drools.test",
                       ruleBase.getPackages()[0].getName() );
         assertEquals( "org.drools.test2",
@@ -2591,6 +2594,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( "rule2",
                       ruleBase.getPackages()[1].getRules()[0].getName() );
 
+        // now remove the first rule
         if ( reteooRuleBase != null ) {
             reteooRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
                                        ruleBase.getPackages()[0].getRules()[0].getName() );
@@ -2599,6 +2603,7 @@ public abstract class IntegrationCases extends TestCase {
             // ruleBase.getPackages()[0].getRules()[0].getName() );
         }
 
+        //  Check the rule was correctly remove
         assertEquals( 0,
                       ruleBase.getPackages()[0].getRules().length );
         assertEquals( 1,
@@ -2608,28 +2613,28 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( "rule2",
                       ruleBase.getPackages()[1].getRules()[0].getName() );
 
-        list = workingMemory.getObjects( c1.getType().getClass() );
-        assertEquals( "remove of rule should retract objects logically asserted based on the rule",
+        list = workingMemory.getObjects( Person.class );
+        assertEquals( "removal of the rule should result in retraction of c3's logical assertion",
                       2,
                       list.size() );
-        assertTrue( "remove of rule should retract objects logically asserted based on the rule",
-                    list.contains( c1.getType() ) );
-        assertTrue( "remove of rule should retract objects logically asserted based on the rule",
-                    list.contains( c2.getType() ) );
-        assertFalse( "remove of rule should retract objects logically asserted based on the rule",
-                     list.contains( c3.getType() ) );
+        assertTrue( "c1's logical assertion should not be retracted",
+                    list.contains( new Person( c1.getType() ) ) );
+        assertTrue( "c2's logical assertion should  not be retracted",
+                    list.contains( new Person( c2.getType() ) ) );
+        assertFalse( "c3's logical assertion should be  retracted",
+                     list.contains( new Person( c3.getType() ) ) );
 
         c2.setPrice( 3 );
         workingMemory.modifyObject( h,
                                     c2 );
-        list = workingMemory.getObjects( c1.getType().getClass() );
-        assertEquals( "remove of rule should remove one justification for c2 -> type",
+        list = workingMemory.getObjects( Person.class );
+        assertEquals( "c2 now has a higher price, its logical assertion should  be cancelled",
                       1,
                       list.size() );
-        assertFalse( "remove of rule should remove one justification for c2 -> type",
-                     list.contains( c2.getType() ) );
-        assertTrue( "remove of rule should remove one justification for c2 -> type",
-                    list.contains( c1.getType() ) );
+        assertFalse( "The logical assertion cor c2 should have been retracted",
+                     list.contains( new Person( c2.getType() ) ) );
+        assertTrue( "The logical assertion  for c1 should exist",
+                    list.contains( new Person( c1.getType() ) ) );
 
         if ( reteooRuleBase != null ) {
             reteooRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
@@ -2642,7 +2647,7 @@ public abstract class IntegrationCases extends TestCase {
                       ruleBase.getPackages()[0].getRules().length );
         assertEquals( 0,
                       ruleBase.getPackages()[1].getRules().length );
-        list = workingMemory.getObjects( c1.getType().getClass() );
+        list = workingMemory.getObjects( Person.class );
         assertEquals( 0,
                       list.size() );
     }
