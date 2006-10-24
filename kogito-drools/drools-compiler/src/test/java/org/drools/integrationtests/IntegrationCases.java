@@ -74,8 +74,8 @@ import org.drools.spi.AgendaGroup;
 import org.drools.xml.XmlDumper;
 
 /**
- * This contains the test cases for each engines implementation to execute.
- * All integration tests get added here, and will be executed for each engine type. 
+ * This contains the test cases for each engines implementation to execute. All
+ * integration tests get added here, and will be executed for each engine type.
  */
 public abstract class IntegrationCases extends TestCase {
 
@@ -106,9 +106,9 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 
         assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );       
+                      list.get( 0 ) );
     }
- 
+
     public void testFieldBiningsAndEvalSharing() throws Exception {
         String drl = "test_FieldBindingsAndEvalSharing.drl";
         evalSharingTest( drl );
@@ -145,12 +145,12 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testEmptyColumn() throws Exception {
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyColumn.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
@@ -175,15 +175,15 @@ public abstract class IntegrationCases extends TestCase {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
 
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        //load up the rulebase
+        // load up the rulebase
 
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         List list = new ArrayList();
@@ -194,9 +194,10 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
-        
-        workingMemory.assertObject( new Cheese( "brie", 33 ) );
-        
+
+        workingMemory.assertObject( new Cheese( "brie",
+                                                33 ) );
+
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -204,20 +205,20 @@ public abstract class IntegrationCases extends TestCase {
 
     public void testHelloWorld() throws Exception {
 
-        //read in the source
+        // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
 
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        //load up the rulebase
+        // load up the rulebase
 
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -225,7 +226,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        //go !            
+        // go !
         final Message message = new Message( "hola" );
         message.addToList( "hello" );
         message.setNumber( 42 );
@@ -285,7 +286,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( bill,
                       list.get( 0 ) );
     }
-    
+
     public void testFactTemplate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactTemplate.drl" ) ) );
@@ -298,20 +299,26 @@ public abstract class IntegrationCases extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-        
+
         FactTemplate cheese = pkg.getFactTemplate( "Cheese" );
         Fact stilton = cheese.createFact( 0 );
-        stilton.setFieldValue( "name", "stilton" );
-        stilton.setFieldValue( "price", new Integer( 100 ) );
+        stilton.setFieldValue( "name",
+                               "stilton" );
+        stilton.setFieldValue( "price",
+                               new Integer( 100 ) );
         workingMemory.assertObject( stilton );
         workingMemory.fireAllRules();
-        
-        assertEquals( 1, list.size() );
-        assertEquals( stilton, list.get( 0 ) );
-        Fact fact = ( Fact ) list.get( 0 );
-        assertSame( stilton, fact);
-        assertEquals( new Integer( 200 ), fact.getFieldValue( "price" ) );
-        
+
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( stilton,
+                      list.get( 0 ) );
+        Fact fact = (Fact) list.get( 0 );
+        assertSame( stilton,
+                    fact );
+        assertEquals( new Integer( 200 ),
+                      fact.getFieldValue( "price" ) );
+
     }
 
     public void testPropertyChangeSupport() throws Exception {
@@ -370,10 +377,10 @@ public abstract class IntegrationCases extends TestCase {
         bill.setBigDecimal( new BigDecimal( "42" ) );
 
         final PersonInterface ben = new Person( "ben",
-                null,
-                13 );
-        ben.setBigDecimal( new BigDecimal( "43" ) );        
-        
+                                                null,
+                                                13 );
+        ben.setBigDecimal( new BigDecimal( "43" ) );
+
         workingMemory.assertObject( bill );
         workingMemory.assertObject( ben );
         workingMemory.fireAllRules();
@@ -418,7 +425,7 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.fireAllRules();
 
-        //just one added
+        // just one added
         assertEquals( "got cheese",
                       list.get( 0 ) );
         assertEquals( 1,
@@ -427,7 +434,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.retractObject( h );
         workingMemory.fireAllRules();
 
-        //still just one
+        // still just one
         assertEquals( 1,
                       list.size() );
 
@@ -435,7 +442,7 @@ public abstract class IntegrationCases extends TestCase {
                                                 5 ) );
         workingMemory.fireAllRules();
 
-        //now have one more
+        // now have one more
         assertEquals( 2,
                       list.size() );
 
@@ -803,7 +810,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
-    
+
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
@@ -812,125 +819,133 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        Cheese cheese = new Cheese( "stilton", 15 );
+        Cheese cheese = new Cheese( "stilton",
+                                    15 );
         workingMemory.assertObject( cheese );
         List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );        
+        workingMemory.setGlobal( "list",
+                                 list );
         workingMemory.fireAllRules();
-        
-        assertEquals( 4, list.size() );
-        
-        assertEquals( "rule1", list.get( 0 ) );
-        assertEquals( "rule2", list.get( 1 ) );
-        assertEquals( "rule3", list.get( 2 ) );
-        assertEquals( "rule4", list.get( 3 ) );        
+
+        assertEquals( 4,
+                      list.size() );
+
+        assertEquals( "rule1",
+                      list.get( 0 ) );
+        assertEquals( "rule2",
+                      list.get( 1 ) );
+        assertEquals( "rule3",
+                      list.get( 2 ) );
+        assertEquals( "rule4",
+                      list.get( 3 ) );
     }
 
-    
     public void testBasicFrom() throws Exception {
-    	//FIXME
-//        final PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
-//        final Package pkg = builder.getPackage();
-//
-//        final RuleBase ruleBase = getRuleBase();
-//        ruleBase.addPackage( pkg );   
-//        
-//        WorkingMemory  workingMemory = ruleBase.newWorkingMemory();
-//        List list1 = new ArrayList();
-//        workingMemory.setGlobal( "list1", list1 );
-//        List list2 = new ArrayList();
-//        workingMemory.setGlobal( "list2", list2 );
-//        List list3 = new ArrayList();
-//        workingMemory.setGlobal( "list3", list3 );        
-//        
-//        Cheesery cheesery = new Cheesery();
-//        Cheese stilton = new Cheese( "stilton", 12);
-//        Cheese cheddar = new Cheese( "cheddar", 15);
-//        cheesery.addCheese( stilton );
-//        cheesery.addCheese( cheddar );
-//        workingMemory.setGlobal( "cheesery", cheesery );
-//        workingMemory.assertObject( cheesery );
-//        
-//        workingMemory.fireAllRules();
-//        
-//        // from using a global
-//        assertEquals( 2, list1.size() );
-//        assertEquals( cheddar, list1.get( 0 ) );
-//        assertEquals( stilton, list1.get( 1 ) );
-//        
-//        // from using a declaration
-//        assertEquals( 2, list2.size() );
-//        assertEquals( cheddar, list2.get( 0 ) );
-//        assertEquals( stilton, list2.get( 1 ) );
-//        
-//        // from using a declaration
-//        assertEquals( 1, list3.size() );
-//        assertEquals( stilton, list3.get( 0 ) );        
-    } 
-    
-    public void testFromWithParams() throws Exception {     
-    	//FIXME
-//        final PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
-//        final Package pkg = builder.getPackage();
-//
-//        final RuleBase ruleBase = getRuleBase();
-//        ruleBase.addPackage( pkg );   
-//        
-//        WorkingMemory  workingMemory = ruleBase.newWorkingMemory();
-//        List list = new ArrayList();
-//        Object globalObject = new Object();
-//        workingMemory.setGlobal( "list", list );  
-//        workingMemory.setGlobal(  "testObject", new FromTestClass() );
-//        workingMemory.setGlobal( "globalObject", globalObject );
-//        
-//        Person bob = new Person( "bob" );
-//        workingMemory.assertObject( bob );
-//        
-//        workingMemory.fireAllRules();
-//        
-//        assertEquals( 6, list.size() );
-//
-//        List array = (List) list.get( 0 );
-//        assertEquals(3, array.size());
-//        Person p = (Person) array.get( 0 );
-//        assertSame(p, bob);
-//        
-//        assertEquals("42", array.get( 1 ));
-//        
-//        List nested = (List) array.get( 2 );
-//        assertEquals("x", nested.get( 0 ));
-//        assertEquals("y", nested.get( 1 ));
-//        
-//        Map map = ( Map ) list.get( 1 );       
-//        assertEquals( 2, map.keySet().size() );
-//        
-//        assertTrue( map.keySet().contains( bob ) );
-//        assertSame( globalObject, map.get( bob ) );
-//        
-//        assertTrue( map.keySet().contains( "key1" ) );
-//        Map nestedMap = ( Map ) map.get( "key1" );
-//        assertEquals( 1, nestedMap.keySet().size() );
-//        assertTrue( nestedMap.keySet().contains( "key2" ) );
-//        assertEquals( "value2", nestedMap.get( "key2" ) );
-//                
-//        assertEquals( new Integer( 42 ), list.get( 2 ) );
-//        assertEquals( "literal", list.get( 3 ) );                        
-//        assertSame( bob, list.get( 4 ) );
-//        assertSame( globalObject, list.get( 5 ) );        
-    }    
-    
+        // FIXME
+        // final PackageBuilder builder = new PackageBuilder();
+        // builder.addPackageFromDrl( new InputStreamReader(
+        // getClass().getResourceAsStream( "test_From.drl" ) ) );
+        // final Package pkg = builder.getPackage();
+        //
+        // final RuleBase ruleBase = getRuleBase();
+        // ruleBase.addPackage( pkg );
+        //        
+        // WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        // List list1 = new ArrayList();
+        // workingMemory.setGlobal( "list1", list1 );
+        // List list2 = new ArrayList();
+        // workingMemory.setGlobal( "list2", list2 );
+        // List list3 = new ArrayList();
+        // workingMemory.setGlobal( "list3", list3 );
+        //        
+        // Cheesery cheesery = new Cheesery();
+        // Cheese stilton = new Cheese( "stilton", 12);
+        // Cheese cheddar = new Cheese( "cheddar", 15);
+        // cheesery.addCheese( stilton );
+        // cheesery.addCheese( cheddar );
+        // workingMemory.setGlobal( "cheesery", cheesery );
+        // workingMemory.assertObject( cheesery );
+        //        
+        // workingMemory.fireAllRules();
+        //        
+        // // from using a global
+        // assertEquals( 2, list1.size() );
+        // assertEquals( cheddar, list1.get( 0 ) );
+        // assertEquals( stilton, list1.get( 1 ) );
+        //        
+        // // from using a declaration
+        // assertEquals( 2, list2.size() );
+        // assertEquals( cheddar, list2.get( 0 ) );
+        // assertEquals( stilton, list2.get( 1 ) );
+        //        
+        // // from using a declaration
+        // assertEquals( 1, list3.size() );
+        // assertEquals( stilton, list3.get( 0 ) );
+    }
+
+    public void testFromWithParams() throws Exception {
+        // FIXME
+        // final PackageBuilder builder = new PackageBuilder();
+        // builder.addPackageFromDrl( new InputStreamReader(
+        // getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
+        // final Package pkg = builder.getPackage();
+        //
+        // final RuleBase ruleBase = getRuleBase();
+        // ruleBase.addPackage( pkg );
+        //        
+        // WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        // List list = new ArrayList();
+        // Object globalObject = new Object();
+        // workingMemory.setGlobal( "list", list );
+        // workingMemory.setGlobal( "testObject", new FromTestClass() );
+        // workingMemory.setGlobal( "globalObject", globalObject );
+        //        
+        // Person bob = new Person( "bob" );
+        // workingMemory.assertObject( bob );
+        //        
+        // workingMemory.fireAllRules();
+        //        
+        // assertEquals( 6, list.size() );
+        //
+        // List array = (List) list.get( 0 );
+        // assertEquals(3, array.size());
+        // Person p = (Person) array.get( 0 );
+        // assertSame(p, bob);
+        //        
+        // assertEquals("42", array.get( 1 ));
+        //        
+        // List nested = (List) array.get( 2 );
+        // assertEquals("x", nested.get( 0 ));
+        // assertEquals("y", nested.get( 1 ));
+        //        
+        // Map map = ( Map ) list.get( 1 );
+        // assertEquals( 2, map.keySet().size() );
+        //        
+        // assertTrue( map.keySet().contains( bob ) );
+        // assertSame( globalObject, map.get( bob ) );
+        //        
+        // assertTrue( map.keySet().contains( "key1" ) );
+        // Map nestedMap = ( Map ) map.get( "key1" );
+        // assertEquals( 1, nestedMap.keySet().size() );
+        // assertTrue( nestedMap.keySet().contains( "key2" ) );
+        // assertEquals( "value2", nestedMap.get( "key2" ) );
+        //                
+        // assertEquals( new Integer( 42 ), list.get( 2 ) );
+        // assertEquals( "literal", list.get( 3 ) );
+        // assertSame( bob, list.get( 4 ) );
+        // assertSame( globalObject, list.get( 5 ) );
+    }
+
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
-        //Mark: please check if the conseqeuence/should/shouldn't be built
-        //        Rule badBoy = pkg.getRules()[0];
-        //        assertFalse(badBoy.isValid());
+        // Mark: please check if the conseqeuence/should/shouldn't be built
+        // Rule badBoy = pkg.getRules()[0];
+        // assertFalse(badBoy.isValid());
 
         RuntimeException runtime = null;
-        //this should ralph all over the place.
+        // this should ralph all over the place.
         final RuleBase ruleBase = getRuleBase();
         try {
             ruleBase.addPackage( pkg );
@@ -948,9 +963,9 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void testErrorLineNumbers() throws Exception {        
-        //this test aims to test semantic errors
-        //parser errors are another test case
+    public void testErrorLineNumbers() throws Exception {
+        // this test aims to test semantic errors
+        // parser errors are another test case
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "errors_in_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -961,20 +976,23 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( ruleErr.getLine() != -1 );
 
         DroolsError errs[] = builder.getErrors();
-        
+
         assertEquals( 3,
                       builder.getErrors().length );
 
-        //check that its getting it from the ruleDescr
+        // check that its getting it from the ruleDescr
         assertEquals( ruleErr.getLine(),
                       ruleErr.getDescr().getLine() );
-        //check the absolute error line number (there are more).
+        // check the absolute error line number (there are more).
         assertEquals( 11,
                       ruleErr.getLine() );
 
-        //now check the RHS, not being too specific yet, as long as it has the rules line number, not zero
+        // now check the RHS, not being too specific yet, as long as it has the
+        // rules line number, not zero
         final RuleError rhs = (RuleError) builder.getErrors()[2];
-        assertTrue( rhs.getLine() > 7 ); //not being too specific - may need to change this when we rework the error reporting
+        assertTrue( rhs.getLine() > 7 ); // not being too specific - may need to
+        // change this when we rework the error
+        // reporting
 
     }
 
@@ -1082,7 +1100,7 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testAssertRetract() throws Exception {
-        //postponed while I sort out KnowledgeHelperFixer
+        // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1118,12 +1136,12 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( source,
                                    dsl );
 
-        //the compiled package
+        // the compiled package
         final Package pkg = builder.getPackage();
         assertTrue( pkg.isValid() );
         assertEquals( null,
                       pkg.getErrorSummary() );
-        //Check errors
+        // Check errors
         final String err = builder.printErrors();
         assertEquals( "",
                       err );
@@ -1145,7 +1163,7 @@ public abstract class IntegrationCases extends TestCase {
                       messages );
         wm.fireAllRules();
 
-        //should have fired
+        // should have fired
         assertEquals( 1,
                       messages.size() );
 
@@ -1158,12 +1176,12 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( source,
                                    dsl );
 
-        //the compiled package
+        // the compiled package
         final Package pkg = builder.getPackage();
         assertTrue( pkg.isValid() );
         assertEquals( null,
                       pkg.getErrorSummary() );
-        //Check errors
+        // Check errors
         final String err = builder.printErrors();
         assertEquals( "",
                       err );
@@ -1174,30 +1192,32 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-        wm.assertObject( "rage" );
-        wm.assertObject( new Integer( 66 ) );
+        wm.assertObject( new Person( "rage" ) );
+        wm.assertObject( new Cheese( "cheddar",
+                                     15 ) );
 
         final List messages = new ArrayList();
         wm.setGlobal( "messages",
                       messages );
         wm.fireAllRules();
 
-        //should have NONE, as both conditions should be false.
+        // should have NONE, as both conditions should be false.
         assertEquals( 0,
                       messages.size() );
 
-        wm.assertObject( "fire" );
+        wm.assertObject( new Person( "fire" ) );
         wm.fireAllRules();
 
-        //still no firings
+        // still no firings
         assertEquals( 0,
                       messages.size() );
 
-        wm.assertObject( new Integer( 42 ) );
+        wm.assertObject( new Cheese( "brie",
+                                     15 ) );
 
         wm.fireAllRules();
 
-        //YOUR FIRED
+        // YOUR FIRED
         assertEquals( 1,
                       messages.size() );
 
@@ -1457,16 +1477,16 @@ public abstract class IntegrationCases extends TestCase {
                       list2.size() );
         assertTrue( list2.contains( chili1 ) );
         assertTrue( list2.contains( chili2 ) );
-        
+
         assertEquals( 2,
                       list3.size() );
         assertTrue( list3.contains( youngChili1 ) );
-        assertTrue( list3.contains( youngChili2 ) );    
-        
+        assertTrue( list3.contains( youngChili2 ) );
+
         assertEquals( 2,
                       list4.size() );
         assertTrue( list4.contains( youngChili1 ) );
-        assertTrue( list4.contains( chili1 ) );         
+        assertTrue( list4.contains( chili1 ) );
     }
 
     public void testAgendaGroups() throws Exception {
@@ -1903,19 +1923,21 @@ public abstract class IntegrationCases extends TestCase {
     public void testDynamicRuleRemovals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );        
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-        //org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
+        // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
         final RuleBase ruleBase = getRuleBase();
-        //org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        // org.drools.reteoo.RuleBaseImpl ruleBase = new
+        // org.drools.reteoo.RuleBaseImpl();
         if ( ruleBase instanceof org.drools.reteoo.ReteooRuleBase ) {
             reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-//        } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase ) {
-//            leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
+            // } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase )
+            // {
+            // leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
         }
         ruleBase.addPackage( pkg );
         PackageBuilder builder2 = new PackageBuilder();
@@ -1949,9 +1971,9 @@ public abstract class IntegrationCases extends TestCase {
                                            5 );
         workingMemory.assertObject( cheddar );
         //        
-        //        workingMemory.get
+        // workingMemory.get
         //        
-        //        workingMemory.fireAllRules();
+        // workingMemory.fireAllRules();
 
         assertEquals( 11,
                       workingMemory.getAgenda().getActivations().length );
@@ -1976,27 +1998,27 @@ public abstract class IntegrationCases extends TestCase {
 
             assertEquals( 0,
                           workingMemory.getAgenda().getActivations().length );
-//        } else if ( leapsRuleBase != null ) {
-//            leapsRuleBase.removeRule( "org.drools.test",
-//                                      "Who likes Stilton" );
-//            assertEquals( 8,
-//                          workingMemory.getAgenda().getActivations().length );
-//
-//            leapsRuleBase.removeRule( "org.drools.test",
-//                                      "like cheese" );
-//
-//            final Cheese muzzarela = new Cheese( "muzzarela",
-//                                                 5 );
-//            workingMemory.assertObject( muzzarela );
-//
-//            assertEquals( 4,
-//                          workingMemory.getAgenda().getActivations().length );
-//
-//            leapsRuleBase.removePackage( "org.drools.test" );
-//
-//            assertEquals( 0,
-//                          workingMemory.getAgenda().getActivations().length );
-//
+            // } else if ( leapsRuleBase != null ) {
+            // leapsRuleBase.removeRule( "org.drools.test",
+            // "Who likes Stilton" );
+            // assertEquals( 8,
+            // workingMemory.getAgenda().getActivations().length );
+            //
+            // leapsRuleBase.removeRule( "org.drools.test",
+            // "like cheese" );
+            //
+            // final Cheese muzzarela = new Cheese( "muzzarela",
+            // 5 );
+            // workingMemory.assertObject( muzzarela );
+            //
+            // assertEquals( 4,
+            // workingMemory.getAgenda().getActivations().length );
+            //
+            // leapsRuleBase.removePackage( "org.drools.test" );
+            //
+            // assertEquals( 0,
+            // workingMemory.getAgenda().getActivations().length );
+            //
         }
     }
 
@@ -2010,13 +2032,15 @@ public abstract class IntegrationCases extends TestCase {
         final Package pkg = builder.getPackage();
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-//        org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
+        // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
         final RuleBase ruleBase = getRuleBase();
-        //org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        // org.drools.reteoo.RuleBaseImpl ruleBase = new
+        // org.drools.reteoo.RuleBaseImpl();
         if ( ruleBase instanceof org.drools.reteoo.ReteooRuleBase ) {
             reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-//        } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase ) {
-//            leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
+            // } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase )
+            // {
+            // leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
         }
         ruleBase.addPackage( pkg );
 
@@ -2041,42 +2065,43 @@ public abstract class IntegrationCases extends TestCase {
             reteooRuleBase.removePackage( "org.drools.test" );
             assertEquals( 0,
                           reteooRuleBase.getPackages().length );
-//        } else if ( leapsRuleBase != null ) {
-//            assertEquals( 1,
-//                          leapsRuleBase.getPackages().length );
-//            assertEquals( 4,
-//                          leapsRuleBase.getPackages()[0].getRules().length );
-//
-//            leapsRuleBase.removeRule( "org.drools.test",
-//                                      "Who likes Stilton" );
-//            assertEquals( 3,
-//                          leapsRuleBase.getPackages()[0].getRules().length );
-//
-//            leapsRuleBase.removeRule( "org.drools.test",
-//                                      "like cheese" );
-//            assertEquals( 2,
-//                          leapsRuleBase.getPackages()[0].getRules().length );
-//
-//            leapsRuleBase.removePackage( "org.drools.test" );
-//            assertEquals( 0,
-//                          leapsRuleBase.getPackages().length );
+            // } else if ( leapsRuleBase != null ) {
+            // assertEquals( 1,
+            // leapsRuleBase.getPackages().length );
+            // assertEquals( 4,
+            // leapsRuleBase.getPackages()[0].getRules().length );
+            //
+            // leapsRuleBase.removeRule( "org.drools.test",
+            // "Who likes Stilton" );
+            // assertEquals( 3,
+            // leapsRuleBase.getPackages()[0].getRules().length );
+            //
+            // leapsRuleBase.removeRule( "org.drools.test",
+            // "like cheese" );
+            // assertEquals( 2,
+            // leapsRuleBase.getPackages()[0].getRules().length );
+            //
+            // leapsRuleBase.removePackage( "org.drools.test" );
+            // assertEquals( 0,
+            // leapsRuleBase.getPackages().length );
         }
     }
-    
+
     public void testDuplicateRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName1.drl" ) ) );
-        
+
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        
+
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName2.drl" ) ) );
         ruleBase.addPackage( builder.getPackage() );
-        
-        // @todo: this is from JBRULES-394 - maybe we should test more stuff here?
-        
-    }    
+
+        // @todo: this is from JBRULES-394 - maybe we should test more stuff
+        // here?
+
+    }
 
     public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
@@ -2121,7 +2146,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 0,
                       builder.getErrors().length );
 
-        RuleBase ruleBase = getRuleBase();//RuleBaseFactory.newRuleBase();
+        RuleBase ruleBase = getRuleBase();// RuleBaseFactory.newRuleBase();
 
         ruleBase.addPackage( pkg );
 
@@ -2236,10 +2261,10 @@ public abstract class IntegrationCases extends TestCase {
         list = workingMemory.getObjects( cheese1.getType().getClass() );
         assertEquals( 1,
                       list.size() );
-        //probably dangerous, as contains works with equals, not identity
+        // probably dangerous, as contains works with equals, not identity
         assertEquals( cheese1.getType(),
                       list.get( 0 ) );
-        //FactHandle ht = workingMemory.getFactHandle(c1.getType());
+        // FactHandle ht = workingMemory.getFactHandle(c1.getType());
 
         final FactHandle h2 = workingMemory.assertObject( cheese2 );
         workingMemory.fireAllRules();
@@ -2437,8 +2462,9 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
 
         final FactHandle h = workingMemory.assertObject( a );
-        //no need to fire rules, assertion alone removes justification for i, so it should be retracted.
-        //workingMemory.fireAllRules();
+        // no need to fire rules, assertion alone removes justification for i,
+        // so it should be retracted.
+        // workingMemory.fireAllRules();
         list = workingMemory.getObjects();
         assertEquals( "a was not asserted or i not retracted.",
                       1,
@@ -2449,8 +2475,8 @@ public abstract class IntegrationCases extends TestCase {
         assertFalse( "i was not rectracted.",
                      list.contains( i ) );
 
-        //no rules should fire, but nevertheless...
-        //workingMemory.fireAllRules();
+        // no rules should fire, but nevertheless...
+        // workingMemory.fireAllRules();
         assertEquals( "agenda should be empty.",
                       0,
                       workingMemory.getAgenda().agendaSize() );
@@ -2475,8 +2501,9 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        //workingMemory.addEventListener(new DebugAgendaEventListener());
-        //workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+        // workingMemory.addEventListener(new DebugAgendaEventListener());
+        // workingMemory.addEventListener(new
+        // DebugWorkingMemoryEventListener());
 
         final List list;
 
@@ -2493,7 +2520,7 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.fireAllRules();
 
-        //not sure about desired state of working memory. 
+        // not sure about desired state of working memory.
         assertEquals( "Rules have not fired (looped) expected number of times",
                       10,
                       l.size() );
@@ -2505,18 +2532,21 @@ public abstract class IntegrationCases extends TestCase {
         final Package pkg = builder.getPackage();
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-//        org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
+        // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
         final RuleBase ruleBase = getRuleBase();
         if ( ruleBase instanceof org.drools.reteoo.ReteooRuleBase ) {
             reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-//        } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase ) {
-//            leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
+            // } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase )
+            // {
+            // leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
         }
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        //        workingMemory.addEventListener(new org.drools.event.DebugAgendaEventListener());
-        //        workingMemory.addEventListener(new org.drools.event.DebugWorkingMemoryEventListener());
+        // workingMemory.addEventListener(new
+        // org.drools.event.DebugAgendaEventListener());
+        // workingMemory.addEventListener(new
+        // org.drools.event.DebugWorkingMemoryEventListener());
 
         final Cheese c1 = new Cheese( "a",
                                       1 );
@@ -2564,9 +2594,9 @@ public abstract class IntegrationCases extends TestCase {
         if ( reteooRuleBase != null ) {
             reteooRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
                                        ruleBase.getPackages()[0].getRules()[0].getName() );
-//        } else if ( leapsRuleBase != null ) {
-//            leapsRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
-//                                      ruleBase.getPackages()[0].getRules()[0].getName() );
+            // } else if ( leapsRuleBase != null ) {
+            // leapsRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
+            // ruleBase.getPackages()[0].getRules()[0].getName() );
         }
 
         assertEquals( 0,
@@ -2604,9 +2634,9 @@ public abstract class IntegrationCases extends TestCase {
         if ( reteooRuleBase != null ) {
             reteooRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
                                        ruleBase.getPackages()[1].getRules()[0].getName() );
-//        } else if ( leapsRuleBase != null ) {
-//            leapsRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
-//                                      ruleBase.getPackages()[1].getRules()[0].getName() );
+            // } else if ( leapsRuleBase != null ) {
+            // leapsRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
+            // ruleBase.getPackages()[1].getRules()[0].getName() );
         }
         assertEquals( 0,
                       ruleBase.getPackages()[0].getRules().length );
@@ -2653,7 +2683,7 @@ public abstract class IntegrationCases extends TestCase {
                           0,
                           m.size() );
         } catch ( final NoSuchFieldException e ) {
-            //is probably non-reteoo engine
+            // is probably non-reteoo engine
         }
     }
 
@@ -2710,10 +2740,10 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         workingMemory.assertObject( new State( "x" ) );
-        
-        Person hola = new Person( "hola" );        
+
+        Person hola = new Person( "hola" );
         workingMemory.assertObject( hola );
-        
+
         workingMemory.fireAllRules();
 
         assertTrue( list.contains( hola ) );
@@ -2801,10 +2831,10 @@ public abstract class IntegrationCases extends TestCase {
             builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
             ruleBaseWM.addPackage( builder1.getPackage() );
             workingMemory.fireAllRules();
-            
+
             ruleBaseWM.removePackage( packageName );
             ruleBaseWM.addPackage( builder1.getPackage() );
-            
+
             ruleBaseWM.removePackage( packageName );
             ruleBaseWM.addPackage( builder1.getPackage() );
         } catch ( Exception e ) {
@@ -2847,8 +2877,9 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testTwoQuerries() throws Exception {
-        // @see JBRULES-410 More than one Query definition causes an incorrect Rete network to be built.
-        
+        // @see JBRULES-410 More than one Query definition causes an incorrect
+        // Rete network to be built.
+
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_TwoQuerries.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2858,27 +2889,30 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final Cheese stilton = new Cheese( "stinky",
-                                     5 );
+                                           5 );
         workingMemory.assertObject( stilton );
-        final Person per1 = new Person( "stinker", "smelly feet", 70);
-        final Person per2 = new Person( "skunky", "smelly armpits", 40);
-        
+        final Person per1 = new Person( "stinker",
+                                        "smelly feet",
+                                        70 );
+        final Person per2 = new Person( "skunky",
+                                        "smelly armpits",
+                                        40 );
+
         workingMemory.assertObject( per1 );
         workingMemory.assertObject( per2 );
-        
+
         QueryResults results = workingMemory.getQueryResults( "find stinky cheeses" );
         assertEquals( 1,
                       results.size() );
-        
+
         results = workingMemory.getQueryResults( "find pensioners" );
         assertEquals( 1,
-                      results.size() );        
-    }    
-    
+                      results.size() );
+    }
+
     public void testExistsWithBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( 
-               getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -2889,25 +2923,28 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        Cheese c = new Cheese( "stilton", 10 );
-        Person p = new Person( "Mark", "stilton" );
+        Cheese c = new Cheese( "stilton",
+                               10 );
+        Person p = new Person( "Mark",
+                               "stilton" );
         workingMemory.assertObject( c );
         workingMemory.assertObject( p );
         workingMemory.fireAllRules();
 
         assertTrue( list.contains( c.getType() ) );
-        assertEquals(1, list.size() );        
+        assertEquals( 1,
+                      list.size() );
     }
 
     public void testLogicalAssertionsWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionWithExists.drl" )) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
-    
+
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-    
+
         Person p1 = new Person( "p1",
                                 "stilton",
                                 20 );
@@ -2924,12 +2961,12 @@ public abstract class IntegrationCases extends TestCase {
         p3.setStatus( "europe" );
         FactHandle c3FactHandle = workingMemory.assertObject( p3 );
         workingMemory.fireAllRules();
-        
+
         // all 3 in europe, so, 2 cheese
         List cheeseList = workingMemory.getObjects( String.class );
         assertEquals( 2,
                       cheeseList.size() );
-        
+
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
         workingMemory.modifyObject( c3FactHandle,
@@ -2938,7 +2975,7 @@ public abstract class IntegrationCases extends TestCase {
         cheeseList = workingMemory.getObjects( String.class );
         assertEquals( 1,
                       cheeseList.size() );
-        
+
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
         workingMemory.modifyObject( c2FactHandle,
@@ -2947,7 +2984,7 @@ public abstract class IntegrationCases extends TestCase {
         cheeseList = workingMemory.getObjects( String.class );
         assertEquals( 1,
                       cheeseList.size() );
-        
+
         // europe=[ ], america=[ 1, 2, 3 ]
         p1.setStatus( "america" );
         workingMemory.modifyObject( c1FactHandle,
@@ -2956,7 +2993,7 @@ public abstract class IntegrationCases extends TestCase {
         cheeseList = workingMemory.getObjects( String.class );
         assertEquals( 2,
                       cheeseList.size() );
-        
+
         // europe=[ 2 ], america=[ 1, 3 ]
         p2.setStatus( "europe" );
         workingMemory.modifyObject( c2FactHandle,
@@ -2965,7 +3002,7 @@ public abstract class IntegrationCases extends TestCase {
         cheeseList = workingMemory.getObjects( String.class );
         assertEquals( 1,
                       cheeseList.size() );
-        
+
         // europe=[ 1, 2 ], america=[ 3 ]
         p1.setStatus( "europe" );
         workingMemory.modifyObject( c1FactHandle,
@@ -2974,7 +3011,7 @@ public abstract class IntegrationCases extends TestCase {
         cheeseList = workingMemory.getObjects( String.class );
         assertEquals( 1,
                       cheeseList.size() );
-        
+
         // europe=[ 1, 2, 3 ], america=[ ]
         p3.setStatus( "europe" );
         workingMemory.modifyObject( c3FactHandle,
@@ -2984,28 +3021,28 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 2,
                       cheeseList.size() );
     }
-    
+
     public void testLLR() throws Exception {
 
-        //read in the source
+        // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
 
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        //load up the rulebase
+        // load up the rulebase
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-        
+
         try {
-            // 1st time           
+            // 1st time
             org.drools.Target tgt = new org.drools.Target();
             tgt.setLabel( "Santa-Anna" );
             tgt.setLat( new Float( 60.26544f ) );
@@ -3014,7 +3051,7 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 12.0f ) );
             tgt.setTime( new Float( 1.8666667f ) );
             wm.assertObject( tgt );
-            
+
             tgt = new org.drools.Target();
             tgt.setLabel( "Santa-Maria" );
             tgt.setLat( new Float( 60.236874f ) );
@@ -3023,7 +3060,7 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 8.0f ) );
             tgt.setTime( new Float( 1.8666667f ) );
             wm.assertObject( tgt );
-            
+
             wm.fireAllRules();
 
             // 2nd time
@@ -3035,7 +3072,7 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 12.0f ) );
             tgt.setTime( new Float( 1.9f ) );
             wm.assertObject( tgt );
-            
+
             tgt = new org.drools.Target();
             tgt.setLabel( "Santa-Maria" );
             tgt.setLat( new Float( 60.236935f ) );
@@ -3044,7 +3081,7 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 8.0f ) );
             tgt.setTime( new Float( 1.9f ) );
             wm.assertObject( tgt );
-            
+
             wm.fireAllRules();
 
             // 3d time
@@ -3056,7 +3093,7 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 12.0f ) );
             tgt.setTime( new Float( 1.9333333f ) );
             wm.assertObject( tgt );
-            
+
             tgt = new org.drools.Target();
             tgt.setLabel( "Santa-Maria" );
             tgt.setLat( new Float( 60.236996f ) );
@@ -3065,7 +3102,7 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 8.0f ) );
             tgt.setTime( new Float( 1.9333333f ) );
             wm.assertObject( tgt );
-            
+
             wm.fireAllRules();
 
             // 4th time
@@ -3077,7 +3114,7 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 12.0f ) );
             tgt.setTime( new Float( 1.9666667f ) );
             wm.assertObject( tgt );
-            
+
             tgt = new org.drools.Target();
             tgt.setLabel( "Santa-Maria" );
             tgt.setLat( new Float( 60.237057f ) );
@@ -3086,83 +3123,94 @@ public abstract class IntegrationCases extends TestCase {
             tgt.setSpeed( new Float( 8.0f ) );
             tgt.setTime( new Float( 1.9666667f ) );
             wm.assertObject( tgt );
-            
+
             wm.fireAllRules();
         } catch ( RuntimeException e ) {
-            Assert.fail("Test is not supposed to throw any exception");
+            Assert.fail( "Test is not supposed to throw any exception" );
         }
-        
+
     }
-    
+
     public void testAccumulate() throws Exception {
 
-        //read in the source
+        // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
 
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        //load up the rulebase
+        // load up the rulebase
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
-        
-        wm.setGlobal( "results", results );
-        
-        wm.assertObject( new Cheese("stilton", 10) );
-        wm.assertObject( new Cheese("brie", 5) );
-        wm.assertObject( new Cheese("provolone", 150) );
-        wm.assertObject( new Person("Bob", "stilton") );
-        wm.assertObject( new Person("Mark", "provolone") );
-        
+
+        wm.setGlobal( "results",
+                      results );
+
+        wm.assertObject( new Cheese( "stilton",
+                                     10 ) );
+        wm.assertObject( new Cheese( "brie",
+                                     5 ) );
+        wm.assertObject( new Cheese( "provolone",
+                                     150 ) );
+        wm.assertObject( new Person( "Bob",
+                                     "stilton" ) );
+        wm.assertObject( new Person( "Mark",
+                                     "provolone" ) );
+
         wm.fireAllRules();
-        
-        Assert.assertEquals(new Integer(165), results.get(0));
-        Assert.assertEquals(new Integer(10), results.get(1));
-        Assert.assertEquals(new Integer(150), results.get(2));
-        Assert.assertEquals(new Integer(10), results.get(3));
+
+        Assert.assertEquals( new Integer( 165 ),
+                             results.get( 0 ) );
+        Assert.assertEquals( new Integer( 10 ),
+                             results.get( 1 ) );
+        Assert.assertEquals( new Integer( 150 ),
+                             results.get( 2 ) );
+        Assert.assertEquals( new Integer( 10 ),
+                             results.get( 3 ) );
     }
-    
+
     public void testAccumulateModify() throws Exception {
-        //read in the source
+        // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
 
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        //load up the rulebase
+        // load up the rulebase
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
-        
-        wm.setGlobal( "results", results );
-        
-        Cheese[] cheese = new Cheese[] {
-                       new Cheese("stilton", 10),
-                       new Cheese("stilton", 2),
-                       new Cheese("stilton", 5),
-                       new Cheese("brie", 15),
-                       new Cheese("brie", 16),
-                       new Cheese("provolone", 8)
-        };
-        Person bob =  new Person("Bob", "stilton");
-        
+
+        wm.setGlobal( "results",
+                      results );
+
+        Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                   10 ), new Cheese( "stilton",
+                                                                     2 ), new Cheese( "stilton",
+                                                                                      5 ), new Cheese( "brie",
+                                                                                                       15 ), new Cheese( "brie",
+                                                                                                                         16 ), new Cheese( "provolone",
+                                                                                                                                           8 )};
+        Person bob = new Person( "Bob",
+                                 "stilton" );
+
         FactHandle[] cheeseHandles = new FactHandle[cheese.length];
-        for( int i = 0; i < cheese.length; i++ ) {
+        for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.assertObject( cheese[i] );
         }
         FactHandle bobHandle = wm.assertObject( bob );
@@ -3170,107 +3218,128 @@ public abstract class IntegrationCases extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0, results.size() );
-        
+        Assert.assertEquals( 0,
+                             results.size() );
+
         // ---------------- 2nd scenario
         int index = 1;
         cheese[index].setPrice( 9 );
-        wm.modifyObject( cheeseHandles[index], cheese[index] );
+        wm.modifyObject( cheeseHandles[index],
+                         cheese[index] );
         wm.fireAllRules();
-        
+
         // 1 fire
-        Assert.assertEquals( 1, results.size());
-        Assert.assertEquals( 24, ((Cheesery)results.get( results.size()-1 )).getTotalAmount() );
-        
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 24,
+                             ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
+
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );
-        wm.modifyObject( bobHandle, bob );
+        wm.modifyObject( bobHandle,
+                         bob );
         wm.fireAllRules();
-        
+
         // 2 fires
-        Assert.assertEquals( 2, results.size());
-        Assert.assertEquals( 31, ((Cheesery)results.get( results.size()-1 )).getTotalAmount() );
-        
+        Assert.assertEquals( 2,
+                             results.size() );
+        Assert.assertEquals( 31,
+                             ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
+
         // ---------------- 4th scenario
         wm.retractObject( cheeseHandles[3] );
         wm.fireAllRules();
-        
+
         // should not have fired as per constraint
-        Assert.assertEquals( 2, results.size());
-        
+        Assert.assertEquals( 2,
+                             results.size() );
+
     }
-    
+
     public void testCollect() throws Exception {
 
-        //read in the source
+        // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
 
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        //load up the rulebase
+        // load up the rulebase
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
-        
-        wm.setGlobal( "results", results );
-        
-        wm.assertObject( new Cheese("stilton", 10) );
-        wm.assertObject( new Cheese("stilton", 7) );
-        wm.assertObject( new Cheese("stilton", 8) );
-        wm.assertObject( new Cheese("brie", 5) );
-        wm.assertObject( new Cheese("provolone", 150) );
-        wm.assertObject( new Cheese("provolone", 20) );
-        wm.assertObject( new Person("Bob", "stilton") );
-        wm.assertObject( new Person("Mark", "provolone") );
-        
+
+        wm.setGlobal( "results",
+                      results );
+
+        wm.assertObject( new Cheese( "stilton",
+                                     10 ) );
+        wm.assertObject( new Cheese( "stilton",
+                                     7 ) );
+        wm.assertObject( new Cheese( "stilton",
+                                     8 ) );
+        wm.assertObject( new Cheese( "brie",
+                                     5 ) );
+        wm.assertObject( new Cheese( "provolone",
+                                     150 ) );
+        wm.assertObject( new Cheese( "provolone",
+                                     20 ) );
+        wm.assertObject( new Person( "Bob",
+                                     "stilton" ) );
+        wm.assertObject( new Person( "Mark",
+                                     "provolone" ) );
+
         wm.fireAllRules();
-        
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(3, ((Collection)results.get(0)).size());
-        Assert.assertEquals(ArrayList.class.getName(), results.get(0).getClass().getName());
+
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Collection) results.get( 0 )).size() );
+        Assert.assertEquals( ArrayList.class.getName(),
+                             results.get( 0 ).getClass().getName() );
     }
-    
+
     public void testCollectModify() throws Exception {
-        //read in the source
+        // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
 
-        //pre build the package
+        // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        //load up the rulebase
+        // load up the rulebase
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
-        
-        wm.setGlobal( "results", results );
-        
-        Cheese[] cheese = new Cheese[] {
-                       new Cheese("stilton", 10),
-                       new Cheese("stilton", 2),
-                       new Cheese("stilton", 5),
-                       new Cheese("brie", 15),
-                       new Cheese("brie", 16),
-                       new Cheese("provolone", 8)
-        };
-        Person bob =  new Person("Bob", "stilton");
-        
+
+        wm.setGlobal( "results",
+                      results );
+
+        Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                   10 ), new Cheese( "stilton",
+                                                                     2 ), new Cheese( "stilton",
+                                                                                      5 ), new Cheese( "brie",
+                                                                                                       15 ), new Cheese( "brie",
+                                                                                                                         16 ), new Cheese( "provolone",
+                                                                                                                                           8 )};
+        Person bob = new Person( "Bob",
+                                 "stilton" );
+
         FactHandle[] cheeseHandles = new FactHandle[cheese.length];
-        for( int i = 0; i < cheese.length; i++ ) {
+        for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.assertObject( cheese[i] );
         }
         FactHandle bobHandle = wm.assertObject( bob );
@@ -3278,61 +3347,72 @@ public abstract class IntegrationCases extends TestCase {
         // ---------------- 1st scenario
         int fireCount = 0;
         wm.fireAllRules();
-        Assert.assertEquals( ++fireCount, results.size() );
-        Assert.assertEquals( 3, ((Collection)results.get(fireCount-1)).size());
-        Assert.assertEquals( ArrayList.class.getName(), results.get(fireCount-1).getClass().getName());
-        
+        Assert.assertEquals( ++fireCount,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Collection) results.get( fireCount - 1 )).size() );
+        Assert.assertEquals( ArrayList.class.getName(),
+                             results.get( fireCount - 1 ).getClass().getName() );
+
         // ---------------- 2nd scenario
         int index = 1;
         cheese[index].setPrice( 9 );
-        wm.modifyObject( cheeseHandles[index], cheese[index] );
+        wm.modifyObject( cheeseHandles[index],
+                         cheese[index] );
         wm.fireAllRules();
-        
-        Assert.assertEquals( ++fireCount, results.size() );
-        Assert.assertEquals( 3, ((Collection)results.get(fireCount-1)).size());
-        Assert.assertEquals( ArrayList.class.getName(), results.get(fireCount-1).getClass().getName());
-        
+
+        Assert.assertEquals( ++fireCount,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Collection) results.get( fireCount - 1 )).size() );
+        Assert.assertEquals( ArrayList.class.getName(),
+                             results.get( fireCount - 1 ).getClass().getName() );
+
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );
-        wm.modifyObject( bobHandle, bob );
+        wm.modifyObject( bobHandle,
+                         bob );
         wm.fireAllRules();
-        
-        Assert.assertEquals( fireCount, results.size() );
-        
+
+        Assert.assertEquals( fireCount,
+                             results.size() );
+
         // ---------------- 4th scenario
         wm.retractObject( cheeseHandles[3] );
         wm.fireAllRules();
-        
+
         // should not have fired as per constraint
-        Assert.assertEquals( fireCount, results.size());
-        
+        Assert.assertEquals( fireCount,
+                             results.size() );
+
     }
-    
+
     public void testAssertRetractNoloop() {
         try {
-            //read in the source
+            // read in the source
             final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Assert_Retract_Noloop.drl" ) );
             final DrlParser parser = new DrlParser();
             final PackageDescr packageDescr = parser.parse( reader );
 
-            //pre build the package
+            // pre build the package
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackage( packageDescr );
             final Package pkg = builder.getPackage();
 
-            //add the package to a rulebase
+            // add the package to a rulebase
             final RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
-            //load up the rulebase
+            // load up the rulebase
 
             final WorkingMemory wm = ruleBase.newWorkingMemory();
-            wm.assertObject( new Cheese("stilton", 15) );
-            
+            wm.assertObject( new Cheese( "stilton",
+                                         15 ) );
+
             wm.fireAllRules();
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail("test should not throw exception");
+            fail( "test should not throw exception" );
         }
     }
-    
+
 }
