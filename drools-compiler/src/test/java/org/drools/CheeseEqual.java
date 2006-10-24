@@ -28,6 +28,10 @@ public class CheeseEqual
     protected String type;
     protected int    price;
 
+    public CheeseEqual(){
+        
+    }
+    
     public CheeseEqual(final String type,
                        final int price) {
         super();

@@ -1,14 +1,13 @@
 package org.drools.test;
 
-import java.lang.Integer;
-import java.lang.Float;
+import org.drools.Person
 import org.drools.CheeseEqual;
 
 rule "assert"
 	when
-		i : Integer()
+		p : Person()
 	then
-		assertLogical(new CheeseEqual(i.toString(), i.intValue()));
+		assertLogical( new CheeseEqual( p.getName(), p.getAge() ) );
 end
 
 rule "modify"

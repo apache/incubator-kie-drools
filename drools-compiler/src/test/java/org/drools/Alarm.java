@@ -3,6 +3,10 @@ package org.drools;
 public class Alarm {
     private String message;
 
+    public Alarm() {
+        
+    }
+    
     public Alarm(final String message) {
         this.message = message;
     }

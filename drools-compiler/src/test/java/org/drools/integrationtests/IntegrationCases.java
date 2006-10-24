@@ -2303,8 +2303,8 @@ public abstract class IntegrationCases extends TestCase {
 
         List list;
 
-        final String b = new String( "b" );
-        final String a = new String( "a" );
+        final Person b = new Person( "b");
+        final Person a = new Person( "a");
 
         workingMemory.setGlobal( "b",
                                  b );
@@ -2347,7 +2347,7 @@ public abstract class IntegrationCases extends TestCase {
         List list;
 
         final List l = new ArrayList();
-        final String a = new String( "a" );
+        final Person a = new Person( "a" );
         workingMemory.setGlobal( "a",
                                  a );
         workingMemory.setGlobal( "l",
@@ -2375,7 +2375,7 @@ public abstract class IntegrationCases extends TestCase {
         List list;
 
         final List l = new ArrayList();
-        final String a = new String( "a" );
+        final Person a = new Person( "a" );
         workingMemory.setGlobal( "a",
                                  a );
         workingMemory.setGlobal( "l",
@@ -2657,7 +2657,9 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List l;
-        final FactHandle h = workingMemory.assertObject( new Integer( 2 ) );
+        Person p = new Person( "person");
+        p.setAge( 2 );
+        final FactHandle h = workingMemory.assertObject( p );
         assertEquals( 1,
                       workingMemory.getObjects().size() );
 
