@@ -8,17 +8,17 @@ global java.util.List list
 
 rule "another test"
     when
-        s : String()
-        eval(s.equals("foo") && s.startsWith("f"))
+        p : Person()
+        eval(p.getName().equals("foo") && p.getName().startsWith("f"))
     then
-        list.add( s );
+        list.add( p );
 end  
 
 rule "yet more"
     when
-        s : String()
-        eval(s.equals("foo") && s.startsWith("f"))
-        eval(s.equals("foo") && s.startsWith("q"))        
+        p : Person()
+        eval(p.getName().equals("foo") && p.getName().startsWith("f"))
+        eval(p.getName().equals("foo") && p.getName().startsWith("q"))        
     then
-        list.add( s );
+        list.add( p );
 end  
