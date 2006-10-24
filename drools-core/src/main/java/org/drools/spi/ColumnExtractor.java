@@ -31,7 +31,7 @@ public class ColumnExtractor
     /**
      * 
      */
-    private static final long serialVersionUID = 9055898682913511836L;
+    private static final long serialVersionUID = 320L;
     private ObjectType        objectType;
 
     public ColumnExtractor(final ObjectType objectType) {
@@ -39,7 +39,8 @@ public class ColumnExtractor
     }
 
     public Object getValue(final Object object) {
-        return ( object instanceof ShadowProxy ) ? ((ShadowProxy)object).getShadowedObject() : object;
+        return object;
+        //return ( this.objectType.isShadowEnabled() ) ? ((ShadowProxy)object).getShadowedObject() : object;
     }
 
     public ObjectType getObjectType() {
