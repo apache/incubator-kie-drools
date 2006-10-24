@@ -30,7 +30,7 @@ import org.drools.spi.PropagationContext;
 
 public class MockTupleSink extends TupleSource
     implements
-    TupleSink,
+    TupleSinkNode,
     NodeMemory {
     /**
      * 
@@ -39,6 +39,9 @@ public class MockTupleSink extends TupleSource
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();
 
+    private TupleSinkNode           previousTupleSinkNode;
+    private TupleSinkNode           nextTupleSinkNode;
+    
     public MockTupleSink() {
         super( 0 );
     }
@@ -113,5 +116,41 @@ public class MockTupleSink extends TupleSource
         // TODO Auto-generated method stub
         return Collections.EMPTY_LIST;
     }
+    
+    /**
+     * Returns the next node
+     * @return
+     *      The next TupleSinkNode
+     */
+    public TupleSinkNode getNextTupleSinkNode() {
+        return this.nextTupleSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next TupleSinkNode
+     */
+    public void setNextTupleSinkNode(final TupleSinkNode next) {
+        this.nextTupleSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous TupleSinkNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode() {
+        return this.previousTupleSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous TupleSinkNode
+     */
+    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+        this.previousTupleSinkNode = previous;
+    }    
 
 }
