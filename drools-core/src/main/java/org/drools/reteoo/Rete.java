@@ -140,7 +140,12 @@ class Rete extends ObjectSource
 
         final Object object = handle.getObject();
 
-        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
+        ObjectTypeNode[] cachedNodes;
+        if ( object instanceof ShadowProxy ) {
+             cachedNodes  = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
+        } else {
+            cachedNodes  = (ObjectTypeNode[]) memory.get( object.getClass() );
+        }
 //        // //@todo this  is a hack, we really  don't want to be doing instanceof here 
 //        if ( object instanceof ShadowProxy ){
 //        	
