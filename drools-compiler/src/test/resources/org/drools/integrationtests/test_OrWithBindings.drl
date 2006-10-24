@@ -12,5 +12,5 @@ rule "MyRule"
 		p: Person()
 	then 
 		System.out.println("result is " + p);
-		//results.add(p);		
+		results.add(p);		
 end
