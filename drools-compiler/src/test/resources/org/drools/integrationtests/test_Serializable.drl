@@ -41,8 +41,8 @@ rule "match Integer"
 	agenda-group "yyy"	
 	auto-focus true
     when
-		Integer()
+		Person( name ==  "bob" )
     then
-        assertLogical ( new String( "help" ) );
+        assertLogical ( new Person( "help" ) );
         list.add( new Integer( 4 ) );
 end 

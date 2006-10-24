@@ -2170,7 +2170,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  new ArrayList() );
 
-        workingMemory.assertObject( new Integer( 5 ) );
+        workingMemory.assertObject( new  Person( "bob" ) );
 
         final byte[] wm = serializeOut( workingMemory );
 
