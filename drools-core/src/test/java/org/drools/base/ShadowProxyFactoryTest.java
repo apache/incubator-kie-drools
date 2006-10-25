@@ -281,5 +281,60 @@ public class ShadowProxyFactoryTest extends TestCase {
             fail( "Error: " + e.getMessage() );
         }
     }
+    
+    public void testEqualsHashCodeForClass() {
+        try {
+            // creating original object
+            final String originalType = "stilton";
+            final int originalPrice = 15;
+            final Cheese cheese = new Cheese( originalType,
+                                        originalPrice );
+
+            // creating proxy
+            final Class proxy = ShadowProxyFactory.getProxy( Cheese.class );
+            final Cheese cheeseProxy1 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
+            final Cheese cheeseProxy2 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
+
+            int cheesehash = cheeseHashCode( cheese );
+            Assert.assertEquals( cheeseProxy1, cheeseProxy2 );
+            Assert.assertEquals( cheeseProxy2, cheeseProxy1 );
+            Assert.assertEquals( cheesehash, cheeseProxy1.hashCode() );
+            
+            // changing original values
+            final String actualType = "rotten stilton";
+            final int actualPrice = 1;
+            cheese.setType( actualType );
+            cheese.setPrice( actualPrice );
+
+            Assert.assertEquals( cheesehash, cheeseProxy1.hashCode() );
+            
+            // updating proxy1
+            ((ShadowProxy) cheeseProxy1).updateProxy();
+            
+            Assert.assertEquals( cheeseHashCode( cheese ), cheeseProxy1.hashCode() );
+
+            // now they are different
+            Assert.assertFalse( cheeseProxy1.equals( cheeseProxy2 ) );
+            Assert.assertFalse( cheeseProxy2.equals( cheeseProxy1 ) );
+            
+            // updating proxy2
+            ((ShadowProxy) cheeseProxy2).updateProxy();
+
+            // now they are equal again
+            Assert.assertEquals( cheeseProxy1, cheeseProxy2 );
+            Assert.assertEquals( cheeseProxy2, cheeseProxy1 );
+            
+        } catch ( final Exception e ) {
+            fail( "Error: " + e.getMessage() );
+        }
+    }
+    
+    private int cheeseHashCode(Cheese cheese) {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((cheese.getType() == null) ? 0 : cheese.getType().hashCode());
+        result = PRIME * result + cheese.getPrice();
+        return result;
+    }
 
 }

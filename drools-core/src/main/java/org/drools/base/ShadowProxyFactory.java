@@ -114,26 +114,30 @@ public class ShadowProxyFactory {
         final Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
             if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) ) {
-                if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) ) {
+                if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) &&
+                     (!methods[i].getName().equals( "hashCode" )) &&
+                     (!methods[i].getName().equals( "toString" )) ) {
+
                     final String fieldName = methods[i].getName();
 
-                    buildField( /*FIELD_NAME_PREFIX +*/fieldName,
+                    buildField( fieldName,
                                 Type.getDescriptor( methods[i].getReturnType() ),
                                 cw );
-                    fieldTypes.put( /*FIELD_NAME_PREFIX +*/fieldName,
-                                    methods[i].getReturnType() );
+                    fieldTypes.put( fieldName,
+                                    methods[i] );
 
-                    buildField( /*FIELD_NAME_PREFIX +*/fieldName + ShadowProxyFactory.FIELD_SET_FLAG,
+                    buildField( fieldName + ShadowProxyFactory.FIELD_SET_FLAG,
                                 Type.BOOLEAN_TYPE.getDescriptor(),
                                 cw );
-                    buildGetMethod( /*FIELD_NAME_PREFIX +*/fieldName,
+                    buildGetMethod( fieldName,
                                     methods[i].getReturnType(),
-                                    /*FIELD_NAME_PREFIX +*/fieldName + ShadowProxyFactory.FIELD_SET_FLAG,
+                                    fieldName + ShadowProxyFactory.FIELD_SET_FLAG,
                                     methods[i],
                                     className,
                                     clazz,
                                     cw );
-                } else {
+                } else if ( (!methods[i].getName().equals( "hashCode" )) && 
+                            (!methods[i].getName().equals( "equals" ) ) ) {
                     buildDelegateMethod( methods[i],
                                          clazz,
                                          className,
@@ -149,6 +153,16 @@ public class ShadowProxyFactory {
         buildUpdateProxyMethod( fieldTypes,
                                 className,
                                 cw );
+
+        buildEquals( cw,
+                     className,
+                     clazz,
+                     fieldTypes );
+
+        buildHashCode( cw,
+                     className,
+                     clazz,
+                     fieldTypes );
 
         return cw.toByteArray();
     }
@@ -472,6 +486,17 @@ public class ShadowProxyFactory {
         mv.visitJumpInsn( Opcodes.IFNE,
                           l1 );
 
+        //     __fieldIsSet = true;
+        final Label l3 = new Label();
+        mv.visitLabel( l3 );
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         0 );
+        mv.visitInsn( Opcodes.ICONST_1 );
+        mv.visitFieldInsn( Opcodes.PUTFIELD,
+                           className,
+                           fieldFlag,
+                           Type.BOOLEAN_TYPE.getDescriptor() );
+
         //     __field = this.delegate.method();
         final Label l2 = new Label();
         mv.visitLabel( l2 );
@@ -498,17 +523,6 @@ public class ShadowProxyFactory {
                            className,
                            fieldName,
                            Type.getDescriptor( fieldType ) );
-
-        //     __fieldIsSet = true;
-        final Label l3 = new Label();
-        mv.visitLabel( l3 );
-        mv.visitVarInsn( Opcodes.ALOAD,
-                         0 );
-        mv.visitInsn( Opcodes.ICONST_1 );
-        mv.visitFieldInsn( Opcodes.PUTFIELD,
-                           className,
-                           fieldFlag,
-                           Type.BOOLEAN_TYPE.getDescriptor() );
 
         // }
         // return __field;
@@ -665,7 +679,7 @@ public class ShadowProxyFactory {
             final Map.Entry entry = (Map.Entry) it.next();
             final String fieldName = (String) entry.getKey();
             final String fieldFlag = fieldName + ShadowProxyFactory.FIELD_SET_FLAG;
-            final Class fieldType = (Class) entry.getValue();
+            final Class fieldType = (Class) ((Method) entry.getValue()).getReturnType();
             final Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitVarInsn( Opcodes.ALOAD,
@@ -766,6 +780,464 @@ public class ShadowProxyFactory {
         mv.visitMaxs( 0,
                       0 );
         mv.visitEnd();
+    }
+
+    private static void buildEquals(ClassWriter cw,
+                                    String className,
+                                    final Class clazz,
+                                    Map fieldTypes) {
+        MethodVisitor mv;
+        // Building equals method
+        {
+            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                 "equals",
+                                 Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                           new Type[]{Type.getType( Object.class )} ),
+                                 null,
+                                 null );
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel( l0 );
+
+            // if ( this == object )
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            Label l1 = new Label();
+            mv.visitJumpInsn( Opcodes.IF_ACMPNE,
+                              l1 );
+            //      return true;
+            mv.visitInsn( Opcodes.ICONST_1 );
+            mv.visitInsn( Opcodes.IRETURN );
+
+            // if (( object == null ) || ( ! ( object instanceof <class> ) ) ) 
+            mv.visitLabel( l1 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            Label l3 = new Label();
+            mv.visitJumpInsn( Opcodes.IFNULL,
+                              l3 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            mv.visitTypeInsn( Opcodes.INSTANCEOF,
+                              className );
+            Label l4 = new Label();
+            mv.visitJumpInsn( Opcodes.IFNE,
+                              l4 );
+
+            //       return false;
+            mv.visitLabel( l3 );
+            mv.visitInsn( Opcodes.ICONST_0 );
+            mv.visitInsn( Opcodes.IRETURN );
+
+            // <class> other = (<class>) object;
+            mv.visitLabel( l4 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            mv.visitTypeInsn( Opcodes.CHECKCAST,
+                              className );
+            mv.visitVarInsn( Opcodes.ASTORE,
+                             2 );
+
+            // for each field:
+            int count = 0;
+            for ( Iterator it = fieldTypes.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) it.next();
+                String name = (String) entry.getKey();
+                Method method = (Method) entry.getValue();
+                Class fieldType = method.getReturnType();
+                String fieldFlag = name + ShadowProxyFactory.FIELD_SET_FLAG;
+                count++;
+                Label goNext = new Label();
+
+                // if ( ! _fieldIsSet ) {
+                final Label l5 = new Label();
+                mv.visitLabel( l5 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitFieldInsn( Opcodes.GETFIELD,
+                                   className,
+                                   fieldFlag,
+                                   Type.BOOLEAN_TYPE.getDescriptor() );
+                final Label l6 = new Label();
+                mv.visitJumpInsn( Opcodes.IFNE,
+                                  l6 );
+
+                //     __field = this.delegate.method();
+                final Label l7 = new Label();
+                mv.visitLabel( l7 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitFieldInsn( Opcodes.GETFIELD,
+                                   className,
+                                   ShadowProxyFactory.DELEGATE_FIELD_NAME,
+                                   Type.getDescriptor( clazz ) );
+                if ( clazz.isInterface() ) {
+                    mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                        Type.getInternalName( clazz ),
+                                        method.getName(),
+                                        Type.getMethodDescriptor( method ) );
+                } else {
+                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                        Type.getInternalName( clazz ),
+                                        method.getName(),
+                                        Type.getMethodDescriptor( method ) );
+                }
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                   className,
+                                   name,
+                                   Type.getDescriptor( fieldType ) );
+
+                //     __fieldIsSet = true;
+                final Label l8 = new Label();
+                mv.visitLabel( l8 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitInsn( Opcodes.ICONST_1 );
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                   className,
+                                   fieldFlag,
+                                   Type.BOOLEAN_TYPE.getDescriptor() );
+
+                // }
+                mv.visitLabel( l6 );
+                if ( fieldType.isPrimitive() ) {
+                    // for primitive types
+                    // if ( this.field != other.field ) 
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       className,
+                                       name,
+                                       Type.getDescriptor( fieldType ) );
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     2 );
+                    if ( clazz.isInterface() ) {
+                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                            className,
+                                            method.getName(),
+                                            Type.getMethodDescriptor( method ) );
+                    } else {
+                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                            className,
+                                            method.getName(),
+                                            Type.getMethodDescriptor( method ) );
+                    }
+
+                    //                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                    //                                       className,
+                    //                                       name,
+                    //                                       Type.getDescriptor( fieldType ) );
+                    if ( fieldType.equals( Long.TYPE ) ) {
+                        mv.visitInsn( Opcodes.LCMP );
+                        mv.visitJumpInsn( Opcodes.IFEQ,
+                                          goNext );
+                    } else if ( fieldType.equals( Double.TYPE ) ) {
+                        mv.visitInsn( Opcodes.DCMPL );
+                        mv.visitJumpInsn( Opcodes.IFEQ,
+                                          goNext );
+                    } else if ( fieldType.equals( Float.TYPE ) ) {
+                        mv.visitInsn( Opcodes.FCMPL );
+                        mv.visitJumpInsn( Opcodes.IFEQ,
+                                          goNext );
+                    } else {
+                        mv.visitJumpInsn( Opcodes.IF_ICMPEQ,
+                                          goNext );
+                    }
+                    //     return false;
+                    mv.visitInsn( Opcodes.ICONST_0 );
+                    mv.visitInsn( Opcodes.IRETURN );
+                } else {
+                    // for non primitive types
+                    // if( ( ( this.field == null ) && ( other.field != null ) ) ||
+                    //     ( ( this.field != null ) && ( ! this.field.equals( other.field ) ) ) )
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       className,
+                                       name,
+                                       Type.getDescriptor( fieldType ) );
+                    Label secondIfPart = new Label();
+                    mv.visitJumpInsn( Opcodes.IFNONNULL,
+                                      secondIfPart );
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     2 );
+                    if ( clazz.isInterface() ) {
+                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                            className,
+                                            method.getName(),
+                                            Type.getMethodDescriptor( method ) );
+                    } else {
+                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                            className,
+                                            method.getName(),
+                                            Type.getMethodDescriptor( method ) );
+                    }
+                    Label returnFalse = new Label();
+                    mv.visitJumpInsn( Opcodes.IFNONNULL,
+                                      returnFalse );
+                    mv.visitLabel( secondIfPart );
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       className,
+                                       name,
+                                       Type.getDescriptor( fieldType ) );
+                    mv.visitJumpInsn( Opcodes.IFNULL,
+                                      goNext );
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       className,
+                                       name,
+                                       Type.getDescriptor( fieldType ) );
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     2 );
+                    if ( clazz.isInterface() ) {
+                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                            className,
+                                            method.getName(),
+                                            Type.getMethodDescriptor( method ) );
+                    } else {
+                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                            className,
+                                            method.getName(),
+                                            Type.getMethodDescriptor( method ) );
+                    }
+                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                        Type.getInternalName( fieldType ),
+                                        "equals",
+                                        Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                                  new Type[]{Type.getType( Object.class )} ) );
+                    mv.visitJumpInsn( Opcodes.IFNE,
+                                      goNext );
+                    //       return false;
+                    mv.visitLabel( returnFalse );
+                    mv.visitInsn( Opcodes.ICONST_0 );
+                    mv.visitInsn( Opcodes.IRETURN );
+                }
+                mv.visitLabel( goNext );
+            }
+            // if all fields were ok
+            if ( count > 0 ) {
+                // return true;
+                mv.visitInsn( Opcodes.ICONST_1 );
+                // if no fields exists
+            } else {
+                // return false;
+                mv.visitInsn( Opcodes.ICONST_0 );
+            }
+            mv.visitInsn( Opcodes.IRETURN );
+            Label lastLabel = new Label();
+            mv.visitLabel( lastLabel );
+
+            mv.visitLocalVariable( "this",
+                                   "L" + className + ";",
+                                   null,
+                                   l0,
+                                   lastLabel,
+                                   0 );
+            mv.visitLocalVariable( "object",
+                                   Type.getDescriptor( Object.class ),
+                                   null,
+                                   l0,
+                                   lastLabel,
+                                   1 );
+            mv.visitLocalVariable( "other",
+                                   "L" + className + ";",
+                                   null,
+                                   l0,
+                                   lastLabel,
+                                   2 );
+
+            mv.visitMaxs( 0,
+                          0 );
+            mv.visitEnd();
+        }
+    }
+
+    private static void buildHashCode(ClassWriter cw,
+                                      String className,
+                                      final Class clazz,
+                                      Map fieldTypes) {
+        MethodVisitor mv;
+        // Building hashcode method
+        {
+            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                 "hashCode",
+                                 Type.getMethodDescriptor( Type.INT_TYPE,
+                                                           new Type[]{} ),
+                                 null,
+                                 null );
+            mv.visitCode();
+
+            // final int PRIME = 31;
+            Label l0 = new Label();
+            mv.visitLabel( l0 );
+            mv.visitIntInsn( Opcodes.BIPUSH,
+                             31 );
+            mv.visitVarInsn( Opcodes.ISTORE,
+                             1 );
+
+            // int result = 1;
+            Label l1 = new Label();
+            mv.visitLabel( l1 );
+            mv.visitInsn( Opcodes.ICONST_1 );
+            mv.visitVarInsn( Opcodes.ISTORE,
+                             2 );
+
+            // for each field:
+            int count = 0;
+            for ( Iterator it = fieldTypes.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) it.next();
+                String name = (String) entry.getKey();
+                Method method = (Method) entry.getValue();
+                Class fieldType = method.getReturnType();
+                String fieldFlag = name + ShadowProxyFactory.FIELD_SET_FLAG;
+                count++;
+                Label goNext = new Label();
+                
+                // if ( ! _fieldIsSet ) {
+                final Label l5 = new Label();
+                mv.visitLabel( l5 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitFieldInsn( Opcodes.GETFIELD,
+                                   className,
+                                   fieldFlag,
+                                   Type.BOOLEAN_TYPE.getDescriptor() );
+                final Label l6 = new Label();
+                mv.visitJumpInsn( Opcodes.IFNE,
+                                  l6 );
+
+                //     __field = this.delegate.method();
+                final Label l7 = new Label();
+                mv.visitLabel( l7 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitFieldInsn( Opcodes.GETFIELD,
+                                   className,
+                                   ShadowProxyFactory.DELEGATE_FIELD_NAME,
+                                   Type.getDescriptor( clazz ) );
+                if ( clazz.isInterface() ) {
+                    mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                        Type.getInternalName( clazz ),
+                                        method.getName(),
+                                        Type.getMethodDescriptor( method ) );
+                } else {
+                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                        Type.getInternalName( clazz ),
+                                        method.getName(),
+                                        Type.getMethodDescriptor( method ) );
+                }
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                   className,
+                                   name,
+                                   Type.getDescriptor( fieldType ) );
+
+                //     __fieldIsSet = true;
+                final Label l8 = new Label();
+                mv.visitLabel( l8 );
+                mv.visitVarInsn( Opcodes.ALOAD,
+                                 0 );
+                mv.visitInsn( Opcodes.ICONST_1 );
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                   className,
+                                   fieldFlag,
+                                   Type.BOOLEAN_TYPE.getDescriptor() );
+
+                // }
+                mv.visitLabel( l6 );
+
+                // result = PRIME * result + <att hashcode>
+                Label l2 = new Label();
+                mv.visitLabel( l2 );
+                mv.visitIntInsn( Opcodes.BIPUSH,
+                                 31 );
+                mv.visitVarInsn( Opcodes.ILOAD,
+                                 2 );
+                mv.visitInsn( Opcodes.IMUL );
+
+                if ( fieldType.isPrimitive() ) {
+                    // for primitive types
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       className,
+                                       name,
+                                       Type.getDescriptor( fieldType ) );
+
+                    mv.visitInsn( Type.getType( fieldType ).getOpcode( Opcodes.IADD ) );
+                    mv.visitVarInsn( Type.getType( fieldType ).getOpcode( Opcodes.ISTORE ),
+                                     2 );
+
+                } else {
+                    // for non primitive types
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       className,
+                                       name,
+                                       Type.getDescriptor( fieldType ) );
+
+                    Label np1 = new Label();
+                    mv.visitJumpInsn( Opcodes.IFNONNULL,
+                                      np1 );
+                    mv.visitInsn( Opcodes.ICONST_0 );
+                    Label np2 = new Label();
+                    mv.visitJumpInsn( Opcodes.GOTO,
+                                      np2 );
+                    mv.visitLabel( np1 );
+                    mv.visitVarInsn( Opcodes.ALOAD,
+                                     0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       className,
+                                       name,
+                                       Type.getDescriptor( fieldType ) );
+                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                        Type.getInternalName( fieldType ),
+                                        "hashCode",
+                                        "()I" );
+                    mv.visitLabel( np2 );
+                    mv.visitInsn( Opcodes.IADD );
+                    mv.visitVarInsn( Opcodes.ISTORE,
+                                     2 );
+                }
+                mv.visitLabel( goNext );
+            }
+            mv.visitVarInsn( Opcodes.ILOAD,
+                             2 );
+            mv.visitInsn( Opcodes.IRETURN );
+            Label lastLabel = new Label();
+            mv.visitLabel( lastLabel );
+
+            mv.visitLocalVariable( "this",
+                                   "L"+className+";",
+                                   null,
+                                   l0,
+                                   lastLabel,
+                                   0 );
+            mv.visitLocalVariable( "PRIME",
+                                   Type.INT_TYPE.getDescriptor(),
+                                   null,
+                                   l0,
+                                   lastLabel,
+                                   1 );
+            mv.visitLocalVariable( "result",
+                                   Type.INT_TYPE.getDescriptor(),
+                                   null,
+                                   l1,
+                                   lastLabel,
+                                   2 );
+            mv.visitMaxs( 0,
+                          0 );
+            mv.visitEnd();
+        }
     }
 
     /**
