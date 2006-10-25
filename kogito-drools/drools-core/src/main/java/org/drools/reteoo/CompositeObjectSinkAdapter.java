@@ -22,12 +22,12 @@ public class CompositeObjectSinkAdapter
     implements
     ObjectSinkPropagator {
 
-    private ObjectSinkNodeList otherSinks;
-    private ObjectSinkNodeList hashableSinks;
+    ObjectSinkNodeList otherSinks;
+    ObjectSinkNodeList hashableSinks;
 
-    private LinkedList         hashedFieldIndexes;
+    LinkedList         hashedFieldIndexes;
 
-    private ObjectHashMap      hashedSinkMap;
+    ObjectHashMap      hashedSinkMap;
 
     private HashKey            hashKey;
 
@@ -158,6 +158,7 @@ public class CompositeObjectSinkAdapter
     public void unHashSinks(final FieldIndex fieldIndex) {
         final int index = fieldIndex.getIndex();
 
+     
         for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
