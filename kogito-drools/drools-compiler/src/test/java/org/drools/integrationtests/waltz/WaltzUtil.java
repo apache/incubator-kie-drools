@@ -23,7 +23,7 @@ package org.drools.integrationtests.waltz;
 public class WaltzUtil {
     private static double PI      = 3.1415927;
 
-    private static final int    MOD_NUM = 100;
+    private static final int    MOD_NUM = 10000;
 
     private static int get_y(final int val) {
         return val % WaltzUtil.MOD_NUM;
