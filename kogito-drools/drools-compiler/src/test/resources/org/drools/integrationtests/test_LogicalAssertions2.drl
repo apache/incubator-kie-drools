@@ -10,14 +10,17 @@ rule "Everything is Normal"
     when
         not Alarm( )
     then
+        System.out.println("Everything is Normal");
         events.add("Everything is Normal");
 end   
 
-rule "Problem detected" salience 10
+rule "Problem detected" 
+    salience 10
     when
         sensor : Sensor( temperature > 100 ) or Sensor( pressure > 150 )
     then
         events.add( "Problem detected: "+sensor.toString() );
+        System.out.println( "Problem detected: " + sensor.toString() );
         assertLogical( new Alarm( "Call emergency team" ) );
 end 
 
@@ -26,25 +29,30 @@ rule "Call Emergency Team"
         Alarm ( )
     then
         events.add( "Calling Emergency Team" );
+        System.out.println( "Calling Emergency Team" );
         assertLogical( new EmergencyTeam() );
 end
 
-rule "Emergency Team solves temperature" salience 20
+rule "Emergency Team solves temperature" 
+    salience 20
     when 
         EmergencyTeam()
         sensor : Sensor( temperature > 100 )
     then
         events.add( "Solving temperature problem" );
+        System.out.println(  "Solving temperature problem" );
         sensor.setTemperature(80);
         modify(sensor);
 end
 
-rule "Emergency Team solves pressure" salience 20
+rule "Emergency Team solves pressure" 
+    salience 20
     when 
         EmergencyTeam()
         sensor : Sensor( pressure > 150 )
     then
         events.add( "Solving pressure problem" );
+        System.out.println(  "Solving pressure problem" );
         sensor.setPressure(80);
         modify(sensor);
 end

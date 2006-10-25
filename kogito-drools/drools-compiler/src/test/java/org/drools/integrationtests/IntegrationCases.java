@@ -33,9 +33,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.DefaultDesktopManager;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.antlr.runtime.debug.DebugEventListener;
 import org.drools.AssertedObject;
 import org.drools.Cell;
 import org.drools.Cheese;
@@ -62,6 +65,12 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AgendaEventListener;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.DefaultAgendaEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.integrationtests.helloworld.Message;
@@ -2399,6 +2408,26 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        AgendaEventListener listener = new DefaultAgendaEventListener() {
+            public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
+                super.activationCreated( event, workingMemory );
+            }
+            
+            public void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory) {
+                super.activationCancelled( event, workingMemory );
+            }
+            
+            public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
+                super.beforeActivationFired( event, workingMemory );
+            }
+            
+            public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
+                super.afterActivationFired( event, workingMemory );
+            }
+        };
+
+        workingMemory.addEventListener( listener );        
 
         final List events = new ArrayList();
 
@@ -2881,7 +2910,7 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-
+        
         final List orderedFacts = new ArrayList();
         final List errors = new ArrayList();
 
