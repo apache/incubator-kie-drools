@@ -318,7 +318,7 @@ public class DefaultAgenda
         if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
                 item.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory );
             }
         }
     }
@@ -353,7 +353,7 @@ public class DefaultAgenda
                 item.getActivationGroupNode().getActivationGroup().removeActivation( item );
             }
 
-            eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory  );
         }
         ((AgendaGroupImpl) agendaGroup).clear();
     }
@@ -382,7 +382,7 @@ public class DefaultAgenda
             if ( activation.isActivated() ) {
                 activation.setActivated( false );
                 activation.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation );
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation, this.workingMemory  );
             }
         }
         activationGroup.clear();
@@ -426,7 +426,7 @@ public class DefaultAgenda
     public synchronized void fireActivation(final Activation activation) throws ConsequenceException {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );
+        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation, this.workingMemory  );
 
         if ( activation.getActivationGroupNode() != null ) {
             final ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();

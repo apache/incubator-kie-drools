@@ -164,7 +164,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void activationCreated(final ActivationCreatedEvent event) {
+    public void activationCreated(final ActivationCreatedEvent event, WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CREATED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -174,7 +174,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void activationCancelled(final ActivationCancelledEvent event) {
+    public void activationCancelled(final ActivationCancelledEvent event, WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -184,7 +184,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void beforeActivationFired(final BeforeActivationFiredEvent event) {
+    public void beforeActivationFired(final BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -194,7 +194,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void afterActivationFired(final AfterActivationFiredEvent event) {
+    public void afterActivationFired(final AfterActivationFiredEvent event, WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),

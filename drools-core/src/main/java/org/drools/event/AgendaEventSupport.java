@@ -33,7 +33,7 @@ public class AgendaEventSupport
     /**
      * 
      */
-    private static final long   serialVersionUID = 9072017367081307109L;
+    private static final long   serialVersionUID = 320L;
     private final List          listeners        = Collections.synchronizedList( new ArrayList() );
     private final WorkingMemory workingMemory;
 
@@ -63,7 +63,7 @@ public class AgendaEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireActivationCreated(final Activation activation) {
+    public void fireActivationCreated(final Activation activation, WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -71,11 +71,11 @@ public class AgendaEventSupport
         final ActivationCreatedEvent event = new ActivationCreatedEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).activationCreated( event );
+            ((AgendaEventListener) this.listeners.get( i )).activationCreated( event, workingMemory );
         }
     }
 
-    public void fireActivationCancelled(final Activation activation) {
+    public void fireActivationCancelled(final Activation activation, WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -83,11 +83,11 @@ public class AgendaEventSupport
         final ActivationCancelledEvent event = new ActivationCancelledEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event );
+            ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event, workingMemory );
         }
     }
 
-    public void fireBeforeActivationFired(final Activation activation) {
+    public void fireBeforeActivationFired(final Activation activation, WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -95,7 +95,7 @@ public class AgendaEventSupport
         final BeforeActivationFiredEvent event = new BeforeActivationFiredEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event );
+            ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event, workingMemory );
         }
     }
 
@@ -107,7 +107,7 @@ public class AgendaEventSupport
         final AfterActivationFiredEvent event = new AfterActivationFiredEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event );
+            ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event, workingMemory );
         }
     }
 }

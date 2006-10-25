@@ -1,5 +1,7 @@
 package org.drools.event;
 
+import org.drools.WorkingMemory;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,19 +25,19 @@ public class DefaultAgendaEventListener
         // intentionally left blank
     }
 
-    public void activationCreated(final ActivationCreatedEvent event) {
+    public void activationCreated(final ActivationCreatedEvent event, WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void activationCancelled(final ActivationCancelledEvent event) {
+    public void activationCancelled(final ActivationCancelledEvent event, WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void beforeActivationFired(final BeforeActivationFiredEvent event) {
+    public void beforeActivationFired(final BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void afterActivationFired(final AfterActivationFiredEvent event) {
+    public void afterActivationFired(final AfterActivationFiredEvent event, WorkingMemory workingMemory) {
         // intentionally left blank
     }
 }
