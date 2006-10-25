@@ -22,6 +22,15 @@ public class CompositeObjectSinkAdapter
     implements
     ObjectSinkPropagator {
 
+
+
+    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
+    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
+
+    /** The threshold for when hashing kicks in */
+    public static final int THRESHOLD_TO_HASH = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY, "3" ));
+    
+    private static final long serialVersionUID = 2192568791644369227L;
     ObjectSinkNodeList otherSinks;
     ObjectSinkNodeList hashableSinks;
 
@@ -49,7 +58,7 @@ public class CompositeObjectSinkAdapter
                     final FieldIndex fieldIndex = registerFieldIndex( index,
                                                                 literalConstraint.getFieldExtractor() );
 
-                    if ( fieldIndex.getCount() >= 3 ) {
+                    if ( fieldIndex.getCount() >= THRESHOLD_TO_HASH ) {
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
@@ -96,7 +105,7 @@ public class CompositeObjectSinkAdapter
                         this.hashKey.setIndex( index );
                         this.hashKey.setValue( value );
                         this.hashedSinkMap.remove( this.hashKey );
-                        if ( fieldIndex.getCount() <= 2 ) {
+                        if ( fieldIndex.getCount() <= THRESHOLD_TO_HASH - 1 ) {
                             // we have less than three so unhash
                             unHashSinks( fieldIndex );
                         }
@@ -158,20 +167,34 @@ public class CompositeObjectSinkAdapter
     public void unHashSinks(final FieldIndex fieldIndex) {
         final int index = fieldIndex.getIndex();
 
-     
-        for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+        
+        List sinks = new ArrayList();
+        
+        //iterate twice as custom iterator is immutable
+        Iterator mapIt = this.hashedSinkMap.iterator();
+        for(ObjectHashMap.ObjectEntry e = (ObjectHashMap.ObjectEntry) mapIt.next(); e != null; ) {
+
+            sinks.add( e.getValue() );
+            e = (ObjectHashMap.ObjectEntry) mapIt.next();
+        }
+        
+        for ( java.util.Iterator iter = sinks.iterator(); iter.hasNext(); ) {
+            AlphaNode sink = (AlphaNode) iter.next();
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
             final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
             final Evaluator evaluator = literalConstraint.getEvaluator();
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                final Object value = literalConstraint.getField();
-                this.hashKey.setIndex( index );
-                this.hashKey.setValue( value );
+                final Object value = literalConstraint.getField().getValue();
+                if (this.hashableSinks == null) {
+                    this.hashableSinks = new ObjectSinkNodeList();
+                }
                 this.hashableSinks.add( sink );
-                this.hashedSinkMap.remove( this.hashKey );
-            }
+                this.hashedSinkMap.remove( new HashKey(index, value) );
+            };
         }
+     
+
 
         if ( this.hashedSinkMap.isEmpty() ) {
             this.hashedSinkMap = null;
