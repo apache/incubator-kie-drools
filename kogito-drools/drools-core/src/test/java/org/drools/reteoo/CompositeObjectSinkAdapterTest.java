@@ -146,7 +146,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         LiteralConstraint lit2 = new LiteralConstraint(new MockExtractor(),
                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
                                                       new ObjectFieldImpl("cheddar"));
-        AlphaNode al2 = new AlphaNode(1, lit2,  new MockObjectSource(0) );
+        AlphaNode al2 = new AlphaNode(1, lit2,  new MockObjectSource(1) );
         
         ad.addObjectSink( al2 );
         
@@ -156,7 +156,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         LiteralConstraint lit3 = new LiteralConstraint(new MockExtractor(),
                                                        StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
                                                        new ObjectFieldImpl("stinky"));
-        AlphaNode al3 = new AlphaNode(1, lit3,  new MockObjectSource(0) );
+        AlphaNode al3 = new AlphaNode(1, lit3,  new MockObjectSource(2) );
         ad.addObjectSink( al3 );
         
         //this should now be nicely hashed.
@@ -168,6 +168,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         //now remove one, check the hashing is undone
         ad.removeObjectSink( al2 );
         assertNotNull(ad.hashableSinks);
+        assertEquals(2, ad.hashableSinks.size());
         assertNull(ad.hashedSinkMap);
         
         
