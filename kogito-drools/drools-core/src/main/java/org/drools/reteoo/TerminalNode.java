@@ -156,7 +156,7 @@ final class TerminalNode extends BaseNode
             memory.getTupleMemory().add( tuple );
 
             item.setActivated( true );
-            workingMemory.getAgendaEventSupport().fireActivationCreated( item );
+            workingMemory.getAgendaEventSupport().fireActivationCreated( item, workingMemory );
         } else {
             // -----------------
             // Lazy instantiation and addition to the Agenda of AgendGroup
@@ -214,7 +214,7 @@ final class TerminalNode extends BaseNode
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
             if ( fireActivationCreated ) {
-                workingMemory.getAgendaEventSupport().fireActivationCreated( item );
+                workingMemory.getAgendaEventSupport().fireActivationCreated( item, workingMemory  );
             }
         }
     }
@@ -229,7 +229,7 @@ final class TerminalNode extends BaseNode
             final Activation activation = tuple.getActivation();
             if ( activation.isActivated() ) {
                 activation.remove();
-                workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
+                workingMemory.getAgendaEventSupport().fireActivationCancelled( activation, workingMemory  );
             }
 
             workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
@@ -278,7 +278,7 @@ final class TerminalNode extends BaseNode
 
                 if ( activation.isActivated() ) {
                     activation.remove();
-                    workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
+                    workingMemory.getAgendaEventSupport().fireActivationCancelled( activation, workingMemory );
                 }
 
                 final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
