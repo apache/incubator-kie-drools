@@ -1,13 +1,15 @@
 package org.drools.rule;
 
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 
 public class MultiRestrictionFieldConstraint
     implements
-    AlphaNodeFieldConstraint {
+    AlphaNodeFieldConstraint, BetaNodeFieldConstraint {
 
     /**
      * 
@@ -59,6 +61,20 @@ public class MultiRestrictionFieldConstraint
     public boolean isAllowed(Object object,
                              InternalWorkingMemory workingMemory) {
         return this.restrictions.isAllowed( extractor, object, workingMemory );
+    }
+
+    public ContextEntry getContextEntry() {
+        return this.restrictions.getContextEntry();
+    }
+
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        return this.restrictions.isAllowedCachedLeft( context, object );
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        return this.restrictions.isAllowedCachedRight( tuple, context );
     }
 
 }
