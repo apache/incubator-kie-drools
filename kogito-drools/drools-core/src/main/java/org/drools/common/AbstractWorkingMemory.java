@@ -826,7 +826,7 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             final int status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = handle.getObject();
+            final Object originalObject = ( handle.isShadowFact() ) ? ((ShadowProxy)handle.getObject()).getShadowedObject() : handle.getObject();
 
             if ( handle.getId() == -1 || object == null ) {
                 // the handle is invalid, most likely already  retracted, so return
@@ -834,6 +834,14 @@ public abstract class AbstractWorkingMemory
                 return;
             }
 
+            // Nowretract any trace  of the original fact
+            final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                      PropagationContext.MODIFICATION,
+                                                                                      rule,
+                                                                                      activation );
+            doRetract( handle,
+                       propagationContext );            
+            
             // set anyway, so that it updates the hashCodes
             handle.setObject( object );
 
@@ -863,13 +871,6 @@ public abstract class AbstractWorkingMemory
             }
 
             handle.setEqualityKey( key );
-
-            final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
-                                                                                      PropagationContext.MODIFICATION,
-                                                                                      rule,
-                                                                                      activation );
-            doRetract( handle,
-                       propagationContext );
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
