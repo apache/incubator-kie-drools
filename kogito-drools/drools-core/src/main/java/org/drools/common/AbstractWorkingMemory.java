@@ -50,6 +50,7 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
+import org.drools.util.LinkedList;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -114,7 +115,7 @@ public abstract class AbstractWorkingMemory
     /** Rule-firing agenda. */
     protected DefaultAgenda                   agenda;
 
-    protected final List                      factQueue                                     = new ArrayList();
+    protected final List                      factQueue                                     = new ArrayList();   
 
     protected final ReentrantLock             lock                                          = new ReentrantLock();
 
@@ -142,9 +143,8 @@ public abstract class AbstractWorkingMemory
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.tms = new TruthMaintenanceSystem( this );
-        final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-
         this.assertMap = new ObjectHashMap();
+        final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
         if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( conf.getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
             this.assertMap.setComparator( new IdentityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
@@ -940,8 +940,8 @@ public abstract class AbstractWorkingMemory
 
     public void clearNodeMemory(final NodeMemory node) {
         this.nodeMemories.remove( node.getId() );
-    }
-
+    }  
+    
     public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
         return this.workingMemoryEventSupport;
     }

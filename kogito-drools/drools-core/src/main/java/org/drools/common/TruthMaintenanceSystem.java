@@ -44,14 +44,14 @@ public class TruthMaintenanceSystem
 
     private static final long           serialVersionUID = 320L;
 
-    private final AbstractWorkingMemory WorkingMemory;
+    private final AbstractWorkingMemory workingMemory;
 
     private final PrimitiveLongMap      justifiedMap;
 
     private final ObjectHashMap         assertMap;
 
     public TruthMaintenanceSystem(final AbstractWorkingMemory workingMemory) {
-        this.WorkingMemory = workingMemory;
+        this.workingMemory = workingMemory;
 
         this.justifiedMap = new PrimitiveLongMap( 8,
                                                   32 );
@@ -112,7 +112,7 @@ public class TruthMaintenanceSystem
                     this.justifiedMap.remove( handle.getId() );
                     // this needs to be scheduled so we don't upset the current
                     // working memory operation
-                    this.WorkingMemory.queueRetractAction( handle,
+                    this.workingMemory.queueRetractAction( handle,
                                                            false,
                                                            true,
                                                            context.getRuleOrigin(),
@@ -162,6 +162,9 @@ public class TruthMaintenanceSystem
         activation.addLogicalDependency( node );
         Set set = (Set) this.justifiedMap.get( handle.getId() );
         if ( set == null ) {
+            if ( context.getType() == PropagationContext.MODIFICATION ) {
+                // if this was a  modify, chances  are its trying  to retract a logical assertion
+            }
             set = new HashSet();
             this.justifiedMap.put( handle.getId(),
                                    set );
