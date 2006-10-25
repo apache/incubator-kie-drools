@@ -106,6 +106,8 @@ class ReteooBuilder
     private Map                             objectType;
 
     private int                             currentOffsetAdjustment;
+    
+    private final boolean                   removeIdentities;
 
     // ------------------------------------------------------------
     // Constructors
@@ -123,6 +125,7 @@ class ReteooBuilder
 
         //Set to 1 as Rete node is set to 0
         this.id = 1;
+        this.removeIdentities = false;
     }
 
     /**
@@ -263,7 +266,7 @@ class ReteooBuilder
 
                 binder = attachColumn( (Column) object,
                                        and,
-                                       true );
+                                       this.removeIdentities );
 
                 // If a tupleSource does not exist then we need to adapt this
                 // into
@@ -370,7 +373,7 @@ class ReteooBuilder
 
     private BetaConstraints attachColumn(final Column column,
                                          final GroupElement parent,
-                                         final boolean removeIdentities) throws InvalidPatternException {
+                                         boolean removeIdentities) throws InvalidPatternException {
         // Adjusting offset in case a previous Initial-Fact was added to the network
         column.adjustOffset( this.currentOffsetAdjustment );
 

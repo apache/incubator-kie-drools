@@ -18,14 +18,16 @@ package org.drools.event;
 
 import java.util.EventListener;
 
+import org.drools.WorkingMemory;
+
 public interface AgendaEventListener
     extends
     EventListener {
-    void activationCreated(ActivationCreatedEvent event);
+    void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory);
 
-    void activationCancelled(ActivationCancelledEvent event);
+    void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory);
 
-    void beforeActivationFired(BeforeActivationFiredEvent event);
+    void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory);
 
-    void afterActivationFired(AfterActivationFiredEvent event);
+    void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory);
 }

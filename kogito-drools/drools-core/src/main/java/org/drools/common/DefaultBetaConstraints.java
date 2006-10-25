@@ -52,10 +52,10 @@ public class DefaultBetaConstraints
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
         this( constraints, true );
-        this.indexed = -1;
     }
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index ) {
+        this.indexed = -1;
         this.constraints = new LinkedList();
         ContextEntry current = null;
 
