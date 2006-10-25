@@ -2975,25 +2975,25 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 
         // all 3 in europe, so, 2 cheese
-        List cheeseList = workingMemory.getObjects( String.class );
+        List cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 2,
                       cheeseList.size() );
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
         workingMemory.modifyObject( c3FactHandle,
-                                    p3 );
+                                    p3 );        
         workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( String.class );
+        cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 1,
-                      cheeseList.size() );
+                      cheeseList.size() );        
 
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
         workingMemory.modifyObject( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( String.class );
+        cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 1,
                       cheeseList.size() );
 
@@ -3002,7 +3002,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( String.class );
+        cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 2,
                       cheeseList.size() );
 
@@ -3011,7 +3011,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( String.class );
+        cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 1,
                       cheeseList.size() );
 
@@ -3020,7 +3020,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( String.class );
+        cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 1,
                       cheeseList.size() );
 
@@ -3029,7 +3029,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c3FactHandle,
                                     p3 );
         workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( String.class );
+        cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 2,
                       cheeseList.size() );
     }
