@@ -2693,6 +2693,93 @@ public abstract class IntegrationCases extends TestCase {
             // is probably non-reteoo engine
         }
     }
+    
+
+    public void testLogicalAssertionsWithExists() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionWithExists.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        Person p1 = new Person( "p1",
+                                "stilton",
+                                20 );
+        p1.setStatus( "europe" );
+        FactHandle c1FactHandle = workingMemory.assertObject( p1 );
+        Person p2 = new Person( "p2",
+                                "stilton",
+                                30 );
+        p2.setStatus( "europe" );
+        FactHandle c2FactHandle = workingMemory.assertObject( p2 );
+        Person p3 = new Person( "p3",
+                                "stilton",
+                                40 );
+        p3.setStatus( "europe" );
+        FactHandle c3FactHandle = workingMemory.assertObject( p3 );
+        workingMemory.fireAllRules();
+
+        // all 3 in europe, so, 2 cheese
+        List cheeseList = workingMemory.getObjects( Cheese.class );
+        assertEquals( 2,
+                      cheeseList.size() );
+
+        // europe=[ 1, 2 ], america=[ 3 ]
+        p3.setStatus( "america" );
+        workingMemory.modifyObject( c3FactHandle,
+                                    p3 );        
+        workingMemory.fireAllRules();
+        cheeseList = workingMemory.getObjects( Cheese.class );
+        assertEquals( 1,
+                      cheeseList.size() );        
+
+        // europe=[ 1 ], america=[ 2, 3 ]
+        p2.setStatus( "america" );
+        workingMemory.modifyObject( c2FactHandle,
+                                    p2 );
+        workingMemory.fireAllRules();
+        cheeseList = workingMemory.getObjects( Cheese.class );
+        assertEquals( 1,
+                      cheeseList.size() );
+
+        // europe=[ ], america=[ 1, 2, 3 ]
+        p1.setStatus( "america" );
+        workingMemory.modifyObject( c1FactHandle,
+                                    p1 );
+        workingMemory.fireAllRules();
+        cheeseList = workingMemory.getObjects( Cheese.class );
+        assertEquals( 2,
+                      cheeseList.size() );
+
+        // europe=[ 2 ], america=[ 1, 3 ]
+        p2.setStatus( "europe" );
+        workingMemory.modifyObject( c2FactHandle,
+                                    p2 );
+        workingMemory.fireAllRules();
+        cheeseList = workingMemory.getObjects( Cheese.class );
+        assertEquals( 1,
+                      cheeseList.size() );
+
+        // europe=[ 1, 2 ], america=[ 3 ]
+        p1.setStatus( "europe" );
+        workingMemory.modifyObject( c1FactHandle,
+                                    p1 );
+        workingMemory.fireAllRules();
+        cheeseList = workingMemory.getObjects( Cheese.class );
+        assertEquals( 1,
+                      cheeseList.size() );
+
+        // europe=[ 1, 2, 3 ], america=[ ]
+        p3.setStatus( "europe" );
+        workingMemory.modifyObject( c3FactHandle,
+                                    p3 );
+        workingMemory.fireAllRules();
+        cheeseList = workingMemory.getObjects( Cheese.class );
+        assertEquals( 2,
+                      cheeseList.size() );
+    }    
 
     public void testEmptyRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -2784,7 +2871,7 @@ public abstract class IntegrationCases extends TestCase {
         return bytes;
     }
 
-    public void xxxtestJoinNodeModifyObject() throws Exception {
+    public void testJoinNodeModifyObject() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyObject.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
@@ -2850,6 +2937,7 @@ public abstract class IntegrationCases extends TestCase {
             ruleBaseWM.removePackage( packageName );
             ruleBaseWM.addPackage( builder1.getPackage() );
         } catch ( Exception e ) {
+            e.printStackTrace();
             Assert.fail( "Removing packages should not throw any exception: " + e.getMessage() );
         }
     }
@@ -2946,92 +3034,6 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list.contains( c.getType() ) );
         assertEquals( 1,
                       list.size() );
-    }
-
-    public void testLogicalAssertionsWithExists() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionWithExists.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-
-        Person p1 = new Person( "p1",
-                                "stilton",
-                                20 );
-        p1.setStatus( "europe" );
-        FactHandle c1FactHandle = workingMemory.assertObject( p1 );
-        Person p2 = new Person( "p2",
-                                "stilton",
-                                30 );
-        p2.setStatus( "europe" );
-        FactHandle c2FactHandle = workingMemory.assertObject( p2 );
-        Person p3 = new Person( "p3",
-                                "stilton",
-                                40 );
-        p3.setStatus( "europe" );
-        FactHandle c3FactHandle = workingMemory.assertObject( p3 );
-        workingMemory.fireAllRules();
-
-        // all 3 in europe, so, 2 cheese
-        List cheeseList = workingMemory.getObjects( Cheese.class );
-        assertEquals( 2,
-                      cheeseList.size() );
-
-        // europe=[ 1, 2 ], america=[ 3 ]
-        p3.setStatus( "america" );
-        workingMemory.modifyObject( c3FactHandle,
-                                    p3 );        
-        workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( Cheese.class );
-        assertEquals( 1,
-                      cheeseList.size() );        
-
-        // europe=[ 1 ], america=[ 2, 3 ]
-        p2.setStatus( "america" );
-        workingMemory.modifyObject( c2FactHandle,
-                                    p2 );
-        workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( Cheese.class );
-        assertEquals( 1,
-                      cheeseList.size() );
-
-        // europe=[ ], america=[ 1, 2, 3 ]
-        p1.setStatus( "america" );
-        workingMemory.modifyObject( c1FactHandle,
-                                    p1 );
-        workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( Cheese.class );
-        assertEquals( 2,
-                      cheeseList.size() );
-
-        // europe=[ 2 ], america=[ 1, 3 ]
-        p2.setStatus( "europe" );
-        workingMemory.modifyObject( c2FactHandle,
-                                    p2 );
-        workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( Cheese.class );
-        assertEquals( 1,
-                      cheeseList.size() );
-
-        // europe=[ 1, 2 ], america=[ 3 ]
-        p1.setStatus( "europe" );
-        workingMemory.modifyObject( c1FactHandle,
-                                    p1 );
-        workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( Cheese.class );
-        assertEquals( 1,
-                      cheeseList.size() );
-
-        // europe=[ 1, 2, 3 ], america=[ ]
-        p3.setStatus( "europe" );
-        workingMemory.modifyObject( c3FactHandle,
-                                    p3 );
-        workingMemory.fireAllRules();
-        cheeseList = workingMemory.getObjects( Cheese.class );
-        assertEquals( 2,
-                      cheeseList.size() );
     }
 
     public void testLLR() throws Exception {
