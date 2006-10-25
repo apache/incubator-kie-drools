@@ -178,12 +178,26 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
+    
+    public void testNotWithModify() throws Exception {
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NotWithModify.drl" ) );
+        
+        Cheese c = new Cheese("stilton", 13);
+        Cheese c2 = new Cheese("cheddar", 42);
+        Person p = new Person("michael");
+        WorkingMemory wm = loadRuleBase( reader ).newWorkingMemory();
+        wm.assertObject( c );
+        wm.assertObject( p );
+        wm.assertObject( c2 );
+        wm.fireAllRules();
+        
+    }
 
-    public void testExplicitAnd() throws Exception {
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
+    private RuleBase loadRuleBase(final Reader reader) throws IOException,
+                                                      DroolsParserException,
+                                                      Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
-
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
@@ -193,6 +207,12 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         // load up the rulebase
+        return ruleBase;
+    }
+
+    public void testExplicitAnd() throws Exception {
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         List list = new ArrayList();
@@ -216,18 +236,7 @@ public abstract class IntegrationCases extends TestCase {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
+        final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -1419,8 +1428,7 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the ReturnValue" );
         } catch ( final Exception e ) {
-            assertEquals( "this should throw an exception",
-                          e.getCause().getMessage() );
+            assertTrue( e.getCause().getMessage().endsWith( "this should throw an exception"));
         }
     }
 
@@ -3069,18 +3077,7 @@ public abstract class IntegrationCases extends TestCase {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
+        final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
 
@@ -3178,18 +3175,7 @@ public abstract class IntegrationCases extends TestCase {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
+        final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
@@ -3223,18 +3209,7 @@ public abstract class IntegrationCases extends TestCase {
     public void testAccumulateModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
+        final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
@@ -3303,18 +3278,7 @@ public abstract class IntegrationCases extends TestCase {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
+        final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
@@ -3352,18 +3316,7 @@ public abstract class IntegrationCases extends TestCase {
     public void testCollectModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
+        final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
         List results = new ArrayList();
@@ -3434,18 +3387,7 @@ public abstract class IntegrationCases extends TestCase {
         try {
             // read in the source
             final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Assert_Retract_Noloop.drl" ) );
-            final DrlParser parser = new DrlParser();
-            final PackageDescr packageDescr = parser.parse( reader );
-
-            // pre build the package
-            final PackageBuilder builder = new PackageBuilder();
-            builder.addPackage( packageDescr );
-            final Package pkg = builder.getPackage();
-
-            // add the package to a rulebase
-            final RuleBase ruleBase = getRuleBase();
-            ruleBase.addPackage( pkg );
-            // load up the rulebase
+            final RuleBase ruleBase = loadRuleBase( reader );
 
             final WorkingMemory wm = ruleBase.newWorkingMemory();
             wm.assertObject( new Cheese( "stilton",
