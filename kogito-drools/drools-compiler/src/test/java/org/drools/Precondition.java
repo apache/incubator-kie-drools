@@ -4,6 +4,10 @@ public class Precondition {
     private String code;
     private String value;
     
+    public Precondition() {
+        
+    }
+    
     public Precondition(String code, String value) {
         super();
         this.code = code;
