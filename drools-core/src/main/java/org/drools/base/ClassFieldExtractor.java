@@ -144,4 +144,8 @@ public class ClassFieldExtractor
     public Method getNativeReadMethod() {
         return this.extractor.getNativeReadMethod();
     }
+
+    public int getHashCode(Object object) {
+        return this.extractor.getHashCode( object );
+    }
 }

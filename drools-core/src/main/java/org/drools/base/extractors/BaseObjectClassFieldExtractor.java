@@ -104,4 +104,9 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
             throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
         }
     }
+    
+    public int getHashCode(Object object) {
+        return getValue( object ).hashCode();
+    }
+    
 }

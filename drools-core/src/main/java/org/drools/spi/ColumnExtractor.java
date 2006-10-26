@@ -124,4 +124,7 @@ public class ColumnExtractor
         }
     }
 
+    public int getHashCode(Object object) {
+        return getValue( object ).hashCode();
+    }
 }

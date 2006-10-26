@@ -57,4 +57,10 @@ public abstract class BaseLongClassFieldExtractors extends BaseClassFieldExtract
             throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
         }
     }
+    
+    public int getHashCode(Object object) {
+        long temp = getLongValue( object );
+        return (int) ( temp ^ ( temp >>> 32 ));
+    }
+    
 }
