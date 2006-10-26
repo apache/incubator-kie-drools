@@ -26,6 +26,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
+import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
@@ -35,7 +36,6 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
-import org.drools.spi.MockField;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -66,7 +66,7 @@ public class FieldConstraintTest extends TestCase {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
 
@@ -111,7 +111,7 @@ public class FieldConstraintTest extends TestCase {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
 
-        final FieldValue field = new MockField( new Integer( 5 ) );
+        final FieldValue field = FieldFactory.getFieldValue( 5 );
 
         final Evaluator evaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
 
@@ -152,7 +152,7 @@ public class FieldConstraintTest extends TestCase {
      */
     public void testPredicateConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
@@ -187,8 +187,8 @@ public class FieldConstraintTest extends TestCase {
                                     Declaration declaration,
                                     Declaration[] declarations,
                                     WorkingMemory workingMemory) {
-                int price1 = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
-                int price2 = ((Integer) declaration.getValue( object )).intValue();
+                int price1 = declarations[0].getIntValue( workingMemory.getObject( tuple.get( declarations[0] ) ) );
+                int price2 = declaration.getIntValue( object );
 
                 return (price2 == (price1 * 2));
 
@@ -212,7 +212,6 @@ public class FieldConstraintTest extends TestCase {
                                            f1 );
 
         assertTrue( constraint1.isAllowed( f1.getObject(),
-                                           tuple,
                                            workingMemory ) );
     }
 
@@ -231,7 +230,7 @@ public class FieldConstraintTest extends TestCase {
      */
     public void testReturnValueConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
@@ -251,11 +250,11 @@ public class FieldConstraintTest extends TestCase {
              */
             private static final long serialVersionUID = 5673999834006100045L;
 
-            public Object evaluate(Tuple tuple, // ?price
+            public FieldValue evaluate(Tuple tuple, // ?price
                                    Declaration[] declarations,
                                    WorkingMemory workingMemory) {
                 int price = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
-                return new Integer( 2 * price );
+                return FieldFactory.getFieldValue( 2 * price );
 
             }
         };
@@ -283,11 +282,9 @@ public class FieldConstraintTest extends TestCase {
                                            f1 );
 
         assertTrue( constraint1.isAllowed( f1.getObject(),
-                                           tuple,
                                            workingMemory ) );
 
         assertFalse( constraint2.isAllowed( f1.getObject(),
-                                            tuple,
                                             workingMemory ) );
 
         final Cheese cheddar2 = new Cheese( "cheddar",
@@ -296,7 +293,6 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
 
         assertTrue( constraint2.isAllowed( f2.getObject(),
-                                           tuple,
                                            workingMemory ) );
     }
 

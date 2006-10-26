@@ -66,28 +66,6 @@ public class ShadowProxyFactory {
         }
     }
 
-    public static Class getEagerProxy(final Class clazz) {
-        try {
-            String className = null;
-            if ( clazz.getPackage().getName().startsWith( "java." ) || clazz.getPackage().getName().startsWith( "javax." ) ) {
-                className = "org/drools/shadow/" + Type.getInternalName( clazz ) + "EagerShadowProxy";
-            } else {
-                className = Type.getInternalName( clazz ) + "EagerShadowProxy";
-            }
-            // generating byte array to create target class
-            final byte[] bytes = dumpEager( clazz,
-                                            className );
-            // use bytes to get a class 
-            final ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
-            final Class newClass = classLoader.defineClass( className.replace( '/',
-                                                                               '.' ),
-                                                            bytes );
-            return newClass;
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
-        }
-    }
-
     protected static byte[] dump(final Class clazz,
                                  final String className) throws Exception {
 
@@ -114,9 +92,7 @@ public class ShadowProxyFactory {
         final Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
             if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) ) {
-                if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) &&
-                     (!methods[i].getName().equals( "hashCode" )) &&
-                     (!methods[i].getName().equals( "toString" )) ) {
+                if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "hashCode" )) && (!methods[i].getName().equals( "toString" )) ) {
 
                     final String fieldName = methods[i].getName();
 
@@ -136,8 +112,7 @@ public class ShadowProxyFactory {
                                     className,
                                     clazz,
                                     cw );
-                } else if ( (!methods[i].getName().equals( "hashCode" )) && 
-                            (!methods[i].getName().equals( "equals" ) ) ) {
+                } else if ( (!methods[i].getName().equals( "hashCode" )) && (!methods[i].getName().equals( "equals" )) ) {
                     buildDelegateMethod( methods[i],
                                          clazz,
                                          className,
@@ -160,67 +135,9 @@ public class ShadowProxyFactory {
                      fieldTypes );
 
         buildHashCode( cw,
-                     className,
-                     clazz,
-                     fieldTypes );
-
-        return cw.toByteArray();
-    }
-
-    protected static byte[] dumpEager(final Class clazz,
-                                      final String className) throws Exception {
-
-        final ClassWriter cw = new ClassWriter( true );
-
-        buildClassHeader( clazz,
-                          className,
-                          cw );
-
-        buildField( ShadowProxyFactory.DELEGATE_FIELD_NAME,
-                    Type.getDescriptor( clazz ),
-                    cw );
-
-        final Map fieldTypes = new HashMap();
-        final Map fieldMethods = new HashMap();
-
-        final Method[] methods = clazz.getMethods();
-        for ( int i = 0; i < methods.length; i++ ) {
-            if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) ) {
-                if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) && ((methods[i].getName().startsWith( "get" )) || (methods[i].getName().startsWith( "is" ))) ) {
-                    final String fieldName = methods[i].getName();
-
-                    buildField( /*FIELD_NAME_PREFIX +*/fieldName,
-                                Type.getDescriptor( methods[i].getReturnType() ),
-                                cw );
-                    fieldMethods.put( /*FIELD_NAME_PREFIX +*/fieldName,
-                                      methods[i] );
-                    fieldTypes.put( /*FIELD_NAME_PREFIX +*/fieldName,
-                                    methods[i].getReturnType() );
-
-                    buildSimpleGetMethod( /*FIELD_NAME_PREFIX +*/fieldName,
-                                          methods[i].getReturnType(),
-                                          methods[i],
-                                          className,
-                                          clazz,
-                                          cw );
-                } else {
-                    buildDelegateMethod( methods[i],
-                                         clazz,
-                                         className,
-                                         cw );
-                }
-            }
-        }
-
-        buildEagerConstructor( clazz,
-                               className,
-                               cw );
-
-        buildEagerUpdateProxyMethod( clazz,
-                                     fieldTypes,
-                                     fieldMethods,
-                                     className,
-                                     cw );
+                       className,
+                       clazz,
+                       fieldTypes );
 
         return cw.toByteArray();
     }
@@ -328,98 +245,6 @@ public class ShadowProxyFactory {
                                className,
                                ShadowProxyFactory.DELEGATE_FIELD_NAME,
                                Type.getDescriptor( clazz ) );
-
-            // return
-            final Label l2 = new Label();
-            mv.visitLabel( l2 );
-            mv.visitLineNumber( 43,
-                                l2 );
-            mv.visitInsn( Opcodes.RETURN );
-
-            final Label l3 = new Label();
-            mv.visitLabel( l3 );
-            mv.visitLocalVariable( "this",
-                                   "L" + className + ";",
-                                   null,
-                                   l0,
-                                   l3,
-                                   0 );
-            mv.visitLocalVariable( ShadowProxyFactory.DELEGATE_FIELD_NAME,
-                                   Type.getDescriptor( clazz ),
-                                   null,
-                                   l0,
-                                   l3,
-                                   1 );
-            mv.visitMaxs( 0,
-                          0 );
-            mv.visitEnd();
-        }
-    }
-
-    /**
-     * Creates a constructor for the shadow proxy receiving
-     * the actual delegate class as parameter
-     * 
-     * @param originalClassName
-     * @param className
-     * @param cw
-     */
-    private static void buildEagerConstructor(final Class clazz,
-                                              final String className,
-                                              final ClassWriter cw) {
-        MethodVisitor mv;
-        {
-            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "<init>",
-                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           new Type[]{Type.getType( clazz )} ),
-                                 null,
-                                 null );
-            mv.visitCode();
-
-            // super();
-            final Label l0 = new Label();
-            mv.visitLabel( l0 );
-            mv.visitLineNumber( 41,
-                                l0 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
-            if ( clazz.isInterface() ) {
-                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                    Type.getInternalName( Object.class ),
-                                    "<init>",
-                                    Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                              new Type[]{} ) );
-            } else {
-                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                    Type.getInternalName( clazz ),
-                                    "<init>",
-                                    Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                              new Type[]{} ) );
-            }
-
-            // this.delegate = delegate
-            final Label l1 = new Label();
-            mv.visitLabel( l1 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
-            mv.visitFieldInsn( Opcodes.PUTFIELD,
-                               className,
-                               ShadowProxyFactory.DELEGATE_FIELD_NAME,
-                               Type.getDescriptor( clazz ) );
-
-            // this.updateProxy();
-            final Label l4 = new Label();
-            mv.visitLabel( l4 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
-            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                className,
-                                ShadowProxyFactory.UPDATE_PROXY,
-                                Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          new Type[]{} ) );
 
             // return
             final Label l2 = new Label();
@@ -599,70 +424,6 @@ public class ShadowProxyFactory {
         mv.visitEnd();
     }
 
-    protected static void buildEagerUpdateProxyMethod(final Class delegate,
-                                                      final Map fieldTypes,
-                                                      final Map fieldMethods,
-                                                      final String className,
-                                                      final ClassWriter cw) {
-        final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                                 ShadowProxyFactory.UPDATE_PROXY,
-                                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                                           new Type[]{} ),
-                                                 null,
-                                                 null );
-        mv.visitCode();
-        final Label l0 = new Label();
-        mv.visitLabel( l0 );
-        for ( final Iterator it = fieldTypes.entrySet().iterator(); it.hasNext(); ) {
-            final Map.Entry entry = (Map.Entry) it.next();
-            final String fieldName = (String) entry.getKey();
-            final Class fieldType = (Class) entry.getValue();
-            final Method method = (Method) fieldMethods.get( fieldName );
-
-            // __field = this.delegate.getField()
-            final Label l1 = new Label();
-            mv.visitLabel( l1 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
-            mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
-            mv.visitFieldInsn( Opcodes.GETFIELD,
-                               className,
-                               ShadowProxyFactory.DELEGATE_FIELD_NAME,
-                               Type.getDescriptor( delegate ) );
-            if ( delegate.isInterface() ) {
-                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                    Type.getInternalName( delegate ),
-                                    method.getName(),
-                                    Type.getMethodDescriptor( method ) );
-            } else {
-                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    Type.getInternalName( delegate ),
-                                    method.getName(),
-                                    Type.getMethodDescriptor( method ) );
-            }
-            mv.visitFieldInsn( Opcodes.PUTFIELD,
-                               className,
-                               fieldName,
-                               Type.getDescriptor( fieldType ) );
-
-        }
-        final Label l4 = new Label();
-        mv.visitLabel( l4 );
-        mv.visitInsn( Opcodes.RETURN );
-        final Label l5 = new Label();
-        mv.visitLabel( l5 );
-        mv.visitLocalVariable( "this",
-                               "L" + className + ";",
-                               null,
-                               l0,
-                               l5,
-                               0 );
-        mv.visitMaxs( 0,
-                      0 );
-        mv.visitEnd();
-    }
-
     protected static void buildUpdateProxyMethod(final Map fieldTypes,
                                                  final String className,
                                                  final ClassWriter cw) {
@@ -782,7 +543,7 @@ public class ShadowProxyFactory {
         mv.visitEnd();
     }
 
-    private static void buildEquals(ClassWriter cw,
+    protected static void buildEquals(ClassWriter cw,
                                     String className,
                                     final Class clazz,
                                     Map fieldTypes) {
@@ -844,10 +605,10 @@ public class ShadowProxyFactory {
             int count = 0;
             for ( Iterator it = fieldTypes.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) it.next();
-                String name = (String) entry.getKey();
+                String fieldName = (String) entry.getKey();
                 Method method = (Method) entry.getValue();
                 Class fieldType = method.getReturnType();
-                String fieldFlag = name + ShadowProxyFactory.FIELD_SET_FLAG;
+                String fieldFlag = fieldName + ShadowProxyFactory.FIELD_SET_FLAG;
                 count++;
                 Label goNext = new Label();
 
@@ -888,7 +649,7 @@ public class ShadowProxyFactory {
                 }
                 mv.visitFieldInsn( Opcodes.PUTFIELD,
                                    className,
-                                   name,
+                                   fieldName,
                                    Type.getDescriptor( fieldType ) );
 
                 //     __fieldIsSet = true;
@@ -911,7 +672,7 @@ public class ShadowProxyFactory {
                                      0 );
                     mv.visitFieldInsn( Opcodes.GETFIELD,
                                        className,
-                                       name,
+                                       fieldName,
                                        Type.getDescriptor( fieldType ) );
                     mv.visitVarInsn( Opcodes.ALOAD,
                                      2 );
@@ -958,7 +719,7 @@ public class ShadowProxyFactory {
                                      0 );
                     mv.visitFieldInsn( Opcodes.GETFIELD,
                                        className,
-                                       name,
+                                       fieldName,
                                        Type.getDescriptor( fieldType ) );
                     Label secondIfPart = new Label();
                     mv.visitJumpInsn( Opcodes.IFNONNULL,
@@ -984,7 +745,7 @@ public class ShadowProxyFactory {
                                      0 );
                     mv.visitFieldInsn( Opcodes.GETFIELD,
                                        className,
-                                       name,
+                                       fieldName,
                                        Type.getDescriptor( fieldType ) );
                     mv.visitJumpInsn( Opcodes.IFNULL,
                                       goNext );
@@ -992,7 +753,7 @@ public class ShadowProxyFactory {
                                      0 );
                     mv.visitFieldInsn( Opcodes.GETFIELD,
                                        className,
-                                       name,
+                                       fieldName,
                                        Type.getDescriptor( fieldType ) );
                     mv.visitVarInsn( Opcodes.ALOAD,
                                      2 );
@@ -1007,11 +768,19 @@ public class ShadowProxyFactory {
                                             method.getName(),
                                             Type.getMethodDescriptor( method ) );
                     }
-                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( fieldType ),
-                                        "equals",
-                                        Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
-                                                                  new Type[]{Type.getType( Object.class )} ) );
+                    if ( fieldType.isInterface() ) {
+                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                            Type.getInternalName( fieldType ),
+                                            "equals",
+                                            Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                                      new Type[]{Type.getType( Object.class )} ) );
+                    } else {
+                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                            Type.getInternalName( fieldType ),
+                                            "equals",
+                                            Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                                      new Type[]{Type.getType( Object.class )} ) );
+                    }
                     mv.visitJumpInsn( Opcodes.IFNE,
                                       goNext );
                     //       return false;
@@ -1059,11 +828,35 @@ public class ShadowProxyFactory {
         }
     }
 
-    private static void buildHashCode(ClassWriter cw,
+    /**
+     *  Sample of generated code for all primitive + object types
+     *  
+     *  public int hashCode() {
+     *       final int PRIME = 31;
+     *       int result = 1;
+     *       result = PRIME * result + (booleanAttr ? 1231 : 1237);
+     *       result = PRIME * result + charAttr;
+     *       long temp = Double.doubleToLongBits( doubleAttr );
+     *       result = PRIME * result + (int) (temp ^ (temp >>> 32));
+     *       result = PRIME * result + Float.floatToIntBits( floatAttr );
+     *       result = PRIME * result + intAttr;
+     *       result = PRIME * result + ((listAttr == null) ? 0 : listAttr.hashCode());
+     *       result = PRIME * result + (int) (longAttr ^ (longAttr >>> 32));
+     *       result = PRIME * result + shortAttr;
+     *       return result;
+     *   }
+     * 
+     * @param cw
+     * @param className
+     * @param clazz
+     * @param fieldTypes
+     */
+    protected static void buildHashCode(ClassWriter cw,
                                       String className,
                                       final Class clazz,
                                       Map fieldTypes) {
         MethodVisitor mv;
+        boolean hasDoubleAttr = false;
         // Building hashcode method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
@@ -1093,13 +886,13 @@ public class ShadowProxyFactory {
             int count = 0;
             for ( Iterator it = fieldTypes.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) it.next();
-                String name = (String) entry.getKey();
+                String fieldName = (String) entry.getKey();
                 Method method = (Method) entry.getValue();
                 Class fieldType = method.getReturnType();
-                String fieldFlag = name + ShadowProxyFactory.FIELD_SET_FLAG;
+                String fieldFlag = fieldName + ShadowProxyFactory.FIELD_SET_FLAG;
                 count++;
                 Label goNext = new Label();
-                
+
                 // if ( ! _fieldIsSet ) {
                 final Label l5 = new Label();
                 mv.visitLabel( l5 );
@@ -1137,7 +930,7 @@ public class ShadowProxyFactory {
                 }
                 mv.visitFieldInsn( Opcodes.PUTFIELD,
                                    className,
-                                   name,
+                                   fieldName,
                                    Type.getDescriptor( fieldType ) );
 
                 //     __fieldIsSet = true;
@@ -1154,35 +947,112 @@ public class ShadowProxyFactory {
                 // }
                 mv.visitLabel( l6 );
 
-                // result = PRIME * result + <att hashcode>
-                Label l2 = new Label();
-                mv.visitLabel( l2 );
-                mv.visitIntInsn( Opcodes.BIPUSH,
-                                 31 );
-                mv.visitVarInsn( Opcodes.ILOAD,
-                                 2 );
-                mv.visitInsn( Opcodes.IMUL );
-
                 if ( fieldType.isPrimitive() ) {
                     // for primitive types
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     0 );
-                    mv.visitFieldInsn( Opcodes.GETFIELD,
-                                       className,
-                                       name,
-                                       Type.getDescriptor( fieldType ) );
+                    // result = PRIME * result + <att hashcode>
+                    Label l2 = new Label();
+                    if ( fieldType == Double.TYPE ) {
+                        hasDoubleAttr = true;
+                        mv.visitVarInsn( Opcodes.ALOAD,
+                                         0 );
+                        mv.visitFieldInsn( Opcodes.GETFIELD,
+                                           className,
+                                           fieldName,
+                                           Type.getDescriptor( fieldType ) );
+                        mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                            Type.getInternalName( Double.class ),
+                                            "doubleToLongBits",
+                                            "(D)J" );
+                        mv.visitVarInsn( Opcodes.LSTORE,
+                                         3 );
+                    }
 
-                    mv.visitInsn( Type.getType( fieldType ).getOpcode( Opcodes.IADD ) );
-                    mv.visitVarInsn( Type.getType( fieldType ).getOpcode( Opcodes.ISTORE ),
+                    mv.visitLabel( l2 );
+                    mv.visitIntInsn( Opcodes.BIPUSH,
+                                     31 );
+                    mv.visitVarInsn( Opcodes.ILOAD,
+                                     2 );
+                    mv.visitInsn( Opcodes.IMUL );
+
+                    if ( fieldType != Double.TYPE ) {
+                        mv.visitVarInsn( Opcodes.ALOAD,
+                                         0 );
+                        mv.visitFieldInsn( Opcodes.GETFIELD,
+                                           className,
+                                           fieldName,
+                                           Type.getDescriptor( fieldType ) );
+                    }
+
+                    if ( fieldType == Boolean.TYPE ) {
+                        // att_hashcode ::= ( boolean_attribute ) ? 1231 : 1237;
+                        Label z1 = new Label();
+                        mv.visitJumpInsn( Opcodes.IFEQ,
+                                          z1 );
+                        mv.visitIntInsn( Opcodes.SIPUSH,
+                                         1231 );
+                        Label z2 = new Label();
+                        mv.visitJumpInsn( Opcodes.GOTO,
+                                          z2 );
+                        mv.visitLabel( z1 );
+                        mv.visitIntInsn( Opcodes.SIPUSH,
+                                         1237 );
+                        mv.visitLabel( z2 );
+                    } else if ( fieldType == Double.TYPE ) {
+                        // long temp = Double.doubleToLongBits( doubleAttr );
+                        // att_hashcode ::= (int) (temp ^ ( temp >>> 32 ) );
+                        Label d1 = new Label();
+                        mv.visitLabel( d1 );
+                        mv.visitVarInsn( Opcodes.LLOAD,
+                                         3 );
+                        mv.visitVarInsn( Opcodes.LLOAD,
+                                         3 );
+                        mv.visitIntInsn( Opcodes.BIPUSH,
+                                         32 );
+                        mv.visitInsn( Opcodes.LUSHR );
+                        mv.visitInsn( Opcodes.LXOR );
+                        mv.visitInsn( Opcodes.L2I );
+                    } else if ( fieldType == Float.TYPE ) {
+                        // att_hashcode ::= Float.floatToIntBits( floatAttr );
+                        mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                            Type.getInternalName( Float.class ),
+                                            "floatToIntBits",
+                                            "(F)I" );
+
+                    } else if ( fieldType == Long.TYPE ) {
+                        // att_hashcode ::= (int) (lontattr ^( longattr >>> 32 ) );
+                        mv.visitVarInsn( Opcodes.ALOAD,
+                                         0 );
+                        mv.visitFieldInsn( Opcodes.GETFIELD,
+                                           className,
+                                           fieldName,
+                                           Type.getDescriptor( fieldType ) );
+                        mv.visitIntInsn( Opcodes.BIPUSH,
+                                         32 );
+                        mv.visitInsn( Opcodes.LUSHR );
+                        mv.visitInsn( Opcodes.LXOR );
+                        mv.visitInsn( Opcodes.L2I );
+
+                    }
+                    mv.visitInsn( Opcodes.IADD );
+                    mv.visitVarInsn( Opcodes.ISTORE,
                                      2 );
 
                 } else {
                     // for non primitive types
+                    // result = PRIME * result + <att hashcode>
+                    Label l2 = new Label();
+                    mv.visitLabel( l2 );
+                    mv.visitIntInsn( Opcodes.BIPUSH,
+                                     31 );
+                    mv.visitVarInsn( Opcodes.ILOAD,
+                                     2 );
+                    mv.visitInsn( Opcodes.IMUL );
+
                     mv.visitVarInsn( Opcodes.ALOAD,
                                      0 );
                     mv.visitFieldInsn( Opcodes.GETFIELD,
                                        className,
-                                       name,
+                                       fieldName,
                                        Type.getDescriptor( fieldType ) );
 
                     Label np1 = new Label();
@@ -1197,12 +1067,19 @@ public class ShadowProxyFactory {
                                      0 );
                     mv.visitFieldInsn( Opcodes.GETFIELD,
                                        className,
-                                       name,
+                                       fieldName,
                                        Type.getDescriptor( fieldType ) );
-                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( fieldType ),
-                                        "hashCode",
-                                        "()I" );
+                    if ( fieldType.isInterface() ) {
+                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                            Type.getInternalName( fieldType ),
+                                            "hashCode",
+                                            "()I" );
+                    } else {
+                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                            Type.getInternalName( fieldType ),
+                                            "hashCode",
+                                            "()I" );
+                    }
                     mv.visitLabel( np2 );
                     mv.visitInsn( Opcodes.IADD );
                     mv.visitVarInsn( Opcodes.ISTORE,
@@ -1217,7 +1094,7 @@ public class ShadowProxyFactory {
             mv.visitLabel( lastLabel );
 
             mv.visitLocalVariable( "this",
-                                   "L"+className+";",
+                                   "L" + className + ";",
                                    null,
                                    l0,
                                    lastLabel,
@@ -1234,6 +1111,14 @@ public class ShadowProxyFactory {
                                    l1,
                                    lastLabel,
                                    2 );
+            if ( hasDoubleAttr ) {
+                mv.visitLocalVariable( "temp",
+                                       Type.LONG_TYPE.getDescriptor(),
+                                       null,
+                                       l1,
+                                       lastLabel,
+                                       3 );
+            }
             mv.visitMaxs( 0,
                           0 );
             mv.visitEnd();
