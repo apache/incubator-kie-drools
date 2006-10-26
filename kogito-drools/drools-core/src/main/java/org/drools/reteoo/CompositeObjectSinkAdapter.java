@@ -322,8 +322,12 @@ public class CompositeObjectSinkAdapter
             if ( useHash && this.hashedSinkMap != null ) {
                 final Object object = handle.getObject();
                 // Iterate the FieldIndexes to see if any are hashed        
-                for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null && fieldIndex.isHashed(); fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+                for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
                     // this field is hashed so set the existing hashKey and see if there is a sink for it
+                    if ( ! fieldIndex.isHashed() ) {
+                        continue;
+                    }
+                    
                     final int index = fieldIndex.getIndex();
                     final FieldExtractor extractor = fieldIndex.getFieldExtactor();
                     this.hashKey.setIndex( index );
