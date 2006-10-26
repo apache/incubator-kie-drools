@@ -270,6 +270,9 @@ public class CompositeObjectSinkAdapter
                                       final InternalWorkingMemory workingMemory) {
         final Object object = handle.getObject();
 
+        // Iterates t he FieldIndex collection, which tells you if particularly field is hashed or not
+        // if the field is hashed then it builds the hashkey to return the correct sink for the current objects slot's
+        // value, one object may have multiple fields indexed.
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed        
             for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
