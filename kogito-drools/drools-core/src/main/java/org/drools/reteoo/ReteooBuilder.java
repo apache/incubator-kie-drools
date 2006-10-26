@@ -437,7 +437,7 @@ class ReteooBuilder
                                                                (AlphaNodeFieldConstraint) constraint,
                                                                this.objectSource ) );
             } else {
-                checkUnboundDeclarations( ((BetaNodeFieldConstraint) constraint).getRequiredDeclarations() );
+                checkUnboundDeclarations( constraint.getRequiredDeclarations() );
                 betaConstraints.add( constraint );
             }
         }
