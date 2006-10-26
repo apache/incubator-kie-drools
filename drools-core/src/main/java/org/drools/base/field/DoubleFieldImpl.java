@@ -70,4 +70,20 @@ public class DoubleFieldImpl
         return (int) this.value;
     }
 
+    public boolean isBooleanField() {
+        return false;
+    }
+
+    public boolean isFloatNumberField() {
+        return true;
+    }
+
+    public boolean isIntegerNumberField() {
+        return false;
+    }
+
+    public boolean isObjectField() {
+        return false;
+    }
+
 }
