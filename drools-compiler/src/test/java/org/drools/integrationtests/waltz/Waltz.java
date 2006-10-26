@@ -62,10 +62,14 @@ public abstract class Waltz extends TestCase {
             //final Stage stage = new Stage( Stage.START );
             //workingMemory.assertObject( stage );
             
-            Stage stage = new Stage(Stage.DUPLICATE);
-            workingMemory.assertObject( stage );            
+            long start = System.currentTimeMillis();
             
+            Stage stage = new Stage(Stage.DUPLICATE);
+            workingMemory.assertObject( stage );                
             workingMemory.fireAllRules();
+            
+            long end = System.currentTimeMillis();
+            System.out.println( end  - start );
         } catch ( final Throwable t ) {
             t.printStackTrace();
             fail( t.getMessage() );
