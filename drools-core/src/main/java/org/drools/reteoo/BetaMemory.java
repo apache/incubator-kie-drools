@@ -4,21 +4,21 @@ import org.drools.util.ObjectHashMap;
 import org.drools.util.TupleHashTable;
 
 public class BetaMemory {
-    private TupleHashTable  tupleMemory;
-    private ObjectHashTable objectMemory;
+    private TupleMemory  tupleMemory;
+    private FactHandleMemory factHandleMemory;
     private ObjectHashMap   createdHandles;
 
-    public BetaMemory(final TupleHashTable tupleMemory,
-                      final ObjectHashTable objectMemory) {
+    public BetaMemory(final TupleMemory tupleMemory,
+                      final FactHandleMemory objectMemory) {
         this.tupleMemory = tupleMemory;
-        this.objectMemory = objectMemory;
+        this.factHandleMemory = objectMemory;
     }
 
-    public ObjectHashTable getObjectMemory() {
-        return this.objectMemory;
+    public FactHandleMemory getFactHandleMemory() {
+        return this.factHandleMemory;
     }
 
-    public TupleHashTable getTupleMemory() {
+    public TupleMemory getTupleMemory() {
         return this.tupleMemory;
     }
     

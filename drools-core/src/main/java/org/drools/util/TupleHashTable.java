@@ -3,9 +3,11 @@
  */
 package org.drools.util;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.TupleMemory;
 
-public class TupleHashTable extends AbstractHashTable {
+public class TupleHashTable extends AbstractHashTable implements TupleMemory {
     public TupleHashTable() {
         this( 16,
               0.75f );
@@ -16,8 +18,12 @@ public class TupleHashTable extends AbstractHashTable {
         super( capacity,
                loadFactor );
     }
+    
+    public Iterator iterator(final InternalFactHandle handle) {
+        return iterator();
+    }    
 
-    public Object add(final ReteTuple tuple) {
+    public void add(final ReteTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
                              this.table.length );
@@ -28,10 +34,9 @@ public class TupleHashTable extends AbstractHashTable {
         if ( this.size++ >= this.threshold ) {
             resize( 2 * this.table.length );
         }
-        return null;
     }
 
-    public Object get(final ReteTuple tuple) {
+    public ReteTuple get(final ReteTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
                              this.table.length );
@@ -46,7 +51,7 @@ public class TupleHashTable extends AbstractHashTable {
         return null;
     }
 
-    public Object remove(final ReteTuple tuple) {
+    public ReteTuple remove(final ReteTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
                              this.table.length );
@@ -81,5 +86,9 @@ public class TupleHashTable extends AbstractHashTable {
 
     public boolean contains(final ReteTuple tuple) {
         return (get( tuple ) != null);
+    }
+    
+    public boolean isIndexed() {
+        return false;
     }
 }

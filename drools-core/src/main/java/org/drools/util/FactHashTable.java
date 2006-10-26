@@ -4,13 +4,13 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.ObjectHashTable;
+import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FactHashTable extends AbstractHashTable
     implements
-    ObjectHashTable {
+    FactHandleMemory {
     private static final long serialVersionUID = 320L;
 
     public FactHashTable() {
@@ -22,10 +22,6 @@ public class FactHashTable extends AbstractHashTable
                          final float loadFactor) {
         super( capacity,
                loadFactor );
-    }
-
-    public Iterator iterator(final int hashCode) {
-        throw new UnsupportedOperationException( "FactHashTable does not support the method iterator(int hashCode" );
     }
 
     public Iterator iterator(final ReteTuple tuple) {

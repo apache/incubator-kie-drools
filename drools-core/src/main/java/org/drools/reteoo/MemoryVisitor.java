@@ -7,12 +7,12 @@ import org.drools.reteoo.TerminalNode.TerminalNodeMemory;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.Entry;
 import org.drools.util.FactHashTable;
-import org.drools.util.FieldIndexHashTable;
+import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.util.TupleHashTable;
-import org.drools.util.FieldIndexHashTable.FieldIndexEntry;
+import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class MemoryVisitor extends ReflectiveVisitor {
@@ -124,7 +124,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
 
         try {
             final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
-            checkObjectHashTable( memory.getObjectMemory() );
+            checkObjectHashTable( memory.getFactHandleMemory() );
             checkTupleMemory( memory.getTupleMemory() );
         } catch ( final Exception e ) {
             e.printStackTrace();
@@ -149,7 +149,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
         System.out.println( indent() + node );
         try {
             final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
-            checkObjectHashTable( memory.getObjectMemory() );
+            checkObjectHashTable( memory.getFactHandleMemory() );
             checkTupleMemory( memory.getTupleMemory() );
         } catch ( final Exception e ) {
             e.printStackTrace();
@@ -191,11 +191,11 @@ public class MemoryVisitor extends ReflectiveVisitor {
 //        }
 //    }
 
-    private void checkObjectHashTable(final ObjectHashTable memory) {
+    private void checkObjectHashTable(final FactHandleMemory memory) {
         if ( memory instanceof FactHashTable ) {
             checkFactHashTable( (FactHashTable) memory );
-        } else if ( memory instanceof FieldIndexHashTable ) {
-            checkFieldIndexHashTable( (FieldIndexHashTable) memory );
+        } else if ( memory instanceof FactHandleIndexHashTable ) {
+            checkFieldIndexHashTable( (FactHandleIndexHashTable) memory );
         } else {
             throw new RuntimeException( memory.getClass() + " should not be here" );
         }
@@ -220,7 +220,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
         }
     }
 
-    private void checkFieldIndexHashTable(final FieldIndexHashTable memory) {
+    private void checkFieldIndexHashTable(final FactHandleIndexHashTable memory) {
         final Entry[] entries = memory.getTable();
         int factCount = 0;
         int bucketCount = 0;
@@ -260,7 +260,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
         }
     }
 
-    private void checkTupleMemory(final TupleHashTable memory) {
+    private void checkTupleMemory(final TupleMemory memory) {
         final Entry[] entries = memory.getTable();
         int count = 0;
         for ( int i = 0, length = entries.length; i < length; i++ ) {

@@ -141,7 +141,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getTupleMemory().size() );
         assertEquals( 1,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
 
         // When this is retracter both tuples should assert
         this.node.retractObject( f1,
@@ -241,14 +241,14 @@ public class NotNodeTest extends DroolsTestCase {
 
             // Initially, no objects in right memory
             assertEquals( 0,
-                          this.memory.getObjectMemory().size() );
+                          this.memory.getFactHandleMemory().size() );
             this.node.assertObject( f1,
                                     this.context,
                                     this.workingMemory );
 
             // Now, needs to have 1 object in right memory
             assertEquals( 1,
-                          this.memory.getObjectMemory().size() );
+                          this.memory.getFactHandleMemory().size() );
 
             // simulate modify
             this.node.retractObject( f1,
@@ -259,14 +259,14 @@ public class NotNodeTest extends DroolsTestCase {
                                     this.workingMemory );
             // Memory should not change
             assertEquals( 1,
-                          this.memory.getObjectMemory().size() );
+                          this.memory.getFactHandleMemory().size() );
 
             // When this is retracter both tuples should assert
             this.node.retractObject( f1,
                                      this.context,
                                      this.workingMemory );
             assertEquals( 0,
-                          this.memory.getObjectMemory().size() );
+                          this.memory.getFactHandleMemory().size() );
 
             // check memory sizes
             assertEquals( 1,

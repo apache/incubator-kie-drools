@@ -4,7 +4,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.util.Entry;
 import org.drools.util.Iterator;
 
-public interface ObjectHashTable {
+public interface FactHandleMemory {
     public Iterator iterator();
 
     public Iterator iterator(ReteTuple tuple);

@@ -16,7 +16,7 @@ import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.AbstractHashTable.FactEntry;
-import org.drools.util.FieldIndexHashTable.FieldIndexEntry;
+import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FieldIndexHashTableTest extends TestCase {
@@ -32,7 +32,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( extractor,
                                                            declaration );
 
         final Cheese cheddar = new Cheese( "cheddar",
@@ -77,7 +77,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
@@ -130,7 +130,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
@@ -184,7 +184,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( extractor,
                                                            declaration );
 
         final TestClass c1 = new TestClass( 0,
@@ -231,7 +231,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
@@ -295,7 +295,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( extractor,
                                                            declaration );
 
         assertEquals( 0,
@@ -508,7 +508,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                          extractor,
                                                          column );
 
-        final FieldIndexHashTable map = new FieldIndexHashTable( extractor,
+        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( extractor,
                                                            declaration );
 
         final Cheese stilton = new Cheese( "stilton",

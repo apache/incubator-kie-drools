@@ -73,7 +73,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
 
     }
 
@@ -144,7 +144,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
 
         // assert tuple, should add left memory should be 2
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
@@ -178,7 +178,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       this.memory.getTupleMemory().size() );
         assertEquals( 1,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
 
         // check new objects/handles still assert
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.assertObject( "test1" );
@@ -186,9 +186,9 @@ public class JoinNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 2,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
 
-        final Iterator it = this.memory.getObjectMemory().iterator( new ReteTuple( f0 ) );
+        final Iterator it = this.memory.getFactHandleMemory().iterator( new ReteTuple( f0 ) );
 
         final InternalFactHandle rf0 = ((FactEntry) it.next()).getFactHandle();
         final InternalFactHandle rf1 = ((FactEntry) it.next()).getFactHandle();
@@ -297,7 +297,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // Double check the item is in memory
         final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
-        assertTrue( memory.getObjectMemory().contains( f0 ) );
+        assertTrue( memory.getFactHandleMemory().contains( f0 ) );
 
         // Retract an object, check propagations  and memory
         this.node.retractObject( f0,
@@ -316,7 +316,7 @@ public class JoinNodeTest extends DroolsTestCase {
                                                     f0 ) ) );
 
         // Now check the item  is no longer in memory
-        assertFalse( memory.getObjectMemory().contains( f0 ) );
+        assertFalse( memory.getFactHandleMemory().contains( f0 ) );
 
         this.node.retractTuple( tuple2,
                                 this.context,

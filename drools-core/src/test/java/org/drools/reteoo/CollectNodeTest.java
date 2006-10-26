@@ -89,7 +89,7 @@ public class CollectNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
     }
 
     /* (non-Javadoc)
@@ -138,7 +138,7 @@ public class CollectNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
         Assert.assertTrue( "An empty collection should be propagated",
                            ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).isEmpty() );
 
@@ -186,7 +186,7 @@ public class CollectNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       this.memory.getTupleMemory().size() );
         assertEquals( 2,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).size() );
@@ -226,7 +226,7 @@ public class CollectNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       this.memory.getTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
         Assert.assertTrue( "An empty collection should be propagated",
                            ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).isEmpty() );
 
@@ -264,7 +264,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 1,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
         assertEquals( 2,
                       this.sink.getAsserted().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
@@ -276,7 +276,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                 this.workingMemory );
 
         assertEquals( 2,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
         assertEquals( 3,
                       this.sink.getAsserted().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
@@ -298,7 +298,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 2,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
 
         // assert tuple, should add one to left memory
         this.node.assertTuple( tuple0,
@@ -320,7 +320,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                  this.context,
                                  this.workingMemory );
         assertEquals( 1,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
         assertEquals( 1,
                       this.sink.getRetracted().size() );
         assertEquals( 2,
@@ -333,7 +333,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                  this.context,
                                  this.workingMemory );
         assertEquals( 0,
-                      this.memory.getObjectMemory().size() );
+                      this.memory.getFactHandleMemory().size() );
         assertEquals( 2,
                       this.sink.getRetracted().size() );
         assertEquals( 3,

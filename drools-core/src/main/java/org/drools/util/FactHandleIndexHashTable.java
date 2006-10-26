@@ -4,15 +4,15 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.ObjectHashTable;
+import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
-public class FieldIndexHashTable extends AbstractHashTable
+public class FactHandleIndexHashTable extends AbstractHashTable
     implements
-    ObjectHashTable {
+    FactHandleMemory {
     public static final int             PRIME = 31;
 
     private int                         startResult;
@@ -23,26 +23,26 @@ public class FieldIndexHashTable extends AbstractHashTable
 
     private Index                       index;
 
-    public FieldIndexHashTable(final FieldIndex[] index) {
+    public FactHandleIndexHashTable(final FieldIndex[] index) {
         this( 16,
               0.75f,
               index );
     }
 
-    public FieldIndexHashTable(final int capacity,
+    public FactHandleIndexHashTable(final int capacity,
                                final float loadFactor,
                                final FieldIndex[] index) {
         super( capacity,
                loadFactor );
 
-        this.startResult = FieldIndexHashTable.PRIME;
+        this.startResult = FactHandleIndexHashTable.PRIME;
         for ( int i = 0, length = index.length; i < length; i++ ) {
-            this.startResult += FieldIndexHashTable.PRIME * this.startResult + index[i].getExtractor().getIndex();
+            this.startResult += FactHandleIndexHashTable.PRIME * this.startResult + index[i].getExtractor().getIndex();
         }
 
         switch ( index.length ) {
             case 0 :
-                throw new IllegalAccessError( "FieldIndexHashTable cannot use an index[] of length  0" );
+                throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  0" );
             case 1 :
                 this.index = new SingleIndex( index,
                                               this.startResult,
@@ -59,7 +59,7 @@ public class FieldIndexHashTable extends AbstractHashTable
                                                        this.comparator );
                 break;
             default :
-                throw new IllegalAccessError( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
+                throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
         }
     }
 
@@ -375,14 +375,14 @@ public class FieldIndexHashTable extends AbstractHashTable
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
             final Object value = this.extractor.getValue( object );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
             return this.comparator.rehash( hashCode );
         }
 
         public int hashCodeOf(final ReteTuple tuple) {
             int hashCode = this.startResult;
             final Object value = this.declaration.getValue( tuple.get( this.declaration ).getObject() );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
             return this.comparator.rehash( hashCode );
         }
 
@@ -431,10 +431,10 @@ public class FieldIndexHashTable extends AbstractHashTable
             int hashCode = this.startResult;
 
             Object value = this.index0.extractor.getValue( object );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             value = this.index1.extractor.getValue( object );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             return this.comparator.rehash( hashCode );
         }
@@ -443,10 +443,10 @@ public class FieldIndexHashTable extends AbstractHashTable
             int hashCode = this.startResult;
 
             Object value = this.index0.declaration.getValue( tuple.get( this.index0.declaration ).getObject() );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             value = this.index1.declaration.getValue( tuple.get( this.index1.declaration ).getObject() );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             return this.comparator.rehash( hashCode );
         }
@@ -521,13 +521,13 @@ public class FieldIndexHashTable extends AbstractHashTable
             int hashCode = this.startResult;
 
             Object value = this.index0.extractor.getValue( object );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             value = this.index1.extractor.getValue( object );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             value = this.index2.extractor.getValue( object );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             return this.comparator.rehash( hashCode );
         }
@@ -536,13 +536,13 @@ public class FieldIndexHashTable extends AbstractHashTable
             int hashCode = this.startResult;
 
             Object value = this.index0.declaration.getValue( tuple.get( this.index0.declaration ).getObject() );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             value = this.index1.declaration.getValue( tuple.get( this.index1.declaration ).getObject() );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             value = this.index2.declaration.getValue( tuple.get( this.index2.declaration ).getObject() );
-            hashCode += FieldIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode += FactHandleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
 
             return this.comparator.rehash( hashCode );
         }
@@ -603,34 +603,6 @@ public class FieldIndexHashTable extends AbstractHashTable
             }
 
             return true;
-        }
-    }
-
-    public static class FieldIndex {
-        private FieldExtractor extractor;
-        private Declaration    declaration;
-
-        public FieldIndex(final FieldExtractor extractor,
-                          final Declaration declaration) {
-            super();
-            this.extractor = extractor;
-            this.declaration = declaration;
-        }
-
-        public Declaration getDeclaration() {
-            return this.declaration;
-        }
-
-        public void setDeclaration(final Declaration declaration) {
-            this.declaration = declaration;
-        }
-
-        public FieldExtractor getExtractor() {
-            return this.extractor;
-        }
-
-        public void setExtractor(final FieldExtractor extractor) {
-            this.extractor = extractor;
         }
     }
 }
