@@ -79,4 +79,7 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
         }
     }
 
+    public int getHashCode(Object object) {
+        return getByteValue( object );
+    }
 }

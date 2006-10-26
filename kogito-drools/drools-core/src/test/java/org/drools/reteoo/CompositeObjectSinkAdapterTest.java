@@ -244,6 +244,10 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             //  Auto-generated method stub
             return null;
         }
+
+        public int getHashCode(Object object) {
+            return 0;
+        }
         
     }
     

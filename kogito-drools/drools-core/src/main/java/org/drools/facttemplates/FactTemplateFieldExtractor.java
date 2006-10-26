@@ -76,4 +76,7 @@ public class FactTemplateFieldExtractor
         }
     }
     
+    public int getHashCode(Object object) {
+        return getValue( object ).hashCode();
+    }
 }

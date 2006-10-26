@@ -71,6 +71,6 @@ public class EqualityAssertMapComparator
     }
 
     public String toString() {
-        return "identity";
+        return "equality";
     }
 }

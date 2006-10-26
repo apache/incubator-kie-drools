@@ -415,15 +415,13 @@ public abstract class AbstractHashTable
 
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
-            final Object value = this.extractor.getValue( object );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.extractor.getHashCode( object );
             return this.comparator.rehash( hashCode );
         }
 
         public int hashCodeOf(final ReteTuple tuple) {
             int hashCode = this.startResult;
-            final Object value = this.declaration.getValue( tuple.get( this.declaration ).getObject() );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.declaration.getHashCode( tuple.get( this.declaration ).getObject() );
             return this.comparator.rehash( hashCode );
         }
 
@@ -479,11 +477,11 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
 
-            Object value = this.index0.extractor.getValue( object );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            int hash = this.index0.extractor.getHashCode( object );
+            hashCode = TupleIndexHashTable.PRIME * hashCode + hash;
 
-            value = this.index1.extractor.getValue( object );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hash = this.index1.extractor.getHashCode( object );
+            hashCode = TupleIndexHashTable.PRIME * hashCode + hash;
 
             return this.comparator.rehash( hashCode );
         }
@@ -491,11 +489,9 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final ReteTuple tuple) {
             int hashCode = this.startResult;
 
-            Object value = this.index0.declaration.getValue( tuple.get( this.index0.declaration ).getObject() );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( tuple.get( this.index0.declaration ).getObject() );
 
-            value = this.index1.declaration.getValue( tuple.get( this.index1.declaration ).getObject() );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( tuple.get( this.index1.declaration ).getObject() );
 
             return this.comparator.rehash( hashCode );
         }
@@ -590,14 +586,9 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
 
-            Object value = this.index0.extractor.getValue( object );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
-
-            value = this.index1.extractor.getValue( object );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
-
-            value = this.index2.extractor.getValue( object );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( object );;
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( object );;
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index2.extractor.getHashCode( object );;
 
             return this.comparator.rehash( hashCode );
         }
@@ -605,14 +596,9 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final ReteTuple tuple) {
             int hashCode = this.startResult;
 
-            Object value = this.index0.declaration.getValue( tuple.get( this.index0.declaration ).getObject() );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
-
-            value = this.index1.declaration.getValue( tuple.get( this.index1.declaration ).getObject() );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
-
-            value = this.index2.declaration.getValue( tuple.get( this.index2.declaration ).getObject() );
-            hashCode += TupleIndexHashTable.PRIME * hashCode + ((value == null) ? 0 : value.hashCode());
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( tuple.get( this.index0.declaration ).getObject() );
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( tuple.get( this.index1.declaration ).getObject() );
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index2.declaration.getHashCode( tuple.get( this.index2.declaration ).getObject() );
 
             return this.comparator.rehash( hashCode );
         }

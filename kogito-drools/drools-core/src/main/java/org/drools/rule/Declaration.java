@@ -188,6 +188,9 @@ public class Declaration
         return this.extractor.getBooleanValue( object );
     }
 
+    public int getHashCode(Object object) {
+        return this.extractor.getHashCode( object );
+    }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {

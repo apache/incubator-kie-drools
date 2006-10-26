@@ -57,4 +57,10 @@ public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtrac
             throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
         }
     }
+    
+    public int getHashCode(Object object) {
+        long temp = Double.doubleToLongBits( getDoubleValue( object ) );
+        return (int) ( temp ^ ( temp >>> 32) );
+    }
+    
 }
