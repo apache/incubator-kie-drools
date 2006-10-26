@@ -6,6 +6,8 @@ package org.drools.util;
 import java.io.Serializable;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.rule.Declaration;
+import org.drools.spi.FieldExtractor;
 
 public abstract class AbstractHashTable
     implements
@@ -351,6 +353,26 @@ public abstract class AbstractHashTable
 
         public boolean equals(final Object object) {
             return (object == this) || (this.handle == ((FactEntry) object).handle);
+        }
+    }
+    
+    public static class FieldIndex {
+        public FieldExtractor extractor;
+        public Declaration    declaration;
+
+        public FieldIndex(final FieldExtractor extractor,
+                          final Declaration declaration) {
+            super();
+            this.extractor = extractor;
+            this.declaration = declaration;
+        }
+
+        public Declaration getDeclaration() {
+            return this.declaration;
+        }
+
+        public FieldExtractor getExtractor() {
+            return this.extractor;
         }
     }
 }

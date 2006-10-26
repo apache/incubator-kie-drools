@@ -125,7 +125,7 @@ public class CollectNode extends BetaNode
         memory.getTupleMemory().add( leftTuple );
 
         final Collection result = this.collect.instantiateResultObject();
-        final Iterator it = memory.getObjectMemory().iterator( leftTuple );
+        final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory,
                                           leftTuple );
 
@@ -199,7 +199,7 @@ public class CollectNode extends BetaNode
                              final InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.getObjectMemory().add( handle );
+        memory.getFactHandleMemory().add( handle );
 
         final Iterator it = memory.getTupleMemory().iterator();
         this.constraints.updateFromFactHandle( workingMemory,
@@ -227,7 +227,7 @@ public class CollectNode extends BetaNode
                               final InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.getObjectMemory().remove( handle ) ) {
+        if ( !memory.getFactHandleMemory().remove( handle ) ) {
             return;
         }
 

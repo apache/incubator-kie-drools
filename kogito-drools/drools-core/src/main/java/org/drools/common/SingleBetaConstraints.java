@@ -25,11 +25,12 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.util.FactHashTable;
-import org.drools.util.FieldIndexHashTable;
+import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
-import org.drools.util.FieldIndexHashTable.FieldIndex;
+import org.drools.util.TupleIndexHashTable;
+import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class SingleBetaConstraints
     implements
@@ -114,8 +115,8 @@ public class SingleBetaConstraints
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                variableConstraint.getRequiredDeclarations()[0] );
-            memory = new BetaMemory( new TupleHashTable(),
-                                     new FieldIndexHashTable( new FieldIndex[]{index} ) );
+            memory = new BetaMemory( new TupleIndexHashTable( new FieldIndex[]{index} ),
+                                     new FactHandleIndexHashTable( new FieldIndex[]{index} ) );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );

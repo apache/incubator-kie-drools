@@ -106,7 +106,7 @@ public class NotNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getTupleMemory().add( leftTuple );
 
-        final Iterator it = memory.getObjectMemory().iterator( leftTuple );
+        final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory, leftTuple );
         int matches = 0;
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
@@ -141,9 +141,9 @@ public class NotNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.getObjectMemory().add( handle );
+        memory.getFactHandleMemory().add( handle );
 
-        final Iterator it = memory.getTupleMemory().iterator();
+        final Iterator it = memory.getTupleMemory().iterator( handle );
         this.constraints.updateFromFactHandle( workingMemory, handle );
         for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
@@ -176,11 +176,11 @@ public class NotNode extends BetaNode {
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.getObjectMemory().remove( handle ) ) {
+        if ( !memory.getFactHandleMemory().remove( handle ) ) {
             return;
         }
 
-        final Iterator it = memory.getTupleMemory().iterator();
+        final Iterator it = memory.getTupleMemory().iterator( handle );
         this.constraints.updateFromFactHandle( workingMemory, handle );
         for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {

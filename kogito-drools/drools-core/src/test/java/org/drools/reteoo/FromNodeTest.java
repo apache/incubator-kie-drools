@@ -273,7 +273,7 @@ public class FromNodeTest extends TestCase {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( from );
         assertEquals( 1,
                       memory.getTupleMemory().size() );
-        assertNull( memory.getObjectMemory() );
+        assertNull( memory.getFactHandleMemory() );
         assertEquals( 2,
                       ((LinkedList) memory.getCreatedHandles().get( tuple )).size() );
 
@@ -287,7 +287,7 @@ public class FromNodeTest extends TestCase {
                            workingMemory );
         assertEquals( 0,
                       memory.getTupleMemory().size() );
-        assertNull( memory.getObjectMemory() );
+        assertNull( memory.getFactHandleMemory() );
     }
 
 
