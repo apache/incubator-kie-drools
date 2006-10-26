@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.FieldValue;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
@@ -22,21 +25,20 @@ public class CompositeObjectSinkAdapter
     implements
     ObjectSinkPropagator {
 
-
-
     /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
     public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
 
     /** The threshold for when hashing kicks in */
-    public static final int THRESHOLD_TO_HASH = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY, "3" ));
-    
-    private static final long serialVersionUID = 2192568791644369227L;
-    ObjectSinkNodeList otherSinks;
-    ObjectSinkNodeList hashableSinks;
+    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
+                                                                                                      "3" ) );
 
-    LinkedList         hashedFieldIndexes;
+    private static final long  serialVersionUID               = 2192568791644369227L;
+    ObjectSinkNodeList         otherSinks;
+    ObjectSinkNodeList         hashableSinks;
 
-    ObjectHashMap      hashedSinkMap;
+    LinkedList                 hashedFieldIndexes;
+
+    ObjectHashMap              hashedSinkMap;
 
     private HashKey            hashKey;
 
@@ -56,18 +58,18 @@ public class CompositeObjectSinkAdapter
                 if ( evaluator.getOperator() == Operator.EQUAL ) {
                     final int index = literalConstraint.getFieldExtractor().getIndex();
                     final FieldIndex fieldIndex = registerFieldIndex( index,
-                                                                literalConstraint.getFieldExtractor() );
+                                                                      literalConstraint.getFieldExtractor() );
 
                     if ( fieldIndex.getCount() >= THRESHOLD_TO_HASH ) {
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
-                        final Object value = literalConstraint.getField().getValue();
+                        final FieldValue value = literalConstraint.getField();
                         // no need to check, we know  the sink  does not exist
                         this.hashedSinkMap.put( new HashKey( index,
-                                                        value ),
-                                           sink,
-                                           false );
+                                                             value ),
+                                                sink,
+                                                false );
                     } else {
                         if ( this.hashableSinks == null ) {
                             this.hashableSinks = new ObjectSinkNodeList();
@@ -95,15 +97,14 @@ public class CompositeObjectSinkAdapter
             if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
                 final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 final Evaluator evaluator = literalConstraint.getEvaluator();
-                final Object value = literalConstraint.getField().getValue();
+                final FieldValue value = literalConstraint.getField();
 
                 if ( evaluator.getOperator() == Operator.EQUAL ) {
                     final int index = literalConstraint.getFieldExtractor().getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
 
                     if ( fieldIndex.isHashed() ) {
-                        this.hashKey.setIndex( index );
-                        this.hashKey.setValue( value );
+                        this.hashKey.setValue( index, value );
                         this.hashedSinkMap.remove( this.hashKey );
                         if ( fieldIndex.getCount() <= THRESHOLD_TO_HASH - 1 ) {
                             // we have less than three so unhash
@@ -144,11 +145,11 @@ public class CompositeObjectSinkAdapter
             final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
             final Evaluator evaluator = literalConstraint.getEvaluator();
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                final Object value = literalConstraint.getField().getValue();
+                final FieldValue value = literalConstraint.getField();
                 list.add( sink );
                 this.hashedSinkMap.put( new HashKey( index,
-                                                value ),
-                                   sink );
+                                                     value ),
+                                        sink );
             }
         }
 
@@ -167,17 +168,16 @@ public class CompositeObjectSinkAdapter
     public void unHashSinks(final FieldIndex fieldIndex) {
         final int index = fieldIndex.getIndex();
 
-        
         List sinks = new ArrayList();
-        
+
         //iterate twice as custom iterator is immutable
         Iterator mapIt = this.hashedSinkMap.iterator();
-        for(ObjectHashMap.ObjectEntry e = (ObjectHashMap.ObjectEntry) mapIt.next(); e != null; ) {
+        for ( ObjectHashMap.ObjectEntry e = (ObjectHashMap.ObjectEntry) mapIt.next(); e != null; ) {
 
             sinks.add( e.getValue() );
             e = (ObjectHashMap.ObjectEntry) mapIt.next();
         }
-        
+
         for ( java.util.Iterator iter = sinks.iterator(); iter.hasNext(); ) {
             AlphaNode sink = (AlphaNode) iter.next();
             final AlphaNode alphaNode = (AlphaNode) sink;
@@ -185,16 +185,15 @@ public class CompositeObjectSinkAdapter
             final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
             final Evaluator evaluator = literalConstraint.getEvaluator();
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
-                final Object value = literalConstraint.getField().getValue();
-                if (this.hashableSinks == null) {
+                final FieldValue value = literalConstraint.getField();
+                if ( this.hashableSinks == null ) {
                     this.hashableSinks = new ObjectSinkNodeList();
                 }
                 this.hashableSinks.add( sink );
-                this.hashedSinkMap.remove( new HashKey(index, value) );
+                this.hashedSinkMap.remove( new HashKey( index,
+                                                        value ) );
             };
         }
-     
-
 
         if ( this.hashedSinkMap.isEmpty() ) {
             this.hashedSinkMap = null;
@@ -276,14 +275,13 @@ public class CompositeObjectSinkAdapter
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed        
             for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
-                if  ( !fieldIndex.isHashed() ) {
+                if ( !fieldIndex.isHashed() ) {
                     continue;
                 }
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
                 final int index = fieldIndex.getIndex();
                 final FieldExtractor extractor = fieldIndex.getFieldExtactor();
-                this.hashKey.setIndex( index );
-                this.hashKey.setValue( extractor.getValue( object ) );
+                this.hashKey.setValue( index, object, extractor );
                 final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
                 if ( sink != null ) {
                     // The sink exists so propagate
@@ -324,14 +322,13 @@ public class CompositeObjectSinkAdapter
                 // Iterate the FieldIndexes to see if any are hashed        
                 for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
                     // this field is hashed so set the existing hashKey and see if there is a sink for it
-                    if ( ! fieldIndex.isHashed() ) {
+                    if ( !fieldIndex.isHashed() ) {
                         continue;
                     }
-                    
+
                     final int index = fieldIndex.getIndex();
                     final FieldExtractor extractor = fieldIndex.getFieldExtactor();
-                    this.hashKey.setIndex( index );
-                    this.hashKey.setValue( extractor.getValue( object ) );
+                    this.hashKey.setValue( index, object, extractor );
                     final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
                     if ( sink != null ) {
                         // The sink exists so propagate
@@ -397,56 +394,117 @@ public class CompositeObjectSinkAdapter
     }
 
     public int size() {
-    	int size = 0;
-        size += ( ( otherSinks != null ) ? otherSinks.size() : 0);
-        size += ( ( hashableSinks != null ) ? hashableSinks.size() : 0);
-        size += ( ( hashedSinkMap != null ) ? hashedSinkMap.size() : 0);
+        int size = 0;
+        size += ((otherSinks != null) ? otherSinks.size() : 0);
+        size += ((hashableSinks != null) ? hashableSinks.size() : 0);
+        size += ((hashedSinkMap != null) ? hashedSinkMap.size() : 0);
         return size;
     }
 
-    public static class HashKey implements Serializable {
-        private int    index;
-        private Object value;
+    public static class HashKey
+        implements
+        Serializable {
+        private static final long serialVersionUID = 1949191240975565186L;
+        
+        private static final byte OBJECT = 1;
+        private static final byte LONG   = 2;
+        private static final byte DOUBLE = 3;
+        private static final byte BOOL   = 4;
 
+        private int               index;
+        
+        private byte              type;
+        private Object            ovalue;
+        private long              lvalue;
+        private boolean           bvalue;
+        private double            dvalue;
+        
+        private int               hashCode;
+        
         public HashKey() {
-
         }
 
         public HashKey(final int index,
-                       final Object value) {
-            super();
-            this.index = index;
-            this.value = value;
+                       final FieldValue value ) {
+            this.setValue( index, value );
+        }
+
+        public HashKey(final int index,
+                       final Object value,
+                       final Extractor extractor) {
+            this.setValue( index, value, extractor );
         }
 
         public int getIndex() {
             return this.index;
         }
 
-        public void setIndex(final int index) {
+        public void setValue(final int index, final Object value, final Extractor extractor) {
             this.index = index;
+            ValueType vtype = extractor.getValueType(); 
+            if( vtype.isBoolean() ) {
+                this.bvalue = extractor.getBooleanValue( value );
+                this.type = BOOL;
+                this.setHashCode( this.bvalue ? 1231 : 1237 );
+            } else if( vtype.isIntegerNumber() ) {
+                this.lvalue = extractor.getLongValue( value );
+                this.type = LONG;
+                this.setHashCode( (int) ( this.lvalue ^ ( this.lvalue >>> 32 ) ) );
+            } else if( vtype.isFloatNumber() ) {
+                this.dvalue = extractor.getDoubleValue( value );
+                this.type = DOUBLE;
+                long temp = Double.doubleToLongBits( this.dvalue );
+                this.setHashCode( (int) ( temp ^ ( temp >>> 32 )));
+            } else {
+                this.ovalue = extractor.getValue( value );
+                this.type = OBJECT;
+                this.setHashCode( this.ovalue.hashCode() );
+            }
         }
-
-        public Object getValue() {
-            return this.value;
+        
+        public void setValue(final int index, final FieldValue value) {
+            this.index = index;
+            if( value.isBooleanField() ) {
+                this.bvalue = value.getBooleanValue();
+                this.type = BOOL;
+                this.setHashCode( this.bvalue ? 1231 : 1237 );
+            } else if( value.isIntegerNumberField() ) {
+                this.lvalue = value.getLongValue();
+                this.type = LONG;
+                this.setHashCode( (int) ( this.lvalue ^ ( this.lvalue >>> 32 ) ) );
+            } else if( value.isFloatNumberField() ) {
+                this.dvalue = value.getDoubleValue();
+                this.type = DOUBLE;
+                long temp = Double.doubleToLongBits( this.dvalue );
+                this.setHashCode( (int) ( temp ^ ( temp >>> 32 )));
+            } else {
+                this.ovalue = value.getValue();
+                this.type = OBJECT;
+                this.setHashCode( this.ovalue.hashCode() );
+            }
         }
-
-        public void setValue(final Object value) {
-            this.value = value;
+        
+        private void setHashCode(int hashSeed) {
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + hashSeed;
+            result = PRIME * result + this.index;
+            this.hashCode = result;
         }
 
         public int hashCode() {
-            final int PRIME = 31;
-            int result = 1;
-            result = PRIME * result + this.index;
-            result = PRIME * result + ((this.value == null) ? 0 : this.value.hashCode());
-            return result;
+            return this.hashCode;
         }
 
         public boolean equals(final Object object) {
             final HashKey other = (HashKey) object;
 
-            return this.index == other.index && this.value.equals( other.value );
+            return this.index == other.index &&
+                   this.type  == other.type &&
+                   ( ((this.type == BOOL) && (this.bvalue == other.bvalue)) ||
+                     ((this.type == LONG) && (this.lvalue == other.lvalue)) ||
+                     ((this.type == DOUBLE) && (this.dvalue == other.dvalue)) ||
+                     ((this.type == OBJECT) && (this.ovalue.equals( other.ovalue ))) );
         }
 
     }
@@ -455,15 +513,15 @@ public class CompositeObjectSinkAdapter
         implements
         LinkedListNode {
         private static final long serialVersionUID = 3853708964744065172L;
-        private final int      index;
-        private FieldExtractor fieldExtactor;
+        private final int         index;
+        private FieldExtractor    fieldExtactor;
 
-        private int            count;
+        private int               count;
 
-        private boolean        hashed;
+        private boolean           hashed;
 
-        private LinkedListNode previous;
-        private LinkedListNode next;
+        private LinkedListNode    previous;
+        private LinkedListNode    next;
 
         public FieldIndex(final int index,
                           final FieldExtractor fieldExtractor) {

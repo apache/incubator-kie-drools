@@ -113,4 +113,20 @@ public class ObjectFieldImpl
             return 0;
         }
     }
+
+    public boolean isBooleanField() {
+        return false;
+    }
+
+    public boolean isFloatNumberField() {
+        return false;
+    }
+
+    public boolean isIntegerNumberField() {
+        return false;
+    }
+
+    public boolean isObjectField() {
+        return true;
+    }
 }

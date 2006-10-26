@@ -69,4 +69,20 @@ public class LongFieldImpl
     public int hashCode() {
         return (int) this.value;
     }
+
+    public boolean isBooleanField() {
+        return false;
+    }
+
+    public boolean isFloatNumberField() {
+        return false;
+    }
+
+    public boolean isIntegerNumberField() {
+        return true;
+    }
+
+    public boolean isObjectField() {
+        return false;
+    }
 }

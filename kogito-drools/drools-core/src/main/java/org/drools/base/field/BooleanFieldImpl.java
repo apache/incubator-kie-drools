@@ -90,4 +90,20 @@ public class BooleanFieldImpl
         return this.value ? 1 : 0;
     }
 
+    public boolean isBooleanField() {
+        return true;
+    }
+
+    public boolean isFloatNumberField() {
+        return false;
+    }
+
+    public boolean isIntegerNumberField() {
+        return false;
+    }
+
+    public boolean isObjectField() {
+        return false;
+    }
+
 }

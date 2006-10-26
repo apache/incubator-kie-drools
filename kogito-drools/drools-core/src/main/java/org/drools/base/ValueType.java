@@ -212,8 +212,35 @@ public class ValueType
     }
 
     public boolean isNumber() {
-        return (Number.class.isAssignableFrom( this.classType )) || (this.classType == Byte.TYPE) || (this.classType == Short.TYPE) || (this.classType == Integer.TYPE) || (this.classType == Long.TYPE) || (this.classType == Float.TYPE)
-               || (this.classType == Double.TYPE);
+        return (this.classType == Integer.TYPE) || 
+               (this.classType == Long.TYPE) || 
+               (this.classType == Float.TYPE) || 
+               (this.classType == Double.TYPE) ||
+               (this.classType == Byte.TYPE) || 
+               (this.classType == Short.TYPE) || 
+               (this.classType == Character.TYPE) ||
+               (this.classType == Character.class) || 
+               (Number.class.isAssignableFrom( this.classType ));
+    }
+
+    public boolean isIntegerNumber() {
+        return (this.classType == Integer.TYPE) || 
+               (this.classType == Long.TYPE) || 
+               (this.classType == Integer.class) || 
+               (this.classType == Long.class) || 
+               (this.classType == Character.class) || 
+               (this.classType == Character.TYPE) ||
+               (this.classType == Byte.TYPE) ||
+               (this.classType == Short.TYPE) || 
+               (this.classType == Byte.class) || 
+               (this.classType == Short.class);
+    }
+
+    public boolean isFloatNumber() {
+        return (this.classType == Float.TYPE) || 
+               (this.classType == Double.TYPE) || 
+               (this.classType == Float.class) || 
+               (this.classType == Double.class);
     }
 
     public boolean isChar() {
