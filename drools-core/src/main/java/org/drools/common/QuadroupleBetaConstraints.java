@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ReteTuple;
@@ -57,69 +58,74 @@ public class QuadroupleBetaConstraints
     private boolean                       indexed1;
     private boolean                       indexed2;
 
-    public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
-        this( constraints,
-              true );
-    }
-
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
-                                     boolean index) {
-        final boolean i0 = index && isIndexable( constraints[0] );
-        final boolean i1 = index && isIndexable( constraints[1] );
-        final boolean i2 = index && isIndexable( constraints[2] );
-        final boolean i3 = index && isIndexable( constraints[3] );
+                                     final RuleBaseConfiguration conf) {
+        if  (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) {
+            this.indexed0 = false;
+            this.indexed1 = false;
+            this.indexed2 = false;
+        } else { 
+            int depth = conf.getCompositeKeyDepth();    
 
-        if ( i0 ) {
-            this.indexed0 = true;
-        }
-
-        if ( i1 ) {
-            if ( !i0 ) {
+            // Determine  if this constraints are indexable                           
+            final boolean i0 = isIndexable( constraints[0] );
+            final boolean i1 = isIndexable( constraints[1] );
+            final boolean i2 = isIndexable( constraints[2] );
+            final boolean i3 = isIndexable( constraints[3] );
+    
+            if (  depth >= 1 && i0 ) {
                 this.indexed0 = true;
-                swap( constraints,
-                      1,
-                      0 );
-            } else {
-                this.indexed1 = true;
+            }
+    
+            if ( i1 ) {
+                if ( depth >= 1 && !this.indexed0 ) {
+                    this.indexed0 = true;
+                    swap( constraints,
+                          1,
+                          0 );
+                } else if (depth >= 2 ) {
+                    this.indexed1 = true;
+                }
+            }
+    
+            if ( i2 ) {
+                if ( depth >= 1 && !this.indexed0 ) {
+                    this.indexed0 = true;
+                    swap( constraints,
+                          2,
+                          0 );
+                } else if ( depth >= 2 && this.indexed0 && !this.indexed1 ) {
+                    this.indexed1 = true;
+                    swap( constraints,
+                          2,
+                          1 );
+                } else if ( depth >= 3 ) {
+                    this.indexed2 = true;
+                }
+            }
+    
+            if ( i3 ) {
+                if (  depth >= 1 && !this.indexed0 ) {
+                    this.indexed0 = true;
+                    swap( constraints,
+                          3,
+                          0 );
+                } else if (  depth >= 2 && this.indexed0 && !this.indexed1 ) {
+                    this.indexed1 = true;
+                    swap( constraints,
+                          3,
+                          1 );
+                } else if (  depth >= 3 && this.indexed0 && this.indexed1 && !this.indexed2 ) {
+                    this.indexed2 = true;
+                    swap( constraints,
+                          3,
+                          2 );
+                } else {
+                    throw new IllegalArgumentException( "There cannot be more than 3 indexes" );
+                }
             }
         }
-
-        if ( i2 ) {
-            if ( !i0 ) {
-                this.indexed0 = true;
-                swap( constraints,
-                      2,
-                      0 );
-            } else if ( !i0 && !i1 ) {
-                this.indexed1 = true;
-                swap( constraints,
-                      2,
-                      1 );
-            } else {
-                this.indexed2 = true;
-            }
-        }
-
-        if ( i3 ) {
-            if ( !i0 ) {
-                this.indexed0 = true;
-                swap( constraints,
-                      3,
-                      0 );
-            } else if ( !i0 && !i1 ) {
-                this.indexed1 = true;
-                swap( constraints,
-                      3,
-                      1 );
-            } else if ( !i0 && !i1 && !i2 ) {
-                this.indexed2 = true;
-                swap( constraints,
-                      3,
-                      2 );
-            } else {
-                throw new IllegalArgumentException( "There cannot be more than 3 index" );
-            }
-        }
+        
         this.constraint0 = constraints[0];
         this.context0 = this.constraint0.getContextEntry();
 

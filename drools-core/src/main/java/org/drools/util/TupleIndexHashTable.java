@@ -299,9 +299,6 @@ public class TupleIndexHashTable extends AbstractHashTable
             return current;
         }
 
-        //        public boolean matches(int otherHashCode) {
-        //            return this.hashCode == otherHashCode && this.index.equal( this.first.getFactHandle().getObject() );
-        //        }
 
         public boolean matches(final Object object,
                                final int objectHashCode) {

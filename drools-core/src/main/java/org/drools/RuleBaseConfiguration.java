@@ -42,110 +42,43 @@ import java.util.Map;
 public class RuleBaseConfiguration
     implements
     Serializable {
-    private Map                properties;
+    private static final long serialVersionUID = 320L;
 
-    private boolean            immutable;
+    private boolean           immutable;
 
-    /**
-     * Property to enable/disable left beta memory indexing
-     * Defaults to false 
-     */
-    public static final String PROPERTY_INDEX_LEFT_BETA_MEMORY    = "org.drools.reteoo.beta.index-left";
-
-    /**
-     * Property to enable/disable right beta memory indexing
-     * Defaults to true 
-     */
-    public static final String PROPERTY_INDEX_RIGHT_BETA_MEMORY   = "org.drools.reteoo.beta.index-right";
-
-    /**
-     * Property to enable/disable alpha node hashing inside object type nodes
-     * Defaults to true 
-     */
-    public static final String PROPERTY_HASH_OBJECT_TYPE_NODES    = "org.drools.reteoo.alpha.hash-type-node";
-
-    /**
-     * Property to enable/disable alpha node hashing inside alpha nodes
-     * Defaults to false 
-     */
-    public static final String PROPERTY_HASH_ALPHA_NODES          = "org.drools.reteoo.alpha.hash-alpha-node";
-
-    /**
-     * Property to define working memory assert behavior. Valid values are "identity" or "equality".
-     * Defaults to identity 
-     */
-    public static final String PROPERTY_ASSERT_BEHAVIOR           = "org.drools.wm.assert-behavior";
-
-    public static final String PROPERTY_LOGICAL_OVERRIDE_BEHAVIOR = "org.drools.wm.logical-override-behavior";
-
-    public static final String WM_BEHAVIOR_IDENTITY               = "identity";
-    public static final String WM_BEHAVIOR_EQUALITY               = "equality";
-
-    public static final String WM_BEHAVIOR_PRESERVE               = "preserve";
-    public static final String WM_BEHAVIOR_DISCARD                = "discard";
-
-    // a generated serial version id
-    private static final long  serialVersionUID                   = 2989084670778336973L;
+    private boolean           shareAlphaNodes;
+    private boolean           shareBetaNodes;
+    private int               alphaNodeHashingThreshold;
+    private int               compositeKeyDepth;
+    private boolean           indexLeftBetaMemory;
+    private boolean           indexRightBetaMemory;
+    private AssertBehaviour   assertBehaviour;
+    private LogicalOverride   logicalOverride;
 
     public RuleBaseConfiguration() {
-        this.properties = new HashMap();
         this.immutable = false;
 
-        // default values
-        this.properties.put( RuleBaseConfiguration.PROPERTY_INDEX_LEFT_BETA_MEMORY,
-                             System.getProperty( RuleBaseConfiguration.PROPERTY_INDEX_LEFT_BETA_MEMORY,
-                                                 "false" ) );
-        this.properties.put( RuleBaseConfiguration.PROPERTY_INDEX_RIGHT_BETA_MEMORY,
-                             System.getProperty( RuleBaseConfiguration.PROPERTY_INDEX_RIGHT_BETA_MEMORY,
-                                                 "true" ) );
-        this.properties.put( RuleBaseConfiguration.PROPERTY_HASH_OBJECT_TYPE_NODES,
-                             System.getProperty( RuleBaseConfiguration.PROPERTY_HASH_OBJECT_TYPE_NODES,
-                                                 "true" ) );
-        this.properties.put( RuleBaseConfiguration.PROPERTY_HASH_ALPHA_NODES,
-                             System.getProperty( RuleBaseConfiguration.PROPERTY_HASH_ALPHA_NODES,
-                                                 "false" ) );
-        this.properties.put( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR,
-                             System.getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR,
-                                                 RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY ) );
-        this.properties.put( RuleBaseConfiguration.PROPERTY_LOGICAL_OVERRIDE_BEHAVIOR,
-                             System.getProperty( RuleBaseConfiguration.PROPERTY_HASH_OBJECT_TYPE_NODES,
-                                                 RuleBaseConfiguration.WM_BEHAVIOR_DISCARD ) );
-    }
+        setShareAlphaNodes( Boolean.valueOf( System.getProperty( "drools.shareAlphaNodes",
+                                                                 "true" ) ).booleanValue() );
 
-    /**
-     * Returns the current value for the given property or null if it is not set 
-     * @param prop
-     * @return
-     */
-    public String getProperty(final String prop) {
-        return (String) this.properties.get( prop );
-    }
+        setShareBetaNodes( Boolean.valueOf( System.getProperty( "drools.shareBetaNodes",
+                                                                "true" ) ).booleanValue() );
 
-    /**
-     * Convenience method that calls get() method and returns a boolean for the 
-     * given property.
-     *  
-     * @param prop
-     * @return
-     */
-    public boolean getBooleanProperty(final String prop) {
-        return Boolean.valueOf( (String) this.properties.get( prop ) ).booleanValue();
-    }
+        setAlphaNodeHashingThreshold( Integer.parseInt( System.getProperty( "drools.alphaNodeHashingThreshold",
+                                                                            "3" ) ) );
 
-    /**
-     * Sets the value of the given property
-     * 
-     * @param prop
-     * @param value
-     */
-    public void setProperty(final String prop,
-                            final String value) {
-        if ( !this.immutable ) {
-            this.properties.put( prop,
-                                 value );
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        setCompositeKeyDepth( Integer.parseInt( System.getProperty( "drools.compositeKeyDepth",
+                                                                    "3" ) ) );
+
+        setIndexLeftBetaMemory( Boolean.valueOf( System.getProperty( "drools.indexLeftBetaMemory",
+                                                                     "true" ) ).booleanValue() );
+        setIndexRightBetaMemory( Boolean.valueOf( System.getProperty( "drools.indexRightBetaMemory",
+                                                                      "true" ) ).booleanValue() );
+
+        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( System.getProperty( "drools.iassertBehaviour",
+                                                                                          "IDENTITY" ) ) );
+        setLogicalOverride( LogicalOverride.determineLogicalOverride( System.getProperty( "drools.logicalOverride",
+                                                                                          "DISCARD" ) ) );
     }
 
     /**
@@ -163,6 +96,177 @@ public class RuleBaseConfiguration
      */
     public boolean isImmutable() {
         return this.immutable;
+    }
+
+    public boolean isShareAlphaNodes() {
+        return shareAlphaNodes;
+    }
+
+    public void setShareAlphaNodes(boolean shareAlphaNodes) {
+        if ( !this.immutable ) {
+            this.shareAlphaNodes = shareAlphaNodes;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public boolean isShareBetaNodes() {
+        return shareBetaNodes;
+    }
+
+    public void setShareBetaNodes(boolean shareBetaNodes) {
+        if ( !this.immutable ) {
+            this.shareBetaNodes = shareBetaNodes;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public int getAlphaNodeHashingThreshold() {
+        return alphaNodeHashingThreshold;
+    }
+
+    public void setAlphaNodeHashingThreshold(int alphaNodeHashingThreshold) {
+        if ( !this.immutable ) {
+            this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public AssertBehaviour getAssertBehaviour() {
+        return assertBehaviour;
+    }
+
+    public void setAssertBehaviour(AssertBehaviour assertBehaviour) {
+        if ( !this.immutable ) {
+            this.assertBehaviour = assertBehaviour;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public int getCompositeKeyDepth() {
+        return compositeKeyDepth;
+    }
+
+    public void setCompositeKeyDepth(int compositeKeyDepth) {
+        if ( !this.immutable ) {
+            if ( compositeKeyDepth > 3 ) {
+                throw new UnsupportedOperationException( "compositeKeyDepth cannot be greater than 3" );
+            }
+            this.compositeKeyDepth = compositeKeyDepth;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public boolean isIndexLeftBetaMemory() {
+        return indexLeftBetaMemory;
+    }
+
+    public void setIndexLeftBetaMemory(boolean indexLeftBetaMemory) {
+        if ( !this.immutable ) {
+            this.indexLeftBetaMemory = indexLeftBetaMemory;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public boolean isIndexRightBetaMemory() {
+        return indexRightBetaMemory;
+    }
+
+    public void setIndexRightBetaMemory(boolean indexRightBetaMemory) {
+        if ( !this.immutable ) {
+            this.indexRightBetaMemory = indexRightBetaMemory;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public LogicalOverride getLogicalOverride() {
+        return logicalOverride;
+    }
+
+    public void setLogicalOverride(LogicalOverride logicalOverride) {
+        if ( !this.immutable ) {
+            this.logicalOverride = logicalOverride;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
+    public static class AssertBehaviour
+        implements
+        Serializable {
+        private static final long           serialVersionUID = 320L;
+
+        public static final AssertBehaviour IDENTITY         = new AssertBehaviour( 0 );
+        public static final AssertBehaviour EQUALITY         = new AssertBehaviour( 1 );
+
+        private int                         value;
+
+        private AssertBehaviour(int value) {
+            this.value = value;
+        }
+
+        public static AssertBehaviour determineAssertBehaviour(String value) {
+            if ( value.equals( "IDENTITY" ) ) {
+                return IDENTITY;
+            } else if ( value.equals( "EQUALITY" ) ) {
+                return EQUALITY;
+            } else {
+                throw new IllegalArgumentException( "Illegal enum value '" + value + "' for AssertBehaviour" );
+            }
+        }
+
+        private Object readResolve() throws java.io.ObjectStreamException {
+            switch ( this.value ) {
+                case 0 :
+                    return IDENTITY;
+                case 1 :
+                    return EQUALITY;
+                default :
+                    throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for AssertBehaviour" );
+            }
+        }
+    }
+
+    public static class LogicalOverride
+        implements
+        Serializable {
+        private static final long           serialVersionUID = 320L;
+
+        public static final LogicalOverride PRESERVE         = new LogicalOverride( 0 );
+        public static final LogicalOverride DISCARD          = new LogicalOverride( 1 );
+
+        private int                         value;
+
+        private LogicalOverride(int value) {
+            this.value = value;
+        }
+
+        public static LogicalOverride determineLogicalOverride(String value) {
+            if ( value.equals( "PRESERVE" ) ) {
+                return PRESERVE;
+            } else if ( value.equals( "DISCARD" ) ) {
+                return DISCARD;
+            } else {
+                throw new IllegalArgumentException( "Illegal enum value '" + value + "' for LogicalOverride" );
+            }
+        }
+
+        private Object readResolve() throws java.io.ObjectStreamException {
+            switch ( this.value ) {
+                case 0 :
+                    return PRESERVE;
+                case 1 :
+                    return DISCARD;
+                default :
+                    throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for LogicalOverride" );
+            }
+        }
     }
 
 }
