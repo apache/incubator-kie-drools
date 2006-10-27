@@ -39,6 +39,19 @@ import java.util.Map;
  *
  * @version $Id$
  */
+
+/**
+ * drools.removeIdentities = <true|false>
+ * drools.shareAlphaNodes  = <true|false>
+ * drools.shareBetaNodes = <true|false>
+ * drools.alphaMemory <true/false>
+ * drools.alphaNodeHashingThreshold = <1...n>
+ * drools.compositeKeyDepth  =<1..3>
+ * drools.indexLeftBetaMemory = <true/false>
+ * drools.indexRightBetaMemory = <true/false>
+ * drools.assertBehaviour = <IDENTITY|EQUALITY>
+ * drools.logicalOverride = <DISCARD|PRESERVE>
+ */
 public class RuleBaseConfiguration
     implements
     Serializable {
@@ -46,6 +59,7 @@ public class RuleBaseConfiguration
 
     private boolean           immutable;
 
+    private boolean           removeIdentities;
     private boolean           shareAlphaNodes;
     private boolean           shareBetaNodes;
     private boolean           alphaMemory;
@@ -59,8 +73,11 @@ public class RuleBaseConfiguration
     public RuleBaseConfiguration() {
         this.immutable = false;
 
+        setRemoveIdentities( Boolean.valueOf( System.getProperty( "drools.removeIdentities",
+                                                                  "false" ) ).booleanValue() );
+        
         setAlphaMemory( Boolean.valueOf( System.getProperty( "drools.alphaMemory",
-                                                             "true" ) ).booleanValue() );
+                                                             "false" ) ).booleanValue() );
         
         setShareAlphaNodes( Boolean.valueOf( System.getProperty( "drools.shareAlphaNodes",
                                                                  "true" ) ).booleanValue() );
@@ -102,6 +119,20 @@ public class RuleBaseConfiguration
         return this.immutable;
     }
         
+    
+    
+    public boolean isRemoveIdentities() {
+        return removeIdentities;
+    }
+
+    public void setRemoveIdentities(boolean removeIdentities) {
+        if ( !this.immutable ) {
+            this.removeIdentities = removeIdentities;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
+
     public boolean isAlphaMemory() {
         return alphaMemory;
     }
