@@ -46,6 +46,10 @@ public interface Evaluator
     public boolean evaluate(Extractor extractor,
                             Object object1,
                             FieldValue value);
+    
+    public boolean evaluate(Extractor extractor,
+                            Object object1,
+                            Object object2);
 
     public boolean evaluateCachedLeft(VariableContextEntry context,
                                       Object object1);

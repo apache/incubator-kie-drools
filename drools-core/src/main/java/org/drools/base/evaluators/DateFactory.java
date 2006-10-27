@@ -131,9 +131,21 @@ public class DateFactory
             return value1.compareTo( getRightDate( value2 ) ) == 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Date value1 = (Date) extractor.getValue( object1 );
+            final Date value2 = (Date) extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.compareTo( value2 ) == 0;
+        }
+
         public String toString() {
             return "Date ==";
         }
+
     }
 
     static class DateNotEqualEvaluator extends BaseEvaluator {
@@ -188,6 +200,17 @@ public class DateFactory
             return value1.compareTo( getRightDate( value2 ) ) != 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Date value1 = (Date) extractor.getValue( object1 );
+            final Date value2 = (Date) extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.compareTo( value2 ) != 0;
+        }
+
         public String toString() {
             return "Date !=";
         }
@@ -225,6 +248,17 @@ public class DateFactory
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( right );
             return getRightDate( value2 ).compareTo( value1 ) < 0;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Date value1 = (Date) extractor.getValue( object1 );
+            final Date value2 = (Date) extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.compareTo( value2 ) < 0;
         }
 
         public String toString() {
@@ -266,6 +300,17 @@ public class DateFactory
             return getRightDate( value2 ).compareTo( value1 ) <= 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Date value1 = (Date) extractor.getValue( object1 );
+            final Date value2 = (Date) extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.compareTo( value2 ) <= 0;
+        }
+
         public String toString() {
             return "Date <=";
         }
@@ -305,6 +350,17 @@ public class DateFactory
             return getRightDate( value2 ).compareTo( value1 ) > 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Date value1 = (Date) extractor.getValue( object1 );
+            final Date value2 = (Date) extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.compareTo( value2 ) > 0;
+        }
+
         public String toString() {
             return "Date >";
         }
@@ -342,6 +398,17 @@ public class DateFactory
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( right );
             return getRightDate( value2 ).compareTo( value1 ) >= 0;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Date value1 = (Date) extractor.getValue( object1 );
+            final Date value2 = (Date) extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.compareTo( value2 ) >= 0;
         }
 
         public String toString() {

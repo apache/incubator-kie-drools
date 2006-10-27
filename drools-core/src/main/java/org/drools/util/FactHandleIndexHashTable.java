@@ -6,13 +6,13 @@ package org.drools.util;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Declaration;
-import org.drools.spi.FieldExtractor;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FactHandleIndexHashTable extends AbstractHashTable
     implements
     FactHandleMemory {
+
+    private static final long serialVersionUID = -6033183838054653227L;
+
     public static final int             PRIME = 31;
 
     private int                         startResult;
@@ -37,7 +37,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
 
         this.startResult = FactHandleIndexHashTable.PRIME;
         for ( int i = 0, length = index.length; i < length; i++ ) {
-            this.startResult += FactHandleIndexHashTable.PRIME * this.startResult + index[i].getExtractor().getIndex();
+            this.startResult = FactHandleIndexHashTable.PRIME * this.startResult + index[i].getExtractor().getIndex();
         }
 
         switch ( index.length ) {
@@ -45,18 +45,15 @@ public class FactHandleIndexHashTable extends AbstractHashTable
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  0" );
             case 1 :
                 this.index = new SingleIndex( index,
-                                              this.startResult,
-                                              this.comparator );
+                                              this.startResult);
                 break;
             case 2 :
                 this.index = new DoubleCompositeIndex( index,
-                                                       this.startResult,
-                                                       this.comparator );
+                                                       this.startResult );
                 break;
             case 3 :
                 this.index = new TripleCompositeIndex( index,
-                                                       this.startResult,
-                                                       this.comparator );
+                                                       this.startResult );
                 break;
             default :
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
@@ -250,6 +247,8 @@ public class FactHandleIndexHashTable extends AbstractHashTable
     public static class FieldIndexEntry
         implements
         Entry {
+
+        private static final long serialVersionUID = -577270475161063671L;
         private Entry     next;
         private FactEntry first;
         private final int hashCode;

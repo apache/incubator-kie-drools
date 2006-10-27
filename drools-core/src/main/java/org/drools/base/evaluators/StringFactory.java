@@ -102,9 +102,21 @@ public class StringFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.equals( value2 );
+        }
+
         public String toString() {
             return "String ==";
         }
+
     }
 
     static class StringNotEqualEvaluator extends BaseEvaluator {
@@ -146,6 +158,17 @@ public class StringFactory
                 return value != null;
             }
             return !((ObjectVariableContextEntry) context).left.equals( value );
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            return !value1.equals( value2 );
         }
 
         public String toString() {
@@ -192,6 +215,17 @@ public class StringFactory
                 return false;
             }
             return value.matches( (String) ((ObjectVariableContextEntry) context).left);
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return false;
+            }
+            return ((String) value1).matches( (String) value2 );
         }
 
         public String toString() {

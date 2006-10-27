@@ -88,6 +88,12 @@ public class LongFactory
             return ((LongVariableContextEntry) context).left == context.extractor.getLongValue( right );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getLongValue( object1 ) == extractor.getLongValue( object2 );
+        }
+
         public String toString() {
             return "Long ==";
         }
@@ -119,6 +125,12 @@ public class LongFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return ((LongVariableContextEntry) context).left != context.extractor.getLongValue( right );
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getLongValue( object1 ) != extractor.getLongValue( object2 );
         }
 
         public String toString() {
@@ -154,6 +166,12 @@ public class LongFactory
             return context.extractor.getLongValue( right ) < ((LongVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getLongValue( object1 ) < extractor.getLongValue( object2 );
+        }
+
         public String toString() {
             return "Long <";
         }
@@ -185,6 +203,12 @@ public class LongFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return context.extractor.getLongValue( right ) <= ((LongVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getLongValue( object1 ) <= extractor.getLongValue( object2 );
         }
 
         public String toString() {
@@ -220,6 +244,12 @@ public class LongFactory
             return context.extractor.getLongValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getLongValue( object1 ) > extractor.getLongValue( object2 );
+        }
+
         public String toString() {
             return "Long >";
         }
@@ -251,6 +281,12 @@ public class LongFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return context.extractor.getLongValue( right ) >= ((LongVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getLongValue( object1 ) >= extractor.getLongValue( object2 );
         }
 
         public String toString() {

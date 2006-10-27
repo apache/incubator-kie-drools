@@ -101,9 +101,21 @@ public class ArrayFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.equals( value2 );
+        }
+
         public String toString() {
             return "Array ==";
         }
+
     }
 
     static class ArrayNotEqualEvaluator extends BaseEvaluator {
@@ -124,7 +136,7 @@ public class ArrayFactory
             final Object value1 = extractor.getValue( object1 );
             final Object value2 = object2.getValue();
             if ( value1 == null ) {
-                return value2 == null;
+                return value2 != null;
             }
             return !value1.equals( value2 );
         }
@@ -133,7 +145,7 @@ public class ArrayFactory
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
             if ( value == null ) {
-                return ((ObjectVariableContextEntry) context).right == null;
+                return ((ObjectVariableContextEntry) context).right != null;
             }
             return !value.equals( ((ObjectVariableContextEntry) context).right );
         }
@@ -142,9 +154,20 @@ public class ArrayFactory
                                           final Object right) {
             final Object value = context.extractor.getValue( right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
-                return value == null;
+                return value != null;
             }
             return !((ObjectVariableContextEntry) context).left.equals( value );
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            return !value1.equals( value2 );
         }
 
         public String toString() {
@@ -169,34 +192,34 @@ public class ArrayFactory
                                 final FieldValue object2) {
             final Object value = object2.getValue();
             final Object[] array = (Object[]) extractor.getValue( object1 );
-
-            if ( Arrays.binarySearch( array,
-                                      value ) == -1 ) {
-                return false;
-            }
-            return true;
+            return Arrays.binarySearch( array,
+                                        value ) != -1;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
-            if ( Arrays.binarySearch( array,
-                                      value ) == -1 ) {
-                return false;
-            }
-            return true;
+            return Arrays.binarySearch( array,
+                                        value ) != -1;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
             final Object[] array = (Object[]) context.extractor.getValue( right );
-            if ( Arrays.binarySearch( array,
-                                      value ) == -1 ) {
-                return false;
-            }
-            return true;
+            return Arrays.binarySearch( array,
+                                        value ) != -1;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value = extractor.getValue( object2 );
+            final Object[] array = (Object[]) extractor.getValue( object1 );
+
+            return Arrays.binarySearch( array,
+                                        value ) != -1 ; 
         }
 
         public String toString() {
