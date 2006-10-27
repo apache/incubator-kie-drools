@@ -368,8 +368,8 @@ public abstract class AbstractHashTable
     }
 
     public static class FieldIndex {
-        public FieldExtractor extractor;
-        public Declaration    declaration;
+        FieldExtractor extractor;
+        Declaration    declaration;
         public Evaluator      evaluator;
 
         public FieldIndex(final FieldExtractor extractor,

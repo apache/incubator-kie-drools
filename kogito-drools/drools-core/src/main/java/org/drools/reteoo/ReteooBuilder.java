@@ -831,26 +831,26 @@ class ReteooBuilder
         }
     }
 
-    public static BetaConstraints createBetaNodeConstraint(final List list) {
+    public BetaConstraints createBetaNodeConstraint(final List list) {
         BetaConstraints constraints;
         switch ( list.size() ) {
             case 0 :
                 constraints = EmptyBetaConstraints.getInstance();
                 break;
             case 1 :
-                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ) );
+                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ), this.ruleBase.getConfiguration() );
                 break;
             case 2 :
-                constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
+                constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
                 break;
             case 3 :
-                constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
+                constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
                 break;
             case 4 :
-                constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
+                constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
                 break;                
             default :
-                constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ) );
+                constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
         }
         return constraints;
     }

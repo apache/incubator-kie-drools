@@ -37,6 +37,8 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
+import org.drools.RuleBaseConfiguration.AssertBehaviour;
+import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.ShadowProxy;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -145,15 +147,17 @@ public abstract class AbstractWorkingMemory
         this.tms = new TruthMaintenanceSystem( this );
         this.assertMap = new ObjectHashMap();
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-
-        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( conf.getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
+        
+        
+        
+        if ( conf.getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
             this.assertMap.setComparator( new IdentityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
         } else {
             this.assertMap.setComparator( new EqualityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
         }
 
-        // Only takes effect if are using idententity behaviour for assert
-        if ( RuleBaseConfiguration.WM_BEHAVIOR_DISCARD.equals( conf.getProperty( RuleBaseConfiguration.PROPERTY_LOGICAL_OVERRIDE_BEHAVIOR ) ) ) {
+        // Only takes effect if are using idententity behaviour for assert        
+        if ( conf.getLogicalOverride() == LogicalOverride.DISCARD ) {
             this.discardOnLogicalOverride = true;
         } else {
             this.discardOnLogicalOverride = false;

@@ -18,6 +18,8 @@ package org.drools.common;
 
 import java.io.Serializable;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ReteTuple;
@@ -47,18 +49,17 @@ public class SingleBetaConstraints
     private ContextEntry                  context;
 
     private boolean                       indexed;
-
-    public SingleBetaConstraints(final BetaNodeFieldConstraint constraint) {
-        this( constraint, true );
-    }
     
-    public SingleBetaConstraints(final BetaNodeFieldConstraint constraint, boolean index ) {
-        this.constraint = constraint;
-        // Determine  if this constraint is indexable
-        if ( index  && isIndexable( constraint ) ) {
-            this.indexed = true;
-        }
+    public SingleBetaConstraints(final BetaNodeFieldConstraint constraint, RuleBaseConfiguration conf ) {
+        if  (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) {
+            this.indexed = false;
+        } else {
+            int depth = conf.getCompositeKeyDepth();    
+            // Determine  if this constraint is indexable
+                this.indexed = depth >= 1 && isIndexable( constraint );
+        }        
 
+        this.constraint = constraint;
         this.context = constraint.getContextEntry();
     }
 
