@@ -246,8 +246,8 @@ public abstract class AbstractHashTable
         implements
         ObjectComparator {
 
-        private static final long serialVersionUID = 1835792402650440794L;
-        public static ObjectComparator INSTANCE = new InstanceEquals();
+        private static final long      serialVersionUID = 1835792402650440794L;
+        public static ObjectComparator INSTANCE         = new InstanceEquals();
 
         public static ObjectComparator getInstance() {
             return InstanceEquals.INSTANCE;
@@ -279,8 +279,8 @@ public abstract class AbstractHashTable
         implements
         ObjectComparator {
 
-        private static final long serialVersionUID = 8004812231695147987L;
-        public static ObjectComparator INSTANCE = new EqualityEquals();
+        private static final long      serialVersionUID = 8004812231695147987L;
+        public static ObjectComparator INSTANCE         = new EqualityEquals();
 
         public static ObjectComparator getInstance() {
             return EqualityEquals.INSTANCE;
@@ -378,6 +378,7 @@ public abstract class AbstractHashTable
             super();
             this.extractor = extractor;
             this.declaration = declaration;
+            this.evaluator = evaluator;
         }
 
         public Declaration getDeclaration() {
@@ -426,6 +427,10 @@ public abstract class AbstractHashTable
             this.declaration = indexes[0].declaration;
             this.evaluator = indexes[0].evaluator;
 
+            if ( this.evaluator == null ) {
+                System.out.println( "STOP" );
+            }
+
         }
 
         public int hashCodeOf(final Object object) {
@@ -440,13 +445,14 @@ public abstract class AbstractHashTable
             return rehash( hashCode );
         }
 
-        public boolean equal(final Object object1,
+        public boolean equal(final Object right,
                              final ReteTuple tuple) {
-            final Object object2 = tuple.get( this.declaration ).getObject();
+            final Object left = tuple.get( this.declaration ).getObject();
 
-            return this.evaluator.evaluate( this.extractor,
-                                            object1,
-                                            object2 );
+            return this.evaluator.evaluate( this.declaration.getExtractor(),
+                                            left,
+                                            this.extractor,
+                                            right );
         }
 
         public boolean equal(final Object object1,
@@ -454,6 +460,7 @@ public abstract class AbstractHashTable
 
             return this.evaluator.evaluate( this.extractor,
                                             object1,
+                                            this.extractor,
                                             object2 );
         }
 
@@ -461,8 +468,9 @@ public abstract class AbstractHashTable
                              final ReteTuple tuple2) {
             final Object object1 = tuple1.get( this.declaration ).getObject();
             final Object object2 = tuple2.get( this.declaration ).getObject();
-            return this.evaluator.evaluate( this.extractor,
+            return this.evaluator.evaluate( this.declaration.getExtractor(),
                                             object1,
+                                            this.declaration.getExtractor(),
                                             object2 );
         }
 
@@ -511,16 +519,18 @@ public abstract class AbstractHashTable
             return rehash( hashCode );
         }
 
-        public boolean equal(final Object object1,
+        public boolean equal(final Object right,
                              final ReteTuple tuple) {
-            Object object12 = tuple.get( this.index0.declaration ).getObject();
-            Object object22 = tuple.get( this.index1.declaration ).getObject();
+            Object left1 = tuple.get( this.index0.declaration ).getObject();
+            Object left2 = tuple.get( this.index1.declaration ).getObject();
 
-            return this.index0.evaluator.evaluate( this.index0.extractor,
-                                                   object1,
-                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
-                                                                                                 object1,
-                                                                                                 object22 );
+            return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
+                                                   left1,
+                                                   this.index0.extractor,
+                                                   right ) && this.index1.evaluator.evaluate( this.index1.declaration.getExtractor(),
+                                                                                              left2,
+                                                                                              this.index1.extractor,
+                                                                                              right );
         }
 
         public boolean equal(final ReteTuple tuple1,
@@ -531,10 +541,12 @@ public abstract class AbstractHashTable
             Object object21 = tuple1.get( this.index1.declaration ).getObject();
             Object object22 = tuple2.get( this.index1.declaration ).getObject();
 
-            return this.index0.evaluator.evaluate( this.index0.extractor,
+            return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
                                                    object11,
-                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                   this.index0.declaration.getExtractor(),
+                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.declaration.getExtractor(),
                                                                                                  object21,
+                                                                                                 this.index1.declaration.getExtractor(),
                                                                                                  object22 );
         }
 
@@ -542,8 +554,10 @@ public abstract class AbstractHashTable
                              final Object object2) {
             return this.index0.evaluator.evaluate( this.index0.extractor,
                                                    object1,
+                                                   this.index0.extractor,
                                                    object2 ) && this.index1.evaluator.evaluate( this.index1.extractor,
                                                                                                 object1,
+                                                                                                this.index1.extractor,
                                                                                                 object2 );
         }
 
@@ -559,11 +573,11 @@ public abstract class AbstractHashTable
     public static class TripleCompositeIndex
         implements
         Index {
-        private FieldIndex       index0;
-        private FieldIndex       index1;
-        private FieldIndex       index2;
+        private FieldIndex index0;
+        private FieldIndex index1;
+        private FieldIndex index2;
 
-        private int              startResult;
+        private int        startResult;
 
         public TripleCompositeIndex(final FieldIndex[] indexes,
                                     final int startResult) {
@@ -595,19 +609,22 @@ public abstract class AbstractHashTable
             return rehash( hashCode );
         }
 
-        public boolean equal(final Object object1,
+        public boolean equal(final Object right,
                              final ReteTuple tuple) {
-            Object object12 = tuple.get( this.index0.declaration ).getObject();
-            Object object22 = tuple.get( this.index1.declaration ).getObject();
-            Object object32 = tuple.get( this.index2.declaration ).getObject();
+            Object left1 = tuple.get( this.index0.declaration ).getObject();
+            Object left2 = tuple.get( this.index1.declaration ).getObject();
+            Object left3 = tuple.get( this.index2.declaration ).getObject();
 
-            return this.index0.evaluator.evaluate( this.index0.extractor,
-                                                   object1,
-                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
-                                                                                                 object1,
-                                                                                                 object22 ) && this.index2.evaluator.evaluate( this.index2.extractor,
-                                                                                                                                               object1,
-                                                                                                                                               object32 );
+            return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
+                                                   left1,
+                                                   this.index0.extractor,
+                                                   right ) && this.index1.evaluator.evaluate( this.index1.declaration.getExtractor(),
+                                                                                              left2,
+                                                                                              this.index1.extractor,
+                                                                                              right ) && this.index2.evaluator.evaluate( this.index2.declaration.getExtractor(),
+                                                                                                                                         left3,
+                                                                                                                                         this.index2.extractor,
+                                                                                                                                         right  );
         }
 
         public boolean equal(final ReteTuple tuple1,
@@ -619,12 +636,15 @@ public abstract class AbstractHashTable
             Object object31 = tuple1.get( this.index2.declaration ).getObject();
             Object object32 = tuple2.get( this.index2.declaration ).getObject();
 
-            return this.index0.evaluator.evaluate( this.index0.extractor,
+            return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
                                                    object11,
-                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                   this.index0.declaration.getExtractor(),
+                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.declaration.getExtractor(),
                                                                                                  object21,
-                                                                                                 object22 ) && this.index2.evaluator.evaluate( this.index2.extractor,
+                                                                                                 this.index1.declaration.getExtractor(),
+                                                                                                 object22 ) && this.index2.evaluator.evaluate( this.index2.declaration.getExtractor(),
                                                                                                                                                object31,
+                                                                                                                                               this.index2.declaration.getExtractor(),
                                                                                                                                                object32 );
         }
 
@@ -632,11 +652,14 @@ public abstract class AbstractHashTable
                              final Object object2) {
             return this.index0.evaluator.evaluate( this.index0.extractor,
                                                    object1,
+                                                   this.index0.extractor,
                                                    object2 ) && this.index1.evaluator.evaluate( this.index1.extractor,
-                                                                                                 object1,
-                                                                                                 object2 ) && this.index2.evaluator.evaluate( this.index2.extractor,
-                                                                                                                                               object1,
-                                                                                                                                               object2 );
+                                                                                                object1,
+                                                                                                this.index1.extractor,
+                                                                                                object2 ) && this.index2.evaluator.evaluate( this.index2.extractor,
+                                                                                                                                             object1,
+                                                                                                                                             this.index2.extractor,
+                                                                                                                                             object2 );
         }
 
         public int rehash(int h) {

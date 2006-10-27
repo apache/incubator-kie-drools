@@ -91,11 +91,12 @@ public class DoubleFactory
             return ((DoubleVariableContextEntry) context).left == context.extractor.getDoubleValue( right );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getDoubleValue( object1 ) == extractor.getDoubleValue( object2 );
+            return extractor1.getDoubleValue( object1 ) == extractor2.getDoubleValue( object2 );
         }
 
         public String toString() {
@@ -134,11 +135,12 @@ public class DoubleFactory
             return ((DoubleVariableContextEntry) context).left != context.extractor.getDoubleValue( right );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getDoubleValue( object1 ) != extractor.getDoubleValue( object2 );
+            return extractor1.getDoubleValue( object1 ) != extractor2.getDoubleValue( object2 );
         }
 
         public String toString() {
@@ -177,11 +179,12 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) < ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getDoubleValue( object1 ) < extractor.getDoubleValue( object2 );
+            return extractor1.getDoubleValue( object1 ) < extractor2.getDoubleValue( object2 );
         }
 
         public String toString() {
@@ -220,11 +223,12 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) <= ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getDoubleValue( object1 ) <= extractor.getDoubleValue( object2 );
+            return extractor1.getDoubleValue( object1 ) <= extractor2.getDoubleValue( object2 );
         }
 
         public String toString() {
@@ -263,11 +267,12 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) > ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getDoubleValue( object1 ) > extractor.getDoubleValue( object2 );
+            return extractor1.getDoubleValue( object1 ) > extractor2.getDoubleValue( object2 );
         }
 
         public String toString() {
@@ -306,11 +311,12 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) >= ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getDoubleValue( object1 ) >= extractor.getDoubleValue( object2 );
+            return extractor1.getDoubleValue( object1 ) >= extractor2.getDoubleValue( object2 );
         }
 
         public String toString() {

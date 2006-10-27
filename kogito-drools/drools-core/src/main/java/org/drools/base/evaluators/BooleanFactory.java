@@ -80,10 +80,11 @@ public class BooleanFactory
             return context.extractor.getBooleanValue( object2 ) == ((BooleanVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            return extractor.getBooleanValue( object1 ) == extractor.getBooleanValue( object2 );
+            return extractor1.getBooleanValue( object1 ) == extractor2.getBooleanValue( object2 );
         }
 
         public String toString() {
@@ -120,10 +121,11 @@ public class BooleanFactory
             return context.extractor.getBooleanValue( object2 ) != ((BooleanVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            return extractor.getBooleanValue( object1 ) != extractor.getBooleanValue( object2 );
+            return extractor1.getBooleanValue( object1 ) != extractor1.getBooleanValue( object2 );
         }
 
         public String toString() {

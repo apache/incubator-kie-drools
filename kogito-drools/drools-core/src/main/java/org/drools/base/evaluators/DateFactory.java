@@ -131,11 +131,12 @@ public class DateFactory
             return value1.compareTo( getRightDate( value2 ) ) == 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Date value1 = (Date) extractor.getValue( object1 );
-            final Date value2 = (Date) extractor.getValue( object2 );
+            final Date value1 = (Date) extractor1.getValue( object1 );
+            final Date value2 = (Date) extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -200,11 +201,12 @@ public class DateFactory
             return value1.compareTo( getRightDate( value2 ) ) != 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Date value1 = (Date) extractor.getValue( object1 );
-            final Date value2 = (Date) extractor.getValue( object2 );
+            final Date value1 = (Date) extractor1.getValue( object1 );
+            final Date value2 = (Date) extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -250,11 +252,12 @@ public class DateFactory
             return getRightDate( value2 ).compareTo( value1 ) < 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Date value1 = (Date) extractor.getValue( object1 );
-            final Date value2 = (Date) extractor.getValue( object2 );
+            final Date value1 = (Date) extractor1.getValue( object1 );
+            final Date value2 = (Date) extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -300,11 +303,12 @@ public class DateFactory
             return getRightDate( value2 ).compareTo( value1 ) <= 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Date value1 = (Date) extractor.getValue( object1 );
-            final Date value2 = (Date) extractor.getValue( object2 );
+            final Date value1 = (Date) extractor1.getValue( object1 );
+            final Date value2 = (Date) extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -350,11 +354,12 @@ public class DateFactory
             return getRightDate( value2 ).compareTo( value1 ) > 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Date value1 = (Date) extractor.getValue( object1 );
-            final Date value2 = (Date) extractor.getValue( object2 );
+            final Date value1 = (Date) extractor1.getValue( object1 );
+            final Date value2 = (Date) extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -400,11 +405,12 @@ public class DateFactory
             return getRightDate( value2 ).compareTo( value1 ) >= 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Date value1 = (Date) extractor.getValue( object1 );
-            final Date value2 = (Date) extractor.getValue( object2 );
+            final Date value1 = (Date) extractor1.getValue( object1 );
+            final Date value2 = (Date) extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }

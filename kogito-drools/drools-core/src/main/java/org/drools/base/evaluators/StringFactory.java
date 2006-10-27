@@ -102,11 +102,12 @@ public class StringFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -160,11 +161,12 @@ public class StringFactory
             return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -217,11 +219,12 @@ public class StringFactory
             return value.matches( (String) ((ObjectVariableContextEntry) context).left);
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return false;
             }
