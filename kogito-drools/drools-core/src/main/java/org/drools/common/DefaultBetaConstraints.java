@@ -20,9 +20,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.TupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -50,26 +53,27 @@ public class DefaultBetaConstraints
     private ContextEntry      contexts;
 
     private int               indexed;
+    
+    private RuleBaseConfiguration         conf;
 
-    public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints) {
-        this( constraints, true );
-    }
-
-    public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints, boolean index ) {
+    public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                  final RuleBaseConfiguration conf) {
+        this.conf = conf;        
         this.indexed = -1;
         this.constraints = new LinkedList();
         ContextEntry current = null;
-
+        int depth = conf.getCompositeKeyDepth();
+        
         // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
-            if ( index && isIndexable( constraints[i] ) ) {
-                if ( indexed == -1 ) {
+            if ( isIndexable( constraints[i] ) ) {
+                if ( depth >= 1 && indexed == -1 ) {
                     // first index, so just add to the front
                     this.constraints.insertAfter( null,
                                                   new LinkedListEntry( constraints[i] ) );
                     indexed++;
-                } else {
+                } else if ( depth >= this.indexed +1){ //this.indexed is zero based, so adjust
                     // insert this index after  the previous index
                     this.constraints.insertAfter( findNode( indexed++ ),
                                                   new LinkedListEntry( constraints[i] ) );
@@ -192,8 +196,21 @@ public class DefaultBetaConstraints
             }
             
             FieldIndex[] indexes = ( FieldIndex[] ) list.toArray( new FieldIndex[ list.size() ] );
-            memory = new BetaMemory( new TupleIndexHashTable( indexes ),
-                                     new FactHandleIndexHashTable( indexes ) );
+            TupleMemory tupleMemory;
+            if ( conf.isIndexLeftBetaMemory() ) {
+                tupleMemory = new TupleIndexHashTable( indexes );
+            } else {
+                tupleMemory = new TupleHashTable();
+            }
+
+            FactHandleMemory factHandleMemory;
+            if ( conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( indexes );           
+            }  else {
+                factHandleMemory = new FactHashTable();
+            }
+            memory = new BetaMemory( tupleMemory,
+                                     factHandleMemory );   
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );

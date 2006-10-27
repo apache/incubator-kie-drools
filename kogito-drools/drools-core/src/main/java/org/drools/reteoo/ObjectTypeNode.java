@@ -88,8 +88,9 @@ class ObjectTypeNode extends ObjectSource
      */
     public ObjectTypeNode(final int id,
                           final ObjectType objectType,
-                          final Rete rete) {
-        super( id );
+                          final Rete rete,
+                          final int alphaNodeHashingThreshold) {
+        super( id, null, alphaNodeHashingThreshold );
         this.rete = rete;
         this.objectType = objectType;
         setHasMemory( true );

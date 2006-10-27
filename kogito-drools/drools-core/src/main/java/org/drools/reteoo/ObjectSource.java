@@ -49,6 +49,8 @@ abstract class ObjectSource extends BaseNode
 
     protected ObjectSource         objectSource;
 
+    private int alphaNodeHashingThreshold;
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -60,7 +62,8 @@ abstract class ObjectSource extends BaseNode
      */
     ObjectSource(final int id) {
         this( id,
-              null );
+              null,
+              3 );
         this.sink = EmptyObjectSinkAdapter.getInstance();
     }
 
@@ -70,9 +73,11 @@ abstract class ObjectSource extends BaseNode
      * @param id
      */
     ObjectSource(final int id,
-                 final ObjectSource objectSource) {
+                 final ObjectSource objectSource,
+                 int alphaNodeHashingThreshold) {
         super( id );
         this.objectSource = objectSource;
+        this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
     // ------------------------------------------------------------
@@ -92,7 +97,7 @@ abstract class ObjectSource extends BaseNode
         if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
         } else if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
-            final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter();
+            final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter(alphaNodeHashingThreshold);
             sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
             sinkAdapter.addObjectSink( objectSink );
             this.sink = sinkAdapter;

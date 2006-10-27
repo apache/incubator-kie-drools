@@ -25,14 +25,14 @@ public class CompositeObjectSinkAdapter
     implements
     ObjectSinkPropagator {
 
-    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
-    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
+//    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
+//    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
+//
+//    /** The threshold for when hashing kicks in */
+//    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
+//                                                                                                      "3" ) );
 
-    /** The threshold for when hashing kicks in */
-    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
-                                                                                                      "3" ) );
-
-    private static final long  serialVersionUID               = 2192568791644369227L;
+    private static final long  serialVersionUID               = 320L;
     ObjectSinkNodeList         otherSinks;
     ObjectSinkNodeList         hashableSinks;
 
@@ -41,9 +41,15 @@ public class CompositeObjectSinkAdapter
     ObjectHashMap              hashedSinkMap;
 
     private HashKey            hashKey;
+    
+    private final int  alphaNodeHashingThreshold;
 
     public CompositeObjectSinkAdapter() {
+        this(3);
+    }
+    public CompositeObjectSinkAdapter(int alphaNodeHashingThreshold) {
         this.hashKey = new HashKey();
+        this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
     public void addObjectSink(final ObjectSink sink) {
@@ -60,7 +66,7 @@ public class CompositeObjectSinkAdapter
                     final FieldIndex fieldIndex = registerFieldIndex( index,
                                                                       literalConstraint.getFieldExtractor() );
 
-                    if ( fieldIndex.getCount() >= THRESHOLD_TO_HASH ) {
+                    if ( fieldIndex.getCount() >= alphaNodeHashingThreshold ) {
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
@@ -106,7 +112,7 @@ public class CompositeObjectSinkAdapter
                     if ( fieldIndex.isHashed() ) {
                         this.hashKey.setValue( index, value );
                         this.hashedSinkMap.remove( this.hashKey );
-                        if ( fieldIndex.getCount() <= THRESHOLD_TO_HASH - 1 ) {
+                        if ( fieldIndex.getCount() <= alphaNodeHashingThreshold - 1 ) {
                             // we have less than three so unhash
                             unHashSinks( fieldIndex );
                         }

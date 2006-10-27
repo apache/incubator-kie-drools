@@ -23,7 +23,9 @@ import java.util.List;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.TupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -32,6 +34,7 @@ import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
+import org.drools.util.TupleIndexHashTable;
 import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class QuadroupleBetaConstraints
@@ -57,9 +60,12 @@ public class QuadroupleBetaConstraints
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
+    
+    private RuleBaseConfiguration         conf;
 
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                      final RuleBaseConfiguration conf) {
+        this.conf = conf;        
         if  (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) {
             this.indexed0 = false;
             this.indexed1 = false;
@@ -254,8 +260,21 @@ public class QuadroupleBetaConstraints
 
         if ( !list.isEmpty() ) {
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
-            memory = new BetaMemory( new TupleHashTable(),
-                                     new FactHandleIndexHashTable( indexes ) );
+            TupleMemory tupleMemory;
+            if ( conf.isIndexLeftBetaMemory() ) {
+                tupleMemory = new TupleIndexHashTable( indexes );
+            } else {
+                tupleMemory = new TupleHashTable();
+            }
+
+            FactHandleMemory factHandleMemory;
+            if ( conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( indexes );           
+            }  else {
+                factHandleMemory = new FactHashTable();
+            }
+            memory = new BetaMemory( tupleMemory,
+                                     factHandleMemory );    
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
