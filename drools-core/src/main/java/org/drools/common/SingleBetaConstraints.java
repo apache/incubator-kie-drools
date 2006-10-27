@@ -114,7 +114,8 @@ public class SingleBetaConstraints
         if ( this.indexed ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0] );
+                                               variableConstraint.getRequiredDeclarations()[0],
+                                               variableConstraint.getEvaluator());
             memory = new BetaMemory( new TupleIndexHashTable( new FieldIndex[]{index} ),
                                      new FactHandleIndexHashTable( new FieldIndex[]{index} ) );
         } else {

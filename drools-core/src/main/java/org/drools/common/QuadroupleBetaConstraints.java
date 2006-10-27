@@ -224,7 +224,8 @@ public class QuadroupleBetaConstraints
         if ( this.indexed0 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator());
             list.add( index );
 
         }
@@ -232,14 +233,16 @@ public class QuadroupleBetaConstraints
         if ( this.indexed1 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator());
             list.add( index );
         }
 
         if ( this.indexed2 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator());
             list.add( index );
         }
 
@@ -256,7 +259,7 @@ public class QuadroupleBetaConstraints
     }
 
     public int hashCode() {
-        return this.constraint0.hashCode() ^ this.constraint0.hashCode() ^ this.constraint0.hashCode();
+        return this.constraint0.hashCode() ^ this.constraint1.hashCode() ^ this.constraint2.hashCode() ^ this.constraint3.hashCode();
     }
 
     /* (non-Javadoc)
@@ -267,6 +270,7 @@ public class QuadroupleBetaConstraints
         list.add( new LinkedListEntry( this.constraint0 ) );
         list.add( new LinkedListEntry( this.constraint1 ) );
         list.add( new LinkedListEntry( this.constraint2 ) );
+        list.add( new LinkedListEntry( this.constraint3 ) );
         return list;
     }
 
@@ -290,15 +294,19 @@ public class QuadroupleBetaConstraints
 
         final QuadroupleBetaConstraints other = (QuadroupleBetaConstraints) object;
 
-        if ( this.constraint0 != other.constraint0 && this.constraint0.equals( other.constraint0 ) ) {
+        if ( this.constraint0 != other.constraint0 && ! this.constraint0.equals( other.constraint0 ) ) {
             return false;
         }
 
-        if ( this.constraint1 != other.constraint1 && this.constraint1.equals( other.constraint1 ) ) {
+        if ( this.constraint1 != other.constraint1 && ! this.constraint1.equals( other.constraint1 ) ) {
             return false;
         }
 
-        if ( this.constraint2 != other.constraint2 && this.constraint2.equals( other.constraint2 ) ) {
+        if ( this.constraint2 != other.constraint2 && ! this.constraint2.equals( other.constraint2 ) ) {
+            return false;
+        }
+
+        if ( this.constraint3 != other.constraint3 && ! this.constraint3.equals( other.constraint3 ) ) {
             return false;
         }
 

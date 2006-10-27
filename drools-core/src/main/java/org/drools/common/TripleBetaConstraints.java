@@ -192,7 +192,8 @@ public class TripleBetaConstraints
         if ( this.indexed0 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator());
             list.add( index );
 
         }
@@ -200,14 +201,16 @@ public class TripleBetaConstraints
         if ( this.indexed1 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator());
             list.add( index );
         }
 
         if ( this.indexed2 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0] );
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator());
             list.add( index );
         }
 
@@ -224,7 +227,7 @@ public class TripleBetaConstraints
     }
 
     public int hashCode() {
-        return this.constraint0.hashCode() ^ this.constraint0.hashCode() ^ this.constraint0.hashCode();
+        return this.constraint0.hashCode() ^ this.constraint1.hashCode() ^ this.constraint2.hashCode();
     }
 
     /* (non-Javadoc)
@@ -258,15 +261,15 @@ public class TripleBetaConstraints
 
         final TripleBetaConstraints other = (TripleBetaConstraints) object;
 
-        if ( this.constraint0 != other.constraint0 && this.constraint0.equals( other.constraint0 ) ) {
+        if ( this.constraint0 != other.constraint0 && ! this.constraint0.equals( other.constraint0 ) ) {
             return false;
         }
 
-        if ( this.constraint1 != other.constraint1 && this.constraint1.equals( other.constraint1 ) ) {
+        if ( this.constraint1 != other.constraint1 && ! this.constraint1.equals( other.constraint1 ) ) {
             return false;
         }
 
-        if ( this.constraint2 != other.constraint2 && this.constraint2.equals( other.constraint2 ) ) {
+        if ( this.constraint2 != other.constraint2 && ! this.constraint2.equals( other.constraint2 ) ) {
             return false;
         }
 
