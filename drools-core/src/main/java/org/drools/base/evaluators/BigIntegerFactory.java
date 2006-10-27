@@ -103,11 +103,12 @@ public class BigIntegerFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -160,11 +161,12 @@ public class BigIntegerFactory
             return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -207,11 +209,12 @@ public class BigIntegerFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) < 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final BigInteger comp = (BigInteger) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) < 0;
+            final BigInteger comp = (BigInteger) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) < 0;
         }
         
         public String toString() {
@@ -250,11 +253,12 @@ public class BigIntegerFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) <= 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final BigInteger comp = (BigInteger) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) <= 0;
+            final BigInteger comp = (BigInteger) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) <= 0;
         }
         
         public String toString() {
@@ -293,11 +297,12 @@ public class BigIntegerFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) > 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final BigInteger comp = (BigInteger) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) > 0;
+            final BigInteger comp = (BigInteger) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) > 0;
         }
         
         public String toString() {
@@ -336,11 +341,12 @@ public class BigIntegerFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) >= 0;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final BigInteger comp = (BigInteger) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) >= 0;
+            final BigInteger comp = (BigInteger) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) >= 0;
         }
         
         public String toString() {

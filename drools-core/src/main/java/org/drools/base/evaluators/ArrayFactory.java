@@ -101,11 +101,12 @@ public class ArrayFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -159,11 +160,12 @@ public class ArrayFactory
             return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -212,11 +214,12 @@ public class ArrayFactory
                                         value ) != -1;
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value = extractor.getValue( object2 );
-            final Object[] array = (Object[]) extractor.getValue( object1 );
+            final Object value = extractor2.getValue( object2 );
+            final Object[] array = (Object[]) extractor1.getValue( object1 );
 
             return Arrays.binarySearch( array,
                                         value ) != -1 ; 

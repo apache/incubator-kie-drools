@@ -118,11 +118,12 @@ public class ObjectFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -176,11 +177,12 @@ public class ObjectFactory
             return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor,
+        public boolean evaluate(Extractor extractor1,
                                 Object object1,
+                                Extractor extractor2,
                                 Object object2) {
-            final Object value1 = extractor.getValue( object1 );
-            final Object value2 = extractor.getValue( object2 );
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -220,11 +222,12 @@ public class ObjectFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) < 0;
         }
 
-        public boolean evaluate(final Extractor extractor,
+        public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
+                                final Extractor extractor2,
                                 final Object object2) {
-            final Comparable comp = (Comparable) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) < 0;
+            final Comparable comp = (Comparable) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) < 0;
         }
 
         public String toString() {
@@ -263,11 +266,12 @@ public class ObjectFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) <= 0;
         }
 
-        public boolean evaluate(final Extractor extractor,
+        public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
+                                final Extractor extractor2,
                                 final Object object2) {
-            final Comparable comp = (Comparable) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) <= 0;
+            final Comparable comp = (Comparable) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) <= 0;
         }
 
         public String toString() {
@@ -306,11 +310,12 @@ public class ObjectFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) > 0;
         }
 
-        public boolean evaluate(final Extractor extractor,
+        public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
+                                final Extractor extractor2,
                                 final Object object2) {
-            final Comparable comp = (Comparable) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) > 0;
+            final Comparable comp = (Comparable) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) > 0;
         }
 
         public String toString() {
@@ -349,11 +354,12 @@ public class ObjectFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) >= 0;
         }
 
-        public boolean evaluate(final Extractor extractor,
+        public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
+                                final Extractor extractor2,
                                 final Object object2) {
-            final Comparable comp = (Comparable) extractor.getValue( object1 );
-            return comp.compareTo( extractor.getValue( object2 ) ) >= 0;
+            final Comparable comp = (Comparable) extractor1.getValue( object1 );
+            return comp.compareTo( extractor2.getValue( object2 ) ) >= 0;
         }
 
         public String toString() {
@@ -395,11 +401,12 @@ public class ObjectFactory
             return col.contains( value );
         }
 
-        public boolean evaluate(final Extractor extractor,
+        public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
+                                final Extractor extractor2,
                                 final Object object2) {
-            final Object value = extractor.getValue( object2 );
-            final Collection col = (Collection) extractor.getValue( object1 );
+            final Object value = extractor2.getValue( object2 );
+            final Collection col = (Collection) extractor1.getValue( object1 );
             return col.contains( value );
         }
 
@@ -442,11 +449,12 @@ public class ObjectFactory
             return !col.contains( value );
         }
 
-        public boolean evaluate(final Extractor extractor,
+        public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
+                                final Extractor extractor2,
                                 final Object object2) {
-            final Object value = extractor.getValue( object2 );
-            final Collection col = (Collection) extractor.getValue( object1 );
+            final Object value = extractor2.getValue( object2 );
+            final Collection col = (Collection) extractor1.getValue( object1 );
             return !col.contains( value );
         }
 
