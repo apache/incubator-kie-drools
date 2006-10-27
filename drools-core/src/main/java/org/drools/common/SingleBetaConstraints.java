@@ -22,7 +22,9 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.TupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -50,14 +52,18 @@ public class SingleBetaConstraints
 
     private boolean                       indexed;
     
-    public SingleBetaConstraints(final BetaNodeFieldConstraint constraint, RuleBaseConfiguration conf ) {
-        if  (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) {
+    private RuleBaseConfiguration         conf;
+
+    public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
+                                 RuleBaseConfiguration conf) {
+        this.conf = conf;
+        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
             this.indexed = false;
         } else {
-            int depth = conf.getCompositeKeyDepth();    
+            int depth = conf.getCompositeKeyDepth();
             // Determine  if this constraint is indexable
-                this.indexed = depth >= 1 && isIndexable( constraint );
-        }        
+            this.indexed = depth >= 1 && isIndexable( constraint );
+        }
 
         this.constraint = constraint;
         this.context = constraint.getContextEntry();
@@ -75,15 +81,19 @@ public class SingleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-        this.context.updateFromTuple( workingMemory, tuple );
+    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                final ReteTuple tuple) {
+        this.context.updateFromTuple( workingMemory,
+                                      tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
-        this.context.updateFromFactHandle( workingMemory, handle );
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                     final InternalFactHandle handle) {
+        this.context.updateFromFactHandle( workingMemory,
+                                           handle );
     }
 
     /* (non-Javadoc)
@@ -115,10 +125,23 @@ public class SingleBetaConstraints
         if ( this.indexed ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0],
-                                               variableConstraint.getEvaluator());
-            memory = new BetaMemory( new TupleIndexHashTable( new FieldIndex[]{index} ),
-                                     new FactHandleIndexHashTable( new FieldIndex[]{index} ) );
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator() );
+            TupleMemory tupleMemory;
+            if ( conf.isIndexLeftBetaMemory() ) {
+                tupleMemory = new TupleIndexHashTable( new FieldIndex[]{index} );
+            } else {
+                tupleMemory = new TupleHashTable();
+            }
+
+            FactHandleMemory factHandleMemory;
+            if ( conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( new FieldIndex[]{index} );           
+            }  else {
+                factHandleMemory = new FactHashTable();
+            }
+            memory = new BetaMemory( tupleMemory,
+                                     factHandleMemory );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );

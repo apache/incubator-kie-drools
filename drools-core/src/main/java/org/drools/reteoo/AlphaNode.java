@@ -70,7 +70,8 @@ class AlphaNode extends ObjectSource
         this( id,
               constraint,
               objectSource,
-              true );
+              true,
+              3 );
     }
 
     /**
@@ -88,10 +89,10 @@ class AlphaNode extends ObjectSource
     AlphaNode(final int id,
               final AlphaNodeFieldConstraint constraint,
               final ObjectSource objectSource,
-              final boolean hasMemory) {
-        super( id );
+              final boolean hasMemory,
+              final int alphaNodeHashingThreshold) {
+        super( id, objectSource, alphaNodeHashingThreshold );
         this.constraint = constraint;
-        this.objectSource = objectSource;
         setHasMemory( hasMemory );
     }
 

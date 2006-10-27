@@ -297,7 +297,8 @@ class ReteooBuilder
 
                     final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                                                       new ClassObjectType( InitialFact.class ),
-                                                                                      this.rete ) );
+                                                                                      this.rete,
+                                                                                      this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
 
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                              objectSource ) );
@@ -351,7 +352,8 @@ class ReteooBuilder
 
         final ObjectSource objectTypeSource = attachNode( new ObjectTypeNode( this.id++,
                                                                               new ClassObjectType( DroolsQuery.class ),
-                                                                              this.rete ) );
+                                                                              this.rete,
+                                                                              this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
 
         final ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
                                                                        "name" );
@@ -365,7 +367,9 @@ class ReteooBuilder
 
         final ObjectSource alphaNodeSource = attachNode( new AlphaNode( this.id++,
                                                                         constraint,
-                                                                        objectTypeSource ) );
+                                                                        objectTypeSource,
+                                                                        this.ruleBase.getConfiguration().isAlphaMemory(),
+                                                                        this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
 
         this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                  alphaNodeSource ) );
@@ -399,7 +403,8 @@ class ReteooBuilder
 
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                             column.getObjectType(),
-                                                            this.rete ) );
+                                                            this.rete,
+                                                            this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
 
         final List betaConstraints = new ArrayList();
 
@@ -491,7 +496,7 @@ class ReteooBuilder
                                                                                                        column,
                                                                                                        notNode ) );
 
-        final BetaConstraints identityBinder = new SingleBetaConstraints( new InstanceEqualsConstraint( column ) );
+        final BetaConstraints identityBinder = new SingleBetaConstraints( new InstanceEqualsConstraint( column ), this.ruleBase.getConfiguration() );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
                                                      adapter,
@@ -532,18 +537,7 @@ class ReteooBuilder
     private TupleSource attachNode(final TupleSource candidate) {
         TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
 
-        if ( node == null ) {
-            if ( this.workingMemories.length == 0 ) {
-                candidate.attach();
-            } else {
-                candidate.attach( this.workingMemories );
-            }
-
-            this.attachedNodes.put( candidate,
-                                    candidate );
-
-            node = candidate;
-        } else {
+        if ( this.ruleBase.getConfiguration().isShareBetaNodes() && node !=  null ) {
             if ( !node.isInUse() ) {
                 if ( this.workingMemories.length == 0 ) {
                     node.attach();
@@ -553,8 +547,19 @@ class ReteooBuilder
             }
             node.addShare();
             this.id--;
-        }
+        } else {
+            if ( this.workingMemories.length == 0 ) {
+                candidate.attach();
+            } else {
+                candidate.attach( this.workingMemories );
+            }
 
+            this.attachedNodes.put( candidate,
+                                    candidate );
+
+            node = candidate;            
+        }
+        
         return node;
     }
 
@@ -570,7 +575,8 @@ class ReteooBuilder
 
             final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                                               new ClassObjectType( InitialFact.class ),
-                                                                              this.rete ) );
+                                                                              this.rete,
+                                                                              this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
 
             this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                      objectSource ) );
@@ -633,7 +639,8 @@ class ReteooBuilder
 
             final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
                                                                                  new ClassObjectType( InitialFact.class ),
-                                                                                 this.rete ) );
+                                                                                 this.rete,
+                                                                                 this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
 
             this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                      auxObjectSource ) );
@@ -703,7 +710,8 @@ class ReteooBuilder
 
             final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
                                                                                  new ClassObjectType( InitialFact.class ),
-                                                                                 this.rete ) );
+                                                                                 this.rete,
+                                                                                 this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
 
             this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                      auxObjectSource ) );
@@ -765,7 +773,17 @@ class ReteooBuilder
     private ObjectSource attachNode(final ObjectSource candidate) {
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
 
-        if ( node == null ) {
+        if ( this.ruleBase.getConfiguration().isShareAlphaNodes() && node != null) {
+            if ( !node.isInUse() ) {
+                if ( this.workingMemories.length == 0 ) {
+                    node.attach();
+                } else {
+                    node.attach( this.workingMemories );
+                }
+            }
+            node.addShare();
+            this.id--;
+        } else {
             if ( this.workingMemories.length == 0 ) {
                 candidate.attach();
             } else {
@@ -776,16 +794,6 @@ class ReteooBuilder
                                     candidate );
 
             node = candidate;
-        } else {
-            if ( !node.isInUse() ) {
-                if ( this.workingMemories.length == 0 ) {
-                    node.attach();
-                } else {
-                    node.attach( this.workingMemories );
-                }
-            }
-            node.addShare();
-            this.id--;
         }
 
         return node;

@@ -48,6 +48,7 @@ public class RuleBaseConfiguration
 
     private boolean           shareAlphaNodes;
     private boolean           shareBetaNodes;
+    private boolean           alphaMemory;
     private int               alphaNodeHashingThreshold;
     private int               compositeKeyDepth;
     private boolean           indexLeftBetaMemory;
@@ -58,6 +59,9 @@ public class RuleBaseConfiguration
     public RuleBaseConfiguration() {
         this.immutable = false;
 
+        setAlphaMemory( Boolean.valueOf( System.getProperty( "drools.alphaMemory",
+                                                             "true" ) ).booleanValue() );
+        
         setShareAlphaNodes( Boolean.valueOf( System.getProperty( "drools.shareAlphaNodes",
                                                                  "true" ) ).booleanValue() );
 
@@ -96,6 +100,18 @@ public class RuleBaseConfiguration
      */
     public boolean isImmutable() {
         return this.immutable;
+    }
+        
+    public boolean isAlphaMemory() {
+        return alphaMemory;
+    }
+
+    public void setAlphaMemory(boolean alphaMemory) {
+        if ( !this.immutable ) {
+            this.alphaMemory = alphaMemory;
+        } else {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
     }
 
     public boolean isShareAlphaNodes() {
