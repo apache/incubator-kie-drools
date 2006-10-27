@@ -63,8 +63,7 @@ abstract class ObjectSource extends BaseNode
     ObjectSource(final int id) {
         this( id,
               null,
-              3 );
-        this.sink = EmptyObjectSinkAdapter.getInstance();
+              3 );        
     }
 
     /**
@@ -78,6 +77,7 @@ abstract class ObjectSource extends BaseNode
         super( id );
         this.objectSource = objectSource;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
+        this.sink = EmptyObjectSinkAdapter.getInstance();
     }
 
     // ------------------------------------------------------------
