@@ -89,19 +89,16 @@ public class LinkedList
      *      The <code>LinkedListNode</code> to be removed.
      */
     public void remove(final LinkedListNode node) {
-        if ( (this.firstNode != node) && (this.lastNode != node) ) {
-            node.getPrevious().setNext( node.getNext() );
-            ((LinkedListNode)node.getNext()).setPrevious( node.getPrevious() );
-            this.size--;
-            node.setPrevious( null );
-            node.setNext( null );
-
+        if ( this.firstNode == node ) {
+            removeFirst();
+        } else if ( this.lastNode == node ) {
+            removeLast();
         } else {
-            if ( this.firstNode == node ) {
-                removeFirst();
-            } else if ( this.lastNode == node ) {
-                removeLast();
-            }
+           node.getPrevious().setNext( node.getNext() );
+           ((LinkedListNode)node.getNext()).setPrevious( node.getPrevious() );
+           this.size--;
+           node.setPrevious( null );
+           node.setNext( null );
         }
     }
 
