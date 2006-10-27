@@ -427,10 +427,6 @@ public abstract class AbstractHashTable
             this.declaration = indexes[0].declaration;
             this.evaluator = indexes[0].evaluator;
 
-            if ( this.evaluator == null ) {
-                System.out.println( "STOP" );
-            }
-
         }
 
         public int hashCodeOf(final Object object) {
