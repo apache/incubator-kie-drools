@@ -73,7 +73,7 @@ public class TripleBetaConstraints
             // Determine  if this constraints are indexable               
             final boolean i0 = isIndexable( constraints[0] );
             final boolean i1 = isIndexable( constraints[1] );
-            final boolean i2 = depth >= 3 && isIndexable( constraints[2] );
+            final boolean i2 = isIndexable( constraints[2] );
     
             if ( depth >= 1 && i0 ) {
                 this.indexed0 = true;
