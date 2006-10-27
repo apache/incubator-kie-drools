@@ -8,6 +8,7 @@ import java.io.Serializable;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 
 public abstract class AbstractHashTable
@@ -72,7 +73,7 @@ public abstract class AbstractHashTable
                 next = entry.getNext();
 
                 final int index = indexOf( entry.hashCode(),
-                                     newTable.length );
+                                           newTable.length );
                 entry.setNext( newTable[index] );
                 newTable[index] = entry;
 
@@ -179,7 +180,9 @@ public abstract class AbstractHashTable
 
     public abstract Entry getBucket(Object object);
 
-    public interface ObjectComparator extends Serializable {
+    public interface ObjectComparator
+        extends
+        Serializable {
         public int hashCodeOf(Object object);
 
         public int rehash(int hashCode);
@@ -242,6 +245,8 @@ public abstract class AbstractHashTable
     public static class InstanceEquals
         implements
         ObjectComparator {
+
+        private static final long serialVersionUID = 1835792402650440794L;
         public static ObjectComparator INSTANCE = new InstanceEquals();
 
         public static ObjectComparator getInstance() {
@@ -273,6 +278,8 @@ public abstract class AbstractHashTable
     public static class EqualityEquals
         implements
         ObjectComparator {
+
+        private static final long serialVersionUID = 8004812231695147987L;
         public static ObjectComparator INSTANCE = new EqualityEquals();
 
         public static ObjectComparator getInstance() {
@@ -297,9 +304,9 @@ public abstract class AbstractHashTable
 
         public boolean equal(final Object object1,
                              final Object object2) {
-        	if ( object1 == null ) {
-        		return object2 == null;
-        	}
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return object1.equals( object2 );
         }
     }
@@ -307,6 +314,9 @@ public abstract class AbstractHashTable
     public static class FactEntry
         implements
         Entry {
+
+        private static final long serialVersionUID = 1776798977330980128L;
+
         public InternalFactHandle handle;
 
         public int                hashCode;
@@ -356,13 +366,15 @@ public abstract class AbstractHashTable
             return (object == this) || (this.handle == ((FactEntry) object).handle);
         }
     }
-    
+
     public static class FieldIndex {
         public FieldExtractor extractor;
         public Declaration    declaration;
+        public Evaluator      evaluator;
 
         public FieldIndex(final FieldExtractor extractor,
-                          final Declaration declaration) {
+                          final Declaration declaration,
+                          final Evaluator evaluator) {
             super();
             this.extractor = extractor;
             this.declaration = declaration;
@@ -375,8 +387,12 @@ public abstract class AbstractHashTable
         public FieldExtractor getExtractor() {
             return this.extractor;
         }
+
+        public Evaluator getEvaluator() {
+            return this.evaluator;
+        }
     }
-    
+
     public static interface Index {
         public int hashCodeOf(ReteTuple tuple);
 
@@ -387,200 +403,176 @@ public abstract class AbstractHashTable
 
         public boolean equal(ReteTuple tuple1,
                              ReteTuple tuple2);
-        
+
         public boolean equal(Object object1,
-                             Object object2);        
+                             Object object2);
     }
 
     public static class SingleIndex
         implements
         Index {
-        private FieldExtractor   extractor;
-        private Declaration      declaration;
 
-        private int              startResult;
+        private FieldExtractor extractor;
+        private Declaration    declaration;
+        private Evaluator      evaluator;
 
-        private ObjectComparator comparator;
+        private int            startResult;
 
         public SingleIndex(final FieldIndex[] indexes,
-                           final int startResult,
-                           final ObjectComparator comparator) {
+                           final int startResult) {
             this.startResult = startResult;
 
             this.extractor = indexes[0].extractor;
             this.declaration = indexes[0].declaration;
+            this.evaluator = indexes[0].evaluator;
 
-            this.comparator = comparator;
         }
 
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.extractor.getHashCode( object );
-            return this.comparator.rehash( hashCode );
+            return rehash( hashCode );
         }
 
         public int hashCodeOf(final ReteTuple tuple) {
             int hashCode = this.startResult;
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.declaration.getHashCode( tuple.get( this.declaration ).getObject() );
-            return this.comparator.rehash( hashCode );
+            return rehash( hashCode );
         }
 
         public boolean equal(final Object object1,
                              final ReteTuple tuple) {
-            final Object value1 = this.extractor.getValue( object1 );
-            final Object value2 = this.declaration.getValue( tuple.get( this.declaration ).getObject() );
+            final Object object2 = tuple.get( this.declaration ).getObject();
 
-            return this.comparator.equal( value1,
-                                          value2 );
+            return this.evaluator.evaluate( this.extractor,
+                                            object1,
+                                            object2 );
         }
-        
+
         public boolean equal(final Object object1,
                              final Object object2) {
 
-            final Object value1 = this.extractor.getValue( object1 );
-            final Object value2 = this.extractor.getValue( object2 );
-
-            return this.comparator.equal( value1,
-                                          value2 );
-        }        
+            return this.evaluator.evaluate( this.extractor,
+                                            object1,
+                                            object2 );
+        }
 
         public boolean equal(final ReteTuple tuple1,
                              final ReteTuple tuple2) {
-            final Object value1 = this.declaration.getValue( tuple1.get( this.declaration ).getObject() );
-            final Object value2 = this.declaration.getValue( tuple2.get( this.declaration ).getObject() );
-            return this.comparator.equal( value1,
-                                          value2 );
+            final Object object1 = tuple1.get( this.declaration ).getObject();
+            final Object object2 = tuple2.get( this.declaration ).getObject();
+            return this.evaluator.evaluate( this.extractor,
+                                            object1,
+                                            object2 );
         }
+
+        public int rehash(int h) {
+            h += ~(h << 9);
+            h ^= (h >>> 14);
+            h += (h << 4);
+            h ^= (h >>> 10);
+            return h;
+        }
+
     }
 
     public static class DoubleCompositeIndex
         implements
         Index {
-        private FieldIndex  index0;
-        private FieldIndex  index1;
+        private FieldIndex index0;
+        private FieldIndex index1;
 
-        private int              startResult;
-
-        private ObjectComparator comparator;
+        private int        startResult;
 
         public DoubleCompositeIndex(final FieldIndex[] indexes,
-                                    final int startResult,
-                                    final ObjectComparator comparator) {
+                                    final int startResult) {
             this.startResult = startResult;
 
             this.index0 = indexes[0];
             this.index1 = indexes[1];
 
-            this.comparator = comparator;
         }
 
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
 
-            int hash = this.index0.extractor.getHashCode( object );
-            hashCode = TupleIndexHashTable.PRIME * hashCode + hash;
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( object );
+            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( object );
 
-            hash = this.index1.extractor.getHashCode( object );
-            hashCode = TupleIndexHashTable.PRIME * hashCode + hash;
-
-            return this.comparator.rehash( hashCode );
+            return rehash( hashCode );
         }
 
         public int hashCodeOf(final ReteTuple tuple) {
             int hashCode = this.startResult;
 
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( tuple.get( this.index0.declaration ).getObject() );
-
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( tuple.get( this.index1.declaration ).getObject() );
 
-            return this.comparator.rehash( hashCode );
+            return rehash( hashCode );
         }
 
         public boolean equal(final Object object1,
                              final ReteTuple tuple) {
-            Object value1 = this.index0.extractor.getValue( object1 );
-            Object value2 = this.index0.declaration.getValue( tuple.get( this.index0.declaration ).getObject() );
+            Object object12 = tuple.get( this.index0.declaration ).getObject();
+            Object object22 = tuple.get( this.index1.declaration ).getObject();
 
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            value1 = this.index1.extractor.getValue( object1 );
-            value2 = this.index1.declaration.getValue( tuple.get( this.index1.declaration ).getObject() );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            return true;
+            return this.index0.evaluator.evaluate( this.index0.extractor,
+                                                   object1,
+                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                                                                 object1,
+                                                                                                 object22 );
         }
 
         public boolean equal(final ReteTuple tuple1,
                              final ReteTuple tuple2) {
-            Object value1 = this.index0.declaration.getValue( tuple1.get( this.index0.declaration ).getObject() );
-            Object value2 = this.index0.declaration.getValue( tuple2.get( this.index0.declaration ).getObject() );
+            Object object11 = tuple1.get( this.index0.declaration ).getObject();
+            Object object12 = tuple2.get( this.index0.declaration ).getObject();
 
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
+            Object object21 = tuple1.get( this.index1.declaration ).getObject();
+            Object object22 = tuple2.get( this.index1.declaration ).getObject();
 
-            value1 = this.index1.declaration.getValue( tuple1.get( this.index1.declaration ).getObject() );
-            value2 = this.index1.declaration.getValue( tuple2.get( this.index1.declaration ).getObject() );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            return true;
+            return this.index0.evaluator.evaluate( this.index0.extractor,
+                                                   object11,
+                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                                                                 object21,
+                                                                                                 object22 );
         }
-        
+
         public boolean equal(final Object object1,
                              final Object object2) {
-            Object value1 = this.index0.extractor.getValue( object1 );
-            Object value2 = this.index0.extractor.getValue( object2 );
+            return this.index0.evaluator.evaluate( this.index0.extractor,
+                                                   object1,
+                                                   object2 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                                                                object1,
+                                                                                                object2 );
+        }
 
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            value1 = this.index1.extractor.getValue( object1 );
-            value2 = this.index1.extractor.getValue( object2 );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            return true;
-        }        
+        public int rehash(int h) {
+            h += ~(h << 9);
+            h ^= (h >>> 14);
+            h += (h << 4);
+            h ^= (h >>> 10);
+            return h;
+        }
     }
 
     public static class TripleCompositeIndex
         implements
         Index {
-        private FieldIndex  index0;
-        private FieldIndex  index1;
-        private FieldIndex  index2;
+        private FieldIndex       index0;
+        private FieldIndex       index1;
+        private FieldIndex       index2;
 
         private int              startResult;
 
-        private ObjectComparator comparator;
-
         public TripleCompositeIndex(final FieldIndex[] indexes,
-                                    final int startResult,
-                                    final ObjectComparator comparator) {
+                                    final int startResult) {
             this.startResult = startResult;
 
             this.index0 = indexes[0];
             this.index1 = indexes[1];
             this.index2 = indexes[2];
 
-            this.comparator = comparator;
         }
 
         public int hashCodeOf(final Object object) {
@@ -590,7 +582,7 @@ public abstract class AbstractHashTable
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( object );;
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.index2.extractor.getHashCode( object );;
 
-            return this.comparator.rehash( hashCode );
+            return rehash( hashCode );
         }
 
         public int hashCodeOf(final ReteTuple tuple) {
@@ -600,94 +592,60 @@ public abstract class AbstractHashTable
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( tuple.get( this.index1.declaration ).getObject() );
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.index2.declaration.getHashCode( tuple.get( this.index2.declaration ).getObject() );
 
-            return this.comparator.rehash( hashCode );
+            return rehash( hashCode );
         }
 
         public boolean equal(final Object object1,
                              final ReteTuple tuple) {
-            Object value1 = this.index0.extractor.getValue( object1 );
-            Object value2 = this.index0.declaration.getValue( tuple.get( this.index0.declaration ).getObject() );
+            Object object12 = tuple.get( this.index0.declaration ).getObject();
+            Object object22 = tuple.get( this.index1.declaration ).getObject();
+            Object object32 = tuple.get( this.index2.declaration ).getObject();
 
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            value1 = this.index1.extractor.getValue( object1 );
-            value2 = this.index1.declaration.getValue( tuple.get( this.index1.declaration ).getObject() );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            value1 = this.index2.extractor.getValue( object1 );
-            value2 = this.index2.declaration.getValue( tuple.get( this.index2.declaration ).getObject() );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            return true;
+            return this.index0.evaluator.evaluate( this.index0.extractor,
+                                                   object1,
+                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                                                                 object1,
+                                                                                                 object22 ) && this.index2.evaluator.evaluate( this.index2.extractor,
+                                                                                                                                               object1,
+                                                                                                                                               object32 );
         }
 
         public boolean equal(final ReteTuple tuple1,
                              final ReteTuple tuple2) {
-            Object value1 = this.index0.declaration.getValue( tuple1.get( this.index0.declaration ).getObject() );
-            Object value2 = this.index0.declaration.getValue( tuple2.get( this.index0.declaration ).getObject() );
+            Object object11 = tuple1.get( this.index0.declaration ).getObject();
+            Object object12 = tuple2.get( this.index0.declaration ).getObject();
+            Object object21 = tuple1.get( this.index1.declaration ).getObject();
+            Object object22 = tuple2.get( this.index1.declaration ).getObject();
+            Object object31 = tuple1.get( this.index2.declaration ).getObject();
+            Object object32 = tuple2.get( this.index2.declaration ).getObject();
 
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            value1 = this.index1.declaration.getValue( tuple1.get( this.index1.declaration ).getObject() );
-            value2 = this.index1.declaration.getValue( tuple2.get( this.index1.declaration ).getObject() );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            value1 = this.index2.declaration.getValue( tuple1.get( this.index2.declaration ).getObject() );
-            value2 = this.index2.declaration.getValue( tuple2.get( this.index2.declaration ).getObject() );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            return true;
+            return this.index0.evaluator.evaluate( this.index0.extractor,
+                                                   object11,
+                                                   object12 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                                                                 object21,
+                                                                                                 object22 ) && this.index2.evaluator.evaluate( this.index2.extractor,
+                                                                                                                                               object31,
+                                                                                                                                               object32 );
         }
-        
+
         public boolean equal(final Object object1,
                              final Object object2) {
-            Object value1 = this.index0.extractor.getValue( object1 );
-            Object value2 = this.index0.extractor.getValue( object2 );
+            return this.index0.evaluator.evaluate( this.index0.extractor,
+                                                   object1,
+                                                   object2 ) && this.index1.evaluator.evaluate( this.index1.extractor,
+                                                                                                 object1,
+                                                                                                 object2 ) && this.index2.evaluator.evaluate( this.index2.extractor,
+                                                                                                                                               object1,
+                                                                                                                                               object2 );
+        }
 
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
+        public int rehash(int h) {
+            h += ~(h << 9);
+            h ^= (h >>> 14);
+            h += (h << 4);
+            h ^= (h >>> 10);
+            return h;
+        }
 
-            value1 = this.index1.extractor.getValue( object1 );
-            value2 = this.index1.extractor.getValue( object2 );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            value1 = this.index2.extractor.getValue( object1 );
-            value2 = this.index2.extractor.getValue( object2 );
-
-            if ( !this.comparator.equal( value1,
-                                         value2 ) ) {
-                return false;
-            }
-
-            return true;
-        }        
-    }    
+    }
 }

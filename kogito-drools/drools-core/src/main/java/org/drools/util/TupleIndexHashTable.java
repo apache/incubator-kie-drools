@@ -4,17 +4,15 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.reteoo.TupleMemory;
-import org.drools.rule.Column;
-import org.drools.rule.Declaration;
-import org.drools.spi.FieldExtractor;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class TupleIndexHashTable extends AbstractHashTable
     implements
     TupleMemory {
+
+    private static final long serialVersionUID = -6214772340195061306L;
+
     public static final int             PRIME = 31;
 
     private int                         startResult;
@@ -47,18 +45,15 @@ public class TupleIndexHashTable extends AbstractHashTable
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  0" );
             case 1 :
                 this.index = new SingleIndex( index,
-                                              this.startResult,
-                                              this.comparator );
+                                              this.startResult);
                 break;
             case 2 :
                 this.index = new DoubleCompositeIndex( index,
-                                                       this.startResult,
-                                                       this.comparator );
+                                                       this.startResult);
                 break;
             case 3 :
                 this.index = new TripleCompositeIndex( index,
-                                                       this.startResult,
-                                                       this.comparator );
+                                                       this.startResult);
                 break;
             default :
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
@@ -243,6 +238,8 @@ public class TupleIndexHashTable extends AbstractHashTable
     public static class FieldIndexEntry
         implements
         Entry {
+
+        private static final long serialVersionUID = 8160842495541574574L;
         private Entry     next;
         private ReteTuple first;
         private final int hashCode;

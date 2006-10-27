@@ -88,6 +88,12 @@ public class IntegerFactory
             return context.extractor.getIntValue( object2 ) == ((LongVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getIntValue( object1 ) == extractor.getIntValue( object2 );
+        }
+
         public String toString() {
             return "Integer ==";
         }
@@ -120,6 +126,12 @@ public class IntegerFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
             return context.extractor.getIntValue( object2 ) != ((LongVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getIntValue( object1 ) != extractor.getIntValue( object2 );
         }
 
         public String toString() {
@@ -155,6 +167,12 @@ public class IntegerFactory
             return context.extractor.getIntValue( right ) < ((LongVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getIntValue( object1 ) < extractor.getIntValue( object2 );
+        }
+
         public String toString() {
             return "Integer <";
         }
@@ -186,6 +204,12 @@ public class IntegerFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return context.extractor.getIntValue( right ) <= ((LongVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getIntValue( object1 ) <= extractor.getIntValue( object2 );
         }
 
         public String toString() {
@@ -221,6 +245,12 @@ public class IntegerFactory
             return context.extractor.getIntValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getIntValue( object1 ) > extractor.getIntValue( object2 );
+        }
+
         public String toString() {
             return "Integer >";
         }
@@ -252,6 +282,12 @@ public class IntegerFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return context.extractor.getIntValue( right ) >= ((LongVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getIntValue( object1 ) >= extractor.getIntValue( object2 );
         }
 
         public String toString() {

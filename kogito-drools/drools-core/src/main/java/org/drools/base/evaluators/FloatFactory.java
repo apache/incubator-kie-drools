@@ -89,6 +89,13 @@ public class FloatFactory
             return ((DoubleVariableContextEntry) context).left == context.extractor.getFloatValue( right );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) == extractor.getFloatValue( object2 );
+        }
+
         public String toString() {
             return "Float ==";
         }
@@ -123,6 +130,13 @@ public class FloatFactory
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left != context.extractor.getFloatValue( right );
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) != extractor.getFloatValue( object2 );
         }
 
         public String toString() {
@@ -161,6 +175,13 @@ public class FloatFactory
             return context.extractor.getFloatValue( right ) < ((DoubleVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) < extractor.getFloatValue( object2 );
+        }
+
         public String toString() {
             return "Float <";
         }
@@ -195,6 +216,13 @@ public class FloatFactory
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return context.extractor.getFloatValue( right ) <= ((DoubleVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) <= extractor.getFloatValue( object2 );
         }
 
         public String toString() {
@@ -233,6 +261,13 @@ public class FloatFactory
             return context.extractor.getFloatValue( right ) > ((DoubleVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) > extractor.getFloatValue( object2 );
+        }
+
         public String toString() {
             return "Float >";
         }
@@ -267,6 +302,13 @@ public class FloatFactory
                                           final Object right) {
             // TODO: we are not handling delta right now... maybe we should
             return context.extractor.getFloatValue( right ) >= ((DoubleVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            // TODO: we are not handling delta right now... maybe we should
+            return extractor.getFloatValue( object1 ) >= extractor.getFloatValue( object2 );
         }
 
         public String toString() {

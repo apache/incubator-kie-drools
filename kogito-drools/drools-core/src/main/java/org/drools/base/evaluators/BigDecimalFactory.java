@@ -103,9 +103,21 @@ public class BigDecimalFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.equals( value2 );
+        }
+
         public String toString() {
             return "BigDecimal ==";
         }
+
     }
 
     static class BigDecimalNotEqualEvaluator extends BaseEvaluator {
@@ -149,6 +161,17 @@ public class BigDecimalFactory
             return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            return !value1.equals( value2 );
+        }
+
         public String toString() {
             return "BigDecimal !=";
         }
@@ -185,6 +208,13 @@ public class BigDecimalFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) < 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
+            return comp.compareTo( extractor.getValue( object2 ) ) < 0;
+        }
+        
         public String toString() {
             return "BigDecimal <";
         }
@@ -221,6 +251,13 @@ public class BigDecimalFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) <= 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
+            return comp.compareTo( extractor.getValue( object2 ) ) <= 0;
+        }
+        
         public String toString() {
             return "BigDecimal <=";
         }
@@ -257,6 +294,13 @@ public class BigDecimalFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) > 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
+            return comp.compareTo( extractor.getValue( object2 ) ) > 0;
+        }
+        
         public String toString() {
             return "BigDecimal >";
         }
@@ -293,6 +337,13 @@ public class BigDecimalFactory
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) >= 0;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
+            return comp.compareTo( extractor.getValue( object2 ) ) >= 0;
+        }
+        
         public String toString() {
             return "BigDecimal >=";
         }

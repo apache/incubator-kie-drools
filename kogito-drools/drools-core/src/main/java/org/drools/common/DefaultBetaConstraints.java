@@ -185,7 +185,8 @@ public class DefaultBetaConstraints
                 final Constraint constraint = (Constraint) entry.getObject();
                 final VariableConstraint variableConstraint = (VariableConstraint) constraint;
                 final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                         variableConstraint.getRequiredDeclarations()[0] );
+                                                         variableConstraint.getRequiredDeclarations()[0],
+                                                         variableConstraint.getEvaluator());
                 list.add( index );
                 entry = (LinkedListEntry) entry.getNext();
             }

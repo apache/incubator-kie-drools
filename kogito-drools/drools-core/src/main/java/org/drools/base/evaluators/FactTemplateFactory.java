@@ -82,17 +82,6 @@ public class FactTemplateFactory
             return value1.equals( value2 );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            return value1.equals( value2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
@@ -111,9 +100,21 @@ public class FactTemplateFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 == null;
+            }
+            return value1.equals( value2 );
+        }
+
         public String toString() {
             return "FactTemplate ==";
         }
+
     }
 
     static class FactTemplateNotEqualEvaluator extends BaseEvaluator {
@@ -139,17 +140,6 @@ public class FactTemplateFactory
             return !value1.equals( value2 );
         }
 
-        public boolean evaluate(final FieldValue object1,
-                                final Extractor extractor,
-                                final Object object2) {
-            final Object value1 = object1.getValue();
-            final Object value2 = extractor.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 != null;
-            }
-            return !value1.equals( value2 );
-        }
-
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
@@ -166,6 +156,17 @@ public class FactTemplateFactory
                 return value != null;
             }
             return !((ObjectVariableContextEntry) context).left.equals( value );
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            final Object value1 = extractor.getValue( object1 );
+            final Object value2 = extractor.getValue( object2 );
+            if ( value1 == null ) {
+                return value2 != null;
+            }
+            return !value1.equals( value2 );
         }
 
         public String toString() {

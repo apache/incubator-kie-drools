@@ -80,9 +80,16 @@ public class BooleanFactory
             return context.extractor.getBooleanValue( object2 ) == ((BooleanVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getBooleanValue( object1 ) == extractor.getBooleanValue( object2 );
+        }
+
         public String toString() {
             return "Boolean ==";
         }
+
     }
 
     static class BooleanNotEqualEvaluator extends BaseEvaluator {
@@ -111,6 +118,12 @@ public class BooleanFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
             return context.extractor.getBooleanValue( object2 ) != ((BooleanVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getBooleanValue( object1 ) != extractor.getBooleanValue( object2 );
         }
 
         public String toString() {

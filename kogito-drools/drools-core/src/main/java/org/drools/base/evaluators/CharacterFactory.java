@@ -88,6 +88,12 @@ public class CharacterFactory
             return ((LongVariableContextEntry) context).left == context.extractor.getCharValue( right );
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getCharValue( object1 ) == extractor.getCharValue( object2 );
+        }
+
         public String toString() {
             return "Character ==";
         }
@@ -119,6 +125,12 @@ public class CharacterFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return ((LongVariableContextEntry) context).left != context.extractor.getCharValue( right );
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getCharValue( object1 ) != extractor.getCharValue( object2 );
         }
 
         public String toString() {
@@ -154,6 +166,12 @@ public class CharacterFactory
             return context.extractor.getCharValue( right ) <((LongVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getCharValue( object1 ) < extractor.getCharValue( object2 );
+        }
+
         public String toString() {
             return "Character <";
         }
@@ -185,6 +203,12 @@ public class CharacterFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return context.extractor.getCharValue( right ) <= ((LongVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getCharValue( object1 ) <= extractor.getCharValue( object2 );
         }
 
         public String toString() {
@@ -220,6 +244,12 @@ public class CharacterFactory
             return context.extractor.getCharValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getCharValue( object1 ) > extractor.getCharValue( object2 );
+        }
+
         public String toString() {
             return "Character >";
         }
@@ -251,6 +281,12 @@ public class CharacterFactory
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             return context.extractor.getCharValue( right ) >= ((LongVariableContextEntry) context).left;
+        }
+
+        public boolean evaluate(Extractor extractor,
+                                Object object1,
+                                Object object2) {
+            return extractor.getCharValue( object1 ) >= extractor.getCharValue( object2 );
         }
 
         public String toString() {
