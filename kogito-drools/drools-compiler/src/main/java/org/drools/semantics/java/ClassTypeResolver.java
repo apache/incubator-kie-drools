@@ -111,21 +111,21 @@ public class ClassTypeResolver
 
         //is the class a primitive?
         if ( "boolean".equals( className )) {
-            return boolean.class;
+            clazz = boolean.class;
         } else if ( "byte".equals( className ) ) {
-            return byte.class;
+            clazz =  byte.class;
         } else if ( "short".equals( className ) ) {
-            return short.class;
+            clazz =  short.class;
         } else if ( "char".equals( className ) ) {
-            return char.class;
+            clazz =  char.class;
         } else if ( "int".equals( className ) ) {
-            return int.class;
+            clazz =  int.class;
         } else if ( "long".equals( className ) ) {
-            return long.class;
+            clazz =  long.class;
         } else if ( "float".equals( className ) ) {
-            return float.class;
+            clazz =  float.class;
         } else if ( "double".equals( className ) ) {
-            return double.class;
+            clazz =  double.class;
         }
         
         // Now try the className with each of the given imports 
