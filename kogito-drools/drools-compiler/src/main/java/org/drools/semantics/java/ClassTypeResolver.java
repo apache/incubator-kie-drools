@@ -109,6 +109,25 @@ public class ClassTypeResolver
             }
         }
 
+        //is the class a primitive?
+        if ( "boolean".equals( className )) {
+            return boolean.class;
+        } else if ( "byte".equals( className ) ) {
+            return byte.class;
+        } else if ( "short".equals( className ) ) {
+            return short.class;
+        } else if ( "char".equals( className ) ) {
+            return char.class;
+        } else if ( "int".equals( className ) ) {
+            return int.class;
+        } else if ( "long".equals( className ) ) {
+            return long.class;
+        } else if ( "float".equals( className ) ) {
+            return float.class;
+        } else if ( "double".equals( className ) ) {
+            return double.class;
+        }
+        
         // Now try the className with each of the given imports 
         if ( clazz == null ) {
             final Set validClazzCandidates = new HashSet();
