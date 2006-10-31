@@ -30,7 +30,8 @@ public class AddRemoveTest extends DroolsTestCase {
         final Rete rete = new Rete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( Object.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  1 );
         objectTypeNode.attach();
 
         final MockObjectSink sink = new MockObjectSink();

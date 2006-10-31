@@ -28,13 +28,13 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
-import org.drools.spi.MockField;
 
 public class QueryTerminalNodeTest extends TestCase {
     public void testQueryTerminalNode() {
@@ -44,13 +44,14 @@ public class QueryTerminalNodeTest extends TestCase {
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
                                                                        queryObjectType,
-                                                                       rete );
+                                                                       rete,
+                                                                       3);
         queryObjectTypeNode.attach();
 
         ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
                                                                  "name" );
 
-        FieldValue field = new MockField( "query-1" );
+        FieldValue field = FieldFactory.getFieldValue( "query-1" );
 
         final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
         LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -69,13 +70,14 @@ public class QueryTerminalNodeTest extends TestCase {
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
                                                                         cheeseObjectType,
-                                                                        rete );
+                                                                        rete,
+                                                                        3);
         cheeseObjectTypeNode.attach();
 
         extractor = new ClassFieldExtractor( Cheese.class,
                                              "type" );
 
-        field = new MockField( "stilton" );
+        field = FieldFactory.getFieldValue( "stilton" );
 
         constraint = new LiteralConstraint( extractor,
                                             evaluator,
@@ -135,13 +137,13 @@ public class QueryTerminalNodeTest extends TestCase {
         QueryResult result = results.get( 0 );
         assertEquals( 1,
                       result.size() );
-        assertSame( stilton1,
+        assertEquals( stilton2,
                     result.get( 0 ) );
 
         result = results.get( 1 );
         assertEquals( 1,
                       result.size() );
-        assertSame( stilton2,
+        assertEquals( stilton1,
                     result.get( 0 ) );
 
         int i = 0;
@@ -149,7 +151,7 @@ public class QueryTerminalNodeTest extends TestCase {
             result = (QueryResult) it.next();
             assertEquals( 1,
                           result.size() );
-            if ( i == 0 ) {
+            if ( i == 1 ) {
                 assertSame( stilton1,
                             result.get( 0 ) );
             } else {

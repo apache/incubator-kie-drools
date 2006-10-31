@@ -18,7 +18,8 @@ public class PropertyChangeListenerTest extends TestCase {
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( State.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3);
 
         objectTypeNode.attach();
 
@@ -31,13 +32,9 @@ public class PropertyChangeListenerTest extends TestCase {
 
         assertEquals( 1,
                       sink.getAsserted().size() );
-        assertEquals( 0,
-                      sink.getModified().size() );
 
         a.setState( "stop" );
 
-        assertEquals( 1,
-                      sink.getModified().size() );
     }
 
     public static class State {

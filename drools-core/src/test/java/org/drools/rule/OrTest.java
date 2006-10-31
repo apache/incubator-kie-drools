@@ -27,19 +27,19 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
+import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.examples.waltz.Edge;
 import org.drools.examples.waltz.Stage;
-import org.drools.leaps.LeapsRuleBase;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
 
 /**
@@ -70,40 +70,9 @@ public class OrTest extends TestCase {
         super.setUp();
         this.stageType = new ClassObjectType( Stage.class );
         this.edgeType = new ClassObjectType( Edge.class );
-        this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
-        this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        this.integerEqualEvaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        this.integerNotEqualEvaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
         this.pkg = new Package( "or" );
-    }
-
-    /*
-     */
-    public void testLeapsNeverGetsToConsequenceOrder() throws Exception {
-
-        this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
-
-        final org.drools.leaps.LeapsRuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
-        ruleBase.addPackage( this.pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new Stage( Stage.LABELING ) );
-        workingMemory.assertObject( new Edge( 1000,
-                                              1,
-                                              false,
-                                              Edge.NIL,
-                                              Edge.NIL ) );
-        workingMemory.assertObject( new Edge( 1000,
-                                              2,
-                                              false,
-                                              Edge.NIL,
-                                              Edge.NIL ) );
-        workingMemory.assertObject( new Edge( 5555,
-                                              3,
-                                              false,
-                                              Edge.NIL,
-                                              Edge.NIL ) );
-        workingMemory.fireAllRules();
-        workingMemory.assertObject( new Stage( Stage.DETECT_JUNCTIONS ) );
-
-        workingMemory.fireAllRules();
     }
 
     /*
@@ -113,37 +82,6 @@ public class OrTest extends TestCase {
         this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
-        ruleBase.addPackage( this.pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new Stage( Stage.LABELING ) );
-        workingMemory.assertObject( new Edge( 1000,
-                                              1,
-                                              false,
-                                              Edge.NIL,
-                                              Edge.NIL ) );
-        workingMemory.assertObject( new Edge( 1000,
-                                              2,
-                                              false,
-                                              Edge.NIL,
-                                              Edge.NIL ) );
-        workingMemory.assertObject( new Edge( 5555,
-                                              3,
-                                              false,
-                                              Edge.NIL,
-                                              Edge.NIL ) );
-        workingMemory.fireAllRules();
-        workingMemory.assertObject( new Stage( Stage.DETECT_JUNCTIONS ) );
-
-        workingMemory.fireAllRules();
-    }
-
-    /*
-     */
-    public void testLeapsWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
-
-        this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
-
-        final org.drools.leaps.LeapsRuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
@@ -387,7 +325,7 @@ public class OrTest extends TestCase {
         final int index = getIndex( clazz,
                                     fieldName );
 
-        final FieldValue field = new MockField( fieldValue );
+        final FieldValue field = FieldFactory.getFieldValue( fieldValue );
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
@@ -397,7 +335,7 @@ public class OrTest extends TestCase {
                                       field );
     }
 
-    private AlphaNodeFieldConstraint getBoundVariableConstraint(final Column column,
+    private BetaNodeFieldConstraint getBoundVariableConstraint(final Column column,
                                                                 final String fieldName,
                                                                 final Declaration declaration,
                                                                 final Evaluator evaluator) throws IntrospectionException {

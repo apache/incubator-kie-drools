@@ -17,6 +17,10 @@ package org.drools.spi;
  */
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteTuple;
+import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 
 public class MockConstraint
@@ -40,6 +44,39 @@ public class MockConstraint
 
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
+    }
+
+    public ContextEntry getContextEntry() {
+        return new ContextEntry() {
+            private static final long serialVersionUID = -6597931500771088767L;
+            private ContextEntry next;
+
+            public ContextEntry getNext() {
+                return next;
+            }
+
+            public void setNext(ContextEntry entry) {
+                this.next = entry;
+            }
+
+            public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+                                             InternalFactHandle handle) {
+            }
+
+            public void updateFromTuple(InternalWorkingMemory workingMemory,
+                                        ReteTuple tuple) {
+            }
+        };
+    }
+
+    public boolean isAllowedCachedLeft(ContextEntry context,
+                                       Object object) {
+        return this.isAllowed;
+    }
+
+    public boolean isAllowedCachedRight(ReteTuple tuple,
+                                        ContextEntry context) {
+        return this.isAllowed;
     }
 
 }

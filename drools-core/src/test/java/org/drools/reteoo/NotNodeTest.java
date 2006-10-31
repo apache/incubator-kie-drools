@@ -23,11 +23,13 @@ import junit.framework.Assert;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -56,11 +58,13 @@ public class NotNodeTest extends DroolsTestCase {
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
+        RuleBaseConfiguration configuration = new RuleBaseConfiguration();
+        
         // string1Declaration is bound to column 3 
         this.node = new NotNode( 15,
                                  new MockTupleSource( 5 ),
                                  new MockObjectSource( 8 ),
-                                 new DefaultBetaConstraints( this.constraint ) );
+                                 new DefaultBetaConstraints( new BetaNodeFieldConstraint[] { this.constraint }, configuration ) );
 
         this.sink = new MockTupleSink();
         this.node.addTupleSink( this.sink );
