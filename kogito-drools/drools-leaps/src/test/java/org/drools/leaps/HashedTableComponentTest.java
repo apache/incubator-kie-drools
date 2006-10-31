@@ -39,13 +39,13 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
 
 /**
@@ -401,7 +401,7 @@ public class HashedTableComponentTest extends DroolsTestCase {
                                extractor );
     }
 
-    private AlphaNodeFieldConstraint getBoundVariableConstraint(final Column column,
+    private BetaNodeFieldConstraint getBoundVariableConstraint(final Column column,
                                                                 final String fieldName,
                                                                 final Declaration declaration,
                                                                 final Evaluator evaluator) throws IntrospectionException {
