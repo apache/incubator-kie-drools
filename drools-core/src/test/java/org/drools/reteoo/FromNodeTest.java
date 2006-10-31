@@ -9,10 +9,12 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
+import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaConstraints;
@@ -27,7 +29,6 @@ import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.FieldValue;
-import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
@@ -45,7 +46,7 @@ public class FromNodeTest extends TestCase {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "type" );
 
-        final FieldValue field = new MockField( "stilton" );
+        final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
                                                                     field );
@@ -149,7 +150,10 @@ public class FromNodeTest extends TestCase {
         final VariableConstraint variableConstraint = new VariableConstraint( priceExtractor,
                                                                               declaration,
                                                                               ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
-        final BetaConstraints betaConstraints = new SingleBetaConstraints( variableConstraint, false );
+        final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
+        configuration.setIndexRightBetaMemory( false );
+        configuration.setIndexLeftBetaMemory( false );
+        final BetaConstraints betaConstraints = new SingleBetaConstraints( variableConstraint, configuration );
 
         final List list = new ArrayList();
         final Cheese cheese1 = new Cheese( "cheddar",
@@ -235,7 +239,7 @@ public class FromNodeTest extends TestCase {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "type" );
 
-        final FieldValue field = new MockField( "stilton" );
+        final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
                                                                     field );
