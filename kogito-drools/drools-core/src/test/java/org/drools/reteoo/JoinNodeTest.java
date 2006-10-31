@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
@@ -59,11 +60,13 @@ public class JoinNodeTest extends DroolsTestCase {
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
         this.sink = new MockTupleSink();
+        
+        RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
         this.node = new JoinNode( 15,
                                   this.tupleSource,
                                   this.objectSource,
-                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint} ) );
+                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint}, configuration ) );
 
         this.node.addTupleSink( this.sink );
 
@@ -89,8 +92,8 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 15,
                       this.node.getId() );
 
-        assertNull( objectSink );
-        assertNull( tupleSink );
+        assertNotNull( objectSink );
+        assertNotNull( tupleSink );
 
         this.node.attach();
 
@@ -357,8 +360,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.retractObject( f0,
                                  this.context,
                                  this.workingMemory );
-        // We still propagate all joins for a retract. Later we might apply tests first.
-        assertLength( 1,
+        assertLength( 0,
                       this.sink.getRetracted() );
     }
 

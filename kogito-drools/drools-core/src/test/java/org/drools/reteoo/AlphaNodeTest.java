@@ -23,6 +23,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
@@ -32,7 +33,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
-import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
 
@@ -65,7 +65,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -76,7 +76,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
                                                    source,
-                                                   true ); // has memory
+                                                   true,
+                                                   3); // has memory
 
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
@@ -145,7 +146,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -156,7 +157,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
                                                    source,
-                                                   false ); // no memory
+                                                   false,
+                                                   3); // no memory
 
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
@@ -230,7 +232,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -291,7 +293,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -301,7 +303,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
                                                    source,
-                                                   true ); // has memory
+                                                   true,
+                                                   3); // has memory
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
@@ -368,7 +371,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -378,7 +381,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
                                                    source,
-                                                   false ); // no memory
+                                                   false,
+                                                   3 ); // no memory
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
@@ -450,7 +454,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -460,7 +464,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
                                                    source,
-                                                   true ); // has memory
+                                                   true,
+                                                   3); // has memory
 
         alphaNode.attach();
 
@@ -516,7 +521,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -526,7 +531,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
                                                    source,
-                                                   false ); // no memory
+                                                   false,
+                                                   3 ); // no memory
 
         alphaNode.attach();
 

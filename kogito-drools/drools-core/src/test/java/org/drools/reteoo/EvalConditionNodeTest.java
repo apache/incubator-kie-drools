@@ -23,6 +23,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
+import org.drools.util.TupleHashTable;
 
 public class EvalConditionNodeTest extends DroolsTestCase {
     private PropagationContext  context;
@@ -52,16 +53,14 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         assertEquals( 18,
                       node.getId() );
 
-        assertLength( 0,
-                      source.getTupleSinks() );
+        assertEquals( 0,
+                      source.getAttached() );
 
         node.attach();
 
-        assertLength( 1,
-                      source.getTupleSinks() );
+        assertEquals( 1,
+                      source.getAttached() );
 
-        assertSame( node,
-                    source.getTupleSinks().get( 0 ) );
     }
 
     public void testMemory() {
@@ -74,7 +73,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                               source,
                                                               new MockEvalCondition( true ) );
 
-        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( node );
+        final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( node );
 
         assertNotNull( memory );
     }
@@ -117,16 +116,13 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                           this.workingMemory );
 
         // Check memory was populated
-        final LinkedList memory = (LinkedList) this.workingMemory.getNodeMemory( node );
+        final TupleHashTable memory = (TupleHashTable) this.workingMemory.getNodeMemory( node );
 
         assertEquals( 2,
                       memory.size() );
 
-        // Check list is in the correct order
-        assertEquals( tuple0,
-                      memory.getFirst() );
-        assertEquals( tuple1,
-                      tuple0.getNext() );
+        assertTrue( memory.contains( tuple0 ) );
+        assertTrue( memory.contains( tuple1 ) );
 
         // make sure assertions were propagated
         assertEquals( 2,
@@ -166,14 +162,12 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                           this.workingMemory );
 
         // Check memory was populated
-        final LinkedList memory = (LinkedList) this.workingMemory.getNodeMemory( node );
+        final TupleHashTable memory = (TupleHashTable) this.workingMemory.getNodeMemory( node );
 
         assertEquals( 2,
                       memory.size() );
-        assertEquals( tuple0,
-                      memory.getFirst() );
-        assertEquals( tuple1,
-                      tuple0.getNext() );
+        assertTrue( memory.contains( tuple0 ) );
+        assertTrue( memory.contains( tuple1 ) );
 
         // make sure assertions were propagated
         assertEquals( 2,
@@ -188,8 +182,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       memory.size() );
 
-        assertEquals( tuple1,
-                      memory.getFirst() );
+        assertTrue( memory.contains( tuple1 ) );
 
         // make sure retractions were propagated
         assertEquals( 1,
@@ -205,164 +198,6 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                       memory.size() );
 
         // make sure retractions were propagated
-        assertEquals( 2,
-                      sink.getRetracted().size() );
-    }
-
-    public void testAssertedAllowedThenModifyAllowed() throws FactException {
-        final MockEvalCondition eval = new MockEvalCondition( true );
-
-        // Create a test node that always returns false 
-        final EvalConditionNode node = new EvalConditionNode( 1,
-                                                              new MockTupleSource( 15 ),
-                                                              eval );
-
-        final MockTupleSink sink = new MockTupleSink();
-        node.addTupleSink( sink );
-
-        // Create the Tuple
-        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
-                                                            "stilton" );
-        final ReteTuple tuple0 = new ReteTuple( f0 );
-
-        // Tuple should pass and propagate 
-        node.assertTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-
-        // we create and retract two tuples, checking the linkedtuples is null for JBRULES-246 "NPE on retract()"        
-        // Create the Tuple
-        final DefaultFactHandle f1 = new DefaultFactHandle( 1,
-                                                            "cheddar" );
-        final ReteTuple tuple1 = new ReteTuple( f1 );
-
-        // Tuple should pass and propagate 
-        node.assertTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-
-        // Check memory was populated
-        final LinkedList memory = (LinkedList) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 2,
-                      memory.size() );
-        assertEquals( tuple0,
-                      memory.getFirst() );
-        assertEquals( tuple1,
-                      tuple0.getNext() );
-
-        // make sure assertions were propagated
-        assertEquals( 2,
-                      sink.getAsserted().size() );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-        assertEquals( 2,
-                      memory.size() );
-
-        // notice the order is reversed, as tuple0 was modified last and is more recent
-        assertEquals( tuple1,
-                      memory.getFirst() );
-
-        assertEquals( tuple0,
-                      tuple1.getNext() );
-
-        // make sure modifications were propagated
-        assertEquals( 1,
-                      sink.getModified().size() );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-
-        // notice the order is reversed, as tuple0 was modified last and is more recent
-        assertEquals( tuple0,
-                      memory.getFirst() );
-
-        assertEquals( tuple1,
-                      tuple0.getNext() );
-
-        // make sure modifications were propagated
-        assertEquals( 2,
-                      sink.getModified().size() );
-    }
-
-    public void testAssertedAllowedThenModifyNotAllowed() throws FactException {
-        final MockEvalCondition eval = new MockEvalCondition( true );
-
-        // Create a test node that always returns false 
-        final EvalConditionNode node = new EvalConditionNode( 1,
-                                                              new MockTupleSource( 15 ),
-                                                              eval );
-
-        final MockTupleSink sink = new MockTupleSink();
-        node.addTupleSink( sink );
-
-        // Create the Tuple
-        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
-                                                            "stilton" );
-        final ReteTuple tuple0 = new ReteTuple( f0 );
-
-        // Tuple should pass and propagate 
-        node.assertTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-
-        // we create and retract two tuples, checking the linkedtuples is null for JBRULES-246 "NPE on retract()"        
-        // Create the Tuple
-        final DefaultFactHandle f1 = new DefaultFactHandle( 1,
-                                                            "cheddar" );
-        final ReteTuple tuple1 = new ReteTuple( f1 );
-
-        // Tuple should pass and propagate 
-        node.assertTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-
-        // Check memory was populated
-        final LinkedList memory = (LinkedList) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 2,
-                      memory.size() );
-        assertEquals( tuple0,
-                      memory.getFirst() );
-        assertEquals( tuple1,
-                      tuple0.getNext() );
-
-        // make sure assertions were propagated
-        assertEquals( 2,
-                      sink.getAsserted().size() );
-
-        eval.setIsAllowed( false );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-
-        // tuple1 has now been removed
-        assertEquals( 1,
-                      memory.size() );
-        assertEquals( tuple1,
-                      memory.getFirst() );
-
-        // make sure modifications were propagated as a retraction, as it is now no longer passing
-        assertEquals( 1,
-                      sink.getRetracted().size() );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-
-        // tuple0 has now been removed
-        assertEquals( 0,
-                      memory.size() );
-
-        // make sure modifications were propagated as a retraction
         assertEquals( 2,
                       sink.getRetracted().size() );
     }
@@ -399,7 +234,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                           this.workingMemory );
 
         // Check memory was not populated
-        final LinkedList memory = (LinkedList) this.workingMemory.getNodeMemory( node );
+        final TupleHashTable memory = (TupleHashTable) this.workingMemory.getNodeMemory( node );
 
         assertEquals( 0,
                       memory.size() );
@@ -407,147 +242,6 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // test no propagations
         assertEquals( 0,
                       sink.getAsserted().size() );
-        assertEquals( 0,
-                      sink.getModified().size() );
-        assertEquals( 0,
-                      sink.getRetracted().size() );
-    }
-
-    public void testAssertedNotAllowedThenModifyNotAllowed() throws FactException {
-        final MockEvalCondition eval = new MockEvalCondition( false );
-
-        // Create a test node that always returns false 
-        final EvalConditionNode node = new EvalConditionNode( 1,
-                                                              new MockTupleSource( 15 ),
-                                                              eval );
-
-        final MockTupleSink sink = new MockTupleSink();
-        node.addTupleSink( sink );
-
-        // Create the Tuple
-        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
-                                                            "stilton" );
-        final ReteTuple tuple0 = new ReteTuple( f0 );
-
-        // Tuple should fail and not propagate
-        node.assertTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-
-        // Create the Tuple
-        final DefaultFactHandle f1 = new DefaultFactHandle( 1,
-                                                            "chedddar" );
-        final ReteTuple tuple1 = new ReteTuple( f1 );
-
-        // Tuple should fail and not propagate 
-        node.assertTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-
-        // Check memory was not populated
-        final LinkedList memory = (LinkedList) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 0,
-                      memory.size() );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-        assertEquals( 0,
-                      memory.size() );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-
-        // make sure the memory wasn't populated
-        assertEquals( 0,
-                      memory.size() );
-
-        // test no propagations
-        assertEquals( 0,
-                      sink.getAsserted().size() );
-        assertEquals( 0,
-                      sink.getModified().size() );
-        assertEquals( 0,
-                      sink.getRetracted().size() );
-    }
-
-    public void testAssertedNotAllowedThenModifyAllowed() throws FactException {
-        final MockEvalCondition eval = new MockEvalCondition( false );
-
-        // Create a test node that always returns false 
-        final EvalConditionNode node = new EvalConditionNode( 1,
-                                                              new MockTupleSource( 15 ),
-                                                              eval );
-
-        final MockTupleSink sink = new MockTupleSink();
-        node.addTupleSink( sink );
-
-        // Create the Tuple
-        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
-                                                            "stilton" );
-        final ReteTuple tuple0 = new ReteTuple( f0 );
-
-        // Tuple should fail and not propagate
-        node.assertTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-
-        // Create the Tuple
-        final DefaultFactHandle f1 = new DefaultFactHandle( 1,
-                                                            "cheddar" );
-        final ReteTuple tuple1 = new ReteTuple( f1 );
-
-        // Tuple should fail and not propagate 
-        node.assertTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-
-        // Check memory was not populated
-        final LinkedList memory = (LinkedList) this.workingMemory.getNodeMemory( node );
-
-        assertEquals( 0,
-                      memory.size() );
-
-        eval.setIsAllowed( true );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple1,
-                          this.context,
-                          this.workingMemory );
-        assertEquals( 1,
-                      memory.size() );
-
-        // As this this  wasn't asserted and remember before, will propagate as an assert
-        assertEquals( 1,
-                      sink.getAsserted().size() );
-
-        assertSame( tuple1,
-                    memory.getFirst() );
-
-        // Now test that the fact is modified correctly
-        node.modifyTuple( tuple0,
-                          this.context,
-                          this.workingMemory );
-        assertEquals( 2,
-                      memory.size() );
-
-        // As this this  wasn't asserted and remember before, will propagate as an assert
-        assertEquals( 2,
-                      sink.getAsserted().size() );
-
-        assertSame( tuple1,
-                    memory.getFirst() );
-
-        assertSame( tuple0,
-                    tuple1.getNext() );
-
-        // test no propagations
-        assertEquals( 0,
-                      sink.getModified().size() );
         assertEquals( 0,
                       sink.getRetracted().size() );
     }
@@ -561,7 +255,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         // Creat the object source so we can detect the alphaNode telling it to
         // propate its contents
-        final MockTupleSource source = new MockTupleSource( 1 );
+        //final MockTupleSource source = new MockTupleSource( 1 );
 
         /* Create a test node that always returns true */
         final EvalConditionNode node = new EvalConditionNode( 1,
@@ -592,8 +286,9 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         assertLength( 0,
                       sink2.getAsserted() );
 
-        node.updateNewNode( workingMemory,
-                            this.context );
+        node.updateSink( sink2,
+                         this.context,
+                         workingMemory );
 
         assertLength( 1,
                       sink2.getAsserted() );

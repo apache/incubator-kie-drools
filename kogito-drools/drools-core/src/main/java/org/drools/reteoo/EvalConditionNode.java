@@ -16,10 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
@@ -27,6 +23,8 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
+import org.drools.util.Iterator;
+import org.drools.util.TupleHashTable;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -144,7 +142,7 @@ class EvalConditionNode extends TupleSource
                                                           workingMemory );
 
         if ( allowed ) {
-            final List memory = (LinkedList) workingMemory.getNodeMemory( this );
+            final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
             memory.add( tuple );
 
             this.sink.propagateAssertTuple( tuple,
@@ -156,11 +154,12 @@ class EvalConditionNode extends TupleSource
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final List memory = (LinkedList) workingMemory.getNodeMemory( this );
+        final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
 
         // can we improve that?
-        if ( memory.remove( tuple ) ) {
-            this.sink.propagateRetractTuple( tuple,
+        ReteTuple memTuple = memory.remove( tuple ); 
+        if (  memTuple != null ) {
+            this.sink.propagateRetractTuple( memTuple,
                                              context,
                                              workingMemory );
         }
@@ -194,7 +193,7 @@ class EvalConditionNode extends TupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new LinkedList();
+        return new TupleHashTable();
     }
 
     /* (non-Javadoc)
@@ -204,10 +203,10 @@ class EvalConditionNode extends TupleSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
-        final List memory = (List) workingMemory.getNodeMemory( this );
+        final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
 
-        for ( Iterator tupleIter = memory.iterator(); tupleIter.hasNext(); ) {
-            ReteTuple tuple = (ReteTuple) tupleIter.next();
+        final Iterator it = memory.iterator();
+        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             sink.assertTuple( tuple,
                               context,
                               workingMemory );

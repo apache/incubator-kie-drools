@@ -16,9 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
@@ -43,7 +40,7 @@ public class MockTupleSource extends TupleSource {
     }
 
     public int getAttached() {
-        return this.attached;
+        return this.sink.getSinks().length;
     }
 
     public int getUdated() {
@@ -65,12 +62,6 @@ public class MockTupleSource extends TupleSource {
     public void attach(final InternalWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
-    }
-
-    public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
-                                    final TupleSink sink) {
-        // TODO Auto-generated method stub
-        return Collections.EMPTY_LIST;
     }
 
 }
