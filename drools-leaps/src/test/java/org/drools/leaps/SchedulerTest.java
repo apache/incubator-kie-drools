@@ -19,6 +19,8 @@ package org.drools.leaps;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -34,7 +36,7 @@ import org.drools.spi.Tuple;
  * @author Alexander Bagerman
  */
 
-public class SchedulerTest extends DroolsTestCase {
+public class SchedulerTest extends  TestCase {
     public void testScheduledActivation() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
