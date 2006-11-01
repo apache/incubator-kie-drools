@@ -6,7 +6,7 @@ import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
-public class CharClassFieldExtractorTest extends ClassFieldExtractorsBaseTest {
+public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     Extractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
                                                                              "charAttr" );
     TestBean  bean      = new TestBean();

@@ -6,7 +6,7 @@ import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
-public class ByteClassFieldExtractorTest extends ClassFieldExtractorsBaseTest {
+public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     Extractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
                                                                              "byteAttr" );
     TestBean  bean      = new TestBean();

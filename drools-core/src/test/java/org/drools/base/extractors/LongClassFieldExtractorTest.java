@@ -6,7 +6,7 @@ import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
-public class LongClassFieldExtractorTest extends ClassFieldExtractorsBaseTest {
+public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final long VALUE     = 5;
 
     Extractor                 extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,

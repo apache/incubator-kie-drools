@@ -25,7 +25,7 @@ import org.drools.util.asm.TestAbstractImpl;
 import org.drools.util.asm.TestInterface;
 import org.drools.util.asm.TestInterfaceImpl;
 
-public abstract class ClassFieldExtractorFactoryTest extends TestCase {
+public abstract class BaseClassFieldExtractorFactoryTest extends TestCase {
 
     public void testIt() throws Exception {
         FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
