@@ -68,7 +68,7 @@ public class ByteFactory
         public final static Evaluator INSTANCE         = new ByteEqualEvaluator();
 
         private ByteEqualEvaluator() {
-            super( ValueType.BYTE_TYPE,
+            super( ValueType.PBYTE_TYPE,
                    Operator.EQUAL );
         }
 
@@ -109,7 +109,7 @@ public class ByteFactory
         public final static Evaluator INSTANCE         = new ByteNotEqualEvaluator();
 
         private ByteNotEqualEvaluator() {
-            super( ValueType.BYTE_TYPE,
+            super( ValueType.PBYTE_TYPE,
                    Operator.NOT_EQUAL );
         }
 
@@ -149,7 +149,7 @@ public class ByteFactory
         public final static Evaluator INSTANCE         = new ByteLessEvaluator();
 
         private ByteLessEvaluator() {
-            super( ValueType.BYTE_TYPE,
+            super( ValueType.PBYTE_TYPE,
                    Operator.LESS );
         }
 
@@ -189,7 +189,7 @@ public class ByteFactory
         public final static Evaluator INSTANCE         = new ByteLessOrEqualEvaluator();
 
         private ByteLessOrEqualEvaluator() {
-            super( ValueType.BYTE_TYPE,
+            super( ValueType.PBYTE_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -229,7 +229,7 @@ public class ByteFactory
         public final static Evaluator INSTANCE         = new ByteGreaterEvaluator();
 
         private ByteGreaterEvaluator() {
-            super( ValueType.BYTE_TYPE,
+            super( ValueType.PBYTE_TYPE,
                    Operator.GREATER );
         }
 
@@ -269,7 +269,7 @@ public class ByteFactory
         private final static Evaluator INSTANCE         = new ByteGreaterOrEqualEvaluator();
 
         private ByteGreaterOrEqualEvaluator() {
-            super( ValueType.BYTE_TYPE,
+            super( ValueType.PBYTE_TYPE,
                    Operator.GREATER_OR_EQUAL );
         }
 

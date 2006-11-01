@@ -68,7 +68,7 @@ public class DoubleFactory
         public final static Evaluator INSTANCE         = new DoubleEqualEvaluator();
 
         private DoubleEqualEvaluator() {
-            super( ValueType.DOUBLE_TYPE,
+            super( ValueType.PDOUBLE_TYPE,
                    Operator.EQUAL );
         }
 
@@ -112,7 +112,7 @@ public class DoubleFactory
         public final static Evaluator INSTANCE         = new DoubleNotEqualEvaluator();
 
         private DoubleNotEqualEvaluator() {
-            super( ValueType.DOUBLE_TYPE,
+            super( ValueType.PDOUBLE_TYPE,
                    Operator.NOT_EQUAL );
         }
 
@@ -156,7 +156,7 @@ public class DoubleFactory
         public final static Evaluator INSTANCE         = new DoubleLessEvaluator();
 
         private DoubleLessEvaluator() {
-            super( ValueType.DOUBLE_TYPE,
+            super( ValueType.PDOUBLE_TYPE,
                    Operator.LESS );
         }
 
@@ -200,7 +200,7 @@ public class DoubleFactory
         public final static Evaluator INSTANCE         = new DoubleLessOrEqualEvaluator();
 
         private DoubleLessOrEqualEvaluator() {
-            super( ValueType.DOUBLE_TYPE,
+            super( ValueType.PDOUBLE_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -244,7 +244,7 @@ public class DoubleFactory
         public final static Evaluator INSTANCE         = new DoubleGreaterEvaluator();
 
         private DoubleGreaterEvaluator() {
-            super( ValueType.DOUBLE_TYPE,
+            super( ValueType.PDOUBLE_TYPE,
                    Operator.GREATER );
         }
 
@@ -288,7 +288,7 @@ public class DoubleFactory
         private final static Evaluator INSTANCE         = new DoubleGreaterOrEqualEvaluator();
 
         private DoubleGreaterOrEqualEvaluator() {
-            super( ValueType.DOUBLE_TYPE,
+            super( ValueType.PDOUBLE_TYPE,
                    Operator.GREATER_OR_EQUAL );
         }
 

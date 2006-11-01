@@ -66,7 +66,7 @@ public class FloatFactory
         public final static Evaluator INSTANCE         = new FloatEqualEvaluator();
 
         private FloatEqualEvaluator() {
-            super( ValueType.FLOAT_TYPE,
+            super( ValueType.PFLOAT_TYPE,
                    Operator.EQUAL );
         }
 
@@ -110,7 +110,7 @@ public class FloatFactory
         public final static Evaluator INSTANCE         = new FloatNotEqualEvaluator();
 
         private FloatNotEqualEvaluator() {
-            super( ValueType.FLOAT_TYPE,
+            super( ValueType.PFLOAT_TYPE,
                    Operator.NOT_EQUAL );
         }
 
@@ -154,7 +154,7 @@ public class FloatFactory
         public final static Evaluator INSTANCE         = new FloatLessEvaluator();
 
         private FloatLessEvaluator() {
-            super( ValueType.FLOAT_TYPE,
+            super( ValueType.PFLOAT_TYPE,
                    Operator.LESS );
         }
 
@@ -198,7 +198,7 @@ public class FloatFactory
         public final static Evaluator INSTANCE         = new FloatLessOrEqualEvaluator();
 
         private FloatLessOrEqualEvaluator() {
-            super( ValueType.FLOAT_TYPE,
+            super( ValueType.PFLOAT_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -242,7 +242,7 @@ public class FloatFactory
         public final static Evaluator INSTANCE         = new FloatGreaterEvaluator();
 
         private FloatGreaterEvaluator() {
-            super( ValueType.FLOAT_TYPE,
+            super( ValueType.PFLOAT_TYPE,
                    Operator.GREATER );
         }
 
@@ -286,7 +286,7 @@ public class FloatFactory
         private final static Evaluator INSTANCE         = new FloatGreaterOrEqualEvaluator();
 
         private FloatGreaterOrEqualEvaluator() {
-            super( ValueType.FLOAT_TYPE,
+            super( ValueType.PFLOAT_TYPE,
                    Operator.GREATER_OR_EQUAL );
         }
 

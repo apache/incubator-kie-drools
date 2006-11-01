@@ -60,7 +60,7 @@ public class BooleanFactory
         private final static Evaluator INSTANCE         = new BooleanEqualEvaluator();
 
         private BooleanEqualEvaluator() {
-            super( ValueType.BOOLEAN_TYPE,
+            super( ValueType.PBOOLEAN_TYPE,
                    Operator.EQUAL );
         }
 
@@ -101,7 +101,7 @@ public class BooleanFactory
         public final static Evaluator INSTANCE         = new BooleanNotEqualEvaluator();
 
         private BooleanNotEqualEvaluator() {
-            super( ValueType.BOOLEAN_TYPE,
+            super( ValueType.PBOOLEAN_TYPE,
                    Operator.NOT_EQUAL );
         }
 

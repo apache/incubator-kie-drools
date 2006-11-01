@@ -68,7 +68,7 @@ public class CharacterFactory
         public final static Evaluator INSTANCE         = new CharacterEqualEvaluator();
 
         private CharacterEqualEvaluator() {
-            super( ValueType.CHAR_TYPE,
+            super( ValueType.PCHAR_TYPE,
                    Operator.EQUAL );
         }
 
@@ -108,7 +108,7 @@ public class CharacterFactory
         public final static Evaluator INSTANCE         = new CharacterNotEqualEvaluator();
 
         private CharacterNotEqualEvaluator() {
-            super( ValueType.CHAR_TYPE,
+            super( ValueType.PCHAR_TYPE,
                    Operator.NOT_EQUAL );
         }
 
@@ -148,7 +148,7 @@ public class CharacterFactory
         public final static Evaluator INSTANCE         = new CharacterLessEvaluator();
 
         private CharacterLessEvaluator() {
-            super( ValueType.CHAR_TYPE,
+            super( ValueType.PCHAR_TYPE,
                    Operator.LESS );
         }
 
@@ -188,7 +188,7 @@ public class CharacterFactory
         public final static Evaluator INSTANCE         = new CharacterLessOrEqualEvaluator();
 
         private CharacterLessOrEqualEvaluator() {
-            super( ValueType.CHAR_TYPE,
+            super( ValueType.PCHAR_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -228,7 +228,7 @@ public class CharacterFactory
         public final static Evaluator INSTANCE         = new CharacterGreaterEvaluator();
 
         private CharacterGreaterEvaluator() {
-            super( ValueType.CHAR_TYPE,
+            super( ValueType.PCHAR_TYPE,
                    Operator.GREATER );
         }
 
@@ -268,7 +268,7 @@ public class CharacterFactory
         private final static Evaluator INSTANCE         = new CharacterGreaterOrEqualEvaluator();
 
         private CharacterGreaterOrEqualEvaluator() {
-            super( ValueType.CHAR_TYPE,
+            super( ValueType.PCHAR_TYPE,
                    Operator.GREATER_OR_EQUAL );
         }
 

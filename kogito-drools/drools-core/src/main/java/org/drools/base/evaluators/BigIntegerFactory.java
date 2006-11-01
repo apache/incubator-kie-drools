@@ -168,9 +168,9 @@ public class BigIntegerFactory
             final Object value1 = extractor1.getValue( object1 );
             final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
-                return value2 == null;
+                return value2 != null;
             }
-            return value1.equals( value2 );
+            return !value1.equals( value2 );
         }
         
         public String toString() {

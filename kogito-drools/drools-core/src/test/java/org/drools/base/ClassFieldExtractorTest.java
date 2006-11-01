@@ -88,7 +88,7 @@ public class ClassFieldExtractorTest extends TestCase {
         final ClassFieldExtractor ext = new ClassFieldExtractor( InterfaceChild.class,
                                                                  "foo" );
         assertEquals( 42,
-                      ((Integer) ext.getValue( obj )).intValue() );
+                      ((Number) ext.getValue( obj )).intValue() );
     }
 
     public void testLong() throws Exception {
@@ -96,7 +96,7 @@ public class ClassFieldExtractorTest extends TestCase {
                                                                  "longField" );
         final TestBean bean = new TestBean();
         assertEquals( 424242,
-                      ((Long) ext.getValue( bean )).longValue() );
+                      ((Number) ext.getValue( bean )).longValue() );
     }
 
 }

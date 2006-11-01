@@ -41,21 +41,4 @@ public class RuleBaseFactoryTest extends TestCase {
         assertNotNull( ((InternalRuleBase) rb2).getId() );
     }
 
-    public void testLeaps() {
-        final RuleBase rb = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
-        assertTrue( rb instanceof org.drools.leaps.LeapsRuleBase );
-        assertTrue( !"default".equals( ((InternalRuleBase) rb).getId() ) );
-        assertTrue( !"".equals( ((InternalRuleBase) rb).getId() ) );
-        assertNotNull( ((InternalRuleBase) rb).getId() );
-
-        final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
-        assertTrue( rb2 instanceof org.drools.leaps.LeapsRuleBase );
-        assertNotSame( rb2,
-                       rb );
-
-        assertTrue( !"default".equals( ((InternalRuleBase) rb2).getId() ) );
-        assertTrue( !"".equals( ((InternalRuleBase) rb2).getId() ) );
-        assertNotNull( ((InternalRuleBase) rb2).getId() );
-    }
-
 }

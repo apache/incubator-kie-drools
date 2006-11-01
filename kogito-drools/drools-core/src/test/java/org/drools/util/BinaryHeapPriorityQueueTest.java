@@ -23,8 +23,6 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.collections.BinaryHeap;
-
 public class BinaryHeapPriorityQueueTest extends TestCase {
     public void testOptimised() {
         final Random random = new Random();
@@ -61,11 +59,12 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
         System.out.println( "elapsedDequeue = " + elapsedDequeue );
     }
 
-    public void xxxtestBasic() {
+    public void testBasic() {
         final Random random = new Random();
         final List items = new LinkedList();
 
-        final BinaryHeap queue = new BinaryHeap();
+        final BinaryHeapQueue queue = new BinaryHeapQueue(NaturalComparator.INSTANCE,
+                                                          100000 );
 
         for ( int i = 0; i < 100000; ++i ) {
             items.add( new LongQueueable( random.nextLong() ) );
@@ -74,7 +73,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
         final long startEnqueue = System.currentTimeMillis();
 
         for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.add( i.next() );
+            queue.enqueue( (Queueable) i.next() );
         }
 
         final long elapsedEnqueue = System.currentTimeMillis() - startEnqueue;
@@ -82,7 +81,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
         final long startDequeue = System.currentTimeMillis();
 
         for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.remove( i.next() );
+            queue.enqueue( (Queueable) i.next() );
         }
 
         //        while (!queue.isEmpty()) {

@@ -68,7 +68,7 @@ public class ShortFactory
         private static final Evaluator  INSTANCE         = new ShortEqualEvaluator();
 
         private ShortEqualEvaluator() {
-            super( ValueType.SHORT_TYPE,
+            super( ValueType.PSHORT_TYPE,
                    Operator.EQUAL );
         }
 
@@ -108,7 +108,7 @@ public class ShortFactory
         private static final Evaluator  INSTANCE         = new ShortNotEqualEvaluator();
 
         private ShortNotEqualEvaluator() {
-            super( ValueType.SHORT_TYPE,
+            super( ValueType.PSHORT_TYPE,
                    Operator.NOT_EQUAL );
         }
 
@@ -148,7 +148,7 @@ public class ShortFactory
         private static final Evaluator  INSTANCE         = new ShortLessEvaluator();
 
         private ShortLessEvaluator() {
-            super( ValueType.SHORT_TYPE,
+            super( ValueType.PSHORT_TYPE,
                    Operator.LESS );
         }
 
@@ -188,7 +188,7 @@ public class ShortFactory
         private static final Evaluator  INSTANCE         = new ShortLessOrEqualEvaluator();
 
         private ShortLessOrEqualEvaluator() {
-            super( ValueType.SHORT_TYPE,
+            super( ValueType.PSHORT_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -228,7 +228,7 @@ public class ShortFactory
         private static final Evaluator  INSTANCE         = new ShortGreaterEvaluator();
 
         private ShortGreaterEvaluator() {
-            super( ValueType.SHORT_TYPE,
+            super( ValueType.PSHORT_TYPE,
                    Operator.GREATER );
         }
 
@@ -268,7 +268,7 @@ public class ShortFactory
         private static final Evaluator  INSTANCE         = new ShortGreaterOrEqualEvaluator();
 
         private ShortGreaterOrEqualEvaluator() {
-            super( ValueType.SHORT_TYPE,
+            super( ValueType.PSHORT_TYPE,
                    Operator.GREATER_OR_EQUAL );
         }
 
