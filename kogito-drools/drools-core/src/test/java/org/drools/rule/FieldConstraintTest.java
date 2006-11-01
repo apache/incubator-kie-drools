@@ -33,6 +33,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.rule.PredicateConstraint.PredicateContextEntry;
+import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
@@ -211,8 +213,9 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        assertTrue( constraint1.isAllowed( f1.getObject(),
-                                           workingMemory ) );
+        PredicateContextEntry context = (PredicateContextEntry) constraint1.getContextEntry();
+        context.updateFromTuple( workingMemory, tuple );
+        assertTrue( constraint1.isAllowedCachedLeft( context, f1.getObject() ) );
     }
 
     /**
@@ -253,7 +256,7 @@ public class FieldConstraintTest extends TestCase {
             public FieldValue evaluate(Tuple tuple, // ?price
                                    Declaration[] declarations,
                                    WorkingMemory workingMemory) {
-                int price = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
+                int price = ((Number) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
                 return FieldFactory.getFieldValue( 2 * price );
 
             }
@@ -281,19 +284,20 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        assertTrue( constraint1.isAllowed( f1.getObject(),
-                                           workingMemory ) );
+        ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.getContextEntry();
+        context1.updateFromTuple( workingMemory, tuple );
+        assertTrue( constraint1.isAllowedCachedLeft( context1, f1.getObject() ) );
 
-        assertFalse( constraint2.isAllowed( f1.getObject(),
-                                            workingMemory ) );
+        ReturnValueContextEntry context2 = (ReturnValueContextEntry) constraint2.getContextEntry();
+        context2.updateFromTuple( workingMemory, tuple );
+        assertFalse( constraint2.isAllowedCachedLeft( context2, f1.getObject() ) );
 
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             11 );
 
         final InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
 
-        assertTrue( constraint2.isAllowed( f2.getObject(),
-                                           workingMemory ) );
+        assertTrue( constraint2.isAllowedCachedLeft( context2, f2.getObject() ) );
     }
 
 }

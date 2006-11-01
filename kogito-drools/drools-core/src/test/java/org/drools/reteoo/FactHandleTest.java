@@ -75,25 +75,6 @@ public class FactHandleTest extends TestCase {
                       f0.hashCode() );
     }
 
-    public void testToExternalForm() {
-        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
-                                                            "cheese" );
-
-        assertEquals( "[fid:134:134]",
-                      f0.toExternalForm() );
-    }
-
-    /*
-     * Class under test for String toString()
-     */
-    public void testToString() {
-        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
-                                                            "cheese" );
-
-        assertEquals( "[fid:134:134]",
-                      f0.toString() );
-    }
-
     public void testInvalidate() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese" );

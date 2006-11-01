@@ -34,7 +34,12 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ObjectType;
 
 public class CrossProductTest extends TestCase {
-    public void test1() throws Exception {
+    private Package       pkg;
+    private WorkingMemory workingMemory;
+    private List          values;
+    
+    protected void setUp() throws Exception {
+        super.setUp();
         final ObjectType list1ObjectType = new ClassObjectType( String.class );
         final ObjectType list2ObjectType = new ClassObjectType( String.class );
 
@@ -53,7 +58,7 @@ public class CrossProductTest extends TestCase {
         final Declaration s1Declaration = rule.getDeclaration( "s1" );
         final Declaration s2Declaration = rule.getDeclaration( "s2" );
 
-        final List values = new ArrayList();
+        values = new ArrayList();
 
         rule.setConsequence( new Consequence() {
 
@@ -71,13 +76,34 @@ public class CrossProductTest extends TestCase {
 
         } );
 
-        final Package pkg = new Package( "org.drools" );
+        pkg = new Package( "org.drools" );
         pkg.addRule( rule );
-
+    }
+    
+    public void testNotRemoveIdentities() throws Exception {
+        // Default is remove identity FALSE
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        workingMemory = ruleBase.newWorkingMemory();
+        workingMemory.assertObject( "F1" );
+        workingMemory.assertObject( "F2" );
+        workingMemory.assertObject( "F3" );
+        workingMemory.assertObject( "F4" );
+
+        workingMemory.fireAllRules();
+
+        // A full cross product is 16, this is just 12
+        assertEquals( 16,
+                      values.size() );
+    }
+    
+    public void testRemoveIdentities() throws Exception {
+        System.setProperty( "drools.removeIdentities", "true" );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+
+        workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( "F1" );
         workingMemory.assertObject( "F2" );
         workingMemory.assertObject( "F3" );
@@ -89,5 +115,8 @@ public class CrossProductTest extends TestCase {
         assertEquals( 12,
                       values.size() );
     }
+    
+    
+    
 
 }

@@ -147,7 +147,7 @@ public abstract class AbstractHashTable
     //        return current;
     //    }
 
-    public Entry getBucket(final int hashCode) {
+    protected Entry getBucket(final int hashCode) {
         return this.table[indexOf( hashCode,
                                    this.table.length )];
     }
