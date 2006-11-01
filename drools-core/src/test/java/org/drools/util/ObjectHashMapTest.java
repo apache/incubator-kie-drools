@@ -23,12 +23,13 @@ public class ObjectHashMapTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                      5 );
         map.put( new Integer( 1 ),
-                 cheddar );
+                 cheddar, 
+                 false );
         c = (Cheese) map.get( new Integer( 1 ) );
         assertSame( cheddar,
                     c );
 
-        Entry entry = map.getBucket( new Integer( 1 ).hashCode() );
+        Entry entry = map.getBucket( new Integer( 1 ) );
         int size = 0;
         while ( entry != null ) {
             size++;
@@ -40,7 +41,7 @@ public class ObjectHashMapTest extends TestCase {
 
         // Check remove works, should leave one unreachable key
         map.remove( new Integer( 1 ) );
-        entry = map.getBucket( new Integer( 1 ).hashCode() );
+        entry = map.getBucket( new Integer( 1 ) );
         size = 0;
         while ( entry != null ) {
             size++;
@@ -73,7 +74,7 @@ public class ObjectHashMapTest extends TestCase {
         assertSame( cheddar,
                     c );
 
-        Entry entry = map.getBucket( new Integer( 1 ).hashCode() );
+        Entry entry = map.getBucket( new Integer( 1 ) );
         int size = 0;
         while ( entry != null ) {
             size++;
@@ -85,7 +86,7 @@ public class ObjectHashMapTest extends TestCase {
 
         // Check remove works
         map.remove( new Integer( 1 ) );
-        entry = map.getBucket( new Integer( 1 ).hashCode() );
+        entry = map.getBucket( new Integer( 1 ) );
         size = 0;
         while ( entry != null ) {
             size++;

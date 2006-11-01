@@ -26,7 +26,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.ObjectHashMap;
+import org.drools.util.FactHashTable;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
@@ -59,7 +59,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         assertEquals( 1,
                       liaNode.getId() );
-        assertNull( sink );
+        assertNotNull( sink );
 
         liaNode.attach();
 
@@ -150,9 +150,10 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                     workingMemory.getObject( tuple0.get( 0 ) ) );
 
         // check node memory
-        final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( liaNode );
-        assertSame( tuple0,
-                    map.get( f0 ) );
+        final FactHashTable table = (FactHashTable) workingMemory.getNodeMemory( liaNode );
+        assertEquals( 1,
+                      table.size() );
+        assertTrue( table.contains( f0 ) );
 
         // check memory works with multiple handles
         final DefaultFactHandle f1 = (DefaultFactHandle) workingMemory.assertObject( "test1" );
@@ -164,8 +165,9 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                       asserted );
         final Tuple tuple1 = (Tuple) ((Object[]) asserted.get( 1 ))[0];
 
-        assertSame( tuple1,
-                    map.get( f1 ) );
+        assertEquals( 2,
+                      table.size() );
+        assertTrue( table.contains( f1 ) );
 
         assertNotSame( tuple0,
                        tuple1 );
@@ -245,17 +247,16 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         final Tuple tuple = (Tuple) ((Object[]) sink.getAsserted().get( 0 ))[0];
 
-        final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( liaNode );
-        assertSame( tuple,
-                    map.get( f0 ) );
+        final FactHashTable map = (FactHashTable) workingMemory.getNodeMemory( liaNode );
+        assertTrue( map.contains( f0 ) );
 
         liaNode.retractObject( f0,
                                context,
                                workingMemory );
 
-        assertNull( map.get( f0 ) );
+        assertFalse( map.contains( f0 ) );
 
-        assertSame( tuple,
+        assertNotSame( tuple,
                     ((Object[]) sink.getRetracted().get( 0 ))[0] );
 
     }

@@ -26,12 +26,6 @@ public class TupleSourceTest extends DroolsTestCase {
         final MockTupleSource source = new MockTupleSource( 15 );
         assertEquals( 15,
                       source.getId() );
-
-        assertEquals( 0,
-                      source.getAttached() );
-        source.attach();
-        assertEquals( 1,
-                      source.getAttached() );
     }
 
     public void testAddTupleSink() throws Exception {

@@ -154,11 +154,8 @@ public class CollectNodeTest extends DroolsTestCase {
         Assert.assertTrue( "An empty collection should be propagated",
                            ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0]).get( 1 )).getObject()).isEmpty() );
 
-        final ReteTuple tuple = (ReteTuple) this.memory.getTupleMemory().iterator( ).next();
-        assertEquals( tuple0,
-                      tuple );
-        assertEquals( tuple1,
-                      tuple.getNext() );
+        assertTrue( this.memory.getTupleMemory().contains( tuple0 ));
+        assertTrue( this.memory.getTupleMemory().contains( tuple1 ));
 
         Assert.assertEquals( "Two tuples should have been propagated",
                              2,
@@ -202,11 +199,8 @@ public class CollectNodeTest extends DroolsTestCase {
                              2,
                              ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0]).get( 1 )).getObject()).size() );
 
-        final ReteTuple tuple = (ReteTuple) this.memory.getTupleMemory().iterator( ).next();
-        assertEquals( tuple0,
-                      tuple );
-        assertEquals( tuple1,
-                      tuple.getNext() );
+        assertTrue( this.memory.getTupleMemory().contains( tuple0 ));
+        assertTrue( this.memory.getTupleMemory().contains( tuple1 ));
 
         Assert.assertEquals( "Two tuples should have been propagated",
                              2,

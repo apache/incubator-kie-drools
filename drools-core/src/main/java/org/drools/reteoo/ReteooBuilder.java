@@ -125,7 +125,7 @@ class ReteooBuilder
 
         //Set to 1 as Rete node is set to 0
         this.id = 1;
-        this.removeIdentities = false;
+        this.removeIdentities = this.ruleBase.getConfiguration().isRemoveIdentities();
     }
 
     /**
