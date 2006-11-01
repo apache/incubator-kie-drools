@@ -140,6 +140,9 @@ public class DateFactory
             if ( value1 == null ) {
                 return value2 == null;
             }
+            if ( value2 == null ) {
+                return false;
+            }
             return value1.compareTo( value2 ) == 0;
         }
 
@@ -208,7 +211,10 @@ public class DateFactory
             final Date value1 = (Date) extractor1.getValue( object1 );
             final Date value2 = (Date) extractor2.getValue( object2 );
             if ( value1 == null ) {
-                return value2 == null;
+                return value2 != null;
+            }
+            if ( value2 == null ) {
+                return true;
             }
             return value1.compareTo( value2 ) != 0;
         }

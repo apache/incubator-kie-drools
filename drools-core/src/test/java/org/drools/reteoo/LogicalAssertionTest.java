@@ -43,7 +43,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // MockObjectSink so we can detect assertions and retractions
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -141,7 +142,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = new Rete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -205,7 +207,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // If assert behavior in working memory is IDENTITY, 
         // returned handles must not be the same 
-        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( ((ReteooRuleBase) ruleBase).getConfiguration().getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
+        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY == ((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() ) {
 
             assertNotSame( logicalHandle1,
                            logicalHandle2 );
@@ -228,7 +230,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = new Rete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -360,7 +363,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = new Rete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -368,8 +372,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setProperty( RuleBaseConfiguration.PROPERTY_LOGICAL_OVERRIDE_BEHAVIOR,
-                          RuleBaseConfiguration.WM_BEHAVIOR_PRESERVE );
+        conf.setLogicalOverride( RuleBaseConfiguration.LogicalOverride.PRESERVE );
 
         final RuleBase ruleBase = new ReteooRuleBase( conf );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
@@ -449,7 +452,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = new Rete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -544,7 +548,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // MockObjectSink so we can detect assertions and retractions
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -668,7 +673,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = new Rete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -727,7 +733,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // If assert behavior in working memory is IDENTITY, 
         // we need to retract object 2 times before being able to 
         // succesfully logically assert a new fact
-        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( ((ReteooRuleBase) ruleBase).getConfiguration().getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
+        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY == ((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() ) {
 
             workingMemory.retractObject( statedHandle2 );
 
@@ -765,7 +771,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = new Rete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete );
+                                                                  rete,
+                                                                  3);
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );

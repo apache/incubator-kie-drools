@@ -16,43 +16,34 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import org.drools.spi.FieldValue;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-public class FieldImplTest extends TestCase {
-    FieldImpl field1;
-    FieldImpl field2;
-    FieldImpl field3;
-    FieldImpl field4;
-    FieldImpl field5;
+public class FieldValueTest extends TestCase {
+    FieldValue field1;
+    FieldValue field2;
+    FieldValue field3;
+    FieldValue field4;
+    FieldValue field5;
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.field1 = new FieldImpl( null );
-        this.field2 = new FieldImpl( null );
-        this.field3 = new FieldImpl( "A" );
-        this.field4 = new FieldImpl( "A" );
-        this.field5 = new FieldImpl( "B" );
+        this.field1 = FieldFactory.getFieldValue( null );
+        this.field2 = FieldFactory.getFieldValue( null );
+        this.field3 = FieldFactory.getFieldValue( "A" );
+        this.field4 = FieldFactory.getFieldValue( "A" );
+        this.field5 = FieldFactory.getFieldValue( "B" );
 
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        Assert.assertEquals( this.field1,
-                             this.field1 );
-        Assert.assertEquals( this.field1,
-                             this.field2 );
-        Assert.assertEquals( this.field3,
-                             this.field3 );
-        Assert.assertEquals( this.field3,
-                             this.field4 );
-        Assert.assertFalse( this.field1.equals( this.field3 ) );
-        Assert.assertFalse( this.field3.equals( this.field1 ) );
-        Assert.assertFalse( this.field3.equals( this.field5 ) );
     }
 
     /*
-     * Test method for 'org.drools.base.FieldImpl.hashCode()'
+     * Test method for 'org.drools.base.FieldValue.hashCode()'
      */
     public void testHashCode() {
         Assert.assertEquals( this.field1.hashCode(),
@@ -69,10 +60,20 @@ public class FieldImplTest extends TestCase {
     }
 
     /*
-     * Test method for 'org.drools.base.FieldImpl.equals(Object)'
+     * Test method for 'org.drools.base.FieldValue.equals(Object)'
      */
     public void testEqualsObject() {
-
+        Assert.assertEquals( this.field1,
+                             this.field1 );
+        Assert.assertEquals( this.field1,
+                             this.field2 );
+        Assert.assertEquals( this.field3,
+                             this.field3 );
+        Assert.assertEquals( this.field3,
+                             this.field4 );
+        Assert.assertFalse( this.field1.equals( this.field3 ) );
+        Assert.assertFalse( this.field3.equals( this.field1 ) );
+        Assert.assertFalse( this.field3.equals( this.field5 ) );
     }
 
 }

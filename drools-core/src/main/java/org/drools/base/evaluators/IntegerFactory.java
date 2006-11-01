@@ -68,7 +68,7 @@ public class IntegerFactory
         public final static Evaluator INSTANCE         = new IntegerEqualEvaluator();
 
         private IntegerEqualEvaluator() {
-            super( ValueType.INTEGER_TYPE,
+            super( ValueType.PINTEGER_TYPE,
                    Operator.EQUAL );
         }
 
@@ -109,7 +109,7 @@ public class IntegerFactory
         public final static Evaluator INSTANCE         = new IntegerNotEqualEvaluator();
 
         private IntegerNotEqualEvaluator() {
-            super( ValueType.INTEGER_TYPE,
+            super( ValueType.PINTEGER_TYPE,
                    Operator.NOT_EQUAL );
         }
 
@@ -149,7 +149,7 @@ public class IntegerFactory
         public final static Evaluator INSTANCE         = new IntegerLessEvaluator();
 
         private IntegerLessEvaluator() {
-            super( ValueType.INTEGER_TYPE,
+            super( ValueType.PINTEGER_TYPE,
                    Operator.LESS );
         }
 
@@ -189,7 +189,7 @@ public class IntegerFactory
         public final static Evaluator INSTANCE         = new IntegerLessOrEqualEvaluator();
 
         private IntegerLessOrEqualEvaluator() {
-            super( ValueType.INTEGER_TYPE,
+            super( ValueType.PINTEGER_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -229,7 +229,7 @@ public class IntegerFactory
         public final static Evaluator INSTANCE         = new IntegerGreaterEvaluator();
 
         private IntegerGreaterEvaluator() {
-            super( ValueType.INTEGER_TYPE,
+            super( ValueType.PINTEGER_TYPE,
                    Operator.GREATER );
         }
 
@@ -269,7 +269,7 @@ public class IntegerFactory
         private final static Evaluator INSTANCE         = new IntegerGreaterOrEqualEvaluator();
 
         private IntegerGreaterOrEqualEvaluator() {
-            super( ValueType.INTEGER_TYPE,
+            super( ValueType.PINTEGER_TYPE,
                    Operator.GREATER_OR_EQUAL );
         }
 

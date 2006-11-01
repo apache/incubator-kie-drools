@@ -26,10 +26,10 @@ public class CharClassFieldExtractorTest extends ClassFieldExtractorsBaseTest {
 
     public void testGetByteValue() {
         try {
-            this.extractor.getByteValue( this.bean );
-            fail( "Should have throw an exception" );
+            Assert.assertEquals( 'a',
+                                 this.extractor.getByteValue( this.bean ) );
         } catch ( final Exception e ) {
-            // success
+            fail( "Should not throw exception" );
         }
     }
 
@@ -44,54 +44,53 @@ public class CharClassFieldExtractorTest extends ClassFieldExtractorsBaseTest {
 
     public void testGetDoubleValue() {
         try {
-            this.extractor.getDoubleValue( this.bean );
-            fail( "Should have throw an exception" );
+            Assert.assertEquals( 'a',
+                                 (int) this.extractor.getDoubleValue( this.bean ) );
         } catch ( final Exception e ) {
-            // success
+            fail( "Should not throw exception" );
         }
     }
 
     public void testGetFloatValue() {
         try {
-            this.extractor.getFloatValue( this.bean );
-            fail( "Should have throw an exception" );
+            Assert.assertEquals( 'a',
+                                 (int) this.extractor.getFloatValue( this.bean ) );
         } catch ( final Exception e ) {
-            // success
+            fail( "Should not throw exception" );
         }
     }
 
     public void testGetIntValue() {
         try {
-            this.extractor.getIntValue( this.bean );
-            fail( "Should have throw an exception" );
+            Assert.assertEquals( 'a',
+                                 (int) this.extractor.getIntValue( this.bean ) );
         } catch ( final Exception e ) {
-            // success
+            fail( "Should not throw exception" );
         }
     }
 
     public void testGetLongValue() {
         try {
-            this.extractor.getLongValue( this.bean );
-            fail( "Should have throw an exception" );
+            Assert.assertEquals( 'a',
+                                 (int) this.extractor.getLongValue( this.bean ) );
         } catch ( final Exception e ) {
-            // success
+            fail( "Should not throw exception" );
         }
     }
 
     public void testGetShortValue() {
         try {
-            this.extractor.getShortValue( this.bean );
-            fail( "Should have throw an exception" );
+            Assert.assertEquals( 'a',
+                                 this.extractor.getShortValue( this.bean ) );
         } catch ( final Exception e ) {
-            // success
+            fail( "Should not throw exception" );
         }
     }
 
     public void testGetValue() {
         try {
-            Assert.assertEquals( new Character( 'a' ),
-                                 this.extractor.getValue( this.bean ) );
-            Assert.assertTrue( this.extractor.getValue( this.bean ) instanceof Character );
+            Assert.assertEquals( 'a',
+                                 ((Number)this.extractor.getValue( this.bean )).intValue() );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

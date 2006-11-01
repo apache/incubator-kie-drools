@@ -160,7 +160,7 @@ public class ReteTuple
         }
 
         // A ReteTuple is  only the same if it has the same hashCode, factId and parent
-        if ( this.hashCode != other.hashCode ) {
+        if (( other == null ) || ( this.hashCode != other.hashCode )) {
             return false;
         }
 

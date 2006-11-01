@@ -68,7 +68,7 @@ public class LongFactory
         public final static Evaluator INSTANCE         = new LongEqualEvaluator();
 
         private LongEqualEvaluator() {
-            super( ValueType.LONG_TYPE,
+            super( ValueType.PLONG_TYPE,
                    Operator.EQUAL );
         }
 
@@ -108,7 +108,7 @@ public class LongFactory
         public final static Evaluator INSTANCE         = new LongNotEqualEvaluator();
 
         private LongNotEqualEvaluator() {
-            super( ValueType.LONG_TYPE,
+            super( ValueType.PLONG_TYPE,
                    Operator.NOT_EQUAL );
         }
 
@@ -148,7 +148,7 @@ public class LongFactory
         public final static Evaluator INSTANCE         = new LongLessEvaluator();
 
         private LongLessEvaluator() {
-            super( ValueType.LONG_TYPE,
+            super( ValueType.PLONG_TYPE,
                    Operator.LESS );
         }
 
@@ -188,7 +188,7 @@ public class LongFactory
         public final static Evaluator INSTANCE         = new LongLessOrEqualEvaluator();
 
         private LongLessOrEqualEvaluator() {
-            super( ValueType.LONG_TYPE,
+            super( ValueType.PLONG_TYPE,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -228,7 +228,7 @@ public class LongFactory
         public final static Evaluator INSTANCE         = new LongGreaterEvaluator();
 
         private LongGreaterEvaluator() {
-            super( ValueType.LONG_TYPE,
+            super( ValueType.PLONG_TYPE,
                    Operator.GREATER );
         }
 
@@ -268,7 +268,7 @@ public class LongFactory
         private final static Evaluator INSTANCE         = new LongGreaterOrEqualEvaluator();
 
         private LongGreaterOrEqualEvaluator() {
-            super( ValueType.LONG_TYPE,
+            super( ValueType.PLONG_TYPE,
                    Operator.GREATER_OR_EQUAL );
         }
 
