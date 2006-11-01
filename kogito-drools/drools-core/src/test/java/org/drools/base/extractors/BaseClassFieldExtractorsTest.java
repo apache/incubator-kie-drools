@@ -2,7 +2,7 @@ package org.drools.base.extractors;
 
 import junit.framework.TestCase;
 
-public abstract class ClassFieldExtractorsBaseTest extends TestCase {
+public abstract class BaseClassFieldExtractorsTest extends TestCase {
 
     public abstract void testGetBooleanValue();
 

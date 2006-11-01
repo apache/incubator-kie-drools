@@ -6,7 +6,7 @@ import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
-public class ShortClassFieldExtractorTest extends ClassFieldExtractorsBaseTest {
+public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final short VALUE     = 3;
 
     Extractor                  extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
