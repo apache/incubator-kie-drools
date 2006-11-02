@@ -195,19 +195,19 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final FieldValue object2) {
             final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
-            return comp.compareTo( object2.getValue() ) < 0;
+            return comp.compareTo( ( BigDecimal ) object2.getValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) < 0;
+            return comp.compareTo( ( BigDecimal ) context.declaration.getExtractor().getValue( left ) ) < 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) < 0;
+            return comp.compareTo( ( BigDecimal ) ((ObjectVariableContextEntry) context).left ) < 0;
         }
 
         public boolean evaluate(Extractor extractor1,
@@ -215,7 +215,7 @@ public class BigDecimalFactory
                                 Extractor extractor2,
                                 Object object2) {
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
-            return comp.compareTo( extractor2.getValue( object2 ) ) < 0;
+            return comp.compareTo( ( BigDecimal ) extractor2.getValue( object2 ) ) < 0;
         }
         
         public String toString() {
@@ -239,19 +239,19 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final FieldValue object2) {
             final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
-            return comp.compareTo( object2.getValue() ) <= 0;
+            return comp.compareTo( ( BigDecimal ) object2.getValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) <= 0;
+            return comp.compareTo( ( BigDecimal ) context.declaration.getExtractor().getValue( left ) ) <= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) <= 0;
+            return comp.compareTo( ( BigDecimal ) ((ObjectVariableContextEntry) context).left ) <= 0;
         }
 
         public boolean evaluate(Extractor extractor1,
@@ -259,7 +259,7 @@ public class BigDecimalFactory
                                 Extractor extractor2,
                                 Object object2) {
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
-            return comp.compareTo( extractor2.getValue( object2 ) ) <= 0;
+            return comp.compareTo( ( BigDecimal ) extractor2.getValue( object2 ) ) <= 0;
         }
         
         public String toString() {
@@ -283,19 +283,19 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final FieldValue object2) {
             final BigDecimal comp = (BigDecimal) object2.getValue();
-            return comp.compareTo( extractor.getValue( object1 ) ) > 0;
+            return comp.compareTo( ( BigDecimal ) extractor.getValue( object1 ) ) > 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) > 0;
+            return comp.compareTo( ( BigDecimal ) context.declaration.getExtractor().getValue( left ) ) > 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) > 0;
+            return comp.compareTo( ( BigDecimal ) ((ObjectVariableContextEntry) context).left ) > 0;
         }
 
         public boolean evaluate(Extractor extractor1,
@@ -303,7 +303,7 @@ public class BigDecimalFactory
                                 Extractor extractor2,
                                 Object object2) {
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
-            return comp.compareTo( extractor2.getValue( object2 ) ) > 0;
+            return comp.compareTo( ( BigDecimal ) extractor2.getValue( object2 ) ) > 0;
         }
         
         public String toString() {
@@ -327,19 +327,19 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final FieldValue object2) {
             final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
-            return comp.compareTo( object2.getValue() ) >= 0;
+            return comp.compareTo( ( BigDecimal ) object2.getValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) >= 0;
+            return comp.compareTo( ( BigDecimal ) context.declaration.getExtractor().getValue( left ) ) >= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) >= 0;
+            return comp.compareTo( ( BigDecimal ) ((ObjectVariableContextEntry) context).left ) >= 0;
         }
 
         public boolean evaluate(Extractor extractor1,
@@ -347,7 +347,7 @@ public class BigDecimalFactory
                                 Extractor extractor2,
                                 Object object2) {
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
-            return comp.compareTo( extractor2.getValue( object2 ) ) >= 0;
+            return comp.compareTo( ( BigDecimal ) extractor2.getValue( object2 ) ) >= 0;
         }
         
         public String toString() {
