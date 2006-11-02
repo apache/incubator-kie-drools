@@ -106,7 +106,8 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
     
     public int getHashCode(Object object) {
-        return getValue( object ).hashCode();
+        Object value = getValue( object ); 
+        return (value != null) ? value.hashCode() : 0;
     }
     
 }

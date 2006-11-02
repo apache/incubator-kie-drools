@@ -45,6 +45,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.facttemplates.Fact;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -57,11 +58,9 @@ import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.And;
 import org.drools.rule.Column;
@@ -385,7 +384,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                 "java.util.Map" );
         
         FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
-        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", "new  Integer(( ( ( Integer )map.get(x) ).intValue() * y.intValue()))") );  
+        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", "(( (Integer) map.get( new Integer( x )) ).intValue() * y)") );  
         
         column.addDescr( returnValue );
 
@@ -401,7 +400,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder1 = new PackageBuilder();
         final PackageDescr packageDescr1 = new PackageDescr( "package1" );
         createReturnValueRule( packageDescr1,
-                               "new Integer(x.intValue() + y.intValue() )" );
+                               " x + y " );
         builder1.addPackage( packageDescr1 );
         final Column column1 = (Column) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
         final ReturnValueConstraint returnValue1 = (ReturnValueConstraint) column1.getConstraints().get( 2 );
@@ -409,7 +408,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder2 = new PackageBuilder();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
         createReturnValueRule( packageDescr2,
-                               "new Integer(x.intValue() + y.intValue() )" );
+                               " x + y " );
         builder2.addPackage( packageDescr2 );
         final Column column2 = (Column) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
         final ReturnValueConstraint returnValue2 = (ReturnValueConstraint) column2.getConstraints().get( 2 );
@@ -417,7 +416,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder3 = new PackageBuilder();
         final PackageDescr packageDescr3 = new PackageDescr( "package3" );
         createReturnValueRule( packageDescr3,
-                               "new Integer(x.intValue() - y.intValue() )" );
+                               " x - y " );
         builder3.addPackage( packageDescr3 );
         final Column column3 = (Column) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
         final ReturnValueConstraint returnValue3 = (ReturnValueConstraint) column3.getConstraints().get( 2 );
@@ -451,7 +450,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final PredicateDescr predicate = new PredicateDescr( "price",
                                                              "y",
-                                                             "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
+                                                             "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
         column.addDescr( predicate );
 
         ruleDescr.setConsequence( "modify(stilton);" );
@@ -517,7 +516,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
 
-        final EvalDescr evalDescr = new EvalDescr( "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
+        final EvalDescr evalDescr = new EvalDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
         lhs.addDescr( evalDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );

@@ -39,10 +39,11 @@ public class ColumnExtractor
     }
 
     public Object getValue(final Object object) {
-        //return object;
-        return ( this.objectType.isShadowEnabled() ) ? ((ShadowProxy)object).getShadowedObject() : object;
+        // need to use instanceof because an object may be created in nodes like accumulate and from
+        // where no shadow is applied
+        return ( object instanceof ShadowProxy ) ? ((ShadowProxy)object).getShadowedObject() : object;
     }
-
+    
     public ObjectType getObjectType() {
         return this.objectType;
     }
