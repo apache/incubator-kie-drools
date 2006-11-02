@@ -21,7 +21,7 @@ public class Query extends Rule {
     /**
      * 
      */
-    private static final long serialVersionUID = 9047611595977428676L;
+    private static final long serialVersionUID = 320L;
 
     public Query(final String name) {
         super( name );
