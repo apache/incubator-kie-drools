@@ -11,13 +11,14 @@ public class TupleIndexHashTable extends AbstractHashTable
     implements
     TupleMemory {
 
-    private static final long serialVersionUID = -6214772340195061306L;
+    private static final long           serialVersionUID = -6214772340195061306L;
 
-    public static final int             PRIME = 31;
+    public static final int             PRIME            = 31;
 
     private int                         startResult;
 
     private FieldIndexHashTableIterator tupleValueIterator;
+    private FieldIndexHashTableFullIterator tupleValueFullIterator;
 
     private int                         factSize;
 
@@ -45,15 +46,15 @@ public class TupleIndexHashTable extends AbstractHashTable
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  0" );
             case 1 :
                 this.index = new SingleIndex( index,
-                                              this.startResult);
+                                              this.startResult );
                 break;
             case 2 :
                 this.index = new DoubleCompositeIndex( index,
-                                                       this.startResult);
+                                                       this.startResult );
                 break;
             case 3 :
                 this.index = new TripleCompositeIndex( index,
-                                                       this.startResult);
+                                                       this.startResult );
                 break;
             default :
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
@@ -61,9 +62,13 @@ public class TupleIndexHashTable extends AbstractHashTable
     }
 
     public Iterator iterator() {
-        throw new UnsupportedOperationException( "FieldIndexHashTable does not support  iterator()" );
+        if ( this.tupleValueFullIterator == null ) {
+            this.tupleValueFullIterator = new FieldIndexHashTableFullIterator(this);
+        }
+        this.tupleValueFullIterator.reset();
+        return this.tupleValueFullIterator;
     }
-
+    
     public Iterator iterator(final InternalFactHandle handle) {
         if ( this.tupleValueIterator == null ) {
             this.tupleValueIterator = new FieldIndexHashTableIterator();
@@ -115,16 +120,63 @@ public class TupleIndexHashTable extends AbstractHashTable
         }
     }
 
+    public static class FieldIndexHashTableFullIterator
+        implements
+        Iterator {
+        private AbstractHashTable hashTable;
+        private Entry[]           table;
+        private int               row;
+        private int               length;
+        private Entry             entry;
+
+        public FieldIndexHashTableFullIterator(final AbstractHashTable hashTable) {
+            this.hashTable = hashTable;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#next()
+         */
+        public Entry next() {
+            if ( this.entry == null ) {
+                // keep skipping rows until we come to the end, or find one that is populated
+                while ( this.entry == null ) {
+                    this.row++;
+                    if ( this.row == this.length ) {
+                        return null;
+                    }
+                    this.entry = ( this.table[this.row] != null ) ? ((FieldIndexEntry) this.table[this.row]).first : null ;
+                }
+            } else {
+                this.entry = this.entry.getNext();
+                if ( this.entry == null ) {
+                    this.entry = next();
+                }
+            }
+
+            return this.entry;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#reset()
+         */
+        public void reset() {
+            this.table = this.hashTable.getTable();
+            this.length = this.table.length;
+            this.row = -1;
+            this.entry = null;
+        }
+    }
+
     public void add(final ReteTuple tuple) {
         final FieldIndexEntry entry = getOrCreate( tuple );
         entry.add( tuple );
         this.factSize++;
     }
 
-        public boolean add(final ReteTuple tuple,
-                           final boolean checkExists) {
-            throw new UnsupportedOperationException( "FieldIndexHashTable does not support add(ReteTuple tuple, boolean checkExists)" );
-        }
+    public boolean add(final ReteTuple tuple,
+                       final boolean checkExists) {
+        throw new UnsupportedOperationException( "FieldIndexHashTable does not support add(ReteTuple tuple, boolean checkExists)" );
+    }
 
     public ReteTuple remove(final ReteTuple tuple) {
         final int hashCode = this.index.hashCodeOf( tuple );
@@ -240,10 +292,10 @@ public class TupleIndexHashTable extends AbstractHashTable
         Entry {
 
         private static final long serialVersionUID = 8160842495541574574L;
-        private Entry     next;
-        private ReteTuple first;
-        private final int hashCode;
-        private Index     index;
+        private Entry             next;
+        private ReteTuple         first;
+        private final int         hashCode;
+        private Index             index;
 
         public FieldIndexEntry(final Index index,
                                final int hashCode) {
@@ -299,7 +351,6 @@ public class TupleIndexHashTable extends AbstractHashTable
             return current;
         }
 
-
         public boolean matches(final Object object,
                                final int objectHashCode) {
             return this.hashCode == objectHashCode && this.index.equal( object,
@@ -321,6 +372,5 @@ public class TupleIndexHashTable extends AbstractHashTable
             return this.hashCode == other.hashCode && this.index == other.index;
         }
     }
-
 
 }

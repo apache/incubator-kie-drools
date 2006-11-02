@@ -31,21 +31,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import javax.swing.DefaultDesktopManager;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.antlr.runtime.debug.DebugEventListener;
 import org.drools.AssertedObject;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
-import org.drools.FromTestClass;
 import org.drools.IndexedNumber;
 import org.drools.Person;
 import org.drools.PersonInterface;
@@ -179,20 +174,6 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
     
-    public void testNotWithModify() throws Exception {
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NotWithModify.drl" ) );
-        
-        Cheese c = new Cheese("stilton", 13);
-        Cheese c2 = new Cheese("cheddar", 42);
-        Person p = new Person("michael");
-        WorkingMemory wm = loadRuleBase( reader ).newWorkingMemory();
-        wm.assertObject( c );
-        wm.assertObject( p );
-        wm.assertObject( c2 );
-        wm.fireAllRules();
-        
-    }
-
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {

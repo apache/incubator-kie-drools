@@ -47,7 +47,7 @@ rule "Source column binds" salience 70
         $person      : Person( name == "Bob", $likes : likes )
     	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price: price ),
                                                   init( int total = 0; ),
-    	                                          action( total += $price.intValue(); ),
+    	                                          action( total += $price; ),
                                                   result( new Integer( total ) ) );
     then
         //System.out.println($person.getName() +" will spend US$ "+ $totalAmount + " buying cheese");

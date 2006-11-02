@@ -423,7 +423,21 @@ public class RuleBuilder {
         } else {
             try {
                 Class userProvidedClass = this.typeResolver.resolveType( columnDescr.getObjectType() );
-                Class shadowClass = ShadowProxyFactory.getProxy( userProvidedClass );
+                String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( userProvidedClass );
+                Class shadowClass = null;
+                try {
+                    // if already loaded
+                    shadowClass = this.pkg.getPackageCompilationData().getClassLoader().loadClass( shadowProxyName );                    
+                } catch( ClassNotFoundException cnfe ) {
+                    // otherwise, create and load
+                    byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( userProvidedClass );
+                    if( proxyBytes != null ) {
+                        this.pkg.getPackageCompilationData().write( shadowProxyName, 
+                                                                    proxyBytes );
+                        shadowClass = this.pkg.getPackageCompilationData().getClassLoader().loadClass( shadowProxyName );
+                    }
+                    
+                }
                 objectType = new ClassObjectType( userProvidedClass, shadowClass );
             } catch ( final ClassNotFoundException e ) {
                 this.errors.add( new RuleError( this.rule,

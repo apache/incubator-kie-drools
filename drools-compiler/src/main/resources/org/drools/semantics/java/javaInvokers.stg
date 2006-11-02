@@ -154,7 +154,7 @@ public class <invokerClassName> implements org.drools.spi.Accumulator, org.drool
 {
     private static final long serialVersionUID  = 320L;
     
-    public Object accumulate(org.drools.reteoo.ReteTuple tuple,
+    public Object accumulate(org.drools.spi.Tuple tuple,
                               java.util.List matchingObjects,
                               org.drools.rule.Declaration[] declarations, 
                               org.drools.rule.Declaration[] innerDeclarations,

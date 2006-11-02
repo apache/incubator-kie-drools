@@ -49,6 +49,8 @@ public abstract class Waltz extends TestCase {
             //load up the rulebase
             final RuleBase ruleBase = readRule();
             final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            
+            workingMemory.setGlobal( "sysout", System.out );
 
             //            DebugWorkingMemoryEventListener wmListener = new DebugWorkingMemoryEventListener();
             //            DebugAgendaEventListener agendaListener = new DebugAgendaEventListener();
