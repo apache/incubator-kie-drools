@@ -1,5 +1,7 @@
 package org.drools.util;
 
-public interface Iterator {
+import java.io.Serializable;
+
+public interface Iterator extends Serializable {
     public Entry next();
 }

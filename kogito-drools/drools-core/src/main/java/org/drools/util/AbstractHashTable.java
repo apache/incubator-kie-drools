@@ -198,6 +198,9 @@ public abstract class AbstractHashTable
     public static class HashTableIterator
         implements
         Iterator {
+
+        private static final long serialVersionUID = -3058359667332106450L;
+
         private AbstractHashTable hashTable;
         private Entry[]           table;
         private int               row;

@@ -16,6 +16,7 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.drools.FactException;
@@ -38,7 +39,7 @@ import org.drools.rule.Rule;
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:mproctor@codehaus.org">mark proctor</a>
  */
-public interface KnowledgeHelper {
+public interface KnowledgeHelper extends Serializable {
     /**
      * Asserts an object, notice that it does not return the FactHandle
      * 

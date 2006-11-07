@@ -2168,7 +2168,8 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  new ArrayList() );
 
-        workingMemory.assertObject( new  Person( "bob" ) );
+        Person bob = new Person( "bob" );
+        workingMemory.assertObject( bob );
 
         final byte[] wm = serializeOut( workingMemory );
 
@@ -2176,26 +2177,27 @@ public abstract class IntegrationCases extends TestCase {
 
         assertEquals( 1,
                       workingMemory.getObjects().size() );
-        assertEquals( new Integer( 5 ),
+        assertEquals( bob,
                       workingMemory.getObjects().get( 0 ) );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       workingMemory.getAgenda().agendaSize() );
 
         workingMemory.fireAllRules();
 
         List list = (List) workingMemory.getGlobal( "list" );
 
-        assertEquals( 1,
+        assertEquals( 3,
                       list.size() );
-        assertEquals( new Integer( 4 ),
+        // because of agenda-groups
+        assertEquals( new Integer(4), 
                       list.get( 0 ) );
 
         assertEquals( 2,
                       workingMemory.getObjects().size() );
-        assertEquals( new Integer( 5 ),
+        assertEquals( bob,
                       workingMemory.getObjects().get( 0 ) );
-        assertEquals( "help",
+        assertEquals( new Person("help"),
                       workingMemory.getObjects().get( 1 ) );
     }
 

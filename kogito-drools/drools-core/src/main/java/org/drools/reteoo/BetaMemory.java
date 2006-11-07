@@ -1,9 +1,13 @@
 package org.drools.reteoo;
 
-import org.drools.util.ObjectHashMap;
-import org.drools.util.TupleHashTable;
+import java.io.Serializable;
 
-public class BetaMemory {
+import org.drools.util.ObjectHashMap;
+
+public class BetaMemory implements Serializable {
+
+    private static final long serialVersionUID = -4648029105678562600L;
+
     private TupleMemory  tupleMemory;
     private FactHandleMemory factHandleMemory;
     private ObjectHashMap   createdHandles;

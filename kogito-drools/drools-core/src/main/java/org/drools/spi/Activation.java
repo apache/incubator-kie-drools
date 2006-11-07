@@ -16,6 +16,8 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.io.Serializable;
+
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
 import org.drools.rule.Rule;
@@ -30,7 +32,7 @@ import org.drools.util.LinkedList;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public interface Activation {
+public interface Activation extends Serializable {
     /**
      * Retrieve the <code>Rule</code> that was activated.
      * 
