@@ -111,12 +111,8 @@ final class QueryTerminalNode extends BaseNode
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-    }
-
-    public void modifyTuple(final ReteTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-
+        final LinkedList list = (LinkedList) workingMemory.getNodeMemory( this );
+        list.remove( tuple );
     }
 
     public String toString() {
