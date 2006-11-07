@@ -52,7 +52,6 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -688,11 +687,13 @@ public abstract class AbstractWorkingMemory
         try {
             object = getObject( handle );
 
-            final Method mehod = handle.getClass().getMethod( "removePropertyChangeListener",
-                                                              AbstractWorkingMemory.ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
+            if(object != null) {
+                final Method mehod = object.getClass().getMethod( "removePropertyChangeListener",
+                                                                  AbstractWorkingMemory.ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
 
-            mehod.invoke( handle,
-                          this.addRemovePropertyChangeListenerArgs );
+                mehod.invoke( object,
+                              this.addRemovePropertyChangeListenerArgs );
+            }
         } catch ( final NoSuchMethodException e ) {
             // The removePropertyChangeListener method on the class
             // was not found so Drools will be unable to
