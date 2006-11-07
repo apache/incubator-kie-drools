@@ -16,6 +16,8 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.io.Serializable;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
@@ -30,7 +32,7 @@ import org.drools.rule.Declaration;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public interface Tuple {
+public interface Tuple extends Serializable {
     /**
      * Returns the <code>FactHandle</code> for the given column index. If the column is empty
      * It returns null.

@@ -20,12 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.facttemplates.FactTemplate;
 
 /**
@@ -172,27 +170,6 @@ public class Package
                                                                                               this.packageCompilationData.getClassLoader() );
 
         this.rules = (Map) streamWithLoader.readObject();
-    }
-
-    private static class ObjectInputStreamWithLoader extends ObjectInputStream {
-        private final ClassLoader classLoader;
-
-        public ObjectInputStreamWithLoader(final InputStream in,
-                                           final ClassLoader classLoader) throws IOException {
-            super( in );
-            this.classLoader = classLoader;
-            enableResolveObject( true );
-        }
-
-        protected Class resolveClass(final ObjectStreamClass desc) throws IOException,
-                                                                  ClassNotFoundException {
-            if ( this.classLoader == null ) {
-                return super.resolveClass( desc );
-            } else {
-                final String name = desc.getName();
-                return this.classLoader.loadClass( name );
-            }
-        }
     }
 
     // ------------------------------------------------------------

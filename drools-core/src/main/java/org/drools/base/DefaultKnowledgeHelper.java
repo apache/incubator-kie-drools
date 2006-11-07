@@ -33,6 +33,9 @@ import org.drools.spi.Tuple;
 public class DefaultKnowledgeHelper
     implements
     KnowledgeHelper {
+
+    private static final long serialVersionUID = 3692991484157215686L;
+
     private Rule                               rule;
     private Activation                         activation;
     private Tuple                              tuple;

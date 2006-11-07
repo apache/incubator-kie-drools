@@ -48,9 +48,9 @@ import org.drools.spi.PropagationContext;
 public class ReteooRuleBase extends AbstractRuleBase {
     /**
      * DO NOT CHANGE BELLOW SERIAL_VERSION_ID UNLESS YOU ARE CHANGING DROOLS VERSION
-     * SERIAL_VERSION_ID=300 stands for version 3.0.0 
+     * SERIAL_VERSION_ID=320 stands for version 3.2.0 
      */
-    private static final long serialVersionUID = 300;
+    private static final long serialVersionUID = 320;
 
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private Rete              rete;
@@ -220,8 +220,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super.addWorkingMemory( workingMemory,
                                 keepReference );
 
-        final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new Serializable() {
-        } ) );
+        final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
 
         workingMemory.queueWorkingMemoryAction( workingMemory.new WorkingMemoryReteAssertAction( handle,
                                                                                                  false,
@@ -241,6 +240,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     protected void removeRule(final Rule rule) {
         this.reteooBuilder.removeRule( rule );
+    }
+    
+    private static class InitialFactHandleDummyObject implements Serializable {
+        private static final long serialVersionUID = 1L;
     }
 
 }
