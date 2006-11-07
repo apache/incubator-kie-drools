@@ -196,12 +196,17 @@ There is a person called Mike who is sad
     it is easy to do a mapping using the above techniques. However, chances
     are that you will have many fields, and many combinations. If this is the
     case, you can setup your mappings like so: <programlisting>[when]There is a Cheese with=Cheese()
-[when]-age is less than {age}=age&lt;{age}
-[when]-type is '{type}'=type=='{type}'
-[when]-country equal to '{country}'=country=='{country}'</programlisting> You
-    can then write rules with conditions like the following: <programlisting>There is a Cheese with
-        -age is less than 42
-        -type is 'stilton'</programlisting> The parser will pick up the "-"
+[when]- age is less than {age}=age&lt;{age}
+[when]- type is '{type}'=type=='{type}'
+[when]- country equal to '{country}'=country=='{country}'</programlisting></para>
+
+    <para><emphasis role="bold">IMPORTANT:</emphasis> There must be an space
+    between the "-" (dash) and the constraint mappings.</para>
+
+    <para> You can then write rules with conditions like the following:
+    <programlisting>There is a Cheese with
+        - age is less than 42
+        - type is 'stilton'</programlisting> The parser will pick up the "-"
     lines (they have to be on their own line) and add them as constraints to
     the declaration above. So in this specific case, using the above mappings,
     is the equivalent to doing (in DRL): <programlisting>Cheese(age&lt;42, type=='stilton')</programlisting>
