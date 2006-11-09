@@ -1,0 +1,16 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list
+
+function int addFive( int price ) {
+	return price + 5;
+}
+
+rule "Function with Primitives"
+    when
+        Cheese( $price: price )
+    then
+        list.add( new Integer( addFive( $price ) ) );
+end    

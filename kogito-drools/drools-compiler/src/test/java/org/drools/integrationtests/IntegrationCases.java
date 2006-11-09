@@ -3467,4 +3467,28 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 2,
                       queryResults.size() );
     }
+    
+    public void testFunctionWithPrimitives() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionWithPrimitives.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           5 );
+        workingMemory.assertObject( stilton );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( new Integer( 10 ),
+                      list.get( 0 ) );
+    }
+    
 }
