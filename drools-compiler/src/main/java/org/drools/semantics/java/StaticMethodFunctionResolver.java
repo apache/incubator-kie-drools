@@ -1,21 +1,13 @@
 package org.drools.semantics.java;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.resolvers.LiteralValue;
-import org.drools.rule.Declaration;
 import org.drools.spi.AvailableVariables;
 import org.drools.spi.FunctionResolver;
 import org.drools.spi.TypeResolver;
-import org.eclipse.jdt.core.dom.ASTParser;
-
-import antlr.collections.AST;
 
 public class StaticMethodFunctionResolver
     implements
