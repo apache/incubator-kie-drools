@@ -3491,4 +3491,43 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
     
+    public void testReturnValueAndGlobal() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueAndGlobal.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List matchlist = new ArrayList();
+        workingMemory.setGlobal( "matchingList",
+                                 matchlist );
+
+        final List nonmatchlist = new ArrayList();
+        workingMemory.setGlobal( "nonMatchingList",
+                                 nonmatchlist );
+
+        workingMemory.setGlobal( "cheeseType",
+                                 "stilton" );
+
+        final Cheese stilton1 = new Cheese( "stilton",
+                                           5 );
+        final Cheese stilton2 = new Cheese( "stilton",
+                                           7 );
+        final Cheese brie = new Cheese( "brie",
+                                           4 );
+        workingMemory.assertObject( stilton1 );
+        workingMemory.assertObject( stilton2 );
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      matchlist.size() );
+        assertEquals( 1,
+                      nonmatchlist.size() );
+    }
+
 }
