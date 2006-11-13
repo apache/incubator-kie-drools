@@ -1,0 +1,14 @@
+#created on: 10/11/2006
+package org.drools.integrationtests
+
+import org.drools.Sensor;
+
+global java.util.List sensors;
+
+rule "BindsTest"
+	when
+		$sensor : Sensor( $temp : temperature, pressure < $temp )
+	then 
+	    sensors.add( $sensor );
+end
+

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
@@ -264,6 +265,10 @@ class ReteooBuilder
             if ( object instanceof Column ) {
                 column = (Column) object;
 
+                // @REMOVEME after the milestone period
+                if(( binder != null) && ( binder != EmptyBetaConstraints.getInstance()))
+                    throw new RuntimeDroolsException("This is a bug! Please report to Drools development team!");
+                
                 binder = attachColumn( (Column) object,
                                        and,
                                        this.removeIdentities );
@@ -304,6 +309,10 @@ class ReteooBuilder
                                                                              objectSource ) );
                 }
 
+                // @REMOVEME after the milestone period
+                if(( binder != null) && ( binder != EmptyBetaConstraints.getInstance()))
+                    throw new RuntimeDroolsException("This is a bug! Please report to Drools development team!");
+
                 binder = attachColumn( column,
                                        and,
                                        false );
@@ -315,12 +324,14 @@ class ReteooBuilder
                            this.objectSource,
                            binder,
                            column );
+                binder = null;
             } else if ( object.getClass() == Exists.class ) {
                 attachExists( this.tupleSource,
                               (Exists) object,
                               this.objectSource,
                               binder,
                               column );
+                binder = null;
             } else if ( object.getClass() == From.class ) {
                 attachFrom( this.tupleSource,
                             (From) object );
@@ -337,6 +348,7 @@ class ReteooBuilder
                                                              this.tupleSource,
                                                              this.objectSource,
                                                              binder ) );
+                binder = null;
             }
         }
     }
@@ -437,7 +449,15 @@ class ReteooBuilder
             }
 
             final Constraint constraint = (Constraint) object;
-            if ( constraint.getRequiredDeclarations().length == 0 ) {
+            Declaration[] declarations = constraint.getRequiredDeclarations();
+
+            boolean isAlphaConstraint = true;
+            for(int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
+                if( declarations[i].getColumn() != column ) {
+                    isAlphaConstraint = false;
+                }
+            }
+            if ( isAlphaConstraint ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
                                                                (AlphaNodeFieldConstraint) constraint,
                                                                this.objectSource ) );
