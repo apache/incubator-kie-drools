@@ -16,13 +16,16 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 
 public class VariableConstraint
     implements
+    AlphaNodeFieldConstraint,
     BetaNodeFieldConstraint {
 
     private static final long         serialVersionUID = 320L;
@@ -55,6 +58,13 @@ public class VariableConstraint
 
     public Evaluator getEvaluator() {
         return this.restriction.getEvaluator();
+    }
+
+    public boolean isAllowed(Object object,
+                             InternalWorkingMemory workingMemory) {
+        return this.restriction.isAllowed( this.fieldExtractor,
+                                           object,
+                                           workingMemory );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
@@ -98,6 +108,5 @@ public class VariableConstraint
 
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
-
 
 }

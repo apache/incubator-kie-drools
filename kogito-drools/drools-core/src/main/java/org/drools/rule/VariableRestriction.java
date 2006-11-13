@@ -60,7 +60,7 @@ public class VariableRestriction
     public boolean isAllowed(final Extractor extractor,
                              final Object object,
                              final InternalWorkingMemory workingMemoiry) {
-        throw new UnsupportedOperationException( "does not support method call isAllowed(Extractor extractor, Object object, InternalWorkingMemory workingMemoiry)" );
+        return this.evaluator.evaluate( this.contextEntry.extractor, object, this.contextEntry.declaration.getExtractor(), object );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
@@ -171,6 +171,8 @@ public class VariableRestriction
     }
 
     public static class ObjectVariableContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = 3607107040739298581L;
         public Object left;
         public Object right;
 
@@ -194,6 +196,9 @@ public class VariableRestriction
     }
 
     public static class LongVariableContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = -5316792696755228175L;
+
         public long left;
         public long right;
 
@@ -217,6 +222,9 @@ public class VariableRestriction
     }
 
     public static class DoubleVariableContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = 6996094205302851397L;
+
         public double left;
         public double right;
 
@@ -240,6 +248,8 @@ public class VariableRestriction
     }
 
     public static class BooleanVariableContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = -7664012658143075200L;
         public boolean left;
         public boolean right;
 

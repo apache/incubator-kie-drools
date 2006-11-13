@@ -138,9 +138,6 @@ class ObjectTypeNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-//        if ( handle.getObject().getClass().getName().indexOf( "Edge" ) > 0 ) {
-//            System.out.println( handle );
-//        }
 
         // checks if shadow is enabled
         if ( this.objectType.isShadowEnabled() ) {

@@ -173,7 +173,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
-    
+
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {
@@ -1409,7 +1409,7 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the ReturnValue" );
         } catch ( final Exception e ) {
-            assertTrue( e.getCause().getMessage().endsWith( "this should throw an exception"));
+            assertTrue( e.getCause().getMessage().endsWith( "this should throw an exception" ) );
         }
     }
 
@@ -2190,14 +2190,14 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 3,
                       list.size() );
         // because of agenda-groups
-        assertEquals( new Integer(4), 
+        assertEquals( new Integer( 4 ),
                       list.get( 0 ) );
 
         assertEquals( 2,
                       workingMemory.getObjects().size() );
         assertEquals( bob,
                       workingMemory.getObjects().get( 0 ) );
-        assertEquals( new Person("help"),
+        assertEquals( new Person( "help" ),
                       workingMemory.getObjects().get( 1 ) );
     }
 
@@ -2303,8 +2303,8 @@ public abstract class IntegrationCases extends TestCase {
 
         List list;
 
-        final Person b = new Person( "b");
-        final Person a = new Person( "a");
+        final Person b = new Person( "b" );
+        final Person a = new Person( "a" );
 
         workingMemory.setGlobal( "b",
                                  b );
@@ -2399,26 +2399,34 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         AgendaEventListener listener = new DefaultAgendaEventListener() {
-            public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
-                super.activationCreated( event, workingMemory );
+            public void activationCreated(ActivationCreatedEvent event,
+                                          WorkingMemory workingMemory) {
+                super.activationCreated( event,
+                                         workingMemory );
             }
-            
-            public void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory) {
-                super.activationCancelled( event, workingMemory );
+
+            public void activationCancelled(ActivationCancelledEvent event,
+                                            WorkingMemory workingMemory) {
+                super.activationCancelled( event,
+                                           workingMemory );
             }
-            
-            public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
-                super.beforeActivationFired( event, workingMemory );
+
+            public void beforeActivationFired(BeforeActivationFiredEvent event,
+                                              WorkingMemory workingMemory) {
+                super.beforeActivationFired( event,
+                                             workingMemory );
             }
-            
-            public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
-                super.afterActivationFired( event, workingMemory );
+
+            public void afterActivationFired(AfterActivationFiredEvent event,
+                                             WorkingMemory workingMemory) {
+                super.afterActivationFired( event,
+                                            workingMemory );
             }
         };
 
-        workingMemory.addEventListener( listener );        
+        workingMemory.addEventListener( listener );
 
         final List events = new ArrayList();
 
@@ -2468,7 +2476,8 @@ public abstract class IntegrationCases extends TestCase {
         List list;
 
         final Person a = new Person( "a" );
-        final Cheese cheese = new Cheese( "brie", 1 );
+        final Cheese cheese = new Cheese( "brie",
+                                          1 );
         workingMemory.setGlobal( "cheese",
                                  cheese );
 
@@ -2528,7 +2537,8 @@ public abstract class IntegrationCases extends TestCase {
         final List list = new ArrayList();
 
         final Person person = new Person( "person" );
-        final Cheese cheese = new Cheese( "cheese", 0 );
+        final Cheese cheese = new Cheese( "cheese",
+                                          0 );
         workingMemory.setGlobal( "cheese",
                                  cheese );
         workingMemory.setGlobal( "person",
@@ -2578,12 +2588,12 @@ public abstract class IntegrationCases extends TestCase {
         final FactHandle h = workingMemory.assertObject( c2 );
         workingMemory.assertObject( c3 );
         workingMemory.fireAllRules();
-        
+
         //  Check logical assertions where made for  c2 and c3
         list = workingMemory.getObjects( Person.class );
         assertEquals( 2,
-                      list.size() );     
-        assertFalse( list.contains( new  Person( c1.getType() ) ) );
+                      list.size() );
+        assertFalse( list.contains( new Person( c1.getType() ) ) );
         assertTrue( list.contains( new Person( c2.getType() ) ) );
         assertTrue( list.contains( new Person( c3.getType() ) ) );
 
@@ -2682,7 +2692,7 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List l;
-        Person p = new Person( "person");
+        Person p = new Person( "person" );
         p.setAge( 2 );
         final FactHandle h = workingMemory.assertObject( p );
         assertEquals( 1,
@@ -2713,7 +2723,6 @@ public abstract class IntegrationCases extends TestCase {
             // is probably non-reteoo engine
         }
     }
-    
 
     public void testLogicalAssertionsWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -2749,11 +2758,11 @@ public abstract class IntegrationCases extends TestCase {
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
         workingMemory.modifyObject( c3FactHandle,
-                                    p3 );        
+                                    p3 );
         workingMemory.fireAllRules();
         cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 1,
-                      cheeseList.size() );        
+                      cheeseList.size() );
 
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
@@ -2799,7 +2808,7 @@ public abstract class IntegrationCases extends TestCase {
         cheeseList = workingMemory.getObjects( Cheese.class );
         assertEquals( 2,
                       cheeseList.size() );
-    }    
+    }
 
     public void testEmptyRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -2855,16 +2864,15 @@ public abstract class IntegrationCases extends TestCase {
 
         Person hola = new Person( "hola" );
         workingMemory.assertObject( hola );
-        
+
         workingMemory.fireAllRules();
-        
+
         assertEquals( 0,
                       list.size() );
         workingMemory.assertObject( new State( "x" ) );
 
-
         workingMemory.fireAllRules();
-        
+
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( hola ) );
@@ -2901,7 +2909,7 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         final List orderedFacts = new ArrayList();
         final List errors = new ArrayList();
 
@@ -3409,7 +3417,7 @@ public abstract class IntegrationCases extends TestCase {
         FactHandle c3FactHandle = workingMemory.assertObject( p3 );
         workingMemory.fireAllRules();
 
-        QueryResults queryResults = workingMemory.getQueryResults("2 persons with the same status");
+        QueryResults queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
                       queryResults.size() );
 
@@ -3418,7 +3426,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c3FactHandle,
                                     p3 );
         workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults("2 persons with the same status");
+        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
                       queryResults.size() );
 
@@ -3427,7 +3435,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults("2 persons with the same status");
+        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
                       queryResults.size() );
 
@@ -3436,7 +3444,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults("2 persons with the same status");
+        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
                       queryResults.size() );
 
@@ -3445,7 +3453,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults("2 persons with the same status");
+        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
                       queryResults.size() );
 
@@ -3454,7 +3462,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults("2 persons with the same status");
+        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
                       queryResults.size() );
 
@@ -3463,11 +3471,11 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.modifyObject( c3FactHandle,
                                     p3 );
         workingMemory.fireAllRules();
-        queryResults = workingMemory.getQueryResults("2 persons with the same status");
+        queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
                       queryResults.size() );
     }
-    
+
     public void testFunctionWithPrimitives() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionWithPrimitives.drl" ) ) );
@@ -3490,7 +3498,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 10 ),
                       list.get( 0 ) );
     }
-    
+
     public void testReturnValueAndGlobal() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -3513,11 +3521,11 @@ public abstract class IntegrationCases extends TestCase {
                                  "stilton" );
 
         final Cheese stilton1 = new Cheese( "stilton",
-                                           5 );
+                                            5 );
         final Cheese stilton2 = new Cheese( "stilton",
-                                           7 );
+                                            7 );
         final Cheese brie = new Cheese( "brie",
-                                           4 );
+                                        4 );
         workingMemory.assertObject( stilton1 );
         workingMemory.assertObject( stilton2 );
         workingMemory.assertObject( brie );
@@ -3530,4 +3538,39 @@ public abstract class IntegrationCases extends TestCase {
                       nonmatchlist.size() );
     }
 
+    public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclaringAndUsingBindsInSamePattern.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        try {
+            List sensors = new ArrayList();
+
+            workingMemory.setGlobal( "sensors",
+                                     sensors );
+
+            Sensor sensor1 = new Sensor( 100,
+                                         150 );
+            workingMemory.assertObject( sensor1 );
+            workingMemory.fireAllRules();
+            assertEquals( 0,
+                          sensors.size() );
+
+            Sensor sensor2 = new Sensor( 200,
+                                         150 );
+            workingMemory.assertObject( sensor2 );
+            workingMemory.fireAllRules();
+            assertEquals( 1,
+                          sensors.size() );
+
+        } catch ( RuntimeException e ) {
+            e.printStackTrace();
+            fail( "Should not throw any exception" );
+        }
+
+    }
 }
