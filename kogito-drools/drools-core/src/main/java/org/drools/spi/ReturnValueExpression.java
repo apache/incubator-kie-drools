@@ -22,7 +22,9 @@ import org.drools.rule.Declaration;
 public interface ReturnValueExpression
     extends
     Invoker {
-    public FieldValue evaluate(Tuple tuple,
-                               Declaration[] requiredDeclarations,
+    public FieldValue evaluate(Object object,
+                               Tuple tuple,
+                               Declaration[] previousDeclarations,
+                               Declaration[] localDeclarations,
                                WorkingMemory workingMemory) throws Exception;
 }

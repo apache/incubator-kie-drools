@@ -25,6 +25,7 @@ public interface PredicateExpression
     public boolean evaluate(Object object,
                             Tuple tuple,
                             Declaration declaration,
-                            Declaration[] requiredDeclarations,
+                            Declaration[] previousDeclarations,
+                            Declaration[] localDeclarations,
                             WorkingMemory workingMemory) throws Exception;
 }

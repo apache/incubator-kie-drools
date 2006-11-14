@@ -91,6 +91,13 @@ public class ReteooRuleBase extends AbstractRuleBase {
               factHandleFactory );
     }
 
+    public ReteooRuleBase(final String id,
+                          final RuleBaseConfiguration config) {
+        this( id,
+              config,
+              new ReteooFactHandleFactory() );
+    }
+
     /**
      * @param config
      */
