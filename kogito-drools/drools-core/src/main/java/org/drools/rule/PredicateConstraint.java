@@ -84,7 +84,7 @@ public class PredicateConstraint
             this.localDeclarations = localDeclarations;
         }
         
-        this.requiredDeclarations = new Declaration[ previousDeclarations.length + localDeclarations.length ];
+        this.requiredDeclarations = new Declaration[ this.previousDeclarations.length + this.localDeclarations.length ];
         System.arraycopy( this.previousDeclarations, 0, this.requiredDeclarations, 0, this.previousDeclarations.length );
         System.arraycopy( this.localDeclarations, 0, this.requiredDeclarations, this.previousDeclarations.length, this.localDeclarations.length );
     }
