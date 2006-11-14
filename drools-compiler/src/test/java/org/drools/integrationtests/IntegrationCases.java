@@ -49,6 +49,7 @@ import org.drools.Primitives;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.Sensor;
 import org.drools.State;
 import org.drools.TestParam;
@@ -85,6 +86,9 @@ public abstract class IntegrationCases extends TestCase {
 
     /** Implementation specific subclasses must provide this. */
     protected abstract RuleBase getRuleBase() throws Exception;
+
+    /** Implementation specific subclasses must provide this. */
+    protected abstract RuleBase getRuleBase(RuleBaseConfiguration config) throws Exception;
 
     public void testGlobals() throws Exception {
 
@@ -3539,11 +3543,14 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
+        final RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setRemoveIdentities( true );
+        
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclaringAndUsingBindsInSamePattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getRuleBase(config);
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -3564,7 +3571,7 @@ public abstract class IntegrationCases extends TestCase {
                                          150 );
             workingMemory.assertObject( sensor2 );
             workingMemory.fireAllRules();
-            assertEquals( 1,
+            assertEquals( 3,
                           sensors.size() );
 
         } catch ( RuntimeException e ) {

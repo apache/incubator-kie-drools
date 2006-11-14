@@ -40,26 +40,6 @@ public class ReturnValueConstraint
     private final ReturnValueRestriction restriction;
 
     public ReturnValueConstraint(final FieldExtractor fieldExtractor,
-                                 final Declaration[] declarations,
-                                 final Evaluator evaluator) {
-        this.fieldExtractor = fieldExtractor;
-        this.restriction = new ReturnValueRestriction( fieldExtractor,
-                                                       declarations,
-                                                       evaluator );
-    }
-
-    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
-                                 final ReturnValueExpression expression,
-                                 final Declaration[] declarations,
-                                 final Evaluator evaluator) {
-        this.fieldExtractor = fieldExtractor;
-        this.restriction = new ReturnValueRestriction( fieldExtractor,
-                                                       expression,
-                                                       declarations,
-                                                       evaluator );
-    }
-
-    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
                                  final ReturnValueRestriction restriction) {
         this.fieldExtractor = fieldExtractor;
         this.restriction = restriction;

@@ -40,39 +40,65 @@ public class PredicateConstraint
 
     private final Declaration[]        requiredDeclarations;
 
+    private final Declaration[]        previousDeclarations;
+
+    private final Declaration[]        localDeclarations;
+
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
     public PredicateConstraint(final PredicateExpression evaluator,
                                final Declaration declaration) {
         this( evaluator,
               declaration,
+              null,
               null );
     }
 
     public PredicateConstraint(final Declaration declaration,
-                               final Declaration[] requiredDeclarations) {
+                               final Declaration[] previousDeclarations,
+                               final Declaration[] localDeclarations) {
         this( null,
               declaration,
-              requiredDeclarations );
+              previousDeclarations,
+              localDeclarations );
     }
 
     public PredicateConstraint(final PredicateExpression expression,
                                final Declaration declaration,
-                               final Declaration[] requiredDeclarations) {
+                               final Declaration[] previousDeclarations,
+                               final Declaration[] localDeclarations) {
 
         this.expression = expression;
 
         this.declaration = declaration;
 
-        if ( requiredDeclarations == null ) {
-            this.requiredDeclarations = PredicateConstraint.EMPTY_DECLARATIONS;
+        if ( previousDeclarations == null ) {
+            this.previousDeclarations = PredicateConstraint.EMPTY_DECLARATIONS;
         } else {
-            this.requiredDeclarations = requiredDeclarations;
+            this.previousDeclarations = previousDeclarations;
         }
+        
+        if ( localDeclarations == null ) {
+            this.localDeclarations = PredicateConstraint.EMPTY_DECLARATIONS;
+        } else {
+            this.localDeclarations = localDeclarations;
+        }
+        
+        this.requiredDeclarations = new Declaration[ previousDeclarations.length + localDeclarations.length ];
+        System.arraycopy( this.previousDeclarations, 0, this.requiredDeclarations, 0, this.previousDeclarations.length );
+        System.arraycopy( this.localDeclarations, 0, this.requiredDeclarations, this.previousDeclarations.length, this.localDeclarations.length );
     }
 
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
+    }
+
+    public Declaration[] getPreviousDeclarations() {
+        return this.previousDeclarations;
+    }
+
+    public Declaration[] getLocalDeclarations() {
+        return this.localDeclarations;
     }
 
     public void setPredicateExpression(final PredicateExpression expression) {
@@ -84,7 +110,7 @@ public class PredicateConstraint
     }
 
     public String toString() {
-        return "[PredicateConstraint declarations=" + this.requiredDeclarations + "]";
+        return "[PredicateConstraint previousDeclarations=" + this.previousDeclarations + " localDeclarations=" + this.localDeclarations+ "]";
     }
 
     public int hashCode() {
@@ -102,7 +128,11 @@ public class PredicateConstraint
 
         final PredicateConstraint other = (PredicateConstraint) object;
 
-        if ( this.requiredDeclarations.length != other.requiredDeclarations.length ) {
+        if ( this.previousDeclarations.length != other.previousDeclarations.length ) {
+            return false;
+        }
+
+        if ( this.localDeclarations.length != other.localDeclarations.length ) {
             return false;
         }
 
@@ -114,12 +144,22 @@ public class PredicateConstraint
             return false;
         }
 
-        for ( int i = 0, length = this.requiredDeclarations.length; i < length; i++ ) {
-            if ( this.requiredDeclarations[i].getColumn().getFactIndex() != other.requiredDeclarations[i].getColumn().getFactIndex() ) {
+        for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
+            if ( this.previousDeclarations[i].getColumn().getFactIndex() != other.previousDeclarations[i].getColumn().getFactIndex() ) {
                 return false;
             }
 
-            if ( !this.requiredDeclarations[i].getExtractor().equals( other.requiredDeclarations[i].getExtractor() ) ) {
+            if ( !this.previousDeclarations[i].getExtractor().equals( other.previousDeclarations[i].getExtractor() ) ) {
+                return false;
+            }
+        }
+
+        for ( int i = 0, length = this.localDeclarations.length; i < length; i++ ) {
+            if ( this.localDeclarations[i].getColumn().getFactIndex() != other.localDeclarations[i].getColumn().getFactIndex() ) {
+                return false;
+            }
+
+            if ( !this.localDeclarations[i].getExtractor().equals( other.localDeclarations[i].getExtractor() ) ) {
                 return false;
             }
         }
@@ -137,7 +177,8 @@ public class PredicateConstraint
             return this.expression.evaluate( object,
                                              null,
                                              declaration,
-                                             requiredDeclarations,
+                                             previousDeclarations,
+                                             localDeclarations,
                                              workingMemory );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
@@ -152,7 +193,8 @@ public class PredicateConstraint
             return this.expression.evaluate( object,
                                              ctx.leftTuple,
                                              declaration,
-                                             requiredDeclarations,
+                                             previousDeclarations,
+                                             localDeclarations,
                                              ctx.workingMemory );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
@@ -167,7 +209,8 @@ public class PredicateConstraint
             return this.expression.evaluate( ctx.rightObject,
                                              tuple,
                                              declaration,
-                                             requiredDeclarations,
+                                             previousDeclarations,
+                                             localDeclarations,
                                              ctx.workingMemory );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
@@ -178,6 +221,9 @@ public class PredicateConstraint
     public static class PredicateContextEntry
         implements
         ContextEntry {
+
+        private static final long serialVersionUID = 4217315252579887635L;
+        
         public ReteTuple             leftTuple;
         public Object                rightObject;
         public InternalWorkingMemory workingMemory;

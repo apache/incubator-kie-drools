@@ -34,45 +34,72 @@ public class ReturnValueRestriction
     implements
     Restriction {
 
-    private static final long          serialVersionUID       = 320;
+    private static final long             serialVersionUID       = 320;
 
-    private ReturnValueExpression      expression;
+    private ReturnValueExpression         expression;
 
-    private final Declaration[]        requiredDeclarations;
+    private final Declaration[]           requiredDeclarations;
 
-    private final Evaluator            evaluator;
+    private final Declaration[]           previousDeclarations;
 
-    private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
-    
+    private final Declaration[]           localDeclarations;
+
+    private final Evaluator               evaluator;
+
+    private static final Declaration[]    noRequiredDeclarations = new Declaration[]{};
+
     private final ReturnValueContextEntry contextEntry;
 
     public ReturnValueRestriction(final FieldExtractor fieldExtractor,
-                                  final Declaration[] declarations,
+                                  final Declaration[] previousDeclarations,
+                                  final Declaration[] localDeclarations,
                                   final Evaluator evaluator) {
         this( fieldExtractor,
               null,
-              declarations,
+              previousDeclarations,
+              localDeclarations,
               evaluator );
     }
 
     public ReturnValueRestriction(final FieldExtractor fieldExtractor,
                                   final ReturnValueExpression returnValueExpression,
-                                  final Declaration[] declarations,
+                                  final Declaration[] previousDeclarations,
+                                  final Declaration[] localDeclarations,
                                   final Evaluator evaluator) {
         this.expression = returnValueExpression;
 
-        if ( declarations != null ) {
-            this.requiredDeclarations = declarations;
+        if ( previousDeclarations != null ) {
+            this.previousDeclarations = previousDeclarations;
         } else {
-            this.requiredDeclarations = ReturnValueRestriction.noRequiredDeclarations;
+            this.previousDeclarations = ReturnValueRestriction.noRequiredDeclarations;
+        }
+
+        if ( localDeclarations != null ) {
+            this.localDeclarations = localDeclarations;
+        } else {
+            this.localDeclarations = ReturnValueRestriction.noRequiredDeclarations;
         }
 
         this.evaluator = evaluator;
-        this.contextEntry = new ReturnValueContextEntry(fieldExtractor, requiredDeclarations);
+        this.contextEntry = new ReturnValueContextEntry( fieldExtractor,
+                                                         previousDeclarations,
+                                                         localDeclarations );
+
+        this.requiredDeclarations = new Declaration[ previousDeclarations.length + localDeclarations.length ];
+        System.arraycopy( this.previousDeclarations, 0, this.requiredDeclarations, 0, this.previousDeclarations.length );
+        System.arraycopy( this.localDeclarations, 0, this.requiredDeclarations, this.previousDeclarations.length, this.localDeclarations.length );
     }
 
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
+    }
+
+    public Declaration[] getPreviousDeclarations() {
+        return this.previousDeclarations;
+    }
+
+    public Declaration[] getLocalDeclarations() {
+        return this.localDeclarations;
     }
 
     public void setReturnValueExpression(final ReturnValueExpression expression) {
@@ -94,8 +121,10 @@ public class ReturnValueRestriction
         try {
             return this.evaluator.evaluate( extractor,
                                             object,
-                                            this.expression.evaluate( tuple,
-                                                                      this.requiredDeclarations,
+                                            this.expression.evaluate( object,
+                                                                      tuple,
+                                                                      this.previousDeclarations,
+                                                                      this.localDeclarations,
                                                                       workingMemory ) );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
@@ -122,8 +151,9 @@ public class ReturnValueRestriction
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + this.evaluator.hashCode();
-        result = PRIME * result + ( ( this.expression != null ) ? this.expression.hashCode() : 0 );
-        result = PRIME * result + ReturnValueRestriction.hashCode( this.requiredDeclarations );
+        result = PRIME * result + ((this.expression != null) ? this.expression.hashCode() : 0);
+        result = PRIME * result + ReturnValueRestriction.hashCode( this.localDeclarations );
+        result = PRIME * result + ReturnValueRestriction.hashCode( this.previousDeclarations );
         return result;
     }
 
@@ -138,12 +168,21 @@ public class ReturnValueRestriction
 
         final ReturnValueRestriction other = (ReturnValueRestriction) object;
 
-        if ( this.requiredDeclarations.length != other.requiredDeclarations.length ) {
+        if ( this.localDeclarations.length != other.localDeclarations.length ) {
             return false;
         }
 
-        if ( !Arrays.equals( this.requiredDeclarations,
-                             other.requiredDeclarations ) ) {
+        if ( this.previousDeclarations.length != other.previousDeclarations.length ) {
+            return false;
+        }
+
+        if ( !Arrays.equals( this.previousDeclarations,
+                             other.previousDeclarations ) ) {
+            return false;
+        }
+
+        if ( !Arrays.equals( this.previousDeclarations,
+                             other.previousDeclarations ) ) {
             return false;
         }
 
@@ -169,17 +208,24 @@ public class ReturnValueRestriction
     public static class ReturnValueContextEntry
         implements
         ContextEntry {
+
+        private static final long serialVersionUID = 3563817867979321431L;
+        
         public FieldExtractor        fieldExtractor;
         public Object                object;
         public ReteTuple             leftTuple;
         public InternalWorkingMemory workingMemory;
-        public Declaration[]         requiredDeclarations;
+        public Declaration[]         previousDeclarations;
+        public Declaration[]         localDeclarations;
 
-        private ContextEntry          entry;
+        private ContextEntry         entry;
 
-        public ReturnValueContextEntry(FieldExtractor fieldExtractor, Declaration[] requiredDeclarations) {
+        public ReturnValueContextEntry(FieldExtractor fieldExtractor,
+                                       Declaration[] previousDeclarations,
+                                       Declaration[] localDeclarations) {
             this.fieldExtractor = fieldExtractor;
-            this.requiredDeclarations = requiredDeclarations;
+            this.previousDeclarations = previousDeclarations;
+            this.localDeclarations = localDeclarations;
         }
 
         public ContextEntry getNext() {
@@ -226,8 +272,12 @@ public class ReturnValueRestriction
         /* (non-Javadoc)
          * @see org.drools.rule.ReturnValueContextEntry#getRequiredDeclarations()
          */
-        public Declaration[] getRequiredDeclarations() {
-            return this.requiredDeclarations;
+        public Declaration[] getPreviousDeclarations() {
+            return this.previousDeclarations;
+        }
+
+        public Declaration[] getLocalDeclarations() {
+            return this.localDeclarations;
         }
 
         /* (non-Javadoc)

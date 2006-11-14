@@ -498,7 +498,8 @@ public class RuleBuilder {
         if ( fieldConstraintDescr.getRestrictions().size() == 1 ) {
             final Object object = fieldConstraintDescr.getRestrictions().get( 0 );
 
-            final Restriction restriction = buildRestriction( extractor,
+            final Restriction restriction = buildRestriction( column, 
+                                                              extractor,
                                                               fieldConstraintDescr,
                                                               (RestrictionDescr) object );
             if ( restriction == null ) {
@@ -552,7 +553,8 @@ public class RuleBuilder {
                 if ( currentList != null ) {
                     // Are we are at the first operator? if so treat differently
                     if ( previousList == null ) {
-                        restriction = buildRestriction( extractor,
+                        restriction = buildRestriction( column,
+                                                        extractor,
                                                         fieldConstraintDescr,
                                                         previousRestriction );
                         if ( currentList == andList ) {
@@ -561,7 +563,8 @@ public class RuleBuilder {
                             orList.add( restriction );
                         }
                     } else {
-                        restriction = buildRestriction( extractor,
+                        restriction = buildRestriction( column,
+                                                        extractor,
                                                         fieldConstraintDescr,
                                                         previousRestriction );
 
@@ -589,7 +592,8 @@ public class RuleBuilder {
             currentRestriction = (RestrictionDescr) object;
         }
 
-        final Restriction restriction = buildRestriction( extractor,
+        final Restriction restriction = buildRestriction( column, 
+                                                          extractor,
                                                           fieldConstraintDescr,
                                                           currentRestriction );
         currentList.add( restriction );
@@ -620,7 +624,8 @@ public class RuleBuilder {
                                                                    restrictions ) );
     }
 
-    private Restriction buildRestriction(final FieldExtractor extractor,
+    private Restriction buildRestriction(final Column column,
+                                         final FieldExtractor extractor,
                                          final FieldConstraintDescr fieldConstraintDescr,
                                          final RestrictionDescr restrictionDescr) {
         Restriction restriction = null;
@@ -633,7 +638,8 @@ public class RuleBuilder {
                                             fieldConstraintDescr,
                                             (VariableRestrictionDescr) restrictionDescr );
         } else if ( restrictionDescr instanceof ReturnValueRestrictionDescr ) {
-            restriction = buildRestriction( extractor,
+            restriction = buildRestriction( column,
+                                            extractor,
                                             fieldConstraintDescr,
                                             (ReturnValueRestrictionDescr) restrictionDescr );
 
@@ -754,7 +760,8 @@ public class RuleBuilder {
                                        extractor );
     }
 
-    private ReturnValueRestriction buildRestriction(final FieldExtractor extractor,
+    private ReturnValueRestriction buildRestriction(final Column column,
+                                                    final FieldExtractor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
         final String className = "returnValue" + this.counter++;
@@ -763,9 +770,15 @@ public class RuleBuilder {
         final List[] usedIdentifiers = getUsedIdentifiers( returnValueRestrictionDescr,
                                                            returnValueRestrictionDescr.getText() );
 
-        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        final List tupleDeclarations = new ArrayList();
+        final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
+            Declaration declaration = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
+            if( declaration.getColumn() == column ) {
+                factDeclarations.add( declaration );
+            } else {
+                tupleDeclarations.add( declaration );
+            }
         }
 
         final Evaluator evaluator = getEvaluator( returnValueRestrictionDescr,
@@ -775,16 +788,30 @@ public class RuleBuilder {
             return null;
         }
 
+        Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+        Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
         final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( extractor,
-                                                                                          declarations,
+                                                                                          previousDeclarations,
+                                                                                          localDeclarations,
                                                                                           evaluator );
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "returnValueMethod" );
 
         setStringTemplateAttributes( st,
-                                     declarations,
+                                     previousDeclarations,
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      returnValueRestrictionDescr.getText() );
+
+        final String[] localDeclarationTypes = new String[localDeclarations.length];
+        for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
+            localDeclarationTypes[i] = localDeclarations[i].getExtractor().getExtractToClass().getName().replace( '$',
+                                                                                                        '.' );
+        }
+
+        st.setAttribute( "localDeclarations",
+                         localDeclarations );
+        st.setAttribute( "localDeclarationTypes",
+                         localDeclarationTypes );
 
         st.setAttribute( "methodName",
                          className );
@@ -807,9 +834,14 @@ public class RuleBuilder {
                          className );
 
         setStringTemplateAttributes( st,
-                                     declarations,
+                                     previousDeclarations,
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      returnValueRestrictionDescr.getText() );
+
+        st.setAttribute( "localDeclarations",
+                         localDeclarations );
+        st.setAttribute( "localDeclarationTypes",
+                         localDeclarationTypes );
 
         st.setAttribute( "hashCode",
                          returnValueText.hashCode() );
@@ -855,13 +887,22 @@ public class RuleBuilder {
         // Don't include the focus declaration, that hasn't been merged into the tuple yet.
         usedIdentifiers[0].remove( predicateDescr.getDeclaration() );
 
-        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        final List tupleDeclarations = new ArrayList();
+        final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
+            Declaration decl = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
+            if( decl.getColumn() == column ) {
+                factDeclarations.add( decl );
+            } else {
+                tupleDeclarations.add( decl );
+            }
         }
+        Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+        Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
 
         final PredicateConstraint predicateConstraint = new PredicateConstraint( declaration,
-                                                                                 declarations );
+                                                                                 previousDeclarations,
+                                                                                 localDeclarations );
         column.addConstraint( predicateConstraint );
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "predicateMethod" );
@@ -874,9 +915,20 @@ public class RuleBuilder {
                                                                                            '.' ) );
 
         setStringTemplateAttributes( st,
-                                     declarations,
+                                     previousDeclarations,
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      predicateDescr.getText() );
+
+        final String[] localDeclarationTypes = new String[localDeclarations.length];
+        for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
+            localDeclarationTypes[i] = localDeclarations[i].getExtractor().getExtractToClass().getName().replace( '$',
+                                                                                                        '.' );
+        }
+
+        st.setAttribute( "localDeclarations",
+                         localDeclarations );
+        st.setAttribute( "localDeclarationTypes",
+                         localDeclarationTypes );
 
         st.setAttribute( "methodName",
                          className );
@@ -905,9 +957,14 @@ public class RuleBuilder {
                                                                                            '.' ) );
 
         setStringTemplateAttributes( st,
-                                     declarations,
+                                     previousDeclarations,
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      predicateDescr.getText() );
+
+        st.setAttribute( "localDeclarations",
+                         localDeclarations );
+        st.setAttribute( "localDeclarationTypes",
+                         localDeclarationTypes );
 
         st.setAttribute( "hashCode",
                          predicateText.hashCode() );

@@ -17,6 +17,7 @@ package org.drools.integrationtests;
  */
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 
 /** Run all the tests with the ReteOO engine implementation */
@@ -24,7 +25,12 @@ public class ReteTest extends IntegrationCases {
 
     protected RuleBase getRuleBase() throws Exception {
 
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO, null );
+    }
+
+    protected RuleBase getRuleBase(final RuleBaseConfiguration config ) throws Exception {
+
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO, config );
     }
 
 }

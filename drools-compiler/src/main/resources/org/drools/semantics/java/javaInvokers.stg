@@ -53,22 +53,26 @@ hashCode(hashCode) ::= <<
     }
 >>
 
-returnValueInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, globals, globalTypes, hashCode) ::= <<
+returnValueInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, localDeclarations, localDeclarationTypes, globals, globalTypes, hashCode) ::= <<
 package <package>;
 
 public class <invokerClassName> implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 320L;
     
-    public org.drools.spi.FieldValue evaluate(org.drools.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] declarations, 
+    public org.drools.spi.FieldValue evaluate(java.lang.Object object,
+                            org.drools.spi.Tuple tuple,
+                            org.drools.rule.Declaration[] previousDeclarations, 
+                            org.drools.rule.Declaration[] localDeclarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) previousDeclarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[<i0>] ) ).getObject() );<\n>}>
+        <localDeclarationTypes, localDeclarations:{ type, declr| <type> <declr.identifier> = ( <type> ) localDeclarations[<i0>].<declr.extractor.nativeReadMethod.name>( object );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
-            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)><if(declarations)>,<endif><endif>
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(localDeclarations)><if(declarations)>,<endif><endif>
+            <localDeclarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)><if(localDeclarations)>,<endif><if(!localDeclarations)><if(declarations)>,<endif><endif><endif>
 	        <globals:{ identifier | <identifier>}; separator=",\n"> );
     }    
     
@@ -81,7 +85,7 @@ public class <invokerClassName> implements org.drools.spi.ReturnValueExpression,
 >>
 
 predicateInvoker(package, invokerClassName, ruleClassName, methodName, declaration, declarationType, 
-                 declarations, declarationTypes, globals, globalTypes, hashCode) ::= <<
+                 declarations, declarationTypes, localDeclarations, localDeclarationTypes, globals, globalTypes, hashCode) ::= <<
 package <package>;
 
 public class <invokerClassName> implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker
@@ -91,15 +95,18 @@ public class <invokerClassName> implements org.drools.spi.PredicateExpression, o
     public boolean evaluate(Object object,
     						org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration declaration,
-                            org.drools.rule.Declaration[] declarations, 
+                            org.drools.rule.Declaration[] previousDeclarations, 
+                            org.drools.rule.Declaration[] localDeclarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 		<declarationType> <declaration.identifier> = (<declarationType>) declaration.<declaration.extractor.nativeReadMethod.name>( object );
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) previousDeclarations[<i0>].<declr.extractor.nativeReadMethod.name>( ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[<i0>] ) ).getObject() );<\n>}>
+        <localDeclarationTypes, localDeclarations:{ type, declr| <type> <declr.identifier> = ( <type> ) localDeclarations[<i0>].<declr.extractor.nativeReadMethod.name>( object );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
             <declaration.identifier><if(declarations)>,<endif>
-            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(localDeclarations)>,<endif>
+            <localDeclarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
 	        <globals:{ identifier | <identifier>}; separator=",\n"> );
     }
     
