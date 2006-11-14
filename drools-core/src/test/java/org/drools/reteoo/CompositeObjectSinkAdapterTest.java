@@ -10,7 +10,6 @@ import org.drools.base.evaluators.StringFactory;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.PredicateConstraint;
 import org.drools.spi.FieldExtractor;
@@ -47,7 +46,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     
     public void testAlphaWithPredicate() {
         CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        AlphaNode al = new AlphaNode(0, new PredicateConstraint(null, (Declaration[]) null), null);
+        AlphaNode al = new AlphaNode(0, new PredicateConstraint(null, null), null);
         ad.addObjectSink( al );
         
         assertEquals(1, ad.getSinks().length);      

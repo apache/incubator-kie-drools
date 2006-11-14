@@ -187,9 +187,10 @@ public class FieldConstraintTest extends TestCase {
             public boolean evaluate(Object object,
                                     Tuple tuple,
                                     Declaration declaration,
-                                    Declaration[] declarations,
+                                    Declaration[] previousDeclarations,
+                                    Declaration[] localDeclarations,
                                     WorkingMemory workingMemory) {
-                int price1 = declarations[0].getIntValue( workingMemory.getObject( tuple.get( declarations[0] ) ) );
+                int price1 = previousDeclarations[0].getIntValue( workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) );
                 int price2 = declaration.getIntValue( object );
 
                 return (price2 == (price1 * 2));
@@ -199,7 +200,8 @@ public class FieldConstraintTest extends TestCase {
 
         final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
                                                                          price2Declaration,
-                                                                         new Declaration[]{price1Declaration} );
+                                                                         new Declaration[]{price1Declaration},
+                                                                         new Declaration[0] );
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
@@ -253,24 +255,34 @@ public class FieldConstraintTest extends TestCase {
              */
             private static final long serialVersionUID = 5673999834006100045L;
 
-            public FieldValue evaluate(Tuple tuple, // ?price
-                                   Declaration[] declarations,
+            public FieldValue evaluate(Object object, 
+                                       Tuple tuple, // ?price
+                                       Declaration[] previousDeclarations,
+                                       Declaration[] localDeclarations,
                                    WorkingMemory workingMemory) {
-                int price = ((Number) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
+                int price = ((Number) previousDeclarations[0].getValue( workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) )).intValue();
                 return FieldFactory.getFieldValue( 2 * price );
 
             }
         };
+        
+        ReturnValueRestriction restriction1 = new ReturnValueRestriction( priceExtractor,
+                                                                         isDoubleThePrice,
+                                                                         new Declaration[]{priceDeclaration},
+                                                                         new Declaration[0],
+                                                                         ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
 
         final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
-                                                                             isDoubleThePrice,
-                                                                             new Declaration[]{priceDeclaration},
-                                                                             ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+                                                                             restriction1 );
+
+        ReturnValueRestriction restriction2 = new ReturnValueRestriction( priceExtractor,
+                                                                          isDoubleThePrice,
+                                                                          new Declaration[]{priceDeclaration},
+                                                                          new Declaration[0],
+                                                                          ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER ) );
 
         final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
-                                                                             isDoubleThePrice,
-                                                                             new Declaration[]{priceDeclaration},
-                                                                             ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER ) );
+                                                                             restriction2 );
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
