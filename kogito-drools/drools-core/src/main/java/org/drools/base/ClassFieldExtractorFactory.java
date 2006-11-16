@@ -17,6 +17,9 @@ package org.drools.base;
  */
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.asm.ClassWriter;
@@ -48,6 +51,16 @@ public class ClassFieldExtractorFactory {
 
     private static final String BASE_PACKAGE = "org/drools/base";
 
+    private static final ProtectionDomain PROTECTION_DOMAIN;
+
+    static {
+            PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+                public Object run() {
+                    return ClassFieldExtractorFactory.class.getProtectionDomain();
+                }
+            } );
+    }
+
     public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
                                                                  final String fieldName) {
         try {
@@ -66,7 +79,8 @@ public class ClassFieldExtractorFactory {
             final ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
             final Class newClass = classLoader.defineClass( className.replace( '/',
                                                                                '.' ),
-                                                            bytes );
+                                                            bytes,
+                                                            PROTECTION_DOMAIN);
             // instantiating target class
             final Object[] params = {clazz, fieldName};
             return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
@@ -324,11 +338,13 @@ public class ClassFieldExtractorFactory {
         }
 
         public Class defineClass(final String name,
-                                 final byte[] bytes) {
+                                 final byte[] bytes,
+                                 ProtectionDomain domain ) {
             return defineClass( name,
                                 bytes,
                                 0,
-                                bytes.length );
+                                bytes.length,
+                                domain );
         }
     }
 }
