@@ -19,8 +19,6 @@ public class ReteooBuilderTest extends TestCase {
 
     private final boolean writeTree = false;
 
-    private final boolean showRete  = false;
-
     /** Implementation specific subclasses must provide this. */
     protected RuleBase getRuleBase() throws Exception {
         return RuleBaseFactory.newRuleBase();
