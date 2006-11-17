@@ -106,6 +106,12 @@ abstract class BetaNode extends TupleSource
     }
 
     public AlphaNodeFieldConstraint[] getConstraints() {
+    
+        // Sanity check
+        if ( this.constraints == null ) {
+            return null;
+        }
+
         final LinkedList constraints = this.constraints.getConstraints();
 
         final AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];

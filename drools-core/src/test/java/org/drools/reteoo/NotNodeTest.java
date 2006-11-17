@@ -25,11 +25,13 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -293,6 +295,17 @@ public class NotNodeTest extends DroolsTestCase {
         } catch ( final Exception e ) {
             Assert.fail( "No exception should be raised in this procedure, but got: " + e.toString() );
         }
+    }
+    
+
+    public void testGetConstraints_ReturnsNullEvenWithEmptyBinder() {
+        BetaConstraints nullConstraints = null;
+        NotNode notNode = new NotNode( 1,
+                                                this.tupleSource,
+                                                this.objectSource, nullConstraints);        
+        AlphaNodeFieldConstraint[] constraints = notNode.getConstraints();
+        assertNull(constraints);
+        
     }
 
 }

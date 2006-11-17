@@ -106,6 +106,10 @@ abstract class TupleSource extends BaseNode
         }
     }
 
+    public TupleSinkPropagator getSinkPropagator() {
+        return this.sink;
+    }
+    
     public abstract void updateSink(TupleSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
