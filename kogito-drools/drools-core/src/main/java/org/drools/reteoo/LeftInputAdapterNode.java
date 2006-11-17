@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.Map;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -90,6 +92,10 @@ class LeftInputAdapterNode extends TupleSource
     }
 
     //    public AlphaNodeFieldConstraint[] getConstraints() {
+    //        // Sanity check
+    //        if ( this.constraints == null ) {
+    //            return null;
+    //        }
     //        LinkedList constraints = this.constraints.getConstraints();
     //
     //        AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];
@@ -99,6 +105,7 @@ class LeftInputAdapterNode extends TupleSource
     //        }
     //        return array;
     //    }
+
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()

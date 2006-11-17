@@ -25,5 +25,4 @@ Export-Package: org.drools,
  org.drools.visualize
 Require-Bundle: org.eclipse.osgi
 Bundle-ClassPath: lib/drools-asm-2.2.1.jar,
- lib/jung-1.7.2.jar,
  lib/xstream-1.1.3.jar
