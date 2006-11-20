@@ -27,8 +27,16 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.rule.Declaration;
+import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
+import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
+import org.drools.rule.VariableRestriction.LongVariableContextEntry;
+import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
+import org.drools.spi.FieldExtractor;
+import org.drools.spi.FieldValue;
 
 /**
  * Some test coverage goodness for the evaluators.
@@ -81,7 +89,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
         final Object[][] data = {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE}, {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE}, {new Integer( 42 ), ">=", new Integer( 41 ), Boolean.TRUE},
                 {new Integer( 42 ), "!=", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), ">", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), "<=", new Integer( 42 ), Boolean.TRUE},
-                {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE} };
+                {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PINTEGER_TYPE );
@@ -184,8 +192,7 @@ public class EvaluatorFactoryTest extends TestCase {
         final Object[][] data = {{df.parse( "10-Jul-1974" ), "==", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE},
                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), "!=", df.parse( "11-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-2000" ), ">", df.parse( "10-Jul-1974" ), Boolean.TRUE},
                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "11-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), ">=", df.parse( "11-Jul-1974" ), Boolean.FALSE},
-                {df.parse( "10-Jul-2000" ), "<", df.parse( "10-Jul-1974" ), Boolean.FALSE}, {df.parse( "10-Jul-1974" ), "<", df.parse("11-Jul-1974"), Boolean.TRUE},
-                {df.parse( "10-Jul-1974" ), "==", null, Boolean.FALSE},
+                {df.parse( "10-Jul-2000" ), "<", df.parse( "10-Jul-1974" ), Boolean.FALSE}, {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), "==", null, Boolean.FALSE},
                 {df.parse( "10-Jul-1974" ), "!=", null, Boolean.TRUE}, {null, "==", null, Boolean.TRUE}, {null, "==", df.parse( "10-Jul-1974" ), Boolean.FALSE}, {null, "!=", null, Boolean.FALSE}, {null, "!=", df.parse( "10-Jul-1974" ), Boolean.TRUE}};
         runEvaluatorTest( data,
                           ValueType.DATE_TYPE );
@@ -210,42 +217,190 @@ public class EvaluatorFactoryTest extends TestCase {
         for ( int i = 0; i < data.length; i++ ) {
             final Object[] row = data[i];
             final Evaluator evaluator = valueType.getEvaluator( Operator.determineOperator( (String) row[1] ) );
-            final boolean result = evaluator.evaluate( extractor,
-                                                       row[0],
-                                                       extractor,
-                                                       row[2] );
-            final String message = "The evaluator type: [" + valueType + "] incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
-
-            if ( row[3] == Boolean.TRUE ) {
-                assertTrue( message,
-                            result );
-            } else {
-                assertFalse( message,
-                             result );
-            }
+            checkEvaluatorMethodWithFieldValue( valueType,
+                                                extractor,
+                                                row,
+                                                evaluator );
+            checkEvaluatorMethodCachedRight( valueType,
+                                             extractor,
+                                             row,
+                                             evaluator );
+            checkEvaluatorMethodCachedLeft( valueType,
+                                            extractor,
+                                            row,
+                                            evaluator );
+            checkEvaluatorMethodWith2Extractors( valueType,
+                                                 extractor,
+                                                 row,
+                                                 evaluator );
 
             assertEquals( valueType,
                           evaluator.getValueType() );
 
         }
     }
-    
-    private static class MockExtractor implements Extractor {
+
+    /**
+     * @param valueType
+     * @param extractor
+     * @param row
+     * @param evaluator
+     */
+    private void checkEvaluatorMethodWithFieldValue(final ValueType valueType,
+                                                    Extractor extractor,
+                                                    final Object[] row,
+                                                    final Evaluator evaluator) {
+        FieldValue value = FieldFactory.getFieldValue( row[2],
+                                                       valueType );
+        final boolean result = evaluator.evaluate( extractor,
+                                                   row[0],
+                                                   value );
+        final String message = "The evaluator type: [" + valueType + "] with FieldValue incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
+
+        if ( row[3] == Boolean.TRUE ) {
+            assertTrue( message,
+                        result );
+        } else {
+            assertFalse( message,
+                         result );
+        }
+    }
+
+    /**
+     * @param valueType
+     * @param extractor
+     * @param row
+     * @param evaluator
+     */
+    private void checkEvaluatorMethodCachedRight(final ValueType valueType,
+                                                 Extractor extractor,
+                                                 final Object[] row,
+                                                 final Evaluator evaluator) {
+        VariableContextEntry context = this.getContextEntry( (FieldExtractor) extractor,
+                                                             valueType,
+                                                             row );
+        final boolean result = evaluator.evaluateCachedRight( context,
+                                                              row[2] );
+        final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
+
+        if ( row[3] == Boolean.TRUE ) {
+            assertTrue( message,
+                        result );
+        } else {
+            assertFalse( message,
+                         result );
+        }
+    }
+
+    /**
+     * @param valueType
+     * @param extractor
+     * @param row
+     * @param evaluator
+     */
+    private void checkEvaluatorMethodCachedLeft(final ValueType valueType,
+                                                Extractor extractor,
+                                                final Object[] row,
+                                                final Evaluator evaluator) {
+        VariableContextEntry context = this.getContextEntry( (FieldExtractor) extractor,
+                                                             valueType,
+                                                             row );
+        final boolean result = evaluator.evaluateCachedLeft( context,
+                                                             row[0] );
+        final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
+
+        if ( row[3] == Boolean.TRUE ) {
+            assertTrue( message,
+                        result );
+        } else {
+            assertFalse( message,
+                         result );
+        }
+    }
+
+    /**
+     * @param valueType
+     * @param extractor
+     * @param row
+     * @param evaluator
+     */
+    private void checkEvaluatorMethodWith2Extractors(final ValueType valueType,
+                                                     Extractor extractor,
+                                                     final Object[] row,
+                                                     final Evaluator evaluator) {
+        final boolean result = evaluator.evaluate( extractor,
+                                                   row[0],
+                                                   extractor,
+                                                   row[2] );
+        final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
+
+        if ( row[3] == Boolean.TRUE ) {
+            assertTrue( message,
+                        result );
+        } else {
+            assertFalse( message,
+                         result );
+        }
+    }
+
+    private VariableContextEntry getContextEntry(FieldExtractor extractor,
+                                                 ValueType valueType,
+                                                 Object[] row) {
+        Declaration declaration = new Declaration( "test",
+                                                   extractor,
+                                                   null );
+        if ( valueType.isIntegerNumber() ) {
+            LongVariableContextEntry context = new LongVariableContextEntry( extractor,
+                                                                             declaration );
+            if ( row[2] instanceof Character ) {
+                context.left = ((Character) row[2]).charValue();
+                context.right = ((Character) row[0]).charValue();
+            } else {
+                context.left = ((Number) row[2]).longValue();
+                context.right = ((Number) row[0]).longValue();
+            }
+            return context;
+        } else if ( valueType.isBoolean() ) {
+            BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
+                                                                                   declaration );
+            context.left = ((Boolean) row[2]).booleanValue();
+            context.right = ((Boolean) row[0]).booleanValue();
+            return context;
+        } else if ( valueType.isFloatNumber() ) {
+            DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
+                                                                                 declaration );
+            context.left = ((Number) row[2]).doubleValue();
+            context.right = ((Number) row[0]).doubleValue();
+            return context;
+        } else {
+            ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
+                                                                                 declaration );
+            context.left = row[2];
+            context.right = row[0];
+            return context;
+        }
+    }
+
+    private static class MockExtractor
+        implements
+        FieldExtractor {
+
+        private static final long serialVersionUID = 2759666130893301563L;
 
         public boolean getBooleanValue(Object object) {
-            return ((Boolean)object).booleanValue();
+            return ((Boolean) object).booleanValue();
         }
 
         public byte getByteValue(Object object) {
-            return ((Number)object).byteValue();
+            return ((Number) object).byteValue();
         }
 
         public char getCharValue(Object object) {
-            return ((Character)object).charValue();
+            return ((Character) object).charValue();
         }
 
         public double getDoubleValue(Object object) {
-            return ((Number)object).doubleValue();
+            return ((Number) object).doubleValue();
         }
 
         public Class getExtractToClass() {
@@ -253,7 +408,7 @@ public class EvaluatorFactoryTest extends TestCase {
         }
 
         public float getFloatValue(Object object) {
-            return ((Number)object).floatValue();
+            return ((Number) object).floatValue();
         }
 
         public int getHashCode(Object object) {
@@ -261,11 +416,11 @@ public class EvaluatorFactoryTest extends TestCase {
         }
 
         public int getIntValue(Object object) {
-            return ((Number)object).intValue();
+            return ((Number) object).intValue();
         }
 
         public long getLongValue(Object object) {
-            return ((Number)object).longValue();
+            return ((Number) object).longValue();
         }
 
         public Method getNativeReadMethod() {
@@ -273,7 +428,7 @@ public class EvaluatorFactoryTest extends TestCase {
         }
 
         public short getShortValue(Object object) {
-            return ((Number)object).shortValue();
+            return ((Number) object).shortValue();
         }
 
         public Object getValue(Object object) {
@@ -284,7 +439,11 @@ public class EvaluatorFactoryTest extends TestCase {
             // TODO Auto-generated method stub
             return null;
         }
-        
+
+        public int getIndex() {
+            return 0;
+        }
+
     }
 
     //    public void testRegexFoo() {

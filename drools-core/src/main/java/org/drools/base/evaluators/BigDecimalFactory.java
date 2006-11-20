@@ -282,8 +282,8 @@ public class BigDecimalFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
-            final BigDecimal comp = (BigDecimal) object2.getValue();
-            return comp.compareTo( ( BigDecimal ) extractor.getValue( object1 ) ) > 0;
+            final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
+            return comp.compareTo( ( BigDecimal ) object2.getValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
