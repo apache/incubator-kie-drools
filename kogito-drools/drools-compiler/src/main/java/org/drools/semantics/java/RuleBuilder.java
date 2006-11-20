@@ -289,7 +289,8 @@ public class RuleBuilder {
 
                     this.innerDeclarations = null;
                 } else if ( object.getClass() == ExistsDescr.class ) {
-                    // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
+                    // We cannot have declarations created inside exists visible outside it, 
+                    // so track declarations in a way they can be removed
                     this.innerDeclarations = new HashMap();
                     final Exists exists = new Exists();
                     build( this.rule,

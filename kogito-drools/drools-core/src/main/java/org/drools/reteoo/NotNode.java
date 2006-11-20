@@ -42,9 +42,7 @@ import org.drools.util.AbstractHashTable.FactEntry;
  *
  */
 public class NotNode extends BetaNode {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 320L;
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
@@ -229,22 +227,16 @@ public class NotNode extends BetaNode {
     public void updateSink(final TupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        //        this.attachingNewNode = true;
-        //
-        //        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        //        for ( final Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
-        //            final ReteTuple leftTuple = (ReteTuple) it.next();
-        //            if ( leftTuple.matchesSize() == 0 ) {
-        //                final ReteTuple child = new ReteTuple( leftTuple );
-        //                // no TupleMatch so instead add as a linked tuple
-        //                leftTuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
-        //                ((TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 )).assertTuple( child,
-        //                                                                                             context,
-        //                                                                                             workingMemory );
-        //            }
-        //        }
-        //
-        //        this.attachingNewNode = true;
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        final Iterator tupleIter = memory.getTupleMemory().iterator();
+        for ( ReteTuple tuple = (ReteTuple) tupleIter.next(); tuple != null; tuple = (ReteTuple) tupleIter.next() ) {
+            if ( tuple.getMatches() == 0 ) {
+                sink.assertTuple( new ReteTuple( tuple ),
+                                  context,
+                                  workingMemory );
+            }
+        }
     }
 
     public String toString() {

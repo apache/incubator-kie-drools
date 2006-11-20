@@ -38,7 +38,6 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
@@ -479,28 +478,7 @@ class ReteooBuilder
                                                                    tupleSource,
                                                                    ObjectSource,
                                                                    binder ) );
-        if ( not.getChild() instanceof Not ) {
-
-            final RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                                 column,
-                                                                                                                 notNode ) );
-            attachNot( tupleSource,
-                       (Not) not.getChild(),
-                       adapter,
-                       EmptyBetaConstraints.getInstance(),
-                       column );
-        } else if ( not.getChild() instanceof Exists ) {
-            final RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                                 column,
-                                                                                                                 notNode ) );
-            attachExists( tupleSource,
-                          (Exists) not.getChild(),
-                          adapter,
-                          EmptyBetaConstraints.getInstance(),
-                          column );
-        } else {
-            this.tupleSource = notNode;
-        }
+        this.tupleSource = notNode;
     }
 
     private void attachExists(final TupleSource tupleSource,
@@ -508,41 +486,11 @@ class ReteooBuilder
                               final ObjectSource ObjectSource,
                               final BetaConstraints binder,
                               final Column column) {
-        NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
+        ExistsNode existsNode = (ExistsNode) attachNode( new ExistsNode( this.id++,
                                                              tupleSource,
                                                              ObjectSource,
                                                              binder ) );
-        RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                       column,
-                                                                                                       notNode ) );
-
-        final BetaConstraints identityBinder = new SingleBetaConstraints( new InstanceEqualsConstraint( column ), this.ruleBase.getConfiguration() );
-        notNode = (NotNode) attachNode( new NotNode( this.id++,
-                                                     tupleSource,
-                                                     adapter,
-                                                     identityBinder ) );
-
-        if ( exists.getChild() instanceof Not ) {
-            adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                     column,
-                                                                                     notNode ) );
-            attachNot( tupleSource,
-                       (Not) exists.getChild(),
-                       adapter,
-                       EmptyBetaConstraints.getInstance(),
-                       column );
-        } else if ( exists.getChild() instanceof Exists ) {
-            adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                     column,
-                                                                                     notNode ) );
-            attachExists( tupleSource,
-                          (Exists) exists.getChild(),
-                          adapter,
-                          EmptyBetaConstraints.getInstance(),
-                          column );
-        } else {
-            this.tupleSource = notNode;
-        }
+        this.tupleSource = existsNode;
     }
 
     /**
