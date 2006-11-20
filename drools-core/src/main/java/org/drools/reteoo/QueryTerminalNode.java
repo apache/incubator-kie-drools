@@ -111,9 +111,6 @@ final class QueryTerminalNode extends BaseNode
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        // following code is needed because of queries that eventually uses "exists" 
-        final LinkedList list = (LinkedList) workingMemory.getNodeMemory( this );
-        list.remove( tuple );
     }
 
     public String toString() {
