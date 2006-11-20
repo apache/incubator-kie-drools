@@ -112,6 +112,9 @@ public class ObjectHashMap extends AbstractHashTable {
     public static class ObjectEntry
         implements
         Entry {
+
+        private static final long serialVersionUID = -2589987113898296555L;
+
         private Object key;
 
         private Object value;
@@ -145,7 +148,7 @@ public class ObjectHashMap extends AbstractHashTable {
         }
 
         public int hashCode() {
-            return this.key.hashCode() ^ this.value.hashCode();
+            return this.hashCode;
         }
 
         public boolean equals(final Object object) {
