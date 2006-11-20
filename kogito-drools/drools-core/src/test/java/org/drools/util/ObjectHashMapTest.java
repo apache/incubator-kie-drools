@@ -9,7 +9,7 @@ public class ObjectHashMapTest extends TestCase {
     public void testChechExistsFalse() {
         final ObjectHashMap map = new ObjectHashMap();
         final Cheese stilton = new Cheese( "stilton",
-                                     5 );
+                                           5 );
         map.put( new Integer( 1 ),
                  stilton,
                  false );
@@ -21,9 +21,9 @@ public class ObjectHashMapTest extends TestCase {
         // we haven't told the map to check if the key exists, so we should end up with two entries.
         // the second one is nolonger reacheable
         final Cheese cheddar = new Cheese( "cheddar",
-                                     5 );
+                                           5 );
         map.put( new Integer( 1 ),
-                 cheddar, 
+                 cheddar,
                  false );
         c = (Cheese) map.get( new Integer( 1 ) );
         assertSame( cheddar,
@@ -55,7 +55,7 @@ public class ObjectHashMapTest extends TestCase {
     public void testChechExistsTrue() {
         final ObjectHashMap map = new ObjectHashMap();
         final Cheese stilton = new Cheese( "stilton",
-                                     5 );
+                                           5 );
         map.put( new Integer( 1 ),
                  stilton,
                  true );
@@ -67,7 +67,7 @@ public class ObjectHashMapTest extends TestCase {
         // we haven't told the map to check if the key exists, so we should end up with two entries.
         // the second one is nolonger reacheable
         final Cheese cheddar = new Cheese( "cheddar",
-                                     5 );
+                                           5 );
         map.put( new Integer( 1 ),
                  cheddar );
         c = (Cheese) map.get( new Integer( 1 ) );
@@ -102,6 +102,34 @@ public class ObjectHashMapTest extends TestCase {
         final Iterator it = map.iterator();
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             fail( "Map is empty, there should be no iteration" );
+        }
+    }
+
+    public void testStringData() {
+        ObjectHashMap map = new ObjectHashMap();
+        assertNotNull( map );
+        int count = 1000;
+        for ( int idx = 0; idx < count; idx++ ) {
+            String key = "key" + idx;
+            String val = "value" + idx;
+            map.put( key,
+                     val );
+            assertEquals( val,
+                          map.get( key ) );
+        }
+    }
+
+    public void testIntegerData() {
+        ObjectHashMap map = new ObjectHashMap();
+        assertNotNull( map );
+        int count = 1000;
+        for ( int idx = 0; idx < count; idx++ ) {
+            Integer key = new Integer( idx );
+            Integer val = new Integer( idx );
+            map.put( key,
+                     val );
+            assertEquals( val,
+                          map.get( key ) );
         }
     }
 }
