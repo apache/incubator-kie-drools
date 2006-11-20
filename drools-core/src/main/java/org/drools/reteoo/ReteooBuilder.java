@@ -315,7 +315,7 @@ class ReteooBuilder
 
                 binder = attachColumn( column,
                                        and,
-                                       false );
+                                       this.removeIdentities );
             }
 
             if ( object.getClass() == Not.class ) {
