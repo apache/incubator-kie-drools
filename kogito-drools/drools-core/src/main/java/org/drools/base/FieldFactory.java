@@ -96,6 +96,66 @@ public class FieldFactory {
         return field;
     }
 
+    public static FieldValue getFieldValue(final Object value,
+                                           ValueType valueType) {
+        FieldValue field = null;
+        if ( value == null ) {
+            valueType = ValueType.NULL_TYPE;
+        }
+
+        if ( valueType == ValueType.NULL_TYPE ) {
+            field = new ObjectFieldImpl( null );
+        } else if ( valueType == ValueType.PCHAR_TYPE ) {
+            field = new LongFieldImpl( ((Character)value).charValue() );
+        } else if ( valueType == ValueType.PBYTE_TYPE ) {
+            field = new LongFieldImpl( ((Number)value).byteValue() );
+        } else if ( valueType == ValueType.PSHORT_TYPE ) {
+            field = new LongFieldImpl( ((Number)value).shortValue() );
+        } else if ( valueType == ValueType.PINTEGER_TYPE ) {
+            field = new LongFieldImpl( ((Number)value).intValue() );
+        } else if ( valueType == ValueType.PLONG_TYPE ) {
+            field = new LongFieldImpl( ((Number)value).longValue() );
+        } else if ( valueType == ValueType.PFLOAT_TYPE ) {
+            field = new DoubleFieldImpl( ((Number)value).floatValue() );
+        } else if ( valueType == ValueType.PDOUBLE_TYPE ) {
+            field = new DoubleFieldImpl( ((Number)value).doubleValue() );
+        } else if ( valueType == ValueType.PBOOLEAN_TYPE ) {
+            field = new BooleanFieldImpl( ((Boolean)value).booleanValue() );
+        } else if ( valueType == ValueType.CHAR_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.BYTE_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.SHORT_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.INTEGER_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.LONG_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.FLOAT_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.DOUBLE_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.BOOLEAN_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.STRING_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.DATE_TYPE ) {
+            //MN: I think its fine like this, seems to work !
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.ARRAY_TYPE ) {
+            //MN: I think its fine like this.
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.OBJECT_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.BIG_DECIMAL_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
+            field = new ObjectFieldImpl( value );
+        }
+
+        return field;
+    }
+
     public static FieldValue getFieldValue(final Object value) {
         return new ObjectFieldImpl( value );
     }

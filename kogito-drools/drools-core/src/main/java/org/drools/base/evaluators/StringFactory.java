@@ -149,7 +149,7 @@ public class StringFactory
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right != null;
             }
-            return value.equals( ((ObjectVariableContextEntry) context).right );
+            return !value.equals( ((ObjectVariableContextEntry) context).right );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
@@ -232,7 +232,7 @@ public class StringFactory
         }
 
         public String toString() {
-            return "String !=";
+            return "String matches";
         }
     }
 
