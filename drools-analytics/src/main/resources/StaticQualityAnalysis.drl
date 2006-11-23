@@ -1,0 +1,106 @@
+ package drools.analytics
+
+import org.drools.analytics.*
+
+global AnalysisResult result
+
+rule "Less than"
+	when
+		constraint: Constraint( f:field, o:operator == "<", v:value, r:ruleName, ot:objectType    )
+		not Constraint( field == f, objectType == ot, ruleName != r, value == v,
+					other:operator -> (other.equals(">=") || other.equals("==") ))
+	then
+		result.addWarning(drools, "You may be missing a greater or equal range of values: " + constraint);
+end
+
+rule "Less than or equal to"
+	when
+		constraint: Constraint( f:field, o:operator == "<=", v:value, r:ruleName, ot:objectType )
+		not Constraint( field == f, objectType == ot, ruleName != r, operator == ">", value == v )
+	then
+		result.addWarning(drools, "You may be missing a greater range of values for: " + constraint);
+end
+
+rule "Greater than"
+	when
+		constraint: Constraint( f:field, o:operator == ">", v:value, r:ruleName, ot:objectType )
+		not Constraint( field == f, objectType == ot, ruleName != r, value == v,
+					other:operator -> (other.equals("<=") || other.equals("==") ))
+	then
+		result.addWarning(drools, "You may be missing a lesser or equal range of values for: " + constraint);
+end
+
+
+rule "Greater than or equal to"
+	when
+		constraint: Constraint( f:field, o:operator == ">=", v:value, r:ruleName, ot:objectType )
+		not Constraint( field == f, objectType == ot, ruleName != r, operator == "<", value == v )
+	then
+		result.addWarning(drools, "You may be missing a lesser range of values for: " + constraint);
+end
+
+rule "Inequal - missing equality case"	
+	when
+		constraint: Constraint( f:field, o:operator == "!=", v:value, r:ruleName, ot:objectType )
+		not Constraint( field == f, objectType == ot, value == v,
+					other: operator -> (other.equals("==") || other.equals("|=")) )
+	then 
+		result.addWarning(drools, "You specified an inequality, but there is no equivalent equality: " + constraint);		
+end
+
+rule "same field with conflicting constraints on the one Rule - impossible to satisfy"
+	when
+		constraint: Constraint(  )
+	then
+end	
+
+rule "Not node conflicting with top level CE - impossible to satisfy"
+	when
+		
+	then
+		
+end
+
+rule "Subsumption"
+	when		
+		//need to check RHS for rule, to have the same action
+		//and when there is at least one Pattern in common
+	then
+		
+end
+
+rule "Combination explosion risk"
+	when
+		
+	then
+		
+end
+
+rule "Major combination explosion danger"
+	when
+		
+	then
+		
+end
+
+rule "Infinite loop risk warning"
+	when
+		//RHS modifies a fact which LHS depends on, no "no loop"
+	then
+		
+end
+
+rule "No action - possibly commented out"
+	when
+		
+	then
+		
+end
+
+rule "Less restrictive constraint first"
+	when
+		//if the first constraint is less restrictive then the next, suggest re-arrange
+		//works off the pattern
+	then
+		
+end
