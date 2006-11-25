@@ -50,7 +50,6 @@ end
 
 rule "same field with conflicting constraints on the one Rule - impossible to satisfy"
 	when
-		constraint: Constraint(  )
 	then
 end	
 
@@ -92,15 +91,32 @@ end
 
 rule "No action - possibly commented out"
 	when
-		
+		r: Rule(rhs == "") 
 	then
-		
+		result.addWarning(drools, "This rule has no action: " + r.getName());
 end
 
 rule "Less restrictive constraint first"
 	when
 		//if the first constraint is less restrictive then the next, suggest re-arrange
 		//works off the pattern
+	then
+		
+end
+
+rule "Excessive use of salience"
+	when
+		not Rule(salienceValue == 0) 
+	then
+		result.addWarning(drools, "Salience is being used heavily, if possible, consider using agenda groups to break up the rule package.");		
+end
+
+
+
+
+rule "Only a few values of salience - consider using agenda-groups"
+	when
+		//when agenda groups would be better for controlling the flow in phases then salience.
 	then
 		
 end
