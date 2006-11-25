@@ -30,6 +30,10 @@ public class AnalysisResult implements Serializable {
         errors.add( new ReportItem(k.getRule().getName(), message) );
     }
     
+    public List getWarnings() {
+        return warnings;
+    }
+    
     static class ReportItem implements Serializable {
         private static final long serialVersionUID = 3674119457586457238L;
         public String rule;
@@ -43,6 +47,10 @@ public class AnalysisResult implements Serializable {
         public String toString() {
             return rule + ": " + message;
         }
+    }
+
+    public List getErrors() {
+        return errors;
     }
     
 }
