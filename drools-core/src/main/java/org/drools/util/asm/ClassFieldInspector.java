@@ -20,6 +20,7 @@ import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,15 +64,24 @@ public class ClassFieldInspector {
 
     public ClassFieldInspector(final Class clazz,
                                final boolean includeFinalMethods) throws IOException {
-        processClass( clazz,
-                      includeFinalMethods );
+        final String name = getResourcePath( clazz );
+        final InputStream stream = clazz.getResourceAsStream( name );
+
+        if ( stream != null ) {
+            processClassWithByteCode( clazz,
+                                      stream,
+                                      includeFinalMethods );
+        } else {
+            processClassWithoutByteCode( clazz,
+                                         includeFinalMethods  );
+        }
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
-    private void processClass(final Class clazz,
-                              final boolean includeFinalMethods) throws IOException {
-        final String name = getResourcePath( clazz );
-        final InputStream stream = clazz.getResourceAsStream( name );
+    private void processClassWithByteCode(final Class clazz,
+                                          final InputStream stream,
+                                          final boolean includeFinalMethods) throws IOException {
+
         final ClassReader reader = new ClassReader( stream );
         final ClassFieldVisitor visitor = new ClassFieldVisitor( clazz,
                                                                  includeFinalMethods,
@@ -79,14 +89,49 @@ public class ClassFieldInspector {
         reader.accept( visitor,
                        false );
         if ( clazz.getSuperclass() != null ) {
-            processClass( clazz.getSuperclass(),
-                          includeFinalMethods );
+            final String name = getResourcePath( clazz.getSuperclass() );
+            final InputStream parentStream = clazz.getResourceAsStream( name );
+            if ( parentStream != null ) {
+                processClassWithByteCode( clazz.getSuperclass(),
+                                          parentStream,
+                                          includeFinalMethods );
+            } else {
+                processClassWithoutByteCode( clazz.getSuperclass(),
+                                             includeFinalMethods );
+            }
         }
         if ( clazz.isInterface() ) {
             final Class[] interfaces = clazz.getInterfaces();
             for ( int i = 0; i < interfaces.length; i++ ) {
-                processClass( interfaces[i],
-                              includeFinalMethods );
+                final String name = getResourcePath( interfaces[i] );
+                final InputStream parentStream = clazz.getResourceAsStream( name );
+                if ( parentStream != null ) {
+                    processClassWithByteCode( interfaces[i],
+                                              parentStream,
+                                              includeFinalMethods );
+                } else {
+                    processClassWithoutByteCode( interfaces[i],
+                                                 includeFinalMethods );
+                }
+            }
+        }
+    }
+
+    private void processClassWithoutByteCode(Class clazz,
+                                             final boolean includeFinalMethods) {
+        Method[] methods = clazz.getMethods();
+        for ( int i = 0; i < methods.length; i++ ) {
+
+            //only want public methods that start with 'get' or 'is'
+            //and have no args, and return a value
+            final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
+            if ( (( methods[i].getModifiers() & mask ) == Modifier.PUBLIC ) &&
+                 ( methods[i].getParameterTypes().length == 0) && 
+                 ( !methods[i].getName().equals( "<init>" )) && 
+                 (methods[i].getReturnType() != void.class) ) {
+                    final int fieldIndex = this.methods.size();
+                    addToMapping( methods[i],
+                                  fieldIndex );
             }
         }
     }
@@ -129,6 +174,65 @@ public class ClassFieldInspector {
         return this.methodNames;
     }
 
+    private void addToMapping(final Method method,
+                              final int index) {
+        final String name = method.getName();
+        int offset;
+        if ( name.startsWith( "is" ) ) {
+            offset = 2;
+        } else if ( name.startsWith( "get" ) ) {
+            offset = 3;
+        } else {
+            offset = 0;
+        }
+        final String fieldName = calcFieldName( name,
+                                                offset );
+        if ( this.fieldNames.containsKey( fieldName ) ) {
+            //only want it once, the first one thats found
+            if ( offset != 0 && this.nonGetters.contains( fieldName ) ) {
+                //replace the non getter method with the getter one
+                removeOldField( fieldName );
+                storeField( method,
+                            index,
+                            fieldName );
+                this.nonGetters.remove( fieldName );
+            }
+        } else {
+            storeField( method,
+                        index,
+                        fieldName );
+            if ( offset == 0 ) {
+                this.nonGetters.add( fieldName );
+            }
+        }
+    }
+
+    private void removeOldField(final String fieldName) {
+        this.fieldNames.remove( fieldName );
+        this.fieldTypes.remove( fieldName );
+        this.methods.remove( this.methodNames.get( fieldName ) );
+        this.methodNames.remove( fieldName );
+
+    }
+
+    private void storeField(final Method method,
+                            final int index,
+                            final String fieldName) {
+        this.fieldNames.put( fieldName,
+                                       new Integer( index ) );
+        this.fieldTypes.put( fieldName,
+                                       method.getReturnType() );
+        this.methodNames.put( fieldName,
+                                        method );
+        this.methods.add( method );
+    }
+
+    private String calcFieldName(String name,
+                                 final int offset) {
+        name = name.substring( offset );
+        return Introspector.decapitalize( name );
+    }
+
     /**
      * Using the ASM classfield extractor to pluck it out in the order they appear in the class file.
      * @author Michael Neale
@@ -164,8 +268,8 @@ public class ClassFieldInspector {
                                                                     (Class[]) null );
                         if ( method.getReturnType() != void.class ) {
                             final int fieldIndex = this.inspector.methods.size();
-                            addToMapping( method,
-                                          fieldIndex );
+                            this.inspector.addToMapping( method,
+                                                         fieldIndex );
                         }
                     } catch ( final NoSuchMethodException e ) {
                         throw new IllegalStateException( "Error in getting field access method." );
@@ -235,65 +339,6 @@ public class ClassFieldInspector {
                                        final Object arg4) {
 
             return null;
-        }
-
-        private void addToMapping(final Method method,
-                                  final int index) {
-            final String name = method.getName();
-            int offset;
-            if ( name.startsWith( "is" ) ) {
-                offset = 2;
-            } else if ( name.startsWith( "get" ) ) {
-                offset = 3;
-            } else {
-                offset = 0;
-            }
-            final String fieldName = calcFieldName( name,
-                                                    offset );
-            if ( this.inspector.fieldNames.containsKey( fieldName ) ) {
-                //only want it once, the first one thats found
-                if ( offset != 0 && this.inspector.nonGetters.contains( fieldName ) ) {
-                    //replace the non getter method with the getter one
-                    removeOldField( fieldName );
-                    storeField( method,
-                                index,
-                                fieldName );
-                    this.inspector.nonGetters.remove( fieldName );
-                }
-            } else {
-                storeField( method,
-                            index,
-                            fieldName );
-                if ( offset == 0 ) {
-                    this.inspector.nonGetters.add( fieldName );
-                }
-            }
-        }
-
-        private void removeOldField(final String fieldName) {
-            this.inspector.fieldNames.remove( fieldName );
-            this.inspector.fieldTypes.remove( fieldName );
-            this.inspector.methods.remove( this.inspector.methodNames.get( fieldName ) );
-            this.inspector.methodNames.remove( fieldName );
-
-        }
-
-        private void storeField(final Method method,
-                                final int index,
-                                final String fieldName) {
-            this.inspector.fieldNames.put( fieldName,
-                                           new Integer( index ) );
-            this.inspector.fieldTypes.put( fieldName,
-                                           method.getReturnType() );
-            this.inspector.methodNames.put( fieldName,
-                                            method );
-            this.inspector.methods.add( method );
-        }
-
-        private String calcFieldName(String name,
-                                     final int offset) {
-            name = name.substring( offset );
-            return Introspector.decapitalize( name );
         }
 
     }
