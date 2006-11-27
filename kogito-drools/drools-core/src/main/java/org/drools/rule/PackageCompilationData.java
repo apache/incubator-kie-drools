@@ -352,7 +352,11 @@ public class PackageCompilationData
             if ( bytes != null ) {
                 return new ByteArrayInputStream( bytes );
             } else {
-                return super.getResourceAsStream( name );
+                InputStream input = this.getParent().getResourceAsStream( name );
+                if( input == null ){
+                    input = super.getResourceAsStream( name );
+                }
+                return input;
             }
         }
     }
