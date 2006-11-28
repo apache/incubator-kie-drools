@@ -35,7 +35,7 @@ public class ObjectFieldImpl
     }
 
     public String toString() {
-        return this.value.toString();
+        return this.value == null ? "null" : this.value.toString();
     }
 
     public boolean getBooleanValue() {
