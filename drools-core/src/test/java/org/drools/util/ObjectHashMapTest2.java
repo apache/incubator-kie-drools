@@ -57,33 +57,35 @@ public class ObjectHashMapTest2 extends TestCase {
 		}
 	}
 	
-	public void testStringData2() {
-		int count = 100000;
-		ObjectHashMap map = new ObjectHashMap();
-		assertNotNull(map);
-		long start = System.nanoTime();
-		for (int idx=0; idx < count; idx++) {
-			String key = "key" + idx;
-			String strval = "value" + idx;
-			map.put(key,strval);
-		}
-		long end = System.nanoTime();
-		System.out.println("Custom ObjectHashMap put(key,value) ET - " + ((end-start)/1000000));
-	}
-	
 	public void testJUHashMap1() {
 		int count = 100000;
 		java.util.HashMap map = new java.util.HashMap();
 		assertNotNull(map);
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		for (int idx=0; idx < count; idx++) {
 			String key = "key" + idx;
 			String strval = "value" + idx;
 			map.put(key,strval);
 		}
-		long end = System.nanoTime();
-		System.out.println("java.util.HashMap put(key,value) ET - " + ((end-start)/1000000));
+		long end = System.currentTimeMillis();
+		System.out.println("java.util.HashMap put(key,value) ET - " + ((end-start)));
+	}	
+	
+	public void testStringData2() {
+		int count = 100000;
+		ObjectHashMap map = new ObjectHashMap();
+		assertNotNull(map);
+		long start = System.currentTimeMillis();
+		for (int idx=0; idx < count; idx++) {
+			String key = "key" + idx;
+			String strval = "value" + idx;
+			map.put(key,strval);
+		}
+		long end = System.currentTimeMillis();
+		System.out.println("Custom ObjectHashMap put(key,value) ET - " + ((end-start)));
 	}
+	
+
 
 	public void testStringData3() {
 		int count = 100000;
@@ -94,13 +96,13 @@ public class ObjectHashMapTest2 extends TestCase {
 			String strval = "value" + idx;
 			map.put(key,strval);
 		}
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		for (int idx=0; idx < count; idx++) {
 			String key = "key" + idx;
 			map.get(key);
 		}
-		long end = System.nanoTime();
-		System.out.println("Custom ObjectHashMap get(key) ET - " + ((end-start)/1000000));
+		long end = System.currentTimeMillis();
+		System.out.println("Custom ObjectHashMap get(key) ET - " + ((end-start)));
 	}
 	
 	public void testJUHashMap2() {
@@ -112,13 +114,13 @@ public class ObjectHashMapTest2 extends TestCase {
 			String strval = "value" + idx;
 			map.put(key,strval);
 		}
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		for (int idx=0; idx < count; idx++) {
 			String key = "key" + idx;
 			map.get(key);
 		}
-		long end = System.nanoTime();
-		System.out.println("java.util.HashMap get(key) ET - " + ((end-start)/1000000));
+		long end = System.currentTimeMillis();
+		System.out.println("java.util.HashMap get(key) ET - " + ((end-start)));
 	}
 	
 	public void testStringData4() {
@@ -130,14 +132,14 @@ public class ObjectHashMapTest2 extends TestCase {
 			String strval = "value" + idx;
 			map.put(key,strval);
 		}
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		org.drools.util.Iterator itr = map.iterator();
 		Object val = null;
 		while ( (val = itr.next()) != null) {
 			val.hashCode();
 		}
-		long end = System.nanoTime();
-		System.out.println("Custom ObjectHashMap iterate ET - " + ((end-start)/1000000));
+		long end = System.currentTimeMillis();
+		System.out.println("Custom ObjectHashMap iterate ET - " + ((end-start)));
 	}
 
 	public void testJUHashMap3() {
@@ -149,28 +151,27 @@ public class ObjectHashMapTest2 extends TestCase {
 			String strval = "value" + idx;
 			map.put(key,strval);
 		}
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		java.util.Iterator itr = map.values().iterator();
-		Object val = null;
 		while ( itr.hasNext()) {
 			itr.next().hashCode();
 		}
-		long end = System.nanoTime();
-		System.out.println("java.util.HashMap iterate ET - " + ((end-start)/1000000));
+		long end = System.currentTimeMillis();
+		System.out.println("java.util.HashMap iterate ET - " + ((end-start)));
 	}
 	
 	public void testStringData5() {
 		int count = 100000;
 		ObjectHashMap map = new ObjectHashMap();
 		assertNotNull(map);
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		for (int idx=0; idx < count; idx++) {
 			String key = "key" + idx;
 			String strval = "value" + idx;
 			map.put(key,strval,false);
 		}
-		long end = System.nanoTime();
-		System.out.println("Custom ObjectHashMap dup false ET - " + ((end-start)/1000000));
+		long end = System.currentTimeMillis();
+		System.out.println("Custom ObjectHashMap dup false ET - " + ((end-start)));
 	}
 	
 	public static void main(String[] args) {
