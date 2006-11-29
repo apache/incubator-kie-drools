@@ -1,6 +1,10 @@
 
 rule "1. Do Stuff!"
+  when
+  then
 end
 
 rule "2. Do More Stuff!"
+  when
+  then
 end

@@ -25,8 +25,8 @@ import java.util.List;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.drools.lang.RuleParser;
-import org.drools.lang.RuleParserLexer;
+import org.drools.lang.DRLLexer;
+import org.drools.lang.DRLParser;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 
@@ -44,13 +44,13 @@ public class DrlParser {
 
     /** Parse a rule from text */
     public PackageDescr parse(final String text) throws DroolsParserException {
-        final RuleParser parser = getParser( text );
+        final DRLParser parser = getParser( text );
         compile( parser );
         return parser.getPackageDescr();
 
     }
 
-    private void compile(final RuleParser parser) throws DroolsParserException {
+    private void compile(final DRLParser parser) throws DroolsParserException {
         try {
             parser.compilation_unit();
 
@@ -61,7 +61,7 @@ public class DrlParser {
     }
 
     /** Convert the antlr exceptions to drools parser exceptions */
-    private void makeErrorList(final RuleParser parser) {
+    private void makeErrorList(final DRLParser parser) {
         for ( final Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
             final RecognitionException recogErr = (RecognitionException) iter.next();
             final ParserError err = new ParserError( parser.createErrorMessage( recogErr ),
@@ -74,8 +74,8 @@ public class DrlParser {
     /**
      * @return An instance of a RuleParser should you need one (most folks will not).
      */
-    private RuleParser getParser(final String text) {
-        return new RuleParser( new CommonTokenStream( new RuleParserLexer( new ANTLRStringStream( text ) ) ) );
+    private DRLParser getParser(final String text) {
+        return new DRLParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRStringStream( text ) ) ) );
     }
 
     /** Parse and build a rule package from a DRL source */
@@ -107,7 +107,7 @@ public class DrlParser {
     public PackageDescr parse(final String source,
                               final Reader dsl) throws DroolsParserException {
         final DefaultExpanderResolver resolver = new DefaultExpanderResolver( dsl );
-        final RuleParser parser = getParser( source );
+        final DRLParser parser = getParser( source );
         parser.setExpanderResolver( resolver );
         compile( parser );
         return parser.getPackageDescr();
