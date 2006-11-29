@@ -15,7 +15,6 @@ public class FunctionCallDescr extends DeclarativeInvokerDescr {
 		this.name = name;
 	}
 	
-
 	public String getArguments() {
 		return arguments;
 	}
