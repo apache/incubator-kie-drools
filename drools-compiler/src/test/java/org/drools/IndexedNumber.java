@@ -31,6 +31,8 @@ public class IndexedNumber {
     
     private int index = 0;
     
+    private boolean printed;
+    
     public IndexedNumber() {
     }
 
@@ -76,6 +78,14 @@ public class IndexedNumber {
      */
     public String toString() {
         return "IndexedNumber[ " + number + ", " + index + " ]";
+    }
+
+    public boolean isPrinted() {
+        return printed;
+    }
+
+    public void setPrinted(boolean printed) {
+        this.printed = printed;
     }
     
 

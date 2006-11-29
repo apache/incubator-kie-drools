@@ -2,8 +2,12 @@ package test
 
 rule type1
   when
-	Something(end == "foo)
+	$id : Something(xyz == "foo")
   then
   	The.end();
+  	end;
+  	attributes;
+  	rule;
+  	package;
 end
 
