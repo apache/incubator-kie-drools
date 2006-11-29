@@ -486,6 +486,7 @@ public class RuleParserTest extends TestCase {
         
         final RuleDescr rule = parseResource( "argument_list.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        System.out.println( from.getDataSource() );
         MethodAccessDescr meth = (MethodAccessDescr) from.getDataSource();
         
         if (parser.hasErrors()) {
