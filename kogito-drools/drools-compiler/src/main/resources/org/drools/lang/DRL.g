@@ -788,6 +788,7 @@ collect_statement returns [CollectDescr d]
 		}
 	; 		
 
+/*
 argument_list returns [ArrayList args]
 	@init {
 		args = new ArrayList();
@@ -822,7 +823,7 @@ argument_value returns [ArgumentValueDescr value]
 		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}				
 		)
 	;
-
+*/
 fact_binding returns [BaseDescr d]
 	@init {
 		d=null;

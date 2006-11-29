@@ -35,7 +35,6 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.SwitchingCommonTokenStream;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ColumnDescr;
@@ -60,7 +59,6 @@ import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.lang.descr.ArgumentValueDescr.KeyValuePairDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 
 public class RuleParserTest extends TestCase {
@@ -484,7 +482,7 @@ public class RuleParserTest extends TestCase {
 
     }
     
-    public void FIXME_testArguementList() throws Exception {
+    public void testArguementList() throws Exception {
         
         final RuleDescr rule = parseResource( "argument_list.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
@@ -493,78 +491,8 @@ public class RuleParserTest extends TestCase {
         if (parser.hasErrors()) {
             System.err.println(parser.getErrorMessages());
         }
-        assertFalse(parser.hasErrors());
-        
-        final List argList = meth.getArguments();
-        
-        assertEquals(7, argList.size());
-        ArgumentValueDescr arg = (ArgumentValueDescr) argList.get( 0 );
-        assertEquals( ArgumentValueDescr.VARIABLE, arg.getType());
-        assertEquals("foo", arg.getValue());
-        
-        arg = (ArgumentValueDescr) argList.get( 1 );
-        assertEquals( ArgumentValueDescr.VARIABLE, arg.getType());
-        assertEquals("bar", arg.getValue());        
-
-        arg = (ArgumentValueDescr) argList.get( 2 );
-        assertEquals( ArgumentValueDescr.INTEGRAL, arg.getType());
-        assertEquals("42", arg.getValue());
-        
-        arg = (ArgumentValueDescr) argList.get( 3 );
-        assertEquals( ArgumentValueDescr.STRING, arg.getType());
-        assertEquals("hello", arg.getValue());
-        
-        arg = (ArgumentValueDescr) argList.get( 4 );
-        assertEquals( ArgumentValueDescr.MAP, arg.getType());
-        
-        ArgumentValueDescr.KeyValuePairDescr[] keyValuePairs = ( ArgumentValueDescr.KeyValuePairDescr[] ) arg.getValue();
-        
-        KeyValuePairDescr pair = keyValuePairs[0];
-        arg = pair.getKey();
-        assertEquals(ArgumentValueDescr.VARIABLE, arg.getType());
-        assertEquals("a", arg.getValue());
-        
-        assertEquals("b", pair.getValue().getValue());
-        assertEquals(ArgumentValueDescr.STRING, pair.getValue().getType());
-        
-        pair = keyValuePairs[1];
-        assertEquals(ArgumentValueDescr.STRING, pair.getKey().getType());
-        assertEquals("something", pair.getKey().getValue());
-        assertEquals(ArgumentValueDescr.INTEGRAL, pair.getValue().getType());
-        assertEquals("42", pair.getValue().getValue());
-        
-        
-        pair = keyValuePairs[2];
-        assertEquals(ArgumentValueDescr.STRING, pair.getKey().getType());
-        assertEquals("a", pair.getKey().getValue());
-        assertEquals(ArgumentValueDescr.VARIABLE, pair.getValue().getType());
-        assertEquals("foo", pair.getValue().getValue());
-        
-        pair = keyValuePairs[3];
-        assertEquals("x", pair.getKey().getValue());
-        assertEquals(ArgumentValueDescr.MAP, pair.getValue().getType());
-        
-        arg = (ArgumentValueDescr) argList.get( 5 );
-        assertEquals("end", arg.getValue() );
-        assertEquals(ArgumentValueDescr.STRING, arg.getType());
-        
-        arg = (ArgumentValueDescr) argList.get( 6 );
-        assertEquals(ArgumentValueDescr.LIST, arg.getType());
-        List array = (List) arg.getValue();
-        assertEquals(3, array.size());
-        
-        arg = (ArgumentValueDescr) array.get( 0 );
-        assertEquals(ArgumentValueDescr.VARIABLE, arg.getType());
-        assertEquals("a", arg.getValue());
-        
-        arg = (ArgumentValueDescr) array.get(1);
-        assertEquals(ArgumentValueDescr.STRING, arg.getType());
-        assertEquals("b", arg.getValue());        
-
-        arg = (ArgumentValueDescr) array.get(2);
-        assertEquals(ArgumentValueDescr.INTEGRAL, arg.getType());
-        assertEquals("42", arg.getValue());        
-      
+        assertFalse(parser.hasErrors());    
+        assertEquals( "foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42]", meth.getArguments() );
     }
 
 
