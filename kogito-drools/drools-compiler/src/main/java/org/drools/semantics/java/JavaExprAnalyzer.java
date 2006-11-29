@@ -26,8 +26,8 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
-import org.drools.semantics.java.parser.JavaParser;
 import org.drools.semantics.java.parser.JavaParserLexer;
+import org.drools.semantics.java.parser.JavaParserParser;
 
 /**
  * Expression analyzer.
@@ -67,7 +67,7 @@ public class JavaExprAnalyzer {
         final CharStream charStream = new ANTLRStringStream( expr );
         final JavaParserLexer lexer = new JavaParserLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParser parser = new JavaParser( tokenStream );
+        final JavaParserParser parser = new JavaParserParser( tokenStream );
 
         parser.logicalOrExpression();
 
@@ -80,7 +80,7 @@ public class JavaExprAnalyzer {
         final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
         final JavaParserLexer lexer = new JavaParserLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParser parser = new JavaParser( tokenStream );
+        final JavaParserParser parser = new JavaParserParser( tokenStream );
 
         parser.compoundStatement();
 
