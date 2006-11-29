@@ -709,7 +709,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 		ds = null;
 	}
 	:
-		(var=ID '.' field=ID  ('[' arg=argument_value ']')?
+		(var=ID '.' field=ID  ( arg=square_chunk )?
 		
 			{
           		 FieldAccessDescr fa;
@@ -724,7 +724,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 	
 		)  
 		|
-		(var=ID '.' method=ID '(' args=argument_list ')' 
+		(var=ID '.' method=ID '(' arg=paren_chunk ')' 
 			{
 			  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), method.getText());	
 			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
@@ -733,7 +733,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 			}	
 		)
 		|
-		(functionName=ID '(' args=argument_list ')'
+		(functionName=ID '(' args=paren_chunk ')'
 			{
 			FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
 			fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
@@ -819,45 +819,9 @@ argument_value returns [ArgumentValueDescr value]
 		|	t=FLOAT	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.DECIMAL, text); }
 		|	t=BOOL 	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.BOOLEAN, text); }
 		|	t=ID { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text);}	
-		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}	
-		|       m=inline_map {  value=new ArgumentValueDescr(ArgumentValueDescr.MAP, m.getKeyValuePairs() ); }
-		|       a=inline_array { value = new ArgumentValueDescr(ArgumentValueDescr.LIST, a ); }		
+		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}				
 		)
-	;			
-
-inline_map returns [ArgumentValueDescr.MapDescr mapDescr]
-    @init {
-        mapDescr = new ArgumentValueDescr.MapDescr();
-    }	
-    :  '{' 
-           ( key=argument_value '=>' value=argument_value {
-                 if ( key != null ) {
-                     mapDescr.add( new ArgumentValueDescr.KeyValuePairDescr( key, value ) );
-                 }
-             }
-           )
-           
-           ( (EOL)? ',' (EOL)? key=argument_value '=>' value=argument_value {
-                 if ( key != null ) {
-                     mapDescr.add( new ArgumentValueDescr.KeyValuePairDescr( key, value ) );
-                 }
-             }
-           )*           
-       '}'
-    ;
-    
-inline_array returns [List list]
-    @init {
-    	list = new ArrayList();
-    }		    
-    :
-    '[' arg=argument_value { list.add(arg); }
-    
-     	 ( EOL? ',' EOL? arg=argument_value { list.add(arg); } )*
-      ']'
-      
-    
-    ; 	
+	;
 
 fact_binding returns [BaseDescr d]
 	@init {
@@ -1080,6 +1044,39 @@ paren_chunk returns [String text]
 		} 
                 ')'
 	;
+	
+
+square_chunk returns [String text]
+	:
+	        {
+		    ((CommonTokenStream)input).setTokenTypeChannel(WS, Token.DEFAULT_CHANNEL);
+	        }
+		loc='['
+		{
+		    int parenCounter = 1;
+		    StringBuffer buf = new StringBuffer();
+		    buf.append(loc.getText());
+
+                    do {
+                        Token nextToken = input.LT(1);
+                        buf.append( nextToken.getText() );
+                        
+                        int nextTokenId = nextToken.getType();
+                        if( nextTokenId == RIGHT_SQUARE ) {
+                            parenCounter--;
+                        } else if( nextTokenId == LEFT_SQUARE ) {
+                            parenCounter++;
+                        }
+                        if( parenCounter == 0 ) {
+                            break;
+                        }
+                        input.consume();
+		    } while( true );
+		    text = buf.toString();
+		    ((CommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		} 
+                ']'
+	;	
 	
 retval_constraint returns [String text]
 	@init {
@@ -1318,6 +1315,14 @@ LEFT_PAREN
 RIGHT_PAREN
         :	')'
         ;
+        
+LEFT_SQUARE
+        :	'('
+        ;
+
+RIGHT_SQUARE
+        :	')'
+        ;        
 
 fragment
 NO_PAREN

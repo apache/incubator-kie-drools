@@ -47,7 +47,6 @@ import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
@@ -980,7 +979,11 @@ public class RuleBuilder {
     }
 
     private From build(final FromDescr fromDescr) {
-    	return null;
+      final Column column = build( fromDescr.getReturnedColumn() );
+    	return null;    
+    }
+//    private From build(final FromDescr fromDescr) {
+//    	return null;
     	// @todo: waiting for JFDI so we can impl this properly
 //        final Column column = build( fromDescr.getReturnedColumn() );
 //
@@ -1041,94 +1044,94 @@ public class RuleBuilder {
 //        return new From( column,
 //                         dataProvider );
 
-    }
+//    }
 
-    private ValueHandler buildValueHandler(final ArgumentValueDescr descr) {
-        ValueHandler valueHandler = null;
-        if ( descr.getType() == ArgumentValueDescr.VARIABLE ) {
-            if ( this.declarations.containsKey( descr.getValue() ) ) {
-                valueHandler = new DeclarationVariable( (Declaration) this.declarations.get( descr.getValue() ) );
-            } else if ( this.pkg.getGlobals().containsKey( descr.getValue() ) ) {
-                valueHandler = new GlobalVariable( (String) descr.getValue(),
-                                                   (Class) this.pkg.getGlobals().get( descr.getValue() ) );
-            } else {
-                throw new IllegalArgumentException( "Uknown variable: " + descr.getValue() );
-            }
-        } else if ( descr.getType() == ArgumentValueDescr.MAP ) {
-            final ArgumentValueDescr.KeyValuePairDescr[] pairs = (ArgumentValueDescr.KeyValuePairDescr[]) descr.getValue();
-            final List list = new ArrayList( pairs.length );
-            for ( int i = 0, length = pairs.length; i < length; i++ ) {
-                list.add( new MapValue.KeyValuePair( buildValueHandler( pairs[i].getKey() ),
-                                                     buildValueHandler( pairs[i].getValue() ) ) );
-            }
-
-            valueHandler = new MapValue( (MapValue.KeyValuePair[]) list.toArray( new MapValue.KeyValuePair[pairs.length] ) );
-        } else if ( descr.getType() == ArgumentValueDescr.LIST ) {
-            final List args = (List) descr.getValue();
-            final List handlers = new ArrayList( args.size() );
-            for ( final Iterator iter = args.iterator(); iter.hasNext(); ) {
-                final ArgumentValueDescr arg = (ArgumentValueDescr) iter.next();
-                handlers.add( buildValueHandler( arg ) );
-            }
-            valueHandler = new ListValue( handlers );
-        } else if ( descr.getType() == ArgumentValueDescr.BOOLEAN ) {
-            // handling a literal
-            valueHandler = new LiteralValue( new Boolean ( (String) descr.getValue() ) );
-        } else if ( descr.getType() == ArgumentValueDescr.INTEGRAL ) {
-            String text = (String) descr.getValue();
-            char c = text.charAt( text.length() - 1 );
-            if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
-                switch ( c ) {
-                    case 'l' :
-                    case 'L' :
-                        valueHandler = new LiteralValue( new Long( (String) descr.getValue() ) );                        
-                        break;
-                    case 'f' :
-                    case 'F' :
-                        valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                          
-                        break;
-                    case 'd' :
-                    case 'D' :
-                        valueHandler = new LiteralValue( new Double( (String) descr.getValue() ) );                        
-                        break;
-                    default :
-                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );
-                }
-            } else {
-                valueHandler = new LiteralValue( new Integer( (String) descr.getValue() ) );                
-            }
-            
-        } else if ( descr.getType() == ArgumentValueDescr.DECIMAL ) {
-            String text = (String) descr.getValue();
-            char c = text.charAt( text.length() - 1 );
-            if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
-                switch ( c ) {
-                    case 'l' :
-                    case 'L' :
-                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );                      
-                    case 'f' :
-                    case 'F' :
-                        valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                          
-                        break;
-                    case 'd' :
-                    case 'D' :
-                        valueHandler = new LiteralValue( new Double( (String) descr.getValue() ) );                        
-                        break;
-                    default :
-                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );
-                }
-            } else {
-                valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                
-            }
-        } else if ( descr.getType() == ArgumentValueDescr.STRING ) {
-            // handling a literal
-            valueHandler = new LiteralValue( (String) descr.getValue() );
-        } else {
-            // This should never happen
-            throw new IllegalArgumentException( "Unable to determine type for argument [" + descr.getType() + "]" );
-        }
-        return valueHandler;
-    }
+//    private ValueHandler buildValueHandler(final ArgumentValueDescr descr) {
+//        ValueHandler valueHandler = null;
+//        if ( descr.getType() == ArgumentValueDescr.VARIABLE ) {
+//            if ( this.declarations.containsKey( descr.getValue() ) ) {
+//                valueHandler = new DeclarationVariable( (Declaration) this.declarations.get( descr.getValue() ) );
+//            } else if ( this.pkg.getGlobals().containsKey( descr.getValue() ) ) {
+//                valueHandler = new GlobalVariable( (String) descr.getValue(),
+//                                                   (Class) this.pkg.getGlobals().get( descr.getValue() ) );
+//            } else {
+//                throw new IllegalArgumentException( "Uknown variable: " + descr.getValue() );
+//            }
+//        } else if ( descr.getType() == ArgumentValueDescr.MAP ) {
+//            final ArgumentValueDescr.KeyValuePairDescr[] pairs = (ArgumentValueDescr.KeyValuePairDescr[]) descr.getValue();
+//            final List list = new ArrayList( pairs.length );
+//            for ( int i = 0, length = pairs.length; i < length; i++ ) {
+//                list.add( new MapValue.KeyValuePair( buildValueHandler( pairs[i].getKey() ),
+//                                                     buildValueHandler( pairs[i].getValue() ) ) );
+//            }
+//
+//            valueHandler = new MapValue( (MapValue.KeyValuePair[]) list.toArray( new MapValue.KeyValuePair[pairs.length] ) );
+//        } else if ( descr.getType() == ArgumentValueDescr.LIST ) {
+//            final List args = (List) descr.getValue();
+//            final List handlers = new ArrayList( args.size() );
+//            for ( final Iterator iter = args.iterator(); iter.hasNext(); ) {
+//                final ArgumentValueDescr arg = (ArgumentValueDescr) iter.next();
+//                handlers.add( buildValueHandler( arg ) );
+//            }
+//            valueHandler = new ListValue( handlers );
+//        } else if ( descr.getType() == ArgumentValueDescr.BOOLEAN ) {
+//            // handling a literal
+//            valueHandler = new LiteralValue( new Boolean ( (String) descr.getValue() ) );
+//        } else if ( descr.getType() == ArgumentValueDescr.INTEGRAL ) {
+//            String text = (String) descr.getValue();
+//            char c = text.charAt( text.length() - 1 );
+//            if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
+//                switch ( c ) {
+//                    case 'l' :
+//                    case 'L' :
+//                        valueHandler = new LiteralValue( new Long( (String) descr.getValue() ) );                        
+//                        break;
+//                    case 'f' :
+//                    case 'F' :
+//                        valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                          
+//                        break;
+//                    case 'd' :
+//                    case 'D' :
+//                        valueHandler = new LiteralValue( new Double( (String) descr.getValue() ) );                        
+//                        break;
+//                    default :
+//                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );
+//                }
+//            } else {
+//                valueHandler = new LiteralValue( new Integer( (String) descr.getValue() ) );                
+//            }
+//            
+//        } else if ( descr.getType() == ArgumentValueDescr.DECIMAL ) {
+//            String text = (String) descr.getValue();
+//            char c = text.charAt( text.length() - 1 );
+//            if ( Character.getType( c ) != Character.DECIMAL_DIGIT_NUMBER ) {
+//                switch ( c ) {
+//                    case 'l' :
+//                    case 'L' :
+//                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );                      
+//                    case 'f' :
+//                    case 'F' :
+//                        valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                          
+//                        break;
+//                    case 'd' :
+//                    case 'D' :
+//                        valueHandler = new LiteralValue( new Double( (String) descr.getValue() ) );                        
+//                        break;
+//                    default :
+//                        throw new IllegalArgumentException( "invalid type identifier '" + c + "' used with number [" + text + "]" );
+//                }
+//            } else {
+//                valueHandler = new LiteralValue( new Float( (String) descr.getValue() ) );                
+//            }
+//        } else if ( descr.getType() == ArgumentValueDescr.STRING ) {
+//            // handling a literal
+//            valueHandler = new LiteralValue( (String) descr.getValue() );
+//        } else {
+//            // This should never happen
+//            throw new IllegalArgumentException( "Unable to determine type for argument [" + descr.getType() + "]" );
+//        }
+//        return valueHandler;
+//    }
 
     private EvalCondition build(final EvalDescr evalDescr) {
 
