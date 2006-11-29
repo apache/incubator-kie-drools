@@ -708,23 +708,18 @@ from_source returns [DeclarativeInvokerDescr ds]
 	@init {
 		ds = null;
 	}
-	:
-		(var=ID '.' field=ID  (arg=square_chunk)?
-		
+	:	
+		(var=ID '.' field=ID  arg=square_chunk		
 			{
-          		 FieldAccessDescr fa;
-			  if ( arg == null )   {
-				  fa = new FieldAccessDescr(var.getText(), field.getText());	
-			  } else {
-				  fa = new FieldAccessDescr(var.getText(), field.getText(), arg);				  
-			  }
+          		  FieldAccessDescr fa;
+		          fa = new FieldAccessDescr(var.getText(), field.getText(), arg);	
 			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
 			  ds = fa;
 			 }
 	
 		)  
 		|
-		(var=ID '.' method=ID '(' args=paren_chunk ')' 
+		(var=ID '.' method=ID args=paren_chunk
 			{
 			  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), method.getText());	
 			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
@@ -733,8 +728,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 			}	
 		)
 		|
-		(functionName=ID '(' args=paren_chunk ')'
-			{
+		(functionName=ID args=paren_chunk			{
 			FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
 			fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
 			fc.setArguments(args);
@@ -743,6 +737,16 @@ from_source returns [DeclarativeInvokerDescr ds]
 
 		
 		)
+		|
+		(var=ID '.' field=ID 		
+			{
+          		  FieldAccessDescr fa;
+		          fa = new FieldAccessDescr(var.getText(), field.getText());	
+			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+			  ds = fa;
+			 }
+	
+		) 		
 	
 	;	
 	
