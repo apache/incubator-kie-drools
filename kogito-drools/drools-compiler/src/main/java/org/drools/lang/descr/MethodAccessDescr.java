@@ -14,7 +14,7 @@ import java.util.List;
 public class MethodAccessDescr extends DeclarativeInvokerDescr {
 
 	private String methodName;
-	private List arguments;
+	private String arguments;
 	private String variableName;
 	
 	public MethodAccessDescr(String variableName, String methodName) {
@@ -22,11 +22,11 @@ public class MethodAccessDescr extends DeclarativeInvokerDescr {
 		this.variableName = variableName;
 	}
 
-	public List getArguments() {
+	public String getArguments() {
 		return arguments;
 	}
 
-	public void setArguments(List arguments) {
+	public void setArguments(String arguments) {
 		this.arguments = arguments;
 	}
 
