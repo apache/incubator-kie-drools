@@ -709,7 +709,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 		ds = null;
 	}
 	:
-		(var=ID '.' field=ID  ( arg=square_chunk )?
+		(var=ID '.' field=ID  (arg=square_chunk)?
 		
 			{
           		 FieldAccessDescr fa;
@@ -724,7 +724,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 	
 		)  
 		|
-		(var=ID '.' method=ID '(' arg=paren_chunk ')' 
+		(var=ID '.' method=ID '(' args=paren_chunk ')' 
 			{
 			  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), method.getText());	
 			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
@@ -787,7 +787,6 @@ collect_statement returns [CollectDescr d]
 		        d.setSourceColumn( (ColumnDescr)column );
 		}
 	; 		
-
 /*
 argument_list returns [ArrayList args]
 	@init {
@@ -820,9 +819,45 @@ argument_value returns [ArgumentValueDescr value]
 		|	t=FLOAT	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.DECIMAL, text); }
 		|	t=BOOL 	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.BOOLEAN, text); }
 		|	t=ID { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text);}	
-		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}				
+		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}	
+		|       m=inline_map {  value=new ArgumentValueDescr(ArgumentValueDescr.MAP, m.getKeyValuePairs() ); }
+		|       a=inline_array { value = new ArgumentValueDescr(ArgumentValueDescr.LIST, a ); }		
 		)
-	;
+	;			
+
+inline_map returns [ArgumentValueDescr.MapDescr mapDescr]
+    @init {
+        mapDescr = new ArgumentValueDescr.MapDescr();
+    }	
+    :  '{' 
+           ( key=argument_value '=>' value=argument_value {
+                 if ( key != null ) {
+                     mapDescr.add( new ArgumentValueDescr.KeyValuePairDescr( key, value ) );
+                 }
+             }
+           )
+           
+           ( (EOL)? ',' (EOL)? key=argument_value '=>' value=argument_value {
+                 if ( key != null ) {
+                     mapDescr.add( new ArgumentValueDescr.KeyValuePairDescr( key, value ) );
+                 }
+             }
+           )*           
+       '}'
+    ;
+    
+inline_array returns [List list]
+    @init {
+    	list = new ArrayList();
+    }		    
+    :
+    '[' arg=argument_value { list.add(arg); }
+    
+     	 ( EOL? ',' EOL? arg=argument_value { list.add(arg); } )*
+      ']'
+      
+    
+    ; 	
 */
 fact_binding returns [BaseDescr d]
 	@init {
@@ -1045,7 +1080,7 @@ paren_chunk returns [String text]
 		} 
                 ')'
 	;
-	
+
 
 square_chunk returns [String text]
 	:
@@ -1077,7 +1112,7 @@ square_chunk returns [String text]
 		    ((CommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
 		} 
                 ']'
-	;	
+	;
 	
 retval_constraint returns [String text]
 	@init {
@@ -1318,11 +1353,11 @@ RIGHT_PAREN
         ;
         
 LEFT_SQUARE
-        :	'('
+        :	'['
         ;
 
 RIGHT_SQUARE
-        :	')'
+        :	']'
         ;        
 
 fragment
