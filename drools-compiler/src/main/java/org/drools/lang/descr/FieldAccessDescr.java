@@ -12,9 +12,9 @@ public class FieldAccessDescr extends DeclarativeInvokerDescr {
 
 	private String variableName;
 	private String fieldName;
-    private ArgumentValueDescr argument;
+    private String argument;
 
-    public FieldAccessDescr(String variableName, String fieldName, ArgumentValueDescr argument) {
+    public FieldAccessDescr(String variableName, String fieldName, String argument) {
         this.variableName = variableName;
         this.fieldName = fieldName;     
         this.argument = argument;
@@ -41,11 +41,11 @@ public class FieldAccessDescr extends DeclarativeInvokerDescr {
 		this.variableName = variableName;
 	}
 
-    public ArgumentValueDescr getArgument() {
+    public String getArgument() {
         return this.argument;
     }
 
-    public void setArgument(ArgumentValueDescr argument) {
+    public void setArgument(String argument) {
         this.argument = argument;
     }   
 	
