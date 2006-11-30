@@ -739,15 +739,6 @@ from_source returns [DeclarativeInvokerDescr ds]
 	
 		)  
 		|
-/*		( ( ID '.' ID LEFT_PAREN ) => var=ID '.' method=ID args=paren_chunk
-			{
-		    	  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), method.getText());	
-			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
-			  ma.setArguments(args);
-			  ds = ma;
-			}	
-		)
-		|*/
 		( functionName=ID args=paren_chunk			
 		        {
 				FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
@@ -756,15 +747,6 @@ from_source returns [DeclarativeInvokerDescr ds]
 				ds = fc;
 			}
 		)
-/*		|
-		( ( ID '.' ID ~(LEFT_PAREN|LEFT_SQUARE) ) => 	var=ID '.' field=ID 	 	
-			{
-	      		  FieldAccessDescr fa;
-		          fa = new FieldAccessDescr(var.getText(), field.getText());	
-			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
-			  ds = fa;
-			}
-		)*/
 	;	
 	
 accumulate_statement returns [AccumulateDescr d]
