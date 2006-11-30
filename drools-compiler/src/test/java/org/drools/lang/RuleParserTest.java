@@ -516,8 +516,45 @@ public class RuleParserTest extends TestCase {
         assertEquals( "doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", string );
     }    
     
-
-
+    
+    public void testSimpleAccessorWithFrom() throws Exception {
+        
+        final RuleDescr rule = parseResource( "test_SimpleAccessorWithFrom.drl" ).rule();
+        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        System.out.println( from.getDataSource() );
+        FieldAccessDescr field = (FieldAccessDescr) from.getDataSource();
+        
+        if (parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
+        assertFalse(parser.hasErrors());    
+        
+        assertNull( field.getArgument() );
+        
+        String string = field.getVariableName() + "." + field.getFieldName();
+        
+        assertEquals( "something.doIt", string );
+    }      
+    
+    public void testSimpleAccessorAndArgWithFrom() throws Exception {
+        
+        final RuleDescr rule = parseResource( "test_SimpleAccessorArgWithFrom.drl" ).rule();
+        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        System.out.println( from.getDataSource() );
+        FieldAccessDescr field = (FieldAccessDescr) from.getDataSource();
+        
+        if (parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
+        assertFalse(parser.hasErrors());    
+        
+        assertNotNull( field.getArgument() );
+        
+        String string = field.getVariableName() + "." + field.getFieldName() + field.getArgument();
+        
+        assertEquals( "something.doIt[\"key\"]", string );
+    }      
+    
 //    public void testFrom() throws Exception {
 //        final RuleDescr rule = parseResource( "from.drl" ).rule();
 //
