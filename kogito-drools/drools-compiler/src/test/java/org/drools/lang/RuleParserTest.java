@@ -482,22 +482,40 @@ public class RuleParserTest extends TestCase {
 
     }
     
-    public void testArguementList() throws Exception {
+    public void testSimpleMethodCallWithFrom() throws Exception {
         
-        final RuleDescr rule = parseResource( "argument_list.drl" ).rule();
+        final RuleDescr rule = parseResource( "test_SimpleMethodCallWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
         System.out.println( from.getDataSource() );
-        MethodAccessDescr meth = (MethodAccessDescr) from.getDataSource();
+        MethodAccessDescr method = (MethodAccessDescr) from.getDataSource();
         
         if (parser.hasErrors()) {
             System.err.println(parser.getErrorMessages());
         }
         assertFalse(parser.hasErrors());    
         
-        String string = meth.getVariableName() + "." + meth.getMethodName() + meth.getArguments();
+        String string = method.getVariableName() + "." + method.getMethodName() + method.getArguments();
         
         assertEquals( "something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", string );
     }
+    
+    public void testSimpleFunctionCallWithFrom() throws Exception {
+        
+        final RuleDescr rule = parseResource( "test_SimpleFunctionCallWithFrom.drl" ).rule();
+        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        System.out.println( from.getDataSource() );
+        FunctionCallDescr func = (FunctionCallDescr) from.getDataSource();
+        
+        if (parser.hasErrors()) {
+            System.err.println(parser.getErrorMessages());
+        }
+        assertFalse(parser.hasErrors());    
+        
+        String string = func.getName() + func.getArguments();
+        
+        assertEquals( "doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", string );
+    }    
+    
 
 
 //    public void xxxtestFrom() throws Exception {
