@@ -493,7 +493,10 @@ public class RuleParserTest extends TestCase {
             System.err.println(parser.getErrorMessages());
         }
         assertFalse(parser.hasErrors());    
-        assertEquals( "( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", meth.getArguments() );
+        
+        String string = meth.getVariableName() + "." + meth.getMethodName() + meth.getArguments();
+        
+        assertEquals( "something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", string );
     }
 
 
