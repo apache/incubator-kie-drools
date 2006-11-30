@@ -40,6 +40,18 @@ public class SwitchingCommonTokenStream extends CommonTokenStream {
         super(tokenSource, channel);
     }
 
+    public Integer getTokenTypeChannel(int tokenType) {
+        if( this.channelOverrideMap != null ) {
+            return (Integer) this.channelOverrideMap.get( new Integer(tokenType) );
+        }
+        return null;
+    }
+    
+    public void removeTokenTypeChannel(int tokenType) {
+        if( this.channelOverrideMap != null ) {
+            this.channelOverrideMap.remove( new Integer(tokenType) );
+        }
+    }
     
     /** 
      * @inheritdoc
