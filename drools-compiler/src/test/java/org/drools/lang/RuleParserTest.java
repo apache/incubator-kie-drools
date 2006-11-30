@@ -73,21 +73,21 @@ public class RuleParserTest extends TestCase {
         super.tearDown();
     }
 
-    public void xxxtestPackage_OneSegment() throws Exception {
+    public void testPackage_OneSegment() throws Exception {
         final String packageName = parse( "package foo" ).package_statement();
         assertEquals( "foo",
                       packageName );
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestPackage_MultipleSegments() throws Exception {
+    public void testPackage_MultipleSegments() throws Exception {
         final String packageName = parse( "package foo.bar.baz;" ).package_statement();
         assertEquals( "foo.bar.baz",
                       packageName );
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestCompilationUnit() throws Exception {
+    public void testCompilationUnit() throws Exception {
         parse( "package foo; import com.foo.Bar; import com.foo.Baz;" ).compilation_unit();
         assertEquals( "foo",
                       this.parser.getPackageDescr().getName() );
@@ -100,7 +100,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestEmptyRule() throws Exception {
+    public void testEmptyRule() throws Exception {
         final RuleDescr rule = parseResource( "empty_rule.drl" ).rule();
 
         assertNotNull( rule );
@@ -113,7 +113,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestKeywordCollisions() throws Exception {
+    public void testKeywordCollisions() throws Exception {
         //MN: this really needs the multiphase parser for it to work properly
         final DRLParser parser = parseResource( "eol_funny_business.drl" );
 
@@ -129,7 +129,7 @@ public class RuleParserTest extends TestCase {
         
     }
     
-    public void xxxtestPartialAST() throws Exception {
+    public void testPartialAST() throws Exception {
         parseResource( "column_partial.drl" );
         
         parser.compilation_unit();
@@ -149,7 +149,7 @@ public class RuleParserTest extends TestCase {
                 
     }
     
-    public void xxxtestTemplates() throws Exception {
+    public void testTemplates() throws Exception {
         
         final DRLParser parser = parseResource( "test_Templates.drl" );
 
@@ -194,7 +194,7 @@ public class RuleParserTest extends TestCase {
         
     }    
     
-    public void xxxtestTernaryExpression() throws Exception {
+    public void testTernaryExpression() throws Exception {
 
         final DRLParser parser = parseResource( "ternary_expression.drl" );
 
@@ -231,7 +231,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    public void xxxtestFunctionWithArrays() throws Exception {
+    public void testFunctionWithArrays() throws Exception {
         DRLParser parser = parseResource( "function_arrays.drl" );
 
         parser.compilation_unit();
@@ -260,7 +260,7 @@ public class RuleParserTest extends TestCase {
                       func.getParameterTypes().get( 0 ) );
     }
 
-    public void xxxtestAlmostEmptyRule() throws Exception {
+    public void testAlmostEmptyRule() throws Exception {
         final RuleDescr rule = parseResource( "almost_empty_rule.drl" ).rule();
 
         assertNotNull( rule );
@@ -273,7 +273,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestQuotedStringNameRule() throws Exception {
+    public void testQuotedStringNameRule() throws Exception {
         final RuleDescr rule = parseResource( "quoted_string_name_rule.drl" ).rule();
 
         assertNotNull( rule );
@@ -286,7 +286,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestNoLoop() throws Exception {
+    public void testNoLoop() throws Exception {
         final RuleDescr rule = parseResource( "no-loop.drl" ).rule();
 
         assertNotNull( rule );
@@ -302,7 +302,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    public void xxxtestAutofocus() throws Exception {
+    public void testAutofocus() throws Exception {
         final RuleDescr rule = parseResource( "autofocus.drl" ).rule();
 
         assertNotNull( rule );
@@ -318,7 +318,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestConsequenceWithDeclaration() throws Exception {
+    public void testConsequenceWithDeclaration() throws Exception {
         final RuleDescr rule = parseResource( "declaration-in-consequence.drl" ).rule();
 
         assertNotNull( rule );
@@ -343,7 +343,7 @@ public class RuleParserTest extends TestCase {
     }
     
     
-    public void xxxtestRuleParseLhs() throws Exception {
+    public void testRuleParseLhs() throws Exception {
     	String text = "Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") \n";
     	AndDescr descrs = new AndDescr();
 		CharStream charStream = new ANTLRStringStream( text );
@@ -359,7 +359,7 @@ public class RuleParserTest extends TestCase {
     	
     }
 
-    public void xxxtestLiteralBoolAndNegativeNumbersRule() throws Exception {
+    public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
         final DRLParser parser = parseResource( "literal_bool_and_negative.drl" );
         final RuleDescr rule = parser.rule();
         assertFalse( parser.hasErrors() );
@@ -426,7 +426,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestChunkWithoutParens() throws Exception {
+    public void testChunkWithoutParens() throws Exception {
         final String chunk = parse( "( foo )" ).paren_chunk();
 
         assertEquals( "( foo )",
@@ -435,7 +435,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestChunkWithParens() throws Exception {
+    public void testChunkWithParens() throws Exception {
         final String chunk = parse( "(fnord())" ).paren_chunk();
 
         assertEqualsIgnoreWhitespace( "(fnord())",
@@ -444,7 +444,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestChunkWithParensAndQuotedString() throws Exception {
+    public void testChunkWithParensAndQuotedString() throws Exception {
         final String chunk = parse( "( fnord( \"cheese\" ) )" ).paren_chunk();
 
         assertEqualsIgnoreWhitespace( "( fnord( \"cheese\" ) )",
@@ -453,7 +453,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestChunkWithRandomCharac5ters() throws Exception {
+    public void testChunkWithRandomCharac5ters() throws Exception {
         final String chunk = parse( "( %*9dkj)" ).paren_chunk();
 
         assertEqualsIgnoreWhitespace( "( %*9dkj)",
@@ -462,7 +462,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestEmptyColumn() throws Exception {
+    public void testEmptyColumn() throws Exception {
         parseResource( "test_EmptyColumn.drl" );
         this.parser.compilation_unit();
         final PackageDescr packageDescr = this.parser.getPackageDescr();
@@ -518,7 +518,7 @@ public class RuleParserTest extends TestCase {
     
 
 
-//    public void xxxtestFrom() throws Exception {
+//    public void testFrom() throws Exception {
 //        final RuleDescr rule = parseResource( "from.drl" ).rule();
 //
 //        if(parser.hasErrors()) {
@@ -620,7 +620,7 @@ public class RuleParserTest extends TestCase {
 //        assertEquals("Bam", ((ColumnDescr)rule.getLhs().getDescrs().get(8)).getObjectType());
 //    }
     
-    public void xxxtestSimpleRule() throws Exception {
+    public void testSimpleRule() throws Exception {
         final RuleDescr rule = parseResource( "simple_rule.drl" ).rule();
 
         assertNotNull( rule );
@@ -713,7 +713,7 @@ public class RuleParserTest extends TestCase {
     }
     
     
-    public void xxxtestRestrictionsMultiple() throws Exception {
+    public void testRestrictionsMultiple() throws Exception {
         final RuleDescr rule = parseResource( "restrictions_test.drl" ).rule();
         
         assertFalse(this.parser.getErrors().toString(),this.parser.hasErrors());        
@@ -771,7 +771,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    public void xxxtestLineNumberInAST() throws Exception {
+    public void testLineNumberInAST() throws Exception {
         //also see testSimpleExpander to see how this works with an expander (should be the same). 
 
         final RuleDescr rule = parseResource( "simple_rule.drl" ).rule();
@@ -831,7 +831,7 @@ public class RuleParserTest extends TestCase {
         assertEquals("\n first\n\n\n\n\n\n\n second", rhs);
     }
 
-    public void xxxtestMultiBindings() throws Exception {
+    public void testMultiBindings() throws Exception {
         final RuleDescr rule = parseResource( "multiple_bindings.drl" ).rule();
         assertNotNull( rule );
         assertEquals( "simple_rule",
@@ -846,7 +846,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    public void xxxtestMultiBindingsMore() throws Exception {
+    public void testMultiBindingsMore() throws Exception {
         final RuleDescr rule = parseResource( "multiple_bindings_more.drl" ).rule();
         assertNotNull( rule );
         assertEquals( "simple_rule",
@@ -863,7 +863,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    public void xxxtestLhsSemicolonDelim() throws Exception {
+    public void testLhsSemicolonDelim() throws Exception {
         final RuleDescr rule = parseResource( "lhs_semicolon_delim.drl" ).rule();
 
         assertNotNull( rule );
@@ -949,7 +949,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestNotNode() throws Exception {
+    public void testNotNode() throws Exception {
         final RuleDescr rule = parseResource( "rule_not.drl" ).rule();
 
         assertNotNull( rule );
@@ -983,7 +983,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
     
-    public void xxxtestFunctionImport() throws Exception {
+    public void testFunctionImport() throws Exception {
         final DRLParser parser = parseResource( "test_FunctionImport.drl" );
         parser.compilation_unit();
         assertFalse(parser.hasErrors());
@@ -997,7 +997,7 @@ public class RuleParserTest extends TestCase {
         
     }
 
-    public void xxxtestNotExistWithBrackets() throws Exception {
+    public void testNotExistWithBrackets() throws Exception {
 
         final DRLParser parser = parseResource( "not_exist_with_brackets.drl" );
 
@@ -1031,13 +1031,13 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestNotBindindShouldBarf() throws Exception {
+    public void testNotBindindShouldBarf() throws Exception {
         final DRLParser parser = parseResource( "not_with_binding_error.drl" );
         parser.compilation_unit();
         assertTrue( parser.hasErrors() );
     }
 
-    public void xxxtestSimpleQuery() throws Exception {
+    public void testSimpleQuery() throws Exception {
         final QueryDescr query = parseResource( "simple_query.drl" ).query();
 
         assertNotNull( query );
@@ -1107,7 +1107,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestQueryRuleMixed() throws Exception {
+    public void testQueryRuleMixed() throws Exception {
         final DRLParser parser = parseResource( "query_and_rule.drl" );
         parser.compilation_unit();
 
@@ -1133,7 +1133,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestMultipleRules() throws Exception {
+    public void testMultipleRules() throws Exception {
         final DRLParser parser = parseResource( "multiple_rules.drl" );
         parser.compilation_unit();
 
@@ -1441,7 +1441,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    public void xxxtestBasicBinding() throws Exception {
+    public void testBasicBinding() throws Exception {
         final DRLParser parser = parseResource( "basic_binding.drl" );
         parser.compilation_unit();
 
@@ -1465,7 +1465,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestBoundVariables() throws Exception {
+    public void testBoundVariables() throws Exception {
         final DRLParser parser = parseResource( "bindings.drl" );
         parser.compilation_unit();
 
@@ -1522,7 +1522,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
     
-    public void xxxtestOrNesting() throws Exception {
+    public void testOrNesting() throws Exception {
         final DRLParser parser = parseResource( "or_nesting.drl" );
         parser.compilation_unit();
 
@@ -1553,7 +1553,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** Test that explicit "&&", "||" works as expected */
-    public void xxxtestAndOrRules() throws Exception {
+    public void testAndOrRules() throws Exception {
         final DRLParser parser = parseResource( "and_or_rule.drl" );
         parser.compilation_unit();
 
@@ -1652,7 +1652,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** test basic foo : Fact() || Fact() stuff */
-    public void xxxtestOrWithBinding() throws Exception {
+    public void testOrWithBinding() throws Exception {
         final DRLParser parser = parseResource( "or_binding.drl" );
         parser.compilation_unit();
 
@@ -1691,7 +1691,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** test basic foo : Fact() || Fact() stuff binding to an "or"*/
-    public void xxxtestOrBindingComplex() throws Exception {
+    public void testOrBindingComplex() throws Exception {
         final DRLParser parser = parseResource( "or_binding_complex.drl" );
         parser.compilation_unit();
 
@@ -1729,7 +1729,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestOrBindingWithBrackets() throws Exception {
+    public void testOrBindingWithBrackets() throws Exception {
         final DRLParser parser = parseResource( "or_binding_with_brackets.drl" );
         parser.compilation_unit();
 
@@ -1768,7 +1768,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** */
-    public void xxxtestBracketsPrecedence() throws Exception {
+    public void testBracketsPrecedence() throws Exception {
         final DRLParser parser = parseResource( "brackets_precedence.drl" );
         parser.compilation_unit();
 
@@ -1811,7 +1811,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestEvalMultiple() throws Exception {
+    public void testEvalMultiple() throws Exception {
         final DRLParser parser = parseResource( "eval_multiple.drl" );
         parser.compilation_unit();
 
@@ -1834,7 +1834,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    public void xxxtestWithEval() throws Exception {
+    public void testWithEval() throws Exception {
         final DRLParser parser = parseResource( "with_eval.drl" );
         parser.compilation_unit();
 
@@ -1860,7 +1860,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestWithRetval() throws Exception {
+    public void testWithRetval() throws Exception {
         final DRLParser parser = parseResource( "with_retval.drl" );
         parser.compilation_unit();
 
@@ -1890,7 +1890,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestWithPredicate() throws Exception {
+    public void testWithPredicate() throws Exception {
         final DRLParser parser = parseResource( "with_predicate.drl" );
         parser.compilation_unit();
 
@@ -1916,7 +1916,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrorMessages().toString(), parser.hasErrors() );
     }
 
-    public void xxxtestNotWithConstraint() throws Exception {
+    public void testNotWithConstraint() throws Exception {
         final DRLParser parser = parseResource( "not_with_constraint.drl" );
         parser.compilation_unit();
 
@@ -1949,7 +1949,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestGlobal() throws Exception {
+    public void testGlobal() throws Exception {
         final DRLParser parser = parseResource( "globals.drl" );
         parser.compilation_unit();
 
@@ -1974,7 +1974,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestFunctions() throws Exception {
+    public void testFunctions() throws Exception {
         final DRLParser parser = parseResource( "functions.drl" );
         parser.compilation_unit();
 
@@ -2022,7 +2022,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestComment() throws Exception {
+    public void testComment() throws Exception {
         final DRLParser parser = parseResource( "comment.drl" );
         parser.compilation_unit();
 
@@ -2035,7 +2035,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestAttributes() throws Exception {
+    public void testAttributes() throws Exception {
         final RuleDescr rule = parseResource( "rule_attributes.drl" ).rule();
         assertEquals( "simple_rule",
                       rule.getName() );
@@ -2079,7 +2079,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestAttributes_alternateSyntax() throws Exception {
+    public void testAttributes_alternateSyntax() throws Exception {
         final RuleDescr rule = parseResource( "rule_attributes_alt.drl" ).rule();
         assertEquals( "simple_rule",
                       rule.getName() );
@@ -2123,7 +2123,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestEnumeration() throws Exception {
+    public void testEnumeration() throws Exception {
         final RuleDescr rule = parseResource( "enumeration.drl" ).rule();
         assertEquals( "simple_rule",
                       rule.getName() );
@@ -2160,24 +2160,24 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
 
-    public void xxxtestInvalidSyntax_Catches() throws Exception {
+    public void testInvalidSyntax_Catches() throws Exception {
         parseResource( "invalid_syntax.drl" ).compilation_unit();
         assertTrue( this.parser.hasErrors() );
     }
 
-    public void xxxtestMultipleErrors() throws Exception {
+    public void testMultipleErrors() throws Exception {
         parseResource( "multiple_errors.drl" ).compilation_unit();
         assertTrue( this.parser.hasErrors() );
         assertEquals( 2,
                       this.parser.getErrors().size() );
     }
 
-    public void xxxtestExtraLhsNewline() throws Exception {
+    public void testExtraLhsNewline() throws Exception {
         parseResource( "extra_lhs_newline.drl" ).compilation_unit();
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestStatementOrdering1() throws Exception {
+    public void testStatementOrdering1() throws Exception {
         parseResource( "statement_ordering_1.drl" );
         final MockExpanderResolver mockExpanderResolver = new MockExpanderResolver();
         this.parser.setExpanderResolver( mockExpanderResolver );
@@ -2215,7 +2215,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestRuleNamesStartingWithNumbers() throws Exception {
+    public void testRuleNamesStartingWithNumbers() throws Exception {
         parseResource( "rule_names_number_prefix.drl" ).compilation_unit();
 
         assertFalse( this.parser.getErrors().toString(), this.parser.hasErrors() );
@@ -2231,7 +2231,7 @@ public class RuleParserTest extends TestCase {
                       ((RuleDescr) pkg.getRules().get( 1 )).getName() );
     }
 
-    public void xxxtestEvalWithNewline() throws Exception {
+    public void testEvalWithNewline() throws Exception {
         parseResource( "eval_with_newline.drl" ).compilation_unit();
 
         if(parser.hasErrors()) {
@@ -2240,7 +2240,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void xxxtestEvalWithSemicolon() throws Exception {
+    public void testEvalWithSemicolon() throws Exception {
         parseResource( "eval_with_semicolon.drl" ).compilation_unit();
 
         assertTrue( this.parser.hasErrors() );
@@ -2249,7 +2249,7 @@ public class RuleParserTest extends TestCase {
         assertTrue( ((String) this.parser.getErrorMessages().get( 0 )).indexOf( "Trailing semi-colon not allowed" ) >= 0 );
     }
     
-    public void xxxtestEndPosition() throws Exception {
+    public void testEndPosition() throws Exception {
         parseResource( "test_EndPosition.drl" ).compilation_unit();
         RuleDescr rule = (RuleDescr) parser.getPackageDescr().getRules().get( 0 );
         ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
@@ -2260,7 +2260,7 @@ public class RuleParserTest extends TestCase {
         
     }
 
-    public void xxxtestQualifiedClassname() throws Exception {
+    public void testQualifiedClassname() throws Exception {
         parseResource( "qualified_classname.drl" ).compilation_unit();
 
         assertFalse( this.parser.hasErrors() );
@@ -2274,7 +2274,7 @@ public class RuleParserTest extends TestCase {
                       c.getObjectType() );
     }
 
-    public void xxxtestAccumulate() throws Exception {
+    public void testAccumulate() throws Exception {
         final DRLParser parser = parseResource( "accumulate.drl" );
         parser.compilation_unit();
 
@@ -2304,7 +2304,7 @@ public class RuleParserTest extends TestCase {
                       col.getObjectType() );
     }
 
-    public void xxxtestAccumulateWithBindings() throws Exception {
+    public void testAccumulateWithBindings() throws Exception {
         final DRLParser parser = parseResource( "accumulate_with_bindings.drl" );
         parser.compilation_unit();
 
@@ -2332,7 +2332,7 @@ public class RuleParserTest extends TestCase {
                       col.getObjectType() );
     }
 
-    public void xxxtestCollect() throws Exception {
+    public void testCollect() throws Exception {
         final DRLParser parser = parseResource( "collect.drl" );
         parser.compilation_unit();
 
@@ -2356,7 +2356,7 @@ public class RuleParserTest extends TestCase {
                       col.getObjectType() );
     }
 
-    public void xxxtestPredicate() throws Exception {
+    public void testPredicate() throws Exception {
         List constraints = new ArrayList();
         parse( "$var : attr -> ( $var.equals(\"xyz\") )" ).predicate(constraints);
         
