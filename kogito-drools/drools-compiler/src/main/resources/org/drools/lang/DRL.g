@@ -1,4 +1,5 @@
 grammar DRL; 
+options {backtrack=true;}
 
 @parser::header {
 	package org.drools.lang;
@@ -397,13 +398,14 @@ function
 query returns [QueryDescr query]
 	@init {
 		query = null;
+		AndDescr lhs = null;
 	}
 	:
 		loc='query' queryName=word
 		{ 
 			query = new QueryDescr( queryName, null ); 
 			query.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			AndDescr lhs = new AndDescr(); query.setLhs( lhs ); 
+			lhs = new AndDescr(); query.setLhs( lhs ); 
 			lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 		(
@@ -453,6 +455,7 @@ rule returns [RuleDescr rule]
 	@init {
 		rule = null;
 		String consequence = "";
+		AndDescr lhs = null;
 	}
 	:
 		loc='rule' ruleName=word 
@@ -464,7 +467,7 @@ rule returns [RuleDescr rule]
 		rule_attributes[rule]
 		(	loc='when' ':'?
 			{ 
-				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
+				lhs = new AndDescr(); rule.setLhs( lhs ); 
 				lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			}
 			(
@@ -693,15 +696,15 @@ from_statement returns [FromDescr d]
 	@init {
 		d=factory.createFrom();
 	}
- 	:
- 		'from' ds=from_source
- 		{
- 			d.setDataSource(ds);
- 		
- 		}
- 		
- 		
- 		
+	:
+	'from' ds=from_source
+		{
+			d.setDataSource(ds);
+		
+		}
+		
+		
+		
 	;
 	
 from_source returns [DeclarativeInvokerDescr ds]
@@ -709,45 +712,59 @@ from_source returns [DeclarativeInvokerDescr ds]
 		ds = null;
 	}
 	:	
-		(var=ID '.' field=ID  arg=square_chunk		
-			{
-          		  FieldAccessDescr fa;
-		          fa = new FieldAccessDescr(var.getText(), field.getText(), arg);	
+		( var=ID '.' field=ID  
+		    {
+			FieldAccessDescr fa;
+		        fa = new FieldAccessDescr(var.getText(), field.getText());	
+			fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+			ds = fa;
+		    }
+		  (
+		    ( LEFT_SQUARE ) => sqarg=square_chunk
+		      {
+	      		  FieldAccessDescr fa;
+		          fa = new FieldAccessDescr(var.getText(), field.getText(), sqarg);	
 			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
 			  ds = fa;
-			 }
+		      }
+		    |
+		    ( LEFT_PAREN ) => paarg=paren_chunk
+			{
+		    	  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), field.getText());	
+			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+			  ma.setArguments(paarg);
+			  ds = ma;
+			}
+		  )?
 	
 		)  
 		|
-		(var=ID '.' method=ID args=paren_chunk
+/*		( ( ID '.' ID LEFT_PAREN ) => var=ID '.' method=ID args=paren_chunk
 			{
-			  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), method.getText());	
+		    	  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), method.getText());	
 			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
 			  ma.setArguments(args);
 			  ds = ma;
 			}	
 		)
-		|
-		(functionName=ID args=paren_chunk			{
-			FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
-			fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
-			fc.setArguments(args);
-			ds = fc;
+		|*/
+		( functionName=ID args=paren_chunk			
+		        {
+				FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
+				fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
+				fc.setArguments(args);
+				ds = fc;
 			}
-
-		
 		)
-		|
-		(var=ID '.' field=ID 		
+/*		|
+		( ( ID '.' ID ~(LEFT_PAREN|LEFT_SQUARE) ) => 	var=ID '.' field=ID 	 	
 			{
-          		  FieldAccessDescr fa;
+	      		  FieldAccessDescr fa;
 		          fa = new FieldAccessDescr(var.getText(), field.getText());	
 			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
 			  ds = fa;
-			 }
-	
-		) 		
-	
+			}
+		)*/
 	;	
 	
 accumulate_statement returns [AccumulateDescr d]
@@ -928,17 +945,18 @@ fact returns [BaseDescr d]
  		}
  		loc='(' {
  				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
- 			} (	c=constraints
- 				{
-		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
- 						((ColumnDescr)d).addDescr( (BaseDescr) cIter.next() );
- 					}
+ 			} 
+ 		(	c=constraints
+ 			{
+		 		for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
+ 					((ColumnDescr)d).addDescr( (BaseDescr) cIter.next() );
  				}
- 
- 				)? endLoc=')'
- 				{
- 					d.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
- 				}
+ 			}
+  		)? 
+ 		endLoc=')'
+		{
+			d.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
+ 		}
  	;
 	
 	
@@ -1054,68 +1072,85 @@ predicate[List constraints]
 	;
 
 paren_chunk returns [String text]
+        @init {
+           StringBuffer buf = null;
+           Integer channel = null;
+        }
 	:
 	        {
-		    ((CommonTokenStream)input).setTokenTypeChannel(WS, Token.DEFAULT_CHANNEL);
+	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
+		    buf = new StringBuffer();
 	        }
-		loc='('
+		loc=LEFT_PAREN 
 		{
-		    int parenCounter = 1;
-		    StringBuffer buf = new StringBuffer();
-		    buf.append(loc.getText());
-
-                    do {
-                        Token nextToken = input.LT(1);
-                        buf.append( nextToken.getText() );
-                        
-                        int nextTokenId = nextToken.getType();
-                        if( nextTokenId == RIGHT_PAREN ) {
-                            parenCounter--;
-                        } else if( nextTokenId == LEFT_PAREN ) {
-                            parenCounter++;
-                        }
-                        if( parenCounter == 0 ) {
-                            break;
-                        }
-                        input.consume();
-		    } while( true );
-		    text = buf.toString();
-		    ((CommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		    buf.append( loc.getText());
+ 
 		} 
-                ')'
+		( 
+			~(LEFT_PAREN|RIGHT_PAREN)
+			  {
+			    buf.append( input.LT(-1).getText() );
+			  }
+			|
+			chunk=paren_chunk
+			  {
+			    buf.append( chunk );
+			  }
+		)*
+		{
+		    if( channel != null ) {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
+		    } else {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		    }
+		}
+                loc=RIGHT_PAREN
+                {
+                    buf.append( loc.getText() );
+		    text = buf.toString();
+                }
 	;
 
-
 square_chunk returns [String text]
+        @init {
+           StringBuffer buf = null;
+           Integer channel = null;
+        }
 	:
 	        {
-		    ((CommonTokenStream)input).setTokenTypeChannel(WS, Token.DEFAULT_CHANNEL);
+	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
+		    buf = new StringBuffer();
 	        }
-		loc='['
+		loc=LEFT_SQUARE 
 		{
-		    int parenCounter = 1;
-		    StringBuffer buf = new StringBuffer();
-		    buf.append(loc.getText());
-
-                    do {
-                        Token nextToken = input.LT(1);
-                        buf.append( nextToken.getText() );
-                        
-                        int nextTokenId = nextToken.getType();
-                        if( nextTokenId == RIGHT_SQUARE ) {
-                            parenCounter--;
-                        } else if( nextTokenId == LEFT_SQUARE ) {
-                            parenCounter++;
-                        }
-                        if( parenCounter == 0 ) {
-                            break;
-                        }
-                        input.consume();
-		    } while( true );
-		    text = buf.toString();
-		    ((CommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		    buf.append( loc.getText());
+ 
 		} 
-                ']'
+		( 
+			~(LEFT_SQUARE|RIGHT_SQUARE)
+			  {
+			    buf.append( input.LT(-1).getText() );
+			  }
+			|
+			chunk=square_chunk
+			  {
+			    buf.append( chunk );
+			  }
+		)*
+		{
+		    if( channel != null ) {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
+		    } else {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		    }
+		}
+                loc=RIGHT_SQUARE
+                {
+                    buf.append( loc.getText() );
+		    text = buf.toString();
+                }
 	;
 	
 retval_constraint returns [String text]
@@ -1134,9 +1169,9 @@ retval_constraint returns [String text]
 lhs_or returns [BaseDescr d]
 	@init{
 		d = null;
+		OrDescr or = null;
 	}
 	:	
-		{ OrDescr or = null; }
 		left=lhs_and {d = left; }
 		( ('or'|'||')
 			right=lhs_and 
@@ -1155,9 +1190,9 @@ lhs_or returns [BaseDescr d]
 lhs_and returns [BaseDescr d]
 	@init{
 		d = null;
+		AndDescr and = null;
 	}
 	:
-		{ AndDescr and = null; }
 		left=lhs_unary { d = left; }
 		( ('and'|'&&')
 			right=lhs_unary
@@ -1363,11 +1398,6 @@ LEFT_SQUARE
 RIGHT_SQUARE
         :	']'
         ;        
-
-fragment
-NO_PAREN
-	: ~('('|')')
-	;
 
 fragment
 NO_CURLY
