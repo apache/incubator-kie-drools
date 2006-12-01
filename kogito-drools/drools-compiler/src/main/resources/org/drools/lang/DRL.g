@@ -710,36 +710,10 @@ from_statement returns [FromDescr d]
 from_source returns [DeclarativeInvokerDescr ds]
 	@init {
 		ds = null;
+		AccessorDescr ad = null;
 	}
 	:	
-		( var=ID '.' field=ID  
-		    {
-			FieldAccessDescr fa;
-		        fa = new FieldAccessDescr(var.getText(), field.getText());	
-			fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
-			ds = fa;
-		    }
-		  (
-		    ( LEFT_SQUARE ) => sqarg=square_chunk
-		      {
-	      		  FieldAccessDescr fa;
-		          fa = new FieldAccessDescr(var.getText(), field.getText(), sqarg);	
-			  fa.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
-			  ds = fa;
-		      }
-		    |
-		    ( LEFT_PAREN ) => paarg=paren_chunk
-			{
-		    	  MethodAccessDescr ma = new MethodAccessDescr(var.getText(), field.getText());	
-			  ma.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
-			  ma.setArguments(paarg);
-			  ds = ma;
-			}
-		  )?
-	
-		)  
-		|
-		( functionName=ID args=paren_chunk			
+		( ( ID LEFT_PAREN ) => functionName=ID args=paren_chunk			
 		        {
 				FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
 				fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
@@ -747,6 +721,49 @@ from_source returns [DeclarativeInvokerDescr ds]
 				ds = fc;
 			}
 		)
+		|
+		(   var=ID 
+		    {
+			ad = new AccessorDescr(var.getText());	
+			ad.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+			ds = ad;
+		    }
+		    expression_chain[ad]?
+		)  
+	;	
+	
+expression_chain[AccessorDescr as]
+	@init {
+  		FieldAccessDescr fa = null;
+	    	MethodAccessDescr ma = null;	
+	}
+	:
+	( '.' field=ID  
+	    {
+	        fa = new FieldAccessDescr(field.getText());	
+		fa.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
+	    }
+	  (
+	    ( LEFT_SQUARE ) => sqarg=square_chunk
+	      {
+	          fa.setArgument( sqarg );	
+	      }
+	    |
+	    ( LEFT_PAREN ) => paarg=paren_chunk
+		{
+	    	  ma = new MethodAccessDescr( field.getText(), paarg );	
+		  ma.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
+		}
+	  )?
+	  {
+	      if( ma != null ) {
+	          as.addInvoker( ma );
+	      } else {
+	          as.addInvoker( fa );
+	      }
+	  }
+	  expression_chain[as]?
+	)  
 	;	
 	
 accumulate_statement returns [AccumulateDescr d]

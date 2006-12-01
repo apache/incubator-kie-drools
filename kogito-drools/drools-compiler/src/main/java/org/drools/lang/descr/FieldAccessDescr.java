@@ -10,21 +10,20 @@ package org.drools.lang.descr;
  */
 public class FieldAccessDescr extends DeclarativeInvokerDescr {
 
-	private String variableName;
-	private String fieldName;
+    private static final long serialVersionUID = 3262446325341307441L;
+    
+    private String fieldName;
     private String argument;
 
-    public FieldAccessDescr(String variableName, String fieldName, String argument) {
-        this.variableName = variableName;
+    public FieldAccessDescr(String fieldName) {
+        this.fieldName = fieldName;     
+    }
+
+    public FieldAccessDescr(String fieldName, String argument) {
         this.fieldName = fieldName;     
         this.argument = argument;
     }    
     
-	public FieldAccessDescr(String variableName, String fieldName) {
-		this.variableName = variableName;
-		this.fieldName = fieldName;		
-	}
-
 	public String getFieldName() {
 		return fieldName;
 	}
@@ -33,22 +32,16 @@ public class FieldAccessDescr extends DeclarativeInvokerDescr {
 		this.fieldName = fieldName;
 	}
 
-	public String getVariableName() {
-		return variableName;
-	}
-
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
-	}
-
     public String getArgument() {
         return this.argument;
     }
 
     public void setArgument(String argument) {
         this.argument = argument;
-    }   
-	
-	
+    }
+    
+    public String toString() {
+        return fieldName + ( (this.argument!=null) ? this.argument: "" );
+    }
 	
 }

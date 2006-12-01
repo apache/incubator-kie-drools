@@ -33,6 +33,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.SwitchingCommonTokenStream;
+import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -487,16 +488,12 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = parseResource( "test_SimpleMethodCallWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
         System.out.println( from.getDataSource() );
-        MethodAccessDescr method = (MethodAccessDescr) from.getDataSource();
+        AccessorDescr method = (AccessorDescr) from.getDataSource();
         
-        if (parser.hasErrors()) {
-            System.err.println(parser.getErrorMessages());
-        }
-        assertFalse(parser.hasErrors());    
+        assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
         
-        String string = method.getVariableName() + "." + method.getMethodName() + method.getArguments();
-        
-        assertEquals( "something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", string );
+        assertEquals( "something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", 
+                      method.toString());
     }
     
     public void testSimpleFunctionCallWithFrom() throws Exception {
@@ -506,14 +503,10 @@ public class RuleParserTest extends TestCase {
         System.out.println( from.getDataSource() );
         FunctionCallDescr func = (FunctionCallDescr) from.getDataSource();
         
-        if (parser.hasErrors()) {
-            System.err.println(parser.getErrorMessages());
-        }
-        assertFalse(parser.hasErrors());    
+        assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
         
-        String string = func.getName() + func.getArguments();
-        
-        assertEquals( "doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", string );
+        assertEquals( "doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )", 
+                      func.toString() );
     }    
     
     
@@ -522,18 +515,13 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = parseResource( "test_SimpleAccessorWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
         System.out.println( from.getDataSource() );
-        FieldAccessDescr field = (FieldAccessDescr) from.getDataSource();
+        AccessorDescr accessor = (AccessorDescr) from.getDataSource();
         
-        if (parser.hasErrors()) {
-            System.err.println(parser.getErrorMessages());
-        }
-        assertFalse(parser.hasErrors());    
+        assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
         
-        assertNull( field.getArgument() );
+        assertNull( ((FieldAccessDescr) accessor.getInvokers().get( 0 )).getArgument() );
         
-        String string = field.getVariableName() + "." + field.getFieldName();
-        
-        assertEquals( "something.doIt", string );
+        assertEquals( "something.doIt", accessor.toString() );
     }      
     
     public void testSimpleAccessorAndArgWithFrom() throws Exception {
@@ -541,18 +529,13 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = parseResource( "test_SimpleAccessorArgWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
         System.out.println( from.getDataSource() );
-        FieldAccessDescr field = (FieldAccessDescr) from.getDataSource();
+        AccessorDescr accessor = (AccessorDescr) from.getDataSource();
         
-        if (parser.hasErrors()) {
-            System.err.println(parser.getErrorMessages());
-        }
-        assertFalse(parser.hasErrors());    
+        assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
         
-        assertNotNull( field.getArgument() );
+        assertNotNull( ((FieldAccessDescr) accessor.getInvokers().get( 0 )).getArgument() );
         
-        String string = field.getVariableName() + "." + field.getFieldName() + field.getArgument();
-        
-        assertEquals( "something.doIt[\"key\"]", string );
+        assertEquals( "something.doIt[\"key\"]", accessor.toString() );
     }      
     
 //    public void testFrom() throws Exception {
