@@ -1,21 +1,32 @@
 package org.drools.lang.descr;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class AccessorDescr extends DeclarativeInvokerDescr { 
+
+    private static final long serialVersionUID = -8501718084759205602L;
+
     private String variableName;
-    private DeclarativeInvokerDescr[] invokers;
-    public AccessorDescr(String methodName,
-                         DeclarativeInvokerDescr[] accessors) {
+    private List invokers;
+    
+    public AccessorDescr(String rootVariableName) {
         super();
-        this.variableName = methodName;
-        this.invokers = accessors;
+        this.variableName = rootVariableName;
+        this.invokers = new ArrayList();
     }
     
-    public DeclarativeInvokerDescr[] getInvokers() {
+    public DeclarativeInvokerDescr[] getInvokersAsArray() {
+        return (DeclarativeInvokerDescr[]) this.invokers.toArray( new DeclarativeInvokerDescr[0] );
+    }
+    
+    public List getInvokers() {
         return this.invokers;
     }
     
-    public void setInvokers(DeclarativeInvokerDescr[] accessors) {
-        this.invokers = accessors;
+    public void addInvoker(DeclarativeInvokerDescr accessor) {
+        this.invokers.add( accessor );
     }
     
     public String getVariableName() {
@@ -26,6 +37,14 @@ public class AccessorDescr extends DeclarativeInvokerDescr {
         this.variableName = methodName;
     }
     
-    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append( this.variableName );
+        for( Iterator it = this.invokers.iterator(); it.hasNext(); ) {
+            buf.append( "." );
+            buf.append( it.next().toString() );
+        }
+        return buf.toString();
+    }
 
 }
