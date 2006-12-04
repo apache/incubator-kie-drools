@@ -501,7 +501,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = parseResource( "test_SimpleFunctionCallWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
         System.out.println( from.getDataSource() );
-        FunctionCallDescr func = (FunctionCallDescr) from.getDataSource();
+        AccessorDescr func = (AccessorDescr) from.getDataSource();
         
         assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
         
@@ -537,6 +537,18 @@ public class RuleParserTest extends TestCase {
         
         assertEquals( "something.doIt[\"key\"]", accessor.toString() );
     }      
+    
+    public void testComplexChainedAcessor() throws Exception {
+        final RuleDescr rule = parseResource( "test_ComplexChainedCallWithFrom.drl" ).rule();
+        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        System.out.println( from.getDataSource() );
+        AccessorDescr accessor = (AccessorDescr) from.getDataSource();
+ 
+        assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
+ 
+        assertEquals( "doIt1( foo,bar,42,\"hello\",{ a => \"b\"}, [a, \"b\", 42] ).doIt2(bar, [a, \"b\", 42]).field[\"key\"]", 
+                      accessor.toString() );        
+    }    
     
 //    public void testFrom() throws Exception {
 //        final RuleDescr rule = parseResource( "from.drl" ).rule();

@@ -11,6 +11,10 @@ public class AccessorDescr extends DeclarativeInvokerDescr {
     private String variableName;
     private List invokers;
     
+    public AccessorDescr() {
+        this( null );
+    }
+    
     public AccessorDescr(String rootVariableName) {
         super();
         this.variableName = rootVariableName;
@@ -39,9 +43,11 @@ public class AccessorDescr extends DeclarativeInvokerDescr {
     
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append( this.variableName );
+        buf.append( ( this.variableName != null ) ? this.variableName : "" );
         for( Iterator it = this.invokers.iterator(); it.hasNext(); ) {
-            buf.append( "." );
+            if( buf.length() > 0 ) {
+                buf.append( "." );
+            }
             buf.append( it.next().toString() );
         }
         return buf.toString();
