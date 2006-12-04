@@ -47,10 +47,8 @@ import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FromDescr;
-import org.drools.lang.descr.FunctionCallDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -487,7 +485,6 @@ public class RuleParserTest extends TestCase {
         
         final RuleDescr rule = parseResource( "test_SimpleMethodCallWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        System.out.println( from.getDataSource() );
         AccessorDescr method = (AccessorDescr) from.getDataSource();
         
         assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
@@ -500,7 +497,6 @@ public class RuleParserTest extends TestCase {
         
         final RuleDescr rule = parseResource( "test_SimpleFunctionCallWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        System.out.println( from.getDataSource() );
         AccessorDescr func = (AccessorDescr) from.getDataSource();
         
         assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
@@ -514,7 +510,6 @@ public class RuleParserTest extends TestCase {
         
         final RuleDescr rule = parseResource( "test_SimpleAccessorWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        System.out.println( from.getDataSource() );
         AccessorDescr accessor = (AccessorDescr) from.getDataSource();
         
         assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
@@ -528,7 +523,6 @@ public class RuleParserTest extends TestCase {
         
         final RuleDescr rule = parseResource( "test_SimpleAccessorArgWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        System.out.println( from.getDataSource() );
         AccessorDescr accessor = (AccessorDescr) from.getDataSource();
         
         assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
@@ -541,7 +535,6 @@ public class RuleParserTest extends TestCase {
     public void testComplexChainedAcessor() throws Exception {
         final RuleDescr rule = parseResource( "test_ComplexChainedCallWithFrom.drl" ).rule();
         FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        System.out.println( from.getDataSource() );
         AccessorDescr accessor = (AccessorDescr) from.getDataSource();
  
         assertFalse(parser.getErrorMessages().toString(), parser.hasErrors());    
