@@ -713,7 +713,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 		AccessorDescr ad = null;
 	}
 	:	
-		( ( ID LEFT_PAREN ) => functionName=ID args=paren_chunk			
+		(( functionName=ID args=paren_chunk			
 		        {
  				ad = new AccessorDescr();	
 				ad.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );
@@ -723,7 +723,6 @@ from_source returns [DeclarativeInvokerDescr ds]
 				fc.setArguments(args);
 				ad.addInvoker(fc);
 			}
-		   expression_chain[ad]?
 		)
 		|
 		(   var=ID 
@@ -732,8 +731,9 @@ from_source returns [DeclarativeInvokerDescr ds]
 			ad.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
 			ds = ad;
 		    }
-		    expression_chain[ad]?
-		)  
+		))  
+		
+		expression_chain[ad]?
 	;	
 	
 expression_chain[AccessorDescr as]
