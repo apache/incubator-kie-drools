@@ -715,11 +715,15 @@ from_source returns [DeclarativeInvokerDescr ds]
 	:	
 		( ( ID LEFT_PAREN ) => functionName=ID args=paren_chunk			
 		        {
+ 				ad = new AccessorDescr();	
+				ad.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );
+				ds = ad;
 				FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
 				fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
 				fc.setArguments(args);
-				ds = fc;
+				ad.addInvoker(fc);
 			}
+		   expression_chain[ad]?
 		)
 		|
 		(   var=ID 
