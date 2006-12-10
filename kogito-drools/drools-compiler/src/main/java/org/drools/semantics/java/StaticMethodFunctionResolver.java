@@ -4,10 +4,10 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
+import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.AvailableVariables;
 import org.drools.spi.FunctionResolver;
-import org.drools.spi.TypeResolver;
 
 public class StaticMethodFunctionResolver
     implements

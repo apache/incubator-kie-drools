@@ -21,8 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jfdi.interpreter.TypeResolver;
+import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.drools.spi.AvailableVariables;
-import org.drools.spi.TypeResolver;
 import org.drools.rule.Package;
 
 import junit.framework.TestCase;

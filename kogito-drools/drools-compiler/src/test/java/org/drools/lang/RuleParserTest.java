@@ -517,7 +517,7 @@ public class RuleParserTest extends TestCase {
         assertNull( ((FieldAccessDescr) accessor.getInvokers().get( 0 )).getArgument() );
         
         assertEquals( "something.doIt", accessor.toString() );
-    }      
+    }          
     
     public void testSimpleAccessorAndArgWithFrom() throws Exception {
         

@@ -16,7 +16,10 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,15 +28,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.runtime.ANTLRReaderStream;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.TokenStream;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
+import org.codehaus.jfdi.interpreter.TypeResolver;
+import org.codehaus.jfdi.interpreter.operations.Expr;
+import org.codehaus.jfdi.parser.JFDILexer;
+import org.codehaus.jfdi.parser.JFDIParser;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsJFDIFactory;
 import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
+import org.drools.base.dataproviders.JFDIDataProvider;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.resolvers.DeclarationVariable;
 import org.drools.base.resolvers.GlobalVariable;
@@ -45,6 +59,7 @@ import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -92,12 +107,12 @@ import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.spi.AvailableVariables;
+import org.drools.spi.DataProvider;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ObjectType;
 import org.drools.spi.Restriction;
-import org.drools.spi.TypeResolver;
 
 /**
  * This builds the rule structure from an AST.
@@ -980,8 +995,29 @@ public class RuleBuilder {
 
     private From build(final FromDescr fromDescr) {
       final Column column = build( fromDescr.getReturnedColumn() );
-    	return null;    
+      AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();      
+      DataProvider dataProvider = null;      
+      try {                    
+          JFDIParser parser = createParser(  accessor.toString() );
+          DroolsJFDIFactory factory = new DroolsJFDIFactory( this.typeResolver );
+          factory.setDeclarationMap( this.declarations );
+          factory.setGlobalsMap( this.pkg.getGlobals() );          
+          parser.setValueHandlerFactory( factory );
+          
+          dataProvider = new JFDIDataProvider(parser.expr(), factory);
+      } catch ( final Exception e ) {
+          this.errors.add( new RuleError( this.rule,
+                                          fromDescr,
+                                          null,
+                                          "Unable to build expression for 'from' node '" + accessor.toString() + "'" ) );
+          return null;
+      }
+      
+      
+      return new From( column,
+                       dataProvider );		        
     }
+    
 //    private From build(final FromDescr fromDescr) {
 //    	return null;
     	// @todo: waiting for JFDI so we can impl this properly
@@ -1133,6 +1169,27 @@ public class RuleBuilder {
 //        return valueHandler;
 //    }
 
+	protected JFDIParser createParser(String text) throws IOException {
+		JFDIParser parser = new JFDIParser( createTokenStream( text ) );
+        DroolsJFDIFactory factory = new DroolsJFDIFactory( this.typeResolver );
+        parser.setValueHandlerFactory( factory );
+		return parser;
+	}
+	
+	private TokenStream createTokenStream(String text) throws IOException {
+		return new CommonTokenStream( createLexer( text ) );
+	}
+	
+	private JFDILexer createLexer(String text) throws IOException {
+		JFDILexer lexer = new JFDILexer(  new ANTLRStringStream( text ) );
+		return lexer;
+	}
+	
+	private Reader createReader(String text) {
+		InputStream in = getClass().getResourceAsStream( text );
+		return new InputStreamReader( in );
+	}    
+    
     private EvalCondition build(final EvalDescr evalDescr) {
 
         final String className = "eval" + this.counter++;
