@@ -30,7 +30,7 @@ public class JFDIDataProvider
         return factory.getRequiredDeclarations();
     }
 
-    public Iterator getResults(final ReteTuple tuple,
+    public Iterator getResults(final Tuple tuple,
                                final WorkingMemory wm,
                                final PropagationContext ctx) {
         factory.setContext( tuple, wm );

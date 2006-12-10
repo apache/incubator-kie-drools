@@ -10,7 +10,7 @@ public interface DataProvider {
 
     public Declaration[] getRequiredDeclarations();
 
-    public Iterator getResults(ReteTuple tuple,
+    public Iterator getResults(Tuple tuple,
                                WorkingMemory wm,
                                PropagationContext ctx);
 
