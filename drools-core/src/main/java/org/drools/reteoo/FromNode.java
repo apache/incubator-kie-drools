@@ -18,7 +18,7 @@ import org.drools.util.TupleHashTable;
 
 public class FromNode extends TupleSource
     implements
-    TupleSink,
+    TupleSinkNode,
     NodeMemory {
     /**
      * 
@@ -29,6 +29,9 @@ public class FromNode extends TupleSource
     private TupleSource                tupleSource;
     private AlphaNodeFieldConstraint[] alphaConstraints;
     private BetaConstraints            betaConstraints;
+
+    private TupleSinkNode              previousTupleSinkNode;
+    private TupleSinkNode              nextTupleSinkNode;
 
     public FromNode(final int id,
                     final DataProvider dataProvider,
@@ -60,7 +63,7 @@ public class FromNode extends TupleSource
                                                                           context ); it.hasNext(); ) {
             final Object object = it.next();
 
-            if( this.alphaConstraints != null ) {
+            if ( this.alphaConstraints != null ) {
                 // First alpha node filters
                 boolean isAllowed = true;
                 for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
@@ -71,7 +74,7 @@ public class FromNode extends TupleSource
                         break;
                     }
                 }
-                if( !isAllowed ) {
+                if ( !isAllowed ) {
                     continue;
                 }
             }
@@ -177,6 +180,42 @@ public class FromNode extends TupleSource
     public Object createMemory(final RuleBaseConfiguration config) {
         return new BetaMemory( new TupleHashTable(),
                                null );
+    }
+
+    /**
+     * Returns the next node
+     * @return
+     *      The next TupleSinkNode
+     */
+    public TupleSinkNode getNextTupleSinkNode() {
+        return this.nextTupleSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next TupleSinkNode
+     */
+    public void setNextTupleSinkNode(final TupleSinkNode next) {
+        this.nextTupleSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous TupleSinkNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode() {
+        return this.previousTupleSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous TupleSinkNode
+     */
+    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+        this.previousTupleSinkNode = previous;
     }
 
 }
