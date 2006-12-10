@@ -7,9 +7,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.codehaus.jfdi.interpreter.TypeResolver;
+import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.drools.spi.AvailableVariables;
 import org.drools.spi.FunctionResolver;
-import org.drools.spi.TypeResolver;
 
 public class StaticMethodFunctionResolverTest extends TestCase {
     public void test1() throws Exception {

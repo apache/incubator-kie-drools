@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -41,6 +42,7 @@ import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
+import org.drools.FromTestClass;
 import org.drools.IndexedNumber;
 import org.drools.Person;
 import org.drools.PersonInterface;
@@ -845,98 +847,127 @@ public abstract class IntegrationCases extends TestCase {
 
     public void testBasicFrom() throws Exception {
         // FIXME
-        // final PackageBuilder builder = new PackageBuilder();
-        // builder.addPackageFromDrl( new InputStreamReader(
-        // getClass().getResourceAsStream( "test_From.drl" ) ) );
-        // final Package pkg = builder.getPackage();
-        //
-        // final RuleBase ruleBase = getRuleBase();
-        // ruleBase.addPackage( pkg );
-        //        
-        // WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        // List list1 = new ArrayList();
-        // workingMemory.setGlobal( "list1", list1 );
-        // List list2 = new ArrayList();
-        // workingMemory.setGlobal( "list2", list2 );
-        // List list3 = new ArrayList();
-        // workingMemory.setGlobal( "list3", list3 );
-        //        
-        // Cheesery cheesery = new Cheesery();
-        // Cheese stilton = new Cheese( "stilton", 12);
-        // Cheese cheddar = new Cheese( "cheddar", 15);
-        // cheesery.addCheese( stilton );
-        // cheesery.addCheese( cheddar );
-        // workingMemory.setGlobal( "cheesery", cheesery );
-        // workingMemory.assertObject( cheesery );
-        //        
-        // workingMemory.fireAllRules();
-        //        
-        // // from using a global
-        // assertEquals( 2, list1.size() );
-        // assertEquals( cheddar, list1.get( 0 ) );
-        // assertEquals( stilton, list1.get( 1 ) );
-        //        
-        // // from using a declaration
-        // assertEquals( 2, list2.size() );
-        // assertEquals( cheddar, list2.get( 0 ) );
-        // assertEquals( stilton, list2.get( 1 ) );
-        //        
-        // // from using a declaration
-        // assertEquals( 1, list3.size() );
-        // assertEquals( stilton, list3.get( 0 ) );
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List list1 = new ArrayList();
+        workingMemory.setGlobal( "list1",
+                                 list1 );
+        List list2 = new ArrayList();
+        workingMemory.setGlobal( "list2",
+                                 list2 );
+        List list3 = new ArrayList();
+        workingMemory.setGlobal( "list3",
+                                 list3 );
+
+        Cheesery cheesery = new Cheesery();
+        Cheese stilton = new Cheese( "stilton",
+                                     12 );
+        Cheese cheddar = new Cheese( "cheddar",
+                                     15 );
+        cheesery.addCheese( stilton );
+        cheesery.addCheese( cheddar );
+        workingMemory.setGlobal( "cheesery",
+                                 cheesery );
+        workingMemory.assertObject( cheesery );
+
+        workingMemory.fireAllRules();
+
+        // from using a global
+        assertEquals( 2,
+                      list1.size() );
+        assertEquals( cheddar,
+                      list1.get( 0 ) );
+        assertEquals( stilton,
+                      list1.get( 1 ) );
+
+        // from using a declaration
+        assertEquals( 2,
+                      list2.size() );
+        assertEquals( cheddar,
+                      list2.get( 0 ) );
+        assertEquals( stilton,
+                      list2.get( 1 ) );
+
+        // from using a declaration
+        assertEquals( 1,
+                      list3.size() );
+        assertEquals( stilton,
+                      list3.get( 0 ) );
     }
 
     public void testFromWithParams() throws Exception {
         // FIXME
-        // final PackageBuilder builder = new PackageBuilder();
-        // builder.addPackageFromDrl( new InputStreamReader(
-        // getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
-        // final Package pkg = builder.getPackage();
-        //
-        // final RuleBase ruleBase = getRuleBase();
-        // ruleBase.addPackage( pkg );
-        //        
-        // WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        // List list = new ArrayList();
-        // Object globalObject = new Object();
-        // workingMemory.setGlobal( "list", list );
-        // workingMemory.setGlobal( "testObject", new FromTestClass() );
-        // workingMemory.setGlobal( "globalObject", globalObject );
-        //        
-        // Person bob = new Person( "bob" );
-        // workingMemory.assertObject( bob );
-        //        
-        // workingMemory.fireAllRules();
-        //        
-        // assertEquals( 6, list.size() );
-        //
-        // List array = (List) list.get( 0 );
-        // assertEquals(3, array.size());
-        // Person p = (Person) array.get( 0 );
-        // assertSame(p, bob);
-        //        
-        // assertEquals("42", array.get( 1 ));
-        //        
-        // List nested = (List) array.get( 2 );
-        // assertEquals("x", nested.get( 0 ));
-        // assertEquals("y", nested.get( 1 ));
-        //        
-        // Map map = ( Map ) list.get( 1 );
-        // assertEquals( 2, map.keySet().size() );
-        //        
-        // assertTrue( map.keySet().contains( bob ) );
-        // assertSame( globalObject, map.get( bob ) );
-        //        
-        // assertTrue( map.keySet().contains( "key1" ) );
-        // Map nestedMap = ( Map ) map.get( "key1" );
-        // assertEquals( 1, nestedMap.keySet().size() );
-        // assertTrue( nestedMap.keySet().contains( "key2" ) );
-        // assertEquals( "value2", nestedMap.get( "key2" ) );
-        //                
-        // assertEquals( new Integer( 42 ), list.get( 2 ) );
-        // assertEquals( "literal", list.get( 3 ) );
-        // assertSame( bob, list.get( 4 ) );
-        // assertSame( globalObject, list.get( 5 ) );
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        Object globalObject = new Object();
+        workingMemory.setGlobal( "list",
+                                 list );
+        workingMemory.setGlobal( "testObject",
+                                 new FromTestClass() );
+        workingMemory.setGlobal( "globalObject",
+                                 globalObject );
+
+        Person bob = new Person( "bob" );
+        workingMemory.assertObject( bob );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 6,
+                      list.size() );
+
+        List array = (List) list.get( 0 );
+        assertEquals( 3,
+                      array.size() );
+        Person p = (Person) array.get( 0 );
+        assertSame( p,
+                    bob );
+
+        assertEquals( new Integer( 42 ),
+                      array.get( 1 ) );
+
+        List nested = (List) array.get( 2 );
+        assertEquals( "x",
+                      nested.get( 0 ) );
+        assertEquals( "y",
+                      nested.get( 1 ) );
+
+        Map map = (Map) list.get( 1 );
+        assertEquals( 2,
+                      map.keySet().size() );
+
+        assertTrue( map.keySet().contains( bob ) );
+        assertSame( globalObject,
+                    map.get( bob ) );
+
+        assertTrue( map.keySet().contains( "key1" ) );
+        Map nestedMap = (Map) map.get( "key1" );
+        assertEquals( 1,
+                      nestedMap.keySet().size() );
+        assertTrue( nestedMap.keySet().contains( "key2" ) );
+        assertEquals( "value2",
+                      nestedMap.get( "key2" ) );
+
+        assertEquals( new Integer( 42 ),
+                      list.get( 2 ) );
+        assertEquals( "literal",
+                      list.get( 3 ) );
+        assertSame( bob,
+                    list.get( 4 ) );
+        assertSame( globalObject,
+                    list.get( 5 ) );
     }
 
     public void testWithInvalidRule() throws Exception {
@@ -3545,12 +3576,12 @@ public abstract class IntegrationCases extends TestCase {
     public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
         final RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setRemoveIdentities( true );
-        
+
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclaringAndUsingBindsInSamePattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase(config);
+        final RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 

@@ -27,12 +27,12 @@ import java.util.Map;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
+import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.spi.AvailableVariables;
-import org.drools.spi.TypeResolver;
 
 public class FunctionBuilder {
     private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( FunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
