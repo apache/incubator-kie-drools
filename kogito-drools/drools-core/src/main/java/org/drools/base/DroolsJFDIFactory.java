@@ -11,9 +11,10 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
+import org.drools.spi.Tuple;
 
 public class DroolsJFDIFactory extends AbstractValueHandlerFactory {    
-    private ReteTuple tuple;
+    private Tuple tuple;
     private Map declarations;
     private Map globals;
     //private
@@ -31,7 +32,7 @@ public class DroolsJFDIFactory extends AbstractValueHandlerFactory {
         this.globals = globals;
     }
     
-    public void setContext(ReteTuple tuple, WorkingMemory workingMemory) {
+    public void setContext(Tuple tuple, WorkingMemory workingMemory) {
         this.tuple = tuple;
         this.workingMemory = workingMemory;
     }
