@@ -42,9 +42,10 @@ import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
+import org.drools.rule.GroupElementFactory;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Not;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
@@ -425,7 +426,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                                  "guestName",
                                                                  leftGuestNameDeclaration,
                                                                  this.objectEqualEvaluator ) );
-        final Not notPath = new Not();
+        final GroupElement notPath = GroupElementFactory.newNotInstance();
         notPath.addChild( notPathColumn );
         rule.addPattern( notPath );
         // ------------
@@ -450,7 +451,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                                    rightGuestHobbyDeclaration,
                                                                    this.objectEqualEvaluator ) );
 
-        final Not notChosen = new Not();
+        final GroupElement notChosen = GroupElementFactory.newNotInstance();
         notChosen.addChild( notChosenColumn );
 
         rule.addPattern( notChosen );
@@ -640,7 +641,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                                  pathGuestNameDeclaration,
                                                                  this.objectEqualEvaluator ) );
 
-        final Not not = new Not();
+        final GroupElement not = GroupElementFactory.newNotInstance();
 
         not.addChild( notPathColumn );
 

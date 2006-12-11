@@ -64,7 +64,7 @@ public class Rule
 
     private Declaration[]     declarationArray;
 
-    private final And         lhsRoot           = new And();
+    private final GroupElement lhsRoot           = new GroupElement( GroupElement.AND );
 
     private String            agendaGroup;
 
@@ -347,7 +347,7 @@ public class Rule
      * 
      * @return The <code>List</code> of <code>Conditions</code>.
      */
-    public And getLhs() {
+    public GroupElement getLhs() {
         return this.lhsRoot;
     }
 
@@ -361,7 +361,7 @@ public class Rule
      * @return
      * @throws InvalidPatternException
      */
-    public And[] getTransformedLhs() throws InvalidPatternException {
+    public GroupElement[] getTransformedLhs() throws InvalidPatternException {
         return LogicTransformer.getInstance().transform( this.lhsRoot );
     }
 

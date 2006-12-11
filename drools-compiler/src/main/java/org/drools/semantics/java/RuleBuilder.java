@@ -28,16 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.TokenStream;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.codehaus.jfdi.interpreter.TypeResolver;
-import org.codehaus.jfdi.interpreter.operations.Expr;
 import org.codehaus.jfdi.parser.JFDILexer;
 import org.codehaus.jfdi.parser.JFDIParser;
 import org.drools.RuntimeDroolsException;
@@ -49,12 +46,6 @@ import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
 import org.drools.base.dataproviders.JFDIDataProvider;
 import org.drools.base.evaluators.Operator;
-import org.drools.base.resolvers.DeclarationVariable;
-import org.drools.base.resolvers.GlobalVariable;
-import org.drools.base.resolvers.ListValue;
-import org.drools.base.resolvers.LiteralValue;
-import org.drools.base.resolvers.MapValue;
-import org.drools.base.resolvers.ValueHandler;
 import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
@@ -83,20 +74,17 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.Accumulate;
-import org.drools.rule.And;
 import org.drools.rule.AndCompositeRestriction;
 import org.drools.rule.Collect;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.rule.Exists;
 import org.drools.rule.From;
 import org.drools.rule.GroupElement;
+import org.drools.rule.GroupElementFactory;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
 import org.drools.rule.MultiRestrictionFieldConstraint;
-import org.drools.rule.Not;
-import org.drools.rule.Or;
 import org.drools.rule.OrCompositeRestriction;
 import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
@@ -270,7 +258,7 @@ public class RuleBuilder {
             final Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object.getClass() == AndDescr.class ) {
-                    final And and = new And();
+                    final GroupElement and = GroupElementFactory.newAndInstance();
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            and,
@@ -278,7 +266,7 @@ public class RuleBuilder {
                            false ); // do not decrement first offset
                     this.rule.addPattern( and );
                 } else if ( object.getClass() == OrDescr.class ) {
-                    final Or or = new Or();
+                    final GroupElement or = GroupElementFactory.newOrInstance();
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            or,
@@ -288,7 +276,7 @@ public class RuleBuilder {
                 } else if ( object.getClass() == NotDescr.class ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
                     this.innerDeclarations = new HashMap();
-                    final Not not = new Not();
+                    final GroupElement not = GroupElementFactory.newNotInstance();
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            not,
@@ -306,7 +294,7 @@ public class RuleBuilder {
                     // We cannot have declarations created inside exists visible outside it, 
                     // so track declarations in a way they can be removed
                     this.innerDeclarations = new HashMap();
-                    final Exists exists = new Exists();
+                    final GroupElement exists = GroupElementFactory.newExistsInstance();
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            exists,
@@ -360,7 +348,7 @@ public class RuleBuilder {
             final Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object.getClass() == AndDescr.class ) {
-                    final And and = new And();
+                    final GroupElement and = GroupElementFactory.newAndInstance();
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
@@ -368,7 +356,7 @@ public class RuleBuilder {
                            false ); // do not decrement first offset
                     ce.addChild( and );
                 } else if ( object.getClass() == OrDescr.class ) {
-                    final Or or = new Or();
+                    final GroupElement or = GroupElementFactory.newOrInstance();
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
@@ -376,7 +364,7 @@ public class RuleBuilder {
                            false ); // do not decrement first offset
                     ce.addChild( or );
                 } else if ( object.getClass() == NotDescr.class ) {
-                    final Not not = new Not();
+                    final GroupElement not = GroupElementFactory.newNotInstance();
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
@@ -384,7 +372,7 @@ public class RuleBuilder {
                            true ); // when NOT is used, offset MUST be decremented for first column
                     ce.addChild( not );
                 } else if ( object.getClass() == ExistsDescr.class ) {
-                    final Exists exists = new Exists();
+                    final GroupElement exists = GroupElementFactory.newExistsInstance();
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
