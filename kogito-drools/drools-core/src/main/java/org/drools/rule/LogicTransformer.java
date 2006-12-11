@@ -78,12 +78,28 @@ class LogicTransformer {
 
         GroupElement[] ands = null;
         // is top element an AND?
-        if ( cloned.getType() == GroupElement.AND ) {
+        if ( cloned.isAnd() ) {
             // Yes, so just return it
             ands = new GroupElement[]{cloned};
+        } else if( cloned.isOr() ){
+            // it is an OR, so each child is an AND branch
+            ands = new GroupElement[cloned.getChildren().size()];
+            int i = 0;
+            for( Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
+                Object branch = it.next();
+                if( ( branch instanceof GroupElement ) && (((GroupElement)branch).isAnd()) ){
+                    ands[i++] = (GroupElement) branch;
+                } else {
+                    ands[i] = GroupElementFactory.newAndInstance();
+                    ands[i].addChild( branch );
+                    i++;
+                }
+            }
         } else {
-            // No, so each child is an AND branch
-            ands = (GroupElement[]) cloned.getChildren().toArray( new GroupElement[cloned.getChildren().size()] );
+            // no, so just wrap into an AND
+            GroupElement wrapper = GroupElementFactory.newAndInstance();
+            wrapper.addChild( cloned );
+            ands = new GroupElement[]{wrapper};
         }
         return ands;
     }
