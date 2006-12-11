@@ -72,7 +72,7 @@ class LogicTransformer {
 
     public GroupElement[] transform(final GroupElement and) throws InvalidPatternException {
         GroupElement cloned = (GroupElement) and.clone();
-
+        
         processTree( cloned );
         cloned.pack();
 
@@ -187,18 +187,21 @@ class LogicTransformer {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
             List orsList = new ArrayList();
-            List others = new ArrayList();
+            // must keep order, so, using array
+            Object[] others = new Object[parent.getChildren().size()];
 
             // first we split children as OR or not OR
             int permutations = 1;
+            int index = 0;
             for ( Iterator it = parent.getChildren().iterator(); it.hasNext(); ) {
                 Object child = it.next();
                 if ( (child instanceof GroupElement) && ((GroupElement) child).isOr() ) {
                     permutations *= ((GroupElement) child).getChildren().size();
                     orsList.add( child );
                 } else {
-                    others.add( child );
+                    others[index] = child ;
                 }
+                index++;
             }
 
             // transform parent into an OR
@@ -213,19 +216,24 @@ class LogicTransformer {
             for ( int i = 1; i <= permutations; i++ ) {
                 GroupElement and = GroupElementFactory.newAndInstance();
 
-                // elements originally outside OR will be in every permutation, so add them
-                and.getChildren().addAll( others );
-
                 // create the actual permutations
                 int mod = 1;
                 for ( int j = ors.length - 1; j >= 0; j-- ) {
-                    and.addChild( ors[j].getChildren().get( indexes[j] ) );
+                    // we must insert at the beggining to keep the order
+                    and.getChildren().add( 0, ors[j].getChildren().get( indexes[j] ) );
                     if ( (i % mod) == 0 ) {
                         indexes[j] = (indexes[j] + 1) % ors[j].getChildren().size();
                     }
                     mod *= ors[j].getChildren().size();
                 }
 
+                // elements originally outside OR will be in every permutation, so add them
+                // in their original position
+                for( int j = 0; j < others.length; j++ ) {
+                    if( others[j] != null ) {
+                        and.getChildren().add( j, others[j] );
+                    }
+                }
                 parent.addChild( and );
             }
 

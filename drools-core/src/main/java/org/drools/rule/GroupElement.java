@@ -70,6 +70,7 @@ public class GroupElement extends ConditionalElement {
      * LogicTransformer does further, more complicated, transformations
      */
     public void pack() {
+        // we must clone, since we want to iterate only over the original list
         Object[] clone = this.children.toArray();
         for ( int i = 0; i < clone.length; i++ ) {
             // if child is also a group element, there may be 
@@ -110,21 +111,32 @@ public class GroupElement extends ConditionalElement {
             // then merge this childs with parent childs
             if ( parent.getType() == this.getType() ) {
 
+                // we must keep the order so, save index
+                int index = parent.getChildren().indexOf( this );
                 parent.getChildren().remove( this );
                 // for each child, pack it and add it to parent
                 for ( Iterator childIt = this.children.iterator(); childIt.hasNext(); ) {
                     Object child = childIt.next();
-                    parent.addChild( child );
+                    // we must keep the order, so add in the same place were parent was before
+                    parent.getChildren().add( index++, child );
                     if ( child instanceof GroupElement ) {
+                        int previousSize = parent.getChildren().size();
                         ((GroupElement) child).pack( parent );
+                        // in case the child also added elements to the parent, 
+                        // we need to compensate
+                        index += ( parent.getChildren().size() - previousSize );
                     }
                 }
 
                 // if current node has a single child, then move it to parent and pack it
             } else if ( ( ! this.isExists() ) && ( this.children.size() == 1 ) ) {
-                Object child = this.children.get( 0 );
-                parent.addChild( child );
+                // we must keep the order so, save index
+                int index = parent.getChildren().indexOf( this );
                 parent.getChildren().remove( this );
+
+                Object child = this.children.get( 0 );
+                parent.getChildren().add( index, child );
+                
                 if ( child instanceof GroupElement ) {
                     ((GroupElement) child).pack( parent );
                 }
