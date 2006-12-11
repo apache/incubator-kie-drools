@@ -43,17 +43,14 @@ import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.rule.Accumulate;
-import org.drools.rule.And;
 import org.drools.rule.Collect;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.rule.Exists;
 import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Not;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -165,7 +162,7 @@ class ReteooBuilder
         this.currentOffsetAdjustment = 0;
 
         final List nodes = new ArrayList();
-        final And[] and = rule.getTransformedLhs();
+        final GroupElement[] and = rule.getTransformedLhs();
 
         for ( int i = 0; i < and.length; i++ ) {
             if ( !hasColumns( and[i] ) ) {
@@ -216,12 +213,12 @@ class ReteooBuilder
         return false;
     }
 
-    private void addInitialFactMatch(final And and) {
-        And temp = null;
+    private void addInitialFactMatch(final GroupElement and) {
+        GroupElement temp = null;
 
         // If we have children we know there are no columns but we need to make sure that InitialFact is first
         if ( !and.getChildren().isEmpty() ) {
-            temp = (And) and.clone();
+            temp = (GroupElement) and.clone();
             and.getChildren().clear();
         }
         final Column column = new Column( 0,
@@ -235,7 +232,7 @@ class ReteooBuilder
         this.currentOffsetAdjustment = 1;
     }
 
-    private void addRule(final And and,
+    private void addRule(final GroupElement and,
                          final Rule rule) throws InvalidPatternException {
         this.objectSource = null;
         this.tupleSource = null;
@@ -317,16 +314,16 @@ class ReteooBuilder
                                        this.removeIdentities );
             }
 
-            if ( object.getClass() == Not.class ) {
+            if (( object instanceof GroupElement ) && (((GroupElement)object).isNot())) {
                 attachNot( this.tupleSource,
-                           (Not) object,
+                           (GroupElement) object,
                            this.objectSource,
                            binder,
                            column );
                 binder = null;
-            } else if ( object.getClass() == Exists.class ) {
+            } else if (( object instanceof GroupElement ) && (((GroupElement)object).isExists())) {
                 attachExists( this.tupleSource,
-                              (Exists) object,
+                              (GroupElement) object,
                               this.objectSource,
                               binder,
                               column );
@@ -470,7 +467,7 @@ class ReteooBuilder
     }
 
     private void attachNot(final TupleSource tupleSource,
-                           final Not not,
+                           final GroupElement not,
                            final ObjectSource ObjectSource,
                            final BetaConstraints binder,
                            final Column column) {
@@ -482,7 +479,7 @@ class ReteooBuilder
     }
 
     private void attachExists(final TupleSource tupleSource,
-                              final Exists exists,
+                              final GroupElement exists,
                               final ObjectSource ObjectSource,
                               final BetaConstraints binder,
                               final Column column) {
@@ -597,7 +594,7 @@ class ReteooBuilder
     }
 
     private void attachAccumulate(final TupleSource tupleSource,
-                                  final And parent,
+                                  final GroupElement parent,
                                   final Accumulate accumulate) {
         // If a tupleSource does not exist then we need to adapt an
         // InitialFact into a a TupleSource using LeftInputAdapterNode
@@ -668,7 +665,7 @@ class ReteooBuilder
     }
 
     private void attachCollect(final TupleSource tupleSource,
-                               final And parent,
+                               final GroupElement parent,
                                final Collect collect) {
         // If a tupleSource does not exist then we need to adapt an
         // InitialFact into a a TupleSource using LeftInputAdapterNode

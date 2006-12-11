@@ -146,7 +146,7 @@ public class Column
     }
 
     public String toString() {
-        return "Column type='" + this.objectType + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + this.declaration.getIdentifier() + "'";
+        return "Column type='" + ((this.objectType == null) ? "null" : this.objectType.toString()) + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + ((this.declaration == null) ? "" : this.declaration.toString()) + "'";
     }
 
     public int hashCode() {
@@ -155,7 +155,7 @@ public class Column
         result = PRIME * result + this.constraints.hashCode();
         result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
         result = PRIME * result + this.index;
-        result = PRIME * result + this.objectType.hashCode();
+        result = PRIME * result + ((this.objectType == null) ? 0 : this.objectType.hashCode());
         result = PRIME * result + this.offset;
         return result;
     }

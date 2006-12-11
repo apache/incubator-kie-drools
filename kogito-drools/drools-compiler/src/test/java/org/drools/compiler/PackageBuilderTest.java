@@ -62,14 +62,11 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.rule.Exists;
+import org.drools.rule.GroupElement;
 import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Not;
-import org.drools.rule.Or;
 import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
@@ -569,11 +566,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
 
-        final And lhs = rule.getLhs();
+        final GroupElement lhs = rule.getLhs();
         assertLength( 1,
                       lhs.getChildren() );
 
-        final Or or = (Or) lhs.getChildren().get( 0 );
+        final GroupElement or = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       or.getChildren() );
         final Column column = (Column) or.getChildren().get( 0 );
@@ -589,11 +586,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
 
-        final And lhs = rule.getLhs();
+        final GroupElement lhs = rule.getLhs();
         assertLength( 1,
                       lhs.getChildren() );
 
-        final And and = (And) lhs.getChildren().get( 0 );
+        final GroupElement and = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       and.getChildren() );
         final Column column = (Column) and.getChildren().get( 0 );
@@ -618,11 +615,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertEquals( 0,
                       builder.getErrors().length );
 
-        final And lhs = rule.getLhs();
+        final GroupElement lhs = rule.getLhs();
         assertLength( 1,
                       lhs.getChildren() );
 
-        final Not not = (Not) lhs.getChildren().get( 0 );
+        final GroupElement not = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       not.getChildren() );
         final Column column = (Column) not.getChildren().get( 0 );
@@ -647,11 +644,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertEquals( 0,
                       builder.getErrors().length );
 
-        final And lhs = rule.getLhs();
+        final GroupElement lhs = rule.getLhs();
         assertLength( 1,
                       lhs.getChildren() );
 
-        final Exists exists = (Exists) lhs.getChildren().get( 0 );
+        final GroupElement exists = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       exists.getChildren() );
         final Column column = (Column) exists.getChildren().get( 0 );
