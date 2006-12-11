@@ -11,6 +11,5 @@ rule "MyRule"
 		(State() || Cheese())
 		p: Person()
 	then 
-		System.out.println("result is " + p);
 		results.add(p);		
 end
