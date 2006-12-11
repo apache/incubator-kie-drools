@@ -470,7 +470,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         }
     }
 
-    public void xxxtestCloneable() {
+    public void testCloneable() {
         final String a = "a";
         final String b = "b";
         final String c = "c";
@@ -555,7 +555,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      * @throws ClassNotFoundException
      * 
      */
-    public void xxxtestTransform() throws IOException,
+    public void testTransform() throws IOException,
                                ClassNotFoundException,
                                InvalidPatternException {
         final String a = "a";
