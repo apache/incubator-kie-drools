@@ -8,3 +8,8 @@ yet
 	   another
    				style
 */
+
+rule "test"
+  when
+  then
+end
