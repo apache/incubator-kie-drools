@@ -313,14 +313,15 @@ public class GroupElementTest extends TestCase {
         and2.pack();
         
         // and2 now is in fact transformed into an OR
-        assertEquals( GroupElement.AND, and2.getType() );
+        assertTrue( and2.isAnd() );
         
         assertEquals( 2,
                       and2.getChildren().size() );
         
-        assertSame( column3,
-                    and2.getChildren().get( 0 ) );
+        // order must be the same
         assertSame( or1,
+                    and2.getChildren().get( 0 ) );
+        assertSame( column3,
                     and2.getChildren().get( 1 ) );
 
         

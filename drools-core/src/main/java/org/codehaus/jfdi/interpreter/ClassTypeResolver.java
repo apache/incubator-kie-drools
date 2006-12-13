@@ -98,8 +98,29 @@ public class ClassTypeResolver
     public Class resolveType(final String className) throws ClassNotFoundException {
         Class clazz = null;
 
-        // Now try the package object type cache         
-        clazz = lookupFromCache( className );
+        //is the class a primitive?
+        if ( "boolean".equals( className )) {
+            clazz = boolean.class;
+        } else if ( "byte".equals( className ) ) {
+            clazz =  byte.class;
+        } else if ( "short".equals( className ) ) {
+            clazz =  short.class;
+        } else if ( "char".equals( className ) ) {
+            clazz =  char.class;
+        } else if ( "int".equals( className ) ) {
+            clazz =  int.class;
+        } else if ( "long".equals( className ) ) {
+            clazz =  long.class;
+        } else if ( "float".equals( className ) ) {
+            clazz =  float.class;
+        } else if ( "double".equals( className ) ) {
+            clazz =  double.class;
+        }
+        
+        if( clazz == null ) {
+            // Now try the package object type cache         
+            clazz = lookupFromCache( className );
+        }
 
         // try loading className
         if ( clazz == null ) {

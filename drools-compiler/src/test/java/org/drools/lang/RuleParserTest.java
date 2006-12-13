@@ -66,9 +66,11 @@ public class RuleParserTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        this.parser = null;
     }
 
     protected void tearDown() throws Exception {
+        this.parser = null;
         super.tearDown();
     }
 
@@ -187,10 +189,6 @@ public class RuleParserTest extends TestCase {
         
         assertEquals("accolades", ((FieldTemplateDescr)fact2.getFields().get(2)).getName());
         assertEquals("String[]", ((FieldTemplateDescr)fact2.getFields().get(2)).getClassType());
-
-        
-        
-        
     }    
     
     public void testTernaryExpression() throws Exception {
@@ -2467,5 +2465,16 @@ public class RuleParserTest extends TestCase {
 			
 		}
     }
+    
+//    public void testStop() {
+//        while(true) {
+//            try {
+//                Thread.sleep( 100000 );
+//            } catch ( InterruptedException e ) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 }
