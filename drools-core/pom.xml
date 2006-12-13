@@ -12,28 +12,6 @@
   <packaging>jar</packaging>
   <name>Drools :: Rete-OO Core</name>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-          <excludes>
-            <exclude>**/LogicTransformerTest.java</exclude>
-            <exclude>**/LeapsMannersTest.java</exclude>
-            <exclude>**/ReteooMannersTest.java</exclude>
-            <exclude>**/LeapsWaltzTest.java</exclude>
-            <exclude>**/ReteooWaltzTest.java</exclude>
-            <exclude>**/TableTest.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
- 
   <repositories>
     <repository>
       <id>basedir</id>

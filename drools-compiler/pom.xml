@@ -57,11 +57,6 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-      <type>test-jar</type>
-    </dependency>
 
     <!-- External dependencies -->
     <!-- TODO will keep JCI local for now. Move to ibiblio when its updated -->
