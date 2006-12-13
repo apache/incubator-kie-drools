@@ -1,71 +1,23 @@
-<project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-	  <version>3.0.2</version>
+	<version>3.1.0-SNAPSHOT</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-
   <artifactId>drools-compiler</artifactId>
-
+  <packaging>jar</packaging>
   <name>Drools :: Compiler</name>
-  <version>3.0.2</version>
 
   <repositories>
     <repository>
       <id>basedir</id>
       <url>file://${basedir}/../repository</url>
     </repository>
-  </repositories>  
-
-  <dependencies>   
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    
-    <!--  will keep JCI local for now. Move to ibiblio when its updated  -->             
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-jci-janino</artifactId>
-      <version>2.4.3</version>
-    </dependency> 
-    
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-jci-eclipse</artifactId>
-      <version>3.2.0.666</version>
-    </dependency>             
-
-	  <!-- only needed for the default expander in parser/lang.. to remove when it is refactored into another module. -->
-	  <dependency>
-	    <groupId>commons-lang</groupId>
-	    <artifactId>commons-lang</artifactId>
-	    <version>2.1</version>
-	  </dependency>                                               
-           
-    <dependency>
-			<groupId>antlr</groupId>
-			<artifactId>stringtemplate</artifactId>    
-			<version>3.0</version>
-    </dependency>                                            
-    
-	 <dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr</artifactId>    
-			<version>3.0b5</version>
-    </dependency>           
-
-    <dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>core</artifactId>    
-			<version>3.2.0.666</version>
-    </dependency>  
-
-           
-  </dependencies>
+  </repositories>
 
   <!-- This is needed to copy the generated jars into the IDE/Plugs lib directory -->
   <build>
@@ -74,29 +26,70 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-            <execution>
-                <id>package</id>
-                <phase>package</phase>
-                <configuration>
-                    <tasks>
-                        <echo message="Copying file ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging} to ../drools-ide/lib/${project.artifactId}.${project.packaging}" />
-                        <copy file="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" tofile="../drools-ide/lib/${project.artifactId}.${project.packaging}" />
-                    </tasks>
-                </configuration>
-                <goals>
-                    <goal>run</goal>
-                </goals>
-            </execution>
+          <execution>
+            <id>package</id>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
+                <echo message="Copying file ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging} to ../drools-ide/lib/${project.artifactId}.${project.packaging}"/>
+                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" tofile="../drools-ide/lib/${project.artifactId}.${project.packaging}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
         </executions>
         <dependencies>
-	        <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-antlr</artifactId>
-                <version>1.6.5</version>
-	        </dependency>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-antlr</artifactId>
+            <version>1.6.5</version>
+          </dependency>
         </dependencies>
-      </plugin>      
+      </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <type>test-jar</type>
+    </dependency>
+
+    <!-- External dependencies -->
+    <!-- TODO will keep JCI local for now. Move to ibiblio when its updated -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jci-janino</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jci-eclipse</artifactId>
+    </dependency>
+    <!-- TODO only needed for the default expander in parser/lang.. to remove when it is refactored into another module. -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>stringtemplate</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
