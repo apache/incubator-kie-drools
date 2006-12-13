@@ -285,7 +285,7 @@ opt_semicolon
 
 compilation_unit
 	:	prolog 
-		( statement )*
+		( statement )+
 	;
 	
 prolog
@@ -300,14 +300,14 @@ prolog
 	
 statement
 	:
-	(	import_statement
-	|       function_import_statement
-	|	global
-	|	function
+	(	import_statement 
+	|       function_import_statement 
+	|	global 
+	|	function 
 	|       t=template {this.packageDescr.addFactTemplate( t ); }
 	|	r=rule 	{this.packageDescr.addRule( r ); }
 	|	q=query	{this.packageDescr.addRule( q ); }
-	)
+	) 
 	;
 
 package_statement returns [String packageName]
@@ -458,14 +458,14 @@ rule returns [RuleDescr rule]
 		AndDescr lhs = null;
 	}
 	:
-		loc='rule' ruleName=word 
+		loc=RULE ruleName=word 
 		{ 
 			debug( "start rule: " + ruleName );
 			rule = new RuleDescr( ruleName, null ); 
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 		rule_attributes[rule]
-		(	loc='when' ':'?
+		(	loc=WHEN ':'?
 			{ 
 				lhs = new AndDescr(); rule.setLhs( lhs ); 
 				lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -476,21 +476,7 @@ rule returns [RuleDescr rule]
 			)
 					
 		)?
-		rhs=RHS
-			{
-				consequence = rhs.getText();
-				//strip out "then", "end"
-				consequence = consequence.substring(4,consequence.length()-3);
-				
-				if ( expander != null ) {
-					String expanded = runThenExpander( consequence, offset(rhs.getLine()) );
-					rule.setConsequence( expanded );
-				} else { 
-					rule.setConsequence( consequence ); 
-				}
-				rule.setConsequenceLocation(offset(rhs.getLine()), rhs.getCharPositionInLine());
-				debug( "end rule: " + ruleName );
-			}
+		rhs_chunk[rule]
 	;
 	
 
@@ -1278,6 +1264,38 @@ argument returns [String name]
 		id=ID { name=id.getText(); } ( '[' ']' { name = name + "[]";})*
 	;
 
+rhs_chunk[RuleDescr rule]
+        @init {
+           StringBuffer buf = null;
+           Integer channel = null;
+        }
+	:
+	        {
+	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
+		    buf = new StringBuffer();
+	        }
+		start='then'
+		( 
+			  ~END
+			  {
+			    buf.append( input.LT(-1).getText() );
+			  }
+		)*
+		{
+		    if( channel != null ) {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
+		    } else {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		    }
+		}
+                END
+                {
+		    rule.setConsequence( buf.toString() );
+     		    rule.setConsequenceLocation(offset(start.getLine()), start.getCharPositionInLine());
+                }
+	;
+
 	
 word returns [String word]
 	@init{
@@ -1286,18 +1304,18 @@ word returns [String word]
 	:	id=ID      { word=id.getText(); }
 	|	'import'   { word="import"; }
 	|	'use'      { word="use"; }
-	|	'rule'     { word="rule"; }
+	|	RULE       { word="rule"; }
 	|	'query'    { word="query"; }
 	|	'salience' { word="salience"; }
  	|	'no-loop'  { word="no-loop"; }
-	|	'when'     { word="when"; }
-	|	'then'     { word="then"; }
-	|	'end'      { word="end"; }
+	|	WHEN       { word="when"; }
+	|	THEN       { word="then"; }
+	|	END        { word="end"; }
 	|	str=STRING { word=getString(str);} //str.getText(); word=word.substring( 1, word.length()-1 ); }
 	;
 
-RHS	:'then' (options{greedy=false;} : .)* ('\n'|'\r') (' '|'\t'|'\f')* 'end'
-	;
+//RHS	:'then' (options{greedy=false;} : .)* ('\n'|'\r') (' '|'\t'|'\f')* 'end'
+//	;
 
 WS      :       (	' '
                 |	'\t'
@@ -1354,6 +1372,14 @@ BOOL
 	:	('true'|'false') 
 	;	
 	
+RULE    :	'rule';
+
+WHEN    :	'when';
+
+THEN	:    	'then';
+
+END     :	'end';
+
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
 	;

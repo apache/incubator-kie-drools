@@ -2055,7 +2055,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "foo.bar",
                       pack.getName() );
 
-        assertFalse( parser.hasErrors() );
+        assertFalse( parser.getErrorMessages().toString(), parser.hasErrors() );
     }
 
     public void testAttributes() throws Exception {
@@ -2466,15 +2466,4 @@ public class RuleParserTest extends TestCase {
 		}
     }
     
-//    public void testStop() {
-//        while(true) {
-//            try {
-//                Thread.sleep( 100000 );
-//            } catch ( InterruptedException e ) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
 }
