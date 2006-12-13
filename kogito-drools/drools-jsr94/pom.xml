@@ -1,81 +1,87 @@
-<project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>3.0.2</version>
+	<version>3.1.0-SNAPSHOT</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-
   <artifactId>drools-jsr94</artifactId>
-
+  <packaging>jar</packaging>
   <name>Drools :: JSR-94 API Module</name>
-  <version>3.0.2</version>
   
   <repositories>
     <repository>
       <id>basedir</id>
       <url>file://${basedir}/../repository</url>
     </repository>
-  </repositories>  
-  
-  <dependencies>  
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-compiler</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>jsr94</groupId>
-            <artifactId>jsr94</artifactId>
-            <version>1.1</version>
-        </dependency>
-		
-        <dependency>
-            <groupId>jsr94</groupId>
-            <artifactId>jsr94-tck</artifactId>
-            <version>1.0.3</version>
-        </dependency>
+  </repositories>
 
-        <dependency>
-            <groupId>jsr94</groupId>
-            <artifactId>jsr94-sigtest</artifactId>
-            <version>1.1</version>
-        </dependency>  
-        
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.0.b2</version>
-        </dependency>          
-  </dependencies>
-  
   <build>
     <plugins>
-
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-surefire-plugin</artifactId>
-	      <configuration>
-	      <systemProperties>
-          <property>
-            <name>jsr94.tck.configuration</name>
-            <value>${basedir}/target/test-classes/org/drools/jsr94/tck</value>
-          </property>
-        </systemProperties>p
-	        <includes>
-	          <include>**/*Tests.java</include>
-	          <include>**/*Test.java</include>	          
-	        </includes>
-	        <excludes>
-	          <exclude>**/ClassLoaderTest.java</exclude>
-              <exclude>**/RuleExecutionSetProviderTest.java</exclude>
-            </excludes>
-	      </configuration>
-	    </plugin>      
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>jsr94.tck.configuration</name>
+              <value>${basedir}/target/test-classes/org/drools/jsr94/tck</value>
+            </property>
+          </systemProperties>
+          <includes>
+            <include>**/*Tests.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+          <excludes>
+            <exclude>**/ClassLoaderTest.java</exclude>
+            <exclude>**/RuleExecutionSetProviderTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <type>test-jar</type>
+    </dependency>
 
+    <!-- External dependencies -->
+    <dependency>
+      <groupId>jsr94</groupId>
+      <artifactId>jsr94</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jsr94</groupId>
+      <artifactId>jsr94-tck</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jsr94</groupId>
+      <artifactId>jsr94-sigtest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
