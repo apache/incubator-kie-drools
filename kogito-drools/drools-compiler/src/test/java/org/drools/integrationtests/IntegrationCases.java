@@ -2236,7 +2236,7 @@ public abstract class IntegrationCases extends TestCase {
                       workingMemory.getObjects().get( 1 ) );
     }
 
-    public void testLogicalAssertions() throws Exception {
+    public void FIXME_testLogicalAssertions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2426,7 +2426,7 @@ public abstract class IntegrationCases extends TestCase {
                       l.size() );
     }
 
-    public void testLogicalAssertions2() throws Exception {
+    public void FIXME_testLogicalAssertions2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions2.drl" ) ) );
         final Package pkg = builder.getPackage();
