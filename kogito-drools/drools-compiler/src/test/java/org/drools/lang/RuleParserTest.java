@@ -2393,6 +2393,22 @@ public class RuleParserTest extends TestCase {
         assertEquals(" $var.equals(\"xyz\") ", predicate.getText());
         
     }
+    
+    public void testEscapedStrings() throws Exception {
+        final RuleDescr rule = parseResource( "escaped-string.drl" ).rule();
+
+        assertNotNull( rule );
+
+        assertEquals( "test_Quotes",
+                      rule.getName() );
+
+        final String expected = "String s = \"\\\"\\n\\t\\\\\";";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      rule.getConsequence() );
+
+        assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
+    }
 
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
