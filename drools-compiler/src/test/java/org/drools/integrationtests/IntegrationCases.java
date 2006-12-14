@@ -74,6 +74,7 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.ActivationGroup;
@@ -3610,5 +3611,22 @@ public abstract class IntegrationCases extends TestCase {
             fail( "Should not throw any exception" );
         }
 
+    }
+    
+    public void testMissingImports() {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_missing_import.drl" ) ) );
+            final Package pkg = builder.getPackage();
+
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+            
+            Assert.fail("Should have thrown an InvalidRulePackage");
+        } catch ( InvalidRulePackage e ) {
+            // everything fine
+        } catch ( Exception e ) {
+            Assert.fail("Should have thrown an InvalidRulePackage Exception instead of "+e.getMessage());
+        }
     }
 }

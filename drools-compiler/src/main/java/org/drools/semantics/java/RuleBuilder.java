@@ -314,13 +314,19 @@ public class RuleBuilder {
                     }
                 } else if ( object.getClass() == FromDescr.class ) {
                     final From from = build( (FromDescr) object );
-                    this.rule.addPattern( from );
+                    if( from != null ) {
+                        this.rule.addPattern( from );
+                    }
                 } else if ( object.getClass() == AccumulateDescr.class ) {
                     final Accumulate accumulate = build( (AccumulateDescr) object );
-                    this.rule.addPattern( accumulate );
+                    if( accumulate != null ) {
+                        this.rule.addPattern( accumulate );
+                    }
                 } else if ( object.getClass() == CollectDescr.class ) {
                     final Collect collect = build( (CollectDescr) object );
-                    this.rule.addPattern( collect );
+                    if( collect != null ) {
+                        this.rule.addPattern( collect );
+                    }
                 }
             } else if ( object.getClass() == ColumnDescr.class ) {
                 final Column column = build( (ColumnDescr) object );
@@ -983,6 +989,11 @@ public class RuleBuilder {
 
     private From build(final FromDescr fromDescr) {
       final Column column = build( fromDescr.getReturnedColumn() );
+      
+      if( column == null ) {
+          return null;
+      }
+      
       AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();      
       DataProvider dataProvider = null;      
       try {                    
@@ -1242,6 +1253,10 @@ public class RuleBuilder {
         this.innerDeclarations = new HashMap();
 
         Column sourceColumn = build( accumDescr.getSourceColumn() );
+        
+        if( sourceColumn == null ) {
+            return null;
+        }
         // remove declarations bound inside source column
         this.declarations.keySet().removeAll( this.innerDeclarations.keySet() );
         Map sourceDeclarations = this.innerDeclarations;
@@ -1348,6 +1363,11 @@ public class RuleBuilder {
     private Collect build(final CollectDescr collectDescr) {
         this.innerDeclarations = new HashMap();
         Column sourceColumn = build( collectDescr.getSourceColumn() );
+
+        if( sourceColumn == null ) {
+            return null;
+        }
+      
         // remove declarations bound inside source column
         this.declarations.keySet().removeAll( this.innerDeclarations.keySet() );
         this.innerDeclarations = null;
