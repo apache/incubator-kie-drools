@@ -18,8 +18,10 @@ package org.drools.base;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -128,7 +130,7 @@ public class ShadowProxyFactory {
                               cw );
 
         final Map fieldTypes = new HashMap();
-        final Method[] methods = clazz.getMethods();
+        final Method[] methods = getMethods( clazz );
         for ( int i = 0; i < methods.length; i++ ) {
             if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) ) {
                 if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "hashCode" )) && (!methods[i].getName().equals( "toString" )) ) {
@@ -179,6 +181,72 @@ public class ShadowProxyFactory {
                        fieldTypes );
 
         return cw.toByteArray();
+    }
+
+    /**
+     * Filter out any method we are not interested in
+     * @param clazz
+     * @return
+     */
+    private static Method[] getMethods(final Class clazz) {
+        // to help filtering process, we will create a map of maps:
+        // Map< String methodName, Map< Class[] parameterTypes, Method method > >
+        Map map = new HashMap();
+        List helperList = new ArrayList();
+        final Method[] methods = clazz.getMethods();
+        for( int i = 0; i < methods.length; i++ ) {
+            Method previous = null; 
+            Map signatures = (Map) map.get( methods[i].getName() );
+            ParametersWrapper key = new ParametersWrapper( methods[i].getParameterTypes() );
+            if( signatures != null ) {
+                previous = (Method) signatures.get( key );
+            }
+            // if no previous method with the same name and parameter types is found
+            // or if the previous method's return type is a super class of the 
+            // current method's return type, add current to the map
+            // overriding previous if it exists
+            if( ( previous == null ) ||
+                ( previous.getReturnType().isAssignableFrom( methods[i].getReturnType() ) ) ) {
+                if( signatures == null ) {
+                    signatures = new HashMap();
+                    map.put( methods[i].getName(), signatures );
+                }
+                if( signatures.put( key, methods[i] ) != null ) {
+                    helperList.remove( previous );
+                }
+                helperList.add( methods[i] );
+            }
+        }
+        return (Method[]) helperList.toArray( new Method[helperList.size()] );
+    }
+    
+    private static class ParametersWrapper {
+        private Class[] parameters;
+        public ParametersWrapper( Class[] parameters ) {
+            this.parameters = parameters;
+        }
+        
+        public int hashCode() {
+            return this.parameters.length;
+        }
+        
+        public boolean equals( Object o ) {
+            if( !( o instanceof ParametersWrapper ) ) {
+                return false;
+            }
+            ParametersWrapper other = (ParametersWrapper) o;
+            
+            if( this.parameters.length != other.parameters.length ) {
+                return false;
+            }
+            
+            for( int i = 0; i < this.parameters.length; i++ ) {
+                if( ! this.parameters[i].equals( other.parameters[i] )) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     /**
