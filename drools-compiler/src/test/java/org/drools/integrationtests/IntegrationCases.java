@@ -3116,9 +3116,6 @@ public abstract class IntegrationCases extends TestCase {
         
         wm.fireAllRules();
         
-        System.out.println("BASE PRICE IS: " + policy.getBasePrice());
-        System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
-        
         assertEquals(120, policy.getBasePrice());
     }
 

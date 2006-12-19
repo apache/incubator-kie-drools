@@ -18,7 +18,7 @@ rule "Pricing bracket_11"
 		policy: Policy(type == "FIRE_THEFT")
 	then
 		policy.setBasePrice(200);
-		System.out.println("Priors not relevant");
+		// System.out.println("Priors not relevant");
 end
 
 #From row number: 12
@@ -49,7 +49,7 @@ rule "Pricing bracket_14"
 		policy: Policy(type == "COMPREHENSIVE")
 	then
 		policy.setBasePrice(150);
-		System.out.println("Safe driver discount");
+		// System.out.println("Safe driver discount");
 end
 
 #From row number: 15
@@ -70,7 +70,7 @@ rule "Pricing bracket_16"
 		policy: Policy(type == "COMPREHENSIVE")
 	then
 		policy.setBasePrice(700);
-		System.out.println("Location risk");
+		// System.out.println("Location risk");
 end
 
 #From row number: 17
@@ -81,7 +81,7 @@ rule "Pricing bracket_17"
 		policy: Policy(type == "FIRE_THEFT")
 	then
 		policy.setBasePrice(550);
-		System.out.println("Location risk");
+		// System.out.println("Location risk");
 end
 
 #From row number: 18
@@ -92,7 +92,7 @@ rule "Pricing bracket_18"
 		policy: Policy(type == "COMPREHENSIVE")
 	then
 		policy.setBasePrice(120);
-		System.out.println("Cheapest possible");
+		// System.out.println("Cheapest possible");
 end
 
 #From row number: 19
@@ -123,7 +123,7 @@ rule "Pricing bracket_21"
 		policy: Policy(type == "THIRD_PARTY")
 	then
 		policy.setBasePrice(800);
-		System.out.println("High risk");
+		// System.out.println("High risk");
 end
 
 #From row number: 30
