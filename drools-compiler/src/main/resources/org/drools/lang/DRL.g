@@ -1296,9 +1296,9 @@ rhs_chunk[RuleDescr rule]
                     while( (index < buf.length() ) && Character.isWhitespace( buf.charAt( index ) ) &&
                            (buf.charAt( index ) != 10 ) && (buf.charAt( index ) != 13 ))
                                index++;
-                    if( (index < buf.length() ) && ( buf.charAt( index ) == 10 ) )
+                    if( (index < buf.length() ) && ( buf.charAt( index ) == '\r' ) )
                         index++;
-                    if( (index < buf.length() ) && ( buf.charAt( index ) == 13 ) )
+                    if( (index < buf.length() ) && ( buf.charAt( index ) == '\n' ) )
                         index++;
                     
 		    rule.setConsequence( buf.substring( index ) );
