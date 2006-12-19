@@ -1291,7 +1291,17 @@ rhs_chunk[RuleDescr rule]
 		}
                 END
                 {
-		    rule.setConsequence( buf.toString() );
+                    // ignoring first line in the consequence
+                    int index = 0;
+                    while( (index < buf.length() ) && Character.isWhitespace( buf.charAt( index ) ) &&
+                           (buf.charAt( index ) != 10 ) && (buf.charAt( index ) != 13 ))
+                               index++;
+                    if( (index < buf.length() ) && ( buf.charAt( index ) == 10 ) )
+                        index++;
+                    if( (index < buf.length() ) && ( buf.charAt( index ) == 13 ) )
+                        index++;
+                    
+		    rule.setConsequence( buf.substring( index ) );
      		    rule.setConsequenceLocation(offset(start.getLine()), start.getCharPositionInLine());
                 }
 	;
