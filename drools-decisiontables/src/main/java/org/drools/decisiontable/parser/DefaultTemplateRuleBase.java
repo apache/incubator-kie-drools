@@ -1,0 +1,149 @@
+package org.drools.decisiontable.parser;
+
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
+import org.drools.compiler.PackageBuilder;
+import org.drools.decisiontable.model.Condition;
+import org.drools.decisiontable.model.Consequence;
+import org.drools.decisiontable.model.DRLOutput;
+import org.drools.decisiontable.model.Global;
+import org.drools.decisiontable.model.Import;
+import org.drools.decisiontable.model.Rule;
+import org.drools.decisiontable.model.SnippetBuilder;
+import org.drools.rule.Package;
+
+public class DefaultTemplateRuleBase implements TemplateRuleBase {
+	private RuleBase ruleBase;
+
+	public DefaultTemplateRuleBase(final TemplateContainer tc) {
+		ruleBase = readRule(getDTRules(tc.getTemplates()));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.drools.decisiontable.parser.TemplateRuleBase#newWorkingMemory()
+	 */
+	public WorkingMemory newWorkingMemory() {
+		return ruleBase.newWorkingMemory();
+	}
+	/**
+	 * 
+	 * @param templates
+	 * @return
+	 */
+	private String getDTRules(Map templates) {
+		org.drools.decisiontable.model.Package p = new org.drools.decisiontable.model.Package(
+				"org.drools.decisiontable.parser");
+		addImports(p);
+		addGlobals(p);
+		int i = 1;
+		for (Iterator it = templates.values().iterator(); it.hasNext();) {
+			RuleTemplate template = (RuleTemplate) it.next();
+
+			Rule rule = new Rule(template.getName(), null, i++);
+			Condition condition = new Condition();
+			condition.setSnippet("r : Row()");
+			rule.addCondition(condition);
+			List templateColumns = template.getColumns();
+			for (Iterator it1 = templateColumns.iterator(); it1.hasNext();) {
+				String column = (String) it1.next();
+				rule.addCondition(createCondition(column));
+			}
+			String[] templateNotColumns = template.getNotColumns();
+			for (int j = 0; j < templateNotColumns.length; j++) {
+				rule.addCondition(createNotCondition(templateNotColumns[j]));
+			}
+			rule.addConsequence(createConsequence(template));
+			p.addRule(rule);
+		}
+		DRLOutput out = new DRLOutput();
+		p.renderDRL(out);
+		return out.getDRL();
+
+	}
+
+
+	private void addGlobals(org.drools.decisiontable.model.Package p) {
+		Global global = new Global();
+		global.setClassName(DefaultGenerator.class.getName());
+		global.setIdentifier("generator");
+		p.addVariable(global);
+	}
+
+	private void addImports(org.drools.decisiontable.model.Package p) {
+		Import drlImport1 = new Import();
+		drlImport1.setClassName(Map.class.getName());
+		Import drlImport2 = new Import();
+		drlImport2.setClassName(HashMap.class.getName());
+		p.addImport(drlImport1);
+		p.addImport(drlImport2);
+	}
+
+	private Consequence createConsequence(RuleTemplate template) {
+		StringBuffer action = new StringBuffer();
+		action.append("generator.generate( \"");
+		action.append(template.getName()).append("\", r);");
+		final Consequence consequence = new Consequence();
+		consequence.setSnippet(action.toString());
+		return consequence;
+	}
+
+	private Condition createCondition(final String value) {
+		SnippetBuilder snip = new SnippetBuilder(
+				"Cell(row == r, column == \"$param\")");
+		String result = snip.build(value);
+		Condition condition = new Condition();
+		condition.setSnippet(result);
+		return condition;
+	}
+
+	private Condition createNotCondition(final String value) {
+		SnippetBuilder snip = new SnippetBuilder(
+				"not Cell(row == r, column == \"$param\")");
+		String result = snip.build(value);
+		Condition condition = new Condition();
+		condition.setSnippet(result);
+		return condition;
+	}
+	private RuleBase readRule(String drl) {
+		try {
+//			System.out.println(drl);
+			// read in the source
+			Reader source = new StringReader(drl);
+			PackageBuilder builder = new PackageBuilder();
+			builder.addPackageFromDrl(source);
+			Package pkg = builder.getPackage();
+
+			// add the package to a rulebase (deploy the rule package).
+			RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+			ruleBase.addPackage(pkg);
+			return ruleBase;
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+}

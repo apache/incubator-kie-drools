@@ -18,8 +18,10 @@ package org.drools.decisiontable.parser.xls;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,8 +46,7 @@ public class ExcelParser
 
     public static final String  DEFAULT_RULESHEET_NAME = "Decision Tables";
     private Map                 _listners              = new HashMap();
-    private SheetListener       _currentSheetListener  = new NullSheetListener();
-	private boolean _useFirstSheet;
+    private boolean _useFirstSheet;
 
 
 
@@ -58,12 +59,18 @@ public class ExcelParser
     public ExcelParser(final Map sheetListners) {
         this._listners = sheetListners;
     }
+    
+    public ExcelParser(final List sheetListners) {
+    	this._listners.put(ExcelParser.DEFAULT_RULESHEET_NAME, sheetListners);
+    	this._useFirstSheet = true;
+    }
 
     public ExcelParser(final SheetListener listener) {
+    	List listeners = new ArrayList();
+    	listeners.add(listener);
         this._listners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
-                       listener );
+                       listeners );
         this._useFirstSheet = true;
-        this._currentSheetListener = listener;
     }
 
 	public void parseFile(InputStream inStream) {
@@ -72,13 +79,13 @@ public class ExcelParser
 			
 			if (_useFirstSheet) {
 				Sheet sheet = workbook.getSheet(0);
-				processSheet(sheet, _currentSheetListener);
+				processSheet(sheet, (List) _listners.get(DEFAULT_RULESHEET_NAME));
 			} else {
 				Set sheetNames = _listners.keySet();
 				for (Iterator iter = sheetNames.iterator(); iter.hasNext();) {
 					String sheetName = (String) iter.next();
 					Sheet sheet = workbook.getSheet(sheetName);
-					processSheet(sheet, (SheetListener)_listners.get(sheetName));
+					processSheet(sheet, (List)_listners.get(sheetName));
 					
 				}
 			}
@@ -94,7 +101,7 @@ public class ExcelParser
 		
 	}
 
-	private void processSheet(Sheet sheet, SheetListener listener) {
+	private void processSheet(Sheet sheet, List listeners) {
 		int maxRows = sheet.getRows();
 		
 		Range[] mergedRanges = sheet.getMergedCells();
@@ -102,7 +109,7 @@ public class ExcelParser
 		
 		for(int i = 0; i < maxRows; i++) {
 			Cell[] row = sheet.getRow(i);
-			listener.newRow(i, row.length);			
+			newRow(listeners, i, row.length);			
 			for (int cellNum = 0; cellNum < row.length; cellNum++) {
 				Cell cell = row[cellNum];
 				
@@ -110,13 +117,13 @@ public class ExcelParser
 											
 				if (merged != null) {
                     Cell topLeft = merged.getTopLeft();
-					listener.newCell(i, cellNum, topLeft.getContents(), topLeft.getColumn());
+					newCell(listeners, i, cellNum, topLeft.getContents(), topLeft.getColumn());
 				} else {
-					listener.newCell(i, cellNum, cell.getContents(), SheetListener.NON_MERGED);
+					newCell(listeners, i, cellNum, cell.getContents(), SheetListener.NON_MERGED);
 				}
 			}
 		}
-        listener.finishSheet();
+        finishSheet(listeners);
 	}
 	
     Range getRangeIfMerged(Cell cell, Range[] mergedRanges) {
@@ -141,8 +148,29 @@ public class ExcelParser
                                              stringVal.length() - 2 );
         }
         return stringVal;
-    }	
-
+    }
+	
+	private void finishSheet(List listeners) {
+		for (Iterator it = listeners.iterator(); it.hasNext();) {
+			SheetListener listener = (SheetListener) it.next();
+			listener.finishSheet();
+		}
+	}
+	private void newRow(List listeners, int row, int cols) {
+		for (Iterator it = listeners.iterator(); it.hasNext();) {
+			SheetListener listener = (SheetListener) it.next();
+			listener.newRow(row, cols);
+		}
+	}
+    public void newCell(List listeners, int row,
+            int column,
+            String value,
+            int mergedColStart) {
+    	for (Iterator it = listeners.iterator(); it.hasNext();) {
+			SheetListener listener = (SheetListener) it.next();
+			listener.newCell(row, column, value, mergedColStart);
+		}
+    }
 
 
 

@@ -57,7 +57,7 @@ public class CsvParserTest extends TestCase {
      * Test the handling of merged cells.
      */
     public void testCellMergeHandling() {
-        CsvParser parser = new CsvParser(null, null);
+        CsvParser parser = new CsvParser((SheetListener)null, null);
         assertEquals(SheetListener.NON_MERGED, parser.calcStartMerge( SheetListener.NON_MERGED, 1, "foo" ));
         assertEquals(42, parser.calcStartMerge( SheetListener.NON_MERGED, 42, "..." ));
         

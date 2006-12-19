@@ -16,6 +16,8 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
+import java.util.List;
+
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.decisiontable.parser.SheetListener;
 import org.drools.decisiontable.parser.csv.CsvLineParser;
@@ -41,6 +43,7 @@ public abstract class InputType {
      * @return The appropriate Parser. 
      */
     public abstract DecisionTableParser createParser(SheetListener listener);
+    public abstract DecisionTableParser createParser(List listeners);
 
 }
 
@@ -48,6 +51,9 @@ class XlsInput extends InputType {
 
     public DecisionTableParser createParser(final SheetListener listener) {
         return new ExcelParser( listener );
+    }
+    public DecisionTableParser createParser(final List listeners) {
+    	return new ExcelParser( listeners );
     }
 
 }
@@ -59,4 +65,9 @@ class CsvInput extends InputType {
                               new CsvLineParser() );
     }
 
+    public DecisionTableParser createParser(final List listeners) {
+    	return new CsvParser( listeners,
+    			new CsvLineParser() );
+    }
+    
 }

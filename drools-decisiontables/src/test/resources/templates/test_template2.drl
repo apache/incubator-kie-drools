@@ -1,0 +1,28 @@
+template header
+colour
+minSize
+maxSize
+valida
+validb[]
+
+package rulesetName;
+#generated from Decision Table
+
+
+template "mine"
+colour
+minSize
+maxSize
+valida
+validb
+rule "some stuff $row.rowNumber$"
+	when
+		Foo(myObject.getColour().equals($colour$),
+		myObject.size () > $minSize$,
+		myObject.size () < $maxSize$)
+	then
+		myObject.setIsValid($valida$);
+		myObject.setIsValid($validb0$, $validb1$);
+end
+end template
+
