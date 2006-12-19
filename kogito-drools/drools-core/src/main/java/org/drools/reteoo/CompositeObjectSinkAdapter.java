@@ -498,6 +498,82 @@ public class CompositeObjectSinkAdapter
             this.hashCode = result;
         }
 
+        public boolean getBooleanValue() {
+            switch( this.type ) {
+                case BOOL:
+                    return this.bvalue;
+                case OBJECT:
+                    if( this.ovalue instanceof Boolean ) {
+                        return ((Boolean) this.ovalue).booleanValue();
+                    } else if( this.ovalue instanceof String ){
+                        return Boolean.valueOf( (String) this.ovalue ).booleanValue();
+                    } else {
+                        throw new ClassCastException( "Can't convert "+this.ovalue.getClass()+" to a boolean value.");
+                    }
+                case LONG:
+                    throw new ClassCastException( "Can't convert long to a boolean value.");
+                case DOUBLE:
+                    throw new ClassCastException( "Can't convert double to a boolean value.");
+                    
+            }
+            return false;
+        }
+        
+        public long getLongValue() {
+            switch( this.type ) {
+                case BOOL:
+                    return this.bvalue ? 1 : 0;
+                case OBJECT:
+                    if( this.ovalue instanceof Number ) {
+                        return ((Number) this.ovalue).longValue();
+                    } else if( this.ovalue instanceof String ){
+                        return Long.parseLong( (String) this.ovalue );
+                    } else {
+                        throw new ClassCastException( "Can't convert "+this.ovalue.getClass()+" to a long value.");
+                    }
+                case LONG:
+                    return this.lvalue;
+                case DOUBLE:
+                    return (long) this.dvalue;
+                    
+            }
+            return 0;
+        }
+        
+        public double getDoubleValue() {
+            switch( this.type ) {
+                case BOOL:
+                    return this.bvalue ? 1 : 0;
+                case OBJECT:
+                    if( this.ovalue instanceof Number ) {
+                        return ((Number) this.ovalue).doubleValue();
+                    } else if( this.ovalue instanceof String ){
+                        return Double.parseDouble( (String) this.ovalue );
+                    } else {
+                        throw new ClassCastException( "Can't convert "+this.ovalue.getClass()+" to a double value.");
+                    }
+                case LONG:
+                    return this.lvalue;
+                case DOUBLE:
+                    return this.dvalue;
+            }
+            return 0;
+        }
+        
+        public Object getObjectValue() {
+            switch( this.type ) {
+                case BOOL:
+                    return this.bvalue ? Boolean.TRUE : Boolean.FALSE;
+                case OBJECT:
+                    return this.ovalue;
+                case LONG:
+                    return new Long( this.lvalue );
+                case DOUBLE:
+                    return new Double( this.dvalue );
+            }
+            return null;
+        }
+        
         public int hashCode() {
             return this.hashCode;
         }
@@ -505,12 +581,21 @@ public class CompositeObjectSinkAdapter
         public boolean equals(final Object object) {
             final HashKey other = (HashKey) object;
 
-            return this.index == other.index &&
-                   this.type  == other.type &&
-                   ( ((this.type == BOOL) && (this.bvalue == other.bvalue)) ||
-                     ((this.type == LONG) && (this.lvalue == other.lvalue)) ||
-                     ((this.type == DOUBLE) && (this.dvalue == other.dvalue)) ||
-                     ((this.type == OBJECT) && (this.ovalue.equals( other.ovalue ))) );
+            switch( this.type ) {
+                case BOOL:
+                    return ( this.index == other.index ) && ( this.bvalue == other.getBooleanValue() );
+                case LONG:
+                    return ( this.index == other.index ) && ( this.lvalue == other.getLongValue() );
+                case DOUBLE:
+                    return ( this.index == other.index ) && ( this.dvalue == other.getDoubleValue() );
+                case OBJECT:
+                    Object otherValue = other.getObjectValue();
+                    if( ( this.ovalue instanceof Number ) && ( otherValue instanceof Number )) {
+                        return ( this.index == other.index ) && ( ( ( Number ) this.ovalue ).doubleValue() == ( ( Number ) otherValue ).doubleValue() );
+                    }
+                    return ( this.index == other.index ) && ( this.ovalue.equals( otherValue ) );
+            }
+            return false;
         }
 
     }
