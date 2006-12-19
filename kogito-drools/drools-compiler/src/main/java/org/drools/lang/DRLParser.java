@@ -1,4 +1,4 @@
-// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2006-12-19 16:02:44
+// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2006-12-19 21:53:43
 
 	package org.drools.lang;
 	import java.util.List;
@@ -4681,9 +4681,9 @@ public class DRLParser extends Parser {
                                   while( (index < buf.length() ) && Character.isWhitespace( buf.charAt( index ) ) &&
                                          (buf.charAt( index ) != 10 ) && (buf.charAt( index ) != 13 ))
                                              index++;
-                                  if( (index < buf.length() ) && ( buf.charAt( index ) == 10 ) )
+                                  if( (index < buf.length() ) && ( buf.charAt( index ) == '\r' ) )
                                       index++;
-                                  if( (index < buf.length() ) && ( buf.charAt( index ) == 13 ) )
+                                  if( (index < buf.length() ) && ( buf.charAt( index ) == '\n' ) )
                                       index++;
                                   
               		    rule.setConsequence( buf.substring( index ) );
