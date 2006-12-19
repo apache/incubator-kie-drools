@@ -36,6 +36,8 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.acme.insurance.Driver;
+import org.acme.insurance.Policy;
 import org.drools.AssertedObject;
 import org.drools.Cell;
 import org.drools.Cheese;
@@ -3098,6 +3100,26 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list.contains( c.getType() ) );
         assertEquals( 1,
                       list.size() );
+    }
+    
+    public void testInsurancePricingExample() throws Exception {
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "insurance_pricing_example.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        
+        //now create some test data
+        Driver driver = new Driver();
+        Policy policy = new Policy();
+        
+        wm.assertObject(driver);
+        wm.assertObject(policy);
+        
+        wm.fireAllRules();
+        
+        System.out.println("BASE PRICE IS: " + policy.getBasePrice());
+        System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
+        
+        assertEquals(120, policy.getBasePrice());
     }
 
     public void testLLR() throws Exception {
