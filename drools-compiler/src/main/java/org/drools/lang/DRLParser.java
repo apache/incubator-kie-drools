@@ -1,4 +1,4 @@
-// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2006-12-13 16:45:06
+// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2006-12-19 16:02:44
 
 	package org.drools.lang;
 	import java.util.List;
@@ -4676,7 +4676,17 @@ public class DRLParser extends Parser {
             match(input,END,FOLLOW_END_in_rhs_chunk3275); if (failed) return ;
             if ( backtracking==0 ) {
               
-              		    rule.setConsequence( buf.toString() );
+                                  // ignoring first line in the consequence
+                                  int index = 0;
+                                  while( (index < buf.length() ) && Character.isWhitespace( buf.charAt( index ) ) &&
+                                         (buf.charAt( index ) != 10 ) && (buf.charAt( index ) != 13 ))
+                                             index++;
+                                  if( (index < buf.length() ) && ( buf.charAt( index ) == 10 ) )
+                                      index++;
+                                  if( (index < buf.length() ) && ( buf.charAt( index ) == 13 ) )
+                                      index++;
+                                  
+              		    rule.setConsequence( buf.substring( index ) );
                    		    rule.setConsequenceLocation(offset(start.getLine()), start.getCharPositionInLine());
                               
             }
@@ -4696,7 +4706,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start word
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1300:1: word returns [String word] : ( ( ID )=>id= ID | ( 'import' )=> 'import' | ( 'use' )=> 'use' | ( RULE )=> RULE | ( 'query' )=> 'query' | ( 'salience' )=> 'salience' | ( 'no-loop' )=> 'no-loop' | ( WHEN )=> WHEN | ( THEN )=> THEN | ( END )=> END | str= STRING );
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1310:1: word returns [String word] : ( ( ID )=>id= ID | ( 'import' )=> 'import' | ( 'use' )=> 'use' | ( RULE )=> RULE | ( 'query' )=> 'query' | ( 'salience' )=> 'salience' | ( 'no-loop' )=> 'no-loop' | ( WHEN )=> WHEN | ( THEN )=> THEN | ( END )=> END | str= STRING );
     public String word() throws RecognitionException {   
         String word = null;
 
@@ -4707,7 +4717,7 @@ public class DRLParser extends Parser {
         		word = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1304:4: ( ( ID )=>id= ID | ( 'import' )=> 'import' | ( 'use' )=> 'use' | ( RULE )=> RULE | ( 'query' )=> 'query' | ( 'salience' )=> 'salience' | ( 'no-loop' )=> 'no-loop' | ( WHEN )=> WHEN | ( THEN )=> THEN | ( END )=> END | str= STRING )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1314:4: ( ( ID )=>id= ID | ( 'import' )=> 'import' | ( 'use' )=> 'use' | ( RULE )=> RULE | ( 'query' )=> 'query' | ( 'salience' )=> 'salience' | ( 'no-loop' )=> 'no-loop' | ( WHEN )=> WHEN | ( THEN )=> THEN | ( END )=> END | str= STRING )
             int alt51=11;
             switch ( input.LA(1) ) {
             case ID:
@@ -4746,14 +4756,14 @@ public class DRLParser extends Parser {
             default:
                 if (backtracking>0) {failed=true; return word;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1300:1: word returns [String word] : ( ( ID )=>id= ID | ( 'import' )=> 'import' | ( 'use' )=> 'use' | ( RULE )=> RULE | ( 'query' )=> 'query' | ( 'salience' )=> 'salience' | ( 'no-loop' )=> 'no-loop' | ( WHEN )=> WHEN | ( THEN )=> THEN | ( END )=> END | str= STRING );", 51, 0, input);
+                    new NoViableAltException("1310:1: word returns [String word] : ( ( ID )=>id= ID | ( 'import' )=> 'import' | ( 'use' )=> 'use' | ( RULE )=> RULE | ( 'query' )=> 'query' | ( 'salience' )=> 'salience' | ( 'no-loop' )=> 'no-loop' | ( WHEN )=> WHEN | ( THEN )=> THEN | ( END )=> END | str= STRING );", 51, 0, input);
 
                 throw nvae;
             }
 
             switch (alt51) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1304:4: ( ID )=>id= ID
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1314:4: ( ID )=>id= ID
                     {
                     id=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_word3317); if (failed) return word;
@@ -4764,7 +4774,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1305:4: ( 'import' )=> 'import'
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1315:4: ( 'import' )=> 'import'
                     {
                     match(input,31,FOLLOW_31_in_word3329); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4774,7 +4784,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1306:4: ( 'use' )=> 'use'
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1316:4: ( 'use' )=> 'use'
                     {
                     match(input,73,FOLLOW_73_in_word3338); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4784,7 +4794,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1307:4: ( RULE )=> RULE
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1317:4: ( RULE )=> RULE
                     {
                     match(input,RULE,FOLLOW_RULE_in_word3350); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4794,7 +4804,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1308:4: ( 'query' )=> 'query'
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1318:4: ( 'query' )=> 'query'
                     {
                     match(input,37,FOLLOW_37_in_word3363); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4804,7 +4814,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1309:4: ( 'salience' )=> 'salience'
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1319:4: ( 'salience' )=> 'salience'
                     {
                     match(input,41,FOLLOW_41_in_word3373); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4814,7 +4824,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1310:5: ( 'no-loop' )=> 'no-loop'
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1320:5: ( 'no-loop' )=> 'no-loop'
                     {
                     match(input,42,FOLLOW_42_in_word3381); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4824,7 +4834,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1311:4: ( WHEN )=> WHEN
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1321:4: ( WHEN )=> WHEN
                     {
                     match(input,WHEN,FOLLOW_WHEN_in_word3389); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4834,7 +4844,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1312:4: ( THEN )=> THEN
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1322:4: ( THEN )=> THEN
                     {
                     match(input,THEN,FOLLOW_THEN_in_word3402); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4844,7 +4854,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1313:4: ( END )=> END
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1323:4: ( END )=> END
                     {
                     match(input,END,FOLLOW_END_in_word3415); if (failed) return word;
                     if ( backtracking==0 ) {
@@ -4854,7 +4864,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1314:4: str= STRING
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1324:4: str= STRING
                     {
                     str=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_word3431); if (failed) return word;

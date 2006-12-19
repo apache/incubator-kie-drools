@@ -197,7 +197,7 @@ public class XmlDumper extends ReflectiveVisitor
                 lhs = "<lhs> </lhs>";
             }
 
-            final String rhs = "<rhs>" + replaceIllegalChars( ruleDescr.getConsequence() ) + "</rhs>" + XmlDumper.eol;
+            final String rhs = "<rhs>\n" + replaceIllegalChars( ruleDescr.getConsequence() ) + "</rhs>" + XmlDumper.eol;
             rule += attribute;
             rule += lhs;
             rule += rhs;
