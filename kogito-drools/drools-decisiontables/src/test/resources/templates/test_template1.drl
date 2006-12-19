@@ -1,0 +1,26 @@
+template header
+name
+age[]
+log
+coolness
+
+package This_is_a_ruleset;
+#generated from Decision Table
+import example.model.User;
+import example.model.Car;
+
+template "coolness"
+name
+age
+log
+coolness
+rule "How cool is $name$ $row.rowNumber$"
+	when
+		user.getName().equals("$name$")
+		user.getAge() >= $age1$ && user.getAge() <= $age2$
+	then
+		System.out.println( "$log$" );
+		user.setCoolness("$coolness$");
+end
+end template
+

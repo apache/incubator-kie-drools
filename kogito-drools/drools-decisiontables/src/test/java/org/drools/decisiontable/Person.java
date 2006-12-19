@@ -17,9 +17,9 @@ package org.drools.decisiontable;
  */
 
 public class Person {
-    private final String name;
-    private final String likes;
-    private final int    age;
+    private String name;
+    private String likes;
+    private int    age;
 
     private char         sex;
 
@@ -27,6 +27,9 @@ public class Person {
 
     private String       status;
 
+    public Person() {
+    	
+    }
     public Person(final String name) {
         this( name,
               "",
