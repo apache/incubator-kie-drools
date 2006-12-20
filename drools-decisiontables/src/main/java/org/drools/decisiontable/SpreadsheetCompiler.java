@@ -17,7 +17,9 @@ package org.drools.decisiontable;
  */
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.decisiontable.model.DRLOutput;
@@ -118,10 +120,12 @@ public class SpreadsheetCompiler {
     private RuleSheetListener getRuleSheetListener(final InputStream stream,
                                                    final String worksheetName) {
         final RuleSheetListener listener = new DefaultRuleSheetListener();
-        final Map listeners = new HashMap();
-        listeners.put( worksheetName,
-                       listener );
-        final ExcelParser parser = new ExcelParser( listeners );
+        final Map sheetListeners = new HashMap();
+        final List listeners = new ArrayList();
+        listeners.add(listener);
+        sheetListeners.put( worksheetName,
+                       listeners );
+        final ExcelParser parser = new ExcelParser( sheetListeners );
         parser.parseFile( stream );
         return listener;
     }
