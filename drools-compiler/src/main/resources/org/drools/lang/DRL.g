@@ -382,12 +382,10 @@ function
 				)*
 			)?
 		')'
-		body=CURLY_CHUNK
+		body=curly_chunk
 		{
 			//strip out '{','}'
-			String bodys = body.getText();
-			bodys = bodys.substring(1,bodys.length()-1);
-			f.setText( bodys );
+			f.setText( body.substring( 1, body.length()-1 ) );
 
 			packageDescr.addFunction( f );
 		}
@@ -1101,6 +1099,45 @@ paren_chunk returns [String text]
                 }
 	;
 
+curly_chunk returns [String text]
+        @init {
+           StringBuffer buf = null;
+           Integer channel = null;
+        }
+	:
+		loc=LEFT_CURLY 
+		{
+	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
+		    buf = new StringBuffer();
+		    
+		    buf.append( loc.getText() );
+		} 
+		( 
+			~(LEFT_CURLY|RIGHT_CURLY)
+			  {
+			    buf.append( input.LT(-1).getText() );
+			  }
+			|
+			chunk=curly_chunk
+			  {
+			    buf.append( chunk );
+			  }
+		)*
+		{
+		    if( channel != null ) {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
+		    } else {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		    }
+		}
+                loc=RIGHT_CURLY
+                {
+                    buf.append( loc.getText() );
+		    text = buf.toString();
+                }
+	;
+
 square_chunk returns [String text]
         @init {
            StringBuffer buf = null;
@@ -1407,11 +1444,6 @@ C_STYLE_SINGLE_LINE_COMMENT
 	;
 
 
-CURLY_CHUNK
-	:
-	'{' ( CURLY_CHUNK | NO_CURLY )* '}'
-	;
-
 LEFT_PAREN
         :	'('
         ;
@@ -1428,11 +1460,14 @@ RIGHT_SQUARE
         :	']'
         ;        
 
-fragment
-NO_CURLY
-	: ~('{'|'}')
-	;
+LEFT_CURLY
+        :	'{'
+        ;
 
+RIGHT_CURLY
+        :	'}'
+        ;
+        
 MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
