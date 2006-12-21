@@ -1,4 +1,4 @@
-// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2006-12-19 22:28:00
+// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2006-12-21 21:35:24
 
 	package org.drools.lang;
 	import java.util.List;
@@ -4363,7 +4363,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start lhs_exist
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1254:1: lhs_exist returns [BaseDescr d] : loc= 'exists' ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column ) ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1254:1: lhs_exist returns [BaseDescr d] : loc= 'exists' ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column ) ;
     public BaseDescr lhs_exist() throws RecognitionException {   
         BaseDescr d = null;
 
@@ -4375,12 +4375,12 @@ public class DRLParser extends Parser {
         		d = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:4: (loc= 'exists' ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:4: loc= 'exists' ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:4: (loc= 'exists' ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column ) )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:4: loc= 'exists' ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column )
             {
             loc=(Token)input.LT(1);
             match(input,70,FOLLOW_70_in_lhs_exist3127); if (failed) return d;
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:17: ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:17: ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column )
             int alt46=2;
             int LA46_0 = input.LA(1);
             if ( (LA46_0==LEFT_PAREN) ) {
@@ -4392,17 +4392,17 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return d;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1258:17: ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column )", 46, 0, input);
+                    new NoViableAltException("1258:17: ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column )", 46, 0, input);
 
                 throw nvae;
             }
             switch (alt46) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:18: ( '(' lhs_column ')' )=> '(' column= lhs_column ')'
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:18: ( '(' lhs_or ')' )=> '(' column= lhs_or ')'
                     {
                     match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_exist3130); if (failed) return d;
-                    pushFollow(FOLLOW_lhs_column_in_lhs_exist3134);
-                    column=lhs_column();
+                    pushFollow(FOLLOW_lhs_or_in_lhs_exist3134);
+                    column=lhs_or();
                     _fsp--;
                     if (failed) return d;
                     match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_exist3136); if (failed) return d;
@@ -4410,7 +4410,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:46: column= lhs_column
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1258:42: column= lhs_column
                     {
                     pushFollow(FOLLOW_lhs_column_in_lhs_exist3142);
                     column=lhs_column();
@@ -4444,7 +4444,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start lhs_not
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1265:1: lhs_not returns [NotDescr d] : loc= 'not' ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column ) ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1265:1: lhs_not returns [NotDescr d] : loc= 'not' ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column ) ;
     public NotDescr lhs_not() throws RecognitionException {   
         NotDescr d = null;
 
@@ -4456,12 +4456,12 @@ public class DRLParser extends Parser {
         		d = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:4: (loc= 'not' ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:4: loc= 'not' ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:4: (loc= 'not' ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column ) )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:4: loc= 'not' ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column )
             {
             loc=(Token)input.LT(1);
             match(input,71,FOLLOW_71_in_lhs_not3172); if (failed) return d;
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:14: ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:14: ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column )
             int alt47=2;
             int LA47_0 = input.LA(1);
             if ( (LA47_0==LEFT_PAREN) ) {
@@ -4473,17 +4473,17 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return d;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1269:14: ( ( '(' lhs_column ')' )=> '(' column= lhs_column ')' | column= lhs_column )", 47, 0, input);
+                    new NoViableAltException("1269:14: ( ( '(' lhs_or ')' )=> '(' column= lhs_or ')' | column= lhs_column )", 47, 0, input);
 
                 throw nvae;
             }
             switch (alt47) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:15: ( '(' lhs_column ')' )=> '(' column= lhs_column ')'
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:15: ( '(' lhs_or ')' )=> '(' column= lhs_or ')'
                     {
                     match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_not3175); if (failed) return d;
-                    pushFollow(FOLLOW_lhs_column_in_lhs_not3179);
-                    column=lhs_column();
+                    pushFollow(FOLLOW_lhs_or_in_lhs_not3179);
+                    column=lhs_or();
                     _fsp--;
                     if (failed) return d;
                     match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_not3182); if (failed) return d;
@@ -4491,7 +4491,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:44: column= lhs_column
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1269:40: column= lhs_column
                     {
                     pushFollow(FOLLOW_lhs_column_in_lhs_not3188);
                     column=lhs_column();
@@ -4505,7 +4505,7 @@ public class DRLParser extends Parser {
 
             if ( backtracking==0 ) {
               
-              			d = new NotDescr( (ColumnDescr) column ); 
+              			d = new NotDescr( column ); 
               			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
               		
             }
@@ -5355,13 +5355,13 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_unary3093 = new BitSet(new long[]{0x0000000020000002L});
     public static final BitSet FOLLOW_opt_semicolon_in_lhs_unary3103 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_70_in_lhs_exist3127 = new BitSet(new long[]{0x0000000000000810L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_exist3130 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_exist3134 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_exist3130 = new BitSet(new long[]{0x0000000000000810L,0x00000000000001C0L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs_exist3134 = new BitSet(new long[]{0x0000000000001000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_exist3136 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_lhs_column_in_lhs_exist3142 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_71_in_lhs_not3172 = new BitSet(new long[]{0x0000000000000810L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_not3175 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_lhs_column_in_lhs_not3179 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_not3175 = new BitSet(new long[]{0x0000000000000810L,0x00000000000001C0L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs_not3179 = new BitSet(new long[]{0x0000000000001000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_not3182 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_lhs_column_in_lhs_not3188 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_72_in_lhs_eval3216 = new BitSet(new long[]{0x0000000000000800L});

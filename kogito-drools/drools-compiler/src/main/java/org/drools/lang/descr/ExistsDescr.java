@@ -32,8 +32,8 @@ public class ExistsDescr extends BaseDescr
     public ExistsDescr() {
     }
 
-    public ExistsDescr(final ColumnDescr column) {
-        addDescr( column );
+    public ExistsDescr(final BaseDescr baseDescr) {
+        addDescr( baseDescr );
     }
 
     public void addDescr(final BaseDescr baseDescr) {

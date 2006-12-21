@@ -2410,6 +2410,36 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
     }
 
+    public void testNestedCEs() throws Exception {
+        final RuleDescr rule = parseResource( "nested_conditional_elements.drl" ).rule();
+
+        assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
+
+        assertNotNull( rule );
+        
+        AndDescr root = rule.getLhs();
+        NotDescr not1 = (NotDescr) root.getDescrs().get( 0 );
+        AndDescr and1 = (AndDescr) not1.getDescrs().get( 0 );
+        
+        ColumnDescr state = (ColumnDescr) and1.getDescrs().get( 0 );
+        NotDescr not2 = (NotDescr) and1.getDescrs().get( 1 );
+        AndDescr and2 = (AndDescr) not2.getDescrs().get( 0 );
+        ColumnDescr person = (ColumnDescr) and2.getDescrs().get( 0 );
+        ColumnDescr cheese = (ColumnDescr) and2.getDescrs().get( 1 );
+        
+        ColumnDescr person2 = (ColumnDescr) root.getDescrs().get( 1 );
+        OrDescr or = (OrDescr) root.getDescrs().get( 2 );
+        ColumnDescr cheese2 = (ColumnDescr) or.getDescrs().get( 0 );
+        ColumnDescr cheese3 = (ColumnDescr) or.getDescrs().get( 1 );
+        
+        assertEquals( state.getObjectType(), "State" );
+        assertEquals( person.getObjectType(), "Person" );
+        assertEquals( cheese.getObjectType(), "Cheese" );
+        assertEquals( person2.getObjectType(), "Person" );
+        assertEquals( cheese2.getObjectType(), "Cheese" );
+        assertEquals( cheese3.getObjectType(), "Cheese" );
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;

@@ -32,8 +32,8 @@ public class NotDescr extends BaseDescr
     public NotDescr() {
     }
 
-    public NotDescr(final ColumnDescr column) {
-        addDescr( column );
+    public NotDescr(final BaseDescr descr) {
+        addDescr( descr );
     }
 
     public void addDescr(final BaseDescr baseDescr) {
