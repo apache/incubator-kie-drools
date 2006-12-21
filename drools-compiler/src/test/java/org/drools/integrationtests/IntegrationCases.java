@@ -3648,4 +3648,39 @@ public abstract class IntegrationCases extends TestCase {
             Assert.fail("Should have thrown an InvalidRulePackage Exception instead of "+e.getMessage());
         }
     }
+    
+    public void testNestedConditionalElements() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedConditionalElements.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        State state = new State("SP");
+        workingMemory.assertObject( state );
+        
+        Person bob = new Person( "Bob" );
+        bob.setStatus( state.getState() );
+        bob.setLikes( "stilton" );
+        workingMemory.assertObject( bob );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 0,
+                      list.size() );
+
+        workingMemory.assertObject( new Cheese( bob.getLikes(), 10 ) );
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+    }
+
 }
