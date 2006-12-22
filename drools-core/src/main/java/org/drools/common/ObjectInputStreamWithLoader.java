@@ -41,7 +41,11 @@ public class ObjectInputStreamWithLoader extends ObjectInputStream {
             final String name = desc.getName();
             Class clazz = (Class) primClasses.get( name );
             if( clazz == null ) {
-                clazz = this.classLoader.loadClass( name );
+                try{
+                    clazz = this.classLoader.loadClass( name );
+                } catch (ClassNotFoundException cnf) {
+                    clazz = super.resolveClass( desc );
+                }
             }
             return clazz;
         }

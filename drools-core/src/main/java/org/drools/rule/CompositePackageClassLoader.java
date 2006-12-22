@@ -48,7 +48,7 @@ public class CompositePackageClassLoader extends ClassLoader {
     protected synchronized Class loadClass(final String name,
                                            final boolean resolve) throws ClassNotFoundException {
         Class clazz = findLoadedClass( name );
-
+        
         if ( clazz == null ) {
             clazz = compositeFastFindClass( name );
 
