@@ -43,11 +43,11 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
@@ -311,10 +311,14 @@ public class PackageBuilder {
     }
 
     private void addFunction(final FunctionDescr functionDescr) {
+    	
+    	String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+    	functionDescr.setClassName(functionClassName);
+    	
         final FunctionBuilder builder = new FunctionBuilder();
         this.pkg.addFunction( functionDescr.getName() );
 
-        addClassCompileTask( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
+        addClassCompileTask( functionClassName,
                              functionDescr,
                              builder.build( this.pkg,
                                             functionDescr,                                            
@@ -325,6 +329,11 @@ public class PackageBuilder {
                              new FunctionErrorHandler( functionDescr,
                                                        "Function Compilation error" ) );
 
+        LineMappings mapping = new LineMappings( functionClassName );
+        mapping.setStartLine( functionDescr.getLine() );
+        mapping.setOffset( functionDescr.getOffset() );
+        this.lineMappings.put( functionClassName,
+                               mapping );
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {

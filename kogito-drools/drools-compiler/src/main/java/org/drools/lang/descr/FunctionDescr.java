@@ -33,6 +33,8 @@ public class FunctionDescr extends BaseDescr {
     
     private int      offset;
 
+    private String   className;
+
     public FunctionDescr(final String name,
                          final String returnType) {
         this.name = name;
@@ -41,6 +43,14 @@ public class FunctionDescr extends BaseDescr {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getClassName() {
+        return this.className;
+    }
+
+    public void setClassName(final String className) {
+        this.className = className;
     }
 
     public List getParameterNames() {
