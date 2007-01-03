@@ -17,6 +17,7 @@
 package org.drools.rule;
 
 import java.util.List;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
@@ -107,6 +108,14 @@ public class Accumulate extends ConditionalElement {
 
     public Column getSourceColumn() {
         return this.sourceColumn;
+    }
+
+    public Map getInnerDeclarations() {
+        return this.sourceColumn.getInnerDeclarations();
+    }
+
+    public Map getOuterDeclarations() {
+        return this.resultColumn.getOuterDeclarations();
     }
 
 }

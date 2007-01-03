@@ -12,6 +12,6 @@ public interface FunctionResolver {
 
     public String resolveFunction(String functionName,
                                   String params,
-                                  AvailableVariables variables);
+                                  DeclarationScopeResolver variables);
 
 }

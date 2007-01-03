@@ -18,8 +18,11 @@ package org.drools.rule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 
@@ -51,7 +54,7 @@ public class GroupElement extends ConditionalElement {
      * 
      * @param child
      */
-    public void addChild(final Object child) {
+    public void addChild(final RuleConditionElement child) {
         if ( (this.isNot() || this.isExists()) && (this.children.size() > 0) ) {
             throw new RuntimeDroolsException( this.type.toString() + " can have only a single child element. Either a single Pattern or another CE." );
         }
@@ -60,6 +63,20 @@ public class GroupElement extends ConditionalElement {
 
     public List getChildren() {
         return this.children;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public Map getInnerDeclarations() {
+        return this.type.getInnerDeclarations( this.children );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public Map getOuterDeclarations() {
+        return this.type.getOuterDeclarations( this.children );
     }
 
     /**
@@ -85,27 +102,27 @@ public class GroupElement extends ConditionalElement {
         // child GE, then clone child into current node eliminating child
         if ( (this.isAnd() || this.isOr()) && (this.children.size() == 1) ) {
             Object child = this.getChildren().get( 0 );
-            if( child instanceof GroupElement ) {
+            if ( child instanceof GroupElement ) {
                 GroupElement group = (GroupElement) child;
                 this.type = group.getType();
                 this.children.clear();
                 this.children.addAll( group.getChildren() );
             }
-        } 
+        }
     }
 
     /**
      * @param parent
      */
     private void pack(GroupElement parent) {
-        if( this.children.size() == 0 ) {
+        if ( this.children.size() == 0 ) {
             // if there is no child, just remove this node
             parent.children.remove( this );
             return;
         }
-        
+
         // If this is  an AND or OR or EXISTS, there are some possible merges
-        if ( this.isAnd() || this.isOr() || this.isExists()) {
+        if ( this.isAnd() || this.isOr() || this.isExists() ) {
 
             // if parent is of the same type as current node,
             // then merge this childs with parent childs
@@ -118,25 +135,27 @@ public class GroupElement extends ConditionalElement {
                 for ( Iterator childIt = this.children.iterator(); childIt.hasNext(); ) {
                     Object child = childIt.next();
                     // we must keep the order, so add in the same place were parent was before
-                    parent.getChildren().add( index++, child );
+                    parent.getChildren().add( index++,
+                                              child );
                     if ( child instanceof GroupElement ) {
                         int previousSize = parent.getChildren().size();
                         ((GroupElement) child).pack( parent );
                         // in case the child also added elements to the parent, 
                         // we need to compensate
-                        index += ( parent.getChildren().size() - previousSize );
+                        index += (parent.getChildren().size() - previousSize);
                     }
                 }
 
                 // if current node has a single child, then move it to parent and pack it
-            } else if ( ( ! this.isExists() ) && ( this.children.size() == 1 ) ) {
+            } else if ( (!this.isExists()) && (this.children.size() == 1) ) {
                 // we must keep the order so, save index
                 int index = parent.getChildren().indexOf( this );
                 parent.getChildren().remove( this );
 
                 Object child = this.children.get( 0 );
-                parent.getChildren().add( index, child );
-                
+                parent.getChildren().add( index,
+                                          child );
+
                 if ( child instanceof GroupElement ) {
                     ((GroupElement) child).pack( parent );
                 }
@@ -146,7 +165,7 @@ public class GroupElement extends ConditionalElement {
                 this.pack();
             }
 
-        // also pack itself if it is a NOT 
+            // also pack itself if it is a NOT 
         } else {
             this.pack();
         }
@@ -173,7 +192,7 @@ public class GroupElement extends ConditionalElement {
 
         // Now try a recurse manual check
         final GroupElement e2 = (GroupElement) object;
-        if ( ! this.type.equals( e2.type ) ) {
+        if ( !this.type.equals( e2.type ) ) {
             return false;
         }
 
@@ -186,23 +205,7 @@ public class GroupElement extends ConditionalElement {
         for ( int i = 0; i < e1Children.size(); i++ ) {
             final Object e1Object1 = e1Children.get( i );
             final Object e2Object1 = e2Children.get( i );
-            if ( e1Object1 instanceof GroupElement ) {
-                if ( e1Object1.getClass().isInstance( e2Object1 ) ) {
-                    if ( !e1Object1.equals( e2Object1 ) ) {
-                        //System.out.println( e1Object1.getClass().getName() + " did not have identical children" );
-                        return false;
-                    }
-                } else {
-                    //System.out.println( "Should be the equal Conditionalelements but instead was '" + e1Object1.getClass().getName() + "', '" + e2Object1.getClass().getName() + "'" );
-                    return false;
-                }
-            } else if ( e1Object1 instanceof String ) {
-                if ( !e1Object1.equals( e2Object1 ) ) {
-                    //System.out.println( "Should be the equal Strings but instead was '" + e1Object1 + "', '" + e2Object1 + "'" );
-                    return false;
-                }
-            } else {
-                //System.out.println( "Objects are neither instances of ConditionalElement or String" );
+            if ( !e1Object1.equals( e2Object1 ) ) {
                 return false;
             }
         }
@@ -232,16 +235,15 @@ public class GroupElement extends ConditionalElement {
         } catch ( final IllegalAccessException e ) {
             throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
         }
-        
+
         cloned.setType( this.getType() );
 
         for ( final Iterator it = this.children.iterator(); it.hasNext(); ) {
-            Object object = it.next();
-            if ( object instanceof GroupElement ) {
-                object = ((GroupElement) object).clone();
+            RuleConditionElement re = (RuleConditionElement) it.next();
+            if ( re instanceof GroupElement ) {
+                re = (RuleConditionElement) ((GroupElement) re).clone();
             }
-            cloned.addChild( object );
-
+            cloned.addChild( re );
         }
 
         return cloned;
@@ -270,15 +272,17 @@ public class GroupElement extends ConditionalElement {
     public boolean isExists() {
         return this.type.isExists();
     }
-    
+
     public String toString() {
-        return this.type.toString()+this.children.toString();
+        return this.type.toString() + this.children.toString();
     }
 
     /**
      * A public interface for CE types
      */
-    public static interface Type extends Serializable {
+    public static interface Type
+        extends
+        Serializable {
 
         /**
          * Returns true if this CE type is an AND
@@ -299,14 +303,69 @@ public class GroupElement extends ConditionalElement {
          * Returns true if this CE type is an EXISTS
          */
         public boolean isExists();
+
+        /**
+         * Returns a map of declarations that are
+         * visible inside of an element of this type
+         */
+        public Map getInnerDeclarations(List children);
+
+        /**
+         * Returns a map of declarations that are
+         * visible outside of an element of this type
+         */
+        public Map getOuterDeclarations(List children);
+    }
+
+    private static abstract class AbstractType
+        implements
+        Type {
+
+        /**
+         * @inheritDoc
+         */
+        public Map getInnerDeclarations(List children) {
+            Map declarations = null;
+
+            if ( children.isEmpty() ) {
+                declarations = Collections.EMPTY_MAP;
+            } else if ( children.size() == 1 ) {
+                RuleConditionElement re = (RuleConditionElement) children.get( 0 );
+                declarations = re.getOuterDeclarations();
+            } else {
+                declarations = new HashMap();
+                for ( Iterator it = children.iterator(); it.hasNext(); ) {
+                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
+                }
+            }
+            return declarations;
+        }
+
+        /**
+         * @inheritDoc
+         */
+        public Map getOuterDeclarations(List children) {
+            Map declarations = null;
+
+            if ( children.isEmpty() ) {
+                declarations = Collections.EMPTY_MAP;
+            } else if ( children.size() == 1 ) {
+                RuleConditionElement re = (RuleConditionElement) children.get( 0 );
+                declarations = re.getOuterDeclarations();
+            } else {
+                declarations = new HashMap();
+                for ( Iterator it = children.iterator(); it.hasNext(); ) {
+                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
+                }
+            }
+            return declarations;
+        }
     }
 
     /**
      * An AND CE type
      */
-    private static class AndType
-        implements
-        Type {
+    private static class AndType extends AbstractType {
 
         private static final long serialVersionUID = -669797012452495460L;
 
@@ -343,14 +402,13 @@ public class GroupElement extends ConditionalElement {
         public String toString() {
             return "AND";
         }
+
     }
 
     /**
      * An OR CE type
      */
-    private static class OrType
-        implements
-        Type {
+    private static class OrType extends AbstractType {
 
         private static final long serialVersionUID = 8108203371968455372L;
 
@@ -392,9 +450,7 @@ public class GroupElement extends ConditionalElement {
     /**
      * A NOT CE type
      */
-    private static class NotType
-        implements
-        Type {
+    private static class NotType extends AbstractType {
 
         private static final long serialVersionUID = -7873159668081968617L;
 
@@ -417,6 +473,13 @@ public class GroupElement extends ConditionalElement {
             return false;
         }
 
+        /**
+         * @inheritDoc
+         */
+        public Map getOuterDeclarations(List children) {
+            return Collections.EMPTY_MAP;
+        }
+
         public boolean equals(Object obj) {
             if ( !(obj instanceof NotType) ) {
                 return false;
@@ -431,15 +494,12 @@ public class GroupElement extends ConditionalElement {
         public String toString() {
             return "NOT";
         }
-
     }
 
     /**
      * An EXISTS CE type
      */
-    private static class ExistsType
-        implements
-        Type {
+    private static class ExistsType extends AbstractType {
 
         private static final long serialVersionUID = -1528071451996382861L;
 
@@ -460,6 +520,13 @@ public class GroupElement extends ConditionalElement {
 
         public boolean isOr() {
             return false;
+        }
+
+        /**
+         * @inheritDoc
+         */
+        public Map getOuterDeclarations(List children) {
+            return Collections.EMPTY_MAP;
         }
 
         public boolean equals(Object obj) {

@@ -86,7 +86,7 @@ class LogicTransformer {
             ands = new GroupElement[cloned.getChildren().size()];
             int i = 0;
             for( Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
-                Object branch = it.next();
+                RuleConditionElement branch = (RuleConditionElement) it.next();
                 if( ( branch instanceof GroupElement ) && (((GroupElement)branch).isAnd()) ){
                     ands[i++] = (GroupElement) branch;
                 } else {
@@ -281,7 +281,7 @@ class LogicTransformer {
             parent.getChildren().clear();
             for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
                 GroupElement newExists = GroupElementFactory.newExistsInstance();
-                newExists.addChild( it.next() );
+                newExists.addChild( (RuleConditionElement) it.next() );
                 parent.addChild( newExists );
             }
             parent.pack();
@@ -328,7 +328,7 @@ class LogicTransformer {
             parent.getChildren().clear();
             for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
                 GroupElement newNot = GroupElementFactory.newNotInstance();
-                newNot.addChild( it.next() );
+                newNot.addChild( (RuleConditionElement) it.next() );
                 parent.addChild( newNot );
             }
             parent.pack();

@@ -128,4 +128,19 @@ public class ColumnExtractor
     public int getHashCode(Object object) {
         return getValue( object ).hashCode();
     }
+    
+    public int hashCode() {
+        return this.objectType.hashCode();
+    }
+    
+    public boolean equals(Object obj) {
+        if( this == obj ) {
+            return true;
+        }
+        if( ! ( obj instanceof ColumnExtractor ) ) {
+            return false;
+        }
+        ColumnExtractor other = (ColumnExtractor) obj;
+        return this.objectType.equals( other.objectType );
+    }
 }

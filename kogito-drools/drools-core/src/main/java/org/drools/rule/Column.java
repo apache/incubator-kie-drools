@@ -16,11 +16,12 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.spi.ColumnExtractor;
 import org.drools.spi.Constraint;
@@ -29,7 +30,7 @@ import org.drools.spi.ObjectType;
 
 public class Column
     implements
-    Serializable {
+    RuleConditionElement {
     /**
      * 
      */
@@ -37,6 +38,7 @@ public class Column
     private final ObjectType  objectType;
     private List              constraints      = Collections.EMPTY_LIST;
     final Declaration         declaration;
+    private Map               declarations;
     private final int         index;
 
     // this is the negative offset of the related fact inside a tuple. i.e:
@@ -71,6 +73,8 @@ public class Column
             this.declaration = new Declaration( identifier,
                                                 new ColumnExtractor( objectType ),
                                                 this );
+            this.declarations = new HashMap(2); // default to avoid immediate resize
+            this.declarations.put( this.declaration.getIdentifier(), this.declaration );
         } else {
             this.declaration = null;
         }
@@ -100,6 +104,10 @@ public class Column
                                                          extractor,
                                                          this );
         this.constraints.add( declaration );
+        if( this.declarations == null ) {
+            this.declarations = new HashMap(2); // default to avoid immediate resize
+        }
+        this.declarations.put( declaration.getIdentifier(), declaration );
         return declaration;
 
     }
@@ -143,6 +151,14 @@ public class Column
                 ((Declaration) constr).setColumn( this );
             }
         }
+    }
+
+    public Map getInnerDeclarations() {
+        return ( this.declarations != null ) ? this.declarations : Collections.EMPTY_MAP;
+    }
+
+    public Map getOuterDeclarations() {
+        return ( this.declarations != null ) ? this.declarations : Collections.EMPTY_MAP;
     }
 
     public String toString() {

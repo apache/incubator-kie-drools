@@ -74,6 +74,6 @@ abstract public class BaseClassFieldExtractor
             return false;
         }
         final BaseClassFieldExtractor other = (BaseClassFieldExtractor) object;
-        return this.fieldType == other.fieldType && this.index == other.index;
+        return this.fieldType == other.fieldType && this.index == other.index && this.valueType.equals( other.valueType );
     }
 }

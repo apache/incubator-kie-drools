@@ -17,6 +17,7 @@
 package org.drools.rule;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -68,5 +69,12 @@ public class Collect extends ConditionalElement {
                                               e );
         }
     }
+    
+    public Map getInnerDeclarations() {
+        return this.sourceColumn.getInnerDeclarations();
+    }
 
+    public Map getOuterDeclarations() {
+        return this.resultColumn.getOuterDeclarations();
+    }
 }
