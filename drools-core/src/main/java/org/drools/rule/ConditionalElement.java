@@ -16,13 +16,12 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 
 public abstract class ConditionalElement
     implements
-    Serializable,
+    RuleConditionElement,
     Cloneable {
 
     public abstract Object clone();
-
+    
 }

@@ -23,6 +23,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.drools.DroolsTestCase;
+import org.drools.base.ClassObjectType;
+import org.drools.spi.ObjectType;
 
 public class LogicTransformerTest extends DroolsTestCase {
     /**
@@ -50,9 +52,10 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      */
     public void testSingleOrAndOrTransformation() throws InvalidPatternException {
-        final String a = "a";
-        final String b = "b";
-        final String c = "c";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
+        final Column c = new Column( 2, type, "c");
 
         final GroupElement or = GroupElementFactory.newOrInstance();
         or.addChild( a );
@@ -119,12 +122,13 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      */
     public void testMultipleOrAndOrTransformation() throws InvalidPatternException {
-        final String a = "a";
-        final String b = "b";
-        final String c = "c";
-        final String d = "d";
-        final String e = "e";
-        final String f = "f";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
+        final Column c = new Column( 2, type, "c");
+        final Column d = new Column( 3, type, "d");
+        final Column e = new Column( 4, type, "e");
+        final Column f = new Column( 5, type, "f");
 
         final GroupElement parent = GroupElementFactory.newAndInstance();
         final GroupElement or = GroupElementFactory.newOrInstance();
@@ -239,8 +243,9 @@ public class LogicTransformerTest extends DroolsTestCase {
      * 
      */
     public void testNotOrTransformation() throws InvalidPatternException {
-        final String a = "a";
-        final String b = "b";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
 
         final GroupElement parent = GroupElementFactory.newNotInstance();
         final GroupElement or = GroupElementFactory.newOrInstance();
@@ -294,8 +299,9 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      */
     public void testExistOrTransformation() throws InvalidPatternException {
-        final String a = "a";
-        final String b = "b";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
 
         final GroupElement parent = GroupElementFactory.newExistsInstance();
         final GroupElement or = GroupElementFactory.newOrInstance();
@@ -329,10 +335,11 @@ public class LogicTransformerTest extends DroolsTestCase {
     }
 
     public void testEliminateEmptyBranchesAndDuplications() throws InvalidRuleException {
-        final String a = "a";
-        final String b = "b";
-        final String c = "c";
-        final String d = "d";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
+        final Column c = new Column( 2, type, "c");
+        final Column d = new Column( 3, type, "d");
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         and1.addChild( a );
@@ -413,14 +420,15 @@ public class LogicTransformerTest extends DroolsTestCase {
     public void testProcessTree() throws IOException,
                                  ClassNotFoundException,
                                  InvalidPatternException {
-        final String a = "a";
-        final String b = "b";
-        final String c = "c";
-        final String d = "d";
-        final String e = "e";
-        final String g = "g";
-        final String h = "h";
-        final String i = "i";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
+        final Column c = new Column( 2, type, "c");
+        final Column d = new Column( 3, type, "d");
+        final Column e = new Column( 4, type, "e");
+        final Column g = new Column( 5, type, "g");
+        final Column h = new Column( 6, type, "h");
+        final Column i = new Column( 7, type, "i");
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         final GroupElement and2 = GroupElementFactory.newAndInstance();
@@ -476,14 +484,15 @@ public class LogicTransformerTest extends DroolsTestCase {
     }
 
     public void testCloneable() {
-        final String a = "a";
-        final String b = "b";
-        final String c = "c";
-        final String d = "d";
-        final String e = "e";
-        final String f = "f";
-        final String g = "g";
-        final String h = "h";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
+        final Column c = new Column( 2, type, "c");
+        final Column d = new Column( 3, type, "d");
+        final Column e = new Column( 4, type, "e");
+        final Column f = new Column( 5, type, "f");
+        final Column g = new Column( 6, type, "g");
+        final Column h = new Column( 7, type, "h");
 
         // Test against a known false tree
         final GroupElement and = GroupElementFactory.newAndInstance();
@@ -563,14 +572,15 @@ public class LogicTransformerTest extends DroolsTestCase {
     public void testTransform() throws IOException,
                                ClassNotFoundException,
                                InvalidPatternException {
-        final String a = "a";
-        final String b = "b";
-        final String c = "c";
-        final String d = "d";
-        final String e = "e";
-        final String f = "f";
-        final String g = "g";
-        final String h = "h";
+        final ObjectType type = new ClassObjectType(String.class);
+        final Column a = new Column( 0, type, "a");
+        final Column b = new Column( 1, type, "b");
+        final Column c = new Column( 2, type, "c");
+        final Column d = new Column( 3, type, "d");
+        final Column e = new Column( 4, type, "e");
+        final Column f = new Column( 5, type, "f");
+        final Column g = new Column( 6, type, "g");
+        final Column h = new Column( 7, type, "h");
 
         final GroupElement and = GroupElementFactory.newAndInstance();
 

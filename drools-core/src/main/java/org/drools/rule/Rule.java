@@ -17,7 +17,6 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -45,48 +44,48 @@ public class Rule
     /**
      * 
      */
-    private static final long serialVersionUID  = 320;
+    private static final long  serialVersionUID  = 320;
 
     /**   */
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
     /** The parent pkg */
-    private String            pkg;
+    private String             pkg;
 
     /** Name of the rule. */
-    private final String      name;
+    private final String       name;
 
     /** Salience value. */
-    private int               salience;
+    private int                salience;
 
-    private final Map         declarations      = new HashMap();
-
-    private Declaration[]     declarationArray;
+    private boolean            dirty             = false;
+    private Map                declarations;
+    private Declaration[]      declarationArray;
 
     private final GroupElement lhsRoot           = new GroupElement( GroupElement.AND );
 
-    private String            agendaGroup;
+    private String             agendaGroup;
 
     /** Consequence. */
-    private Consequence       consequence;
+    private Consequence        consequence;
 
     /** Truthness duration. */
-    private Duration          duration;
+    private Duration           duration;
 
     /** Load order in Package */
-    private long              loadOrder;
+    private long               loadOrder;
 
     /** Is recursion of this rule allowed */
-    private boolean           noLoop;
+    private boolean            noLoop;
 
     /** makes the rule's much the current focus */
-    private boolean           autoFocus;
+    private boolean            autoFocus;
 
-    private String            ActivationGroup;
+    private String             ActivationGroup;
 
     /** indicates that the rule is semantically correct. */
-    private boolean           semanticallyValid = true;
+    private boolean            semanticallyValid = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -268,6 +267,11 @@ public class Rule
      *         the <code>identifier</code>.
      */
     public Declaration getDeclaration(final String identifier) {
+        if ( dirty || (this.declarations == null) ) {
+            this.declarations = this.lhsRoot.getOuterDeclarations();
+            this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
+            this.dirty = false;
+        }
         return (Declaration) this.declarations.get( identifier );
     }
 
@@ -279,8 +283,10 @@ public class Rule
      *         <i>root fact objects</i>.
      */
     public Declaration[] getDeclarations() {
-        if ( this.declarationArray == null ) {
+        if ( dirty || (this.declarationArray == null) ) {
+            this.declarations = this.lhsRoot.getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
+            this.dirty = false;
         }
         return this.declarationArray;
     }
@@ -293,52 +299,9 @@ public class Rule
      *            The <code>Test</code> to add.
      * @throws InvalidRuleException 
      */
-    public void addPattern(final ConditionalElement ce) {
-        if ( ce instanceof GroupElement ) {
-            addDeclarations( (GroupElement) ce );
-        } else if ( ce.getClass() == From.class ) {
-            addDeclarations( ((From) ce).getColumn() );
-        } else if ( ce.getClass() == Accumulate.class ) {
-            addDeclarations( ((Accumulate) ce).getResultColumn() );
-        } else if ( ce.getClass() == Collect.class ) {
-            addDeclarations( ((Collect) ce).getResultColumn() );
-        }
-        this.lhsRoot.addChild( ce );
-    }
-
-    public void addPattern(final Column column) {
-        addDeclarations( column );
-        this.lhsRoot.addChild( column );
-    }
-
-    private void addDeclarations(final Column column) {
-        // Check if the column is bound and if so add it as a declaration
-        if ( column.isBound() ) {
-            final Declaration declaration = column.getDeclaration();
-            this.declarations.put( declaration.getIdentifier(),
-                                   declaration );
-        }
-
-        // Check if there are any bound fields and if so add it as a declaration
-        for ( final Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof Declaration ) {
-                final Declaration declaration = (Declaration) object;
-                this.declarations.put( declaration.getIdentifier(),
-                                       declaration );
-            }
-        }
-    }
-
-    private void addDeclarations(final GroupElement ce) {
-        for ( final Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof Column ) {
-                addDeclarations( (Column) object );
-            } else if ( object instanceof GroupElement ) {
-                addDeclarations( (GroupElement) object );
-            }
-        }
+    public void addPattern(final RuleConditionElement element) {
+        this.dirty = true;
+        this.lhsRoot.addChild( element );
     }
 
     /**

@@ -1,12 +1,16 @@
 package org.drools.rule;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.drools.spi.DataProvider;
 
 public class From extends ConditionalElement
     implements
     Serializable {
+
+    private static final long serialVersionUID = -2640290731776949513L;
+
     private Column       column;
 
     private DataProvider dataProvider;
@@ -28,5 +32,13 @@ public class From extends ConditionalElement
     public Object clone() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public Map getInnerDeclarations() {
+        return this.column.getInnerDeclarations();
+    }
+
+    public Map getOuterDeclarations() {
+        return this.column.getOuterDeclarations();
     }
 }

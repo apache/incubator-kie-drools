@@ -16,6 +16,9 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
@@ -109,5 +112,13 @@ public class EvalCondition extends ConditionalElement {
         }
 
         return this.expression.equals( other.expression );
+    }
+
+    public Map getInnerDeclarations() {
+        return Collections.EMPTY_MAP;
+    }
+
+    public Map getOuterDeclarations() {
+        return Collections.EMPTY_MAP;
     }
 };
