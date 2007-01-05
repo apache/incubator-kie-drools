@@ -33,6 +33,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.NoSuchFactHandleException;
 import org.drools.NoSuchFactObjectException;
+import org.drools.Otherwise;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -342,19 +343,71 @@ public abstract class AbstractWorkingMemory
         if ( !this.factQueue.isEmpty() ) {
             propagateQueuedActions();
         }
+        
+        boolean noneFired = true;
 
         if ( !this.firing ) {
             try {
                 this.firing = true;
-
+                
                 while ( this.agenda.fireNextItem( agendaFilter ) ) {
-                    ;
+                    noneFired = false;                    
                 }
             } finally {
                 this.firing = false;
+                if (noneFired) {
+                    doOtherwise(agendaFilter);
+                }
+                
             }
         }
     }
+
+    /**
+     * This does the "otherwise" phase of processing.
+     * If no items are fired, then it will assert a temporary "Otherwise"
+     * fact and allow any rules to fire to handle "otherwise" cases.
+     */
+    private void doOtherwise(AgendaFilter agendaFilter) {
+        FactHandle handle = this.assertObject( new Otherwise() );
+        if ( !this.factQueue.isEmpty() ) {
+            propagateQueuedActions();
+        }
+        
+        while ( this.agenda.fireNextItem( agendaFilter ) ) {
+            ;
+        }
+        
+        this.retractObject( handle );
+    }
+
+
+//
+//        MN: The following is the traditional fireAllRules (without otherwise).
+//            Purely kept here as this implementation of otherwise is still experimental.    
+//    
+//    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
+//        // If we're already firing a rule, then it'll pick up
+//        // the firing for any other assertObject(..) that get
+//        // nested inside, avoiding concurrent-modification
+//        // exceptions, depending on code paths of the actions.
+//
+//        if ( !this.factQueue.isEmpty() ) {
+//            propagateQueuedActions();
+//        }
+//
+//        if ( !this.firing ) {
+//            try {
+//                this.firing = true;
+//
+//                while ( this.agenda.fireNextItem( agendaFilter ) ) {
+//                    ;
+//                }
+//            } finally {
+//                this.firing = false;
+//            }
+//        }
+//    }    
 
     /**
      * Returns the fact Object for the given <code>FactHandle</code>. It
