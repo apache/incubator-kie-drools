@@ -6,11 +6,13 @@
   core only Java 1.4 (J2SE) is required.</para>
 
   <para>A simple way to get started is to download and install the eclipse
-  plug in. This will provide you with all the dependencies you need to get
-  going: you can simply create a new rule project and everything will be done
-  for you. Refer to the chapter on the Rule Workbench and IDE for detailed
-  instructions on this. Installing the eclipse plugin is generally as simple
-  as unzipping a file into your eclipse plugin directory.</para>
+  plug in - this will also require the Eclipse GEF framework to be installed
+  (see below, if you don't have it installed already). This will provide you
+  with all the dependencies you need to get going: you can simply create a new
+  rule project and everything will be done for you. Refer to the chapter on
+  the Rule Workbench and IDE for detailed instructions on this. Installing the
+  eclipse plugin is generally as simple as unzipping a file into your eclipse
+  plugin directory.</para>
 
   <para>Use of the eclipse plug in is not required. Rule files are just
   textual input (or spreadsheets as the case may be) and the IDE (also known
@@ -106,8 +108,50 @@
     <title>Installing IDE (Rule Workbench)</title>
 
     <para>The rule workbench (for Eclipse) requires that you have eclipse 3.2
-    or greater. You can install it either by downloading the plugin or, or
-    using the update site.</para>
+    or greater, as well as Eclipse GEF 3.2 or greater. You can install it
+    either by downloading the plugin or, or using the update site.</para>
+
+    <para>Another option is to use the JBoss IDE, which comes with all the
+    plug in requirements pre packaged, as well as a choice of other tools
+    seperate to rules. You can choose just to install rules from the "bundle"
+    that JBoss IDE ships with.</para>
+
+    <section>
+      <title>Installing GEF (a required dependency)</title>
+
+      <para>GEF is the eclipse Graphical Editing Framework, which is used for
+      graph viewing components in the plug in.</para>
+
+      <para>If you don't have GEF installed, you can install it using the
+      built in update mechanism (or downloading GEF from the eclipse.org
+      website). JBoss IDE has GEF already, as do many other "distributions" of
+      Eclipse, so this step may be redundant for some people.</para>
+
+      <para>First you open the Help-&gt;Software updates-&gt;Find and install
+      from the help menu. Then you choose the Calisto update site:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="gef_update.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Next you choose the GEF plug in:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="install_gef.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Press next, and agree to install the plug in (an eclipse restart
+      may be required). Once this is completed, then you can continue on
+      installing the rules plug in.</para>
+    </section>
 
     <section>
       <title>Installing from zip file</title>
