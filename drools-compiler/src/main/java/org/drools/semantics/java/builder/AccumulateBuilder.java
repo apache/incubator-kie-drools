@@ -17,9 +17,7 @@
 package org.drools.semantics.java.builder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.drools.base.ClassObjectType;
@@ -48,8 +46,6 @@ public class AccumulateBuilder
 
         AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
-        context.setInnerDeclarations( new HashMap() );
-
         Column sourceColumn = columnBuilder.build( context,
                                                    utils,
                                                    accumDescr.getSourceColumn() );
@@ -57,13 +53,7 @@ public class AccumulateBuilder
         if ( sourceColumn == null ) {
             return null;
         }
-        // remove declarations bound inside source column
-        context.getDeclarations().keySet().removeAll( context.getInnerDeclarations().keySet() );
-        Map sourceDeclarations = context.getInnerDeclarations();
-        context.setInnerDeclarations( null );
 
-        // decrementing offset as accumulate fills only one column
-        context.setColumnOffset( context.getColumnOffset() - 1 );
         Column resultColumn = columnBuilder.build( context,
                                                    utils,
                                                    accumDescr.getResultColumn() );
@@ -91,9 +81,9 @@ public class AccumulateBuilder
 
         final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
         for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
-            declarations[i] = (Declaration) context.getDeclarations().get( (String) requiredDeclarations.get( i ) );
+            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
         }
-        final Declaration[] sourceDeclArr = (Declaration[]) sourceDeclarations.values().toArray( new Declaration[sourceDeclarations.size()] );
+        final Declaration[] sourceDeclArr = (Declaration[]) sourceColumn.getOuterDeclarations().values().toArray( new Declaration[0] );
 
         final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
 

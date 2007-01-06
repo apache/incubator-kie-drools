@@ -125,22 +125,18 @@ public class ColumnBuilder {
         Column column;
         if ( columnDescr.getIdentifier() != null && !columnDescr.getIdentifier().equals( "" ) ) {
             column = new Column( context.getNextColumnId(),
-                                 context.getColumnOffset(),
+                                 0, // offset is 0 by default
                                  objectType,
                                  columnDescr.getIdentifier() );
-            context.getDeclarations().put( column.getDeclaration().getIdentifier(),
-                                           column.getDeclaration() );
-
-            if ( context.getInnerDeclarations() != null ) {
-                context.getInnerDeclarations().put( column.getDeclaration().getIdentifier(),
-                                                    column.getDeclaration() );
-            }
         } else {
             column = new Column( context.getNextColumnId(),
-                                 context.getColumnOffset(),
+                                 0, // offset is 0 by default
                                  objectType,
                                  null );
         }
+        // adding the newly created column to the build stack
+        // this is necessary in case of local declaration usage
+        context.getBuildStack().push( column );
 
         for ( final Iterator it = columnDescr.getDescrs().iterator(); it.hasNext(); ) {
             final Object object = it.next();
@@ -161,6 +157,8 @@ public class ColumnBuilder {
                        (PredicateDescr) object );
             }
         }
+        // poping the column
+        context.getBuildStack().pop();
         return column;
     }
 
@@ -321,7 +319,7 @@ public class ColumnBuilder {
                        final Column column,
                        final FieldBindingDescr fieldBindingDescr) {
 
-        Declaration declaration = (Declaration) context.getDeclarations().get( fieldBindingDescr.getIdentifier() );
+        Declaration declaration = (Declaration) context.getDeclarationResolver().getDeclaration( fieldBindingDescr.getIdentifier() );
         if ( declaration != null ) {
             // This declaration already  exists, so throw an Exception
             context.getErrors().add( new RuleError( context.getRule(),
@@ -342,14 +340,6 @@ public class ColumnBuilder {
 
         declaration = column.addDeclaration( fieldBindingDescr.getIdentifier(),
                                              extractor );
-
-        context.getDeclarations().put( declaration.getIdentifier(),
-                                       declaration );
-
-        if ( context.getInnerDeclarations() != null ) {
-            context.getInnerDeclarations().put( declaration.getIdentifier(),
-                                                declaration );
-        }
     }
 
     private void build(final BuildContext context,
@@ -373,14 +363,6 @@ public class ColumnBuilder {
         final Declaration declaration = column.addDeclaration( predicateDescr.getDeclaration(),
                                                                extractor );
 
-        context.getDeclarations().put( declaration.getIdentifier(),
-                                       declaration );
-
-        if ( context.getInnerDeclarations() != null ) {
-            context.getInnerDeclarations().put( declaration.getIdentifier(),
-                                                declaration );
-        }
-
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  predicateDescr,
                                                                  predicateDescr.getText() );
@@ -390,7 +372,7 @@ public class ColumnBuilder {
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            Declaration decl = (Declaration) context.getDeclarations().get( (String) usedIdentifiers[0].get( i ) );
+            Declaration decl = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
             if ( decl.getColumn() == column ) {
                 factDeclarations.add( decl );
             } else {
@@ -434,7 +416,7 @@ public class ColumnBuilder {
                          className );
 
         final String predicateText = utils.getFunctionFixer().fix( predicateDescr.getText(),
-                                                                   context.getVariables() );
+                                                                   context.getDeclarationResolver() );
         st.setAttribute( "text",
                          predicateText );
 
@@ -522,7 +504,7 @@ public class ColumnBuilder {
             return null;
         }
 
-        final Declaration declaration = (Declaration) context.getDeclarations().get( variableRestrictionDescr.getIdentifier() );
+        final Declaration declaration = (Declaration) context.getDeclarationResolver().getDeclaration( variableRestrictionDescr.getIdentifier() );
 
         if ( declaration == null ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -613,7 +595,7 @@ public class ColumnBuilder {
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            Declaration declaration = (Declaration) context.getDeclarations().get( (String) usedIdentifiers[0].get( i ) );
+            Declaration declaration = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
             if ( declaration.getColumn() == column ) {
                 factDeclarations.add( declaration );
             } else {
@@ -658,7 +640,7 @@ public class ColumnBuilder {
                          className );
 
         final String returnValueText = utils.getFunctionFixer().fix( returnValueRestrictionDescr.getText(),
-                                                                     context.getVariables() );
+                                                                     context.getDeclarationResolver() );
         st.setAttribute( "text",
                          returnValueText );
 

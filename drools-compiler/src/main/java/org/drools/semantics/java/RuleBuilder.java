@@ -22,14 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jfdi.interpreter.TypeResolver;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FromDescr;
@@ -37,10 +35,8 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.GroupElement;
-import org.drools.rule.GroupElementFactory;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.semantics.java.builder.AccumulateBuilder;
@@ -52,6 +48,7 @@ import org.drools.semantics.java.builder.ConditionalElementBuilder;
 import org.drools.semantics.java.builder.ConsequenceBuilder;
 import org.drools.semantics.java.builder.EvalBuilder;
 import org.drools.semantics.java.builder.FromBuilder;
+import org.drools.semantics.java.builder.GroupElementBuilder;
 import org.drools.semantics.java.builder.RuleClassBuilder;
 
 /**
@@ -73,24 +70,16 @@ public class RuleBuilder {
     // the builder for columns
     private ColumnBuilder      columnBuilder;
 
+    // the builder for the consequence
     private ConsequenceBuilder consequenceBuilder;
     
+    // the builder for the rule class
     private RuleClassBuilder   classBuilder;
 
+    // Constructor
     public RuleBuilder(final TypeResolver typeResolver,
                        final FunctionFixer functionFixer,
                        final ClassFieldExtractorCache cache) {
-        this.utils = new BuildUtils( functionFixer,
-                                     new KnowledgeHelperFixer(),
-                                     new JavaExprAnalyzer(),
-                                     typeResolver,
-                                     cache );
-
-        this.columnBuilder = new ColumnBuilder();
-
-        this.consequenceBuilder = new ConsequenceBuilder();
-        
-        this.classBuilder = new RuleClassBuilder();
 
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
@@ -104,7 +93,29 @@ public class RuleBuilder {
                       new CollectBuilder() );
         builders.put( AccumulateDescr.class,
                       new AccumulateBuilder() );
+        GroupElementBuilder gebuilder = new GroupElementBuilder();
+        builders.put( AndDescr.class,
+                      gebuilder);
+        builders.put( OrDescr.class,
+                      gebuilder);
+        builders.put( NotDescr.class,
+                      gebuilder);
+        builders.put( ExistsDescr.class,
+                      gebuilder);
+        
+        
+        this.utils = new BuildUtils( functionFixer,
+                                     new KnowledgeHelperFixer(),
+                                     new JavaExprAnalyzer(),
+                                     typeResolver,
+                                     cache,
+                                     builders );
 
+        this.columnBuilder = new ColumnBuilder();
+
+        this.consequenceBuilder = new ConsequenceBuilder();
+        
+        this.classBuilder = new RuleClassBuilder();
     }
 
     public Map getInvokers() {
@@ -141,6 +152,12 @@ public class RuleBuilder {
         return this.context.getPkg();
     }
 
+    /**
+     * Build the give rule into the 
+     * @param pkg
+     * @param ruleDescr
+     * @return
+     */
     public synchronized Rule build(final Package pkg,
                                    final RuleDescr ruleDescr) {
         this.context = new BuildContext( pkg,
@@ -150,86 +167,12 @@ public class RuleBuilder {
         setAttributes( this.context.getRule(),
                        ruleDescr.getAttributes() );
 
-        // Build the left hand side
-        // generate invokers
-        build( ruleDescr );
-
-        return this.context.getRule();
-    }
-
-    private void build(final RuleDescr ruleDescr) {
-
-        for ( final Iterator it = ruleDescr.getLhs().getDescrs().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof ConditionalElementDescr ) {
-                if ( object.getClass() == AndDescr.class ) {
-                    final GroupElement and = GroupElementFactory.newAndInstance();
-                    build( this.context.getRule(),
-                           (ConditionalElementDescr) object,
-                           and,
-                           false, // do not decrement offset
-                           false ); // do not decrement first offset
-                    this.context.getRule().addPattern( and );
-                } else if ( object.getClass() == OrDescr.class ) {
-                    final GroupElement or = GroupElementFactory.newOrInstance();
-                    build( this.context.getRule(),
-                           (ConditionalElementDescr) object,
-                           or,
-                           true, // when OR is used, offset MUST be decremented
-                           false ); // do not decrement first offset
-                    this.context.getRule().addPattern( or );
-                } else if ( object.getClass() == NotDescr.class ) {
-                    // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
-                    context.setInnerDeclarations( new HashMap() );
-                    final GroupElement not = GroupElementFactory.newNotInstance();
-                    build( this.context.getRule(),
-                           (ConditionalElementDescr) object,
-                           not,
-                           true, // when NOT is used, offset MUST be decremented
-                           true ); // when NOT is used, offset MUST be decremented for first column
-                    this.context.getRule().addPattern( not );
-
-                    // remove declarations bound inside not node
-                    for ( final Iterator notIt = context.getInnerDeclarations().keySet().iterator(); notIt.hasNext(); ) {
-                        context.getDeclarations().remove( notIt.next() );
-                    }
-
-                    context.setInnerDeclarations( null );
-                } else if ( object.getClass() == ExistsDescr.class ) {
-                    // We cannot have declarations created inside exists visible outside it, 
-                    // so track declarations in a way they can be removed
-                    context.setInnerDeclarations( new HashMap() );
-                    final GroupElement exists = GroupElementFactory.newExistsInstance();
-                    build( this.context.getRule(),
-                           (ConditionalElementDescr) object,
-                           exists,
-                           true, // when EXIST is used, offset MUST be decremented
-                           true ); // when EXIST is used, offset MUST be decremented for first column
-                    // remove declarations bound inside not node
-                    for ( final Iterator notIt = context.getInnerDeclarations().keySet().iterator(); notIt.hasNext(); ) {
-                        context.getDeclarations().remove( notIt.next() );
-                    }
-
-                    context.setInnerDeclarations( null );
-                    this.context.getRule().addPattern( exists );
-                } else {
-                    ConditionalElementBuilder builder = (ConditionalElementBuilder) this.builders.get( object.getClass() );
-                    ConditionalElement ce = builder.build( this.context,
-                                                           this.utils,
-                                                           this.columnBuilder,
-                                                           (BaseDescr) object );
-                    if ( ce != null ) {
-                        this.context.getRule().addPattern( ce );
-                    }
-                }
-            } else if ( object.getClass() == ColumnDescr.class ) {
-                final Column column = this.columnBuilder.build( this.context,
-                                                                this.utils,
-                                                                (ColumnDescr) object );
-                if ( column != null ) {
-                    this.context.getRule().addPattern( column );
-                }
-            }
+        ConditionalElementBuilder builder = utils.getBuilder( ruleDescr.getLhs().getClass() );
+        if( builder != null ) {
+            GroupElement ce = (GroupElement) builder.build( this.context, this.utils, this.columnBuilder, ruleDescr.getLhs() );
+            this.context.getRule().setLhs( ce );
+        } else {
+            throw new RuntimeDroolsException("BUG: builder not found for descriptor class "+ruleDescr.getLhs().getClass() );
         }
 
         // Build the consequence and generate it's invoker/s
@@ -241,72 +184,17 @@ public class RuleBuilder {
                                                       ruleDescr );
         }
         this.classBuilder.buildRule( this.context, this.utils, ruleDescr );
+
+        return this.context.getRule();
     }
 
-    private void build(final Rule rule,
-                       final ConditionalElementDescr descr,
-                       final GroupElement group,
-                       final boolean decrementOffset,
-                       boolean decrementFirst) {
-        for ( final Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof ConditionalElementDescr ) {
-                if ( object.getClass() == AndDescr.class ) {
-                    final GroupElement and = GroupElementFactory.newAndInstance();
-                    build( rule,
-                           (ConditionalElementDescr) object,
-                           and,
-                           false, // do not decrement offset
-                           false ); // do not decrement first offset
-                    group.addChild( and );
-                } else if ( object.getClass() == OrDescr.class ) {
-                    final GroupElement or = GroupElementFactory.newOrInstance();
-                    build( rule,
-                           (ConditionalElementDescr) object,
-                           or,
-                           true, // when OR is used, offset MUST be decremented
-                           false ); // do not decrement first offset
-                    group.addChild( or );
-                } else if ( object.getClass() == NotDescr.class ) {
-                    final GroupElement not = GroupElementFactory.newNotInstance();
-                    build( rule,
-                           (ConditionalElementDescr) object,
-                           not,
-                           true, // when NOT is used, offset MUST be decremented
-                           true ); // when NOT is used, offset MUST be decremented for first column
-                    group.addChild( not );
-                } else if ( object.getClass() == ExistsDescr.class ) {
-                    final GroupElement exists = GroupElementFactory.newExistsInstance();
-                    build( rule,
-                           (ConditionalElementDescr) object,
-                           exists,
-                           true, // when EXIST is used, offset MUST be decremented
-                           true ); // when EXIST is used, offset MUST be decremented for first column
-                    group.addChild( exists );
-                } else {
-                    ConditionalElementBuilder builder = (ConditionalElementBuilder) this.builders.get( object.getClass() );
-                    ConditionalElement ce = builder.build( this.context,
-                                                           this.utils,
-                                                           this.columnBuilder,
-                                                           (BaseDescr) object );
-                    if ( ce != null ) {
-                        this.context.getRule().addPattern( ce );
-                    }
-                }
-            } else if ( object.getClass() == ColumnDescr.class ) {
-                if ( decrementOffset && decrementFirst ) {
-                    this.context.setColumnOffset( this.context.getColumnOffset() - 1 );
-                } else {
-                    decrementFirst = true;
-                }
-                final Column column = this.columnBuilder.build( this.context, this.utils, (ColumnDescr) object );
-                if ( column != null ) {
-                    group.addChild( column );
-                }
-            }
-        }
-    }
 
+    /**
+     * Sets rule Attributes
+     * 
+     * @param rule
+     * @param attributes
+     */
     private void setAttributes(final Rule rule,
                                final List attributes) {
         for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {

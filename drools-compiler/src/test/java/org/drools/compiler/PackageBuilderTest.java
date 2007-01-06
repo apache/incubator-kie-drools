@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,8 +106,9 @@ public class PackageBuilderTest extends DroolsTestCase {
                                 "java.util.Map" );
 
         FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
-        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", "x") );                
-        
+        returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
+                                                                     "x" ) );
+
         column.addDescr( returnValue );
 
         // There is no m this should produce errors.
@@ -147,7 +149,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
 
-        final ReteooRuleBase ruleBase = ( ReteooRuleBase )RuleBaseFactory.newRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
                                    Map.class );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -223,7 +225,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final Rule newRule = newPkg.getRule( "rule-1" );
 
-        final ReteooRuleBase ruleBase = ( ReteooRuleBase )RuleBaseFactory.newRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
                                    Map.class );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -280,8 +282,8 @@ public class PackageBuilderTest extends DroolsTestCase {
             assertNotNull( e.getMessage() );
         }
     }
-    
-    public void testFactTemplate()  {
+
+    public void testFactTemplate() {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
@@ -292,17 +294,20 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         FactTemplateDescr cheese = new FactTemplateDescr( "Cheese" );
-        cheese.addFieldTemplate( new FieldTemplateDescr( "name", "String" ) );
-        cheese.addFieldTemplate(new  FieldTemplateDescr( "price", "Integer" ) );
+        cheese.addFieldTemplate( new FieldTemplateDescr( "name",
+                                                         "String" ) );
+        cheese.addFieldTemplate( new FieldTemplateDescr( "price",
+                                                         "Integer" ) );
 
         packageDescr.addFactTemplate( cheese );
-        
+
         final ColumnDescr column = new ColumnDescr( "Cheese",
                                                     "stilton" );
         lhs.addDescr( column );
-        
+
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "stilton" ) );
 
         column.addDescr( literalDescr );
 
@@ -310,9 +315,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors() );
-        
+        assertFalse( Arrays.toString( builder.getErrors() ),
+                     builder.hasErrors() );
+
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package pkg = builder.getPackage();
         try {
@@ -322,11 +327,13 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         Fact stilton = pkg.getFactTemplate( "Cheese" ).createFact( 1 );
-        stilton.setFieldValue( "name", "stilton" );
-        stilton.setFieldValue( "price", new Integer( 200 ) );
-        workingMemory.assertObject( stilton );        
+        stilton.setFieldValue( "name",
+                               "stilton" );
+        stilton.setFieldValue( "price",
+                               new Integer( 200 ) );
+        workingMemory.assertObject( stilton );
         workingMemory.fireAllRules();
-        
+
     }
 
     public void testLiteral() throws Exception {
@@ -342,9 +349,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
                                                     "stilton" );
         lhs.addDescr( column );
-        
+
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "stilton" ) );
 
         column.addDescr( literalDescr );
 
@@ -379,18 +387,19 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
-        
+
         FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
-        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", "(( (Integer) map.get( new Integer( x )) ).intValue() * y)") );  
-        
+        returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
+                                                                     "(( (Integer) map.get( new Integer( x )) ).intValue() * y)" ) );
+
         column.addDescr( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors() );
+        assertFalse( Arrays.toString( builder.getErrors() ),
+                     builder.hasErrors() );
     }
 
     public void testReturnValueMethodCompare() {
@@ -659,96 +668,117 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testNumbers() throws Exception {
         // test boolean
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "booleanPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "true") );            
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "true" ) );
         createLiteralRule( literalDescr );
 
         // test boolean
         literalDescr = new FieldConstraintDescr( "booleanPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "false") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "false" ) );
         createLiteralRule( literalDescr );
 
         // test char
         literalDescr = new FieldConstraintDescr( "charPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "a") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "a" ) );
         createLiteralRule( literalDescr );
 
         // test byte
         literalDescr = new FieldConstraintDescr( "bytePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );            
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "1" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "bytePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );         
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "0" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "bytePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1") );         
-        createLiteralRule( literalDescr);
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "-1" ) );
+        createLiteralRule( literalDescr );
 
         // test short
         literalDescr = new FieldConstraintDescr( "shortPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );         
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "1" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "shortPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") ); 
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "0" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "shortPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1") );         
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "-1" ) );
         createLiteralRule( literalDescr );
 
         // test int
         literalDescr = new FieldConstraintDescr( "intPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );         
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "1" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "intPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") ); 
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "0" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "intPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1") );         
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "-1" ) );
         createLiteralRule( literalDescr );
 
         // test long
         literalDescr = new FieldConstraintDescr( "longPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );         
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "1" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "longPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );          
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "0" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "longPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );          
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "0" ) );
         createLiteralRule( literalDescr );
 
         // test float
         literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1.1") );          
-        createLiteralRule( literalDescr);
-
-        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "1.1" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1.1") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "0" ) );
+        createLiteralRule( literalDescr );
+
+        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "-1.1" ) );
         createLiteralRule( literalDescr );
 
         // test double
         literalDescr = new FieldConstraintDescr( "doublePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1.1") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "1.1" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "doublePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "0" ) );
         createLiteralRule( literalDescr );
 
         literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1.1") );        
-        createLiteralRule( literalDescr);
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "-1.1" ) );
+        createLiteralRule( literalDescr );
     }
 
     public void testNull() {
@@ -765,8 +795,9 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                          "stilton" );
 
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", null) );            
-        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  null ) );
+
         columnDescr.addDescr( literalDescr );
 
         ruleDescr.setConsequence( "" );
@@ -793,7 +824,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
                                                    "stilton" );
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", null) );    
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  null ) );
         columnDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
@@ -806,7 +838,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         columnDescr = new ColumnDescr( Cheese.class.getName(),
                                        "stilton" );
         literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("!=", null) );    
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
+                                                                  null ) );
         columnDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
@@ -818,10 +851,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
         columnDescr = new ColumnDescr( Cheese.class.getName(),
                                        "stilton" );
-        
+
         literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("!=", null ) );            
-        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
+                                                                  null ) );
+
         columnDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
@@ -851,69 +885,78 @@ public class PackageBuilderTest extends DroolsTestCase {
         lhs.addDescr( column1 );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "type",
-                                                                           "$type" );        
-        
+                                                                           "$type" );
+
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );            
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "stilton" ) );
 
         column1.addDescr( fieldBindingDescr );
         column1.addDescr( literalDescr );
-        
+
         final ColumnDescr column2 = new ColumnDescr( Cheese.class.getName() );
         lhs.addDescr( column2 );
         column2.addDescr( fieldBindingDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        builder.addPackage( packageDescr );        
+        builder.addPackage( packageDescr );
 
         assertLength( 2,
                       builder.getErrors() );
     }
 
-    public void testCompilerConfiguration() throws  Exception {
+    public void testCompilerConfiguration() throws Exception {
         // test default is eclipse jdt core
-        PackageBuilder builder = new PackageBuilder( );;        
+        PackageBuilder builder = new PackageBuilder();;
         Field compilerField = builder.getClass().getDeclaredField( "compiler" );
-        compilerField.setAccessible(true);
-        JavaCompiler compiler = ( JavaCompiler ) compilerField.get( builder );
-        assertSame( EclipseJavaCompiler.class, compiler.getClass() );
-        
+        compilerField.setAccessible( true );
+        JavaCompiler compiler = (JavaCompiler) compilerField.get( builder );
+        assertSame( EclipseJavaCompiler.class,
+                    compiler.getClass() );
+
         // test JANINO with property settings
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();       
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         conf.setCompiler( PackageBuilderConfiguration.JANINO );
-        builder = new PackageBuilder( conf );;      
-        compiler = ( JavaCompiler ) compilerField.get( builder );
-        assertSame( JaninoJavaCompiler.class, compiler.getClass() );
-        
+        builder = new PackageBuilder( conf );;
+        compiler = (JavaCompiler) compilerField.get( builder );
+        assertSame( JaninoJavaCompiler.class,
+                    compiler.getClass() );
+
         // test eclipse jdt core with property settings and default source level
-        conf = new PackageBuilderConfiguration();       
+        conf = new PackageBuilderConfiguration();
         conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
-        builder = new PackageBuilder( conf );;      
-        compiler = ( JavaCompiler ) compilerField.get( builder );
-        assertSame( EclipseJavaCompiler.class, compiler.getClass() );   
-        
-        EclipseJavaCompiler eclipseCompiler = ( EclipseJavaCompiler ) compiler;
-        Field settingsField  = eclipseCompiler.getClass().getDeclaredField( "settings" );
+        builder = new PackageBuilder( conf );;
+        compiler = (JavaCompiler) compilerField.get( builder );
+        assertSame( EclipseJavaCompiler.class,
+                    compiler.getClass() );
+
+        EclipseJavaCompiler eclipseCompiler = (EclipseJavaCompiler) compiler;
+        Field settingsField = eclipseCompiler.getClass().getDeclaredField( "settings" );
         settingsField.setAccessible( true );
-        EclipseJavaCompilerSettings settings = ( EclipseJavaCompilerSettings ) settingsField.get( eclipseCompiler );
-        assertEquals( "1.4", settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
-        assertEquals( "1.4", settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );
-        
+        EclipseJavaCompilerSettings settings = (EclipseJavaCompilerSettings) settingsField.get( eclipseCompiler );
+        assertEquals( "1.4",
+                      settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
+        assertEquals( "1.4",
+                      settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );
+
         // test eclipse jdt core with property settings and jdk1.5 source level
-        conf = new PackageBuilderConfiguration();       
+        conf = new PackageBuilderConfiguration();
         conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
         conf.setJavaLanguageLevel( "1.5" );
-        builder = new PackageBuilder( conf );;      
-        compiler = ( JavaCompiler ) compilerField.get( builder );
-        assertSame( EclipseJavaCompiler.class, compiler.getClass() );   
-        
-        eclipseCompiler = ( EclipseJavaCompiler ) compiler;
-        settings = ( EclipseJavaCompilerSettings ) settingsField.get( eclipseCompiler );
-        assertEquals( "1.5", settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
-        assertEquals( "1.5", settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );     
-    }    
-    
+        builder = new PackageBuilder( conf );;
+        compiler = (JavaCompiler) compilerField.get( builder );
+        assertSame( EclipseJavaCompiler.class,
+                    compiler.getClass() );
+
+        eclipseCompiler = (EclipseJavaCompiler) compiler;
+        settings = (EclipseJavaCompilerSettings) settingsField.get( eclipseCompiler );
+        assertEquals( "1.5",
+                      settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
+        assertEquals( "1.5",
+                      settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );
+    }
+
     private void createReturnValueRule(final PackageDescr packageDescr,
                                        final String expression) {
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -935,10 +978,11 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
-       
+
         FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
-        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", expression) );
-        
+        returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
+                                                                     expression ) );
+
         column.addDescr( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
@@ -1027,8 +1071,9 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                          "stilton" );
 
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );        
-        
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  "stilton" ) );
+
         columnDescr.addDescr( literalDescr );
 
         ceDescr.addDescr( columnDescr );

@@ -16,8 +16,6 @@
 
 package org.drools.semantics.java.builder;
 
-import java.util.HashMap;
-
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.rule.Collect;
@@ -42,19 +40,12 @@ public class CollectBuilder
         
         CollectDescr collectDescr = (CollectDescr) descr;
         
-        context.setInnerDeclarations( new HashMap() );
         Column sourceColumn = columnBuilder.build( context, utils, collectDescr.getSourceColumn() );
 
         if ( sourceColumn == null ) {
             return null;
         }
 
-        // remove declarations bound inside source column
-        context.getDeclarations().keySet().removeAll( context.getInnerDeclarations().keySet() );
-        context.setInnerDeclarations( null );
-
-        // decrementing offset as collect fills only one column
-        context.setColumnOffset( context.getColumnOffset() - 1 );
         Column resultColumn = columnBuilder.build( context, utils, collectDescr.getResultColumn() );
 
         final String className = "collect" + context.getNextId();

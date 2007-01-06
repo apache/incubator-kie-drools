@@ -44,48 +44,48 @@ public class Rule
     /**
      * 
      */
-    private static final long  serialVersionUID  = 320;
+    private static final long serialVersionUID  = 320;
 
     /**   */
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
     /** The parent pkg */
-    private String             pkg;
+    private String            pkg;
 
     /** Name of the rule. */
-    private final String       name;
+    private final String      name;
 
     /** Salience value. */
-    private int                salience;
+    private int               salience;
 
-    private boolean            dirty             = false;
-    private Map                declarations;
-    private Declaration[]      declarationArray;
+    private boolean           dirty             = false;
+    private Map               declarations;
+    private Declaration[]     declarationArray;
 
-    private final GroupElement lhsRoot           = new GroupElement( GroupElement.AND );
+    private GroupElement      lhsRoot;
 
-    private String             agendaGroup;
+    private String            agendaGroup;
 
     /** Consequence. */
-    private Consequence        consequence;
+    private Consequence       consequence;
 
     /** Truthness duration. */
-    private Duration           duration;
+    private Duration          duration;
 
     /** Load order in Package */
-    private long               loadOrder;
+    private long              loadOrder;
 
     /** Is recursion of this rule allowed */
-    private boolean            noLoop;
+    private boolean           noLoop;
 
     /** makes the rule's much the current focus */
-    private boolean            autoFocus;
+    private boolean           autoFocus;
 
-    private String             ActivationGroup;
+    private String            ActivationGroup;
 
     /** indicates that the rule is semantically correct. */
-    private boolean            semanticallyValid = true;
+    private boolean           semanticallyValid = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -104,6 +104,7 @@ public class Rule
         this.name = name;
         this.pkg = pkg;
         this.agendaGroup = agendaGroup;
+        this.lhsRoot = GroupElementFactory.newAndInstance();
     }
 
     /**
@@ -115,15 +116,11 @@ public class Rule
      */
     public Rule(final String name,
                 final String agendaGroup) {
-        this.name = name;
-        this.pkg = null;
-        this.agendaGroup = agendaGroup;
+        this( name, null, agendaGroup );
     }
 
     public Rule(final String name) {
-        this.name = name;
-        this.pkg = null;
-        this.agendaGroup = AgendaGroup.MAIN;
+        this( name, null, AgendaGroup.MAIN );
     }
 
     /**
@@ -312,6 +309,10 @@ public class Rule
      */
     public GroupElement getLhs() {
         return this.lhsRoot;
+    }
+
+    public void setLhs( GroupElement lhsRoot ) {
+        this.lhsRoot = lhsRoot;
     }
 
     /**

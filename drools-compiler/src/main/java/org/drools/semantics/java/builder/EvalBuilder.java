@@ -60,7 +60,7 @@ public class EvalBuilder
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = (Declaration) context.getDeclarations().get( (String) usedIdentifiers[0].get( i ) );
+            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         }
 
         final EvalCondition eval = new EvalCondition( declarations );
@@ -76,7 +76,7 @@ public class EvalBuilder
                          className );
 
         final String evalText = utils.getFunctionFixer().fix( evalDescr.getText(),
-                                                              context.getVariables() );
+                                                              context.getDeclarationResolver() );
         st.setAttribute( "text",
                          evalText );
 

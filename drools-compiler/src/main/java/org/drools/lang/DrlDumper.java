@@ -236,7 +236,7 @@ public class DrlDumper extends ReflectiveVisitor
             if ( rhs == null ) {
                 rhs = "\t then" + DrlDumper.eol + "\t";
             } else {
-                rhs = "\t then" + ruleDescr.getConsequence();
+                rhs = "\t then" + DrlDumper.eol + ruleDescr.getConsequence();
             }
 
             rule += attribute;

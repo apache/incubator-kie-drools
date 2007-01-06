@@ -368,6 +368,7 @@ public class PackageBuilder {
                                                          this.src );
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
 
+        // TODO: cache the builder!!!
         final RuleBuilder builder = new RuleBuilder( getTypeResolver(),
                                                      getFunctionFixer(),
                                                      this.classFieldExtractorCache );

@@ -19,6 +19,7 @@ package org.drools.semantics.java.builder;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.antlr.stringtemplate.StringTemplate;
@@ -57,17 +58,21 @@ public class BuildUtils {
     private final TypeResolver             typeResolver;
 
     private final ClassFieldExtractorCache classFieldExtractorCache;
+    
+    private final Map                      builders;
 
     public BuildUtils(final FunctionFixer functionFixer,
                       final KnowledgeHelperFixer knowledgeHelperFixer,
                       final JavaExprAnalyzer analyzer,
                       final TypeResolver typeResolver,
-                      final ClassFieldExtractorCache classFieldExtractorCache) {
+                      final ClassFieldExtractorCache classFieldExtractorCache,
+                      final Map builders ) {
         this.functionFixer = functionFixer;
         this.knowledgeHelperFixer = knowledgeHelperFixer;
         this.analyzer = analyzer;
         this.typeResolver = typeResolver;
         this.classFieldExtractorCache = classFieldExtractorCache;
+        this.builders = builders;
     }
 
     public List[] getUsedIdentifiers(final BuildContext context,
@@ -76,7 +81,7 @@ public class BuildUtils {
         List[] usedIdentifiers = null;
         try {
             usedIdentifiers = this.analyzer.analyzeExpression( text,
-                                                               new Set[]{context.getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
@@ -92,7 +97,7 @@ public class BuildUtils {
         List[] usedIdentifiers = null;
         try {
             usedIdentifiers = this.analyzer.analyzeBlock( text,
-                                                          new Set[]{context.getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                          new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
@@ -196,6 +201,23 @@ public class BuildUtils {
      */
     public ClassFieldExtractorCache getClassFieldExtractorCache() {
         return classFieldExtractorCache;
+    }
+
+    /**
+     * Returns a map<Class, ConditionalElementBuilder> of builders
+     * @return
+     */
+    public Map getBuilders() {
+        return builders;
+    }
+
+    /**
+     * Returns the builder for the given descriptor class
+     * @param descr
+     * @return
+     */
+    public ConditionalElementBuilder getBuilder(Class descr) {
+        return (ConditionalElementBuilder) builders.get( descr );
     }
 
 }
