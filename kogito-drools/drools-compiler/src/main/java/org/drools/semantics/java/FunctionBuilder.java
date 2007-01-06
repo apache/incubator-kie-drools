@@ -32,7 +32,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
-import org.drools.spi.AvailableVariables;
+import org.drools.spi.DeclarationScopeResolver;
 
 public class FunctionBuilder {
     private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( FunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
@@ -82,7 +82,7 @@ public class FunctionBuilder {
         }                   
         
         st.setAttribute( "text",
-                         fixer.fix( functionDescr.getText(), new AvailableVariables( new Map[] { params } ) ) );
+                         fixer.fix( functionDescr.getText(), new DeclarationScopeResolver( new Map[] { params } ) ) );
         
         String text = st.toString();
         

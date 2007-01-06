@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.codehaus.jfdi.interpreter.ClassTypeResolver;
-import org.drools.spi.AvailableVariables;
+import org.drools.spi.DeclarationScopeResolver;
 import org.drools.rule.Package;
 
 import junit.framework.TestCase;
@@ -56,7 +56,7 @@ public class FunctionFixerTest extends TestCase {
         variables.put( "yyy", String.class );
         variables.put( "iii", String.class );
         assertEquals( "org.drools.Func.func(yyy, iii)",
-                      fixer.fix( "func(yyy, iii)", new AvailableVariables( new Map[] { variables }  ) ) );
+                      fixer.fix( "func(yyy, iii)", new DeclarationScopeResolver( new Map[] { variables }  ) ) );
     }
 
     public void testMoreComplex() {
@@ -64,7 +64,7 @@ public class FunctionFixerTest extends TestCase {
         variables.put( "yyy", String.class );
         variables.put( "iii", String.class );        
         assertEquals( "xxx org.drools.Func.func(yyy, iii) yyy",
-                      fixer.fix( "xxx func(yyy, iii) yyy", new AvailableVariables( new Map[] { variables }  )  ) );
+                      fixer.fix( "xxx func(yyy, iii) yyy", new DeclarationScopeResolver( new Map[] { variables }  )  ) );
     }
 
     public void testLeaveAloneNew() {

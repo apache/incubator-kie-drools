@@ -1,0 +1,124 @@
+/*
+ * Copyright 2006 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.semantics.java;
+
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import org.codehaus.jfdi.interpreter.ClassTypeResolver;
+import org.codehaus.jfdi.interpreter.TypeResolver;
+import org.drools.base.ClassFieldExtractorCache;
+import org.drools.compiler.DrlParser;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
+import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.spi.FunctionResolver;
+
+/**
+ * @author etirelli
+ *
+ */
+public class RuleBuilderTest extends TestCase {
+
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
+
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    /**
+     * Test method for {@link org.drools.semantics.java.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
+     */
+    public void testBuild() {
+        try {
+            final DrlParser parser = new DrlParser();
+            final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
+
+            // just checking there is no parsing errors
+            Assert.assertFalse( parser.getErrors().toString(),
+                                parser.hasErrors() );
+
+            Package pkg = new Package( "org.drools" );
+
+            RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
+            final String ruleClassName = "RuleClassName.java";
+            ruleDescr.setClassName( ruleClassName );
+
+            TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
+                                                               this.getClass().getClassLoader() );
+            // make an automatic import for the current package
+            typeResolver.addImport( pkgDescr.getName() + ".*" );
+            typeResolver.addImport( "java.lang.*" );
+
+            FunctionResolver functionResolver = new StaticMethodFunctionResolver( pkg.getFunctionImports(),
+                                                                                  typeResolver );
+
+            FunctionFixer functionFixer = new FunctionFixer( pkg,
+                                                             functionResolver );
+
+            final RuleBuilder builder = new RuleBuilder( typeResolver,
+                                                         functionFixer,
+                                                         new ClassFieldExtractorCache() );
+
+            builder.build( pkg,
+                           ruleDescr );
+
+            Assert.assertTrue( builder.getErrors().toString(),
+                               builder.getErrors().isEmpty() );
+
+            final Rule rule = builder.getRule();
+            
+            assertEquals( "There should be 2 rule level declarations", 2, rule.getDeclarations().length );
+            
+            // second GE should be a not
+            GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );
+            assertTrue( not.isNot() );
+            // not has no outer declarations
+            assertTrue( not.getOuterDeclarations().isEmpty() );
+            assertEquals( 1, not.getInnerDeclarations().size() );
+            assertTrue( not.getInnerDeclarations().keySet().contains( "$state" ) );
+            
+            // second not
+            GroupElement not2 = (GroupElement) ((GroupElement) not.getChildren().get( 0 )).getChildren().get( 1 );
+            assertTrue( not2.isNot() );
+            // not has no outer declarations
+            assertTrue( not2.getOuterDeclarations().isEmpty() );
+            assertEquals( 1, not2.getInnerDeclarations().size() );
+            assertTrue( not2.getInnerDeclarations().keySet().contains( "$likes" ) );
+            
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "This test is not supposed to throw any exception: " + e.getMessage() );
+        }
+
+    }
+
+}

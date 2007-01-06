@@ -66,7 +66,7 @@ public class FromBuilder
             JFDIParser parser = createParser( utils,
                                               accessor.toString() );
             DroolsJFDIFactory factory = new DroolsJFDIFactory( utils.getTypeResolver() );
-            factory.setDeclarationMap( context.getDeclarations() );
+            factory.setDeclarationMap( context.getDeclarationResolver().getDeclarations() );
             factory.setGlobalsMap( context.getPkg().getGlobals() );
             parser.setValueHandlerFactory( factory );
 

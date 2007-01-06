@@ -33,6 +33,10 @@ public class ConsequenceBuilder {
     public void buildConsequence(final BuildContext context,
                                  final BuildUtils utils,
                                  final RuleDescr ruleDescr) {
+        
+        // pushing consequence LHS into the stack for variable resolution
+        context.getBuildStack().push( context.getRule().getLhs() );
+        
         // generate 
         // generate Invoker
         final String className = "consequence";
@@ -48,7 +52,7 @@ public class ConsequenceBuilder {
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = (Declaration) context.getDeclarations().get( (String) usedIdentifiers[0].get( i ) );
+            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         }
 
         utils.setStringTemplateAttributes( context,
@@ -57,7 +61,7 @@ public class ConsequenceBuilder {
                                            (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
         st.setAttribute( "text",
                          utils.getFunctionFixer().fix( utils.getKnowledgeHelperFixer().fix( ruleDescr.getConsequence() ),
-                                                       context.getVariables() ) );
+                                                       context.getDeclarationResolver() ) );
 
         context.getMethods().add( st.toString() );
 
@@ -102,6 +106,9 @@ public class ConsequenceBuilder {
                                          context.getRule() );
         context.getDescrLookups().put( invokerClassName,
                                        ruleDescr );
+        
+        // popping Rule.getLHS() from the build stack
+        context.getBuildStack().pop();
     }
 
 }

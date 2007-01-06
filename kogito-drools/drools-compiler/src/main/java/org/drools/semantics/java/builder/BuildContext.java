@@ -20,13 +20,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.AvailableVariables;
+import org.drools.spi.DeclarationScopeResolver;
 
 /**
  * A context for the current build
@@ -40,6 +41,10 @@ public class BuildContext {
 
     // current rule
     private Rule               rule;
+    
+    // a stack for the rule building used
+    // for declarations resolution
+    private Stack              buildStack;
 
     // current Rule descriptor
     private RuleDescr          ruleDescr;
@@ -47,14 +52,8 @@ public class BuildContext {
     // the class name for the rule
     private String             ruleClass;
 
-    // declarations made in the current context
-    private Map                declarations;
-
-    // helper map for inner declarations
-    private Map                innerDeclarations;
-
-    // available variables 
-    private AvailableVariables variables;
+    // available declarationResolver 
+    private DeclarationScopeResolver declarationResolver;
 
     // errors found when building the current context
     private List               errors;
@@ -75,10 +74,7 @@ public class BuildContext {
     private int                counter;
 
     // a simple counter for columns
-    private int                columnCounter;
-
-    // an offset counter for columns
-    private int                columnOffset;
+    private int                columnId = -1;
 
     /**
      * Default constructor
@@ -90,11 +86,10 @@ public class BuildContext {
         this.methods = new ArrayList();
         this.invokers = new HashMap();
         this.invokerLookups = new HashMap();
-        this.declarations = new HashMap();
         this.descrLookups = new HashMap();
-        this.declarations = new HashMap();
         this.errors = new ArrayList();
-        this.variables = new AvailableVariables( new Map[]{this.declarations, this.pkg.getGlobals()} );
+        this.buildStack = new Stack();
+        this.declarationResolver = new DeclarationScopeResolver( new Map[]{this.pkg.getGlobals()}, this.buildStack );
         this.ruleDescr = ruleDescr;
 
         if ( ruleDescr instanceof QueryDescr ) {
@@ -103,14 +98,6 @@ public class BuildContext {
             this.rule = new Rule( ruleDescr.getName() );
         }
 
-    }
-
-    /**
-     * Returns the map of declarations for the current context
-     * @return
-     */
-    public Map getDeclarations() {
-        return declarations;
     }
 
     /**
@@ -146,19 +133,19 @@ public class BuildContext {
     }
 
     /**
-     * Returns the available variables instance
+     * Returns the available declarationResolver instance
      * @return
      */
-    public AvailableVariables getVariables() {
-        return variables;
+    public DeclarationScopeResolver getDeclarationResolver() {
+        return declarationResolver;
     }
 
     /**
-     * Sets the available variables instance
-     * @param variables
+     * Sets the available declarationResolver instance
+     * @param declarationResolver
      */
-    public void setVariables(AvailableVariables variables) {
-        this.variables = variables;
+    public void setDeclarationResolver(DeclarationScopeResolver variables) {
+        this.declarationResolver = variables;
     }
 
     /**
@@ -221,28 +208,16 @@ public class BuildContext {
         return counter++;
     }
 
-    public int getCurrentColumnId() {
-        return columnCounter;
+    public int getColumnId() {
+        return columnId;
     }
 
     public int getNextColumnId() {
-        return columnCounter++;
+        return ++columnId;
     }
 
-    public int getColumnOffset() {
-        return columnOffset;
-    }
-
-    public void setColumnOffset( int offset ) {
-        this.columnOffset = offset;
-    }
-
-    public Map getInnerDeclarations() {
-        return innerDeclarations;
-    }
-
-    public void setInnerDeclarations(Map innerDeclarations) {
-        this.innerDeclarations = innerDeclarations;
+    public void setColumnId(int columnId) {
+        this.columnId = columnId;
     }
 
     public String getRuleClass() {
@@ -251,6 +226,10 @@ public class BuildContext {
 
     public void setRuleClass(String ruleClass) {
         this.ruleClass = ruleClass;
+    }
+
+    public Stack getBuildStack() {
+        return buildStack;
     }
 
 }

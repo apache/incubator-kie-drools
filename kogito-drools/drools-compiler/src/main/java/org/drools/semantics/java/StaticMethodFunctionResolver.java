@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
-import org.drools.spi.AvailableVariables;
+import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.FunctionResolver;
 
 public class StaticMethodFunctionResolver
@@ -42,7 +42,7 @@ public class StaticMethodFunctionResolver
 
     public String resolveFunction(String functionName,
                                   String params,
-                                  AvailableVariables variables) {
+                                  DeclarationScopeResolver variables) {
         for ( Iterator it = this.functionImports.iterator(); it.hasNext(); ) {
             String functionImport = (String) it.next();
 
@@ -84,7 +84,7 @@ public class StaticMethodFunctionResolver
      * @param paramString
      * @return
      */
-    private Class[] determineParameterTypes(String paramString, AvailableVariables variables) {
+    private Class[] determineParameterTypes(String paramString, DeclarationScopeResolver variables) {
         if ( paramString.trim().equals( "" ) ) {
             return new Class[0];
         }

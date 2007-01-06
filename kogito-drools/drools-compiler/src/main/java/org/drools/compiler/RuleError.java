@@ -22,7 +22,7 @@ import org.drools.rule.Rule;
 
 public class RuleError extends DroolsError {
     private Rule         rule;
-    private BaseDescr descr;
+    private BaseDescr    descr;
     private Object       object;
     private String       message;
 
@@ -71,6 +71,25 @@ public class RuleError extends DroolsError {
 
         }
         return summary;
+    }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append( this.message );
+        buf.append( " : " );
+        buf.append( this.rule );
+        buf.append( "\n" );
+        if( this.object instanceof CompilationProblem[] ) {
+            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
+            for ( int i = 0; i < problem.length; i++ ) {
+                buf.append( "\t" );
+                buf.append( problem[i] );
+                buf.append( "\n" );
+            }
+        } else {
+            buf.append( this.object );
+        }
+        return buf.toString();
     }
 
 }

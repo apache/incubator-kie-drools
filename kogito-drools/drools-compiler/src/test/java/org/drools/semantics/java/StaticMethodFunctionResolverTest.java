@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.codehaus.jfdi.interpreter.ClassTypeResolver;
-import org.drools.spi.AvailableVariables;
+import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.FunctionResolver;
 
 public class StaticMethodFunctionResolverTest extends TestCase {
@@ -34,7 +34,7 @@ public class StaticMethodFunctionResolverTest extends TestCase {
         assertEquals( "org.drools.StaticMethods",
                       functionResolver.resolveFunction( "getString1",
                                                         "a",
-                                                        new AvailableVariables( new Map[]{map} ) ) );
+                                                        new DeclarationScopeResolver( new Map[]{map} ) ) );
 
     }
 }

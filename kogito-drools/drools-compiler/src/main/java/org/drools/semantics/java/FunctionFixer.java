@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.spi.AvailableVariables;
+import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.FunctionResolver;
 import org.drools.rule.Package;
 
@@ -61,7 +61,7 @@ public class FunctionFixer {
                     null );
     }
     
-    public String fix(final String raw, final AvailableVariables variables) {
+    public String fix(final String raw, final DeclarationScopeResolver variables) {
         //return raw;
         return fix( raw,
                     FunctionFixer.FUNCTION,
@@ -70,7 +70,7 @@ public class FunctionFixer {
 
     public String fix(final String raw,
                       final Pattern pattern,
-                      final AvailableVariables variables ) {
+                      final DeclarationScopeResolver variables ) {
         if ( raw == null ) {
             return null;
         }
