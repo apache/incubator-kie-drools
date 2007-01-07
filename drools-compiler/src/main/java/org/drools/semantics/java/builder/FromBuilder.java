@@ -16,15 +16,8 @@
 
 package org.drools.semantics.java.builder;
 
-import java.io.IOException;
-
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.TokenStream;
-import org.codehaus.jfdi.parser.JFDILexer;
-import org.codehaus.jfdi.parser.JFDIParser;
-import org.drools.base.DroolsJFDIFactory;
-import org.drools.base.dataproviders.JFDIDataProvider;
+import org.drools.base.DroolsMVELFactory;
+import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -33,6 +26,8 @@ import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.From;
 import org.drools.spi.DataProvider;
+import org.mvel.CompiledExpression;
+import org.mvel.ExpressionParser;
 
 /**
  * A builder for "from" conditional element
@@ -63,14 +58,16 @@ public class FromBuilder
         AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
         DataProvider dataProvider = null;
         try {
-            JFDIParser parser = createParser( utils,
-                                              accessor.toString() );
-            DroolsJFDIFactory factory = new DroolsJFDIFactory( utils.getTypeResolver() );
+//            JFDIParser parser = createParser( utils,
+//                                              accessor.toString() );
+            DroolsMVELFactory factory = new DroolsMVELFactory( );
             factory.setDeclarationMap( context.getDeclarationResolver().getDeclarations() );
             factory.setGlobalsMap( context.getPkg().getGlobals() );
-            parser.setValueHandlerFactory( factory );
+            
+            //parser.setValueHandlerFactory( factory );
+            CompiledExpression compiled = (CompiledExpression) ExpressionParser.compileExpression( accessor.toString() );
 
-            dataProvider = new JFDIDataProvider( parser.expr(),
+            dataProvider = new MVELDataProvider( compiled,
                                                  factory );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -83,22 +80,4 @@ public class FromBuilder
         return new From( column,
                          dataProvider );
     }
-
-    protected JFDIParser createParser(BuildUtils utils,
-                                      String text) throws IOException {
-        JFDIParser parser = new JFDIParser( createTokenStream( text ) );
-        DroolsJFDIFactory factory = new DroolsJFDIFactory( utils.getTypeResolver() );
-        parser.setValueHandlerFactory( factory );
-        return parser;
-    }
-
-    private TokenStream createTokenStream(String text) throws IOException {
-        return new CommonTokenStream( createLexer( text ) );
-    }
-
-    private JFDILexer createLexer(String text) throws IOException {
-        JFDILexer lexer = new JFDILexer( new ANTLRStringStream( text ) );
-        return lexer;
-    }
-
 }

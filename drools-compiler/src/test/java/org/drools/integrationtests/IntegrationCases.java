@@ -27,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -938,7 +939,7 @@ public abstract class IntegrationCases extends TestCase {
         assertSame( p,
                     bob );
 
-        assertEquals( new Integer( 42 ),
+        assertEquals( new BigDecimal( 42 ),
                       array.get( 1 ) );
 
         List nested = (List) array.get( 2 );
