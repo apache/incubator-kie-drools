@@ -34,6 +34,7 @@ import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
+import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.Column;
 import org.drools.rule.EvalCondition;
@@ -66,7 +67,8 @@ public class ReteooRuleBuilder {
                           new FromBuilder() );
         utils.addBuilder( Collect.class,
                           new CollectBuilder() );
-        //utils.addBuilder( Accumulate.class, new AccumulateBuilder() );
+        utils.addBuilder( Accumulate.class,
+                          new AccumulateBuilder() );
     }
 
     /**

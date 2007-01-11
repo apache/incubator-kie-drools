@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.common.BetaConstraints;
-import org.drools.reteoo.CollectNode;
+import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.TupleSource;
-import org.drools.rule.Collect;
+import org.drools.rule.Accumulate;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
@@ -34,7 +34,7 @@ import org.drools.spi.AlphaNodeFieldConstraint;
  * @author etirelli
  *
  */
-public class CollectBuilder
+public class AccumulateBuilder
     implements
     ReteooComponentBuilder {
 
@@ -44,10 +44,9 @@ public class CollectBuilder
     public void build(BuildContext context,
                       BuildUtils utils,
                       RuleConditionElement rce) {
+        Accumulate accumulate = (Accumulate) rce;
 
-        Collect collect = (Collect) rce;
-
-        final Column sourceColumn = collect.getSourceColumn();
+        final Column sourceColumn = accumulate.getSourceColumn();
 
         // get builder for the column
         ReteooComponentBuilder builder = utils.getBuilderFor( sourceColumn );
@@ -57,7 +56,7 @@ public class CollectBuilder
                        utils,
                        sourceColumn );
 
-        final Column column = collect.getResultColumn();
+        final Column column = accumulate.getResultColumn();
         // adjusting target column offset to be the same as the source column
         column.setOffset( context.getCurrentColumnOffset() - 1 );
 
@@ -87,13 +86,13 @@ public class CollectBuilder
                                                                               betaConstraints );
 
         context.setTupleSource( (TupleSource) utils.attachNode( context,
-                                                                new CollectNode( context.getNextId(),
-                                                                                 context.getTupleSource(),
-                                                                                 context.getObjectSource(),
-                                                                                 (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
-                                                                                 context.getBetaconstraints(),
-                                                                                 resultsBinder,
-                                                                                 collect ) ) );
+                                                                new AccumulateNode( context.getNextId(),
+                                                                                    context.getTupleSource(),
+                                                                                    context.getObjectSource(),
+                                                                                    (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
+                                                                                    context.getBetaconstraints(),
+                                                                                    resultsBinder,
+                                                                                    accumulate ) ) );
         // source column was bound, so nulling context
         context.setObjectSource( null );
     }
