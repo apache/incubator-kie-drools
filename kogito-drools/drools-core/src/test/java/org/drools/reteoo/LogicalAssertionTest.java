@@ -50,7 +50,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.addObjectSink( sink );
 
         final Rule rule1 = new Rule( "test-rule1" );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
@@ -148,7 +148,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
 
@@ -235,7 +235,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -368,7 +368,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
@@ -457,7 +457,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -501,7 +501,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // create the second activation to justify the "logical" fact
         final Rule rule2 = new Rule( "test-rule2" );
-        final TerminalNode node2 = new TerminalNode( 4,
+        final RuleTerminalNode node2 = new RuleTerminalNode( 4,
                                                      new MockTupleSource( 3 ),
                                                      rule2 );
         rule2.setConsequence( consequence );
@@ -553,7 +553,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
@@ -590,7 +590,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Create the second justifer
         final Rule rule2 = new Rule( "test-rule2" );
-        final TerminalNode node2 = new TerminalNode( 4,
+        final RuleTerminalNode node2 = new RuleTerminalNode( 4,
                                                      new MockTupleSource( 3 ),
                                                      rule2 );
         rule2.setConsequence( consequence );
@@ -678,7 +678,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -776,7 +776,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();

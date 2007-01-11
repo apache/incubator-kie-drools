@@ -61,6 +61,15 @@ public class GroupElement extends ConditionalElement {
         this.children.add( child );
     }
 
+    /**
+     * Adds the given child as the (index)th child of the this GroupElement 
+     * @param index
+     * @param rce
+     */
+    public void addChild(int index, RuleConditionElement rce) {
+        this.children.add( index, rce );
+    }
+    
     public List getChildren() {
         return this.children;
     }
@@ -77,6 +86,13 @@ public class GroupElement extends ConditionalElement {
      */
     public Map getOuterDeclarations() {
         return this.type.getOuterDeclarations( this.children );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public Declaration resolveDeclaration(String identifier) {
+        return (Declaration) this.type.getInnerDeclarations( this.children ).get( identifier );
     }
 
     /**
@@ -544,5 +560,6 @@ public class GroupElement extends ConditionalElement {
             return "EXISTS";
         }
     }
+
 
 }

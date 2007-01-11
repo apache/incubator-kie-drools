@@ -54,7 +54,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final Rule rule1 = new Rule( "test-rule1" );
 
-        final TerminalNode node1 = new TerminalNode( 3,
+        final RuleTerminalNode node1 = new RuleTerminalNode( 3,
                                                      new MockTupleSource( 2 ),
                                                      rule1 );
 
@@ -105,7 +105,7 @@ public class AgendaTest extends DroolsTestCase {
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
-        final TerminalNode node = new TerminalNode( 3,
+        final RuleTerminalNode node = new RuleTerminalNode( 3,
                                                     new MockTupleSource( 2 ),
                                                     rule );
 
@@ -227,7 +227,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create a rule for each agendaGroup
         final Rule rule0 = new Rule( "test-rule0" );
-        final TerminalNode node0 = new TerminalNode( 3,
+        final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                      new MockTupleSource( 2 ),
                                                      rule0 );
         rule0.setConsequence( consequence );
@@ -238,7 +238,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final Rule rule1 = new Rule( "test-rule1",
                                      "agendaGroup1" );
-        final TerminalNode node1 = new TerminalNode( 5,
+        final RuleTerminalNode node1 = new RuleTerminalNode( 5,
                                                      new MockTupleSource( 4 ),
                                                      rule1 );
         rule1.setConsequence( consequence );
@@ -249,7 +249,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final Rule rule2 = new Rule( "test-rule2",
                                      "agendaGroup2" );
-        final TerminalNode node2 = new TerminalNode( 7,
+        final RuleTerminalNode node2 = new RuleTerminalNode( 7,
                                                      new MockTupleSource( 6 ),
                                                      rule2 );
         rule2.setConsequence( consequence );
@@ -260,7 +260,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final Rule rule3 = new Rule( "test-rule3",
                                      "agendaGroup3" );
-        final TerminalNode node3 = new TerminalNode( 9,
+        final RuleTerminalNode node3 = new RuleTerminalNode( 9,
                                                      new MockTupleSource( 8 ),
                                                      rule3 );
         rule3.setConsequence( consequence );
@@ -440,7 +440,7 @@ public class AgendaTest extends DroolsTestCase {
         // create a rule for the agendaGroup
         final Rule rule = new Rule( "test-rule",
                                     "agendaGroup" );
-        final TerminalNode node = new TerminalNode( 2,
+        final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule );
         rule.setConsequence( consequence );
@@ -516,7 +516,7 @@ public class AgendaTest extends DroolsTestCase {
         // create a rule for each agendaGroup
         final Rule rule0 = new Rule( "test-rule0" );
         rule0.setXorGroup( "activation-group-0" );
-        final TerminalNode node0 = new TerminalNode( 3,
+        final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                      new MockTupleSource( 2 ),
                                                      rule0 );
         rule0.setConsequence( consequence );
@@ -527,7 +527,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final Rule rule1 = new Rule( "test-rule1" );
         rule1.setXorGroup( "activation-group-0" );
-        final TerminalNode node1 = new TerminalNode( 5,
+        final RuleTerminalNode node1 = new RuleTerminalNode( 5,
                                                      new MockTupleSource( 4 ),
                                                      rule1 );
         rule1.setConsequence( consequence );
@@ -537,7 +537,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null );
 
         final Rule rule2 = new Rule( "test-rule2" );
-        final TerminalNode node2 = new TerminalNode( 7,
+        final RuleTerminalNode node2 = new RuleTerminalNode( 7,
                                                      new MockTupleSource( 6 ),
                                                      rule2 );
         rule2.setConsequence( consequence );
@@ -549,7 +549,7 @@ public class AgendaTest extends DroolsTestCase {
         final Rule rule3 = new Rule( "test-rule3",
                                      "agendaGroup3" );
         rule3.setXorGroup( "activation-group-3" );
-        final TerminalNode node3 = new TerminalNode( 9,
+        final RuleTerminalNode node3 = new RuleTerminalNode( 9,
                                                      new MockTupleSource( 8 ),
                                                      rule3 );
         rule3.setConsequence( consequence );

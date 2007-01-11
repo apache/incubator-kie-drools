@@ -60,7 +60,7 @@ public class InstanceNotEqualsConstraint
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
-        return tuple.get( this.otherColumn.getFactIndex() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
+        return tuple.get( this.otherColumn.getOffset() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
     }
 
     public String toString() {
@@ -87,6 +87,8 @@ public class InstanceNotEqualsConstraint
     public static class InstanceNotEqualsConstraintContextEntry
         implements
         ContextEntry {
+
+        private static final long serialVersionUID = -1229222687367782322L;
         public Object        left;
         public Object        right;
 
@@ -106,7 +108,7 @@ public class InstanceNotEqualsConstraint
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-            this.left = tuple.get( this.column.getFactIndex() ).getObject();
+            this.left = tuple.get( this.column.getOffset() ).getObject();
         }
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {

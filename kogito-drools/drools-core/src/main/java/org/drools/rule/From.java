@@ -41,4 +41,12 @@ public class From extends ConditionalElement
     public Map getOuterDeclarations() {
         return this.column.getOuterDeclarations();
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public Declaration resolveDeclaration(String identifier) {
+        return (Declaration) this.column.getInnerDeclarations().get( identifier );
+    }
+    
 }

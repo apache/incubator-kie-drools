@@ -128,8 +128,7 @@ public class ShortCH implements ConversionHandler {
         CNV.put(Boolean.class,
                 new Converter() {
                     public Short convert(Object o) {
-                        if ((Boolean) o) return 1;
-                        else return 0;
+                        return ((Boolean) o).booleanValue() ? (short)1: (short)0;
                     }
                 }
         );

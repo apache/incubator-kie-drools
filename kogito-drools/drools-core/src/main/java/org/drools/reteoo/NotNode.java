@@ -59,9 +59,9 @@ public class NotNode extends BetaNode {
      * @param rightInput
      *            The right input <code>TupleSource</code>.
      */
-    NotNode(final int id,
-            final TupleSource leftInput,
-            final ObjectSource rightInput) {
+    public NotNode(final int id,
+                   final TupleSource leftInput,
+                   final ObjectSource rightInput) {
         super( id,
                leftInput,
                rightInput,
@@ -76,10 +76,10 @@ public class NotNode extends BetaNode {
      * @param rightInput
      *            The right input <code>TupleSource</code>.
      */
-    NotNode(final int id,
-            final TupleSource leftInput,
-            final ObjectSource rightInput,
-            final BetaConstraints joinNodeBinder) {
+    public NotNode(final int id,
+                   final TupleSource leftInput,
+                   final ObjectSource rightInput,
+                   final BetaConstraints joinNodeBinder) {
         super( id,
                leftInput,
                rightInput,
@@ -105,7 +105,8 @@ public class NotNode extends BetaNode {
         memory.getTupleMemory().add( leftTuple );
 
         final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
-        this.constraints.updateFromTuple( workingMemory, leftTuple );
+        this.constraints.updateFromTuple( workingMemory,
+                                          leftTuple );
         int matches = 0;
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             final InternalFactHandle handle = entry.getFactHandle();
@@ -142,7 +143,8 @@ public class NotNode extends BetaNode {
         memory.getFactHandleMemory().add( handle );
 
         final Iterator it = memory.getTupleMemory().iterator( handle );
-        this.constraints.updateFromFactHandle( workingMemory, handle );
+        this.constraints.updateFromFactHandle( workingMemory,
+                                               handle );
         for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 final int matches = tuple.getMatches();
@@ -179,7 +181,8 @@ public class NotNode extends BetaNode {
         }
 
         final Iterator it = memory.getTupleMemory().iterator( handle );
-        this.constraints.updateFromFactHandle( workingMemory, handle );
+        this.constraints.updateFromFactHandle( workingMemory,
+                                               handle );
         for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 tuple.setMatches( tuple.getMatches() - 1 );

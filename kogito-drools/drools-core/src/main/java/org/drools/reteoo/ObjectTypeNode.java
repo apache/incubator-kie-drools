@@ -19,7 +19,6 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -51,7 +50,7 @@ import org.drools.util.AbstractHashTable.FactEntry;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-class ObjectTypeNode extends ObjectSource
+public class ObjectTypeNode extends ObjectSource
     implements
     ObjectSink,
     Serializable,

@@ -118,4 +118,11 @@ public class Accumulate extends ConditionalElement {
         return this.resultColumn.getOuterDeclarations();
     }
 
+    /**
+     * @inheritDoc
+     */
+    public Declaration resolveDeclaration(String identifier) {
+        return (Declaration) this.sourceColumn.getInnerDeclarations().get( identifier );
+    }
+
 }

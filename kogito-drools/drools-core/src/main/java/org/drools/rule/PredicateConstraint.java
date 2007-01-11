@@ -136,7 +136,7 @@ public class PredicateConstraint
             return false;
         }
 
-        if ( this.declaration.getColumn().getFactIndex() != other.declaration.getColumn().getFactIndex() ) {
+        if ( this.declaration.getColumn().getOffset() != other.declaration.getColumn().getOffset() ) {
             return false;
         }
 
@@ -145,7 +145,7 @@ public class PredicateConstraint
         }
 
         for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
-            if ( this.previousDeclarations[i].getColumn().getFactIndex() != other.previousDeclarations[i].getColumn().getFactIndex() ) {
+            if ( this.previousDeclarations[i].getColumn().getOffset() != other.previousDeclarations[i].getColumn().getOffset() ) {
                 return false;
             }
 
@@ -155,7 +155,7 @@ public class PredicateConstraint
         }
 
         for ( int i = 0, length = this.localDeclarations.length; i < length; i++ ) {
-            if ( this.localDeclarations[i].getColumn().getFactIndex() != other.localDeclarations[i].getColumn().getFactIndex() ) {
+            if ( this.localDeclarations[i].getColumn().getOffset() != other.localDeclarations[i].getColumn().getOffset() ) {
                 return false;
             }
 

@@ -17,7 +17,6 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
@@ -37,7 +36,7 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-abstract class ObjectSource extends BaseNode
+public abstract class ObjectSource extends BaseNode
     implements
     Serializable {
     // ------------------------------------------------------------

@@ -102,7 +102,7 @@ public class EvalCondition extends ConditionalElement {
         }
 
         for ( int i = 0, length = this.requiredDeclarations.length; i < length; i++ ) {
-            if ( this.requiredDeclarations[i].getColumn().getFactIndex() != other.requiredDeclarations[i].getColumn().getFactIndex() ) {
+            if ( this.requiredDeclarations[i].getColumn().getOffset() != other.requiredDeclarations[i].getColumn().getOffset() ) {
                 return false;
             }
 
@@ -121,4 +121,13 @@ public class EvalCondition extends ConditionalElement {
     public Map getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public Declaration resolveDeclaration(String identifier) {
+        return (Declaration) null;
+    }
+
+    
 };

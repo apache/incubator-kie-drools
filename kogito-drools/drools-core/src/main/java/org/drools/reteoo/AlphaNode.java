@@ -39,7 +39,7 @@ import org.drools.util.AbstractHashTable.FactEntry;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-class AlphaNode extends ObjectSource
+public class AlphaNode extends ObjectSource
     implements
     ObjectSinkNode,
     NodeMemory {
@@ -64,7 +64,7 @@ class AlphaNode extends ObjectSource
      * @param constraint
      * @param objectSource
      */
-    AlphaNode(final int id,
+    public AlphaNode(final int id,
               final AlphaNodeFieldConstraint constraint,
               final ObjectSource objectSource) {
         this( id,
@@ -86,7 +86,7 @@ class AlphaNode extends ObjectSource
      * @param objectSource Node's object source
      * @param hasMemory true if node shall be configured with local memory. False otherwise.
      */
-    AlphaNode(final int id,
+    public AlphaNode(final int id,
               final AlphaNodeFieldConstraint constraint,
               final ObjectSource objectSource,
               final boolean hasMemory,

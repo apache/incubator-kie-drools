@@ -34,7 +34,7 @@ public interface RuleConditionElement
      * 
      * @return
      */
-    public abstract Map getInnerDeclarations();
+    public Map getInnerDeclarations();
 
     /**
      * Returns a Map of declarations that are visible
@@ -42,6 +42,16 @@ public interface RuleConditionElement
      * 
      * @return
      */
-    public abstract Map getOuterDeclarations();
+    public Map getOuterDeclarations();
+    
+    /**
+     * Resolves the given identifier in the current scope and
+     * returns the Declaration object for the declaration.
+     * Returns null if identifier can not be resolved.
+     *  
+     * @param identifier
+     * @return
+     */
+    public Declaration resolveDeclaration( String identifier );
 
 }

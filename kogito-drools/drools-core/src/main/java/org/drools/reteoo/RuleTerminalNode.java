@@ -44,10 +44,11 @@ import org.drools.util.TupleHashTable;
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-final class TerminalNode extends BaseNode
+public final class RuleTerminalNode extends BaseNode
     implements
     TupleSinkNode,
-    NodeMemory {
+    NodeMemory,
+    TerminalNode {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -75,9 +76,9 @@ final class TerminalNode extends BaseNode
      * @param rule
      *            The rule.
      */
-    TerminalNode(final int id,
-                 final TupleSource source,
-                 final Rule rule) {
+    public RuleTerminalNode(final int id,
+                            final TupleSource source,
+                            final Rule rule) {
         super( id );
         this.rule = rule;
         this.tupleSource = source;
@@ -156,7 +157,8 @@ final class TerminalNode extends BaseNode
             memory.getTupleMemory().add( tuple );
 
             item.setActivated( true );
-            workingMemory.getAgendaEventSupport().fireActivationCreated( item, workingMemory );
+            workingMemory.getAgendaEventSupport().fireActivationCreated( item,
+                                                                         workingMemory );
         } else {
             // -----------------
             // Lazy instantiation and addition to the Agenda of AgendGroup
@@ -214,7 +216,8 @@ final class TerminalNode extends BaseNode
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
             if ( fireActivationCreated ) {
-                workingMemory.getAgendaEventSupport().fireActivationCreated( item, workingMemory  );
+                workingMemory.getAgendaEventSupport().fireActivationCreated( item,
+                                                                             workingMemory );
             }
         }
     }
@@ -229,7 +232,8 @@ final class TerminalNode extends BaseNode
             final Activation activation = tuple.getActivation();
             if ( activation.isActivated() ) {
                 activation.remove();
-                workingMemory.getAgendaEventSupport().fireActivationCancelled( activation, workingMemory  );
+                workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                               workingMemory );
             }
 
             workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
@@ -239,7 +243,7 @@ final class TerminalNode extends BaseNode
     }
 
     public String toString() {
-        return "[TerminalNode: rule=" + this.rule.getName() + "]";
+        return "[RuleTerminalNode: rule=" + this.rule.getName() + "]";
     }
 
     public void ruleAttached() {
@@ -278,7 +282,8 @@ final class TerminalNode extends BaseNode
 
                 if ( activation.isActivated() ) {
                     activation.remove();
-                    workingMemory.getAgendaEventSupport().fireActivationCancelled( activation, workingMemory );
+                    workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                                   workingMemory );
                 }
 
                 final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
@@ -346,11 +351,11 @@ final class TerminalNode extends BaseNode
             return true;
         }
 
-        if ( object == null || object.getClass() != TerminalNode.class ) {
+        if ( object == null || object.getClass() != RuleTerminalNode.class ) {
             return false;
         }
 
-        final TerminalNode other = (TerminalNode) object;
+        final RuleTerminalNode other = (RuleTerminalNode) object;
         return this.rule.equals( other.rule );
     }
 
