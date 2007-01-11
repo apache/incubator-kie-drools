@@ -200,7 +200,7 @@ public class Declaration
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * this.column.getFactIndex();
+        result = PRIME * this.column.getOffset();
         result = PRIME * this.extractor.hashCode();
         result = PRIME * this.identifier.hashCode();
         return result;
@@ -217,7 +217,7 @@ public class Declaration
 
         final Declaration other = (Declaration) object;
 
-        return this.column.getFactIndex() == other.column.getFactIndex() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
+        return this.column.getOffset() == other.column.getOffset() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
     }
 
 }

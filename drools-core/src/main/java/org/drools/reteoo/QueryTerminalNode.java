@@ -34,10 +34,11 @@ import org.drools.spi.PropagationContext;
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-final class QueryTerminalNode extends BaseNode
+public final class QueryTerminalNode extends BaseNode
     implements
     TupleSink,
-    NodeMemory {
+    NodeMemory,
+    TerminalNode {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -62,9 +63,9 @@ final class QueryTerminalNode extends BaseNode
      * @param rule
      *            The rule.
      */
-    QueryTerminalNode(final int id,
-                      final TupleSource source,
-                      final Rule rule) {
+    public QueryTerminalNode(final int id,
+                             final TupleSource source,
+                             final Rule rule) {
         super( id );
         this.rule = rule;
         this.tupleSource = source;
@@ -134,7 +135,9 @@ final class QueryTerminalNode extends BaseNode
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this, propagationContext, workingMemory );
+            this.tupleSource.updateSink( this,
+                                         propagationContext,
+                                         workingMemory );
         }
     }
 

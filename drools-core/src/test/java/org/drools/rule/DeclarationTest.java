@@ -51,8 +51,8 @@ public class DeclarationTest extends TestCase {
         assertSame( extractor,
                     declaration.getExtractor() );
 
-        assertEquals( 5,
-                      declaration.getColumn().getFactIndex() );
+        assertEquals( 5, 
+                      declaration.getColumn().getOffset() );
 
     }
 

@@ -77,4 +77,11 @@ public class Collect extends ConditionalElement {
     public Map getOuterDeclarations() {
         return this.resultColumn.getOuterDeclarations();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public Declaration resolveDeclaration(String identifier) {
+        return (Declaration) this.sourceColumn.getInnerDeclarations().get( identifier );
+    }
 }

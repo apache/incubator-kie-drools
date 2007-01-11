@@ -48,7 +48,7 @@ import org.drools.util.AbstractHashTable.FactEntry;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-class JoinNode extends BetaNode {
+public class JoinNode extends BetaNode {
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -66,7 +66,7 @@ class JoinNode extends BetaNode {
      * @param rightInput
      *            The right input <code>TupleSource</code>.
      */
-    JoinNode(final int id,
+    public JoinNode(final int id,
              final TupleSource leftInput,
              final ObjectSource rightInput) {
         super( id,
@@ -74,7 +74,7 @@ class JoinNode extends BetaNode {
                rightInput );
     }
 
-    JoinNode(final int id,
+    public JoinNode(final int id,
              final TupleSource leftInput,
              final ObjectSource rightInput,
              final BetaConstraints binder) {

@@ -41,7 +41,7 @@ import org.drools.util.TupleHashTable;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-class EvalConditionNode extends TupleSource
+public class EvalConditionNode extends TupleSource
     implements
     TupleSinkNode,
     NodeMemory {
@@ -76,7 +76,7 @@ class EvalConditionNode extends TupleSource
      *            The source of incoming <code>Tuples</code>.
      * @param eval
      */
-    EvalConditionNode(final int id,
+    public EvalConditionNode(final int id,
                       final TupleSource tupleSource,
                       final EvalCondition eval) {
         super( id );

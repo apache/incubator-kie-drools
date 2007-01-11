@@ -43,7 +43,7 @@ public class SchedulerTest extends DroolsTestCase {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Rule rule = new Rule( "test-rule" );
-        final TerminalNode node = new TerminalNode( 1,
+        final RuleTerminalNode node = new RuleTerminalNode( 1,
                                                     new MockTupleSource( 2 ),
                                                     rule );
         final List data = new ArrayList();
@@ -105,7 +105,7 @@ public class SchedulerTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
-        final TerminalNode node = new TerminalNode( 1,
+        final RuleTerminalNode node = new RuleTerminalNode( 1,
                                                     new MockTupleSource( 2 ),
                                                     rule );
         final List data = new ArrayList();
@@ -183,7 +183,7 @@ public class SchedulerTest extends DroolsTestCase {
         final Rule rule = new Rule( "test-rule" );
         final List data = new ArrayList();
 
-        final TerminalNode node = new TerminalNode( 1,
+        final RuleTerminalNode node = new RuleTerminalNode( 1,
                                                     new MockTupleSource( 2 ),
                                                     rule );
 

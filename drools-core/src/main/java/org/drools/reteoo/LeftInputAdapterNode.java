@@ -39,7 +39,7 @@ import org.drools.util.AbstractHashTable.FactEntry;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-class LeftInputAdapterNode extends TupleSource
+public class LeftInputAdapterNode extends TupleSource
     implements
     ObjectSinkNode,
     NodeMemory {

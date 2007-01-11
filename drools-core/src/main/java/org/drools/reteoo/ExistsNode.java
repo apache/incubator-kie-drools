@@ -60,9 +60,9 @@ public class ExistsNode extends BetaNode {
      * @param rightInput
      *            The right input <code>ObjectSource</code>.
      */
-    ExistsNode(final int id,
-               final TupleSource leftInput,
-               final ObjectSource rightInput) {
+    public ExistsNode(final int id,
+                      final TupleSource leftInput,
+                      final ObjectSource rightInput) {
         super( id,
                leftInput,
                rightInput,
@@ -81,10 +81,10 @@ public class ExistsNode extends BetaNode {
      * @param joinNodeBinder
      *            The constraints to be aplied to the right objects
      */
-    ExistsNode(final int id,
-            final TupleSource leftInput,
-            final ObjectSource rightInput,
-            final BetaConstraints joinNodeBinder) {
+    public ExistsNode(final int id,
+                      final TupleSource leftInput,
+                      final ObjectSource rightInput,
+                      final BetaConstraints joinNodeBinder) {
         super( id,
                leftInput,
                rightInput,
@@ -156,10 +156,10 @@ public class ExistsNode extends BetaNode {
                 tuple.setMatches( matches + 1 );
 
                 // if this is the first match, propagate tuple
-                if( tuple.getMatches() == 1 ) {
+                if ( tuple.getMatches() == 1 ) {
                     this.sink.propagateAssertTuple( tuple,
-                                                     context,
-                                                     workingMemory );
+                                                    context,
+                                                    workingMemory );
                 }
             }
         }
@@ -193,8 +193,8 @@ public class ExistsNode extends BetaNode {
                 tuple.setMatches( tuple.getMatches() - 1 );
                 if ( tuple.getMatches() == 0 ) {
                     this.sink.propagateRetractTuple( tuple,
-                                                    context,
-                                                    workingMemory );
+                                                     context,
+                                                     workingMemory );
                 }
             }
         }

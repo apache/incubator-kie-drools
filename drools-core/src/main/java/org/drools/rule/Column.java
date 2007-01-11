@@ -19,7 +19,6 @@ package org.drools.rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,14 +40,14 @@ public class Column
     private Map               declarations;
     private final int         index;
 
-    // this is the negative offset of the related fact inside a tuple. i.e:
-    // tuple_fact_index = column_index + offset; 
+    // this is the offset of the related fact inside a tuple. i.e:
+    // the position of the related fact inside the tuple; 
     private int               offset;
 
     public Column(final int index,
                   final ObjectType objectType) {
         this( index,
-              0,
+              index,
               objectType,
               null );
     }
@@ -57,7 +56,7 @@ public class Column
                   final ObjectType objectType,
                   final String identifier) {
         this( index,
-              0,
+              index,
               objectType,
               identifier );
     }
@@ -125,14 +124,17 @@ public class Column
     }
 
     /**
+     * The offset of the fact related to this column 
+     * inside the tuple
+     * 
      * @return the offset
      */
     public int getOffset() {
         return this.offset;
     }
-
-    public int getFactIndex() {
-        return this.index + this.offset;
+    
+    public void setOffset(final int offset) {
+        this.offset = offset;
     }
 
     /**
@@ -141,16 +143,6 @@ public class Column
      */
     public void adjustOffset(final int adjust) {
         this.offset += adjust;
-
-        if ( this.declaration != null ) {
-            this.declaration.setColumn( this );
-        }
-        for ( final Iterator i = this.constraints.iterator(); i.hasNext(); ) {
-            final Object constr = i.next();
-            if ( constr instanceof Declaration ) {
-                ((Declaration) constr).setColumn( this );
-            }
-        }
     }
 
     public Map getInnerDeclarations() {
@@ -159,6 +151,10 @@ public class Column
 
     public Map getOuterDeclarations() {
         return ( this.declarations != null ) ? this.declarations : Collections.EMPTY_MAP;
+    }
+    
+    public Declaration resolveDeclaration( String identifier ) {
+        return ( this.declarations != null ) ? (Declaration) this.declarations.get( identifier ) : null;
     }
 
     public String toString() {

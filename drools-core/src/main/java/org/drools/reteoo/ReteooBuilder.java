@@ -42,6 +42,7 @@ import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
+import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.Column;
@@ -67,7 +68,7 @@ import org.drools.spi.FieldValue;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  * 
  */
-class ReteooBuilder
+public class ReteooBuilder
     implements
     Serializable {
     // ------------------------------------------------------------
@@ -90,21 +91,13 @@ class ReteooBuilder
     /** Nodes that have been attached. */
     private final Map                       attachedNodes;
 
-    private TupleSource                     tupleSource;
-
-    private ObjectSource                    objectSource;
-
-    private Map                             declarations;
-
-    private int                             id;
-
     private Map                             rules;
 
-    private Map                             objectType;
-
-    private int                             currentOffsetAdjustment;
-    
     private final boolean                   removeIdentities;
+    
+    private transient ReteooRuleBuilder     ruleBuilder;
+    
+    private IdGenerator                     idGenerator;
 
     // ------------------------------------------------------------
     // Constructors
@@ -121,8 +114,9 @@ class ReteooBuilder
         this.rules = new HashMap();
 
         //Set to 1 as Rete node is set to 0
-        this.id = 1;
+        this.idGenerator = new IdGenerator(1);
         this.removeIdentities = this.ruleBase.getConfiguration().isRemoveIdentities();
+        this.ruleBuilder = new ReteooRuleBuilder();
     }
 
     /**
@@ -157,612 +151,88 @@ class ReteooBuilder
      * @throws InvalidPatternException
      */
     void addRule(final Rule rule) throws InvalidPatternException {
-        // reset working memories for potential propagation
-        this.workingMemories = (ReteooWorkingMemory[]) this.ruleBase.getWorkingMemories().toArray( new ReteooWorkingMemory[this.ruleBase.getWorkingMemories().size()] );
-        this.currentOffsetAdjustment = 0;
-
-        final List nodes = new ArrayList();
-        final GroupElement[] and = rule.getTransformedLhs();
-
-        for ( int i = 0; i < and.length; i++ ) {
-            if ( !hasColumns( and[i] ) ) {
-                addInitialFactMatch( and[i] );
-            }
-
-            addRule( and[i],
-                     rule );
-            BaseNode node = null;
-            if ( !(rule instanceof Query) ) {
-                // Check a consequence is set
-                if ( rule.getConsequence() == null ) {
-                    throw new InvalidPatternException( "Rule '" + rule.getName() + "' has no Consequence" );
-                }
-                node = new TerminalNode( this.id++,
-                                         this.tupleSource,
-                                         rule );
-            } else {
-                // Check there is no consequence
-                if ( rule.getConsequence() != null ) {
-                    throw new InvalidPatternException( "Query '" + rule.getName() + "' should have no Consequence" );
-                }
-                node = new QueryTerminalNode( this.id++,
-                                              this.tupleSource,
-                                              rule );
-            }
-
-            nodes.add( node );
-
-            if ( this.workingMemories.length == 0 ) {
-                node.attach();
-            } else {
-                node.attach( this.workingMemories );
-            }
-        }
+        List terminals = this.ruleBuilder.addRule( rule, this.ruleBase, this.attachedNodes, this.idGenerator );
+        
 
         this.rules.put( rule,
-                        nodes.toArray( new BaseNode[nodes.size()] ) );
-    }
-
-    private boolean hasColumns(final GroupElement ge) {
-        for ( final Iterator it = ge.getChildren().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof Column || (object instanceof GroupElement && hasColumns( (GroupElement) object )) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void addInitialFactMatch(final GroupElement and) {
-        GroupElement temp = null;
-
-        // If we have children we know there are no columns but we need to make sure that InitialFact is first
-        if ( !and.getChildren().isEmpty() ) {
-            temp = (GroupElement) and.clone();
-            and.getChildren().clear();
-        }
-        final Column column = new Column( 0,
-                                          new ClassObjectType( InitialFact.class ) );
-        and.addChild( column );
-
-        // now we know InitialFact is first add all the previous constrains
-        if ( temp != null ) {
-            and.getChildren().addAll( temp.getChildren() );
-        }
-        this.currentOffsetAdjustment = 1;
-    }
-
-    private void addRule(final GroupElement and,
-                         final Rule rule) throws InvalidPatternException {
-        this.objectSource = null;
-        this.tupleSource = null;
-        this.declarations = new HashMap();
-        this.objectType = new LinkedHashMap();
-
-        if ( rule instanceof Query ) {
-            attachQuery( rule.getName() );
-        }
-
-        for ( final Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-
-            if ( object instanceof EvalCondition ) {
-                final EvalCondition eval = (EvalCondition) object;
-                checkUnboundDeclarations( eval.getRequiredDeclarations() );
-                this.tupleSource = attachNode( new EvalConditionNode( this.id++,
-                                                                      this.tupleSource,
-                                                                      eval ) );
-                continue;
-            }
-
-            BetaConstraints binder = null;
-            Column column = null;
-
-            if ( object instanceof Column ) {
-                column = (Column) object;
-
-                // @REMOVEME after the milestone period
-                if(( binder != null) && ( binder != EmptyBetaConstraints.getInstance()))
-                    throw new RuntimeDroolsException("This is a bug! Please report to Drools development team!");
-                
-                binder = attachColumn( (Column) object,
-                                       and,
-                                       this.removeIdentities );
-
-                // If a tupleSource does not exist then we need to adapt this
-                // into
-                // a TupleSource using LeftInputAdapterNode
-                if ( this.tupleSource == null ) {
-                    this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                             this.objectSource ) );
-
-                    // objectSource is created by the attachColumn method, if we
-                    // adapt this to
-                    // a TupleSource then we need to null the objectSource
-                    // reference.
-                    this.objectSource = null;
-                }
-            } else if ( object instanceof GroupElement ) {
-                // If its not a Column or EvalCondition then it can either be a Not or an Exists
-                GroupElement ce = (GroupElement) object;
-                while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
-                    ce = (GroupElement) ce.getChildren().get( 0 );
-                }
-                column = (Column) ce.getChildren().get( 0 );
-
-                // If a tupleSource does not exist then we need to adapt an
-                // InitialFact into a a TupleSource using LeftInputAdapterNode
-                if ( this.tupleSource == null ) {
-                    // adjusting offset as all tuples will now contain initial-fact at index 0
-                    this.currentOffsetAdjustment = 1;
-
-                    final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                                      new ClassObjectType( InitialFact.class ),
-                                                                                      this.rete,
-                                                                                      this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
-
-                    this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                             objectSource ) );
-                }
-
-                // @REMOVEME after the milestone period
-                if(( binder != null) && ( binder != EmptyBetaConstraints.getInstance()))
-                    throw new RuntimeDroolsException("This is a bug! Please report to Drools development team!");
-
-                binder = attachColumn( column,
-                                       and,
-                                       this.removeIdentities );
-            }
-
-            if (( object instanceof GroupElement ) && (((GroupElement)object).isNot())) {
-                attachNot( this.tupleSource,
-                           (GroupElement) object,
-                           this.objectSource,
-                           binder,
-                           column );
-                binder = null;
-            } else if (( object instanceof GroupElement ) && (((GroupElement)object).isExists())) {
-                attachExists( this.tupleSource,
-                              (GroupElement) object,
-                              this.objectSource,
-                              binder,
-                              column );
-                binder = null;
-            } else if ( object.getClass() == From.class ) {
-                attachFrom( this.tupleSource,
-                            (From) object );
-            } else if ( object.getClass() == Accumulate.class ) {
-                attachAccumulate( this.tupleSource,
-                                  and,
-                                  (Accumulate) object );
-            } else if ( object.getClass() == Collect.class ) {
-                attachCollect( this.tupleSource,
-                               and,
-                               (Collect) object );
-            } else if ( this.objectSource != null ) {
-                this.tupleSource = attachNode( new JoinNode( this.id++,
-                                                             this.tupleSource,
-                                                             this.objectSource,
-                                                             binder ) );
-                binder = null;
-            }
-        }
+                        terminals.toArray( new BaseNode[terminals.size()] ) );
     }
 
     public BaseNode[] getTerminalNodes(final Rule rule) {
         return (BaseNode[]) this.rules.remove( rule );
     }
 
-    private void attachQuery(final String queryName) {
-        // incrementing offset adjustment, since we are adding a new ObjectNodeType as our
-        // first column
-        this.currentOffsetAdjustment += 1;
-
-        final ObjectSource objectTypeSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                              new ClassObjectType( DroolsQuery.class ),
-                                                                              this.rete,
-                                                                              this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
-
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
-                                                                       "name" );
-
-        final FieldValue field = FieldFactory.getFieldValue( queryName,
-                                                             ValueType.STRING_TYPE );
-
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
-                                                                    field );
-
-        final ObjectSource alphaNodeSource = attachNode( new AlphaNode( this.id++,
-                                                                        constraint,
-                                                                        objectTypeSource,
-                                                                        this.ruleBase.getConfiguration().isAlphaMemory(),
-                                                                        this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
-
-        this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                 alphaNodeSource ) );
-    }
-
-    private BetaConstraints attachColumn(final Column column,
-                                         final GroupElement parent,
-                                         boolean removeIdentities) throws InvalidPatternException {
-        // Adjusting offset in case a previous Initial-Fact was added to the network
-        column.adjustOffset( this.currentOffsetAdjustment );
-
-        // Check if the Column is bound
-        if ( column.getDeclaration() != null ) {
-            final Declaration declaration = column.getDeclaration();
-            // Add the declaration the map of previously bound declarations
-            this.declarations.put( declaration.getIdentifier(),
-                                   declaration );
-        }
-
-        final List predicates = attachAlphaNodes( column,
-                                                  removeIdentities );
-
-        final BetaConstraints binder = createBetaNodeConstraint( predicates );
-
-        return binder;
-    }
-
-    public List attachAlphaNodes(final Column column,
-                                 final boolean removeIdentities) throws InvalidPatternException {
-        final List constraints = column.getConstraints();
-
-        this.objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                            column.getObjectType(),
-                                                            this.rete,
-                                                            this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
-
-        final List betaConstraints = new ArrayList();
-
-        if ( removeIdentities && column.getObjectType().getClass() == ClassObjectType.class ) {
-            // Check if this object type exists before
-            // If it does we need stop instance equals cross product
-            final Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
-            for ( final Iterator it = this.objectType.entrySet().iterator(); it.hasNext(); ) {
-                final Map.Entry entry = (Map.Entry) it.next();
-                final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
-                if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    betaConstraints.add( new InstanceNotEqualsConstraint( (Column) entry.getValue() ) );
-                }
-            }
-
-            // Must be added after the checking, otherwise it matches against itself
-            this.objectType.put( column.getObjectType(),
-                                 column );
-        }
-
-        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            // Check if its a declaration
-            if ( object instanceof Declaration ) {
-                final Declaration declaration = (Declaration) object;
-                // Add the declaration the map of previously bound declarations
-                this.declarations.put( declaration.getIdentifier(),
-                                       declaration );
-                continue;
-            }
-
-            final Constraint constraint = (Constraint) object;
-            Declaration[] declarations = constraint.getRequiredDeclarations();
-
-            boolean isAlphaConstraint = true;
-            for(int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
-                if( declarations[i].getColumn() != column ) {
-                    isAlphaConstraint = false;
-                }
-            }
-            if ( isAlphaConstraint ) {
-                this.objectSource = attachNode( new AlphaNode( this.id++,
-                                                               (AlphaNodeFieldConstraint) constraint,
-                                                               this.objectSource ) );
-            } else {
-                checkUnboundDeclarations( constraint.getRequiredDeclarations() );
-                betaConstraints.add( constraint );
-            }
-        }
-
-        return betaConstraints;
-    }
-
-    private void attachNot(final TupleSource tupleSource,
-                           final GroupElement not,
-                           final ObjectSource ObjectSource,
-                           final BetaConstraints binder,
-                           final Column column) {
-        final NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
-                                                                   tupleSource,
-                                                                   ObjectSource,
-                                                                   binder ) );
-        this.tupleSource = notNode;
-    }
-
-    private void attachExists(final TupleSource tupleSource,
-                              final GroupElement exists,
-                              final ObjectSource ObjectSource,
-                              final BetaConstraints binder,
-                              final Column column) {
-        ExistsNode existsNode = (ExistsNode) attachNode( new ExistsNode( this.id++,
-                                                             tupleSource,
-                                                             ObjectSource,
-                                                             binder ) );
-        this.tupleSource = existsNode;
-    }
-
-    /**
-     * Attaches a node into the network. If a node already exists that could
-     * substitute, it is used instead.
-     * 
-     * @param candidate
-     *            The node to attach.
-     * @param leafNodes
-     *            The list to which the newly added node will be added.
-     */
-    private TupleSource attachNode(final TupleSource candidate) {
-        TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
-
-        if ( this.ruleBase.getConfiguration().isShareBetaNodes() && node !=  null ) {
-            if ( !node.isInUse() ) {
-                if ( this.workingMemories.length == 0 ) {
-                    node.attach();
-                } else {
-                    node.attach( this.workingMemories );
-                }
-            }
-            node.addShare();
-            this.id--;
-        } else {
-            if ( this.workingMemories.length == 0 ) {
-                candidate.attach();
-            } else {
-                candidate.attach( this.workingMemories );
-            }
-
-            this.attachedNodes.put( candidate,
-                                    candidate );
-
-            node = candidate;            
-        }
-        
-        return node;
-    }
-
-    private void attachFrom(final TupleSource tupleSource,
-                            final From from) {
-        final Column column = from.getColumn();
-
-        // If a tupleSource does not exist then we need to adapt an
-        // InitialFact into a a TupleSource using LeftInputAdapterNode
-        if ( this.tupleSource == null ) {
-            // adjusting offset as all tuples will now contain initial-fact at index 0
-            this.currentOffsetAdjustment = 1;
-
-            final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                              new ClassObjectType( InitialFact.class ),
-                                                                              this.rete,
-                                                                              this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
-
-            this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                     objectSource ) );
-        }
-
-        // Adjusting offset in case a previous Initial-Fact was added to the network
-        column.adjustOffset( this.currentOffsetAdjustment );
-
-        final List constraints = column.getConstraints();
-
-        // Check if the Column is bound
-        if ( column.getDeclaration() != null ) {
-            final Declaration declaration = column.getDeclaration();
-            // Add the declaration the map of previously bound declarations
-            this.declarations.put( declaration.getIdentifier(),
-                                   declaration );
-        }
-
-        final List betaConstraints = new ArrayList();
-        final List alphaConstraints = new ArrayList();
-
-        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            // Check if its a declaration
-            if ( object instanceof Declaration ) {
-                final Declaration declaration = (Declaration) object;
-                // Add the declaration the map of previously bound declarations
-                this.declarations.put( declaration.getIdentifier(),
-                                       declaration );
-                continue;
-            }
-
-            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
-            if ( fieldConstraint instanceof LiteralConstraint ) {
-                alphaConstraints.add( fieldConstraint );
-            } else {
-                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
-                betaConstraints.add( fieldConstraint );
-            }
-        }
-
-        final BetaConstraints binder = createBetaNodeConstraint( betaConstraints );
-
-        this.tupleSource = attachNode( new FromNode( this.id++,
-                                                     from.getDataProvider(),
-                                                     this.tupleSource,
-                                                     (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
-                                                     binder ) );
-
-    }
-
-    private void attachAccumulate(final TupleSource tupleSource,
-                                  final GroupElement parent,
-                                  final Accumulate accumulate) {
-        // If a tupleSource does not exist then we need to adapt an
-        // InitialFact into a a TupleSource using LeftInputAdapterNode
-        if ( this.tupleSource == null ) {
-            // adjusting offset as all tuples will now contain initial-fact at index 0
-            this.currentOffsetAdjustment = 1;
-
-            final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                                 new ClassObjectType( InitialFact.class ),
-                                                                                 this.rete,
-                                                                                 this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
-
-            this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                     auxObjectSource ) );
-        }
-
-        final Column sourceColumn = accumulate.getSourceColumn();
-        final BetaConstraints sourceBinder = attachColumn( sourceColumn,
-                                                           parent,
-                                                           true );
-
-        final Column column = accumulate.getResultColumn();
-        // Adjusting offset in case a previous Initial-Fact was added to the network
-        column.adjustOffset( this.currentOffsetAdjustment );
-
-        final List constraints = column.getConstraints();
-
-        // Check if the Column is bound
-        if ( column.getDeclaration() != null ) {
-            final Declaration declaration = column.getDeclaration();
-            // Add the declaration the map of previously bound declarations
-            this.declarations.put( declaration.getIdentifier(),
-                                   declaration );
-        }
-
-        final List betaConstraints = new ArrayList();
-        final List alphaConstraints = new ArrayList();
-
-        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            // Check if its a declaration
-            if ( object instanceof Declaration ) {
-                final Declaration declaration = (Declaration) object;
-                // Add the declaration the map of previously bound declarations
-                this.declarations.put( declaration.getIdentifier(),
-                                       declaration );
-                continue;
-            }
-
-            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
-            if ( fieldConstraint instanceof LiteralConstraint ) {
-                alphaConstraints.add( fieldConstraint );
-            } else {
-                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
-                betaConstraints.add( fieldConstraint );
-            }
-        }
-
-        final BetaConstraints resultsBinder = createBetaNodeConstraint( betaConstraints );
-
-        this.tupleSource = attachNode( new AccumulateNode( this.id++,
-                                                           this.tupleSource,
-                                                           this.objectSource,
-                                                           (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
-                                                           sourceBinder,
-                                                           resultsBinder,
-                                                           accumulate ) );
-    }
-
-    private void attachCollect(final TupleSource tupleSource,
-                               final GroupElement parent,
-                               final Collect collect) {
-        // If a tupleSource does not exist then we need to adapt an
-        // InitialFact into a a TupleSource using LeftInputAdapterNode
-        if ( this.tupleSource == null ) {
-            // adjusting offset as all tuples will now contain initial-fact at index 0
-            this.currentOffsetAdjustment = 1;
-
-            final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                                 new ClassObjectType( InitialFact.class ),
-                                                                                 this.rete,
-                                                                                 this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
-
-            this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                     auxObjectSource ) );
-        }
-
-        final Column sourceColumn = collect.getSourceColumn();
-        final BetaConstraints sourceBinder = attachColumn( sourceColumn,
-                                                           parent,
-                                                           true );
-
-        final Column column = collect.getResultColumn();
-        // Adjusting offset in case a previous Initial-Fact was added to the network
-        column.adjustOffset( this.currentOffsetAdjustment );
-
-        final List constraints = column.getConstraints();
-
-        // Check if the Column is bound
-        if ( column.getDeclaration() != null ) {
-            final Declaration declaration = column.getDeclaration();
-            // Add the declaration the map of previously bound declarations
-            this.declarations.put( declaration.getIdentifier(),
-                                   declaration );
-        }
-
-        final List betaConstraints = new ArrayList();
-        final List alphaConstraints = new ArrayList();
-
-        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            // Check if its a declaration
-            if ( object instanceof Declaration ) {
-                final Declaration declaration = (Declaration) object;
-                // Add the declaration the map of previously bound declarations
-                this.declarations.put( declaration.getIdentifier(),
-                                       declaration );
-                continue;
-            }
-
-            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
-            if ( fieldConstraint instanceof LiteralConstraint ) {
-                alphaConstraints.add( fieldConstraint );
-            } else {
-                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
-                betaConstraints.add( fieldConstraint );
-            }
-        }
-
-        final BetaConstraints resultsBinder = createBetaNodeConstraint( betaConstraints );
-
-        this.tupleSource = attachNode( new CollectNode( this.id++,
-                                                        this.tupleSource,
-                                                        this.objectSource,
-                                                        (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
-                                                        sourceBinder,
-                                                        resultsBinder,
-                                                        collect ) );
-    }
-
-    private ObjectSource attachNode(final ObjectSource candidate) {
-        ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
-
-        if ( this.ruleBase.getConfiguration().isShareAlphaNodes() && node != null) {
-            if ( !node.isInUse() ) {
-                if ( this.workingMemories.length == 0 ) {
-                    node.attach();
-                } else {
-                    node.attach( this.workingMemories );
-                }
-            }
-            node.addShare();
-            this.id--;
-        } else {
-            if ( this.workingMemories.length == 0 ) {
-                candidate.attach();
-            } else {
-                candidate.attach( this.workingMemories );
-            }
-
-            this.attachedNodes.put( candidate,
-                                    candidate );
-
-            node = candidate;
-        }
-
-        return node;
-    }
+//    private void attachAccumulate(final TupleSource tupleSource,
+//                                  final GroupElement parent,
+//                                  final Accumulate accumulate) {
+//        // If a tupleSource does not exist then we need to adapt an
+//        // InitialFact into a a TupleSource using LeftInputAdapterNode
+//        if ( this.tupleSource == null ) {
+//            // adjusting offset as all tuples will now contain initial-fact at index 0
+//            this.currentOffsetAdjustment = 1;
+//
+//            final ObjectSource auxObjectSource = attachNode( new ObjectTypeNode( this.id++,
+//                                                                                 new ClassObjectType( InitialFact.class ),
+//                                                                                 this.rete,
+//                                                                                 this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold()) );
+//
+//            this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
+//                                                                     auxObjectSource ) );
+//        }
+//
+//        final Column sourceColumn = accumulate.getSourceColumn();
+//        final BetaConstraints sourceBinder = attachColumn( sourceColumn,
+//                                                           parent,
+//                                                           true );
+//
+//        final Column column = accumulate.getResultColumn();
+//        // Adjusting offset in case a previous Initial-Fact was added to the network
+//        column.adjustOffset( this.currentOffsetAdjustment );
+//
+//        final List constraints = column.getConstraints();
+//
+//        // Check if the Column is bound
+//        if ( column.getDeclaration() != null ) {
+//            final Declaration declaration = column.getDeclaration();
+//            // Add the declaration the map of previously bound declarations
+//            this.declarations.put( declaration.getIdentifier(),
+//                                   declaration );
+//        }
+//
+//        final List betaConstraints = new ArrayList();
+//        final List alphaConstraints = new ArrayList();
+//
+//        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+//            final Object object = it.next();
+//            // Check if its a declaration
+//            if ( object instanceof Declaration ) {
+//                final Declaration declaration = (Declaration) object;
+//                // Add the declaration the map of previously bound declarations
+//                this.declarations.put( declaration.getIdentifier(),
+//                                       declaration );
+//                continue;
+//            }
+//
+//            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
+//            if ( fieldConstraint instanceof LiteralConstraint ) {
+//                alphaConstraints.add( fieldConstraint );
+//            } else {
+//                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
+//                betaConstraints.add( fieldConstraint );
+//            }
+//        }
+//
+//        final BetaConstraints resultsBinder = createBetaNodeConstraint( betaConstraints );
+//
+//        this.tupleSource = attachNode( new AccumulateNode( this.id++,
+//                                                           this.tupleSource,
+//                                                           this.objectSource,
+//                                                           (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
+//                                                           sourceBinder,
+//                                                           resultsBinder,
+//                                                           accumulate ) );
+//    }
+//
 
     public void removeRule(final Rule rule) {
         // reset working memories for potential propagation
@@ -777,55 +247,26 @@ class ReteooBuilder
                          this.workingMemories );
         }
     }
+    
+    public static class IdGenerator implements Serializable {
 
-    /**
-     * Make sure the required declarations are previously bound
-     * 
-     * @param declarations
-     * @throws InvalidPatternException
-     */
-    private void checkUnboundDeclarations(final Declaration[] declarations) throws InvalidPatternException {
-        final List list = new ArrayList();
-        for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            if ( this.declarations.get( declarations[i].getIdentifier() ) == null ) {
-                list.add( declarations[i].getIdentifier() );
-            }
+        private static final long serialVersionUID = -5909710713463187779L;
+
+        private int nextId;
+        
+        public IdGenerator( int firstId ) {
+            this.nextId = firstId;
         }
-
-        // Make sure the required declarations        
-        if ( list.size() != 0 ) {
-            final StringBuffer buffer = new StringBuffer();
-            buffer.append( list.get( 0 ) );
-            for ( int i = 1, size = list.size(); i < size; i++ ) {
-                buffer.append( ", " + list.get( i ) );
-            }
-
-            throw new InvalidPatternException( "Required Declarations not bound: '" + buffer );
+        
+        public int getNextId() {
+            return this.nextId++;
         }
+        
+        public void releaseLastId() {
+            this.nextId--;
+        }
+        
     }
 
-    public BetaConstraints createBetaNodeConstraint(final List list) {
-        BetaConstraints constraints;
-        switch ( list.size() ) {
-            case 0 :
-                constraints = EmptyBetaConstraints.getInstance();
-                break;
-            case 1 :
-                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ), this.ruleBase.getConfiguration() );
-                break;
-            case 2 :
-                constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
-                break;
-            case 3 :
-                constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
-                break;
-            case 4 :
-                constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
-                break;                
-            default :
-                constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), this.ruleBase.getConfiguration() );
-        }
-        return constraints;
-    }
 
 }

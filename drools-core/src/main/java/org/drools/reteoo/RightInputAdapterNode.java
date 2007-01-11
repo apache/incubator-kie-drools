@@ -17,7 +17,6 @@ package org.drools.reteoo;
  */
 
 import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Column;
 import org.drools.spi.PropagationContext;
@@ -76,7 +75,7 @@ public class RightInputAdapterNode extends ObjectSource
     public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-        this.sink.propagateAssertObject( tuple.get( this.column.getFactIndex() ),
+        this.sink.propagateAssertObject( tuple.get( this.column.getOffset() ),
                                          context,
                                          workingMemory );
     }
@@ -87,7 +86,7 @@ public class RightInputAdapterNode extends ObjectSource
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        this.sink.propagateRetractObject( tuple.get( this.column.getFactIndex() ),
+        this.sink.propagateRetractObject( tuple.get( this.column.getOffset() ),
                                           context,
                                           workingMemory,
                                           true );
@@ -112,7 +111,7 @@ public class RightInputAdapterNode extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         this.tupleSource.updateSink( new TupleSinkAdapter( sink,
-                                                           this.column.getFactIndex() ),
+                                                           this.column.getOffset() ),
                                      context,
                                      workingMemory );
     }
@@ -136,6 +135,8 @@ public class RightInputAdapterNode extends ObjectSource
     private static class TupleSinkAdapter
         implements
         TupleSink {
+
+        private static final long serialVersionUID = 1636299857108066554L;
         private ObjectSink sink;
         private int        column;
 

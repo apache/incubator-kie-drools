@@ -172,7 +172,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * 
      * @return The RETE-OO network.
      */
-    Rete getRete() {
+    public Rete getRete() {
         return this.rete;
     }
 

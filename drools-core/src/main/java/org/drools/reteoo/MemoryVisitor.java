@@ -3,7 +3,7 @@ package org.drools.reteoo;
 import java.lang.reflect.Field;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.TerminalNode.TerminalNodeMemory;
+import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.Entry;
 import org.drools.util.FactHashTable;
@@ -170,7 +170,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
         this.indent--;
     }
 
-    public void visitTerminalNode(final TerminalNode node) {
+    public void visitTerminalNode(final RuleTerminalNode node) {
         System.out.println( indent() + node );
         final TerminalNodeMemory memory = (TerminalNodeMemory) this.workingMemory.getNodeMemory( node );
         checkTupleMemory( memory.getTupleMemory() );
