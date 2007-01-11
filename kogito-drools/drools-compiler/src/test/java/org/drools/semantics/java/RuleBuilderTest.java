@@ -17,7 +17,11 @@
 package org.drools.semantics.java;
 
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -26,6 +30,7 @@ import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.compiler.DrlParser;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
@@ -119,6 +124,43 @@ public class RuleBuilderTest extends TestCase {
             fail( "This test is not supposed to throw any exception: " + e.getMessage() );
         }
 
+    }
+    
+    public void testBuildAttributes() throws Exception {
+        RuleBuilder builder = new RuleBuilder(null, null, null);
+        Rule rule = new Rule("myrule");
+        List attributes = new ArrayList();
+        
+        attributes.add( new AttributeDescr("no-loop", "true") );
+        attributes.add( new AttributeDescr("enabled", "false") );
+        builder.setAttributes( rule, attributes );
+        
+        assertTrue(rule.getNoLoop());
+        assertFalse(rule.isEffective());
+        
+        attributes = new ArrayList();
+        attributes.add(new AttributeDescr("date-effective", "10-Jul-1974"));
+        attributes.add(new AttributeDescr("date-expires", "10-Jul-2040") );
+        
+        rule = new Rule("myrule");
+        
+        builder.setAttributes( rule, attributes );
+        
+        Field eff = rule.getClass().getDeclaredField( "dateEffective" );
+        eff.setAccessible( true );       
+        Calendar effectiveDate = (Calendar) eff.get( rule );
+        assertNotNull(effectiveDate);
+        
+        assertEquals(1974, effectiveDate.get( Calendar.YEAR ));
+        
+        Field exp = rule.getClass().getDeclaredField( "dateExpires" );
+        exp.setAccessible( true );
+        Calendar expiryDate = (Calendar) exp.get( rule );
+        
+        assertEquals(2040, expiryDate.get(Calendar.YEAR));
+        
+        assertNotNull(expiryDate);
+        
     }
 
 }

@@ -189,6 +189,9 @@ public abstract class IntegrationCases extends TestCase {
                                                       Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
+        if (parser.hasErrors()) {
+            Assert.fail("Error messages in parser, need to sort this our (or else collect error messages)");
+        }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
@@ -246,6 +249,25 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( message.isFired() );
         assertEquals( message,
                       list.get( 0 ) );
+
+    }
+    
+    public void testDateEffective() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EffectiveDate.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        // go !
+        final Message message = new Message( "hola" );
+        workingMemory.assertObject( message );
+        workingMemory.fireAllRules();
+        assertFalse( message.isFired() );
 
     }
 

@@ -16,6 +16,7 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.evaluators.DateFactory;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -35,7 +37,6 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -195,8 +196,9 @@ public class RuleBuilder {
      * @param rule
      * @param attributes
      */
-    private void setAttributes(final Rule rule,
+    void setAttributes(final Rule rule,
                                final List attributes) {
+        
         for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
             final AttributeDescr attributeDescr = (AttributeDescr) it.next();
             final String name = attributeDescr.getName();
@@ -221,6 +223,21 @@ public class RuleBuilder {
             } else if ( name.equals( "duration" ) ) {
                 rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
                 rule.setAgendaGroup( "" );
+            } else if (name.equals( "enabled" )){
+                if (attributeDescr.getValue() == null) {
+                    rule.setEnabled( true );
+                } else {
+                    rule.setEnabled( Boolean.valueOf( attributeDescr.getValue() ).booleanValue());
+                }
+            } else if (name.equals( "date-effective" )) {                
+                Calendar cal = Calendar.getInstance();
+                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
+                rule.setDateEffective( cal );
+            } else if (name.equals( "date-expires" )) {     
+                Calendar cal = Calendar.getInstance();
+                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
+                rule.setDateExpires( cal );
+                
             } else if ( name.equals( "language" ) ) {
                 //@todo: we don't currently  support multiple languages
             }

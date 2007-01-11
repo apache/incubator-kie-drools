@@ -125,14 +125,21 @@ public final class RuleTerminalNode extends BaseNode
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
-        //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
-        final ReteTuple cloned = new ReteTuple( tuple );
+        
+        //check if the rule is effective
+        if (!this.rule.isEffective()) {
+            return;
+        }
 
         // if the current Rule is no-loop and the origin rule is the same then
         // return
         if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
-        }
+        }        
+        
+        //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
+        final ReteTuple cloned = new ReteTuple( tuple );
+
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Duration dur = this.rule.getDuration();
