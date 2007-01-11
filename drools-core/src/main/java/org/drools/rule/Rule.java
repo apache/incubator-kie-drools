@@ -17,6 +17,7 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ import org.drools.spi.Duration;
  * @see Consequence
  * @author <a href="mailto:bob@eng.werken.com"> bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au"> Simon Harris </a>
- * @author <a href="mailto:mproctor@codehaus.org"> mark pro </a>
+ * @author <a href="mailto:mproctor@codehaus.org"> mark proctor </a>
  */
 public class Rule
     implements
@@ -86,6 +87,12 @@ public class Rule
 
     /** indicates that the rule is semantically correct. */
     private boolean           semanticallyValid = true;
+    
+    private Calendar          dateEffective = null;
+    
+    private Calendar          dateExpires = null;
+
+    private boolean           enabled  = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -234,6 +241,30 @@ public class Rule
         return this.noLoop;
     }
 
+    /**
+     * This returns true is the rule is effective. 
+     * If the rule is not effective, it cannot activate.
+     * 
+     * This uses the dateEffective, dateExpires and enabled flag to decide this.
+     */
+    public boolean isEffective() {
+        if (!enabled) return false;
+        if (this.dateEffective == null && this.dateExpires == null) {
+            return true;
+        } else {
+            Calendar now = Calendar.getInstance();
+            if (this.dateEffective != null && this.dateExpires != null) {
+                return (now.after( this.dateEffective ) && now.before( this.dateExpires ));
+            } else if (this.dateEffective != null) {
+                return (now.after( this.dateEffective ));
+            } else {
+                return (now.before( this.dateExpires ));
+            }
+            
+        }
+        
+    }
+    
     public void setNoLoop(final boolean noLoop) {
         this.noLoop = noLoop;
     }
@@ -422,5 +453,28 @@ public class Rule
      */
     public boolean isSemanticallyValid() {
         return this.semanticallyValid;
+    }
+
+    /**
+     * Sets the date from which this rule takes effect (can include time to the millisecond).
+     * @param effectiveDate
+     */
+    public void setDateEffective(Calendar effectiveDate) {
+        this.dateEffective = effectiveDate;        
+    }
+
+    /**
+     * Sets the date after which the rule will no longer apply (can include time to the millisecond).
+     * @param expiresDate
+     */
+    public void setDateExpires(Calendar expiresDate) {
+        this.dateExpires = expiresDate;        
+    }
+
+    /**
+     * A rule is enabled by default. This can explicitly disable it in which case it will never activate.
+     */
+    public void setEnabled(boolean b) {
+        this.enabled = b;        
     }
 }

@@ -502,8 +502,53 @@ rule_attribute returns [AttributeDescr d]
 		|	a=duration  { d = a; }			
 		|	a=activation_group { d = a; }	
 		|	a=auto_focus { d = a; }	
+		|                         a=date_effective {d = a; }
+		|	a=date_expires {d = a; }
+		|                         a=enabled {d=a;}
 		
 	;
+	
+date_effective returns [AttributeDescr d]
+	@init {
+		d = null;
+	}	
+	:
+		loc='date-effective' val=STRING
+		{
+			d = new AttributeDescr( "date-effective", getString( val ) );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+		}
+
+	;
+
+date_expires returns [AttributeDescr d]
+	@init {
+		d = null;
+	}	
+	:
+		loc='date-expires' val=STRING
+		{
+			d = new AttributeDescr( "date-expires", getString( val ) );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+		}
+
+	;
+
+	
+enabled returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+			loc='enabled' t=BOOL opt_semicolon
+			{
+				d = new AttributeDescr( "enabled", t.getText() );
+				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			}
+		
+		
+	;	
+	
 	
 
 salience returns [AttributeDescr d ]
