@@ -1,0 +1,15 @@
+package HelloWorld
+ 
+#we don't use the import, as class is fully qualified below 
+#import org.drools.integrationtests.helloworld.Message
+
+global java.util.List list;
+
+rule "Hello World"
+	date-effective "9-Jul-1974"
+	date-expires "10-Jul-1974"
+	when
+		$m : org.drools.integrationtests.helloworld.Message()
+	then
+		$m.setFired(true); 
+end
