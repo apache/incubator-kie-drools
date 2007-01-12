@@ -27,7 +27,6 @@ import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -3668,6 +3667,7 @@ public abstract class IntegrationCases extends TestCase {
         } catch ( InvalidRulePackage e ) {
             // everything fine
         } catch ( Exception e ) {
+            e.printStackTrace();
             Assert.fail("Should have thrown an InvalidRulePackage Exception instead of "+e.getMessage());
         }
     }
