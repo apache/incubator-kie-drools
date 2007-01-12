@@ -201,7 +201,7 @@ public class ReteTuple
      */
     public ReteTuple getSubTuple( int elements ) {
         ReteTuple entry = this;
-        if( elements > this.size() ) {
+        if( elements < this.size() ) {
             int lastindex = elements-1;
             
             while ( entry.index != lastindex ) {

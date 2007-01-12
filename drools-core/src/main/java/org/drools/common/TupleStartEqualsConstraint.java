@@ -78,7 +78,7 @@ public class TupleStartEqualsConstraint
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
-        return tuple.equals(((TupleStartEqualsConstraintContextEntry) context).right);
+        return tuple.equals(((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ));
     }
 
     public String toString() {
@@ -129,7 +129,7 @@ public class TupleStartEqualsConstraint
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
             // if it is not a rete tuple, then there is a bug in the engine...
             // it MUST be a rete tuple
-            this.right = ((ReteTuple) handle.getObject()).getSubTuple( this.compareSize );
+            this.right = (ReteTuple) handle.getObject();
         }
     }
 }

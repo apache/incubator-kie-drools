@@ -64,12 +64,18 @@ public class GroupElementBuilder
                                                          utils,
                                                          columnBuilder,
                                                          (BaseDescr) child );
-                ge.addChild( ce );
+                if( ce != null ) {
+                    ge.addChild( ce );
+                }
             } else if ( child instanceof ColumnDescr ) {
                 final Column column = columnBuilder.build( context,
                                                            utils,
                                                            (ColumnDescr) child );
-                ge.addChild( column );
+                // in case there is a problem with the column building,
+                // builder will return null. Ex: ClassNotFound for the column type
+                if( column != null ) {
+                    ge.addChild( column );
+                }
 
             } else {
                 throw new RuntimeDroolsException("BUG: no builder found for descriptor class "+child.getClass() );
