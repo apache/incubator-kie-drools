@@ -16,15 +16,20 @@
 
 package org.drools.reteoo.builder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.NotNode;
+import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.Column;
 import org.drools.rule.GroupElement;
@@ -53,8 +58,6 @@ public class GroupElementBuilder
 
     /**
      * @inheritDoc
-     * 
-     * 
      */
     public void build(BuildContext context,
                       BuildUtils utils,
@@ -66,121 +69,19 @@ public class GroupElementBuilder
         builder.build( context,
                        utils,
                        rce );
-
-        //        for ( final Iterator it = subrule.getChildren().iterator(); it.hasNext(); ) {
-        //            final Object object = it.next();
-        //
-        //            if ( object instanceof EvalCondition ) {
-        //                final EvalCondition eval = (EvalCondition) object;
-        //                checkUnboundDeclarations( eval.getRequiredDeclarations() );
-        //                this.tupleSource = attachNode( new EvalConditionNode( this.id++,
-        //                                                                      this.tupleSource,
-        //                                                                      eval ) );
-        //                continue;
-        //            }
-        //
-        //            BetaConstraints binder = null;
-        //            Column column = null;
-        //
-        //            if ( object instanceof Column ) {
-        //                column = (Column) object;
-        //
-        //                // @REMOVEME after the milestone period
-        //                if ( (binder != null) && (binder != EmptyBetaConstraints.getInstance()) ) throw new RuntimeDroolsException( "This is a bug! Please report to Drools development team!" );
-        //
-        //                binder = attachColumn( (Column) object,
-        //                                       subrule,
-        //                                       this.removeIdentities );
-        //
-        //                // If a tupleSource does not exist then we need to adapt this
-        //                // into
-        //                // a TupleSource using LeftInputAdapterNode
-        //                if ( this.tupleSource == null ) {
-        //                    this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-        //                                                                             this.objectSource ) );
-        //
-        //                    // objectSource is created by the attachColumn method, if we
-        //                    // adapt this to
-        //                    // a TupleSource then we need to null the objectSource
-        //                    // reference.
-        //                    this.objectSource = null;
-        //                }
-        //            } else if ( object instanceof GroupElement ) {
-        //                // If its not a Column or EvalCondition then it can either be a Not or an Exists
-        //                GroupElement ce = (GroupElement) object;
-        //                while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
-        //                    ce = (GroupElement) ce.getChildren().get( 0 );
-        //                }
-        //                column = (Column) ce.getChildren().get( 0 );
-        //
-        //                // If a tupleSource does not exist then we need to adapt an
-        //                // InitialFact into a a TupleSource using LeftInputAdapterNode
-        //                if ( this.tupleSource == null ) {
-        //                    // adjusting offset as all tuples will now contain initial-fact at index 0
-        //                    this.currentOffsetAdjustment = 1;
-        //
-        //                    final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-        //                                                                                      new ClassObjectType( InitialFact.class ),
-        //                                                                                      this.rete,
-        //                                                                                      this.ruleBase.getConfiguration().getAlphaNodeHashingThreshold() ) );
-        //
-        //                    this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-        //                                                                             objectSource ) );
-        //                }
-        //
-        //                // @REMOVEME after the milestone period
-        //                if ( (binder != null) && (binder != EmptyBetaConstraints.getInstance()) ) throw new RuntimeDroolsException( "This is a bug! Please report to Drools development team!" );
-        //
-        //                binder = attachColumn( column,
-        //                                       subrule,
-        //                                       this.removeIdentities );
-        //            }
-        //
-        //            if ( (object instanceof GroupElement) && (((GroupElement) object).isNot()) ) {
-        //                attachNot( this.tupleSource,
-        //                           (GroupElement) object,
-        //                           this.objectSource,
-        //                           binder,
-        //                           column );
-        //                binder = null;
-        //            } else if ( (object instanceof GroupElement) && (((GroupElement) object).isExists()) ) {
-        //                attachExists( this.tupleSource,
-        //                              (GroupElement) object,
-        //                              this.objectSource,
-        //                              binder,
-        //                              column );
-        //                binder = null;
-        //            } else if ( object.getClass() == From.class ) {
-        //                attachFrom( this.tupleSource,
-        //                            (From) object );
-        //            } else if ( object.getClass() == Accumulate.class ) {
-        //                attachAccumulate( this.tupleSource,
-        //                                  subrule,
-        //                                  (Accumulate) object );
-        //            } else if ( object.getClass() == Collect.class ) {
-        //                attachCollect( this.tupleSource,
-        //                               subrule,
-        //                               (Collect) object );
-        //            } else if ( this.objectSource != null ) {
-        //                this.tupleSource = attachNode( new JoinNode( this.id++,
-        //                                                             this.tupleSource,
-        //                                                             this.objectSource,
-        //                                                             binder ) );
-        //                binder = null;
-        //            }
-        //        }
-
     }
 
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation( BuildUtils utils, RuleConditionElement rce ) {
+    public boolean requiresLeftActivation(BuildUtils utils,
+                                          RuleConditionElement rce) {
         GroupElement ge = (GroupElement) rce;
 
         ReteooComponentBuilder builder = (ReteooComponentBuilder) geBuilders.get( ge.getType() );
-        
-        return builder.requiresLeftActivation( utils, rce );
+
+        return builder.requiresLeftActivation( utils,
+                                               rce );
     }
 
     private static class AndBuilder
@@ -235,19 +136,21 @@ public class GroupElementBuilder
             }
         }
 
-        public boolean requiresLeftActivation(BuildUtils utils, RuleConditionElement rce) {
+        public boolean requiresLeftActivation(BuildUtils utils,
+                                              RuleConditionElement rce) {
             GroupElement and = (GroupElement) rce;
 
             // need to check this because in the case of an empty rule, the root AND
             // will have no child
-            if( and.getChildren().isEmpty() ) {
+            if ( and.getChildren().isEmpty() ) {
                 return true;
-            } 
-            
+            }
+
             RuleConditionElement child = (RuleConditionElement) and.getChildren().get( 0 );
             ReteooComponentBuilder builder = utils.getBuilderFor( child );
-            
-            return builder.requiresLeftActivation( utils, child );
+
+            return builder.requiresLeftActivation( utils,
+                                                   child );
         }
     }
 
@@ -264,8 +167,9 @@ public class GroupElementBuilder
             throw new RuntimeDroolsException( "BUG: Can't build a rete network with an inner OR group element" );
         }
 
-        public boolean requiresLeftActivation(BuildUtils utils, RuleConditionElement rce) {
-            return false;
+        public boolean requiresLeftActivation(BuildUtils utils,
+                                              RuleConditionElement rce) {
+            throw new RuntimeDroolsException( "BUG: Can't build a rete network with an inner OR group element" );
         }
     }
 
@@ -285,9 +189,10 @@ public class GroupElementBuilder
                           BuildUtils utils,
                           RuleConditionElement rce) {
             GroupElement not = (GroupElement) rce;
-            
-            // NOT must save current column index in order to restore it later
+
+            // NOT must save some context info to restore it later
             int currentColumnIndex = context.getCurrentColumnOffset();
+            TupleSource tupleSource = context.getTupleSource();
 
             // get child
             RuleConditionElement child = (RuleConditionElement) not.getChildren().get( 0 );
@@ -300,21 +205,37 @@ public class GroupElementBuilder
                            utils,
                            child );
 
-            // if child is a column 
-            if ( child instanceof Column ) {
-                // then no sub-network needed... just a simple NOT node
-                context.setTupleSource( (TupleSource) utils.attachNode( context,
-                                                                        new NotNode( context.getNextId(),
-                                                                                     context.getTupleSource(),
-                                                                                     context.getObjectSource(),
-                                                                                     context.getBetaconstraints() ) ) );
-                context.setBetaconstraints( null );
-                context.setObjectSource( null );
+            // if child is not a column adapt it into a subnetwork
+            if ( !(child instanceof Column) ) {
 
-            } else {
-                // TODO: otherwise attach subnetwork
+                // attach right input adapter node to convert tuple source into an object source
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                          new RightInputAdapterNode( context.getNextId(),
+                                                                                                     context.getTupleSource() ) ) );
+
+                // restore tuple source from before the start of the sub network
+                context.setTupleSource( tupleSource );
+
+                // create a tuple start equals constraint and set it in the context
+                TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
+                List predicates = new ArrayList();
+                predicates.add( constraint );
+                context.setBetaconstraints( utils.createBetaNodeConstraint( context,
+                                                                            predicates ) );
+
             }
-            
+
+            // then attach the NOT node. It will work both as a simple not node
+            // or as subnetwork join node as the context was set appropriatelly
+            // in each case
+            context.setTupleSource( (TupleSource) utils.attachNode( context,
+                                                                    new NotNode( context.getNextId(),
+                                                                                 context.getTupleSource(),
+                                                                                 context.getObjectSource(),
+                                                                                 context.getBetaconstraints() ) ) );
+            context.setBetaconstraints( null );
+            context.setObjectSource( null );
+
             // restore column index
             context.setCurrentColumnOffset( currentColumnIndex );
         }
@@ -342,8 +263,9 @@ public class GroupElementBuilder
                           RuleConditionElement rce) {
             GroupElement exists = (GroupElement) rce;
 
-            // EXISTS must save current column index in order to restore it later
+            // EXISTS must save some context info to restore it later
             int currentColumnIndex = context.getCurrentColumnOffset();
+            TupleSource tupleSource = context.getTupleSource();
 
             // get child
             RuleConditionElement child = (RuleConditionElement) exists.getChildren().get( 0 );
@@ -356,21 +278,37 @@ public class GroupElementBuilder
                            utils,
                            child );
 
-            // if child is a column 
-            if ( child instanceof Column ) {
-                // then no sub-network needed... just a simple EXISTS node
-                context.setTupleSource( (TupleSource) utils.attachNode( context,
-                                                                        new ExistsNode( context.getNextId(),
-                                                                                     context.getTupleSource(),
-                                                                                     context.getObjectSource(),
-                                                                                     context.getBetaconstraints() ) ) );
-                context.setBetaconstraints( null );
-                context.setObjectSource( null );
+            // if child is not a column adapt it into a subnetwork
+            if ( !(child instanceof Column) ) {
 
-            } else {
-                // TODO: otherwise attach subnetwork
+                // attach right input adapter node to convert tuple source into an object source
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                          new RightInputAdapterNode( context.getNextId(),
+                                                                                                     context.getTupleSource() ) ) );
+
+                // restore tuple source from before the start of the sub network
+                context.setTupleSource( tupleSource );
+
+                // create a tuple start equals constraint and set it in the context
+                TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
+                List predicates = new ArrayList();
+                predicates.add( constraint );
+                context.setBetaconstraints( utils.createBetaNodeConstraint( context,
+                                                                            predicates ) );
+
             }
-            
+
+            // then attach the EXISTS node. It will work both as a simple exists node
+            // or as subnetwork join node as the context was set appropriatelly
+            // in each case
+            context.setTupleSource( (TupleSource) utils.attachNode( context,
+                                                                    new ExistsNode( context.getNextId(),
+                                                                                    context.getTupleSource(),
+                                                                                    context.getObjectSource(),
+                                                                                    context.getBetaconstraints() ) ) );
+            context.setBetaconstraints( null );
+            context.setObjectSource( null );
+
             // restore column index
             context.setCurrentColumnOffset( currentColumnIndex );
         }

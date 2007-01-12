@@ -57,6 +57,16 @@ public interface Tuple extends Serializable {
 
     InternalFactHandle[] getFactHandles();
 
+    /**
+     * Returns the tuple recency
+     * @return
+     */
     long getRecency();
+    
+    /**
+     * Returns the size of this tuple in number of elements (columns)
+     * @return
+     */
+    int size();
 
 }
