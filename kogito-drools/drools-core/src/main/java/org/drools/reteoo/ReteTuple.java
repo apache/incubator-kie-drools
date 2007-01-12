@@ -179,4 +179,35 @@ public class ReteTuple
         // we know the object is never null and always of the  type ReteTuple    
         return equals( (ReteTuple) object );
     }
+
+    public int size() {
+        return this.index+1;
+    }
+    
+    /**
+     * Returns the ReteTuple that contains the "elements"
+     * first elements in this tuple.
+     * 
+     * Use carefully as no cloning is made during this process.
+     * 
+     * This method is used by TupleStartEqualsConstraint when
+     * joining a subnetwork tuple into the main network tuple;
+     * 
+     * @param elements the number of elements to return, starting from
+     * the begining of the tuple
+     * 
+     * @return a ReteTuple containing the "elements" first elements
+     * of this tuple or null if "elements" is greater than size; 
+     */
+    public ReteTuple getSubTuple( int elements ) {
+        ReteTuple entry = this;
+        if( elements > this.size() ) {
+            int lastindex = elements-1;
+            
+            while ( entry.index != lastindex ) {
+                entry = entry.parent;
+            }
+        }
+        return entry;
+    }
 }

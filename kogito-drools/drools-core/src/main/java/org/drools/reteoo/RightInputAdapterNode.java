@@ -16,30 +16,35 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.Column;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
+import org.drools.util.Iterator;
+import org.drools.util.ObjectHashMap;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
- * When joining two <code>Not<code>s together the resulting <code>Tuple</code> from the first Not
- * Must be adapted to <code>FActHandleImpl</code> so it can be propagated into the second not
+ * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the 
+ * subnetwork's tuple into a fact in order right join it with the tuple being propagated in
+ * the main network.
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
+ * @author <a href="mailto:etirelli@redhat.com">Edson Tirelli</a>
  *
  */
 public class RightInputAdapterNode extends ObjectSource
     implements
-    TupleSink {
-    /**
-     * 
-     */
+    TupleSink,
+    NodeMemory {
+
     private static final long serialVersionUID = 320L;
 
     private final TupleSource tupleSource;
-
-    private final Column         column;
 
     /**
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
@@ -47,23 +52,26 @@ public class RightInputAdapterNode extends ObjectSource
      * 
      * @param id
      *      Unique id 
-     * @param column
-     *      The column which specifis the position of the <code>FactHandleImpl</code> in the <code>ReteTuple</code>
      * @param source
      *      The <code>TupleSource</code> which propagates the received <code>ReteTuple</code>
      */
     public RightInputAdapterNode(final int id,
-                                 final Column column,
                                  final TupleSource source) {
-
         super( id );
-        this.column = column;
         this.tupleSource = source;
+        this.setHasMemory( true );
     }
 
     /**
-     * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and extract and propagate
-     * its <code>FactHandleImpl</code> based on the column specified by te node.
+     * Creates and return the node memory
+     */
+    public Object createMemory(RuleBaseConfiguration config) {
+        return new ObjectHashMap();
+    }
+
+    /**
+     * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and 
+     * adapts it into a FactHandleImpl
      * 
      * @param tuple
      *            The asserted <code>ReteTuple</code>.
@@ -75,45 +83,77 @@ public class RightInputAdapterNode extends ObjectSource
     public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-        this.sink.propagateAssertObject( tuple.get( this.column.getOffset() ),
+
+        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+
+        // creating a dummy fact handle to wrap the tuple
+        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple );
+        // add it to a memory mapping
+        memory.put( tuple,
+                    handle );
+
+        // propagate it
+        this.sink.propagateAssertObject( handle,
                                          context,
                                          workingMemory );
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.RetractionCallback#retractTuple(org.drools.reteoo.ReteTuple, org.drools.spi.PropagationContext, org.drools.reteoo.WorkingMemoryImpl)
+    /**
+     * Retracts the corresponding tuple by retrieving and retracting
+     * the fact created for it
      */
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        this.sink.propagateRetractObject( tuple.get( this.column.getOffset() ),
+
+        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+
+        // retrieve handle from memory
+        final InternalFactHandle handle = (InternalFactHandle) memory.remove( tuple );
+
+        // propagate a retract for it
+        this.sink.propagateRetractObject( handle,
                                           context,
                                           workingMemory,
                                           true );
+
+        // destroy dummy handle
+        workingMemory.getFactHandleFactory().destroyFactHandle( handle );
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#attach()
-     */
     public void attach() {
         this.tupleSource.addTupleSink( this );
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
-        // this node has no memory, no point requesting repropagation     
+
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+            final InternalWorkingMemory workingMemory = workingMemories[i];
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RULE_ADDITION,
+                                                                                      null,
+                                                                                      null );
+            this.tupleSource.updateSink( this,
+                                         propagationContext,
+                                         workingMemory );
+        }
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
-     */
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        this.tupleSource.updateSink( new TupleSinkAdapter( sink,
-                                                           this.column.getOffset() ),
-                                     context,
-                                     workingMemory );
+
+        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+
+        final Iterator it = memory.iterator();
+
+        // iterates over all propagated handles and assert them to the new sink
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            sink.assertObject( (InternalFactHandle) entry.getValue(),
+                               context,
+                               workingMemory );
+        }
     }
 
     public void remove(final BaseNode node,
@@ -126,44 +166,4 @@ public class RightInputAdapterNode extends ObjectSource
                                  workingMemories );
     }
 
-    /**
-     * Used with the updateSink method, so that the parent ObjectSource
-     * can  update the  TupleSink
-     * @author mproctor
-     *
-     */
-    private static class TupleSinkAdapter
-        implements
-        TupleSink {
-
-        private static final long serialVersionUID = 1636299857108066554L;
-        private ObjectSink sink;
-        private int        column;
-
-        public TupleSinkAdapter(final ObjectSink sink,
-                                final int column) {
-            this.sink = sink;
-            this.column = column;
-        }
-
-        public void assertTuple(final ReteTuple tuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-            this.sink.assertObject( tuple.get( this.column ),
-                                    context,
-                                    workingMemory );
-        }
-
-        public void modifyTuple(final ReteTuple tuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "TupleSinkAdapter onlys supports assertObject method calls" );
-        }
-
-        public void retractTuple(final ReteTuple tuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "TupleSinkAdapter onlys supports assertObject method calls" );
-        }
-    }
 }
