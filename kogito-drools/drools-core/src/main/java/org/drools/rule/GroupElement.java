@@ -337,6 +337,8 @@ public class GroupElement extends ConditionalElement {
         implements
         Type {
 
+        private static final long serialVersionUID = -669797012495460L;
+
         /**
          * @inheritDoc
          */
