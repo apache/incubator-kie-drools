@@ -46,6 +46,7 @@ import org.drools.lang.descr.FieldAccessDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -2438,6 +2439,32 @@ public class RuleParserTest extends TestCase {
         assertEquals( person2.getObjectType(), "Person" );
         assertEquals( cheese2.getObjectType(), "Cheese" );
         assertEquals( cheese3.getObjectType(), "Cheese" );
+    }
+
+    public void testForall() throws Exception {
+        final DRLParser parser = parseResource( "forall.drl" );
+        parser.compilation_unit();
+
+        assertFalse( parser.getErrorMessages().toString(), parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals(2, forall.getDescrs().size());
+        final ColumnDescr col = forall.getBaseColumn();
+        assertEquals( "Person",
+                      col.getObjectType() );
+        final List remaining = forall.getRemainingColumns();
+        assertEquals(1, remaining.size());
+        ColumnDescr cheese = (ColumnDescr) remaining.get( 0 );
+        assertEquals( "Cheese",
+                      cheese.getObjectType());
     }
 
     private DRLParser parse(final String text) throws Exception {

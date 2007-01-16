@@ -1291,6 +1291,7 @@ lhs_unary returns [BaseDescr d]
 		          |(ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); u=ac;})
 		          |(cs=collect_statement {cs.setResultColumn((ColumnDescr) u); u=cs;}) 
 		        )?
+		|	u=lhs_forall  
 		|	'(' u=lhs ')'
 		) { d = u; }
 		opt_semicolon
@@ -1330,6 +1331,25 @@ lhs_eval returns [BaseDescr d]
 		}
 	;
 	
+lhs_forall returns [ForallDescr d]
+	@init {
+		d = factory.createForall();
+	}
+	:	loc='forall' '(' base=lhs_column   
+		{
+		        // adding the base column
+		        d.addDescr( base );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+		}
+		( (',')? column=lhs_column
+		{
+		        // adding additional columns
+			d.addDescr( column );
+		}
+		)+
+		')'
+	;
+
 dotted_name returns [String name]
 	@init {
 		name = null;

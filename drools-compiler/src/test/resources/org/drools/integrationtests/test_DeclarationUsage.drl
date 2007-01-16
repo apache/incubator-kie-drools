@@ -1,0 +1,8 @@
+package org.drools;
+
+rule "test declaration"
+when
+    Cheese( type == $likes )
+    Person( $likes : likes );
+then
+end

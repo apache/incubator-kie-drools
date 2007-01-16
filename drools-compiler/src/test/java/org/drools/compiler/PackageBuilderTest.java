@@ -160,6 +160,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final Tuple tuple = new MockTuple( new HashMap() );
         final Activation activation = new MockActivation( rule,
+                                                          rule.getLhs(),
                                                           tuple );
 
         KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
@@ -237,6 +238,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final Tuple tuple = new MockTuple( new HashMap() );
         final Activation activation = new MockActivation( newRule,
+                                                          newRule.getLhs(),
                                                           tuple );
 
         final KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
@@ -1095,9 +1097,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         implements
         Activation {
         private Rule  rule;
+        private GroupElement  subrule;
         private Tuple tuple;
 
         public MockActivation(final Rule rule,
+                              final GroupElement subrule,
                               final Tuple tuple) {
             this.rule = rule;
             this.tuple = tuple;
@@ -1145,6 +1149,10 @@ public class PackageBuilderTest extends DroolsTestCase {
             // TODO Auto-generated method stub
 
         }
+
+        public GroupElement getSubRule() {
+            return this.subrule;
+        }
     }
 
     class MockTuple
@@ -1176,6 +1184,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public long getRecency() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public int size() {
             // TODO Auto-generated method stub
             return 0;
         }

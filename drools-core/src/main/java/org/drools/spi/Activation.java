@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.util.LinkedList;
 
@@ -39,6 +40,13 @@ public interface Activation extends Serializable {
      * @return The rule.
      */
     Rule getRule();
+    
+    /**
+     * Retrieve the subrule that was activated.
+     * 
+     * @return
+     */
+    GroupElement getSubRule();
 
     /**
      * Retrieve the <code>Tuple</code> that was activated.

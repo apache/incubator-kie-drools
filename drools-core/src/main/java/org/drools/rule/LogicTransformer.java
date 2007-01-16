@@ -231,7 +231,8 @@ class LogicTransformer {
                 // in their original position
                 for( int j = 0; j < others.length; j++ ) {
                     if( others[j] != null ) {
-                        and.getChildren().add( j, others[j] );
+                        // always add clone of them to avoid offset conflicts in declarations
+                        and.getChildren().add( j, ((RuleConditionElement) others[j]).clone() );
                     }
                 }
                 parent.addChild( and );

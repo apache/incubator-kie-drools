@@ -27,6 +27,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -59,6 +60,11 @@ public final class RuleTerminalNode extends BaseNode
     private static final long serialVersionUID = 320;
     /** The rule to invoke upon match. */
     private final Rule        rule;
+    /** 
+     * the subrule reference is needed to resolve declarations
+     * because declarations may have different offsets in each subrule
+     */
+    private final GroupElement subrule;
     private final TupleSource tupleSource;
 
     private TupleSinkNode     previousTupleSinkNode;
@@ -78,10 +84,12 @@ public final class RuleTerminalNode extends BaseNode
      */
     public RuleTerminalNode(final int id,
                             final TupleSource source,
-                            final Rule rule) {
+                            final Rule rule,
+                            final GroupElement subrule) {
         super( id );
         this.rule = rule;
         this.tupleSource = source;
+        this.subrule = subrule;
     }
 
     // ------------------------------------------------------------
@@ -149,7 +157,8 @@ public final class RuleTerminalNode extends BaseNode
                                                                       cloned,
                                                                       agenda,
                                                                       context,
-                                                                      this.rule );
+                                                                      this.rule,
+                                                                      this.subrule );
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
             if ( this.rule.getActivationGroup() != null ) {
                 // Lazy cache activationGroup
@@ -202,7 +211,8 @@ public final class RuleTerminalNode extends BaseNode
             final AgendaItem item = new AgendaItem( context.getPropagationNumber(),
                                                     cloned,
                                                     context,
-                                                    this.rule );
+                                                    this.rule,
+                                                    this.subrule );
 
             if ( this.rule.getActivationGroup() != null ) {
                 // Lazy cache activationGroup

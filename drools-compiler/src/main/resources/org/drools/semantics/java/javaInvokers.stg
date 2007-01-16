@@ -199,7 +199,7 @@ public class <invokerClassName> implements org.drools.spi.Consequence
         org.drools.rule.Rule rule = knowledgeHelper.getRule();
         org.drools.rule.Declaration[] declarations = rule.getDeclarations();                                                  
 
-        <declarations, indexes:{ declr, index| org.drools.common.InternalFactHandle <declr.identifier>__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( declarations[<index>] );<\n>}>
+        <declarations, indexes:{ declr, index| org.drools.common.InternalFactHandle <declr.identifier>__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[<index>].getIdentifier() ) );<\n>}>
 
         <declarationTypes, declarations, indexes :{ type, declr, index| <type> <declr.identifier> = ( <type> )  declarations[<index>].<declr.extractor.nativeReadMethod.name>( <declr.identifier>__Handle__.getObject() );<\n>}>
         

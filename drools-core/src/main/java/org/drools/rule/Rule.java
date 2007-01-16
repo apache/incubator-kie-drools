@@ -343,6 +343,7 @@ public class Rule
     }
 
     public void setLhs( GroupElement lhsRoot ) {
+        this.dirty = true;
         this.lhsRoot = lhsRoot;
     }
 

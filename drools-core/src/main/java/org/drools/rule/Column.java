@@ -19,6 +19,7 @@ package org.drools.rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,20 @@ public class Column
             this.declaration = null;
         }
     }
+    
+    public Object clone() {
+        Column clone = new Column( this.index, this.objectType, this.declaration.getIdentifier() );
+        for( Iterator it = this.constraints.iterator(); it.hasNext(); ) {
+            Object constr = it.next();
+            if( constr instanceof Declaration ) {
+                Declaration decl = (Declaration) constr;
+                clone.addDeclaration( decl.getIdentifier(), decl.getExtractor() );
+            } else {
+                clone.addConstraint( (Constraint) constr );
+            }
+        }
+        return clone;
+    }
 
     public ObjectType getObjectType() {
         return this.objectType;
@@ -135,14 +150,6 @@ public class Column
     
     public void setOffset(final int offset) {
         this.offset = offset;
-    }
-
-    /**
-     * A simple method to adjust offset of all declarations using the specified value
-     * @param adjust
-     */
-    public void adjustOffset(final int adjust) {
-        this.offset += adjust;
     }
 
     public Map getInnerDeclarations() {

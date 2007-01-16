@@ -21,4 +21,8 @@ public class DescrFactory {
     public CollectDescr createCollect() {
         return new CollectDescr();
     }
+    
+    public ForallDescr createForall() {
+        return new ForallDescr();
+    }
 }

@@ -62,7 +62,7 @@ public class ColumnBuilder
                                          final BuildUtils utils,
                                          final Column column) throws InvalidPatternException {
 
-        // Adjusting offset in case a previous Initial-Fact was added to the network
+        // Set column offset to the appropriate value
         column.setOffset( context.getCurrentColumnOffset() );
         
         context.incrementCurrentColumnOffset();

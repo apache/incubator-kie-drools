@@ -38,6 +38,7 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.Column;
 import org.drools.rule.EvalCondition;
+import org.drools.rule.Forall;
 import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
@@ -69,6 +70,8 @@ public class ReteooRuleBuilder {
                           new CollectBuilder() );
         utils.addBuilder( Accumulate.class,
                           new AccumulateBuilder() );
+        utils.addBuilder( Forall.class,
+                          new ForallBuilder() );
     }
 
     /**
@@ -152,7 +155,8 @@ public class ReteooRuleBuilder {
             }
             terminal = new RuleTerminalNode( context.getNextId(),
                                              context.getTupleSource(),
-                                             rule );
+                                             rule,
+                                             subrule );
         } else {
             // Check there is no consequence
             if ( rule.getConsequence() != null ) {
@@ -160,7 +164,8 @@ public class ReteooRuleBuilder {
             }
             terminal = new QueryTerminalNode( context.getNextId(),
                                               context.getTupleSource(),
-                                              rule );
+                                              rule,
+                                              subrule );
         }
         if ( context.getWorkingMemories().length == 0 ) {
             ((BaseNode) terminal).attach();

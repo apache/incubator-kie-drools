@@ -117,5 +117,7 @@ public interface KnowledgeHelper extends Serializable {
     void setFocus(String focus);
 
     void setFocus(AgendaGroup focus);
+    
+    public Declaration getDeclaration(String identifier);    
 
 }

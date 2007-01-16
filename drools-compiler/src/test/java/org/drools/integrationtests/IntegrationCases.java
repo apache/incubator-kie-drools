@@ -188,8 +188,8 @@ public abstract class IntegrationCases extends TestCase {
                                                       Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
-        if (parser.hasErrors()) {
-            Assert.fail("Error messages in parser, need to sort this our (or else collect error messages)");
+        if ( parser.hasErrors() ) {
+            Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
@@ -250,7 +250,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
 
     }
-    
+
     public void testDateEffective() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EffectiveDate.drl" ) );
@@ -3123,22 +3123,23 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
-    
+
     public void testInsurancePricingExample() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "insurance_pricing_example.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-        
+
         //now create some test data
         Driver driver = new Driver();
         Policy policy = new Policy();
-        
-        wm.assertObject(driver);
-        wm.assertObject(policy);
-        
+
+        wm.assertObject( driver );
+        wm.assertObject( policy );
+
         wm.fireAllRules();
-        
-        assertEquals(120, policy.getBasePrice());
+
+        assertEquals( 120,
+                      policy.getBasePrice() );
     }
 
     public void testLLR() throws Exception {
@@ -3653,7 +3654,7 @@ public abstract class IntegrationCases extends TestCase {
         }
 
     }
-    
+
     public void testMissingImports() {
         try {
             final PackageBuilder builder = new PackageBuilder();
@@ -3662,16 +3663,16 @@ public abstract class IntegrationCases extends TestCase {
 
             final RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
-            
-            Assert.fail("Should have thrown an InvalidRulePackage");
+
+            Assert.fail( "Should have thrown an InvalidRulePackage" );
         } catch ( InvalidRulePackage e ) {
             // everything fine
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail("Should have thrown an InvalidRulePackage Exception instead of "+e.getMessage());
+            Assert.fail( "Should have thrown an InvalidRulePackage Exception instead of " + e.getMessage() );
         }
     }
-    
+
     public void testNestedConditionalElements() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -3686,9 +3687,9 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        State state = new State("SP");
+        State state = new State( "SP" );
         workingMemory.assertObject( state );
-        
+
         Person bob = new Person( "Bob" );
         bob.setStatus( state.getState() );
         bob.setLikes( "stilton" );
@@ -3699,11 +3700,103 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.assertObject( new Cheese( bob.getLikes(), 10 ) );
+        workingMemory.assertObject( new Cheese( bob.getLikes(),
+                                                10 ) );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
                       list.size() );
+    }
+
+    public void testForall() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Forall.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        State state = new State( "SP" );
+        workingMemory.assertObject( state );
+
+        Person bob = new Person( "Bob" );
+        bob.setStatus( state.getState() );
+        bob.setLikes( "stilton" );
+        workingMemory.assertObject( bob );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 0,
+                      list.size() );
+
+        workingMemory.assertObject( new Cheese( bob.getLikes(),
+                                                10 ) );
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+    }
+
+    public void testDeclarationUsage() throws Exception {
+
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclarationUsage.drl" ) ) );
+            final Package pkg = builder.getPackage();
+
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+
+            fail( "Should have trown an exception" );
+        } catch ( InvalidRulePackage e ) {
+            // success ... correct exception thrown
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Wrong exception raised: " + e.getMessage() );
+        }
+    }
+
+    public void testUnbalancedTrees() throws Exception {
+
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_UnbalancedTrees.drl" ) ) );
+            final Package pkg = builder.getPackage();
+
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+
+            WorkingMemory wm = ruleBase.newWorkingMemory();
+
+            wm.assertObject( new Cheese( "a",
+                                         10 ) );
+            wm.assertObject( new Cheese( "b",
+                                         10 ) );
+            wm.assertObject( new Cheese( "c",
+                                         10 ) );
+            wm.assertObject( new Cheese( "d",
+                                         10 ) );
+            Cheese e = new Cheese( "e",
+                                   10 );
+            wm.assertObject( e );
+
+            wm.fireAllRules();
+
+            Assert.assertEquals( "Rule should have fired twice, seting the price to 30",
+                                 30,
+                                 e.getPrice() );
+            // success
+
+        } catch ( RuntimeException e ) {
+            e.printStackTrace();
+            fail( "Should not throw any exception" );
+        }
     }
 
 }

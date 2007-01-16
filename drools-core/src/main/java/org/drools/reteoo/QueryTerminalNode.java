@@ -23,6 +23,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 
@@ -46,10 +47,11 @@ public final class QueryTerminalNode extends BaseNode
     /**
      * 
      */
-    private static final long serialVersionUID = 1010704050163661495L;
+    private static final long  serialVersionUID = 1010704050163661495L;
     /** The rule to invoke upon match. */
-    private final Rule        rule;
-    private final TupleSource tupleSource;
+    private final Rule         rule;
+    private final GroupElement subrule;
+    private final TupleSource  tupleSource;
 
     // ------------------------------------------------------------
     // Constructors
@@ -65,9 +67,11 @@ public final class QueryTerminalNode extends BaseNode
      */
     public QueryTerminalNode(final int id,
                              final TupleSource source,
-                             final Rule rule) {
+                             final Rule rule,
+                             final GroupElement subrule) {
         super( id );
         this.rule = rule;
+        this.subrule = subrule;
         this.tupleSource = source;
     }
 
@@ -158,6 +162,13 @@ public final class QueryTerminalNode extends BaseNode
     public Object createMemory(final RuleBaseConfiguration config) {
         //return new QueryTerminalNodeMemory();
         return new LinkedList();
+    }
+
+    /**
+     * @return the subrule
+     */
+    public GroupElement getSubrule() {
+        return subrule;
     }
 
 }
