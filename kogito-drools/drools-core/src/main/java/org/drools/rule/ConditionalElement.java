@@ -19,9 +19,8 @@ package org.drools.rule;
 
 public abstract class ConditionalElement
     implements
-    RuleConditionElement,
-    Cloneable {
-
+    RuleConditionElement {
+    
     public abstract Object clone();
     
 }

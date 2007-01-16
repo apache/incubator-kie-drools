@@ -471,7 +471,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        // writeTree(result, "correct_processTree1.dat");
+        writeTree(result, "correct_processTree1.dat");
         final ObjectInputStream ois = new ObjectInputStream( this.getClass().getResourceAsStream( "/correct_processTree1.dat" ) );
 
         final GroupElement[] correctResultRoot = (GroupElement[]) ois.readObject();
@@ -615,7 +615,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        // writeTree(ands, "correct_transform1.dat");
+        writeTree(ands, "correct_transform1.dat");
 
         // Now check the main tree
 

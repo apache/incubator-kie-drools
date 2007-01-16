@@ -1,0 +1,13 @@
+package org.drools;
+
+rule "test unbalanced tree"
+when
+    a: Cheese( type == "a" )
+    ( Cheese( type == "b" ) or
+      ( Cheese( type == "c" ) and Cheese( type == "d" ) ) 
+    ) 
+    e : Cheese( type == "e" )
+then
+    // this shall not throw any exception
+    e.setPrice( e.getPrice() + 10 );
+end

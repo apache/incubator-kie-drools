@@ -101,7 +101,8 @@ public class QueryTerminalNodeTest extends TestCase {
 
         final QueryTerminalNode queryNode = new QueryTerminalNode( 7,
                                                                    joinNode,
-                                                                   query );
+                                                                   query,
+                                                                   query.getLhs());
 
         queryNode.attach();
 

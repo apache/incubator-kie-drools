@@ -18,6 +18,7 @@ package org.drools.common;
 
 import java.io.Serializable;
 
+import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
@@ -51,6 +52,9 @@ public class AgendaItem
 
     /** The rule. */
     private final Rule               rule;
+    
+    /** The subrule */
+    private final GroupElement       subrule;
 
     /** The propagation context */
     private final PropagationContext context;
@@ -84,10 +88,12 @@ public class AgendaItem
     public AgendaItem(final long activationNumber,
                       final Tuple tuple,
                       final PropagationContext context,
-                      final Rule rule) {
+                      final Rule rule,
+                      final GroupElement subrule ) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
+        this.subrule = subrule;
         this.activationNumber = activationNumber;
     }
 
@@ -198,5 +204,9 @@ public class AgendaItem
 
     public void setActivationGroupNode(final ActivationGroupNode activationNode) {
         this.activationGroupNode = activationNode;
+    }
+
+    public GroupElement getSubRule() {
+        return this.subrule;
     }
 }

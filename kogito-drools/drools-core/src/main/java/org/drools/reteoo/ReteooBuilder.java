@@ -17,47 +17,15 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
-import org.drools.common.BetaConstraints;
-import org.drools.common.DefaultBetaConstraints;
-import org.drools.common.DoubleBetaConstraints;
-import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.InstanceNotEqualsConstraint;
-import org.drools.common.QuadroupleBetaConstraints;
-import org.drools.common.SingleBetaConstraints;
-import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
-import org.drools.rule.Accumulate;
-import org.drools.rule.Collect;
-import org.drools.rule.Column;
-import org.drools.rule.Declaration;
-import org.drools.rule.EvalCondition;
-import org.drools.rule.From;
-import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Constraint;
-import org.drools.spi.FieldValue;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -83,9 +51,6 @@ public class ReteooBuilder
     /** The RuleBase */
     private transient ReteooRuleBase        ruleBase;
 
-    /** Rete network to build against. */
-    private transient Rete                  rete;
-
     private transient ReteooWorkingMemory[] workingMemories;
 
     /** Nodes that have been attached. */
@@ -93,8 +58,6 @@ public class ReteooBuilder
 
     private Map                             rules;
 
-    private final boolean                   removeIdentities;
-    
     private transient ReteooRuleBuilder     ruleBuilder;
     
     private IdGenerator                     idGenerator;
@@ -109,13 +72,11 @@ public class ReteooBuilder
      */
     ReteooBuilder(final ReteooRuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.rete = this.ruleBase.getRete();
         this.attachedNodes = new HashMap();
         this.rules = new HashMap();
 
         //Set to 1 as Rete node is set to 0
         this.idGenerator = new IdGenerator(1);
-        this.removeIdentities = this.ruleBase.getConfiguration().isRemoveIdentities();
         this.ruleBuilder = new ReteooRuleBuilder();
     }
 

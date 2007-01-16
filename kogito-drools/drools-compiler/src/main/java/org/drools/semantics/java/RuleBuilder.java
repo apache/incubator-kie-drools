@@ -32,6 +32,7 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -48,6 +49,7 @@ import org.drools.semantics.java.builder.ColumnBuilder;
 import org.drools.semantics.java.builder.ConditionalElementBuilder;
 import org.drools.semantics.java.builder.ConsequenceBuilder;
 import org.drools.semantics.java.builder.EvalBuilder;
+import org.drools.semantics.java.builder.ForallBuilder;
 import org.drools.semantics.java.builder.FromBuilder;
 import org.drools.semantics.java.builder.GroupElementBuilder;
 import org.drools.semantics.java.builder.RuleClassBuilder;
@@ -94,6 +96,8 @@ public class RuleBuilder {
                       new CollectBuilder() );
         builders.put( AccumulateDescr.class,
                       new AccumulateBuilder() );
+        builders.put( ForallDescr.class,
+                      new ForallBuilder() );
         GroupElementBuilder gebuilder = new GroupElementBuilder();
         builders.put( AndDescr.class,
                       gebuilder);

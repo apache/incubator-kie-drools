@@ -24,6 +24,7 @@ import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
@@ -37,6 +38,7 @@ public class DefaultKnowledgeHelper
     private static final long serialVersionUID = 3692991484157215686L;
 
     private Rule                               rule;
+    private GroupElement                       subrule;
     private Activation                         activation;
     private Tuple                              tuple;
     private final InternalWorkingMemoryActions workingMemory;
@@ -55,6 +57,7 @@ public class DefaultKnowledgeHelper
 
     public void setActivation(final Activation agendaItem) {
         this.rule = agendaItem.getRule();
+        this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
     }
@@ -153,5 +156,9 @@ public class DefaultKnowledgeHelper
 
     public void setFocus(final AgendaGroup focus) {
         this.workingMemory.setFocus( focus );
+    }
+    
+    public Declaration getDeclaration( String identifier ) {
+        return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
     }
 }

@@ -54,16 +54,17 @@ public class BuildUtils {
      */
     public void addBuilder(Class target,
                            ReteooComponentBuilder builder) {
-        this.componentBuilders.put( target, builder );
+        this.componentBuilders.put( target,
+                                    builder );
     }
-    
+
     /**
      * Returns a builder for the given target from the builders map
      * 
      * @param target
      * @return returns null if not found
      */
-    public ReteooComponentBuilder getBuilderFor( RuleConditionElement target ) {
+    public ReteooComponentBuilder getBuilderFor(RuleConditionElement target) {
         return (ReteooComponentBuilder) this.componentBuilders.get( target.getClass() );
     }
 
@@ -132,7 +133,7 @@ public class BuildUtils {
         }
         return false;
     }
-    
+
     /**
      * Creates and returns a BetaConstraints object for the given list of constraints
      * 
@@ -149,23 +150,28 @@ public class BuildUtils {
                 constraints = EmptyBetaConstraints.getInstance();
                 break;
             case 1 :
-                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ), context.getRuleBase().getConfiguration() );
+                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ),
+                                                         context.getRuleBase().getConfiguration() );
                 break;
             case 2 :
-                constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), context.getRuleBase().getConfiguration() );
+                constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                                                         context.getRuleBase().getConfiguration() );
                 break;
             case 3 :
-                constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), context.getRuleBase().getConfiguration() );
+                constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                                                         context.getRuleBase().getConfiguration() );
                 break;
             case 4 :
-                constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), context.getRuleBase().getConfiguration() );
-                break;                
+                constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                                                             context.getRuleBase().getConfiguration() );
+                break;
             default :
-                constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ), context.getRuleBase().getConfiguration() );
+                constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                                                          context.getRuleBase().getConfiguration() );
         }
         return constraints;
     }
-    
+
     /**
      * Make sure the required declarations are previously bound
      * 
@@ -176,9 +182,10 @@ public class BuildUtils {
                                          final Declaration[] declarations) throws InvalidPatternException {
         final List list = new ArrayList();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            for( ListIterator it = context.stackIterator(); it.hasPrevious(); ) {
+            for ( ListIterator it = context.stackIterator(); it.hasPrevious(); ) {
                 RuleConditionElement rce = (RuleConditionElement) it.previous();
-                if( rce.resolveDeclaration( declarations[i].getIdentifier() ) == null ) {
+                Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
+                if ( decl == null || decl.getColumn().getOffset() > declarations[i].getColumn().getOffset()) {
                     list.add( declarations[i].getIdentifier() );
                 }
             }
