@@ -652,7 +652,7 @@ duration returns [AttributeDescr d]
 normal_lhs_block[AndDescr descrs]
 	:
 		(	d=lhs
-			{ descrs.addDescr( d ); }
+			{ if(d != null) descrs.addDescr( d ); }
 		)*
 	;
 

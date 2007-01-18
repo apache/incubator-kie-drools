@@ -1,4 +1,4 @@
-// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2007-01-15 18:10:59
+// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2007-01-17 19:08:06
 
 	package org.drools.lang;
 	import java.util.List;
@@ -2163,7 +2163,7 @@ public class DRLParser extends Parser {
             	    _fsp--;
             	    if (failed) return ;
             	    if ( backtracking==0 ) {
-            	       descrs.addDescr( d ); 
+            	       if(d != null) descrs.addDescr( d ); 
             	    }
 
             	    }

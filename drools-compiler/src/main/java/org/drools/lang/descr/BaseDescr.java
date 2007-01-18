@@ -26,10 +26,10 @@ public class BaseDescr
     Serializable {
 
     private static final long serialVersionUID = 320;
-    private int               line;
-    private int               column;
-    private int               endLine;
-    private int               endColumn;
+    private int               line = -1;
+    private int               column = -1;
+    private int               endLine = -1;
+    private int               endColumn = -1;
 
     public void setLocation(int line,
                             int column) {
