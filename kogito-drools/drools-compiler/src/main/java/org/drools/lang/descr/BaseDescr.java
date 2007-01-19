@@ -26,6 +26,8 @@ public class BaseDescr
     Serializable {
 
     private static final long serialVersionUID = 320;
+    private int               startCharacter = -1;
+    private int               endCharacter = -1;
     private int               line = -1;
     private int               column = -1;
     private int               endLine = -1;
@@ -57,5 +59,33 @@ public class BaseDescr
 
     public int getEndColumn() {
         return this.endColumn;
+    }
+
+    /**
+     * @return the endCharacter
+     */
+    public int getEndCharacter() {
+        return endCharacter;
+    }
+
+    /**
+     * @param endCharacter the endCharacter to set
+     */
+    public void setEndCharacter(int endCharacter) {
+        this.endCharacter = endCharacter;
+    }
+
+    /**
+     * @return the startCharacter
+     */
+    public int getStartCharacter() {
+        return startCharacter;
+    }
+
+    /**
+     * @param startCharacter the startCharacter to set
+     */
+    public void setStartCharacter(int startCharacter) {
+        this.startCharacter = startCharacter;
     }
 }
