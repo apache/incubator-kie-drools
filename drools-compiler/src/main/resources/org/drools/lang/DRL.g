@@ -74,25 +74,6 @@ options {backtrack=true;}
 		return expanderResolver;
 	}
 	
-	/** Expand the LHS */
-	private String runWhenExpander(String text, int line) throws RecognitionException {
-		String expanded = text.trim();
-		if (expanded.startsWith(">")) {
-			expanded = expanded.substring(1);  //escape !!
-		} else {
-			try {
-				expanded = expander.expand( "when", text );			
-			} catch (Exception e) {
-				this.errors.add(new ExpanderException("Unable to expand: " + text + ". Due to " + e.getMessage(), line));
-				return "";
-			}
-		}
-		if (expanderDebug) {
-			System.out.println("Expanding LHS: " + text + " ----> " + expanded + " --> from line: " + line);
-		}
-		return expanded;	
-		
-	}
 	
     	/** This will apply a list of constraints to an LHS block */
     	private String applyConstraints(List constraints, String block) {
@@ -294,7 +275,7 @@ prolog
 	}
 	:	( name=package_statement { packageName = name; } )?
 		{ 
-			this.packageDescr = new PackageDescr( name ); 
+			this.packageDescr = new PackageDescr( packageName ); 
 		}
 	;
 	
@@ -305,7 +286,7 @@ statement
 	|	global 
 	|	function 
 	|       t=template {this.packageDescr.addFactTemplate( t ); }
-	|	r=rule 	{this.packageDescr.addRule( r ); }
+	|	r=rule { if( r != null ) this.packageDescr.addRule( r ); }			
 	|	q=query	{this.packageDescr.addRule( q ); }
 	) 
 	;
@@ -461,6 +442,7 @@ rule returns [RuleDescr rule]
 			debug( "start rule: " + ruleName );
 			rule = new RuleDescr( ruleName, null ); 
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			rule.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
 		rule_attributes[rule]
 		(	loc=WHEN ':'?
@@ -656,54 +638,6 @@ normal_lhs_block[AndDescr descrs]
 		)*
 	;
 
-/*
-expander_lhs_block[AndDescr descrs]
-	@init {
-		String lhsBlock = null;
-		String eol = System.getProperty( "line.separator" );
-		List constraints = null;
-	}
-	:
-		(options{greedy=false;} : 
-			text=paren_chunk (options{greedy=true;} : loc=EOL)
-			{
-				//only expand non null
-				if (text != null) {
-					if (text.trim().startsWith("-")) {
-						if (constraints == null) {
-							constraints = new ArrayList();
-						}
-						constraints.add(runWhenExpander( text, offset(loc.getLine())));
-					} else {
-						if (constraints != null) {
-							lhsBlock = applyConstraints(constraints, lhsBlock);
-							constraints = null;
-						}
-					
-					
-						if (lhsBlock == null) {					
-							lhsBlock = runWhenExpander( text, offset(loc.getLine()));
-						} else {
-							lhsBlock = lhsBlock + eol + runWhenExpander( text, offset(loc.getLine()));
-						}
-					}
-					text = null;
-				}
-			}
-			
-			
-		 )* 
-		
-		{	
-			//flush out any constraints left handing before the RHS
-			lhsBlock = applyConstraints(constraints, lhsBlock);
-			if (lhsBlock != null) {
-				reparseLhs(lhsBlock, descrs);
-			}
-		}
-
-	;
-*/	
 	
 lhs returns [BaseDescr d]
 	@init {
@@ -923,6 +857,9 @@ fact_binding returns [BaseDescr d]
  		':' fe=fact_expression[id.getText()]
  		{
  			d=fe;
+ 			if( d != null ) {
+   			    d.setStartCharacter( ((CommonToken)id).getStartIndex() );
+   			}
  		}
 	;
  
@@ -977,6 +914,7 @@ fact returns [BaseDescr d]
  		}
  		loc='(' {
  				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+ 			        d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
  			} 
  		(	c=constraints
  			{
@@ -988,6 +926,7 @@ fact returns [BaseDescr d]
  		endLoc=')'
 		{
 			d.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
+			d.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
  		}
  	;
 	
@@ -1391,7 +1330,7 @@ rhs_chunk[RuleDescr rule]
 			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
 		    }
 		}
-                END
+                loc=END
                 {
                     // ignoring first line in the consequence
                     int index = 0;
@@ -1405,6 +1344,7 @@ rhs_chunk[RuleDescr rule]
                     
 		    rule.setConsequence( buf.substring( index ) );
      		    rule.setConsequenceLocation(offset(start.getLine()), start.getCharPositionInLine());
+ 		    rule.setEndCharacter( ((CommonToken)loc).getStopIndex() );
                 }
 	;
 
