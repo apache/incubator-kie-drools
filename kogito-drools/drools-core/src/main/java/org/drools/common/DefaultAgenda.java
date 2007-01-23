@@ -32,6 +32,7 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
+import org.drools.spi.RuleFlowGroup;
 import org.drools.util.LinkedListNode;
 import org.drools.util.Queueable;
 
@@ -63,7 +64,7 @@ public class DefaultAgenda
     /**
      * 
      */
-    private static final long          serialVersionUID = -9112292414291983688L;
+    private static final long          serialVersionUID = 320L;
 
     /** Working memory of this Agenda. */
     private final WorkingMemory        workingMemory;
@@ -75,6 +76,8 @@ public class DefaultAgenda
     private final Map                  agendaGroups;
 
     private final Map                  activationGroups;
+    
+    private final Map				   ruleFlowGroups;
 
     private final LinkedList           focusStack;
 
@@ -101,6 +104,7 @@ public class DefaultAgenda
         this.knowledgeHelper = new DefaultKnowledgeHelper( this.workingMemory );
         this.agendaGroups = new HashMap();
         this.activationGroups = new HashMap();
+        this.ruleFlowGroups = new HashMap();
         this.focusStack = new LinkedList();
 
         // MAIN should always be the first AgendaGroup and can never be removed
@@ -256,6 +260,16 @@ public class DefaultAgenda
         }
         return activationGroup;
     }
+    
+    public RuleFlowGroup getRuleFlowGroup(final String name) {
+    	RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) this.ruleFlowGroups.get( name );
+        if ( ruleFlowGroup == null ) {
+        	ruleFlowGroup = new RuleFlowGroupImpl( name );
+            this.ruleFlowGroups.put( name,
+            						 ruleFlowGroup );
+        }
+        return ruleFlowGroup;
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.common.AgendaI#focusStackSize()
@@ -429,11 +443,13 @@ public class DefaultAgenda
         eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation, this.workingMemory  );
 
         if ( activation.getActivationGroupNode() != null ) {
+            // We know that this rule will cancel all other activatiosn in the group
+            // so lets remove the information now, before the consequence fires
             final ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
             activationGroup.removeActivation( activation );
             clearActivationGroup( activationGroup );
         }
-        activation.setActivated( false );
+        activation.setActivated( false );        
 
         try {
             this.knowledgeHelper.setActivation( activation );
@@ -443,6 +459,18 @@ public class DefaultAgenda
             e.printStackTrace();
             throw new ConsequenceException( e,
                                             activation.getRule() );
+        }
+        
+        if ( activation.getRuleFlowGroupNode() != null ) {
+            // Now the rule has fired, remove it and check if the rule flow group is empty
+            // if its empty, activate the child groups. We do this after the consequence 
+            // fired as we don't want to populate the Agenda prior to the rule actually firing.
+            final RuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+            ruleFlowGroup.removeActivation( activation );
+            
+            if ( ruleFlowGroup.isEmpty() ) {
+                ruleFlowGroup.activateChildren();
+            }
         }
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );

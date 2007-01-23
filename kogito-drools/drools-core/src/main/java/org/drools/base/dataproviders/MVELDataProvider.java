@@ -1,5 +1,6 @@
 package org.drools.base.dataproviders;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -18,10 +19,10 @@ public class MVELDataProvider
     implements
     DataProvider {
     //private final Expr              expression;
-    private final CompiledExpression expression;
+    private final Serializable expression;
     private final DroolsMVELFactory factory;
 
-    public MVELDataProvider(final CompiledExpression expression,
+    public MVELDataProvider(final Serializable expression,
                             final DroolsMVELFactory factory) {
         this.expression = expression;
         this.factory = factory;

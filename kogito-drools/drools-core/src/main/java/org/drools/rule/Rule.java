@@ -83,7 +83,9 @@ public class Rule
     /** makes the rule's much the current focus */
     private boolean           autoFocus;
 
-    private String            ActivationGroup;
+    private String            activationGroup;
+    
+    private String		      ruleFlowGroup;
 
     /** indicates that the rule is semantically correct. */
     private boolean           semanticallyValid = true;
@@ -278,14 +280,24 @@ public class Rule
     }
 
     public String getActivationGroup() {
-        return this.ActivationGroup;
+        return this.activationGroup;
     }
 
-    public void setXorGroup(final String activationGroup) {
-        this.ActivationGroup = activationGroup;
+    public void setActivationGroup(final String activationGroup) {
+        this.activationGroup = activationGroup;
     }
+    
+    
 
-    /**
+    public String getRuleFlowGroup() {
+		return ruleFlowGroup;
+	}
+
+	public void setRuleFlowGroup(String ruleFlowGroup) {
+		this.ruleFlowGroup = ruleFlowGroup;
+	}
+
+	/**
      * Retrieve a parameter <code>Declaration</code> by identifier.
      * 
      * @param identifier
@@ -435,7 +447,7 @@ public class Rule
         final Rule other = (Rule) object;
 
         return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup )
-                && ((this.ActivationGroup == null && other.ActivationGroup == null) || (this.ActivationGroup != null && this.ActivationGroup.equals( other.ActivationGroup ))) && this.salience == other.salience && this.noLoop == other.noLoop);
+                && ((this.activationGroup == null && other.activationGroup == null) || (this.activationGroup != null && this.activationGroup.equals( other.activationGroup ))) && this.salience == other.salience && this.noLoop == other.noLoop);
     }
 
     public int hashCode() {

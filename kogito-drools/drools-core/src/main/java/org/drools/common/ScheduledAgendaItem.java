@@ -22,6 +22,7 @@ import java.util.TimerTask;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
@@ -69,7 +70,7 @@ public class ScheduledAgendaItem extends TimerTask
 
     private boolean                  activated;
 
-    private ActivationGroupNode      activationGroupNode;
+    private ActivationGroupNode      activationGroupNode;       
 
     // ------------------------------------------------------------
     // Constructors
@@ -185,7 +186,19 @@ public class ScheduledAgendaItem extends TimerTask
     public void setActivationGroupNode(final ActivationGroupNode activationGroupNode) {
         this.activationGroupNode = activationGroupNode;
     }
+    
+    public RuleFlowGroupNode getRuleFlowGroupNode() {
+        throw new UnsupportedOperationException( "Scheduled activations cannot be in a Rule Flow Group" );
+    }
 
+    public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
+        throw new UnsupportedOperationException( "Scheduled activations cannot be in a Rule Flow Group" );
+    }    
+
+    public AgendaGroup getAgendaGroup() {
+        throw new UnsupportedOperationException( "Scheduled activations cannot be in an Agenda Group");
+    }
+    
     /*
      * (non-Javadoc)
      * 
