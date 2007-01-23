@@ -3,6 +3,7 @@ package org.drools;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.RuleFlowGroup;
 
 public interface Agenda {
 
@@ -17,6 +18,8 @@ public interface Agenda {
     public AgendaGroup getFocus();
 
     public AgendaGroup getAgendaGroup(String name);
+    
+    public RuleFlowGroup getRuleFlowGroup(String name);
 
     public AgendaGroup[] getAgendaGroups();
 

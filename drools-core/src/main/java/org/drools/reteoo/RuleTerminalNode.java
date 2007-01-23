@@ -26,6 +26,7 @@ import org.drools.common.InternalAgenda;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -34,6 +35,7 @@ import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleFlowGroup;
 import org.drools.util.Iterator;
 import org.drools.util.TupleHashTable;
 
@@ -221,11 +223,26 @@ public final class RuleTerminalNode extends BaseNode
                 }
                 memory.getActivationGroup().addActivation( item );
             }
+            
+            if ( this.rule.getRuleFlowGroup() == null ) {
+                // No RuleFlowNode so add  it directly to  the Agenda
+            	
+                // Makes sure the Lifo is added to the AgendaGroup priority queue
+                // If the AgendaGroup is already in the priority queue it just
+                // returns.
+                agendaGroup.add( item );            	
+            } else {
+            	//There is  a RuleFlowNode so add it there, instead  of the Agenda
+            	
+                // Lazy cache ruleFlowGroup
+                if ( memory.getRuleFlowGroup() == null ) {
+                    memory.setRuleFlowGroup( workingMemory.getAgenda().getRuleFlowGroup( this.rule.getRuleFlowGroup() ) );
+                }
+                memory.getRuleFlowGroup().addActivation( item );
+            }  
+            
+            item.setAgendaGroup( agendaGroup );
 
-            // Makes sure the Lifo is added to the AgendaGroup priority queue
-            // If the AgendaGroup is already in the priority queue it just
-            // returns.
-            agendaGroup.add( item );
             tuple.setActivation( item );
             memory.getTupleMemory().add( tuple );
 
@@ -384,6 +401,8 @@ public final class RuleTerminalNode extends BaseNode
         private AgendaGroupImpl   agendaGroup;
 
         private ActivationGroup   activationGroup;
+        
+        private RuleFlowGroup     ruleFlowGroup;
 
         private TupleHashTable    tupleMemory;
 
@@ -410,5 +429,13 @@ public final class RuleTerminalNode extends BaseNode
         public TupleHashTable getTupleMemory() {
             return this.tupleMemory;
         }
+
+		public RuleFlowGroup getRuleFlowGroup() {
+			return ruleFlowGroup;
+		}
+
+		public void setRuleFlowGroup(RuleFlowGroup ruleFlowGroup) {
+			this.ruleFlowGroup = ruleFlowGroup;
+		}                        
     }
 }

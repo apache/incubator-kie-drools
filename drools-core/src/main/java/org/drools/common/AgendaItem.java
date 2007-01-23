@@ -21,7 +21,9 @@ import java.io.Serializable;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleFlowGroup;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
 import org.drools.util.Queue;
@@ -52,7 +54,7 @@ public class AgendaItem
 
     /** The rule. */
     private final Rule               rule;
-    
+
     /** The subrule */
     private final GroupElement       subrule;
 
@@ -71,7 +73,11 @@ public class AgendaItem
 
     private boolean                  activated;
 
+    private AgendaGroupImpl          agendaGroup;
+
     private ActivationGroupNode      activationGroupNode;
+
+    private RuleFlowGroupNode        ruleFlowGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -89,7 +95,7 @@ public class AgendaItem
                       final Tuple tuple,
                       final PropagationContext context,
                       final Rule rule,
-                      final GroupElement subrule ) {
+                      final GroupElement subrule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
@@ -204,6 +210,22 @@ public class AgendaItem
 
     public void setActivationGroupNode(final ActivationGroupNode activationNode) {
         this.activationGroupNode = activationNode;
+    }
+
+    public AgendaGroup getAgendaGroup() {
+        return agendaGroup;
+    }
+
+    public void setAgendaGroup(AgendaGroupImpl agendaGroup) {
+        this.agendaGroup = agendaGroup;
+    }
+
+    public RuleFlowGroupNode getRuleFlowGroupNode() {
+        return ruleFlowGroupNode;
+    }
+
+    public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
+        this.ruleFlowGroupNode = ruleFlowGroupNode;
     }
 
     public GroupElement getSubRule() {

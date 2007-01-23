@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
+import org.drools.common.RuleFlowGroupNode;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.util.LinkedList;
@@ -81,8 +82,14 @@ public interface Activation extends Serializable {
     public boolean isActivated();
 
     public void setActivated(boolean activated);
+    
+    public AgendaGroup getAgendaGroup();
 
     public ActivationGroupNode getActivationGroupNode();
 
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode);
+    
+    public RuleFlowGroupNode getRuleFlowGroupNode();
+    
+    public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode);
 }
