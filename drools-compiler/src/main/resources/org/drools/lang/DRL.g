@@ -912,7 +912,7 @@ fact returns [BaseDescr d]
  		{ 
  			d = new ColumnDescr( id ); 
  		}
- 		loc='(' {
+ 		loc=LEFT_PAREN {
  				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
  			        d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
  			} 
@@ -923,10 +923,12 @@ fact returns [BaseDescr d]
  				}
  			}
   		)? 
- 		endLoc=')'
+ 		endLoc=RIGHT_PAREN
 		{
-			d.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
-			d.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
+		        if( endLoc.getType() == RIGHT_PAREN ) {
+				d.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
+				d.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
+			}
  		}
  	;
 	
@@ -941,17 +943,25 @@ constraints returns [List constraints]
 	
 constraint[List constraints]
 	@init {
-		BaseDescr d = null;
+		FieldBindingDescr fbd = null;
 		FieldConstraintDescr fc = null;
 	}
 	:
-		( fb=ID ':' )? 
+		( fb=ID ':' 
+		    { 
+			fbd = new FieldBindingDescr();
+			fbd.setIdentifier( fb.getText() );
+			fbd.setLocation( offset(fb.getLine()), fb.getCharPositionInLine() );
+			fbd.setStartCharacter( ((CommonToken)fb).getStartIndex() );
+			constraints.add( fbd );
+
+		    }
+		)? 
 		f=ID	
 		{
 			if ( fb != null ) {
-				d = new FieldBindingDescr( f.getText(), fb.getText() );
-				d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-				constraints.add( d );
+			    fbd.setFieldName( f.getText() );
+ 			    fbd.setEndCharacter( ((CommonToken)f).getStopIndex() );
 			} 
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );

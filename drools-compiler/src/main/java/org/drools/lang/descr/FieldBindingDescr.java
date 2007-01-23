@@ -24,9 +24,21 @@ public class FieldBindingDescr extends BaseDescr {
     private String fieldName;
     private String identifier;
 
+    public FieldBindingDescr() {
+        this(null, null);
+    }
+    
     public FieldBindingDescr(final String fieldName,
                              final String identifier) {
         this.fieldName = fieldName;
+        this.identifier = identifier;
+    }
+    
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+    
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
