@@ -407,7 +407,6 @@ public class PackageBuilder {
                                                        this.pkg.getPackageCompilationData().getClassLoader() );
             // make an automatic import for the current package
             this.typeResolver.addImport( this.pkg.getName() + ".*" );
-            this.typeResolver.addImport( "java.lang.*" );
         }
         return this.typeResolver;
     }
