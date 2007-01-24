@@ -123,7 +123,6 @@ public class ReteooBuilder
         return (BaseNode[]) this.rules.remove( rule );
     }
 
-
     public void removeRule(final Rule rule) {
         // reset working memories for potential propagation
         this.workingMemories = (ReteooWorkingMemory[]) this.ruleBase.getWorkingMemories().toArray( new ReteooWorkingMemory[this.ruleBase.getWorkingMemories().size()] );

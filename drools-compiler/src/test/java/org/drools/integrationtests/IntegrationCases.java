@@ -43,6 +43,8 @@ import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
+import org.drools.FactA;
+import org.drools.FactB;
 import org.drools.FactHandle;
 import org.drools.FromTestClass;
 import org.drools.IndexedNumber;
@@ -3709,7 +3711,6 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testForall() throws Exception {
-
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Forall.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3797,6 +3798,42 @@ public abstract class IntegrationCases extends TestCase {
             e.printStackTrace();
             fail( "Should not throw any exception" );
         }
+    }
+
+    public void testDynamicRules() throws Exception {
+        final RuleBase ruleBase = getRuleBase();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        Cheese a = new Cheese( "stilton", 10);
+        Cheese b = new Cheese( "stilton", 15);
+        Cheese c = new Cheese( "stilton", 20);
+        workingMemory.assertObject(a);
+        workingMemory.assertObject(b);
+        workingMemory.assertObject(c);
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        ruleBase.addPackage( pkg );
+
+        workingMemory.fireAllRules();
+    }
+
+    public void testDynamicRules2() throws Exception {
+        final RuleBase ruleBase = getRuleBase();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        // Assert some simple facts
+        FactA a = new FactA("hello", new Integer(1), new Float(3.14));
+        FactB b = new FactB("hello", new Integer(2), new Float(6.28));
+        workingMemory.assertObject(a);
+        workingMemory.assertObject(b);
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules2.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        ruleBase.addPackage( pkg );
+
+        workingMemory.fireAllRules();
     }
 
 }
