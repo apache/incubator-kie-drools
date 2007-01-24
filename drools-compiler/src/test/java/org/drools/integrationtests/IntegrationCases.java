@@ -3836,4 +3836,19 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
     }
 
+    public void testImportConflict() throws Exception {
+        try {
+            final RuleBase ruleBase = getRuleBase();
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportConflict.drl" ) ) );
+            final Package pkg = builder.getPackage();
+            ruleBase.addPackage( pkg );
+        } catch ( RuntimeException e ) {
+            e.printStackTrace();
+            fail("No exeception should be raised.");
+        }
+
+    }
+
+
 }

@@ -1,0 +1,10 @@
+package org.example;
+
+import org.drools.Process
+
+rule "A rule"
+    when
+        p:Process( )
+    then
+        // do something
+end
