@@ -139,6 +139,7 @@ public class ColumnBuilder
                                        final Column column,
                                        final List betaConstraints) {
         if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && column.getObjectType().getClass() == ClassObjectType.class ) {
+            List columns = null;
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
@@ -146,13 +147,21 @@ public class ColumnBuilder
                 final Map.Entry entry = (Map.Entry) it.next();
                 final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    betaConstraints.add( new InstanceNotEqualsConstraint( (Column) entry.getValue() ) );
+                    columns = (List) entry.getValue();
+                    for( Iterator columnsIt = columns.iterator(); columnsIt.hasNext(); ) {
+                        betaConstraints.add( new InstanceNotEqualsConstraint( (Column) columnsIt.next() ) );
+                    }
                 }
             }
+            columns = (List) context.getObjectType().get( column.getObjectType() );
+            if( columns == null ) {
+                columns = new ArrayList();
+            }
+            columns.add( column );
 
             // Must be added after the checking, otherwise it matches against itself
             context.getObjectType().put( column.getObjectType(),
-                                         column );
+                                         columns );
         }
     }
 

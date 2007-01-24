@@ -241,6 +241,11 @@ class Rete extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
+        // JBRULES-612: the cache MUST be invalidated when a new
+        // node type is added to the network
+        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+        memory.clear();
+        
         final ObjectTypeNode node = (ObjectTypeNode) sink;
         Iterator it = workingMemory.getFactHandleMap().iterator();
         for (  ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry =  ( ObjectEntry ) it.next() ) {   	

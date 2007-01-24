@@ -1,0 +1,22 @@
+package org.drools;
+
+rule "setupFactC"
+no-loop true
+    when
+        a: FactA(s:field1, i:field2, f:field3)
+        not FactC(f1==s)
+    then
+        assert(s != null ? new FactC(s, i, f) :
+                                  new FactC());
+end
+
+rule "factBWithRetract"
+    when
+        b : FactB(s:f1, i:f2, f:f3)
+        a : FactA(field1==s)
+        c : FactC(f1==s)
+    then
+        c.setF3(f);
+        retract(b);
+        modify(c);
+end
