@@ -27,7 +27,7 @@ end
 rule "test group1 1"
 	agenda-group "agenda group 1"
     when
-    	Cheese( )
+    	Cheese( $price : price )
     then
 		list.add( "1 1" );
 end  
@@ -48,7 +48,7 @@ rule "test group3 2"
 	agenda-group "agenda group 3"
 	activation-group "activation group 3"		
     when
-    	Cheese( )
+    	Cheese( $type : type, $price : price )
     then    	
 		list.add( "3 2" );
 end 

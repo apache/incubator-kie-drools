@@ -19,7 +19,6 @@ package org.drools.lang;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import junit.framework.TestCase;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
@@ -296,7 +294,7 @@ public class RuleParserTest extends TestCase {
                       att.getValue() );
         assertEquals( "no-loop",
                       att.getName() );
-        assertFalse( this.parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
 
     }
 
@@ -346,7 +344,7 @@ public class RuleParserTest extends TestCase {
     	AndDescr descrs = new AndDescr();
 		CharStream charStream = new ANTLRStringStream( text );
 		DRLLexer lexer = new DRLLexer( charStream );
-		TokenStream tokenStream = new CommonTokenStream( lexer );
+		TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
         DRLParser parser = new DRLParser( tokenStream );
 		parser.setLineOffset( descrs.getLine() );
 		parser.normal_lhs_block(descrs);
@@ -1926,14 +1924,15 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
         final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals( 1,
+        assertEquals( 2,
                       col.getDescrs().size() );
 
-        final PredicateDescr pred = (PredicateDescr) col.getDescrs().get( 0 );
+        final FieldBindingDescr field = (FieldBindingDescr) col.getDescrs().get( 0 );
+        final PredicateDescr pred = (PredicateDescr) col.getDescrs().get( 1 );
         assertEquals( "age",
-                      pred.getFieldName() );
+                      field.getFieldName() );
         assertEquals( "$age2",
-                      pred.getDeclaration() );
+                      field.getIdentifier() );
         assertEqualsIgnoreWhitespace( "$age2 == $age1+2",
                                       pred.getText() );
 
@@ -2381,18 +2380,32 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testPredicate() throws Exception {
-        List constraints = new ArrayList();
-        parse( "$var : attr -> ( $var.equals(\"xyz\") )" ).predicate(constraints);
+        ColumnDescr column = new ColumnDescr();
+        parse( "$var : attr -> ( $var.equals(\"xyz\") )" ).constraints( column );
         
-        assertFalse( this.parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
 
+        List constraints = column.getDescrs(); 
+        assertEquals(2, constraints.size());
+
+        FieldBindingDescr field = (FieldBindingDescr) constraints.get( 0 );
+        PredicateDescr predicate = (PredicateDescr) constraints.get( 1 );
+        assertEquals("$var", field.getIdentifier());
+        assertEquals("attr", field.getFieldName());
+        assertEquals(" $var.equals(\"xyz\") ", predicate.getText());
+    }
+    
+    public void testPredicate2() throws Exception {
+        ColumnDescr column = new ColumnDescr();
+        parse( "( $var.equals(\"xyz\") )" ).constraints( column );
+        
+        assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
+
+        List constraints = column.getDescrs(); 
         assertEquals(1, constraints.size());
 
         PredicateDescr predicate = (PredicateDescr) constraints.get( 0 );
-        assertEquals("$var", predicate.getDeclaration());
-        assertEquals("attr", predicate.getFieldName());
         assertEquals(" $var.equals(\"xyz\") ", predicate.getText());
-        
     }
     
     public void testEscapedStrings() throws Exception {

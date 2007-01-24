@@ -127,7 +127,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitFieldBindingDescr(final FieldBindingDescr descr) {
         this.template = new String();
-        this.template = descr.getIdentifier() + " : ";
+        this.template = descr.getIdentifier() + " : " + descr.getFieldName();
     }
 
     public void visitFunctionDescr(final FunctionDescr functionDescr) {
@@ -202,7 +202,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitPredicateDescr(final PredicateDescr descr) {
         this.template = new String();
-        this.template = descr.getDeclaration() + ":" + descr.getFieldName() + " -> ( " + descr.getText() + " )";
+        this.template = "( " + descr.getText() + " )";
 
     }
 
@@ -271,10 +271,7 @@ public class DrlDumper extends ReflectiveVisitor
             final Object temp = iterator.next();
             visit( temp );
             descrString += this.template;
-            if ( !(temp instanceof FieldBindingDescr) ) {
-                descrString += " , ";
-            }
-
+            descrString += " , ";
         }
         return descrString.substring( 0,
                                       descrString.length() - 2 );

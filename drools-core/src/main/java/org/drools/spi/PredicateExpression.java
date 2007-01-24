@@ -24,7 +24,6 @@ public interface PredicateExpression
     Invoker {
     public boolean evaluate(Object object,
                             Tuple tuple,
-                            Declaration declaration,
                             Declaration[] previousDeclarations,
                             Declaration[] localDeclarations,
                             WorkingMemory workingMemory) throws Exception;

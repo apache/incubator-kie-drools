@@ -186,12 +186,11 @@ public class FieldConstraintTest extends TestCase {
 
             public boolean evaluate(Object object,
                                     Tuple tuple,
-                                    Declaration declaration,
                                     Declaration[] previousDeclarations,
                                     Declaration[] localDeclarations,
                                     WorkingMemory workingMemory) {
                 int price1 = previousDeclarations[0].getIntValue( workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) );
-                int price2 = declaration.getIntValue( object );
+                int price2 = localDeclarations[0].getIntValue( object );
 
                 return (price2 == (price1 * 2));
 
@@ -199,9 +198,8 @@ public class FieldConstraintTest extends TestCase {
         };
 
         final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
-                                                                         price2Declaration,
                                                                          new Declaration[]{price1Declaration},
-                                                                         new Declaration[0] );
+                                                                         new Declaration[]{price2Declaration} );
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );

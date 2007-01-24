@@ -916,13 +916,7 @@ fact returns [BaseDescr d]
  				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
  			        d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
  			} 
- 		(	c=constraints
- 			{
-		 		for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
- 					((ColumnDescr)d).addDescr( (BaseDescr) cIter.next() );
- 				}
- 			}
-  		)? 
+ 		( constraints[(ColumnDescr) d]  )? 
  		endLoc=RIGHT_PAREN
 		{
 		        if( endLoc.getType() == RIGHT_PAREN ) {
@@ -933,15 +927,12 @@ fact returns [BaseDescr d]
  	;
 	
 	
-constraints returns [List constraints]
-	@init {
-		constraints = new ArrayList();
-	}
-	:	(constraint[constraints]|predicate[constraints])
-		( ',' (constraint[constraints]|predicate[constraints]))*
+constraints[ColumnDescr column]
+	:	(constraint[column]|predicate[column])
+		( ',' (constraint[column]|predicate[column]))*
 	;
 	
-constraint[List constraints]
+constraint[ColumnDescr column]
 	@init {
 		FieldBindingDescr fbd = null;
 		FieldConstraintDescr fc = null;
@@ -953,7 +944,7 @@ constraint[List constraints]
 			fbd.setIdentifier( fb.getText() );
 			fbd.setLocation( offset(fb.getLine()), fb.getCharPositionInLine() );
 			fbd.setStartCharacter( ((CommonToken)fb).getStartIndex() );
-			constraints.add( fbd );
+			column.addDescr( fbd );
 
 		    }
 		)? 
@@ -967,26 +958,29 @@ constraint[List constraints]
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 		}
 		(
-			rd=constraint_expression
-			{
-				fc.addRestriction(rd);
-				constraints.add(fc);
-			}
-			(
-				con=('&'|'|')
-				{
-					if (con.getText().equals("&") ) {								
-						fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));	
-					} else {
-						fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
-					}							
-				}
-				rd=constraint_expression
+			(	rd=constraint_expression
 				{
 					fc.addRestriction(rd);
+					column.addDescr(fc);
 				}
-			)*
-		)?					
+				(
+					con=('&'|'|')
+					{
+						if (con.getText().equals("&") ) {								
+							fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));	
+						} else {
+							fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
+						}							
+					}
+					rd=constraint_expression
+					{
+						fc.addRestriction(rd);
+					}
+				)*
+			)
+		|
+			'->' predicate[column] 
+		)?
 	;
 	
 constraint_expression returns [RestrictionDescr rd]
@@ -1042,13 +1036,13 @@ enum_constraint returns [String text]
 	;	
 	
 
-predicate[List constraints]
+predicate[ColumnDescr column]
 	:
-		decl=ID ':' field=ID '->' text=paren_chunk
+		text=paren_chunk
 		{
 		        String body = text.substring(1, text.length()-1);
-			PredicateDescr d = new PredicateDescr(field.getText(), decl.getText(), body );
-			constraints.add( d );
+			PredicateDescr d = new PredicateDescr( body );
+			column.addDescr( d );
 		}
 	;
 

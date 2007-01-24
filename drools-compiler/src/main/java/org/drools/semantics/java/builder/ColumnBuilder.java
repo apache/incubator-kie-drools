@@ -351,23 +351,9 @@ public class ColumnBuilder {
         final String className = "predicate" + context.getNextId();
         predicateDescr.setClassMethodName( className );
 
-        final FieldExtractor extractor = getFieldExtractor( context,
-                                                            utils,
-                                                            predicateDescr,
-                                                            column.getObjectType(),
-                                                            predicateDescr.getFieldName() );
-        if ( extractor == null ) {
-            return;
-        }
-
-        final Declaration declaration = column.addDeclaration( predicateDescr.getDeclaration(),
-                                                               extractor );
-
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  predicateDescr,
                                                                  predicateDescr.getText() );
-        // Don't include the focus declaration, that hasn't been merged into the tuple yet.
-        usedIdentifiers[0].remove( predicateDescr.getDeclaration() );
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
@@ -382,19 +368,11 @@ public class ColumnBuilder {
         Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
         Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
 
-        final PredicateConstraint predicateConstraint = new PredicateConstraint( declaration,
-                                                                                 previousDeclarations,
+        final PredicateConstraint predicateConstraint = new PredicateConstraint( previousDeclarations,
                                                                                  localDeclarations );
         column.addConstraint( predicateConstraint );
 
         StringTemplate st = utils.getRuleGroup().getInstanceOf( "predicateMethod" );
-
-        st.setAttribute( "declaration",
-                         declaration );
-
-        st.setAttribute( "declarationType",
-                         declaration.getExtractor().getExtractToClass().getName().replace( '$',
-                                                                                           '.' ) );
 
         utils.setStringTemplateAttributes( context,
                                            st,
@@ -432,12 +410,6 @@ public class ColumnBuilder {
                          context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
                          className );
-
-        st.setAttribute( "declaration",
-                         declaration );
-        st.setAttribute( "declarationType",
-                         declaration.getExtractor().getExtractToClass().getName().replace( '$',
-                                                                                           '.' ) );
 
         utils.setStringTemplateAttributes( context,
                                            st,

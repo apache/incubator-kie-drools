@@ -36,8 +36,6 @@ public class PredicateConstraint
 
     private PredicateExpression        expression;
 
-    private final Declaration          declaration;
-
     private final Declaration[]        requiredDeclarations;
 
     private final Declaration[]        previousDeclarations;
@@ -46,31 +44,24 @@ public class PredicateConstraint
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
-    public PredicateConstraint(final PredicateExpression evaluator,
-                               final Declaration declaration) {
+    public PredicateConstraint(final PredicateExpression evaluator) {
         this( evaluator,
-              declaration,
               null,
               null );
     }
 
-    public PredicateConstraint(final Declaration declaration,
-                               final Declaration[] previousDeclarations,
+    public PredicateConstraint(final Declaration[] previousDeclarations,
                                final Declaration[] localDeclarations) {
         this( null,
-              declaration,
               previousDeclarations,
               localDeclarations );
     }
 
     public PredicateConstraint(final PredicateExpression expression,
-                               final Declaration declaration,
                                final Declaration[] previousDeclarations,
                                final Declaration[] localDeclarations) {
 
         this.expression = expression;
-
-        this.declaration = declaration;
 
         if ( previousDeclarations == null ) {
             this.previousDeclarations = PredicateConstraint.EMPTY_DECLARATIONS;
@@ -136,14 +127,6 @@ public class PredicateConstraint
             return false;
         }
 
-        if ( this.declaration.getColumn().getOffset() != other.declaration.getColumn().getOffset() ) {
-            return false;
-        }
-
-        if ( !this.declaration.getExtractor().equals( other.declaration.getExtractor() ) ) {
-            return false;
-        }
-
         for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
             if ( this.previousDeclarations[i].getColumn().getOffset() != other.previousDeclarations[i].getColumn().getOffset() ) {
                 return false;
@@ -176,7 +159,6 @@ public class PredicateConstraint
         try {
             return this.expression.evaluate( object,
                                              null,
-                                             declaration,
                                              previousDeclarations,
                                              localDeclarations,
                                              workingMemory );
@@ -192,7 +174,6 @@ public class PredicateConstraint
             PredicateContextEntry ctx = (PredicateContextEntry) context;
             return this.expression.evaluate( object,
                                              ctx.leftTuple,
-                                             declaration,
                                              previousDeclarations,
                                              localDeclarations,
                                              ctx.workingMemory );
@@ -208,7 +189,6 @@ public class PredicateConstraint
             PredicateContextEntry ctx = (PredicateContextEntry) context;
             return this.expression.evaluate( ctx.rightObject,
                                              tuple,
-                                             declaration,
                                              previousDeclarations,
                                              localDeclarations,
                                              ctx.workingMemory );

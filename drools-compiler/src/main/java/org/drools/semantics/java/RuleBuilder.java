@@ -223,7 +223,7 @@ public class RuleBuilder {
             } else if ( name.equals( "agenda-group" ) ) {
                 rule.setAgendaGroup( attributeDescr.getValue() );
             } else if ( name.equals( "activation-group" ) ) {
-                rule.setXorGroup( attributeDescr.getValue() );
+                rule.setActivationGroup( attributeDescr.getValue() );
             } else if ( name.equals( "duration" ) ) {
                 rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
                 rule.setAgendaGroup( "" );

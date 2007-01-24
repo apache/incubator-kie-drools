@@ -59,20 +59,7 @@ class PredicateHandler extends BaseAbstractHandler
         this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        final String identifier = attrs.getValue( "identifier" );
-        if ( identifier == null || identifier.trim().equals( "" ) ) {
-            throw new SAXParseException( "<predicate> requires an 'identifier' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
-
-        final String fieldName = attrs.getValue( "field-name" );
-        if ( fieldName == null || fieldName.trim().equals( "" ) ) {
-            throw new SAXParseException( "<predicate> requires a 'field-name' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
-
-        final PredicateDescr predicateDescr = new PredicateDescr( fieldName,
-                                                            identifier );
+        final PredicateDescr predicateDescr = new PredicateDescr( );
 
         return predicateDescr;
     }

@@ -38,7 +38,7 @@ public abstract class AbstractHashTable
         this.table = new Entry[capacity];
         this.comparator = EqualityEquals.getInstance();
     }
-
+    
     public Iterator iterator() {
         if ( this.iterator == null ) {
             this.iterator = new HashTableIterator( this );
