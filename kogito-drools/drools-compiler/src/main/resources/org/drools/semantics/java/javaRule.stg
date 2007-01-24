@@ -8,10 +8,10 @@ public static org.drools.spi.FieldValue <methodName>(<declarationTypes, declarat
 }
 >>
 
-predicateMethod(declaration, declarationType, declarations, declarationTypes, localDeclarations, localDeclarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static boolean <methodName>(<declarationType> <declaration.identifier><if(declarations)>,<endif> 
-                                   <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(localDeclarations)>,<endif> 
-                                   <localDeclarationTypes, localDeclarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif>
+predicateMethod(declarations, declarationTypes, localDeclarations, localDeclarationTypes, globals, globalTypes, methodName, text) ::= <<
+public static boolean <methodName>(
+                                   <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(declarations)><if(localDeclarations)>,<endif><endif> 
+                                   <localDeclarationTypes, localDeclarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)><if(localDeclarations)>,<endif><if(!localDeclarations)><if(declarations)>,<endif><endif><endif>
                                    <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
     return ( <text> );
 }

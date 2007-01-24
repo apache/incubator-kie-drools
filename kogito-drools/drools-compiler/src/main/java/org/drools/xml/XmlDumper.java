@@ -168,7 +168,7 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitPredicateDescr(final PredicateDescr descr) {
         this.template = new String();
-        this.template = "<predicate field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getDeclaration() + "\" >" + replaceIllegalChars( descr.getText() ) + "</predicate>" + XmlDumper.eol;
+        this.template = "<predicate>" + replaceIllegalChars( descr.getText() ) + "</predicate>" + XmlDumper.eol;
     }
 
     public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {

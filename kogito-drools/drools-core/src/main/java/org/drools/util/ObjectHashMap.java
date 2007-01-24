@@ -25,6 +25,11 @@ public class ObjectHashMap extends AbstractHashTable {
                     true );
     }
 
+    public void clear() {
+        this.table = new Entry[Math.min( this.table.length, 16 )];
+        this.threshold = (int) ( this.table.length * this.loadFactor );
+    }
+
     public Object put(final Object key,
                       final Object value,
                       final boolean checkExists) {

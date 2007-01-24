@@ -44,6 +44,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
+import org.drools.common.RuleFlowGroupNode;
 import org.drools.facttemplates.Fact;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -73,6 +74,7 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
@@ -453,12 +455,14 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                                            "x" );
         column.addDescr( fieldBindingDescr );
 
+        final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
+                                                                            "y" );
+        column.addDescr( fieldBindingDescr2 );
+
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
 
-        final PredicateDescr predicate = new PredicateDescr( "price",
-                                                             "y",
-                                                             "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
+        final PredicateDescr predicate = new PredicateDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
         column.addDescr( predicate );
 
         ruleDescr.setConsequence( "modify(stilton);" );
@@ -1006,12 +1010,14 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                                            "x" );
         column.addDescr( fieldBindingDescr );
 
+        final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
+                                                                            "y" );
+        column.addDescr( fieldBindingDescr2 );
+
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
 
-        final PredicateDescr predicate = new PredicateDescr( "price",
-                                                             "y",
-                                                             expression );
+        final PredicateDescr predicate = new PredicateDescr( expression );
         column.addDescr( predicate );
 
         ruleDescr.setConsequence( "modify(stilton);" );
@@ -1096,9 +1102,9 @@ public class PackageBuilderTest extends DroolsTestCase {
     class MockActivation
         implements
         Activation {
-        private Rule  rule;
-        private GroupElement  subrule;
-        private Tuple tuple;
+        private Rule         rule;
+        private GroupElement subrule;
+        private Tuple        tuple;
 
         public MockActivation(final Rule rule,
                               final GroupElement subrule,
@@ -1152,6 +1158,21 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         public GroupElement getSubRule() {
             return this.subrule;
+        }
+
+        public AgendaGroup getAgendaGroup() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public RuleFlowGroupNode getRuleFlowGroupNode() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
+            // TODO Auto-generated method stub
+            
         }
     }
 
