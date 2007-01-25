@@ -4,6 +4,10 @@ public class FactB {
     String f1;
     Integer f2;
     Float f3;
+    
+    public FactB() {
+    }
+    
     public FactB(String a, Integer b, Float c) {
         f1 = a;
         f2 = b;
