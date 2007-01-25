@@ -14,6 +14,7 @@ import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -46,9 +47,9 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( 2,
                       imports.size() );
         assertEquals( "java.util.HashMap",
-                      imports.get( 0 ) );
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
-                      imports.get( 1 ) );
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
     }
 
     public void testParseGlobal() throws Exception {
@@ -63,9 +64,9 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( 2,
                       imports.size() );
         assertEquals( "java.util.HashMap",
-                      imports.get( 0 ) );
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
-                      imports.get( 1 ) );
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final Map globals = packageDescr.getGlobals();
         assertEquals( 2,
@@ -88,9 +89,9 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( 2,
                       imports.size() );
         assertEquals( "java.util.HashMap",
-                      imports.get( 0 ) );
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
-                      imports.get( 1 ) );
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final Map globals = packageDescr.getGlobals();
         assertEquals( 2,
@@ -129,9 +130,9 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( 2,
                       imports.size() );
         assertEquals( "java.util.HashMap",
-                      imports.get( 0 ) );
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
-                      imports.get( 1 ) );
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final Map globals = packageDescr.getGlobals();
         assertEquals( 2,
@@ -195,9 +196,9 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( 2,
                       imports.size() );
         assertEquals( "java.util.HashMap",
-                      imports.get( 0 ) );
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
-                      imports.get( 1 ) );
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final Map globals = packageDescr.getGlobals();
         assertEquals( 2,
@@ -265,10 +266,6 @@ public class XmlPackageReaderTest extends TestCase {
                     variableDescr.getIdentifier() );        
         
         final PredicateDescr predicateDescr = (PredicateDescr) column3.getDescrs().get( 1 );
-        assertEquals( "field1",
-                      predicateDescr.getFieldName() );
-        assertEquals( "var1",
-                      predicateDescr.getDeclaration() );
         assertEquals( "1==1",
                       predicateDescr.getText() );        
 
@@ -332,9 +329,9 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( 2,
                       imports.size() );
         assertEquals( "java.util.HashMap",
-                      imports.get( 0 ) );
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
-                      imports.get( 1 ) );
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final Map globals = packageDescr.getGlobals();
         assertEquals( 2,
@@ -382,9 +379,9 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( 2,
                       imports.size() );
         assertEquals( "java.util.HashMap",
-                      imports.get( 0 ) );
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
-                      imports.get( 1 ) );
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final Map globals = packageDescr.getGlobals();
         assertEquals( 2,

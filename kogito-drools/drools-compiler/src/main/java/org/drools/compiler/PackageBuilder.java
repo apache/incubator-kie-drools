@@ -47,6 +47,8 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.LineMappings;
@@ -260,11 +262,11 @@ public class PackageBuilder {
                               final PackageDescr packageDescr) {
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
-            pkg.addImport( (String) it.next() );
+            pkg.addImport( ((ImportDescr) it.next()).getTarget() );
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
-            pkg.addFunctionImport( (String) it.next() );
+            pkg.addFunctionImport( ((FunctionImportDescr) it.next()).getTarget() );
         }
 
         final TypeResolver typeResolver = new ClassTypeResolver( imports,

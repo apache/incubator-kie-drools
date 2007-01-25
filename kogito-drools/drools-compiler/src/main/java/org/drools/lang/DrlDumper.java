@@ -29,6 +29,7 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -355,7 +356,7 @@ public class DrlDumper extends ReflectiveVisitor
         String importList = "";
 
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
-            final String importString = (String) it.next();
+            final String importString = ((ImportDescr) it.next()).getTarget();
             final String importTemplate = "import " + importString + ";" + DrlDumper.eol;
             importList += importTemplate;
         }

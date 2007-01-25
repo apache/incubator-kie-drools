@@ -31,7 +31,7 @@ public class PackageDescr extends BaseDescr {
     private final String      documentation;
 
     private List              imports          = Collections.EMPTY_LIST;
-    private List              functionImports    = Collections.EMPTY_LIST;
+    private List              functionImports  = Collections.EMPTY_LIST;
     private List              attributes       = Collections.EMPTY_LIST;
     private Map               globals          = Collections.EMPTY_MAP;
     private List              factTemplates    = Collections.EMPTY_LIST;
@@ -57,7 +57,7 @@ public class PackageDescr extends BaseDescr {
         return this.documentation;
     }
 
-    public void addImport(final String importEntry) {
+    public void addImport(final ImportDescr importEntry) {
         if ( this.imports == Collections.EMPTY_LIST ) {
             this.imports = new ArrayList();
         }
@@ -68,7 +68,7 @@ public class PackageDescr extends BaseDescr {
         return this.imports;
     }
     
-    public void addFunctionImport(final String importFunction) {
+    public void addFunctionImport(final FunctionImportDescr importFunction) {
         if (this.functionImports == Collections.EMPTY_LIST) {
             this.functionImports = new ArrayList();
         }

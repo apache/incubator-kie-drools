@@ -6,7 +6,6 @@ options {backtrack=true;}
 	import java.util.List;
 	import java.util.ArrayList;
 	import java.util.Iterator;
-	import java.util.Map;	
 	import java.util.HashMap;	
 	import java.util.StringTokenizer;
 	import org.drools.lang.descr.*;
@@ -73,85 +72,6 @@ options {backtrack=true;}
 	public ExpanderResolver getExpanderResolver() {
 		return expanderResolver;
 	}
-	
-	
-    	/** This will apply a list of constraints to an LHS block */
-    	private String applyConstraints(List constraints, String block) {
-    		//apply the constraints as a comma seperated list inside the previous block
-    		//the block will end in something like "foo()" and the constraint patterns will be put in the ()
-    		if (constraints == null) {
-    			return block;
-    		}
-    		StringBuffer list = new StringBuffer();    		
-    		for (Iterator iter = constraints.iterator(); iter.hasNext();) {
-				String con = (String) iter.next();
-				list.append("\n\t\t");
-				list.append(con);
-				if (iter.hasNext()) {
-					list.append(",");					
-				}			
-			}
-    		if (block.endsWith("()")) {
-    			return block.substring(0, block.length() - 2) + "(" + list.toString() + ")";
-    		} else {
-    			return block + "(" + list.toString() + ")";
-    		}
-    	}  	
-
-        /** Reparse the results of the expansion */
-    	private void reparseLhs(String text, AndDescr descrs) throws RecognitionException {
-    		CharStream charStream = new ANTLRStringStream( text );
-    		DRLLexer lexer = new DRLLexer( charStream );
-    		TokenStream tokenStream = new CommonTokenStream( lexer );
-    		DRLParser parser = new DRLParser( tokenStream );
-    		parser.setLineOffset( descrs.getLine() );
-    		parser.normal_lhs_block(descrs);
-            
-                if (parser.hasErrors()) {
-    			this.errors.addAll(parser.getErrors());
-    		}
-		if (expanderDebug) {
-			System.out.println("Reparsing LHS: " + text + " --> successful:" + !parser.hasErrors());
-		}    		
-    		
-    	}
-	
-	/** Expand a line on the RHS */
-	private String runThenExpander(String text, int startLine) {
-		//System.err.println( "expand THEN [" + text + "]" );
-		StringTokenizer lines = new StringTokenizer( text, "\n\r" );
-
-		StringBuffer expanded = new StringBuffer();
-		
-		String eol = System.getProperty( "line.separator" );
-				
-		while ( lines.hasMoreTokens() ) {
-			startLine++;
-			String line = lines.nextToken();
-			line = line.trim();
-			if ( line.length() > 0 ) {
-				if ( line.startsWith( ">" ) ) {
-					expanded.append( line.substring( 1 ) );
-					expanded.append( eol );
-				} else {
-					try {
-						expanded.append( expander.expand( "then", line ) );
-						expanded.append( eol );
-					} catch (Exception e) {
-						this.errors.add(new ExpanderException("Unable to expand: " + line + ". Due to " + e.getMessage(), startLine));			
-					}
-				}
-			}
-		}
-		
-		if (expanderDebug) {
-			System.out.println("Expanding RHS: " + text + " ----> " + expanded.toString() + " --> from line starting: " + startLine);
-		}		
-		
-		return expanded.toString();
-	}
-	
-
 	
 	private String getString(Token token) {
 		String orig = token.getText();
@@ -304,28 +224,61 @@ package_statement returns [String packageName]
 	
 
 import_statement
-	:	'import' name=import_name opt_semicolon
-		{
-			if (packageDescr != null) 
-				packageDescr.addImport( name );
-		}	
+        @init {
+        	ImportDescr importDecl = null;
+        }
+	:	imp='import' 
+	        {
+	            importDecl = factory.createImport( );
+	            importDecl.setStartCharacter( ((CommonToken)imp).getStartIndex() );
+		    if (packageDescr != null) {
+			packageDescr.addImport( importDecl );
+		    }
+	        }
+	        import_name[importDecl] opt_semicolon
 	;
 
 function_import_statement
-	:	'import' 'function' name=import_name opt_semicolon
-		{
-			if (packageDescr != null) 
-				packageDescr.addFunctionImport( name );
-		}	
+        @init {
+        	FunctionImportDescr importDecl = null;
+        }
+	:	imp='import' 'function' 
+	        {
+	            importDecl = factory.createFunctionImport();
+	            importDecl.setStartCharacter( ((CommonToken)imp).getStartIndex() );
+		    if (packageDescr != null) {
+			packageDescr.addFunctionImport( importDecl );
+		    }
+	        }
+	        import_name[importDecl] opt_semicolon
 	;
 
 
-import_name returns [String name]
+import_name[ImportDescr importDecl] returns [String name]
 	@init {
 		name = null;
 	}
 	:	
-		id=ID { name=id.getText(); } ( '.' id=ID { name = name + "." + id.getText(); } )* (star='.*' { name = name + star.getText(); })?
+		id=ID 
+		{ 
+		    name=id.getText(); 
+		    importDecl.setTarget( name );
+		    importDecl.setEndCharacter( ((CommonToken)id).getStopIndex() );
+		} 
+		( '.' id=ID 
+		    { 
+		        name = name + "." + id.getText(); 
+			importDecl.setTarget( name );
+		        importDecl.setEndCharacter( ((CommonToken)id).getStopIndex() );
+		    } 
+		)* 
+		( star='.*' 
+		    { 
+		        name = name + star.getText(); 
+			importDecl.setTarget( name );
+		        importDecl.setEndCharacter( ((CommonToken)star).getStopIndex() );
+		    }
+		)?
 	;
 
 
@@ -774,78 +727,7 @@ collect_statement returns [CollectDescr d]
 		        d.setSourceColumn( (ColumnDescr)column );
 		}
 	; 		
-/*
-argument_list returns [ArrayList args]
-	@init {
-		args = new ArrayList();
-	}
-	:
-		(param=argument_value  {
-			if (param != null) {
-				args.add(param);
-			}
-		}
-		 
-		(
-			',' param=argument_value {
-				if (param != null) {
-					args.add(param);
-				}
-			}
-		)*
-		)?
-	;		
-	
-argument_value returns [ArgumentValueDescr value]
-	@init {
-		value = null;
-		String text = null;
-	}
-	:	(	t=STRING { text = getString( t );  value=new ArgumentValueDescr(ArgumentValueDescr.STRING, text);} 
-		|	t=INT    { text = t.getText();  value=new ArgumentValueDescr(ArgumentValueDescr.INTEGRAL, text);}
-		|	t=FLOAT	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.DECIMAL, text); }
-		|	t=BOOL 	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.BOOLEAN, text); }
-		|	t=ID { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text);}	
-		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}	
-		|       m=inline_map {  value=new ArgumentValueDescr(ArgumentValueDescr.MAP, m.getKeyValuePairs() ); }
-		|       a=inline_array { value = new ArgumentValueDescr(ArgumentValueDescr.LIST, a ); }		
-		)
-	;			
 
-inline_map returns [ArgumentValueDescr.MapDescr mapDescr]
-    @init {
-        mapDescr = new ArgumentValueDescr.MapDescr();
-    }	
-    :  '{' 
-           ( key=argument_value '=>' value=argument_value {
-                 if ( key != null ) {
-                     mapDescr.add( new ArgumentValueDescr.KeyValuePairDescr( key, value ) );
-                 }
-             }
-           )
-           
-           ( (EOL)? ',' (EOL)? key=argument_value '=>' value=argument_value {
-                 if ( key != null ) {
-                     mapDescr.add( new ArgumentValueDescr.KeyValuePairDescr( key, value ) );
-                 }
-             }
-           )*           
-       '}'
-    ;
-    
-inline_array returns [List list]
-    @init {
-    	list = new ArrayList();
-    }		    
-    :
-    '[' arg=argument_value { list.add(arg); }
-    
-     	 ( EOL? ',' EOL? arg=argument_value { list.add(arg); } )*
-      ']'
-      
-    
-    ; 	
-*/
 fact_binding returns [BaseDescr d]
 	@init {
 		d=null;
