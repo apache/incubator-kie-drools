@@ -852,10 +852,14 @@ fact_binding returns [BaseDescr d]
 		boolean multi=false;
 	}
  	:
- 		id=ID 
- 		
- 		':' fe=fact_expression[id.getText()]
+ 		id=ID ':' 
  		{
+ 		        // handling incomplete parsing
+ 		        d = new ColumnDescr( id.getText() );
+ 		}
+ 		fe=fact_expression[id.getText()]
+ 		{
+ 		        // override previously instantiated column
  			d=fe;
  			if( d != null ) {
    			    d.setStartCharacter( ((CommonToken)id).getStartIndex() );
@@ -956,12 +960,21 @@ constraint[ColumnDescr column]
 			} 
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
+			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
+			
+			// it must be a field constraint, as it is not a binding
+			if( fb == null ) {
+			    column.addDescr( fc );
+			}
 		}
 		(
 			(	rd=constraint_expression
 				{
 					fc.addRestriction(rd);
-					column.addDescr(fc);
+					// we must add now as we didn't before
+					if( fb != null) {
+					    column.addDescr( fc );
+					}
 				}
 				(
 					con=('&'|'|')
