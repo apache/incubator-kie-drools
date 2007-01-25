@@ -4,6 +4,7 @@ public class FactC {
     String f1;
     Integer f2;
     Float f3;
+    
     public FactC(String a, Integer b, Float c) {
         f1 = a;
         f2 = b;

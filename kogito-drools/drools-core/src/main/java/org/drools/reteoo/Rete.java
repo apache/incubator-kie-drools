@@ -146,13 +146,22 @@ class Rete extends ObjectSource
         } else {
             cachedNodes  = (ObjectTypeNode[]) memory.get( object.getClass() );
         }
-//        // //@todo this  is a hack, we really  don't want to be doing instanceof here 
-//        if ( object instanceof ShadowProxy ){
-//        	
-//        } else {
-//        	cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );	
-//        }
          
+        // cached might have been cleared, so recalculate matching nodes
+        if ( cachedNodes == null ) {
+            cachedNodes = getMatchingNodes( object );
+            Object key = null;
+
+            if ( object.getClass() == FactImpl.class ) {
+                key = ((Fact) object).getFactTemplate().getName();
+            } else {
+                key = object.getClass();
+            }
+            memory.put( key,
+                        cachedNodes,
+                        false );
+        }
+
         if ( cachedNodes == null ) {
             // it is  possible that there are no ObjectTypeNodes for an  object being retracted
             return;
