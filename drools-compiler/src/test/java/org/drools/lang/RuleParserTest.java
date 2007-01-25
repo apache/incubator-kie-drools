@@ -47,6 +47,8 @@ import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -88,15 +90,28 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testCompilationUnit() throws Exception {
-        parse( "package foo; import com.foo.Bar; import com.foo.Baz;" ).compilation_unit();
+        String source = "package foo; import com.foo.Bar; import com.foo.Baz;"; 
+        parse( source ).compilation_unit();
         assertEquals( "foo",
                       this.parser.getPackageDescr().getName() );
         assertEquals( 2,
                       this.parser.getPackageDescr().getImports().size() );
+        ImportDescr impdescr = (ImportDescr) this.parser.getPackageDescr().getImports().get( 0 ); 
         assertEquals( "com.foo.Bar",
-                      this.parser.getPackageDescr().getImports().get( 0 ) );
+                      impdescr.getTarget() );
+        assertEquals( source.indexOf( "import "+impdescr.getTarget() ),
+                      impdescr.getStartCharacter() );
+        assertEquals( source.indexOf( "import "+impdescr.getTarget() ) + ("import "+impdescr.getTarget()).length()-1,
+                      impdescr.getEndCharacter() );
+        
+        impdescr = (ImportDescr) this.parser.getPackageDescr().getImports().get( 1 );
         assertEquals( "com.foo.Baz",
-                      this.parser.getPackageDescr().getImports().get( 1 ) );
+                      impdescr.getTarget() );
+        assertEquals( source.indexOf( "import "+impdescr.getTarget() ),
+                      impdescr.getStartCharacter() );
+        assertEquals( source.indexOf( "import "+impdescr.getTarget() ) + ("import "+impdescr.getTarget()).length()-1,
+                      impdescr.getEndCharacter() );
+        
         assertFalse( this.parser.hasErrors() );
     }
 
@@ -1013,10 +1028,12 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = parser.getPackageDescr();
         assertEquals(2, pkg.getFunctionImports().size());
         
-        assertEquals("abd.def.x", pkg.getFunctionImports().get( 0 ));
-        assertEquals("qed.wah.*", pkg.getFunctionImports().get( 1 ));
-        
-        
+        assertEquals("abd.def.x", ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getTarget());
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getStartCharacter() == -1);
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getEndCharacter() == -1);
+        assertEquals("qed.wah.*", ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getTarget());
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getStartCharacter() == -1);
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getEndCharacter() == -1);
     }
 
     public void testNotExistWithBrackets() throws Exception {
@@ -2227,13 +2244,13 @@ public class RuleParserTest extends TestCase {
         assertEquals( 4,
                       pkg.getImports().size() );
         assertEquals( "im.one",
-                      pkg.getImports().get( 0 ) );
+                      ((ImportDescr) pkg.getImports().get( 0 )).getTarget() );
         assertEquals( "im.two",
-                      pkg.getImports().get( 1 ) );
+                      ((ImportDescr) pkg.getImports().get( 1 )).getTarget() );
         assertEquals( "im.three",
-                      pkg.getImports().get( 2 ) );
+                      ((ImportDescr) pkg.getImports().get( 2 )).getTarget() );
         assertEquals( "im.four",
-                      pkg.getImports().get( 3 ) );
+                      ((ImportDescr) pkg.getImports().get( 3 )).getTarget() );
 
         assertFalse( this.parser.hasErrors() );
     }

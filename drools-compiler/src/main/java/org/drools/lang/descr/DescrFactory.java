@@ -25,4 +25,12 @@ public class DescrFactory {
     public ForallDescr createForall() {
         return new ForallDescr();
     }
+    
+    public ImportDescr createImport()  {
+        return new ImportDescr();
+    }
+    
+    public FunctionImportDescr createFunctionImport()  {
+        return new FunctionImportDescr();
+    }
 }
