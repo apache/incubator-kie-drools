@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/testing-core-0.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr-3.0ea8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr-2.7.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-compiler-3.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-core-3.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/drools-jsr94-3.0.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

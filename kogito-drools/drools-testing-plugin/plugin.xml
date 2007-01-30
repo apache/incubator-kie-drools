@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="RTL Editor"
+            extensions="rtl"
+            icon="icons/RTL_small.gif"
+            contributorClass="org.drools.testing.plugin.editors.RTLEditorContributor"
+            class="org.drools.testing.plugin.editors.RTLEditor"
+            id="org.drools.testing.plugin.editors.RTLEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="RTL Wizards"
+            id="org.drools.testing.plugin">
+      </category>
+      <wizard
+            name="Create Rtl File"
+            icon="icons/sample.gif"
+            category="org.drools.testing.plugin"
+            class="org.drools.testing.plugin.wizards.GenerateRtlWizard"
+            id="org.drools.testing.plugin.wizards.RtlWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="drools-testing-plugin.ActionSet"
+            label="Rtl Action Set"
+            visible="true">
+         <menu
+               id="rtlMenu"
+               label="RTL">
+            <separator name="rtlGroup"/>
+         </menu>
+         <action
+               class="org.drools.testing.plugin.action.RtlAction"
+               icon="icons/RTL_small.gif"
+               id="drools-testing-plugin.action2"
+               label="Generate"
+               menubarPath="rtlMenu/rtlGroup"
+               style="push"/>
+      </actionSet>
+   </extension>
+
+</plugin>
