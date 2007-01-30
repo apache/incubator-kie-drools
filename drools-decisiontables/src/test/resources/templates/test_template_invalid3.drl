@@ -1,0 +1,13 @@
+template header
+name
+
+package This_is_a_ruleset;
+
+name
+rule "How cool is $name$ $row.rowNumber$"
+	when
+		user.getName().equals("$name$")
+	then
+end
+end template
+
