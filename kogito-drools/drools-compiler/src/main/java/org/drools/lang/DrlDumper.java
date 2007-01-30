@@ -16,19 +16,18 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -190,7 +189,7 @@ public class DrlDumper extends ReflectiveVisitor
             appendDrlDump( processImportsList( packageDescr.getImports() ) );
         }
         if ( packageDescr.getGlobals() != null ) {
-            appendDrlDump( processGlobalsMap( packageDescr.getGlobals() ) );
+            appendDrlDump( processGlobalsList( packageDescr.getGlobals() ) );
         }
         if ( packageDescr.getFunctions() != null ) {
             appendDrlDump( processFunctionsList( packageDescr.getFunctions() ) );
@@ -339,13 +338,14 @@ public class DrlDumper extends ReflectiveVisitor
         return paramList;
     }
 
-    private String processGlobalsMap(final Map globals) {
+    private String processGlobalsList(final List globals) {
         String globalList = "";
 
-        for ( final Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
-            final String key = (String) it.next();
-            final String value = (String) globals.get( key );
-            final String globalTemplate = "global " + value + " " + key + ";" + DrlDumper.eol;
+        for ( final Iterator it = globals.iterator(); it.hasNext(); ) {
+            final GlobalDescr global = (GlobalDescr) it.next();
+            final String identifier = global.getIdentifier();
+            final String type = global.getType();
+            final String globalTemplate = "global " + type + " " + identifier + ";" + DrlDumper.eol;
             globalList += globalTemplate;
         }
 

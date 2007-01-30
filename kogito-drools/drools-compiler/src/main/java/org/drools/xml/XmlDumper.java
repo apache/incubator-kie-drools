@@ -19,7 +19,6 @@ package org.drools.xml;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -29,6 +28,7 @@ import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -161,7 +161,7 @@ public class XmlDumper extends ReflectiveVisitor
                                  + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol + "\txs:schemaLocation=\"http://drools.org/drools-3.0 drools-3.0.xsd\"> " + XmlDumper.eol;
         appendXmlDump( xmlString );
         appendXmlDump( processImportsList( packageDescr.getImports() ) );
-        appendXmlDump( processGlobalsMap( packageDescr.getGlobals() ) );
+        appendXmlDump( processGlobalsList( packageDescr.getGlobals() ) );
         appendXmlDump( processFunctionsList( packageDescr.getFunctions() ) );
         appendXmlDump( processRules( packageDescr.getRules() ) );
         appendXmlDump( "</package>" );
@@ -266,12 +266,13 @@ public class XmlDumper extends ReflectiveVisitor
         return paramList + XmlDumper.eol;
     }
 
-    private String processGlobalsMap(final Map globals) {
+    private String processGlobalsList(final List globals) {
         String globalList = "";
-        for ( final Iterator iterator = globals.keySet().iterator(); iterator.hasNext(); ) {
-            final String key = (String) iterator.next();
-            final String value = (String) globals.get( key );
-            final String globalTemplate = "<global identifier=\"" + key + "\" type=\"" + value + "\" />" + XmlDumper.eol;
+        for ( final Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
+            final GlobalDescr global = (GlobalDescr) iterator.next();
+            final String identifier = global.getIdentifier();
+            final String type = global.getType();
+            final String globalTemplate = "<global identifier=\"" + identifier + "\" type=\"" + type + "\" />" + XmlDumper.eol;
             globalList += globalTemplate;
         }
 

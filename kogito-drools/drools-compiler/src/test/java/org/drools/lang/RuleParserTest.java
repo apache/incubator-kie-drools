@@ -48,6 +48,7 @@ import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -2004,12 +2005,18 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       pack.getImports().size() );
         assertEquals( 2,
-                      pack.getGlobals().values().size() );
+                      pack.getGlobals().size() );
 
+        GlobalDescr foo = (GlobalDescr) pack.getGlobals().get( 0 );
         assertEquals( "java.lang.String",
-                      pack.getGlobals().get( "foo" ) );
+                      foo.getType() );
+        assertEquals( "foo",
+                      foo.getIdentifier() );
+        GlobalDescr bar = (GlobalDescr) pack.getGlobals().get( 1 );
         assertEquals( "java.lang.Integer",
-                      pack.getGlobals().get( "bar" ) );
+                      bar.getType() );
+        assertEquals( "bar",
+                      bar.getIdentifier() );
 
         assertFalse( parser.hasErrors() );
     }
