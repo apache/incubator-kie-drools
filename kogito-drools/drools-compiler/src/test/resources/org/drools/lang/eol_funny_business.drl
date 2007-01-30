@@ -1,8 +1,14 @@
-package test
+package test.rule.when.end.package.mine;
+
+global java.lang.String accumulate;
+
+function boolean eval() {
+    return true;
+}
 
 rule type1
   when
-	$id : Something(xyz == "foo")
+	$id : Something( duration == "foo")
   then
   	The.end();
   	end;

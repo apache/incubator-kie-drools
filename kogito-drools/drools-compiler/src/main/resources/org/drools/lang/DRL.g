@@ -193,9 +193,9 @@ prolog
 	@init {
 		String packageName = "";
 	}
-	:	( name=package_statement { packageName = name; } )?
+	:	( n=package_statement { packageName = n; } )?
 		{ 
-			this.packageDescr = new PackageDescr( packageName ); 
+			this.packageDescr = factory.createPackage( packageName ); 
 		}
 	;
 	
@@ -207,7 +207,7 @@ statement
 	|	function 
 	|       t=template {this.packageDescr.addFactTemplate( t ); }
 	|	r=rule { if( r != null ) this.packageDescr.addRule( r ); }			
-	|	q=query	{this.packageDescr.addRule( q ); }
+	|	q=query	{ if( q != null ) this.packageDescr.addRule( q ); }
 	) 
 	;
 
@@ -216,9 +216,9 @@ package_statement returns [String packageName]
 		packageName = null;
 	}
 	:	
-		'package' name=dotted_name opt_semicolon
+		PACKAGE n=dotted_name opt_semicolon
 		{
-			packageName = name;
+			packageName = n;
 		}
 	;
 	
@@ -227,7 +227,7 @@ import_statement
         @init {
         	ImportDescr importDecl = null;
         }
-	:	imp='import' 
+	:	imp=IMPORT 
 	        {
 	            importDecl = factory.createImport( );
 	            importDecl.setStartCharacter( ((CommonToken)imp).getStartIndex() );
@@ -242,7 +242,7 @@ function_import_statement
         @init {
         	FunctionImportDescr importDecl = null;
         }
-	:	imp='import' 'function' 
+	:	imp=IMPORT FUNCTION 
 	        {
 	            importDecl = factory.createFunctionImport();
 	            importDecl.setStartCharacter( ((CommonToken)imp).getStartIndex() );
@@ -259,13 +259,13 @@ import_name[ImportDescr importDecl] returns [String name]
 		name = null;
 	}
 	:	
-		id=ID 
+		id=identifier 
 		{ 
 		    name=id.getText(); 
 		    importDecl.setTarget( name );
 		    importDecl.setEndCharacter( ((CommonToken)id).getStopIndex() );
 		} 
-		( '.' id=ID 
+		( '.' id=identifier 
 		    { 
 		        name = name + "." + id.getText(); 
 			importDecl.setTarget( name );
@@ -286,7 +286,7 @@ global
 	@init {
 	}
 	:
-		'global' type=dotted_name id=ID opt_semicolon
+		GLOBAL type=dotted_name id=identifier opt_semicolon
 		{
 			packageDescr.addGlobal( id.getText(), type );
 		}
@@ -298,10 +298,10 @@ function
 		FunctionDescr f = null;
 	}
 	:
-		loc='function' (retType=dotted_name)? name=ID
+		loc=FUNCTION (retType=dotted_name)? n=identifier
 		{
-			//System.err.println( "function :: " + name.getText() );
-			f = new FunctionDescr( name.getText(), retType );
+			//System.err.println( "function :: " + n.getText() );
+			f = new FunctionDescr( n.getText(), retType );
 			f.setLocation(offset(loc.getLine()), loc.getCharPositionInLine());
 		} 
 		'('
@@ -333,7 +333,7 @@ query returns [QueryDescr query]
 		AndDescr lhs = null;
 	}
 	:
-		loc='query' queryName=word
+		loc=QUERY queryName=name
 		{ 
 			query = new QueryDescr( queryName, null ); 
 			query.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -345,7 +345,7 @@ query returns [QueryDescr query]
 			normal_lhs_block[lhs]
 		)
 					
-		'end'
+		END
 	;
 
 
@@ -354,7 +354,7 @@ template returns [FactTemplateDescr template]
 		template = null;		
 	}
 	:
-		loc='template' templateName=ID opt_semicolon
+		loc=TEMPLATE templateName=identifier opt_semicolon
 		{
 			template = new FactTemplateDescr(templateName.getText());
 			template.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );			
@@ -365,7 +365,7 @@ template returns [FactTemplateDescr template]
 				template.addFieldTemplate(slot);
 			}
 		)+
-		'end' opt_semicolon		
+		END opt_semicolon		
 	;
 	
 template_slot returns [FieldTemplateDescr field]
@@ -373,13 +373,13 @@ template_slot returns [FieldTemplateDescr field]
 		field = null;
 	}
 	:
-		//name=ID ':' fieldType=dotted_name ( EOL | ';' )
-		 fieldType=dotted_name name=ID opt_semicolon
+		//n=ID ':' fieldType=dotted_name ( EOL | ';' )
+		 fieldType=dotted_name n=identifier opt_semicolon
 		{
 			
 			
-			field = new FieldTemplateDescr(name.getText(), fieldType);
-			field.setLocation( offset(name.getLine()), name.getCharPositionInLine() );
+			field = new FieldTemplateDescr(n.getText(), fieldType);
+			field.setLocation( offset(n.getLine()), n.getCharPositionInLine() );
 		}
 	;	
 	
@@ -390,7 +390,7 @@ rule returns [RuleDescr rule]
 		AndDescr lhs = null;
 	}
 	:
-		loc=RULE ruleName=word 
+		loc=RULE ruleName=name 
 		{ 
 			debug( "start rule: " + ruleName );
 			rule = new RuleDescr( ruleName, null ); 
@@ -416,7 +416,7 @@ rule returns [RuleDescr rule]
 
 rule_attributes[RuleDescr rule]
 	: 
-			('attributes' ':')?
+			(ATTRIBUTES ':')?
 			(	','? a=rule_attribute
 				{
 					rule.addAttribute( a );
@@ -437,9 +437,9 @@ rule_attribute returns [AttributeDescr d]
 		|	a=duration  { d = a; }			
 		|	a=activation_group { d = a; }	
 		|	a=auto_focus { d = a; }	
-		|                         a=date_effective {d = a; }
+		|       a=date_effective {d = a; }
 		|	a=date_expires {d = a; }
-		|                         a=enabled {d=a;}
+		|       a=enabled {d=a;}
 		
 	;
 	
@@ -448,7 +448,7 @@ date_effective returns [AttributeDescr d]
 		d = null;
 	}	
 	:
-		loc='date-effective' val=STRING
+		loc=DATE_EFFECTIVE val=STRING
 		{
 			d = new AttributeDescr( "date-effective", getString( val ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -461,7 +461,7 @@ date_expires returns [AttributeDescr d]
 		d = null;
 	}	
 	:
-		loc='date-expires' val=STRING
+		loc=DATE_EXPIRES val=STRING
 		{
 			d = new AttributeDescr( "date-expires", getString( val ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -475,7 +475,7 @@ enabled returns [AttributeDescr d]
 		d = null;
 	}
 	:
-			loc='enabled' t=BOOL opt_semicolon
+			loc=ENABLED t=BOOL opt_semicolon
 			{
 				d = new AttributeDescr( "enabled", t.getText() );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -491,7 +491,7 @@ salience returns [AttributeDescr d ]
 		d = null;
 	}
 	:	
-		loc='salience' i=INT opt_semicolon
+		loc=SALIENCE i=INT opt_semicolon
 		{
 			d = new AttributeDescr( "salience", i.getText() );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -504,7 +504,7 @@ no_loop returns [AttributeDescr d]
 	}
 	:
 		(
-			loc='no-loop' opt_semicolon
+			loc=NO_LOOP opt_semicolon
 			{
 				d = new AttributeDescr( "no-loop", "true" );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -512,7 +512,7 @@ no_loop returns [AttributeDescr d]
 		) 
 		|
 		(
-			loc='no-loop' t=BOOL opt_semicolon
+			loc=NO_LOOP t=BOOL opt_semicolon
 			{
 				d = new AttributeDescr( "no-loop", t.getText() );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -528,7 +528,7 @@ auto_focus returns [AttributeDescr d]
 	}
 	:
 		(
-			loc='auto-focus' opt_semicolon
+			loc=AUTO_FOCUS opt_semicolon
 			{
 				d = new AttributeDescr( "auto-focus", "true" );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -536,7 +536,7 @@ auto_focus returns [AttributeDescr d]
 		) 
 		|
 		(
-			loc='auto-focus' t=BOOL opt_semicolon
+			loc=AUTO_FOCUS t=BOOL opt_semicolon
 			{
 				d = new AttributeDescr( "auto-focus", t.getText() );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -551,9 +551,9 @@ activation_group returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc='activation-group' name=STRING opt_semicolon
+		loc=ACTIVATION_GROUP n=STRING opt_semicolon
 		{
-			d = new AttributeDescr( "activation-group", getString( name ) );
+			d = new AttributeDescr( "activation-group", getString( n ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;
@@ -563,9 +563,9 @@ agenda_group returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc='agenda-group' name=STRING opt_semicolon
+		loc=AGENDA_GROUP n=STRING opt_semicolon
 		{
-			d = new AttributeDescr( "agenda-group", getString( name ) );
+			d = new AttributeDescr( "agenda-group", getString( n ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;		
@@ -576,7 +576,7 @@ duration returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc='duration' i=INT
+		loc=DURATION i=INT
 		{
 			d = new AttributeDescr( "duration", i.getText() );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -613,7 +613,7 @@ from_statement returns [FromDescr d]
 		d=factory.createFrom();
 	}
 	:
-	'from' ds=from_source
+	ds=from_source
 		{
 			d.setDataSource(ds);
 		
@@ -629,7 +629,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 		AccessorDescr ad = null;
 	}
 	:	
-		(( functionName=ID args=paren_chunk			
+		(( ( identifier LEFT_PAREN) => functionName=identifier args=paren_chunk			
 		        {
  				ad = new AccessorDescr();	
 				ad.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );
@@ -641,7 +641,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 			}
 		)
 		|
-		(   var=ID 
+		(  ( identifier ~LEFT_PAREN ) => var=identifier
 		    {
 			ad = new AccessorDescr(var.getText());	
 			ad.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
@@ -658,7 +658,7 @@ expression_chain[AccessorDescr as]
 	    	MethodAccessDescr ma = null;	
 	}
 	:
-	( '.' field=ID  
+	( '.' field=identifier  
 	    {
 	        fa = new FieldAccessDescr(field.getText());	
 		fa.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
@@ -691,7 +691,7 @@ accumulate_statement returns [AccumulateDescr d]
 		d = factory.createAccumulate();
 	}
 	:
-	        loc='from' 'accumulate' 
+	        loc=ACCUMULATE 
 		{ 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}	
@@ -699,15 +699,15 @@ accumulate_statement returns [AccumulateDescr d]
 		{
 		        d.setSourceColumn( (ColumnDescr)column );
 		}
-		'init' text=paren_chunk ',' 
+		INIT text=paren_chunk ',' 
 		{
 		        d.setInitCode( text.substring(1, text.length()-1) );
 		}
-		'action' text=paren_chunk ',' 
+		ACTION text=paren_chunk ',' 
 		{
 		        d.setActionCode( text.substring(1, text.length()-1) );
 		}
-		'result' text=paren_chunk ')'
+		RESULT text=paren_chunk ')'
 		{
 		        d.setResultCode( text.substring(1, text.length()-1) );
 		} 
@@ -718,7 +718,7 @@ collect_statement returns [CollectDescr d]
 		d = factory.createCollect();
 	}
 	:
-	        loc='from' 'collect' 
+	        loc=COLLECT 
 		{ 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}	
@@ -754,27 +754,13 @@ fact_binding returns [BaseDescr d]
  		pd = null;
  		boolean multi = false;
  	}
- 	:	'(' fe=fact_expression_in_paren[id] ')' { pd=fe; }
+ 	:	'(' fe=fact_expression[id] ')' { pd=fe; }
  	| 	f=fact
  		{
  			((ColumnDescr)f).setIdentifier( id );
  			pd = f;
  		}
-	;
-
-// in parenthesis alternative is allowed
- fact_expression_in_paren[String id] returns [BaseDescr pd]
- 	@init {
- 		pd = null;
- 		boolean multi = false;
- 	}
- 	:	'(' fe=fact_expression_in_paren[id]')' { pd=fe; }
- 	| 	f=fact
- 		{
- 			((ColumnDescr)f).setIdentifier( id );
- 			pd = f;
- 		}
- 		( ('or'|'||')
+ 		( (OR|'||')
  			{	if ( ! multi ) {
  					BaseDescr first = pd;
  					pd = new OrDescr();
@@ -789,7 +775,35 @@ fact_binding returns [BaseDescr d]
  			}
  		)*	
 	;
- 
+
+// in parenthesis alternative is allowed
+/* fact_expression_in_paren[String id] returns [BaseDescr pd]
+ 	@init {
+ 		pd = null;
+ 		boolean multi = false;
+ 	}
+ 	:	'(' fe=fact_expression[id] ')' { pd=fe; }
+ 	| 	f=fact
+ 		{
+ 			((ColumnDescr)f).setIdentifier( id );
+ 			pd = f;
+ 		}
+ 		( (OR|'||')
+ 			{	if ( ! multi ) {
+ 					BaseDescr first = pd;
+ 					pd = new OrDescr();
+ 					((OrDescr)pd).addDescr( first );
+ 					multi=true;
+ 				}
+ 			}
+ 			f=fact
+ 			{
+ 				((ColumnDescr)f).setIdentifier( id );
+ 				((OrDescr)pd).addDescr( f );
+ 			}
+ 		)*	
+	;
+*/ 
 fact returns [BaseDescr d] 
 	@init {
 		d=null;
@@ -834,7 +848,7 @@ constraint[ColumnDescr column]
 
 		    }
 		)? 
-		f=ID	
+		f=identifier	
 		{
 			if ( fb != null ) {
 			    fbd.setFieldName( f.getText() );
@@ -886,9 +900,9 @@ constraint_expression returns [RestrictionDescr rd]
 		|	'<'
 		|	'<='
 		|	'!='
-		|	'contains'
-		|	'matches'
-		|       'excludes'
+		|	CONTAINS
+		|	MATCHES
+		|       EXCLUDES
 		)	
 		(	bvc=ID
 			{
@@ -915,11 +929,11 @@ literal_constraint returns [String text]
 	@init {
 		text = null;
 	}
-	:	(	t=STRING { text = getString( t ); } //t.getText(); text=text.substring( 1, text.length() - 1 ); }
+	:	(	t=STRING { text = getString( t ); } 
 		|	t=INT    { text = t.getText(); }
 		|	t=FLOAT	 { text = t.getText(); }
 		|	t=BOOL 	 { text = t.getText(); }
-		|	t='null' { text = null; }
+		|	t=NULL   { text = null; }
 		)
 	;
 	
@@ -927,7 +941,8 @@ enum_constraint returns [String text]
 	@init {
 		text = null;
 	}
-	:	(cls=ID '.' en=ID) { text = cls.getText() + "." + en.getText(); }
+	:	
+		id=ID { text=id.getText(); } ( '.' ident=identifier { text += "." + ident.getText(); } )+ 
 	;	
 	
 
@@ -1070,11 +1085,6 @@ retval_constraint returns [String text]
 		c=paren_chunk { text = c.substring(1, c.length()-1); }
 	;
 
-
-
-
-	
-
 lhs_or returns [BaseDescr d]
 	@init{
 		d = null;
@@ -1082,7 +1092,7 @@ lhs_or returns [BaseDescr d]
 	}
 	:	
 		left=lhs_and {d = left; }
-		( ('or'|'||')
+		( (OR|'||')
 			right=lhs_and 
 			{
 				if ( or == null ) {
@@ -1103,7 +1113,7 @@ lhs_and returns [BaseDescr d]
 	}
 	:
 		left=lhs_unary { d = left; }
-		( ('and'|'&&')
+		( (AND|'&&')
 			right=lhs_unary
 			{
 				if ( and == null ) {
@@ -1125,9 +1135,11 @@ lhs_unary returns [BaseDescr d]
 		|	u=lhs_not
 		|	u=lhs_eval
 		|	u=lhs_column (
-		           (fm=from_statement {fm.setColumn((ColumnDescr) u); u=fm;}) 
-		          |(ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); u=ac;})
-		          |(cs=collect_statement {cs.setResultColumn((ColumnDescr) u); u=cs;}) 
+		          FROM (
+		           ( ACCUMULATE ) => (ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); u=ac;})
+		          |( COLLECT ) => (cs=collect_statement {cs.setResultColumn((ColumnDescr) u); u=cs;}) 
+		          |(fm=from_statement {fm.setColumn((ColumnDescr) u); u=fm;}) 
+		          )
 		        )?
 		|	u=lhs_forall  
 		|	'(' u=lhs ')'
@@ -1139,7 +1151,7 @@ lhs_exist returns [BaseDescr d]
 	@init {
 		d = null;
 	}
-	:	loc='exists' ('(' column=lhs_or ')' | column=lhs_column)
+	:	loc=EXISTS ('(' column=lhs_or ')' | column=lhs_column)
 		{ 
 			d = new ExistsDescr( (ColumnDescr) column ); 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -1150,7 +1162,7 @@ lhs_not	returns [NotDescr d]
 	@init {
 		d = null;
 	}
-	:	loc='not' ('(' column=lhs_or  ')' | column=lhs_column)
+	:	loc=NOT ('(' column=lhs_or  ')' | column=lhs_column)
 		{
 			d = new NotDescr( column ); 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -1161,7 +1173,7 @@ lhs_eval returns [BaseDescr d]
 	@init {
 		d = null;
 	}
-	:	loc='eval' c=paren_chunk
+	:	loc=EVAL c=paren_chunk
 		{ 
 		        String body = c.substring(1, c.length()-1);
 			checkTrailingSemicolon( body, offset(loc.getLine()) );
@@ -1173,7 +1185,7 @@ lhs_forall returns [ForallDescr d]
 	@init {
 		d = factory.createForall();
 	}
-	:	loc='forall' '(' base=lhs_column   
+	:	loc=FORALL '(' base=lhs_column   
 		{
 		        // adding the base column
 		        d.addDescr( base );
@@ -1193,7 +1205,7 @@ dotted_name returns [String name]
 		name = null;
 	}
 	:	
-		id=ID { name=id.getText(); } ( '.' id=ID { name = name + "." + id.getText(); } )* ( '[' ']' { name = name + "[]";})*
+		id=ID { name=id.getText(); } ( '.' ident=identifier { name = name + "." + ident.getText(); } )* ( '[' ']' { name = name + "[]";})*
 	;
 	
 argument returns [String name]
@@ -1201,7 +1213,7 @@ argument returns [String name]
 		name = null;
 	}
 	:
-		id=ID { name=id.getText(); } ( '[' ']' { name = name + "[]";})*
+		id=identifier { name=id.getText(); } ( '[' ']' { name = name + "[]";})*
 	;
 
 rhs_chunk[RuleDescr rule]
@@ -1215,7 +1227,7 @@ rhs_chunk[RuleDescr rule]
 		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
 		    buf = new StringBuffer();
 	        }
-		start='then'
+		start=THEN
 		( 
 			  ~END
 			  {
@@ -1247,27 +1259,60 @@ rhs_chunk[RuleDescr rule]
                 }
 	;
 
-	
-word returns [String word]
-	@init{
-		word = null;
-	}
-	:	id=ID      { word=id.getText(); }
-	|	'import'   { word="import"; }
-	|	'use'      { word="use"; }
-	|	RULE       { word="rule"; }
-	|	'query'    { word="query"; }
-	|	'salience' { word="salience"; }
- 	|	'no-loop'  { word="no-loop"; }
-	|	WHEN       { word="when"; }
-	|	THEN       { word="then"; }
-	|	END        { word="end"; }
-	|	str=STRING { word=getString(str);} //str.getText(); word=word.substring( 1, word.length()-1 ); }
+name returns [String s]
+	:
+	( 
+	    tok=ID
+	    {
+	        s = tok.getText();
+	    }
+	|
+	    str=STRING
+	    {
+	       s = getString( str );
+	    }
+	)
 	;
-
-//RHS	:'then' (options{greedy=false;} : .)* ('\n'|'\r') (' '|'\t'|'\f')* 'end'
-//	;
-
+	
+identifier returns [Token tok]
+	:	
+	(       t=ID      
+	|	t=PACKAGE
+	|	t=FUNCTION
+	|	t=GLOBAL
+	|	t=IMPORT  
+	|	t=RULE
+	|	t=QUERY 
+        |       t=TEMPLATE        
+        |       t=ATTRIBUTES      
+        |       t=ENABLED         
+        |       t=SALIENCE 	
+        |       t=DURATION 	
+        |       t=FROM	        
+        |       t=ACCUMULATE 	
+        |       t=INIT	        
+        |       t=ACTION	        
+        |       t=RESULT	        
+        |       t=COLLECT         
+        |       t=OR	        
+        |       t=AND	        
+        |       t=CONTAINS 	
+        |       t=EXCLUDES 	
+        |       t=MATCHES         
+        |       t=NULL	        
+        |       t=EXISTS	        
+        |       t=NOT	        
+        |       t=EVAL	        
+        |       t=FORALL	            					
+        |       t=WHEN            
+        |       t=THEN	        
+        |       t=END             
+	) 
+	{
+	    tok = t;
+	}
+	;
+	
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
@@ -1322,10 +1367,84 @@ UnicodeEscape
 BOOL
 	:	('true'|'false') 
 	;	
+
+PACKAGE	:	'package';
+
+IMPORT	:	'import';
+
+FUNCTION :	'function';
+
+GLOBAL	:	'global';
 	
 RULE    :	'rule';
 
-WHEN    :	'when';
+QUERY	:	'query';
+
+TEMPLATE :	'template';
+
+ATTRIBUTES :	'attributes';
+	
+DATE_EFFECTIVE 
+	:	'date-effective';
+
+DATE_EXPIRES 
+	:	'date-expires';	
+	
+ENABLED :	'enabled';
+
+SALIENCE 
+	:	'salience';
+	
+NO_LOOP :	'no-loop';
+
+AUTO_FOCUS 
+	:	'auto-focus';
+	
+ACTIVATION_GROUP 
+	:	'activation-group';
+	
+AGENDA_GROUP 
+	:	'agenda-group';
+	
+DURATION 
+	:	'duration';
+	
+FROM	:	'from';
+
+ACCUMULATE 
+	:	'accumulate';
+	
+INIT	:	'init';
+
+ACTION	:	'action';
+
+RESULT	:	'result';
+
+COLLECT :	'collect';
+
+OR	:	'or';
+
+AND	:	'and';
+
+CONTAINS 
+	:	'contains';
+	
+EXCLUDES 
+	:	'excludes';
+	
+MATCHES :	'matches';
+
+NULL	:	'null';
+
+EXISTS	:	'exists';
+
+NOT	:	'not';
+
+EVAL	:	'eval';
+
+FORALL	:	'forall';							
+
+WHEN    :	'when'; 
 
 THEN	:    	'then';
 
