@@ -48,6 +48,7 @@ import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -272,10 +273,11 @@ public class PackageBuilder {
         final TypeResolver typeResolver = new ClassTypeResolver( pkg.getImports(),
                                                                  pkg.getPackageCompilationData().getClassLoader() );
 
-        final Map globals = packageDescr.getGlobals();
-        for ( final Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
-            final String identifier = (String) it.next();
-            final String className = (String) globals.get( identifier );
+        final List globals = packageDescr.getGlobals();
+        for ( final Iterator it = globals.iterator(); it.hasNext(); ) {
+            final GlobalDescr global = (GlobalDescr) it.next();
+            final String identifier = global.getIdentifier();
+            final String className = global.getType();
 
             Class clazz;
             try {

@@ -13,6 +13,10 @@ public class DescrFactory {
     public PackageDescr createPackage( String packageName ) {
         return new PackageDescr( packageName );
     }
+    
+    public GlobalDescr createGlobal() {
+        return new GlobalDescr();
+    }
 
     public FromDescr createFrom() {
         return new FromDescr();

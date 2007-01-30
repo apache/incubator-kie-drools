@@ -284,11 +284,23 @@ import_name[ImportDescr importDecl] returns [String name]
 
 global
 	@init {
+	    GlobalDescr global = null;
 	}
 	:
-		GLOBAL type=dotted_name id=identifier opt_semicolon
+		loc=GLOBAL 
 		{
-			packageDescr.addGlobal( id.getText(), type );
+		    global = factory.createGlobal();
+	            global.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+		    packageDescr.addGlobal( global );
+		}
+		type=dotted_name 
+		{
+		    global.setType( type );
+		}
+		id=identifier opt_semicolon
+		{
+		    global.setIdentifier( id.getText() );
+		    global.setEndCharacter( ((CommonToken)id).getStopIndex() );
 		}
 	;
 	
@@ -776,34 +788,6 @@ fact_binding returns [BaseDescr d]
  		)*	
 	;
 
-// in parenthesis alternative is allowed
-/* fact_expression_in_paren[String id] returns [BaseDescr pd]
- 	@init {
- 		pd = null;
- 		boolean multi = false;
- 	}
- 	:	'(' fe=fact_expression[id] ')' { pd=fe; }
- 	| 	f=fact
- 		{
- 			((ColumnDescr)f).setIdentifier( id );
- 			pd = f;
- 		}
- 		( (OR|'||')
- 			{	if ( ! multi ) {
- 					BaseDescr first = pd;
- 					pd = new OrDescr();
- 					((OrDescr)pd).addDescr( first );
- 					multi=true;
- 				}
- 			}
- 			f=fact
- 			{
- 				((ColumnDescr)f).setIdentifier( id );
- 				((OrDescr)pd).addDescr( f );
- 			}
- 		)*	
-	;
-*/ 
 fact returns [BaseDescr d] 
 	@init {
 		d=null;

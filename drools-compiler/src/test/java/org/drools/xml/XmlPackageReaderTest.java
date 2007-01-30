@@ -2,7 +2,6 @@ package org.drools.xml;
 
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -14,6 +13,7 @@ import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -68,13 +68,19 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
-        final Map globals = packageDescr.getGlobals();
+        final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
+        GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
-                      globals.get( "x" ) );
+                      x.getType() );
+        assertEquals( "x",
+                      x.getIdentifier() );
         assertEquals( "com.sample.Yada",
-                      globals.get( "yada" ) );
+                      yada.getType() );
+        assertEquals( "yada",
+                      yada.getIdentifier() );
     }
 
     public void testParseFunction() throws Exception {
@@ -93,13 +99,19 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
-        final Map globals = packageDescr.getGlobals();
+        final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
+        GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
-                      globals.get( "x" ) );
+                      x.getType() );
+        assertEquals( "x",
+                      x.getIdentifier() );
         assertEquals( "com.sample.Yada",
-                      globals.get( "yada" ) );
+                      yada.getType() );
+        assertEquals( "yada",
+                      yada.getIdentifier() );
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
         final List names = functionDescr.getParameterNames();
@@ -134,13 +146,19 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
-        final Map globals = packageDescr.getGlobals();
+        final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
+        GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
-                      globals.get( "x" ) );
+                      x.getType() );
+        assertEquals( "x",
+                      x.getIdentifier() );
         assertEquals( "com.sample.Yada",
-                      globals.get( "yada" ) );
+                      yada.getType() );
+        assertEquals( "yada",
+                      yada.getIdentifier() );
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
         final List names = functionDescr.getParameterNames();
@@ -200,13 +218,19 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
-        final Map globals = packageDescr.getGlobals();
+        final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
+        GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
-                      globals.get( "x" ) );
+                      x.getType() );
+        assertEquals( "x",
+                      x.getIdentifier() );
         assertEquals( "com.sample.Yada",
-                      globals.get( "yada" ) );
+                      yada.getType() );
+        assertEquals( "yada",
+                      yada.getIdentifier() );
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
         final List names = functionDescr.getParameterNames();
@@ -333,13 +357,19 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
-        final Map globals = packageDescr.getGlobals();
+        final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
+        GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
-                      globals.get( "x" ) );
+                      x.getType() );
+        assertEquals( "x",
+                      x.getIdentifier() );
         assertEquals( "com.sample.Yada",
-                      globals.get( "yada" ) );
+                      yada.getType() );
+        assertEquals( "yada",
+                      yada.getIdentifier() );
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
         final List names = functionDescr.getParameterNames();
@@ -383,13 +413,19 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
-        final Map globals = packageDescr.getGlobals();
+        final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
+        GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
-                      globals.get( "x" ) );
+                      x.getType() );
+        assertEquals( "x",
+                      x.getIdentifier() );
         assertEquals( "com.sample.Yada",
-                      globals.get( "yada" ) );
+                      yada.getType() );
+        assertEquals( "yada",
+                      yada.getIdentifier() );
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
         final List names = functionDescr.getParameterNames();

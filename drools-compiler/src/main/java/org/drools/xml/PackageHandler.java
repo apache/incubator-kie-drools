@@ -18,6 +18,7 @@ package org.drools.xml;
 
 import java.util.HashSet;
 
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.xml.sax.Attributes;
@@ -98,8 +99,8 @@ class PackageHandler extends BaseAbstractHandler
                 throw new SAXParseException( "<global> must have specify a type",
                                              this.xmlPackageReader.getLocator() );
             }
-            packageDescr.addGlobal( identifier,
-                                    type );
+            GlobalDescr global = new GlobalDescr(type, identifier);
+            packageDescr.addGlobal( global );
         }
 
         return null;

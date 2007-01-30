@@ -33,7 +33,7 @@ public class PackageDescr extends BaseDescr {
     private List              imports          = Collections.EMPTY_LIST;
     private List              functionImports  = Collections.EMPTY_LIST;
     private List              attributes       = Collections.EMPTY_LIST;
-    private Map               globals          = Collections.EMPTY_MAP;
+    private List              globals          = Collections.EMPTY_LIST;
     private List              factTemplates    = Collections.EMPTY_LIST;
     private List              functions        = Collections.EMPTY_LIST;
     private List              rules            = Collections.EMPTY_LIST;
@@ -79,16 +79,14 @@ public class PackageDescr extends BaseDescr {
         return this.functionImports;
     }
 
-    public void addGlobal(final String identifier,
-                          final String type) {
-        if ( this.globals == Collections.EMPTY_MAP ) {
-            this.globals = new HashMap();
+    public void addGlobal(final GlobalDescr global) {
+        if ( this.globals == Collections.EMPTY_LIST ) {
+            this.globals = new ArrayList();
         }
-        this.globals.put( identifier,
-                          type );
+        this.globals.add( global );
     }
 
-    public Map getGlobals() {
+    public List getGlobals() {
         return this.globals;
     }    
 
