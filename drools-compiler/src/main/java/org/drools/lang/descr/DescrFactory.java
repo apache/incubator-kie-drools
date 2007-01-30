@@ -9,6 +9,10 @@ package org.drools.lang.descr;
  *
  */
 public class DescrFactory {
+    
+    public PackageDescr createPackage( String packageName ) {
+        return new PackageDescr( packageName );
+    }
 
     public FromDescr createFrom() {
         return new FromDescr();

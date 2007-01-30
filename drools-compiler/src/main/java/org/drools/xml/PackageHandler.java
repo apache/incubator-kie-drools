@@ -18,6 +18,7 @@ package org.drools.xml;
 
 import java.util.HashSet;
 
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -79,7 +80,7 @@ class PackageHandler extends BaseAbstractHandler
                 throw new SAXParseException( "<import> cannot be blank",
                                              this.xmlPackageReader.getLocator() );
             }
-            packageDescr.addImport( importEntry );
+            packageDescr.addImport( new ImportDescr( importEntry ) );
         }
 
         final Configuration[] globals = config.getChildren( "global" );

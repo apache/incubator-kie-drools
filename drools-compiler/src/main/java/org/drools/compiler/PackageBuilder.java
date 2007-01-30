@@ -269,7 +269,7 @@ public class PackageBuilder {
             pkg.addFunctionImport( ((FunctionImportDescr) it.next()).getTarget() );
         }
 
-        final TypeResolver typeResolver = new ClassTypeResolver( imports,
+        final TypeResolver typeResolver = new ClassTypeResolver( pkg.getImports(),
                                                                  pkg.getPackageCompilationData().getClassLoader() );
 
         final Map globals = packageDescr.getGlobals();
