@@ -32,13 +32,22 @@ public class DefaultTemplateContainer implements TemplateContainer {
 	private Map templates = new HashMap();
 
 	public DefaultTemplateContainer(final String template) {
-		final InputStream templateStream = this.getClass().getResourceAsStream(
-				template);
-		parseTemplate(templateStream);
+		this(DefaultTemplateContainer.class.getResourceAsStream(template));
 	}
 
 	public DefaultTemplateContainer(final InputStream templateStream) {
 		parseTemplate(templateStream);
+		validateTemplate();
+	}
+
+	private void validateTemplate() {
+		if (columns.size() == 0) {
+			throw new DecisionTableParseException("Missing header columns");
+		}
+		if (templates.size() == 0) {
+			throw new DecisionTableParseException("Missing templates");
+		}
+		
 	}
 
 	private void parseTemplate(final InputStream templateStream) {
@@ -66,6 +75,10 @@ public class DefaultTemplateContainer implements TemplateContainer {
 						addTemplate(template);
 
 					} else if (line.startsWith("package")) {
+						if (inHeader == false) {
+							throw new DecisionTableParseException(
+									"Missing header");
+						}
 						inHeader = false;
 						header.append(line).append("\n");
 					} else if (inHeader) {
@@ -88,12 +101,16 @@ public class DefaultTemplateContainer implements TemplateContainer {
 				}
 
 			}
+			if (inTemplate) {
+				throw new DecisionTableParseException("Missing end template");
+			}
 			this.header = header.toString();
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
-			closeStream(templateStream);
+			if (templateStream != null)
+				closeStream(templateStream);
 		}
 	}
 
@@ -101,7 +118,9 @@ public class DefaultTemplateContainer implements TemplateContainer {
 		templates.put(template.getName(), template);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.drools.decisiontable.parser.TemplateContainer#getTemplates()
 	 */
 	public Map getTemplates() {
@@ -112,14 +131,18 @@ public class DefaultTemplateContainer implements TemplateContainer {
 		columns.add(c);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.drools.decisiontable.parser.TemplateContainer#getColumns()
 	 */
 	public Column[] getColumns() {
 		return (Column[]) columns.toArray(new Column[columns.size()]);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.drools.decisiontable.parser.TemplateContainer#getHeader()
 	 */
 	public String getHeader() {
