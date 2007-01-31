@@ -73,7 +73,7 @@ public class DrlDumper extends ReflectiveVisitor
         this.template = new String();
         String name = attributeDescr.getName();
         String value = null;
-        if ( name.equals( "agenda-group" ) || name.equals( "activation-group" ) ) {
+        if ( name.equals( "agenda-group" ) || name.equals( "activation-group" ) || name.equals( "ruleflow-group" ) ) {
             // These attributes may need quotes around them, if they have spaces, so add anyway
             value =  "\"" + attributeDescr.getValue() + "\"";
         } else {
