@@ -56,16 +56,14 @@ public class RtlNewPage extends WizardPage {
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
-		layout.numColumns = 4;
+		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
 		
 		Label label = new Label(container, SWT.NULL);
-		label = new Label(container, SWT.NULL);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		label.setText("&File name:");
 
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		fileText.setLayoutData(gd);
 		fileText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -82,11 +80,11 @@ public class RtlNewPage extends WizardPage {
 		});
 		
 		label = new Label(container, SWT.NULL);
-		label = new Label(container, SWT.NULL);
 		label.setText("&Rtl name:");
 
 		rtlFileText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
 		rtlFileText.setLayoutData(gd);
 		rtlFileText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -95,7 +93,7 @@ public class RtlNewPage extends WizardPage {
 		});
 		
 		label = new Label(container, SWT.NULL);
-		label.setText("Container:");
+		label.setText("&Container:");
 
 		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
