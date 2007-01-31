@@ -32,7 +32,7 @@ public class GlobalDescr extends BaseDescr {
         this( null, null );
     }
     
-    public GlobalDescr( String type, String identifier ) {
+    public GlobalDescr( String identifier, String type ) {
         this.identifier = identifier;
         this.type = type;
     }

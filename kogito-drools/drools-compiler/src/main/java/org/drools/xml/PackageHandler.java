@@ -99,7 +99,7 @@ class PackageHandler extends BaseAbstractHandler
                 throw new SAXParseException( "<global> must have specify a type",
                                              this.xmlPackageReader.getLocator() );
             }
-            GlobalDescr global = new GlobalDescr(type, identifier);
+            GlobalDescr global = new GlobalDescr(identifier, type);
             packageDescr.addGlobal( global );
         }
 
