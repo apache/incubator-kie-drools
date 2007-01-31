@@ -188,7 +188,7 @@ public class ScheduledAgendaItem extends TimerTask
     }
     
     public RuleFlowGroupNode getRuleFlowGroupNode() {
-        throw new UnsupportedOperationException( "Scheduled activations cannot be in a Rule Flow Group" );
+        throw null;
     }
 
     public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
@@ -196,7 +196,7 @@ public class ScheduledAgendaItem extends TimerTask
     }    
 
     public AgendaGroup getAgendaGroup() {
-        throw new UnsupportedOperationException( "Scheduled activations cannot be in an Agenda Group");
+        return null;
     }
     
     /*
