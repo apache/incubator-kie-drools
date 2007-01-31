@@ -14,6 +14,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.mvel.CompiledExpression;
 import org.mvel.ExpressionParser;
+import org.mvel.MVEL;
 
 public class MVELDataProvider
     implements
@@ -39,7 +40,7 @@ public class MVELDataProvider
         factory.setContext( tuple, wm );
                         
         //this.expression.
-        Object result = ExpressionParser.executeExpression(this.expression, factory);
+        Object result = MVEL.executeExpression(this.expression, factory);
         if ( result instanceof Collection ) {
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {
