@@ -21,6 +21,6 @@
 	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr/3.0b5/antlr-3.0b5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/antlr/stringtemplate/3.0/stringtemplate-3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging-api/1.0.4/commons-logging-api-1.0.4.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/mvel"/>
+	<classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2beta6/mvel14-1.2beta6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
