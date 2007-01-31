@@ -266,15 +266,34 @@ public class DrlDumper extends ReflectiveVisitor
 
     private String processColoumnConstraintList(final List descr) {
         String descrString = "";
+        Object previous = null;
         for ( final Iterator iterator = descr.iterator(); iterator.hasNext(); ) {
 
             final Object temp = iterator.next();
             visit( temp );
-            descrString += this.template;
-            descrString += " , ";
+                        
+            if ( previous == null ) {
+                descrString += this.template;
+            } else if ( previous instanceof FieldBindingDescr && !(temp instanceof FieldBindingDescr) && !(temp instanceof PredicateDescr)) {
+                FieldConstraintDescr tempDescr = (FieldConstraintDescr) temp;
+                FieldBindingDescr previousDescr = (FieldBindingDescr) previous;
+                if ( tempDescr.getFieldName().equals( previousDescr.getFieldName() ) ) {
+                    // as its a binding followed by a field constraint we need to remove 
+                    // the extra field name                    
+                    descrString += this.template.substring( tempDescr.getFieldName().length() + 1 );
+                } else {
+                  descrString +=  " , " + this.template;               
+                }
+            } else {
+                descrString +=  " , " + this.template;                
+            }
+
+            previous = temp;
+            
+            
         }
         return descrString.substring( 0,
-                                      descrString.length() - 2 );
+                                      descrString.length() );
     }
 
     private String processFieldConstraint(List list)  {

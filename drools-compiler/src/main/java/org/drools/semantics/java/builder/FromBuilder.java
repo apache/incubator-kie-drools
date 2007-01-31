@@ -16,6 +16,8 @@
 
 package org.drools.semantics.java.builder;
 
+import java.io.Serializable;
+
 import org.drools.base.DroolsMVELFactory;
 import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.compiler.RuleError;
@@ -28,6 +30,7 @@ import org.drools.rule.From;
 import org.drools.spi.DataProvider;
 import org.mvel.CompiledExpression;
 import org.mvel.ExpressionParser;
+import org.mvel.MVEL;
 
 /**
  * A builder for "from" conditional element
@@ -65,7 +68,7 @@ public class FromBuilder
             factory.setGlobalsMap( context.getPkg().getGlobals() );
             
             //parser.setValueHandlerFactory( factory );
-            CompiledExpression compiled = (CompiledExpression) ExpressionParser.compileExpression( accessor.toString() );
+            Serializable compiled = MVEL.compileExpression( accessor.toString() );
 
             dataProvider = new MVELDataProvider( compiled,
                                                  factory );
