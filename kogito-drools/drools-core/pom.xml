@@ -34,10 +34,10 @@
     </dependency>
     
 	 <dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr</artifactId>    
-			<version>3.0b5</version>
-    </dependency>    
+			<groupId>org.mvel</groupId>
+			<artifactId>mvel14</artifactId>    
+			<version>1.2beta6</version>
+    </dependency>      
     
   </dependencies>
   
