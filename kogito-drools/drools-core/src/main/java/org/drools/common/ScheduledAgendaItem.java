@@ -188,7 +188,7 @@ public class ScheduledAgendaItem extends TimerTask
     }
     
     public RuleFlowGroupNode getRuleFlowGroupNode() {
-        throw null;
+        return null;
     }
 
     public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
