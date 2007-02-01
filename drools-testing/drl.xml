@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<package name="org.drools.testing.core.rules" xmlns="http://drools.org/drools-3.0"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+ xs:schemaLocation="http://drools.org/drools-3.0 drools-3.0.xsd">
+ <import name="org.drools.testing.core.rules.model.Account"/>
+
+
+
+ <rule name="rule1">
+
+  <lhs>
+   <column identifier="$acc" object-type="Account">
+    <literal field-name="status" evaluator="==" value="active"/>
+
+    <literal field-name="balance" evaluator="==" value="0"/>
+
+
+   </column>
+
+
+  </lhs>
+  <rhs> $acc . setBalance ( new Integer ( -100 ) ) ; modify ( $acc ) ; System . out . println (
+   "firing rule1" ) ; </rhs>
+ </rule>
+ <rule name="rule2">
+
+  <lhs>
+   <column identifier="$acc" object-type="Account">
+    <literal field-name="status" evaluator="==" value="active"/>
+
+    <literal field-name="balance" evaluator="&lt;" value="0"/>
+
+
+   </column>
+
+
+  </lhs>
+  <rhs> $acc . setStatus ( "overdrawn" ) ; modify ( $acc ) ; System . out . println ( "Your account
+   is overdrawn. Balance: " + $acc . getBalance ( ) ) ; </rhs>
+ </rule>
+ <rule name="rule3">
+
+  <lhs>
+   <column identifier="$acc" object-type="Account">
+    <literal field-name="balance" evaluator="&gt;" value="0"/>
+
+
+   </column>
+
+
+  </lhs>
+  <rhs> System . out . println ( "The banks likes you.. so we're increasing our fees!" ) ; </rhs>
+ </rule>
+</package>
