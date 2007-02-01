@@ -1,11 +1,17 @@
 package org.drools.testing.plugin.wizards;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
 import org.drools.lang.descr.RuleDescr;
+import org.drools.testing.core.beans.Scenario;
+import org.drools.testing.core.beans.TestSuite;
+import org.drools.testing.core.exception.RuleTestLanguageException;
+import org.drools.testing.core.main.Testing;
 import org.drools.testing.plugin.wizards.model.RtlModel;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -29,6 +35,10 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.xml.sax.ContentHandler;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 
@@ -126,16 +136,37 @@ public class GenerateRtlWizard extends Wizard implements INewWizard {
 		}
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
+		
 		try {
-			InputStream stream = openContentStream();
+			Testing testing = new Testing("The Test Test Suite", rtlModel.getPackageDescr());
+			Scenario scenario = testing.generateScenario("Scenario One",rtlModel.getPackageDescr().getRules());
+			testing.addScenarioToSuite(scenario);
+			TestSuite testSuite = testing.getTestSuite();
+			FileWriter out = new FileWriter(fileName);
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			Marshaller marshaller = new Marshaller(out);
+        	marshaller.setSuppressXSIType(true);
+        	marshaller.setSupressXMLDeclaration(true);
+        	marshaller.marshal(testSuite);   
+			InputStream stream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
 				file.create(stream, true, monitor);
 			}
 			stream.close();
+		}catch (RuleTestLanguageException e) {
+			throwCoreException(e.getMessage());
+			
 		} catch (IOException e) {
+			throwCoreException(e.getMessage());
+		}catch (MarshalException e) {
+			throwCoreException(e.getMessage());
+		}catch (ValidationException e) {
+			throwCoreException(e.getMessage());
 		}
+		
+		
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
@@ -153,7 +184,7 @@ public class GenerateRtlWizard extends Wizard implements INewWizard {
 	}
 	
 	/**
-	 * We will initialize file contents with a sample text.
+	 * We will initialize file contents with the newly generated rtl scenario
 	 */
 
 	private InputStream openContentStream() {
