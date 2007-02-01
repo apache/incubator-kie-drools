@@ -926,75 +926,74 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( stilton,
                       list3.get( 0 ) );
     }
+ 
+    public void testFromWithParams() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
+        final Package pkg = builder.getPackage();
 
-// commented out till MVEL is fixed 
-//    public void testFromWithParams() throws Exception {
-//        final PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
-//        final Package pkg = builder.getPackage();
-//
-//        final RuleBase ruleBase = getRuleBase();
-//        ruleBase.addPackage( pkg );
-//
-//        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-//        List list = new ArrayList();
-//        Object globalObject = new Object();
-//        workingMemory.setGlobal( "list",
-//                                 list );
-//        workingMemory.setGlobal( "testObject",
-//                                 new FromTestClass() );
-//        workingMemory.setGlobal( "globalObject",
-//                                 globalObject );
-//
-//        Person bob = new Person( "bob" );
-//        workingMemory.assertObject( bob );
-//
-//        workingMemory.fireAllRules();
-//
-//        assertEquals( 6,
-//                      list.size() );
-//
-//        List array = (List) list.get( 0 );
-//        assertEquals( 3,
-//                      array.size() );
-//        Person p = (Person) array.get( 0 );
-//        assertSame( p,
-//                    bob );
-//
-//        assertEquals( new Integer( 42 ),
-//                      array.get( 1 ) );
-//
-//        List nested = (List) array.get( 2 );
-//        assertEquals( "x",
-//                      nested.get( 0 ) );
-//        assertEquals( "y",
-//                      nested.get( 1 ) );
-//
-//        Map map = (Map) list.get( 1 );
-//        assertEquals( 2,
-//                      map.keySet().size() );
-//
-//        assertTrue( map.keySet().contains( bob ) );
-//        assertSame( globalObject,
-//                    map.get( bob ) );
-//
-//        assertTrue( map.keySet().contains( "key1" ) );
-//        Map nestedMap = (Map) map.get( "key1" );
-//        assertEquals( 1,
-//                      nestedMap.keySet().size() );
-//        assertTrue( nestedMap.keySet().contains( "key2" ) );
-//        assertEquals( "value2",
-//                      nestedMap.get( "key2" ) );
-//
-//        assertEquals( new Integer( 42 ),
-//                      list.get( 2 ) );
-//        assertEquals( "literal",
-//                      list.get( 3 ) );
-//        assertSame( bob,
-//                    list.get( 4 ) );
-//        assertSame( globalObject,
-//                    list.get( 5 ) );
-//    }
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        Object globalObject = new Object();
+        workingMemory.setGlobal( "list",
+                                 list );
+        workingMemory.setGlobal( "testObject",
+                                 new FromTestClass() );
+        workingMemory.setGlobal( "globalObject",
+                                 globalObject );
+
+        Person bob = new Person( "bob" );
+        workingMemory.assertObject( bob );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 6,
+                      list.size() );
+
+        List array = (List) list.get( 0 );
+        assertEquals( 3,
+                      array.size() );
+        Person p = (Person) array.get( 0 );
+        assertSame( p,
+                    bob );
+
+        assertEquals( new Integer( 42 ),
+                      array.get( 1 ) );
+
+        List nested = (List) array.get( 2 );
+        assertEquals( "x",
+                      nested.get( 0 ) );
+        assertEquals( "y",
+                      nested.get( 1 ) );
+
+        Map map = (Map) list.get( 1 );
+        assertEquals( 2,
+                      map.keySet().size() );
+
+        assertTrue( map.keySet().contains( bob ) );
+        assertSame( globalObject,
+                    map.get( bob ) );
+
+        assertTrue( map.keySet().contains( "key1" ) );
+        Map nestedMap = (Map) map.get( "key1" );
+        assertEquals( 1,
+                      nestedMap.keySet().size() );
+        assertTrue( nestedMap.keySet().contains( "key2" ) );
+        assertEquals( "value2",
+                      nestedMap.get( "key2" ) );
+
+        assertEquals( new Integer( 42 ),
+                      list.get( 2 ) );
+        assertEquals( "literal",
+                      list.get( 3 ) );
+        assertSame( bob,
+                    list.get( 4 ) );
+        assertSame( globalObject,
+                    list.get( 5 ) );
+    }
 
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
