@@ -28,6 +28,8 @@ public class ColumnDescr extends BaseDescr {
     private String objectType;
     private String identifier;
     private List   descrs = Collections.EMPTY_LIST;
+    private int    leftParentCharacter = -1;
+    private int    rightParentCharacter = -1;
 
     public ColumnDescr() {
         this(null, null);
@@ -73,5 +75,33 @@ public class ColumnDescr extends BaseDescr {
 
     public String toString() {
         return "[Column: id=" + this.identifier + "; objectType=" + this.objectType + "]";
+    }
+
+    /**
+     * @return the leftParentCharacter
+     */
+    public int getLeftParentCharacter() {
+        return leftParentCharacter;
+    }
+
+    /**
+     * @param leftParentCharacter the leftParentCharacter to set
+     */
+    public void setLeftParentCharacter(int leftParentCharacter) {
+        this.leftParentCharacter = leftParentCharacter;
+    }
+
+    /**
+     * @return the rightParentCharacter
+     */
+    public int getRightParentCharacter() {
+        return rightParentCharacter;
+    }
+
+    /**
+     * @param rightParentCharacter the rightParentCharacter to set
+     */
+    public void setRightParentCharacter(int rightParentCharacter) {
+        this.rightParentCharacter = rightParentCharacter;
     }
 }
