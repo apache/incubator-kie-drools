@@ -216,7 +216,7 @@ package_statement returns [String packageName]
 		packageName = null;
 	}
 	:	
-		PACKAGE n=dotted_name opt_semicolon
+		PACKAGE n=dotted_name[null] opt_semicolon
 		{
 			packageName = n;
 		}
@@ -293,7 +293,7 @@ global
 	            global.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		    packageDescr.addGlobal( global );
 		}
-		type=dotted_name 
+		type=dotted_name[null] 
 		{
 		    global.setType( type );
 		}
@@ -310,30 +310,30 @@ function
 		FunctionDescr f = null;
 	}
 	:
-		loc=FUNCTION (retType=dotted_name)? n=identifier
+		loc=FUNCTION (retType=dotted_name[null])? n=identifier
 		{
 			//System.err.println( "function :: " + n.getText() );
-			f = new FunctionDescr( n.getText(), retType );
+			f = factory.createFunction( n.getText(), retType );
 			f.setLocation(offset(loc.getLine()), loc.getCharPositionInLine());
+	        	f.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			packageDescr.addFunction( f );
 		} 
 		'('
-			(	(paramType=dotted_name)? paramName=argument
+			(	(paramType=dotted_name[null])? paramName=argument
 				{
 					f.addParameter( paramType, paramName );
 				}
-				(	',' (paramType=dotted_name)? paramName=argument
+				(	',' (paramType=dotted_name[null])? paramName=argument
 					{
 						f.addParameter( paramType, paramName );
 					}
 				)*
 			)?
 		')'
-		body=curly_chunk
+		body=curly_chunk[f]
 		{
 			//strip out '{','}'
 			f.setText( body.substring( 1, body.length()-1 ) );
-
-			packageDescr.addFunction( f );
 		}
 	;
 
@@ -347,17 +347,20 @@ query returns [QueryDescr query]
 	:
 		loc=QUERY queryName=name
 		{ 
-			query = new QueryDescr( queryName, null ); 
+			query = factory.createQuery( queryName ); 
 			query.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			query.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 			lhs = new AndDescr(); query.setLhs( lhs ); 
 			lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 		(
-//			{ expander != null }? expander_lhs_block[lhs] |
 			normal_lhs_block[lhs]
 		)
 					
-		END
+		loc=END
+		{
+			query.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		}
 	;
 
 
@@ -370,6 +373,7 @@ template returns [FactTemplateDescr template]
 		{
 			template = new FactTemplateDescr(templateName.getText());
 			template.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );			
+			template.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
 		(
 			slot=template_slot 
@@ -377,7 +381,10 @@ template returns [FactTemplateDescr template]
 				template.addFieldTemplate(slot);
 			}
 		)+
-		END opt_semicolon		
+		loc=END opt_semicolon 
+		{
+			template.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		}		
 	;
 	
 template_slot returns [FieldTemplateDescr field]
@@ -385,14 +392,20 @@ template_slot returns [FieldTemplateDescr field]
 		field = null;
 	}
 	:
-		//n=ID ':' fieldType=dotted_name ( EOL | ';' )
-		 fieldType=dotted_name n=identifier opt_semicolon
-		{
-			
-			
-			field = new FieldTemplateDescr(n.getText(), fieldType);
+	         {
+			field = factory.createFieldTemplate();
+	         }
+		 fieldType=dotted_name[field] 
+		 {
+		        field.setClassType( fieldType );
+		 }
+		 
+		 n=identifier opt_semicolon
+		 {
+		        field.setName( n.getText() );
 			field.setLocation( offset(n.getLine()), n.getCharPositionInLine() );
-		}
+			field.setEndCharacter( ((CommonToken)n).getStopIndex() );
+		 } 
 	;	
 	
 rule returns [RuleDescr rule]
@@ -414,6 +427,7 @@ rule returns [RuleDescr rule]
 			{ 
 				lhs = new AndDescr(); rule.setLhs( lhs ); 
 				lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 			}
 			(
 //				{ expander != null }? expander_lhs_block[lhs] |
@@ -460,10 +474,12 @@ date_effective returns [AttributeDescr d]
 		d = null;
 	}	
 	:
-		loc=DATE_EFFECTIVE val=STRING
+		loc=DATE_EFFECTIVE val=STRING  
 		{
 			d = new AttributeDescr( "date-effective", getString( val ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)val).getStopIndex() );
 		}
 
 	;
@@ -473,10 +489,12 @@ date_expires returns [AttributeDescr d]
 		d = null;
 	}	
 	:
-		loc=DATE_EXPIRES val=STRING
+		loc=DATE_EXPIRES val=STRING  
 		{
 			d = new AttributeDescr( "date-expires", getString( val ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)val).getStopIndex() );
 		}
 
 	;
@@ -487,10 +505,12 @@ enabled returns [AttributeDescr d]
 		d = null;
 	}
 	:
-			loc=ENABLED t=BOOL opt_semicolon
+			loc=ENABLED t=BOOL   
 			{
 				d = new AttributeDescr( "enabled", t.getText() );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
 			}
 		
 		
@@ -503,10 +523,12 @@ salience returns [AttributeDescr d ]
 		d = null;
 	}
 	:	
-		loc=SALIENCE i=INT opt_semicolon
+		loc=SALIENCE i=INT   
 		{
 			d = new AttributeDescr( "salience", i.getText() );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
 		}
 	;
 	
@@ -516,18 +538,22 @@ no_loop returns [AttributeDescr d]
 	}
 	:
 		(
-			loc=NO_LOOP opt_semicolon
+			loc=NO_LOOP   
 			{
 				d = new AttributeDescr( "no-loop", "true" );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
 			}
 		) 
 		|
 		(
-			loc=NO_LOOP t=BOOL opt_semicolon
+			loc=NO_LOOP t=BOOL   
 			{
 				d = new AttributeDescr( "no-loop", t.getText() );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
 			}
 		
 		)
@@ -540,18 +566,22 @@ auto_focus returns [AttributeDescr d]
 	}
 	:
 		(
-			loc=AUTO_FOCUS opt_semicolon
+			loc=AUTO_FOCUS   
 			{
 				d = new AttributeDescr( "auto-focus", "true" );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
 			}
 		) 
 		|
 		(
-			loc=AUTO_FOCUS t=BOOL opt_semicolon
+			loc=AUTO_FOCUS t=BOOL   
 			{
 				d = new AttributeDescr( "auto-focus", t.getText() );
 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
 			}
 		
 		)
@@ -563,10 +593,12 @@ activation_group returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc=ACTIVATION_GROUP n=STRING opt_semicolon
+		loc=ACTIVATION_GROUP n=STRING   
 		{
 			d = new AttributeDescr( "activation-group", getString( n ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
 		}
 	;
 
@@ -575,10 +607,12 @@ agenda_group returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc=AGENDA_GROUP n=STRING opt_semicolon
+		loc=AGENDA_GROUP n=STRING   
 		{
 			d = new AttributeDescr( "agenda-group", getString( n ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
 		}
 	;		
 
@@ -588,10 +622,12 @@ duration returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc=DURATION i=INT
+		loc=DURATION i=INT 
 		{
 			d = new AttributeDescr( "duration", i.getText() );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
 		}
 	;		
 	
@@ -645,10 +681,14 @@ from_source returns [DeclarativeInvokerDescr ds]
 		        {
  				ad = new AccessorDescr();	
 				ad.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );
+				ad.setStartCharacter( ((CommonToken)functionName).getStartIndex() );
+				ad.setEndCharacter( ((CommonToken)functionName).getStopIndex() );
 				ds = ad;
 				FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
 				fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
 				fc.setArguments(args);
+				fc.setStartCharacter( ((CommonToken)functionName).getStartIndex() );
+				fc.setEndCharacter( ((CommonToken)functionName).getStopIndex() );
 				ad.addInvoker(fc);
 			}
 		)
@@ -657,6 +697,8 @@ from_source returns [DeclarativeInvokerDescr ds]
 		    {
 			ad = new AccessorDescr(var.getText());	
 			ad.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
+			ad.setStartCharacter( ((CommonToken)var).getStartIndex() );
+			ad.setEndCharacter( ((CommonToken)var).getStopIndex() );
 			ds = ad;
 		    }
 		))  
@@ -674,6 +716,8 @@ expression_chain[AccessorDescr as]
 	    {
 	        fa = new FieldAccessDescr(field.getText());	
 		fa.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
+		fa.setStartCharacter( ((CommonToken)field).getStartIndex() );
+		fa.setEndCharacter( ((CommonToken)field).getStopIndex() );
 	    }
 	  (
 	    ( LEFT_SQUARE ) => sqarg=square_chunk
@@ -685,6 +729,7 @@ expression_chain[AccessorDescr as]
 		{
 	    	  ma = new MethodAccessDescr( field.getText(), paarg );	
 		  ma.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
+		  ma.setStartCharacter( ((CommonToken)field).getStartIndex() );
 		}
 	  )?
 	  {
@@ -706,6 +751,7 @@ accumulate_statement returns [AccumulateDescr d]
 	        loc=ACCUMULATE 
 		{ 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}	
 		'(' column=lhs_column ',' 
 		{
@@ -719,9 +765,10 @@ accumulate_statement returns [AccumulateDescr d]
 		{
 		        d.setActionCode( text.substring(1, text.length()-1) );
 		}
-		RESULT text=paren_chunk ')'
+		RESULT text=paren_chunk loc=')'
 		{
 		        d.setResultCode( text.substring(1, text.length()-1) );
+			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
 		} 
 	; 		
  		
@@ -733,10 +780,12 @@ collect_statement returns [CollectDescr d]
 	        loc=COLLECT 
 		{ 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}	
-		'(' column=lhs_column ')'
+		'(' column=lhs_column loc=')'
 		{
 		        d.setSourceColumn( (ColumnDescr)column );
+			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
 		}
 	; 		
 
@@ -792,7 +841,7 @@ fact returns [BaseDescr d]
 	@init {
 		d=null;
 	}
- 	:	id=dotted_name 
+ 	:	id=dotted_name[null] 
  		{ 
  			d = new ColumnDescr( id ); 
  		}
@@ -981,7 +1030,7 @@ paren_chunk returns [String text]
                 }
 	;
 
-curly_chunk returns [String text]
+curly_chunk[BaseDescr descr] returns [String text]
         @init {
            StringBuffer buf = null;
            Integer channel = null;
@@ -1001,7 +1050,7 @@ curly_chunk returns [String text]
 			    buf.append( input.LT(-1).getText() );
 			  }
 			|
-			chunk=curly_chunk
+			chunk=curly_chunk[descr]
 			  {
 			    buf.append( chunk );
 			  }
@@ -1017,6 +1066,9 @@ curly_chunk returns [String text]
                 {
                     buf.append( loc.getText() );
 		    text = buf.toString();
+		    if( descr != null ) {
+		        descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		    }
                 }
 	;
 
@@ -1184,12 +1236,35 @@ lhs_forall returns [ForallDescr d]
 		')'
 	;
 
-dotted_name returns [String name]
+dotted_name[BaseDescr descr] returns [String name]
 	@init {
 		name = null;
 	}
 	:	
-		id=ID { name=id.getText(); } ( '.' ident=identifier { name = name + "." + ident.getText(); } )* ( '[' ']' { name = name + "[]";})*
+		id=ID 
+		{ 
+		    name=id.getText(); 
+		    if( descr != null ) {
+			descr.setStartCharacter( ((CommonToken)id).getStartIndex() );
+			descr.setEndCharacter( ((CommonToken)id).getStopIndex() );
+		    }
+		} 
+		( '.' ident=identifier 
+		    { 
+		        name = name + "." + ident.getText(); 
+    		        if( descr != null ) {
+			    descr.setEndCharacter( ((CommonToken)ident).getStopIndex() );
+		        }
+		    } 
+		)* 
+		( '[' loc=']'
+		    { 
+		        name = name + "[]";
+    		        if( descr != null ) {
+			    descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		        }
+		    }
+		)*
 	;
 	
 argument returns [String name]

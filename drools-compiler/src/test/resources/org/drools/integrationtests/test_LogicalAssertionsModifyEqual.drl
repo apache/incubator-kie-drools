@@ -11,7 +11,7 @@ rule "assert"
 end
 
 rule "modify"
-	no-loop true;
+	no-loop true
 	when
 		c : CheeseEqual(price == 2)
 	then
