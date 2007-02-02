@@ -1222,9 +1222,13 @@ lhs_eval returns [BaseDescr d]
 	}
 	:	loc=EVAL c=paren_chunk
 		{ 
-		        String body = c.substring(1, c.length()-1);
-			checkTrailingSemicolon( body, offset(loc.getLine()) );
+		        String body = null;
+		        if( c != null ) {
+		            body = c.substring(1, c.length()-1);
+			    checkTrailingSemicolon( body, offset(loc.getLine()) );
+			}
 			d = new EvalDescr( body ); 
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
 	;
 	

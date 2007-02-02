@@ -1,4 +1,4 @@
-// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2007-02-02 11:54:37
+// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g 2007-02-02 12:27:40
 
 	package org.drools.lang;
 	import java.util.List;
@@ -5181,9 +5181,13 @@ public class DRLParser extends Parser {
             if (failed) return d;
             if ( backtracking==0 ) {
                
-              		        String body = c.substring(1, c.length()-1);
-              			checkTrailingSemicolon( body, offset(loc.getLine()) );
+              		        String body = null;
+              		        if( c != null ) {
+              		            body = c.substring(1, c.length()-1);
+              			    checkTrailingSemicolon( body, offset(loc.getLine()) );
+              			}
               			d = new EvalDescr( body ); 
+              			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
               		
             }
 
@@ -5202,7 +5206,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start lhs_forall
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1231:1: lhs_forall returns [ForallDescr d] : loc= FORALL '(' base= lhs_column ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+ ')' ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1235:1: lhs_forall returns [ForallDescr d] : loc= FORALL '(' base= lhs_column ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+ ')' ;
     public ForallDescr lhs_forall() throws RecognitionException {   
         ForallDescr d = null;
 
@@ -5216,8 +5220,8 @@ public class DRLParser extends Parser {
         		d = factory.createForall();
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1235:4: (loc= FORALL '(' base= lhs_column ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+ ')' )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1235:4: loc= FORALL '(' base= lhs_column ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+ ')'
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1239:4: (loc= FORALL '(' base= lhs_column ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+ ')' )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1239:4: loc= FORALL '(' base= lhs_column ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+ ')'
             {
             loc=(Token)input.LT(1);
             match(input,FORALL,FOLLOW_FORALL_in_lhs_forall3629); if (failed) return d;
@@ -5233,7 +5237,7 @@ public class DRLParser extends Parser {
               			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
               		
             }
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1241:3: ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1245:3: ( ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column )+
             int cnt50=0;
             loop50:
             do {
@@ -5246,9 +5250,9 @@ public class DRLParser extends Parser {
 
                 switch (alt50) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1241:5: ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column
+            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1245:5: ( ( ( ',' )=> ',' )? lhs_column )=> ( ( ',' )=> ',' )? column= lhs_column
             	    {
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1241:5: ( ( ',' )=> ',' )?
+            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1245:5: ( ( ',' )=> ',' )?
             	    int alt49=2;
             	    int LA49_0 = input.LA(1);
             	    if ( (LA49_0==64) ) {
@@ -5256,7 +5260,7 @@ public class DRLParser extends Parser {
             	    }
             	    switch (alt49) {
             	        case 1 :
-            	            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1241:6: ( ',' )=> ','
+            	            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1245:6: ( ',' )=> ','
             	            {
             	            match(input,64,FOLLOW_64_in_lhs_forall3649); if (failed) return d;
 
@@ -5306,7 +5310,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start dotted_name
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1250:1: dotted_name[BaseDescr descr] returns [String name] : id= ID ( ( '.' identifier )=> '.' ident= identifier )* ( ( '[' ']' )=> '[' loc= ']' )* ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1254:1: dotted_name[BaseDescr descr] returns [String name] : id= ID ( ( '.' identifier )=> '.' ident= identifier )* ( ( '[' ']' )=> '[' loc= ']' )* ;
     public String dotted_name(BaseDescr descr) throws RecognitionException {   
         String name = null;
 
@@ -5319,8 +5323,8 @@ public class DRLParser extends Parser {
         		name = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1255:3: (id= ID ( ( '.' identifier )=> '.' ident= identifier )* ( ( '[' ']' )=> '[' loc= ']' )* )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1255:3: id= ID ( ( '.' identifier )=> '.' ident= identifier )* ( ( '[' ']' )=> '[' loc= ']' )*
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1259:3: (id= ID ( ( '.' identifier )=> '.' ident= identifier )* ( ( '[' ']' )=> '[' loc= ']' )* )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1259:3: id= ID ( ( '.' identifier )=> '.' ident= identifier )* ( ( '[' ']' )=> '[' loc= ']' )*
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_dotted_name3695); if (failed) return name;
@@ -5333,7 +5337,7 @@ public class DRLParser extends Parser {
               		    }
               		
             }
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1263:3: ( ( '.' identifier )=> '.' ident= identifier )*
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1267:3: ( ( '.' identifier )=> '.' ident= identifier )*
             loop51:
             do {
                 int alt51=2;
@@ -5345,7 +5349,7 @@ public class DRLParser extends Parser {
 
                 switch (alt51) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1263:5: ( '.' identifier )=> '.' ident= identifier
+            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1267:5: ( '.' identifier )=> '.' ident= identifier
             	    {
             	    match(input,62,FOLLOW_62_in_dotted_name3707); if (failed) return name;
             	    pushFollow(FOLLOW_identifier_in_dotted_name3711);
@@ -5369,7 +5373,7 @@ public class DRLParser extends Parser {
                 }
             } while (true);
 
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1271:3: ( ( '[' ']' )=> '[' loc= ']' )*
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1275:3: ( ( '[' ']' )=> '[' loc= ']' )*
             loop52:
             do {
                 int alt52=2;
@@ -5381,7 +5385,7 @@ public class DRLParser extends Parser {
 
                 switch (alt52) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1271:5: ( '[' ']' )=> '[' loc= ']'
+            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1275:5: ( '[' ']' )=> '[' loc= ']'
             	    {
             	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_dotted_name3733); if (failed) return name;
             	    loc=(Token)input.LT(1);
@@ -5419,7 +5423,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start argument
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1281:1: argument returns [String name] : id= identifier ( ( '[' ']' )=> '[' ']' )* ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1285:1: argument returns [String name] : id= identifier ( ( '[' ']' )=> '[' ']' )* ;
     public String argument() throws RecognitionException {   
         String name = null;
 
@@ -5430,8 +5434,8 @@ public class DRLParser extends Parser {
         		name = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1286:3: (id= identifier ( ( '[' ']' )=> '[' ']' )* )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1286:3: id= identifier ( ( '[' ']' )=> '[' ']' )*
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1290:3: (id= identifier ( ( '[' ']' )=> '[' ']' )* )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1290:3: id= identifier ( ( '[' ']' )=> '[' ']' )*
             {
             pushFollow(FOLLOW_identifier_in_argument3776);
             id=identifier();
@@ -5440,7 +5444,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
                name=id.getText(); 
             }
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1286:40: ( ( '[' ']' )=> '[' ']' )*
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1290:40: ( ( '[' ']' )=> '[' ']' )*
             loop53:
             do {
                 int alt53=2;
@@ -5452,7 +5456,7 @@ public class DRLParser extends Parser {
 
                 switch (alt53) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1286:42: ( '[' ']' )=> '[' ']'
+            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1290:42: ( '[' ']' )=> '[' ']'
             	    {
             	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_argument3782); if (failed) return name;
             	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_argument3784); if (failed) return name;
@@ -5484,7 +5488,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start rhs_chunk
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1289:1: rhs_chunk[RuleDescr rule] : start= THEN ( (~ END )=>~ END )* loc= END ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1293:1: rhs_chunk[RuleDescr rule] : start= THEN ( (~ END )=>~ END )* loc= END ;
     public void rhs_chunk(RuleDescr rule) throws RecognitionException {   
         Token start=null;
         Token loc=null;
@@ -5494,8 +5498,8 @@ public class DRLParser extends Parser {
                    Integer channel = null;
                 
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1295:10: (start= THEN ( (~ END )=>~ END )* loc= END )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1295:10: start= THEN ( (~ END )=>~ END )* loc= END
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1299:10: (start= THEN ( (~ END )=>~ END )* loc= END )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1299:10: start= THEN ( (~ END )=>~ END )* loc= END
             {
             if ( backtracking==0 ) {
               
@@ -5506,7 +5510,7 @@ public class DRLParser extends Parser {
             }
             start=(Token)input.LT(1);
             match(input,THEN,FOLLOW_THEN_in_rhs_chunk3828); if (failed) return ;
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1301:3: ( (~ END )=>~ END )*
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1305:3: ( (~ END )=>~ END )*
             loop54:
             do {
                 int alt54=2;
@@ -5518,7 +5522,7 @@ public class DRLParser extends Parser {
 
                 switch (alt54) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1302:6: (~ END )=>~ END
+            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1306:6: (~ END )=>~ END
             	    {
             	    if ( (input.LA(1)>=PACKAGE && input.LA(1)<=QUERY)||(input.LA(1)>=TEMPLATE && input.LA(1)<=76) ) {
             	        input.consume();
@@ -5589,7 +5593,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start name
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1332:1: name returns [String s] : ( ( ID )=>tok= ID | str= STRING ) ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1336:1: name returns [String s] : ( ( ID )=>tok= ID | str= STRING ) ;
     public String name() throws RecognitionException {   
         String s = null;
 
@@ -5597,10 +5601,10 @@ public class DRLParser extends Parser {
         Token str=null;
 
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1334:2: ( ( ( ID )=>tok= ID | str= STRING ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1334:2: ( ( ID )=>tok= ID | str= STRING )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1338:2: ( ( ( ID )=>tok= ID | str= STRING ) )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1338:2: ( ( ID )=>tok= ID | str= STRING )
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1334:2: ( ( ID )=>tok= ID | str= STRING )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1338:2: ( ( ID )=>tok= ID | str= STRING )
             int alt55=2;
             int LA55_0 = input.LA(1);
             if ( (LA55_0==ID) ) {
@@ -5612,13 +5616,13 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return s;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1334:2: ( ( ID )=>tok= ID | str= STRING )", 55, 0, input);
+                    new NoViableAltException("1338:2: ( ( ID )=>tok= ID | str= STRING )", 55, 0, input);
 
                 throw nvae;
             }
             switch (alt55) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1335:6: ( ID )=>tok= ID
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1339:6: ( ID )=>tok= ID
                     {
                     tok=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_name3921); if (failed) return s;
@@ -5631,7 +5635,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1340:6: str= STRING
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1344:6: str= STRING
                     {
                     str=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_name3940); if (failed) return s;
@@ -5662,17 +5666,17 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start identifier
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1347:1: identifier returns [Token tok] : ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END ) ;
+    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1351:1: identifier returns [Token tok] : ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END ) ;
     public Token identifier() throws RecognitionException {   
         Token tok = null;
 
         Token t=null;
 
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1349:2: ( ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1349:2: ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1353:2: ( ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END ) )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1353:2: ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END )
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1349:2: ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END )
+            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1353:2: ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END )
             int alt56=31;
             switch ( input.LA(1) ) {
             case ID:
@@ -5771,14 +5775,14 @@ public class DRLParser extends Parser {
             default:
                 if (backtracking>0) {failed=true; return tok;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1349:2: ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END )", 56, 0, input);
+                    new NoViableAltException("1353:2: ( ( ID )=>t= ID | ( PACKAGE )=>t= PACKAGE | ( FUNCTION )=>t= FUNCTION | ( GLOBAL )=>t= GLOBAL | ( IMPORT )=>t= IMPORT | ( RULE )=>t= RULE | ( QUERY )=>t= QUERY | ( TEMPLATE )=>t= TEMPLATE | ( ATTRIBUTES )=>t= ATTRIBUTES | ( ENABLED )=>t= ENABLED | ( SALIENCE )=>t= SALIENCE | ( DURATION )=>t= DURATION | ( FROM )=>t= FROM | ( ACCUMULATE )=>t= ACCUMULATE | ( INIT )=>t= INIT | ( ACTION )=>t= ACTION | ( RESULT )=>t= RESULT | ( COLLECT )=>t= COLLECT | ( OR )=>t= OR | ( AND )=>t= AND | ( CONTAINS )=>t= CONTAINS | ( EXCLUDES )=>t= EXCLUDES | ( MATCHES )=>t= MATCHES | ( NULL )=>t= NULL | ( EXISTS )=>t= EXISTS | ( NOT )=>t= NOT | ( EVAL )=>t= EVAL | ( FORALL )=>t= FORALL | ( WHEN )=>t= WHEN | ( THEN )=>t= THEN | t= END )", 56, 0, input);
 
                 throw nvae;
             }
 
             switch (alt56) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1349:10: ( ID )=>t= ID
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1353:10: ( ID )=>t= ID
                     {
                     t=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_identifier3978); if (failed) return tok;
@@ -5786,7 +5790,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1350:4: ( PACKAGE )=>t= PACKAGE
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1354:4: ( PACKAGE )=>t= PACKAGE
                     {
                     t=(Token)input.LT(1);
                     match(input,PACKAGE,FOLLOW_PACKAGE_in_identifier3991); if (failed) return tok;
@@ -5794,7 +5798,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1351:4: ( FUNCTION )=>t= FUNCTION
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1355:4: ( FUNCTION )=>t= FUNCTION
                     {
                     t=(Token)input.LT(1);
                     match(input,FUNCTION,FOLLOW_FUNCTION_in_identifier3998); if (failed) return tok;
@@ -5802,7 +5806,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1352:4: ( GLOBAL )=>t= GLOBAL
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1356:4: ( GLOBAL )=>t= GLOBAL
                     {
                     t=(Token)input.LT(1);
                     match(input,GLOBAL,FOLLOW_GLOBAL_in_identifier4005); if (failed) return tok;
@@ -5810,7 +5814,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1353:4: ( IMPORT )=>t= IMPORT
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1357:4: ( IMPORT )=>t= IMPORT
                     {
                     t=(Token)input.LT(1);
                     match(input,IMPORT,FOLLOW_IMPORT_in_identifier4012); if (failed) return tok;
@@ -5818,7 +5822,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1354:4: ( RULE )=>t= RULE
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1358:4: ( RULE )=>t= RULE
                     {
                     t=(Token)input.LT(1);
                     match(input,RULE,FOLLOW_RULE_in_identifier4021); if (failed) return tok;
@@ -5826,7 +5830,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1355:4: ( QUERY )=>t= QUERY
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1359:4: ( QUERY )=>t= QUERY
                     {
                     t=(Token)input.LT(1);
                     match(input,QUERY,FOLLOW_QUERY_in_identifier4028); if (failed) return tok;
@@ -5834,7 +5838,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1356:17: ( TEMPLATE )=>t= TEMPLATE
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1360:17: ( TEMPLATE )=>t= TEMPLATE
                     {
                     t=(Token)input.LT(1);
                     match(input,TEMPLATE,FOLLOW_TEMPLATE_in_identifier4049); if (failed) return tok;
@@ -5842,7 +5846,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1357:17: ( ATTRIBUTES )=>t= ATTRIBUTES
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1361:17: ( ATTRIBUTES )=>t= ATTRIBUTES
                     {
                     t=(Token)input.LT(1);
                     match(input,ATTRIBUTES,FOLLOW_ATTRIBUTES_in_identifier4077); if (failed) return tok;
@@ -5850,7 +5854,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1358:17: ( ENABLED )=>t= ENABLED
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1362:17: ( ENABLED )=>t= ENABLED
                     {
                     t=(Token)input.LT(1);
                     match(input,ENABLED,FOLLOW_ENABLED_in_identifier4103); if (failed) return tok;
@@ -5858,7 +5862,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1359:17: ( SALIENCE )=>t= SALIENCE
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1363:17: ( SALIENCE )=>t= SALIENCE
                     {
                     t=(Token)input.LT(1);
                     match(input,SALIENCE,FOLLOW_SALIENCE_in_identifier4132); if (failed) return tok;
@@ -5866,7 +5870,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 12 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1360:17: ( DURATION )=>t= DURATION
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1364:17: ( DURATION )=>t= DURATION
                     {
                     t=(Token)input.LT(1);
                     match(input,DURATION,FOLLOW_DURATION_in_identifier4154); if (failed) return tok;
@@ -5874,7 +5878,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 13 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1361:17: ( FROM )=>t= FROM
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1365:17: ( FROM )=>t= FROM
                     {
                     t=(Token)input.LT(1);
                     match(input,FROM,FOLLOW_FROM_in_identifier4176); if (failed) return tok;
@@ -5882,7 +5886,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 14 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1362:17: ( ACCUMULATE )=>t= ACCUMULATE
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1366:17: ( ACCUMULATE )=>t= ACCUMULATE
                     {
                     t=(Token)input.LT(1);
                     match(input,ACCUMULATE,FOLLOW_ACCUMULATE_in_identifier4205); if (failed) return tok;
@@ -5890,7 +5894,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 15 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1363:17: ( INIT )=>t= INIT
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1367:17: ( INIT )=>t= INIT
                     {
                     t=(Token)input.LT(1);
                     match(input,INIT,FOLLOW_INIT_in_identifier4227); if (failed) return tok;
@@ -5898,7 +5902,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 16 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1364:17: ( ACTION )=>t= ACTION
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1368:17: ( ACTION )=>t= ACTION
                     {
                     t=(Token)input.LT(1);
                     match(input,ACTION,FOLLOW_ACTION_in_identifier4256); if (failed) return tok;
@@ -5906,7 +5910,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 17 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1365:17: ( RESULT )=>t= RESULT
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1369:17: ( RESULT )=>t= RESULT
                     {
                     t=(Token)input.LT(1);
                     match(input,RESULT,FOLLOW_RESULT_in_identifier4285); if (failed) return tok;
@@ -5914,7 +5918,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 18 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1366:17: ( COLLECT )=>t= COLLECT
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1370:17: ( COLLECT )=>t= COLLECT
                     {
                     t=(Token)input.LT(1);
                     match(input,COLLECT,FOLLOW_COLLECT_in_identifier4314); if (failed) return tok;
@@ -5922,7 +5926,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 19 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1367:17: ( OR )=>t= OR
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1371:17: ( OR )=>t= OR
                     {
                     t=(Token)input.LT(1);
                     match(input,OR,FOLLOW_OR_in_identifier4343); if (failed) return tok;
@@ -5930,7 +5934,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 20 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1368:17: ( AND )=>t= AND
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1372:17: ( AND )=>t= AND
                     {
                     t=(Token)input.LT(1);
                     match(input,AND,FOLLOW_AND_in_identifier4372); if (failed) return tok;
@@ -5938,7 +5942,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 21 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1369:17: ( CONTAINS )=>t= CONTAINS
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1373:17: ( CONTAINS )=>t= CONTAINS
                     {
                     t=(Token)input.LT(1);
                     match(input,CONTAINS,FOLLOW_CONTAINS_in_identifier4401); if (failed) return tok;
@@ -5946,7 +5950,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 22 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1370:17: ( EXCLUDES )=>t= EXCLUDES
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1374:17: ( EXCLUDES )=>t= EXCLUDES
                     {
                     t=(Token)input.LT(1);
                     match(input,EXCLUDES,FOLLOW_EXCLUDES_in_identifier4423); if (failed) return tok;
@@ -5954,7 +5958,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 23 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1371:17: ( MATCHES )=>t= MATCHES
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1375:17: ( MATCHES )=>t= MATCHES
                     {
                     t=(Token)input.LT(1);
                     match(input,MATCHES,FOLLOW_MATCHES_in_identifier4445); if (failed) return tok;
@@ -5962,7 +5966,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 24 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1372:17: ( NULL )=>t= NULL
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1376:17: ( NULL )=>t= NULL
                     {
                     t=(Token)input.LT(1);
                     match(input,NULL,FOLLOW_NULL_in_identifier4474); if (failed) return tok;
@@ -5970,7 +5974,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 25 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1373:17: ( EXISTS )=>t= EXISTS
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1377:17: ( EXISTS )=>t= EXISTS
                     {
                     t=(Token)input.LT(1);
                     match(input,EXISTS,FOLLOW_EXISTS_in_identifier4503); if (failed) return tok;
@@ -5978,7 +5982,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 26 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1374:17: ( NOT )=>t= NOT
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1378:17: ( NOT )=>t= NOT
                     {
                     t=(Token)input.LT(1);
                     match(input,NOT,FOLLOW_NOT_in_identifier4532); if (failed) return tok;
@@ -5986,7 +5990,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 27 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1375:17: ( EVAL )=>t= EVAL
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1379:17: ( EVAL )=>t= EVAL
                     {
                     t=(Token)input.LT(1);
                     match(input,EVAL,FOLLOW_EVAL_in_identifier4561); if (failed) return tok;
@@ -5994,7 +5998,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 28 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1376:17: ( FORALL )=>t= FORALL
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1380:17: ( FORALL )=>t= FORALL
                     {
                     t=(Token)input.LT(1);
                     match(input,FORALL,FOLLOW_FORALL_in_identifier4590); if (failed) return tok;
@@ -6002,7 +6006,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 29 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1377:17: ( WHEN )=>t= WHEN
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1381:17: ( WHEN )=>t= WHEN
                     {
                     t=(Token)input.LT(1);
                     match(input,WHEN,FOLLOW_WHEN_in_identifier4628); if (failed) return tok;
@@ -6010,7 +6014,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 30 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1378:17: ( THEN )=>t= THEN
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1382:17: ( THEN )=>t= THEN
                     {
                     t=(Token)input.LT(1);
                     match(input,THEN,FOLLOW_THEN_in_identifier4660); if (failed) return tok;
@@ -6018,7 +6022,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 31 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1379:17: t= END
+                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\lang\\DRL.g:1383:17: t= END
                     {
                     t=(Token)input.LT(1);
                     match(input,END,FOLLOW_END_in_identifier4689); if (failed) return tok;
