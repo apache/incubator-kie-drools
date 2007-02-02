@@ -840,21 +840,29 @@ fact_binding returns [BaseDescr d]
 fact returns [BaseDescr d] 
 	@init {
 		d=null;
+		ColumnDescr column = null;
 	}
- 	:	id=dotted_name[null] 
+ 	:	
+ 	        {
+ 			column = new ColumnDescr( );
+ 			d = column; 
+ 	        }
+ 	        id=dotted_name[d] 
  		{ 
- 			d = new ColumnDescr( id ); 
+ 		        column.setObjectType( id );
+ 		        column.setEndCharacter( -1 );
  		}
  		loc=LEFT_PAREN {
- 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
- 			        d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+ 				column.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+ 			        column.setLeftParentCharacter( ((CommonToken)loc).getStartIndex() );
  			} 
- 		( constraints[(ColumnDescr) d]  )? 
+ 		( constraints[column]  )? 
  		endLoc=RIGHT_PAREN
 		{
 		        if( endLoc.getType() == RIGHT_PAREN ) {
-				d.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
-				d.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
+				column.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
+				column.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
+ 			        column.setRightParentCharacter( ((CommonToken)endLoc).getStartIndex() );
 			}
  		}
  	;
