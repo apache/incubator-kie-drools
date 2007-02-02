@@ -632,15 +632,15 @@ duration returns [AttributeDescr d]
 	;		
 	
 
-normal_lhs_block[AndDescr descrs]
+normal_lhs_block[AndDescr descr]
 	:
-		(	d=lhs
-			{ if(d != null) descrs.addDescr( d ); }
+		(	d=lhs[descr]
+			{ if(d != null) descr.addDescr( d ); }
 		)*
 	;
 
 	
-lhs returns [BaseDescr d]
+lhs[ConditionalElementDescr ce] returns [BaseDescr d]
 	@init {
 		d=null;
 	}
@@ -883,7 +883,9 @@ constraint[ColumnDescr column]
 		)? 
 		f=identifier	
 		{
-			if ( fb != null ) {
+		    if( f != null ) {
+		    
+			if ( fbd != null ) {
 			    fbd.setFieldName( f.getText() );
  			    fbd.setEndCharacter( ((CommonToken)f).getStopIndex() );
 			} 
@@ -895,6 +897,7 @@ constraint[ColumnDescr column]
 			if( fb == null ) {
 			    column.addDescr( fc );
 			}
+		    }
 		}
 		(
 			(	rd=constraint_expression
@@ -1178,7 +1181,7 @@ lhs_unary returns [BaseDescr d]
 		          )
 		        )?
 		|	u=lhs_forall  
-		|	'(' u=lhs ')'
+		|	'(' u=lhs_or ')'
 		) { d = u; }
 		opt_semicolon
 	;
