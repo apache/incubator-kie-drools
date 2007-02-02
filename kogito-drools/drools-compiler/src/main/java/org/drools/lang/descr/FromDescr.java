@@ -1,5 +1,6 @@
 package org.drools.lang.descr;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FromDescr extends BaseDescr
@@ -34,8 +35,7 @@ public class FromDescr extends BaseDescr
     }
 
     public List getDescrs() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.EMPTY_LIST;
     }
 	
    
