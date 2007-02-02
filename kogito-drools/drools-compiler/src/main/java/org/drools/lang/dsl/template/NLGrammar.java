@@ -40,7 +40,8 @@ public class NLGrammar
 
     private static final long    serialVersionUID = 1L;
     private final List                 mappings         = new ArrayList();
-    private static final Pattern itemPrefix       = Pattern.compile( "\\[\\s*(when|then)\\s*\\].*" );
+    // private static final Pattern itemPrefix       = Pattern.compile( "\\[\\s*(when|then)\\s*\\].*" );
+    private static final Pattern itemMetadata     = Pattern.compile( "\\[[a-zA-Z\\d\\.]+\\]" );
 
     private String               description;
 
@@ -54,7 +55,7 @@ public class NLGrammar
     public List getMappings() {
         return this.mappings;
     }
-
+    
     /** Get the human readable description of this language definition. This should just be a comment. */
     public String getDescription() {
         return this.description;
@@ -119,9 +120,14 @@ public class NLGrammar
             for ( final Iterator iter = this.mappings.iterator(); iter.hasNext(); ) {
                 final NLMappingItem item = (NLMappingItem) iter.next();
                 if ( item.getScope().equals( "*" ) ) {
-                    buffer.write( item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n" );
+                    buffer.write("[" + item.getObjectName() + "]"
+							+ item.getNaturalTemplate() + "="
+							+ item.getTargetTemplate() + "\n");
                 } else {
-                    buffer.write( "[" + item.getScope() + "]" + item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n" );
+                    buffer.write("[" + item.getScope() + "]["
+							+ item.getObjectName() + "]"
+							+ item.getNaturalTemplate() + "="
+							+ item.getTargetTemplate() + "\n");
                 }
             }
             buffer.flush();
@@ -158,19 +164,31 @@ public class NLGrammar
                                     "\\",
                                     "" );
 
-        final Matcher matcher = NLGrammar.itemPrefix.matcher( left );
-        if ( matcher.matches() ) {
+        final Matcher m2 = NLGrammar.itemMetadata.matcher(left);
+        //final Matcher matcher = NLGrammar.itemPrefix.matcher( left );
+        if ( m2.find()) {
             //get out priority, association
-            final String type = matcher.group( 1 );
-            left = left.substring( left.indexOf( "]" ) + 1 ).trim();
+            String type = m2.group( 0 );
+            type = type.substring(1,type.length() - 1);
+            if (m2.find()) {
+                String obj = m2.group( 0 );
+                obj = obj.substring(1,obj.length() - 1);
+                left = left.substring( left.lastIndexOf( "]" ) + 1 ).trim();
+                return new NLMappingItem( left,
+                                          right,
+                                          type,
+                                          obj);
+            }
+            left = left.substring( left.lastIndexOf( "]" ) + 1 ).trim();
             return new NLMappingItem( left,
                                       right,
-                                      type );
-
+                                      type,
+                                      "*");
         } else {
             return new NLMappingItem( left,
                                       right,
-                                      "*" );
+                                      "*",
+                                      "*");
 
         }
     }

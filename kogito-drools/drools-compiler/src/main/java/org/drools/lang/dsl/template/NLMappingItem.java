@@ -43,7 +43,12 @@ public class NLMappingItem
     private String               naturalTemplate;
     private String               targetTemplate;
     private String               scope;
+    private String               objectName;
 
+    public void setObjectName(String name) {
+        this.objectName = name;
+    }
+    
     public void setNaturalTemplate(final String naturalTemplate) {
         this.naturalTemplate = naturalTemplate.replaceAll( "\\s*,\\s*",
                                                            " , " );
@@ -59,12 +64,26 @@ public class NLMappingItem
 
     public NLMappingItem(final String naturalTemplate,
                          final String targetTemplate,
-                         final String scope) {
+                         final String scope,
+                         final String objectName) {
         this.setNaturalTemplate( naturalTemplate );
         this.setTargetTemplate( targetTemplate );
         this.setScope( scope );
+        this.setObjectName(objectName);
     }
 
+    public NLMappingItem(final String naturalTemplate,
+            final String targetTemplate,
+            final String scope) {
+    	this.setNaturalTemplate( naturalTemplate );
+    	this.setTargetTemplate( targetTemplate );
+    	this.setScope( scope );
+    }
+    
+    public String getObjectName() {
+        return this.objectName;
+    }
+    
     public String getNaturalTemplate() {
         return this.naturalTemplate;
     }
