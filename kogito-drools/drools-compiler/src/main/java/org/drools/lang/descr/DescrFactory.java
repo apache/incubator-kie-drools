@@ -41,4 +41,20 @@ public class DescrFactory {
     public FunctionImportDescr createFunctionImport()  {
         return new FunctionImportDescr();
     }
+    
+    public QueryDescr createQuery(String queryName) {
+        return new QueryDescr(queryName, "");
+    }
+    
+    public FunctionDescr createFunction(String functionName, String returnType) {
+        return new FunctionDescr( functionName, returnType );
+    }
+    
+    public FactTemplateDescr createFactTemplate(String templateName) {
+        return new FactTemplateDescr( templateName );
+    }
+    
+    public FieldTemplateDescr createFieldTemplate() {
+        return new FieldTemplateDescr();
+    }
 }
