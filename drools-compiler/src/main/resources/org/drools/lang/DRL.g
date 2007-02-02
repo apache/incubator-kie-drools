@@ -23,6 +23,9 @@ options {backtrack=true;}
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
 	
+	// THE FOLLOWING LINE IS A DUMMY ATTRIBUTE TO WORK AROUND AN ANTLR BUG
+	private BaseDescr from = null;
+	
 	public void setParserDebug(boolean parserDebug) {
 		this.parserDebug = parserDebug;
 	}
@@ -661,7 +664,7 @@ from_statement returns [FromDescr d]
 		d=factory.createFrom();
 	}
 	:
-	ds=from_source
+	ds=from_source[d]
 		{
 			d.setDataSource(ds);
 		
@@ -671,42 +674,37 @@ from_statement returns [FromDescr d]
 		
 	;
 	
-from_source returns [DeclarativeInvokerDescr ds]
+from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 	@init {
 		ds = null;
 		AccessorDescr ad = null;
 	}
 	:	
-		(( ( identifier LEFT_PAREN) => functionName=identifier args=paren_chunk			
-		        {
- 				ad = new AccessorDescr();	
-				ad.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );
-				ad.setStartCharacter( ((CommonToken)functionName).getStartIndex() );
-				ad.setEndCharacter( ((CommonToken)functionName).getStopIndex() );
-				ds = ad;
-				FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
-				fc.setLocation( offset(functionName.getLine()), functionName.getCharPositionInLine() );			
+		ident=identifier
+		{
+			ad = new AccessorDescr(ident.getText());	
+			ad.setLocation( offset(ident.getLine()), ident.getCharPositionInLine() );
+			ad.setStartCharacter( ((CommonToken)ident).getStartIndex() );
+			ad.setEndCharacter( ((CommonToken)ident).getStopIndex() );
+			ds = ad;
+		}
+		(args=paren_chunk[from]
+		{
+			if( args != null ) {
+				ad.setVariableName( null );
+				FunctionCallDescr fc = new FunctionCallDescr(ident.getText());
+				fc.setLocation( offset(ident.getLine()), ident.getCharPositionInLine() );			
 				fc.setArguments(args);
-				fc.setStartCharacter( ((CommonToken)functionName).getStartIndex() );
-				fc.setEndCharacter( ((CommonToken)functionName).getStopIndex() );
+				fc.setStartCharacter( ((CommonToken)ident).getStartIndex() );
+				fc.setEndCharacter( ((CommonToken)ident).getStopIndex() );
 				ad.addInvoker(fc);
 			}
-		)
-		|
-		(  ( identifier ~LEFT_PAREN ) => var=identifier
-		    {
-			ad = new AccessorDescr(var.getText());	
-			ad.setLocation( offset(var.getLine()), var.getCharPositionInLine() );
-			ad.setStartCharacter( ((CommonToken)var).getStartIndex() );
-			ad.setEndCharacter( ((CommonToken)var).getStopIndex() );
-			ds = ad;
-		    }
-		))  
-		
-		expression_chain[ad]?
+		}
+		)?
+		expression_chain[from, ad]?
 	;	
 	
-expression_chain[AccessorDescr as]
+expression_chain[FromDescr from, AccessorDescr as]
 	@init {
   		FieldAccessDescr fa = null;
 	    	MethodAccessDescr ma = null;	
@@ -720,12 +718,12 @@ expression_chain[AccessorDescr as]
 		fa.setEndCharacter( ((CommonToken)field).getStopIndex() );
 	    }
 	  (
-	    ( LEFT_SQUARE ) => sqarg=square_chunk
+	    ( LEFT_SQUARE ) => sqarg=square_chunk[from]
 	      {
 	          fa.setArgument( sqarg );	
 	      }
 	    |
-	    ( LEFT_PAREN ) => paarg=paren_chunk
+	    ( LEFT_PAREN ) => paarg=paren_chunk[from]
 		{
 	    	  ma = new MethodAccessDescr( field.getText(), paarg );	
 		  ma.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
@@ -739,7 +737,7 @@ expression_chain[AccessorDescr as]
 	          as.addInvoker( fa );
 	      }
 	  }
-	  expression_chain[as]?
+	  expression_chain[from, as]?
 	)  
 	;	
 	
@@ -757,15 +755,15 @@ accumulate_statement returns [AccumulateDescr d]
 		{
 		        d.setSourceColumn( (ColumnDescr)column );
 		}
-		INIT text=paren_chunk ',' 
+		INIT text=paren_chunk[null] ',' 
 		{
 		        d.setInitCode( text.substring(1, text.length()-1) );
 		}
-		ACTION text=paren_chunk ',' 
+		ACTION text=paren_chunk[null] ',' 
 		{
 		        d.setActionCode( text.substring(1, text.length()-1) );
 		}
-		RESULT text=paren_chunk loc=')'
+		RESULT text=paren_chunk[null] loc=')'
 		{
 		        d.setResultCode( text.substring(1, text.length()-1) );
 			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
@@ -927,7 +925,9 @@ constraint[ColumnDescr column]
 					}
 					rd=constraint_expression
 					{
-						fc.addRestriction(rd);
+					        if( rd != null ) {
+							fc.addRestriction(rd);
+					        }
 					}
 				)*
 			)
@@ -992,7 +992,7 @@ enum_constraint returns [String text]
 
 predicate[ColumnDescr column]
 	:
-		text=paren_chunk
+		text=paren_chunk[null]
 		{
 		        String body = text.substring(1, text.length()-1);
 			PredicateDescr d = new PredicateDescr( body );
@@ -1000,7 +1000,7 @@ predicate[ColumnDescr column]
 		}
 	;
 
-paren_chunk returns [String text]
+paren_chunk[BaseDescr descr] returns [String text]
         @init {
            StringBuffer buf = null;
            Integer channel = null;
@@ -1022,7 +1022,7 @@ paren_chunk returns [String text]
 			    buf.append( input.LT(-1).getText() );
 			  }
 			|
-			chunk=paren_chunk
+			chunk=paren_chunk[null]
 			  {
 			    buf.append( chunk );
 			  }
@@ -1038,6 +1038,9 @@ paren_chunk returns [String text]
                 {
                     buf.append( loc.getText() );
 		    text = buf.toString();
+		    if( descr != null ) {
+		        descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		    }
                 }
 	;
 
@@ -1083,7 +1086,7 @@ curly_chunk[BaseDescr descr] returns [String text]
                 }
 	;
 
-square_chunk returns [String text]
+square_chunk[BaseDescr descr]  returns [String text]
         @init {
            StringBuffer buf = null;
            Integer channel = null;
@@ -1105,7 +1108,7 @@ square_chunk returns [String text]
 			    buf.append( input.LT(-1).getText() );
 			  }
 			|
-			chunk=square_chunk
+			chunk=square_chunk[null]
 			  {
 			    buf.append( chunk );
 			  }
@@ -1121,6 +1124,9 @@ square_chunk returns [String text]
                 {
                     buf.append( loc.getText() );
 		    text = buf.toString();
+		    if( descr != null ) {
+		        descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		    }
                 }
 	;
 	
@@ -1129,7 +1135,7 @@ retval_constraint returns [String text]
 		text = null;
 	}
 	:	
-		c=paren_chunk { text = c.substring(1, c.length()-1); }
+		c=paren_chunk[null] { text = c.substring(1, c.length()-1); }
 	;
 
 lhs_or returns [BaseDescr d]
@@ -1185,7 +1191,7 @@ lhs_unary returns [BaseDescr d]
 		          FROM (
 		           ( ACCUMULATE ) => (ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); u=ac;})
 		          |( COLLECT ) => (cs=collect_statement {cs.setResultColumn((ColumnDescr) u); u=cs;}) 
-		          |(fm=from_statement {fm.setColumn((ColumnDescr) u); u=fm;}) 
+		          |( ~(ACCUMULATE|COLLECT) ) => (fm=from_statement {fm.setColumn((ColumnDescr) u); u=fm;}) 
 		          )
 		        )?
 		|	u=lhs_forall  
@@ -1218,16 +1224,16 @@ lhs_not	returns [NotDescr d]
 
 lhs_eval returns [BaseDescr d]
 	@init {
-		d = null;
+		d = new EvalDescr( );
 	}
-	:	loc=EVAL c=paren_chunk
+	:
+		loc=EVAL c=paren_chunk[d]
 		{ 
-		        String body = null;
 		        if( c != null ) {
-		            body = c.substring(1, c.length()-1);
+		            String body = c.substring(1, c.length()-1);
 			    checkTrailingSemicolon( body, offset(loc.getLine()) );
+			    ((EvalDescr) d).setText( body );
 			}
-			d = new EvalDescr( body ); 
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
 	;

@@ -439,7 +439,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithoutParens() throws Exception {
-        final String chunk = parse( "( foo )" ).paren_chunk();
+        final String chunk = parse( "( foo )" ).paren_chunk(null);
 
         assertEquals( "( foo )",
                       chunk );
@@ -448,7 +448,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithParens() throws Exception {
-        final String chunk = parse( "(fnord())" ).paren_chunk();
+        final String chunk = parse( "(fnord())" ).paren_chunk(null);
 
         assertEqualsIgnoreWhitespace( "(fnord())",
                                       chunk );
@@ -457,7 +457,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithParensAndQuotedString() throws Exception {
-        final String chunk = parse( "( fnord( \"cheese\" ) )" ).paren_chunk();
+        final String chunk = parse( "( fnord( \"cheese\" ) )" ).paren_chunk(null);
 
         assertEqualsIgnoreWhitespace( "( fnord( \"cheese\" ) )",
                                       chunk );
@@ -466,7 +466,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithRandomCharac5ters() throws Exception {
-        final String chunk = parse( "( %*9dkj)" ).paren_chunk();
+        final String chunk = parse( "( %*9dkj)" ).paren_chunk(null);
 
         assertEqualsIgnoreWhitespace( "( %*9dkj)",
                                       chunk );
