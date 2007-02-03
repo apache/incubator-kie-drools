@@ -991,12 +991,20 @@ enum_constraint returns [String text]
 	
 
 predicate[ColumnDescr column]
+        @init {
+		PredicateDescr d = null;
+        }
 	:
-		text=paren_chunk[null]
 		{
-		        String body = text.substring(1, text.length()-1);
-			PredicateDescr d = new PredicateDescr( body );
-			column.addDescr( d );
+			d = new PredicateDescr( );
+		}
+		text=paren_chunk[d]
+		{
+		        if( text != null ) {
+			        String body = text.substring(1, text.length()-1);
+			        d.setText( body );
+				column.addDescr( d );
+		        }
 		}
 	;
 
@@ -1204,22 +1212,51 @@ lhs_exist returns [BaseDescr d]
 	@init {
 		d = null;
 	}
-	:	loc=EXISTS ('(' column=lhs_or ')' | column=lhs_column)
-		{ 
-			d = new ExistsDescr( (ColumnDescr) column ); 
+	:	loc=EXISTS 
+		{
+			d = new ExistsDescr( ); 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-		}	
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+		}
+	        ( ( '(' column=lhs_or 
+	           	{ if ( column != null ) ((ExistsDescr)d).addDescr( column ); }
+	           end=')' 
+	                { if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() ); }
+	        )    
+	        | column=lhs_column
+	                {
+	                	if ( column != null ) {
+	                		((ExistsDescr)d).addDescr( column );
+	                		d.setEndCharacter( column.getEndCharacter() );
+	                	}
+	                }
+	        )
 	;
 	
 lhs_not	returns [NotDescr d]
 	@init {
 		d = null;
 	}
-	:	loc=NOT ('(' column=lhs_or  ')' | column=lhs_column)
+	:	loc=NOT 
 		{
-			d = new NotDescr( column ); 
+			d = new NotDescr( ); 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
+		( ( '(' column=lhs_or  
+	           	{ if ( column != null ) d.addDescr( column ); }
+	           end=')' 
+	                { if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() ); }
+		  )
+		| 
+		column=lhs_column
+	                {
+	                	if ( column != null ) {
+	                		d.addDescr( column );
+	                		d.setEndCharacter( column.getEndCharacter() );
+	                	}
+	                }
+		)
 	;
 
 lhs_eval returns [BaseDescr d]
@@ -1229,12 +1266,12 @@ lhs_eval returns [BaseDescr d]
 	:
 		loc=EVAL c=paren_chunk[d]
 		{ 
+			if ( loc != null ) d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		        if( c != null ) {
 		            String body = c.substring(1, c.length()-1);
 			    checkTrailingSemicolon( body, offset(loc.getLine()) );
 			    ((EvalDescr) d).setText( body );
 			}
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
 	;
 	
@@ -1244,6 +1281,7 @@ lhs_forall returns [ForallDescr d]
 	}
 	:	loc=FORALL '(' base=lhs_column   
 		{
+			if ( loc != null ) d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		        // adding the base column
 		        d.addDescr( base );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -1254,7 +1292,10 @@ lhs_forall returns [ForallDescr d]
 			d.addDescr( column );
 		}
 		)+
-		')'
+		end=')'
+		{
+		        if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() );
+		}
 	;
 
 dotted_name[BaseDescr descr] returns [String name]
