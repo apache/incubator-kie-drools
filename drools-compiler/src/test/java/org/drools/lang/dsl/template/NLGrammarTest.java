@@ -156,7 +156,7 @@ public class NLGrammarTest extends TestCase {
         g.save( writer );
 
         final String result = out.toString();
-        assertEquals( "#my description\n[then]This is something=boo\n[then]This is another=coo\nend=it\n",
+        assertEquals( "#my description\n[then][null]This is something=boo\n[then][null]This is another=coo\n[null]end=it\n",
                       result );
 
         //now load it to double check
