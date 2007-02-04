@@ -1,7 +1,11 @@
 package org.drools.testing.plugin.wizards;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -143,12 +147,13 @@ public class GenerateRtlWizard extends Wizard implements INewWizard {
 			testing.addScenarioToSuite(scenario);
 			TestSuite testSuite = testing.getTestSuite();
 			FileWriter out = new FileWriter(fileName);
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			Marshaller marshaller = new Marshaller(out);
         	marshaller.setSuppressXSIType(true);
         	marshaller.setSupressXMLDeclaration(true);
-        	marshaller.marshal(testSuite);   
-			InputStream stream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        	marshaller.marshal(testSuite);
+        	out.close();
+        	
+        	InputStream stream = openContentStream(fileName);
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -187,9 +192,17 @@ public class GenerateRtlWizard extends Wizard implements INewWizard {
 	 * We will initialize file contents with the newly generated rtl scenario
 	 */
 
-	private InputStream openContentStream() {
-		String contents =
-			"This is the initial file contents for *.rtl file that should be word-sorted in the Preview page of the multi-page editor";
+	private InputStream openContentStream(String fileName) throws CoreException {
+		String contents = "";
+		try {
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+    	String line;
+    	while ((line = br.readLine()) != null) {
+    		contents = contents + line;
+		}
+		}catch (Exception e) {
+			throwCoreException(e.getMessage());
+		}
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
