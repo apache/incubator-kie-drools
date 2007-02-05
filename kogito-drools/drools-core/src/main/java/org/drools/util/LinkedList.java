@@ -230,7 +230,7 @@ public class LinkedList
             return true;
         }
 
-        if ( object == null || object.getClass() != LinkedList.class ) {
+        if ( object == null || !(object instanceof LinkedList) ) {
             return false;
         }
 
