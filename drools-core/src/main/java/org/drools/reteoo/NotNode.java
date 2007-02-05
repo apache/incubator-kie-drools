@@ -244,7 +244,7 @@ public class NotNode extends BetaNode {
 
     public String toString() {
         ObjectSource source = this.rightInput;
-        while ( source.getClass() != ObjectTypeNode.class ) {
+        while ( !(source instanceof ObjectTypeNode ) ) {
             source = source.objectSource;
         }
 
