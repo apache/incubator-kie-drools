@@ -171,7 +171,7 @@ public class AgendaItem
             return true;
         }
 
-        if ( object == null || object.getClass() != AgendaItem.class ) {
+        if ( object == null || !(object instanceof AgendaItem) ) {
             return false;
         }
 

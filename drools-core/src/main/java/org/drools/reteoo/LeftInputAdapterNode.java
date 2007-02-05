@@ -263,7 +263,7 @@ public class LeftInputAdapterNode extends TupleSource
             return true;
         }
 
-        if ( object == null || object.getClass() != LeftInputAdapterNode.class ) {
+        if ( object == null || !( object instanceof LeftInputAdapterNode ) ) {
             return false;
         }
 

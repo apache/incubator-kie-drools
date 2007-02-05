@@ -53,11 +53,11 @@ public class CompositeObjectSinkAdapter
     }
 
     public void addObjectSink(final ObjectSink sink) {
-        if ( sink.getClass() == AlphaNode.class ) {
+        if ( sink instanceof AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-            if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
+            if ( fieldConstraint instanceof LiteralConstraint ) {
                 final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 final Evaluator evaluator = literalConstraint.getEvaluator();
 
@@ -96,11 +96,11 @@ public class CompositeObjectSinkAdapter
     }
 
     public void removeObjectSink(final ObjectSink sink) {
-        if ( sink.getClass() == AlphaNode.class ) {
+        if ( sink instanceof AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-            if ( fieldConstraint.getClass() == LiteralConstraint.class ) {
+            if ( fieldConstraint instanceof LiteralConstraint ) {
                 final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 final Evaluator evaluator = literalConstraint.getEvaluator();
                 final FieldValue value = literalConstraint.getField();

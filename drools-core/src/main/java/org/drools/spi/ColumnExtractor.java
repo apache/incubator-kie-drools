@@ -50,7 +50,7 @@ public class ColumnExtractor
 
     public Class getExtractToClass() {
         // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType.getClass() == ClassObjectType.class ) {
+        if ( this.objectType instanceof ClassObjectType ) {
             return ((ClassObjectType) this.objectType).getClassType();
         } else {
             return Fact.class;

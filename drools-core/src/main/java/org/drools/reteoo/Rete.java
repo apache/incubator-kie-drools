@@ -103,7 +103,7 @@ class Rete extends ObjectSource
 
         Object key = null;
 
-        if ( object.getClass() == FactImpl.class ) {
+        if ( object instanceof FactImpl ) {
             key = ((Fact) object).getFactTemplate().getName();
         } else {
             key = object.getClass();
@@ -152,7 +152,7 @@ class Rete extends ObjectSource
             cachedNodes = getMatchingNodes( object );
             Object key = null;
 
-            if ( object.getClass() == FactImpl.class ) {
+            if ( object instanceof FactImpl ) {
                 key = ((Fact) object).getFactTemplate().getName();
             } else {
                 key = object.getClass();
@@ -239,7 +239,7 @@ class Rete extends ObjectSource
             return true;
         }
 
-        if ( object == null || object.getClass() != Rete.class ) {
+        if ( object == null || !( object instanceof Rete ) ) {
             return false;
         }
 

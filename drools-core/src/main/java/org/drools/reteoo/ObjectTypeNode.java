@@ -265,7 +265,7 @@ public class ObjectTypeNode extends ObjectSource
             return true;
         }
 
-        if ( object == null || object.getClass() != ObjectTypeNode.class ) {
+        if ( object == null || !(object instanceof ObjectTypeNode ) ) {
             return false;
         }
 

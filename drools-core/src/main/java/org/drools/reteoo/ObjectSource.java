@@ -95,7 +95,7 @@ public abstract class ObjectSource extends BaseNode
     protected void addObjectSink(final ObjectSink objectSink) {
         if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
-        } else if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
+        } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
             final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter(alphaNodeHashingThreshold);
             sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
             sinkAdapter.addObjectSink( objectSink );
@@ -116,7 +116,7 @@ public abstract class ObjectSource extends BaseNode
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );            
         }
         
-        if ( this.sink.getClass() == SingleObjectSinkAdapter.class ) {
+        if ( this.sink instanceof SingleObjectSinkAdapter ) {
             this.sink = EmptyObjectSinkAdapter.getInstance();
         } else { 
             CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) this.sink;

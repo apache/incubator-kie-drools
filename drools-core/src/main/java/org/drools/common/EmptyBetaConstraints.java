@@ -110,7 +110,7 @@ public class EmptyBetaConstraints
             return true;
         }
 
-        return (object != null && getClass() == object.getClass());
+        return (object != null && ( object instanceof EmptyBetaConstraints ) );
     }
 
 }
