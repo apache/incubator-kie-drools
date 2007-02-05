@@ -16,6 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.FactHandle;
 import org.drools.base.ShadowProxy;
 import org.drools.util.AbstractHashTable.ObjectComparator;
 
@@ -27,14 +28,11 @@ public class IdentityAssertMapComparator
      */
     private static final long serialVersionUID = 320L;
 
-    private final Class       factHandleClass;
-
-    public IdentityAssertMapComparator(final Class factHandleClass) {
-        this.factHandleClass = factHandleClass;
+    public IdentityAssertMapComparator() {
     }
 
     public int hashCodeOf(final Object obj) {
-        if ( obj.getClass() == this.factHandleClass ) {
+        if ( obj instanceof FactHandle ) {
             return rehash( ((InternalFactHandle) obj).getObjectHashCode() );
         }
         return rehash( obj.hashCode() );
@@ -54,7 +52,7 @@ public class IdentityAssertMapComparator
      */
     public boolean equal(final Object o1,
                          final Object o2) {
-        if ( o1.getClass() == this.factHandleClass ) {
+        if ( o1 instanceof FactHandle ) {
             return ((InternalFactHandle) o1).getObject() == ((InternalFactHandle) o2).getObject();
         }
 
