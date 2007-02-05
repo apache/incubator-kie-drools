@@ -90,7 +90,7 @@ public class TupleStartEqualsConstraint
     }
 
     public boolean equals(final Object object) {
-        if ( this.getClass() == object.getClass() ) {
+        if ( object instanceof TupleStartEqualsConstraint ) {
             return true;
         }
         return false;

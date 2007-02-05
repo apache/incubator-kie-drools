@@ -125,7 +125,7 @@ public class TripleBetaConstraints
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        if ( constraint.getClass() == VariableConstraint.class ) {
+        if ( constraint instanceof VariableConstraint ) {
             final VariableConstraint variableConstraint = (VariableConstraint) constraint;
             return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
         } else {

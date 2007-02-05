@@ -107,7 +107,7 @@ public class DefaultBetaConstraints
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        if ( constraint.getClass() == VariableConstraint.class ) {
+        if ( constraint instanceof VariableConstraint ) {
             final VariableConstraint variableConstraint = (VariableConstraint) constraint;
             return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
         } else {
@@ -244,7 +244,7 @@ public class DefaultBetaConstraints
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || !( object instanceof DefaultBetaConstraints ) ) {
             return false;
         }
 

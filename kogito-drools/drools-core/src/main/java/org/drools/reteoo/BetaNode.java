@@ -135,7 +135,7 @@ abstract class BetaNode extends TupleSource
 
         final TupleSink[] sinks = this.sink.getSinks();
         for ( int i = 0, length = sinks.length; i < length; i++ ) {
-            if ( sinks[i].getClass() == RuleTerminalNode.class ) {
+            if ( sinks[i] instanceof RuleTerminalNode ) {
                 list.add( ((RuleTerminalNode) sinks[i]).getRule().getName() );
             } else if ( sinks[i] instanceof BetaNode ) {
                 list.addAll( ((BetaNode) sinks[i]).getRules() );
@@ -147,7 +147,7 @@ abstract class BetaNode extends TupleSource
 
     public ObjectTypeNode getObjectTypeNode() {
         ObjectSource source = this.rightInput;
-        while ( source.getClass() != ObjectTypeNode.class ) {
+        while ( !(source instanceof ObjectTypeNode) ) {
             source = source.objectSource;
         }
         return ((ObjectTypeNode) source);
@@ -219,7 +219,7 @@ abstract class BetaNode extends TupleSource
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || !( object instanceof BetaNode) ) {
             return false;
         }
 

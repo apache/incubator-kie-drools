@@ -80,7 +80,7 @@ public class InstanceEqualsConstraint
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || !(object instanceof InstanceEqualsConstraint) ) {
             return false;
         }
 

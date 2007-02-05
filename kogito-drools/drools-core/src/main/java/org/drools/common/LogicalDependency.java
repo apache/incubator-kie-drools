@@ -47,12 +47,12 @@ public class LogicalDependency extends AbstractBaseLinkedListNode {
     }
 
     public boolean equals(final Object object) {
-        if ( object == null || !(object.getClass() != this.getClass()) ) {
-            return false;
-        }
-
         if ( this == object ) {
             return true;
+        }
+        
+        if ( object == null || !(object instanceof LogicalDependency ) ) {
+            return false;
         }
 
         final LogicalDependency other = (LogicalDependency) object;

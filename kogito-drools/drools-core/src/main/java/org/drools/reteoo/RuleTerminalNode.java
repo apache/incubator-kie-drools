@@ -385,7 +385,7 @@ public final class RuleTerminalNode extends BaseNode
             return true;
         }
 
-        if ( object == null || object.getClass() != RuleTerminalNode.class ) {
+        if ( object == null || !(object instanceof RuleTerminalNode ) ) {
             return false;
         }
 

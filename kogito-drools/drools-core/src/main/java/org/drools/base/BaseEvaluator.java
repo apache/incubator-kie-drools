@@ -51,7 +51,7 @@ public abstract class BaseEvaluator
         if ( this == object ) {
             return true;
         }
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || !( object instanceof BaseEvaluator) ) {
             return false;
         }
 

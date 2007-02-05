@@ -76,7 +76,7 @@ public class InstanceNotEqualsConstraint
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || !(object instanceof InstanceNotEqualsConstraint ) ) {
             return false;
         }
 

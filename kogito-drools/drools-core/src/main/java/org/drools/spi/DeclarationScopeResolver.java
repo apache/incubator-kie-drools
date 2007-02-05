@@ -29,7 +29,7 @@ public class DeclarationScopeResolver {
         for ( int i = 0, length = this.maps.length; i < length; i++ ) {
             final Object object = this.maps[i].get( name );
             if ( object != null ) {
-                if ( object.getClass() == Declaration.class ) {
+                if ( object instanceof Declaration ) {
                     return ((Declaration) object).getExtractor().getExtractToClass();
                 } else {
                     return (Class) object;

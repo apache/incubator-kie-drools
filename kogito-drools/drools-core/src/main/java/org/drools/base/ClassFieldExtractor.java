@@ -100,7 +100,7 @@ public class ClassFieldExtractor
             return true;
         }
 
-        if ( object == null || object.getClass() != ClassFieldExtractor.class ) {
+        if ( object == null || !( object instanceof ClassFieldExtractor ) ) {
             return false;
         }
 
