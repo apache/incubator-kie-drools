@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.resolvers.LiteralValue;
-import org.drools.base.resolvers.ValueHandler;
 
 /**
  * Determines the method to call, based on the given values
@@ -37,15 +35,6 @@ public class MethodResolver {
 
     public boolean isStaticMethod() {
         return this.staticMethod;
-    }
-
-    public Method resolveMethod(ValueHandler[] params) {
-        Class[]  classes  = new Class[params.length];
-        for ( int i = 0, length  = params.length; i  < length; i++ )  {
-            classes[i]   = params[i].getExtractToClass();
-        }
-        
-        return  resolveMethod(classes);
     }
     
     public Method resolveMethod(Class[] params) {
