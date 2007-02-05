@@ -16,6 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.FactHandle;
 import org.drools.base.ShadowProxy;
 import org.drools.util.AbstractHashTable.ObjectComparator;
 
@@ -25,16 +26,14 @@ public class EqualityAssertMapComparator
     /**
      * 
      */
-    private static final long serialVersionUID = -320L;
+    private static final long serialVersionUID = 320L;
 
-    private final Class       factHandleClass;
 
-    public EqualityAssertMapComparator(final Class factHandleClass) {
-        this.factHandleClass = factHandleClass;
+    public EqualityAssertMapComparator() {
     }
 
     public int hashCodeOf(final Object obj) {
-        if ( obj.getClass() == this.factHandleClass ) {
+        if ( obj instanceof FactHandle ) {
             return rehash( ((InternalFactHandle) obj).getObjectHashCode() );
         }
         return rehash( obj.hashCode() );
@@ -54,7 +53,7 @@ public class EqualityAssertMapComparator
      */
     public boolean equal(final Object o1,
                          Object o2) {
-        if ( o1.getClass() == this.factHandleClass ) {
+        if ( o1 instanceof FactHandle ) {
             return o1 == o2;
         }
 

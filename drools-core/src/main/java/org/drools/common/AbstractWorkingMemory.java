@@ -151,9 +151,9 @@ public abstract class AbstractWorkingMemory
         
         
         if ( conf.getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
-            this.assertMap.setComparator( new IdentityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
+            this.assertMap.setComparator( new IdentityAssertMapComparator( ) );
         } else {
-            this.assertMap.setComparator( new EqualityAssertMapComparator( this.handleFactory.getFactHandleType() ) );
+            this.assertMap.setComparator( new EqualityAssertMapComparator( ) );
         }
 
         // Only takes effect if are using idententity behaviour for assert        
