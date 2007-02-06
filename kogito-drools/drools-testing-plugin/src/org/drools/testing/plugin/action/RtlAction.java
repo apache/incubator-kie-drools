@@ -5,6 +5,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -25,6 +26,7 @@ public class RtlAction implements IWorkbenchWindowActionDelegate {
 
 	public void run(IAction action) {
 		GenerateRtlWizard generateRtlWizard = new GenerateRtlWizard();
+		IWorkbench wb = PlatformUI.getWorkbench();
 		generateRtlWizard.init(PlatformUI.getWorkbench(), new StructuredSelection(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection()));
 		WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 				generateRtlWizard);
