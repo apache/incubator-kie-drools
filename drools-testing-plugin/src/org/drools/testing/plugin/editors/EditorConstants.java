@@ -20,5 +20,9 @@ public final class EditorConstants {
 		public final static String GENERATE_IMG = "/icons/RTL_small.gif";
 	}
 	
-	
+	public interface EditorPageTitles {
+		
+		public final static String TITLE_FREE_FORM = "Rtl Text";
+		
+	}
 }
