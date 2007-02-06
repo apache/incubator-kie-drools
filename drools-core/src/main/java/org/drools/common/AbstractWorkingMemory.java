@@ -461,8 +461,12 @@ public abstract class AbstractWorkingMemory
     public List getFactHandles() {
         try {
             this.lock.lock();
-            return null;
-            //return new ArrayList( this.assertMap.values() );
+            List list = new ArrayList( this.assertMap.size() );
+            org.drools.util.Iterator it = this.assertMap.iterator();
+            for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
+                list.add ( entry.getKey() );
+            }
+            return list; 
         } finally {
             this.lock.unlock();
         }
