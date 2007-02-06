@@ -22,7 +22,8 @@ public class RtlFormEditor extends FormEditor {
 	protected void addPages() {
 		try {
 			TextEditor editor = new TextEditor();
-			addPage(editor, getEditorInput());
+			int index = addPage(editor, getEditorInput());
+			setPageText(index, EditorConstants.EditorPageTitles.TITLE_FREE_FORM);
 			addPage(new InputForm(this));
 		}
 		catch (PartInitException e) {
