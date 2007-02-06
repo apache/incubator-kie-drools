@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/castor-xml-1.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.0ea8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.0.4.jar"/>
@@ -12,8 +11,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.4.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Matt/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Matt/.m2/repository/castor/castor-xml/1.0.5/castor-xml-1.0.5.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Matt/.m2/repository/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/mshaw/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/castor-xml-1.0.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
