@@ -424,11 +424,16 @@ public abstract class AbstractWorkingMemory
     public Object getObject(final FactHandle handle) {
         try {
             this.lock.lock();
-            InternalFactHandle internalHandle = ( InternalFactHandle ) handle;
+                        
+            // Make sure the FactHandle is from this WorkingMemory
+            InternalFactHandle internalHandle = ( InternalFactHandle ) this.assertMap.get( handle );
+            if ( internalHandle == null ) {
+                return null;
+            }
             
             Object object = internalHandle.getObject();
             
-            if ( internalHandle.isShadowFact() ) {
+            if ( object != null && internalHandle.isShadowFact() ) {
                 object = ( (ShadowProxy) object ).getShadowedObject();
             }
         
