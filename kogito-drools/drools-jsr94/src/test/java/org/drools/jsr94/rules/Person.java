@@ -49,6 +49,10 @@ public class Person {
 
     private Set    sisters;
 
+    public Person() {
+        
+    }
+    
     public Person(final String name) {
         this.name = name;
         this.sisters = new HashSet();
@@ -69,4 +73,30 @@ public class Person {
     public String toString() {
         return this.name;
     }
+
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+        result = PRIME * result + ((sisters == null) ? 0 : sisters.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        
+        if ( !(obj instanceof Person) ) return false;
+        final Person other = (Person) obj;
+        
+        if ( name == null ) {
+            if ( other.name != null ) return false;
+        } else if ( !name.equals( other.name ) ) return false;
+        if ( sisters == null ) {
+            if ( other.sisters != null ) return false;
+        } else if ( !sisters.equals( other.sisters ) ) return false;
+        return true;
+    }
+    
+    
 }
