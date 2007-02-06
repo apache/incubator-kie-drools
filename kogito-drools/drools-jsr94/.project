@@ -1,6 +1,6 @@
 <projectDescription>
   <name>drools-jsr94</name>
-  <comment/>
+  <comment>A rule production system</comment>
   <projects>
     <project>drools-core</project>
     <project>drools-compiler</project>
@@ -10,22 +10,8 @@
       <name>org.eclipse.jdt.core.javabuilder</name>
       <arguments/>
     </buildCommand>
-    <buildCommand>
-      <name>org.eclipse.wst.common.modulecore.ComponentStructuralBuilder</name>
-      <arguments/>
-    </buildCommand>
-    <buildCommand>
-      <name>org.eclipse.wst.validation.validationbuilder</name>
-      <arguments/>
-    </buildCommand>
-    <buildCommand>
-      <name>org.eclipse.wst.common.modulecore.ComponentStructuralBuilderDependencyResolver</name>
-      <arguments/>
-    </buildCommand>
   </buildSpec>
   <natures>
     <nature>org.eclipse.jdt.core.javanature</nature>
-    <nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
-    <nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
   </natures>
 </projectDescription>
