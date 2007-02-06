@@ -1,4 +1,4 @@
-package org.drools.testing.plugin.wizards.model;
+package org.drools.testing.plugin.model;
 
 import java.util.ArrayList;
 import java.util.List;

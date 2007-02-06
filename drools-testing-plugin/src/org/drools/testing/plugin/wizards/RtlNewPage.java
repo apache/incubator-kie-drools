@@ -1,6 +1,6 @@
 package org.drools.testing.plugin.wizards;
 
-import org.drools.testing.plugin.wizards.model.RtlModel;
+import org.drools.testing.plugin.model.RtlModel;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;

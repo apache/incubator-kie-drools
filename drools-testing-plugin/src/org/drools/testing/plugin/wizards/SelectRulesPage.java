@@ -11,7 +11,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.testing.plugin.listeners.TreeViewSelectionListener;
-import org.drools.testing.plugin.wizards.model.RtlModel;
+import org.drools.testing.plugin.model.RtlModel;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogPage;

@@ -13,7 +13,7 @@ import org.drools.testing.core.beans.Scenario;
 import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.main.Testing;
-import org.drools.testing.plugin.wizards.model.RtlModel;
+import org.drools.testing.plugin.model.RtlModel;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
