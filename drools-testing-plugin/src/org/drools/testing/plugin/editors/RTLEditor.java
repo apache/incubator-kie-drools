@@ -84,7 +84,7 @@ public class RTLEditor extends MultiPageEditorPart implements IResourceChangeLis
 	 * which allows you to change the font used in page 2.
 	 */
 	void createPage1() {
-
+		
 		Composite composite = new Composite(getContainer(), SWT.NONE);
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);

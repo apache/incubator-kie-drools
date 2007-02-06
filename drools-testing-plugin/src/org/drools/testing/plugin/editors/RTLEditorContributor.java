@@ -89,7 +89,11 @@ public class RTLEditorContributor extends MultiPageEditorActionBarContributor {
 		generateRtlAction = new Action () {
 			public void run() {
 				GenerateRtlWizard generateRtlWizard = new GenerateRtlWizard();
-				activeEditorPart.getSite().getSelectionProvider().getSelection();
+				try {
+					activeEditorPart.getSite().getSelectionProvider().getSelection();
+				}catch (Exception e) {
+					System.out.println(e);
+				}
 				generateRtlWizard.init(PlatformUI.getWorkbench(), new StructuredSelection(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection()));
 				WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 						generateRtlWizard);
