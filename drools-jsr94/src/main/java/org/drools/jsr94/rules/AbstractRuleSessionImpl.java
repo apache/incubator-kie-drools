@@ -86,7 +86,7 @@ abstract class AbstractRuleSessionImpl
      * @see #newWorkingMemory()
      */
     protected void initWorkingMemory() {
-        this.setWorkingMemory( this.newWorkingMemory() );
+        this.setWorkingMemory( newWorkingMemory() );
     }
 
     /**
@@ -266,9 +266,9 @@ abstract class AbstractRuleSessionImpl
      * it is reacquired through the <code>RuleRuntime</code>.
      */
     public void release() {
-        this.setProperties( null );
-        this.setWorkingMemory( null );
-        this.setRuleExecutionSet( null );
+        setProperties( null );
+        setWorkingMemory( null );
+        setRuleExecutionSet( null );
     }
 
     /**
@@ -280,6 +280,6 @@ abstract class AbstractRuleSessionImpl
      * <code>RuleExecutionSet</code>.
      */
     public void reset() {
-        this.initWorkingMemory();
+        initWorkingMemory();
     }
 }
