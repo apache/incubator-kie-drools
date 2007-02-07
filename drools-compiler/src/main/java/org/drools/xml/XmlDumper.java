@@ -216,8 +216,7 @@ public class XmlDumper extends ReflectiveVisitor
             visit( temp );
             descrString += this.template;
         }
-        return descrString.substring( 0,
-                                      descrString.length() - 2 );
+        return descrString;
     }
 
     private String processDescrList(final List descr) {
