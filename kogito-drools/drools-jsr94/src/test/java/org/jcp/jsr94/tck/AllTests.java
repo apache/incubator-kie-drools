@@ -9,9 +9,20 @@
 package org.jcp.jsr94.tck;
 
 // java imports
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.drools.jsr94.rules.Jsr94FactHandle;
 import org.jcp.jsr94.tck.admin.LocalRuleExecutionSetProviderTest;
 import org.jcp.jsr94.tck.admin.RuleAdministrationExceptionTest;
 import org.jcp.jsr94.tck.admin.RuleAdministratorTest;
@@ -28,8 +39,7 @@ import org.jcp.jsr94.tck.admin.RuleTest;
 public class AllTests extends TestSuite {
 
     public static Test suite() {
-        //        System.setProperty( "jsr94.tck.configuration",
-        //                            "src/test/resources/org/drools/jsr94/tck" );
+        setTckConf();
 
         final TestSuite suite = new TestSuite( "JSR 94 Test Compatability Kit" );
         suite.addTestSuite( ApiSignatureTest.class );
@@ -61,5 +71,104 @@ public class AllTests extends TestSuite {
         suite.addTestSuite( RuleExecutionSetDeregistrationExceptionTest.class );
         suite.addTestSuite( RuleTest.class );
         return suite;
+    }
+
+    /**
+     * Because the tck.conf relies on directory paths that are not universally the same from eclipse, maven
+     * and ant this method create a tck.conf on the fly with the correct locations, it also create a jar
+     * on the fly which it uses as the jar url location.
+     *
+     */
+    private static void setTckConf() {
+        File jarFile = null;
+        ZipOutputStream zos = null;
+        File rootDirectory = null;
+        try {
+            jarFile = File.createTempFile( "drools-jsr94",
+                                           ".jar" );
+
+            URL url = Jsr94FactHandle.class.getResource( "Jsr94FactHandle.class" );
+            rootDirectory = new File( url.getFile() ).getParentFile().getParentFile().getParentFile().getParentFile();
+
+            zos = new ZipOutputStream( new FileOutputStream( jarFile ) );
+            zipDir( rootDirectory,
+                    zos );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        } finally {
+            if ( zos != null ) {
+                try {
+                    zos.close();
+                } catch ( IOException e ) {
+                }
+            }
+        }
+
+        String conf = "";
+        conf += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        conf += "<tck-configuration>\n";
+        conf += "<test-factory>org.jcp.jsr94.tck.util.TestFactory</test-factory>\n";
+        conf += "<rule-service-provider>org.drools.jsr94.rules.RuleServiceProviderImpl</rule-service-provider>\n";
+        conf += "<rule-service-provider-jar-url>file://" + jarFile.getAbsolutePath() + "</rule-service-provider-jar-url>\n";
+
+        URL url = AllTests.class.getResource( "AllTests.class" );
+        String setLocation = new File( url.getFile() ).getParentFile().getAbsolutePath().replaceAll( "\\\\",
+                                                                                                     "/" );
+        // the tck needs an asbolute path, with no drive letters
+        if ( setLocation.charAt( 1 ) == ':' ) {
+            setLocation = setLocation.substring( 2 );
+        }
+        conf += "<rule-execution-set-location>" + setLocation + "</rule-execution-set-location>\n";
+        conf += "</tck-configuration>";
+
+        url = AllTests.class.getResource( "tck.conf" );
+        File tckConf = new File( url.getFile() );
+        BufferedWriter buffWriter = null;
+        try {
+            FileWriter fileWriter = new FileWriter( tckConf );
+            buffWriter = new BufferedWriter( fileWriter );
+            buffWriter.write( conf );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        } finally {
+            try {
+                buffWriter.close();
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        }
+
+        System.setProperty( "jsr94.tck.configuration",
+                            tckConf.getParent() );
+
+    }
+
+    public static void zipDir(File zipDir,
+                              ZipOutputStream zos) {
+        try {
+            String[] dirList = zipDir.list();
+            byte[] readBuffer = new byte[2156];
+            int bytesIn = 0;
+            for ( int i = 0; i < dirList.length; i++ ) {
+                File f = new File( zipDir,
+                                   dirList[i] );
+                if ( f.isDirectory() ) {
+                    zipDir( f,
+                            zos );
+                    continue;
+                }
+                FileInputStream fis = new FileInputStream( f );
+                ZipEntry anEntry = new ZipEntry( f.getPath() );
+                zos.putNextEntry( anEntry );
+                while ( (bytesIn = fis.read( readBuffer )) != -1 ) {
+                    zos.write( readBuffer,
+                               0,
+                               bytesIn );
+                }
+                fis.close();
+            }
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
     }
 }
