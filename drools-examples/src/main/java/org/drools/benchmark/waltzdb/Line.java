@@ -18,7 +18,7 @@ public class Line {
 	public void setP2(int p2) {
 		this.p2 = p2;
 	}
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -26,7 +26,7 @@ public class Line {
 		result = PRIME * result + p2;
 		return result;
 	}
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

@@ -6,7 +6,7 @@ public class Junction {
 	public Junction() {
 		super();
 	}
-	@Override
+	
 	public String toString() {
 		String result = "JUNCTION: P1=" + p1 + ",P2=" + p2 + ",P3=" + 
 		p3 + ",BasePoint=" + basePoint + ", Type=" + type +
@@ -88,7 +88,7 @@ public class Junction {
 	public void setVisited(String visited) {
 		this.visited = visited;
 	}
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -101,7 +101,7 @@ public class Junction {
 		result = PRIME * result + ((visited == null) ? 0 : visited.hashCode());
 		return result;
 	}
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

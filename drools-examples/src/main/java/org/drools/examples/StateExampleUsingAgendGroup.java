@@ -27,7 +27,7 @@ public class StateExampleUsingAgendGroup {
 
         workingMemory.addEventListener( new DefaultAgendaEventListener() {
             public void afterActivationFired(final AfterActivationFiredEvent arg0) {
-                super.afterActivationFired( arg0 );
+                super.afterActivationFired( arg0, workingMemory );
             }
         } );
 

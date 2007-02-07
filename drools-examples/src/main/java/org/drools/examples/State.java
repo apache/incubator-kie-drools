@@ -12,6 +12,10 @@ public class State {
     private String                name;
     private int                   state;
 
+    public State() {
+        
+    }
+    
     public State(final String name) {
         this.name = name;
         this.state = State.NOTRUN;
