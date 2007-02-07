@@ -35,8 +35,8 @@ rule findSeating
        not ( Path( id == seatingId, guestName == leftGuestName) )
        not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby) )
    then
-       int rightSeat = seatingRightSeat.intValue();
-       int seatId = seatingId.intValue();
+       int rightSeat = seatingRightSeat;
+       int seatId = seatingId;
        int countValue = count.getValue();
        
        Seating seating = new Seating( countValue, seatId, false, rightSeat, seatingRightGuestName, rightSeat + 1, leftGuestName );
@@ -51,7 +51,7 @@ rule findSeating
 	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
 
        count.setValue(  countValue + 1 );
-       modify( count );
+       modify( count );       
 
        context.setState( Context.MAKE_PATH );
        modify( context );
@@ -64,7 +64,7 @@ rule makePath
         Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         not Path( id == seatingId, guestName == pathGuestName )
     then
-        assert( new Path( seatingId.intValue(), pathSeat.intValue(), pathGuestName ) );
+        assert( new Path( seatingId, pathSeat, pathGuestName ) );
 end 
 
 rule pathDone

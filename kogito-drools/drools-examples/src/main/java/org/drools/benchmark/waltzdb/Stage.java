@@ -24,7 +24,6 @@ public class Stage {
 		this.value = value;
 	}
 
-	@Override
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -32,7 +31,6 @@ public class Stage {
 		return result;
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

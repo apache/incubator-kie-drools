@@ -1,5 +1,5 @@
 #created on: 25/03/2006
-package org.drools.integrationtests.waltz
+package benchmarks.waltz
 
 import org.drools.benchmark.waltz.Stage
 import org.drools.benchmark.waltz.Line
@@ -16,8 +16,8 @@ rule "reverse edges"
 		$line : Line ( $p1:p1, $p2:p2 )
 	then 
 		System.out.println("Draw "+$p1+" "+$p2);
-		assert( new Edge ( $p1.intValue(), $p2.intValue(), false, Edge.NIL, false ) );
-		assert( new Edge ( $p2.intValue(), $p1.intValue(), false, Edge.NIL, false ) );
+		assert( new Edge ( $p1, $p2, false, Edge.NIL, false ) );
+		assert( new Edge ( $p2, $p1, false, Edge.NIL, false ) );
 		retract( $line ); 
 end
 
@@ -26,10 +26,11 @@ end
 rule "reversing done" salience -10
 	when
         $stage: Stage ( value == Stage.DUPLICATE )
+        not ( Line() )
 	then
         $stage.setValue ( Stage.DETECT_JUNCTIONS );
         modify($stage);
-    	System.out.println("Stage: detect junctions");
+    	System.out.println("reversing done");
 end
 
 #If three edges meet at a point and none of them have already been joined in
@@ -44,7 +45,8 @@ rule "make 3 junction" salience 10
         $edge2: Edge( p1==$basePoint, $edge2P2:p2 != $edge1P2, joined == false )
         $edge3: Edge( p1==$basePoint, $edge3P2:p2 != $edge1P2, p2 != $edge2P2, joined == false )
 	then
-	    Junction junction = WaltzUtil.make_3_junction ( $basePoint.intValue(), $edge1P2.intValue(), $edge2P2.intValue(), $edge3P2.intValue() );
+	    Junction junction = WaltzUtil.make_3_junction( $basePoint, $edge1P2, $edge2P2, $edge3P2 );
+        System.out.println( junction );
 	    assert( junction );
 	    $edge1.setJoined(true);
 	    $edge2.setJoined(true);
@@ -63,11 +65,12 @@ rule "make L"
         $edge2: Edge( p1==$basePoint, $edge2P2:p2 != $edge1P2, joined == false )
         not Edge( p1==$basePoint, p2 != $edge1P2, p2 != $edge2P2 )
 	then
-	    assert( new Junction($edge1P2.intValue(), $edge2P2.intValue(), 0, $basePoint.intValue(), Junction.L) );
+	    assert( new Junction($edge1P2, $edge2P2, 0, $basePoint, Junction.L) );
 	    $edge1.setJoined(true);
 	    $edge2.setJoined(true);
 	    modify( $edge1 );
 	    modify( $edge2 );
+	    System.out.println("make L");
 end
 
 #If the detect junctions flag is set, and there are no more un_joined edges,
@@ -78,17 +81,17 @@ rule "detecting done" salience -10
  	then
  	    $stage.setValue( Stage.FIND_INITIAL_BOUNDARY );
  	    modify( $stage );
-    	System.out.println("Stage: find initial boundary");
+    	System.out.println("detecting done");
 end
 
 #If the initial boundary junction is an L, then we know it's labelling
 rule "initial boundary junction L"
 	when
 	    $stage : Stage ( value == Stage.FIND_INITIAL_BOUNDARY )
-	    Junction( type == Junction.L, $basePoint:basePoint, $p1:p1, $p2:p2 )
+	             Junction( type == Junction.L, $basePoint:basePoint, $p1:p1, $p2:p2 )
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
-        not Junction( $bp:basePoint > $basePoint )
+        not Junction( basePoint > $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.B );
@@ -96,18 +99,18 @@ rule "initial boundary junction L"
 	    modify( $edge1 );
 	    modify( $edge2 );
 	    modify( $stage );
-    	System.out.println("Stage: find second boundary");
+    	System.out.println("initial boundary junction L");
 end
 
 # Ditto for an arrow
 rule "initial boundary junction arrow"
 	when
 	    $stage : Stage ( value == Stage.FIND_INITIAL_BOUNDARY )
-	    Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+	             Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
 	    $edge3 : Edge ( p1 == $basePoint, p2 == $p3 )
-        not Junction( $bp:basePoint > $basePoint )
+        not Junction( basePoint > $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.PLUS );
@@ -117,7 +120,7 @@ rule "initial boundary junction arrow"
 	    modify( $edge2 );
 	    modify( $edge3 );
 	    modify( $stage );
-    	System.out.println("Stage: find second boundary");
+    	System.out.println("initial boundary junction arrow");
 end
 
 # If we have already found the first boundary point, then find the second
@@ -128,7 +131,7 @@ rule "second boundary junction L"
 	             Junction( type == Junction.L, $basePoint:basePoint, $p1:p1, $p2:p2 )
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
-        not Junction( $bp:basePoint < $basePoint )
+        not Junction( basePoint < $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.B );
@@ -136,7 +139,7 @@ rule "second boundary junction L"
 	    modify( $edge1 );
 	    modify( $edge2 );
 	    modify( $stage );
-    	System.out.println("Stage: labeling");
+    	System.out.println("second boundary junction L");
 end
 
 # Ditto for arrow
@@ -147,7 +150,7 @@ rule "second boundary junction arrow"
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
 	    $edge3 : Edge ( p1 == $basePoint, p2 == $p3 )
-        not Junction( $bp:basePoint < $basePoint )
+        not Junction( basePoint < $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.PLUS );
@@ -157,7 +160,7 @@ rule "second boundary junction arrow"
 	    modify( $edge2 );
 	    modify( $edge3 );
 	    modify( $stage );
-    	System.out.println("Stage: labeling");
+    	System.out.println("second boundary junction arrow");
 end
  
 # If we have an edge whose label we already know definitely, then
@@ -165,7 +168,7 @@ end
 rule "match edge"
 	when
 	    Stage( value == Stage.LABELING )
-        $edge1: Edge( $p1:p1, $p2:p2, $label:label != Edge.NIL )
+        $edge1: Edge( $p1:p1, $p2:p2, $label:label == Edge.PLUS | == Edge.MINUS | == Edge.B )
         $edge2: Edge( p1 == $p2, p2 == $p1, label == Edge.NIL )
 	then
 	    $edge1.setPlotted( true );
@@ -173,7 +176,7 @@ rule "match edge"
 	    $edge2.setPlotted( true );
 	    modify( $edge1 );
 	    modify( $edge2 );
-	    System.out.println("Plot "+$label+" "+$p1+" "+$p2);
+	    System.out.println("match edge - Plot "+$label+" "+$p1+" "+$p2);
 end
 
 # The following productions propogate the possible labellings of the edges
@@ -187,228 +190,245 @@ rule "label L"
 	when
 	    Stage( value == Stage.LABELING )
 	    Junction( type == Junction.L, $basePoint:basePoint )
-        Edge( $p1:p1, $p2:p2, $label:label -> ( $label.equals(Edge.PLUS) || $label.equals(Edge.MINUS) ) )
-        $edge: Edge( p1 == $p1, p2 != $p2, label == Edge.NIL )
+	    Edge( p1 == $basePoint, $Edge1P2 : p2, label == Edge.PLUS | == Edge.MINUS )
+        $edge: Edge( p1 == $basePoint, p2 != $Edge1P2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.B );
 	    modify( $edge );
+  	    System.out.println("Label L");
 end 
  
 rule "label tee A" salience 5
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.TEE, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        $edge1: Edge( p1 == $bp, p2 == $p1, label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, p2 == $p3 )
+        Junction( type == Junction.TEE, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        $edge1: Edge( p1 == $basePoint, p2 == $p1, label == Edge.NIL )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3 )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.B );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("Label tee A");	    
 end 
 
 
 rule "label tee B"
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.TEE, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        $edge1: Edge( p1 == $bp, p2 == $p1 )
-        $edge2: Edge( p1 == $bp, p2 == $p3, label == Edge.NIL )
+        Junction( type == Junction.TEE, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        $edge1: Edge( p1 == $basePoint, p2 == $p1 )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3, label == Edge.NIL )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.B );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("Label tee B");	    	    
 end
 
 rule "label fork 1"
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.FORK, $bp:basePoint )
-        Edge( p1 == $bp, $p1:p2, label == Edge.PLUS )
-        $edge1: Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2 )
+        Junction( type == Junction.FORK, $basePoint:basePoint )
+                Edge( p1 == $basePoint, $p1:p2, label == Edge.PLUS )
+        $edge1: Edge( p1 == $basePoint, $p2:p2 != $p1, label == Edge.NIL )
+        $edge2: Edge( p1 == $basePoint, p2 != $p1, p2 != $p2 )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( Edge.PLUS );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label fork 1");	    	    
 end
 
 rule "label fork 2"
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.FORK, $bp:basePoint )
-        Edge( p1 == $bp, $p1:p2, label == Edge.B )
-        Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.MINUS )
-        $edge: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2, label == Edge.NIL )
+        Junction( type == Junction.FORK, $basePoint:basePoint )
+        Edge( p1 == $basePoint, $p1:p2, label == Edge.B )
+        Edge( p1 == $basePoint, $p2:p2 != $p1, label == Edge.MINUS )
+        $edge: Edge( p1 == $basePoint, p2 != $p1, p2 != $p2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.B );
 	    modify( $edge );
+  	    System.out.println("label fork 2");	   	    
 end
 
 rule "label fork 3"
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.FORK, $bp:basePoint )
-        Edge( p1 == $bp, $p1:p2, label == Edge.B )
-        Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.B )
-        $edge: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2, label == Edge.NIL )
+        Junction( type == Junction.FORK, $basePoint:basePoint )
+        Edge( p1 == $basePoint, $p1:p2, label == Edge.B )
+        Edge( p1 == $basePoint, $p2:p2 != $p1, label == Edge.B )
+        $edge: Edge( p1 == $basePoint, p2 != $p1, p2 != $p2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.MINUS );
 	    modify( $edge );
+  	    System.out.println("label fork 3");	   	    
 end
 
 rule "label fork 4"
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.FORK, $bp:basePoint )
-        Edge( p1 == $bp, $p1:p2, label == Edge.MINUS )
-        Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.MINUS )
-        $edge: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2, label == Edge.NIL )
+        Junction( type == Junction.FORK, $basePoint:basePoint )
+        Edge( p1 == $basePoint, $p1:p2, label == Edge.MINUS )
+        Edge( p1 == $basePoint, $p2:p2 != $p1, label == Edge.MINUS )
+        $edge: Edge( p1 == $basePoint, p2 != $p1, p2 != $p2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.MINUS );
 	    modify( $edge );
+  	    System.out.println("label fork 4");	   	    
 end
  
 rule "label arrow 1A" salience 5
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p1, $label:label -> ( $label.equals(Edge.B) || $label.equals(Edge.MINUS) ) )
-        $edge1: Edge( p1 == $bp, p2 == $p2, label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, p2 == $p3 )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p1, $label:label == Edge.B | == Edge.MINUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2, label == Edge.NIL )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3 )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( $label );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 1A");	   	    
 end
  
 rule "label arrow 1B" 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p1, $label:label -> ( $label.equals(Edge.B) || $label.equals(Edge.MINUS) ) )
-        $edge1: Edge( p1 == $bp, p2 == $p2 )
-        $edge2: Edge( p1 == $bp, p2 == $p3, label == Edge.NIL )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p1, $label:label == Edge.B | == Edge.MINUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2 )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3, label == Edge.NIL )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( $label );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 1B");	  
 end
  
 rule "label arrow 2A" salience 5 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p3, $label:label -> ( $label.equals(Edge.B) || $label.equals(Edge.MINUS) ) )
-        $edge1: Edge( p1 == $bp, p2 == $p2, label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, p2 == $p1 )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p3, $label:label == Edge.B | == Edge.MINUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2, label == Edge.NIL )
+        $edge2: Edge( p1 == $basePoint, p2 == $p1 )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( $label );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 2A");	  	    
 end
  
 rule "label arrow 2B"
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p3, $label:label -> ( $label.equals(Edge.B) || $label.equals(Edge.MINUS) ) )
-        $edge1: Edge( p1 == $bp, p2 == $p2 )
-        $edge2: Edge( p1 == $bp, p2 == $p1, label == Edge.NIL )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p3,  $label:label == Edge.B | == Edge.MINUS  )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2 )
+        $edge2: Edge( p1 == $basePoint, p2 == $p1, label == Edge.NIL )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( $label );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 2B");	  	    	    
 end
  
 rule "label arrow 3A" salience 5 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p1, label == Edge.PLUS )
-        $edge1: Edge( p1 == $bp, p2 == $p2, label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, p2 == $p3 )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p1, label == Edge.PLUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2, label == Edge.NIL )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3 )
 	then
 	    $edge1.setLabel( Edge.MINUS );
 	    $edge2.setLabel( Edge.PLUS );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 3A");	  	    	    
 end
  
 rule "label arrow 3B" 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p1, label == Edge.PLUS )
-        $edge1: Edge( p1 == $bp, p2 == $p2 )
-        $edge2: Edge( p1 == $bp, p2 == $p3, label == Edge.NIL )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p1, label == Edge.PLUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2 )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3, label == Edge.NIL )
 	then
 	    $edge1.setLabel( Edge.MINUS );
 	    $edge2.setLabel( Edge.PLUS );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 3B");	  	    	    
 end
  
 rule "label arrow 4A" salience 5 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p3, label == Edge.PLUS )
-        $edge1: Edge( p1 == $bp, p2 == $p2, label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, p2 == $p1 )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p3, label == Edge.PLUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2, label == Edge.NIL )
+        $edge2: Edge( p1 == $basePoint, p2 == $p1 )
 	then
 	    $edge1.setLabel( Edge.MINUS );
 	    $edge2.setLabel( Edge.PLUS );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 4A");	  	    	    
 end
  
 rule "label arrow 4B" 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p3, label == Edge.PLUS )
-        $edge1: Edge( p1 == $bp, p2 == $p2 )
-        $edge2: Edge( p1 == $bp, p2 == $p1, label == Edge.NIL )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p3, label == Edge.PLUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p2 )
+        $edge2: Edge( p1 == $basePoint, p2 == $p1, label == Edge.NIL )
 	then
 	    $edge1.setLabel( Edge.MINUS );
 	    $edge2.setLabel( Edge.PLUS );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 4B");	  	    	    
 end
  
 rule "label arrow 5A" salience 5 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p2, label == Edge.MINUS )
-        $edge1: Edge( p1 == $bp, p2 == $p1 )
-        $edge2: Edge( p1 == $bp, p2 == $p3, label == Edge.NIL )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p2, label == Edge.MINUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p1 )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3, label == Edge.NIL )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( Edge.PLUS );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 5A");	  	    	    
 end
 
 rule "label arrow 5B" 
 	when
         Stage( value == Stage.LABELING )
-        Junction( type == Junction.ARROW, $bp:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $bp, p2 == $p2, label == Edge.MINUS )
-        $edge1: Edge( p1 == $bp, p2 == $p1, label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, p2 == $p3 )
+        Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+        Edge( p1 == $basePoint, p2 == $p2, label == Edge.MINUS )
+        $edge1: Edge( p1 == $basePoint, p2 == $p1, label == Edge.NIL )
+        $edge2: Edge( p1 == $basePoint, p2 == $p3 )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( Edge.PLUS );
 	    modify( $edge1 );
 	    modify( $edge2 );
+  	    System.out.println("label arrow 5B");	  	    	    
 end
  
 # The conflict resolution mechanism will only execute a production if no
@@ -421,7 +441,7 @@ rule "done labeling" salience -10
 	then
         $stage.setValue( Stage.PLOT_REMAINING_EDGES );
         modify( $stage );
-    	System.out.println("Stage: plot remaining edges");
+    	System.out.println("done labeling");
 end
 
 # At this point, some labellings may have not been plotted, so plot them
@@ -457,4 +477,3 @@ rule "done plotting" salience -10
 	    modify( $stage );
     	System.out.println("Stage: done");
 end
- 

@@ -55,7 +55,7 @@ public class Label {
 	public void setType(String type) {
 		this.type = type;
 	}
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -67,7 +67,7 @@ public class Label {
 		result = PRIME * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

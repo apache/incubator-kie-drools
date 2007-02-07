@@ -11,7 +11,7 @@ public class Illegal {
 		this.basePoint = basePoint;
 		this.labelId = labelId;
 	}
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -19,7 +19,7 @@ public class Illegal {
 		result = PRIME * result + ((labelId == null) ? 0 : labelId.hashCode());
 		return result;
 	}
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

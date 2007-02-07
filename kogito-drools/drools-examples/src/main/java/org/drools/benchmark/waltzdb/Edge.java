@@ -28,7 +28,7 @@ public class Edge {
 		this.p1 = p1;
 		this.p2 = p2;
 	}
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -38,7 +38,7 @@ public class Edge {
 		result = PRIME * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

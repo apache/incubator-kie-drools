@@ -15,7 +15,7 @@ public class EdgeLabel {
 		this.labelName = labelName;
 		this.labelId = labelId;
 	}
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -25,7 +25,7 @@ public class EdgeLabel {
 		result = PRIME * result + p2;
 		return result;
 	}
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

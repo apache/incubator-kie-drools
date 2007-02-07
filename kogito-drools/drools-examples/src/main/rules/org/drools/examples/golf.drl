@@ -13,7 +13,7 @@ rule "find solution"
   		// The golfer to Fred's immediate right
   		// is wearing blue pants
         Golfer( $unknownsName : name != "Fred", 
-                $unknownsPosition :  position == ( new Integer( $fredsPosition.intValue() + 1 ) ),
+                $unknownsPosition :  position == ( $fredsPosition + 1 ),
                 $unknownsColor : color == "blue",
                 color != $fredsColor )
 

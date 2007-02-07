@@ -33,8 +33,8 @@ end
 rule Calculate
 	when
 		f1 : Fibonacci( s1 : sequence, value != -1 )
-		f2 : Fibonacci( s2 : sequence == (new Integer( s1.intValue() + 1  ) ), value != -1 )
- 		f3 : Fibonacci( sequence == (new Integer( s2.intValue() + 1 ) ), value == -1 )				
+		f2 : Fibonacci( s2 : sequence == (s1 + 1 ), value != -1 )
+ 		f3 : Fibonacci( sequence == (s2 + 1 ), value == -1 )				
 	then	
 		f3.setValue( f1.getValue() + f2.getValue() );
 		modify( f3 );
