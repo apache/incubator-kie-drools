@@ -266,6 +266,11 @@ public final class RuleTerminalNode extends BaseNode
             final Activation activation = tuple.getActivation();
             if ( activation.isActivated() ) {
                 activation.remove();
+
+                if ( activation.getActivationGroupNode() != null ) {
+                	activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+                }
+
                 workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                workingMemory );
             }
