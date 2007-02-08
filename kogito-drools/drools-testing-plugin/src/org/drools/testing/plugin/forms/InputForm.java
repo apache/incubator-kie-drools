@@ -4,17 +4,23 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import org.drools.testing.core.beans.TestSuite;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.FileEditorInput;
 import org.exolab.castor.xml.Unmarshaller;
 
@@ -29,25 +35,48 @@ public class InputForm extends FormPage {
 	
 	protected void createFormContent(IManagedForm managedForm) {
 		
-		TestSuite testSuite;
+		TestSuite testSuite = null;
 		try {
 			FileEditorInput fileEditorInput = ((FileEditorInput)getEditorInput());
 			BufferedReader br = new BufferedReader(new FileReader(fileEditorInput.getFile().getName()));
-			Unmarshaller unmarshaller = new Unmarshaller();
+			Unmarshaller unmarshaller = new Unmarshaller(TestSuite.class);
 			testSuite = (TestSuite) unmarshaller.unmarshal(br);
 		}catch (Exception e) {	
-			e.printStackTrace();
+			MessageDialog.openError(this.getSite().getShell(), "Error", e.getMessage());
 		}
 		
-		ScrolledForm form = managedForm.getForm();
+		final ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
 		form.setText("Rtl Input Capture"); //$NON-NLS-1$
-		//form.setBackgroundImage(FormArticlePlugin.getDefault().getImage(FormArticlePlugin.IMG_FORM_BG));
-		GridLayout layout = new GridLayout();
+		TableWrapLayout layout = new TableWrapLayout();
 		layout.numColumns = 2;
 		form.getBody().setLayout(layout);
-		//createTableSection(form, toolkit, Messages.getString("SecondPage.firstSection")); //$NON-NLS-1$
-		//createTableSection(form, toolkit, Messages.getString("SecondPage.secondSection"));		 //$NON-NLS-1$
+		
+		Section section = toolkit.createSection(form.getBody(), 
+		Section.DESCRIPTION|Section.TITLE_BAR|
+		Section.TWISTIE|Section.EXPANDED);
+		TableWrapData td = new TableWrapData(TableWrapData.FILL);
+		td.colspan = 2;
+
+		section.setLayoutData(td);
+		section.addExpansionListener(new ExpansionAdapter() {
+		public void expansionStateChanged(ExpansionEvent e) {
+			form.reflow(true);
+		  	}
+		 });
+		 section.setText("Test Suite");
+		 section.setDescription("This is the test suite information "+
+		      "generated from the supplied rtl file.");
+
+		 Composite sectionClient = toolkit.createComposite(section);
+		 sectionClient.setLayout(new GridLayout());
+		 Label label = toolkit.createLabel(sectionClient, "Suite Name:");
+		 Text text = toolkit.createText(sectionClient, testSuite.getName());
+		 section.setClient(sectionClient);
+		
+
+
+		
 	}
 	
 	public void init(IEditorSite site, IEditorInput input) {
@@ -55,9 +84,4 @@ public class InputForm extends FormPage {
 		setInput(input);
 	}
 
-	private void throwCoreException(String message) throws CoreException {
-		IStatus status =
-			new Status(IStatus.ERROR, "org.drools.testing.plugin", IStatus.OK, message, null);
-		throw new CoreException(status);
-	}
 }
