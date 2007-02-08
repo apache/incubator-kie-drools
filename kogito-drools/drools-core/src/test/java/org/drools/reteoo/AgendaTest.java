@@ -578,6 +578,20 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       activationGroup0.size() );
 
+        // Removing a tuple should remove the activation from the activation-group-0 again
+        node0.retractTuple( tuple,
+                            context0,
+                            workingMemory );
+        assertEquals( 0,
+                      activationGroup0.size() );
+
+        // Assert the tuple again and check it was added to activation-group-0
+        node0.assertTuple( tuple,
+                           context0,
+                           workingMemory );
+        assertEquals( 1,
+                      activationGroup0.size() );
+
         // Assert another tuple and check it was added to activation-group-0        
         node1.assertTuple( tuple,
                            context1,
