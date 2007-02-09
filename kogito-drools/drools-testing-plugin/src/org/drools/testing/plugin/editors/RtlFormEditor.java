@@ -1,6 +1,7 @@
 package org.drools.testing.plugin.editors;
 
 import org.drools.testing.plugin.forms.InputForm;
+import org.drools.testing.plugin.resources.TestResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;

@@ -4,10 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import org.drools.testing.core.beans.TestSuite;
+import org.drools.testing.plugin.resources.Messages;
+import org.drools.testing.plugin.resources.TestResourcesPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -44,18 +45,25 @@ public class InputForm extends FormPage {
 		}catch (Exception e) {	
 			MessageDialog.openError(this.getSite().getShell(), "Error", e.getMessage());
 		}
+	
+		form = managedForm.getForm();
+		toolkit = managedForm.getToolkit();
+		form.setText(Messages.getString("InputForm.title")); //$NON-NLS-1$
+		form.setBackgroundImage(TestResourcesPlugin.getDefault().getImage(TestResourcesPlugin.IMG_FORM_BG));
 		
-		final ScrolledForm form = managedForm.getForm();
-		FormToolkit toolkit = managedForm.getToolkit();
-		form.setText("Rtl Input Capture"); //$NON-NLS-1$
 		TableWrapLayout layout = new TableWrapLayout();
-		layout.numColumns = 2;
 		form.getBody().setLayout(layout);
+		layout.numColumns = 2;
+		
+		toolkit.createLabel(form.getBody(), Messages.getString("FormView.testLabel")); //$NON-NLS-1$
+		Text text = toolkit.createText(form.getBody(), "Foo"); //$NON-NLS-1$
+		TableWrapData td = new TableWrapData(TableWrapData.FILL_GRAB);
+		text.setLayoutData(td);
 		
 		Section section = toolkit.createSection(form.getBody(), 
 		Section.DESCRIPTION|Section.TITLE_BAR|
 		Section.TWISTIE|Section.EXPANDED);
-		TableWrapData td = new TableWrapData(TableWrapData.FILL);
+		td = new TableWrapData(TableWrapData.FILL_GRAB);
 		td.colspan = 2;
 
 		section.setLayoutData(td);
@@ -63,19 +71,20 @@ public class InputForm extends FormPage {
 		public void expansionStateChanged(ExpansionEvent e) {
 			form.reflow(true);
 		  	}
-		 });
-		 section.setText("Test Suite");
-		 section.setDescription("This is the test suite information "+
-		      "generated from the supplied rtl file.");
+		});
+		section.setText(Messages.getString("InputForm.testSuiteSection"));
+		section.setDescription(Messages.getString("InputForm.testSuiteSection.descr"));
 
-		 Composite sectionClient = toolkit.createComposite(section);
-		 sectionClient.setLayout(new GridLayout());
-		 Label label = toolkit.createLabel(sectionClient, "Suite Name:");
-		 Text text = toolkit.createText(sectionClient, testSuite.getName());
-		 section.setClient(sectionClient);
+		Composite sectionClient = toolkit.createComposite(section);
+		GridLayout gd = new GridLayout();
+		gd.numColumns = 2;
+		sectionClient.setLayout(gd);
+		toolkit.createLabel(sectionClient, Messages.getString("InputForm.testSuiteSection.nameLabel"));
+		toolkit.createText(sectionClient, testSuite.getName());
+		section.setClient(sectionClient);
 		
 
-
+		 toolkit.paintBordersFor(form.getBody());
 		
 	}
 	

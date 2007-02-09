@@ -1,6 +1,5 @@
 package org.drools.testing.plugin.test;
 
-import java.io.FileReader;
 import java.io.FileWriter;
 
 import junit.framework.TestCase;
@@ -10,7 +9,9 @@ import org.drools.testing.core.beans.Scenario;
 import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.core.main.Testing;
 import org.drools.testing.core.main.TransformerService;
-import org.drools.testing.core.rules.RuleSetTest;
+import org.drools.testing.plugin.resources.Messages;
+import org.drools.testing.plugin.resources.TestResourcesPlugin;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.exolab.castor.xml.Unmarshaller;
 import org.xml.sax.InputSource;
 
@@ -33,4 +34,8 @@ public class TestingPlugin extends TestCase {
         TestSuite testSuite = (TestSuite)unmar.unmarshal(new InputSource(TestingPlugin.class.getResourceAsStream( "test.rtl" )));
     }
 	
+	public void testMessages () throws Exception {
+		
+		System.out.println(Messages.getString("InputForm.title"));
+	}
 }
