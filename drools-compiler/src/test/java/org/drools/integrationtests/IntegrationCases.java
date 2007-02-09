@@ -3862,14 +3862,19 @@ public abstract class IntegrationCases extends TestCase {
 
         final Primitives p1 = new Primitives();
         p1.setPrimitiveArrayAttribute( new int[] { 1, 2, 3 } );
+        p1.setArrayAttribute( new String[] { "a","b" } );
 
         workingMemory.assertObject( p1 );
 
         workingMemory.fireAllRules();
-        assertEquals( 1,
+        assertEquals( 3,
                       result.size() );
         assertEquals( 3,
                       ((Integer)result.get( 0 )).intValue());
+        assertEquals( 2,
+                      ((Integer)result.get( 1 )).intValue());
+        assertEquals( 3,
+                      ((Integer)result.get( 2 )).intValue());
 
     }
 
