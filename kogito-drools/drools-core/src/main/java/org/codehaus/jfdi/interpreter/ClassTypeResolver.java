@@ -32,8 +32,9 @@ public class ClassTypeResolver
     private final ClassLoader classLoader;
 
     private Map               cachedImports = new HashMap();
+
     public ClassTypeResolver() {
-    		this( Collections.EMPTY_LIST );
+        this( Collections.EMPTY_LIST );
     }
 
     public ClassTypeResolver(final List imports) {
@@ -95,29 +96,53 @@ public class ClassTypeResolver
     /* (non-Javadoc)
      * @see org.drools.semantics.java.TypeResolver#resolveType(java.lang.String)
      */
-    public Class resolveType(final String className) throws ClassNotFoundException {
+    public Class resolveType(String className) throws ClassNotFoundException {
         Class clazz = null;
+        boolean isArray = false;
 
         //is the class a primitive?
-        if ( "boolean".equals( className )) {
+        if ( "boolean".equals( className ) ) {
             clazz = boolean.class;
         } else if ( "byte".equals( className ) ) {
-            clazz =  byte.class;
+            clazz = byte.class;
         } else if ( "short".equals( className ) ) {
-            clazz =  short.class;
+            clazz = short.class;
         } else if ( "char".equals( className ) ) {
-            clazz =  char.class;
+            clazz = char.class;
         } else if ( "int".equals( className ) ) {
-            clazz =  int.class;
+            clazz = int.class;
         } else if ( "long".equals( className ) ) {
-            clazz =  long.class;
+            clazz = long.class;
         } else if ( "float".equals( className ) ) {
-            clazz =  float.class;
+            clazz = float.class;
         } else if ( "double".equals( className ) ) {
-            clazz =  double.class;
+            clazz = double.class;
+            // Could also be a primitive array
+        } else if ( "boolean[]".equals( className ) ) {
+            clazz = boolean[].class;
+        } else if ( "byte[]".equals( className ) ) {
+            clazz = byte[].class;
+        } else if ( "short[]".equals( className ) ) {
+            clazz = short[].class;
+        } else if ( "char[]".equals( className ) ) {
+            clazz = char[].class;
+        } else if ( "int[]".equals( className ) ) {
+            clazz = int[].class;
+        } else if ( "long[]".equals( className ) ) {
+            clazz = long[].class;
+        } else if ( "float[]".equals( className ) ) {
+            clazz = float[].class;
+        } else if ( "double[]".equals( className ) ) {
+            clazz = double[].class;
+            // Could be primitive array of objects
+        } else if ( className.endsWith( "[]" ) ) {
+            String componentName = className.substring( 0,
+                                                        className.length() - 2 );
+            className = componentName;
+            isArray = true;
         }
-        
-        if( clazz == null ) {
+
+        if ( clazz == null ) {
             // Now try the package object type cache         
             clazz = lookupFromCache( className );
         }
@@ -138,15 +163,6 @@ public class ClassTypeResolver
             final Iterator it = this.imports.iterator();
             while ( it.hasNext() ) {
                 clazz = importClass( (String) it.next(),
-                                     className );
-                if ( clazz != null ) {
-                    validClazzCandidates.add( clazz );
-                }
-            }
-
-            // make a last try using java.lang.* package
-            if( validClazzCandidates.isEmpty() ) {
-                clazz = importClass( "java.lang.*",
                                      className );
                 if ( clazz != null ) {
                     validClazzCandidates.add( clazz );
@@ -174,10 +190,20 @@ public class ClassTypeResolver
         }
 
         // Now try the java.lang package
-        if (clazz == null) {
-        	clazz = defaultClass( className );
+        if ( clazz == null ) {
+            clazz = defaultClass( className );
         }
 
+        // If array component class was found, try to resolve the array class of it 
+        if( isArray && clazz != null ) {
+            String arrayClassName = new StringBuffer().append( "[L" ).append( clazz.getName() ).append( ";" ).toString();
+            try {
+                clazz = Class.forName( arrayClassName );
+            } catch ( ClassNotFoundException e ) {
+                clazz = null;
+            }
+        }
+        
         // We still can't find the class so throw an exception 
         if ( clazz == null ) {
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
@@ -234,22 +260,23 @@ public class ClassTypeResolver
     }
 
     private Class defaultClass(String className) {
-		String qualifiedClass = "java.lang." + className;
-		Class clazz = null;
-		try {
-			clazz = this.classLoader.loadClass(qualifiedClass);
-		} catch (final ClassNotFoundException e) {
-			// do nothing
-		}
-		if (clazz != null) {
-			if (this.cachedImports == Collections.EMPTY_MAP) {
-				this.cachedImports = new HashMap();
-			}
-			this.cachedImports.put(className, clazz);
-		}
-		return clazz;
-	}
-    
+        String qualifiedClass = "java.lang." + className;
+        Class clazz = null;
+        try {
+            clazz = this.classLoader.loadClass( qualifiedClass );
+        } catch ( final ClassNotFoundException e ) {
+            // do nothing
+        }
+        if ( clazz != null ) {
+            if ( this.cachedImports == Collections.EMPTY_MAP ) {
+                this.cachedImports = new HashMap();
+            }
+            this.cachedImports.put( className,
+                                    clazz );
+        }
+        return clazz;
+    }
+
     public boolean isEmpty() {
         return this.imports.isEmpty();
     }
