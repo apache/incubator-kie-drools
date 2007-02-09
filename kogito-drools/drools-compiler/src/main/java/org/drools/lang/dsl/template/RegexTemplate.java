@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Experimental... seeing how far I can take dynamically generated regex... 
  * its a bit of a nightmare to escape everything though...
@@ -138,9 +136,10 @@ public class RegexTemplate {
     private String replace(final String str,
                            final String find,
                            final String replace) {
-        return StringUtils.replace( str,
-                                    find,
-                                    replace );
+//        return StringUtils.replace( str,
+//                                    find,
+//                                    replace );
+        return null;
     }
 
     /**
