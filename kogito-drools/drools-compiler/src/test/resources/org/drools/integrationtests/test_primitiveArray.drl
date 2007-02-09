@@ -1,0 +1,10 @@
+package org.drools;
+
+global java.util.List result;
+
+rule "Test Array"
+  when
+    Primitives( $array : primitiveArrayAttribute -> (($array != null) && ($array.length > 0)))
+  then
+    result.add( new Integer( $array.length ) );
+end

@@ -30,6 +30,7 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
+import org.drools.semantics.java.DeclarationTypeFixer;
 import org.drools.semantics.java.FunctionFixer;
 import org.drools.semantics.java.JavaExprAnalyzer;
 import org.drools.semantics.java.KnowledgeHelperFixer;
@@ -52,6 +53,8 @@ public class BuildUtils {
     private final KnowledgeHelperFixer     knowledgeHelperFixer;
 
     private final FunctionFixer            functionFixer;
+    
+    private final DeclarationTypeFixer     typeFixer;
 
     private final JavaExprAnalyzer         analyzer;
 
@@ -63,12 +66,14 @@ public class BuildUtils {
 
     public BuildUtils(final FunctionFixer functionFixer,
                       final KnowledgeHelperFixer knowledgeHelperFixer,
+                      final DeclarationTypeFixer typeFixer,
                       final JavaExprAnalyzer analyzer,
                       final TypeResolver typeResolver,
                       final ClassFieldExtractorCache classFieldExtractorCache,
                       final Map builders ) {
         this.functionFixer = functionFixer;
         this.knowledgeHelperFixer = knowledgeHelperFixer;
+        this.typeFixer = typeFixer;
         this.analyzer = analyzer;
         this.typeResolver = typeResolver;
         this.classFieldExtractorCache = classFieldExtractorCache;
@@ -124,8 +129,7 @@ public class BuildUtils {
                                             final String[] globals) {
         final String[] declarationTypes = new String[declarations.length];
         for ( int i = 0, size = declarations.length; i < size; i++ ) {
-            declarationTypes[i] = declarations[i].getExtractor().getExtractToClass().getName().replace( '$',
-                                                                                                        '.' );
+            declarationTypes[i] = this.typeFixer.fix( declarations[i] ); 
         }
 
         final List globalTypes = new ArrayList( globals.length );
@@ -218,6 +222,13 @@ public class BuildUtils {
      */
     public ConditionalElementBuilder getBuilder(Class descr) {
         return (ConditionalElementBuilder) builders.get( descr );
+    }
+
+    /**
+     * @return the typeFixer
+     */
+    public DeclarationTypeFixer getTypeFixer() {
+        return typeFixer;
     }
 
 }

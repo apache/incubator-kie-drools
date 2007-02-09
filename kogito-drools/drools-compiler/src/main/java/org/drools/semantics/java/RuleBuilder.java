@@ -111,6 +111,7 @@ public class RuleBuilder {
         
         this.utils = new BuildUtils( functionFixer,
                                      new KnowledgeHelperFixer(),
+                                     new DeclarationTypeFixer(),
                                      new JavaExprAnalyzer(),
                                      typeResolver,
                                      cache,

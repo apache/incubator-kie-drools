@@ -3848,5 +3848,29 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
+    public void testPrimitiveArray() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final List result = new ArrayList();
+        workingMemory.setGlobal( "result",
+                                 result );
+
+        final Primitives p1 = new Primitives();
+        p1.setPrimitiveArrayAttribute( new int[] { 1, 2, 3 } );
+
+        workingMemory.assertObject( p1 );
+
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      result.size() );
+        assertEquals( 3,
+                      ((Integer)result.get( 0 )).intValue());
+
+    }
 
 }

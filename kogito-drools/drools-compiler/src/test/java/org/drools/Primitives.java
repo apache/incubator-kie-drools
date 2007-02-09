@@ -29,6 +29,7 @@ public class Primitives {
     private float   floatPrimitive;
     private float   doublePrimitive;
     private Object[] arrayAttribute;
+    private int[]    primitiveArrayAttribute;
 
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
@@ -100,6 +101,20 @@ public class Primitives {
 
     public void setArrayAttribute(Object[] arrayAttribute) {
         this.arrayAttribute = arrayAttribute;
+    }
+
+    /**
+     * @return the primitiveArrayAttribute
+     */
+    public int[] getPrimitiveArrayAttribute() {
+        return primitiveArrayAttribute;
+    }
+
+    /**
+     * @param primitiveArrayAttribute the primitiveArrayAttribute to set
+     */
+    public void setPrimitiveArrayAttribute(int[] primitiveArrayAttribute) {
+        this.primitiveArrayAttribute = primitiveArrayAttribute;
     }
 
 }

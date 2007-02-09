@@ -381,8 +381,7 @@ public class ColumnBuilder {
 
         final String[] localDeclarationTypes = new String[localDeclarations.length];
         for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = localDeclarations[i].getExtractor().getExtractToClass().getName().replace( '$',
-                                                                                                                  '.' );
+            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] ); 
         }
 
         st.setAttribute( "localDeclarations",
@@ -599,8 +598,7 @@ public class ColumnBuilder {
 
         final String[] localDeclarationTypes = new String[localDeclarations.length];
         for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = localDeclarations[i].getExtractor().getExtractToClass().getName().replace( '$',
-                                                                                                                  '.' );
+            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] ); 
         }
 
         st.setAttribute( "localDeclarations",
