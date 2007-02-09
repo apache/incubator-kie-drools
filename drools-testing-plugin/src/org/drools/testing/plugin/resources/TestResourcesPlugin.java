@@ -129,7 +129,6 @@ public class TestResourcesPlugin extends AbstractUIPlugin {
 		}
 	}
 	public Image getImage(String key) {
-		System.out.println("getting here");
 		return getImageRegistry().get(key);
 	}
 	public ImageDescriptor getImageDescriptor(String key) {
