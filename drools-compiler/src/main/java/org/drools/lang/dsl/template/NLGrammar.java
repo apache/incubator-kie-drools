@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-
 /** 
  * This represents a simple grammar mapping.
  * Order of operations is as stored in the list. 
@@ -160,9 +158,9 @@ public class NLGrammar
                                       split ).trim();
         final String right = line.substring( split + 1 ).trim();
 
-        left = StringUtils.replace( left,
-                                    "\\",
-                                    "" );
+//        left = StringUtils.replace( left,
+//                                    "\\",
+//                                    "" );
 
         final Matcher m2 = NLGrammar.itemMetadata.matcher(left);
         //final Matcher matcher = NLGrammar.itemPrefix.matcher( left );

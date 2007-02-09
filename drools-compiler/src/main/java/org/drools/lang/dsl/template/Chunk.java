@@ -18,8 +18,6 @@ package org.drools.lang.dsl.template;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * This holds a linked list of chunks of natural language.
  * A chunk is basically some text, which is delimited by "holes" in the template.
@@ -81,18 +79,18 @@ class Chunk {
                 storeSpacePadding( expression );
                 this.value = expression.trim();
             } else {
-                final String val = StringUtils.substringBefore( expression,
-                                                          this.next.text );
-                storeSpacePadding( val );
-                this.value = val.trim();
+//                final String val = StringUtils.substringBefore( expression,
+//                                                          this.next.text );
+//                storeSpacePadding( val );
+//                this.value = val.trim();
             }
 
         } else {
             this.value = this.text;
         }
         if ( this.next != null ) {
-            this.next.process( StringUtils.substringAfter( expression,
-                                                      this.value ) );
+//            this.next.process( StringUtils.substringAfter( expression,
+//                                                      this.value ) );
         }
     }
 

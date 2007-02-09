@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.lang.StringUtils;
 
 /**
  * This class takes a linked list of Chunk objects, and will replace what the chunks represent
@@ -88,9 +88,9 @@ class Template {
                                 String grammar_r) {
         for ( final Iterator iter = map.keySet().iterator(); iter.hasNext(); ) {
             final String key = (String) iter.next();
-            grammar_r = StringUtils.replace( grammar_r,
-                                             key,
-                                             (String) map.get( key ) );
+//            grammar_r = StringUtils.replace( grammar_r,
+//                                             key,
+//                                             (String) map.get( key ) );
         }
         return grammar_r;
     }
@@ -104,9 +104,10 @@ class Template {
     String interpolate(final String nl,
                        final String subKey,
                        final String target) {
-        return StringUtils.replace( nl,
-                                    subKey,
-                                    target );
+//        return StringUtils.replace( nl,
+//                                    subKey,
+//                                    target );
+        return null;
     }
 
     /**
