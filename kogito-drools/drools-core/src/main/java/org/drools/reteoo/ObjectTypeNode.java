@@ -21,6 +21,7 @@ import java.io.Serializable;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -70,7 +71,7 @@ public class ObjectTypeNode extends ObjectSource
     private final ObjectType  objectType;
 
     /** The parent Rete node */
-    private final Rete        rete;
+    private final Rete        rete;   
 
     // ------------------------------------------------------------
     // Constructors
@@ -92,7 +93,7 @@ public class ObjectTypeNode extends ObjectSource
         super( id, null, alphaNodeHashingThreshold );
         this.rete = rete;
         this.objectType = objectType;
-        setHasMemory( true );
+        setHasMemory( true );       
     }
 
     // ------------------------------------------------------------
@@ -136,7 +137,7 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );        
 
         // checks if shadow is enabled
         if ( this.objectType.isShadowEnabled() ) {
@@ -149,9 +150,14 @@ public class ObjectTypeNode extends ObjectSource
                 ((ShadowProxy) handle.getObject()).updateProxy();
             }
         }
-        // we do not need to check if the fact exists already
+        
+        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify ) {
+            // we do this after the shadowproxy update, just so that its up to date for the future
+            return;
+        }                
+
         memory.add( handle,
-                    false );
+                    false );        
 
         this.sink.propagateAssertObject( handle,
                                          context,
@@ -172,8 +178,12 @@ public class ObjectTypeNode extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
+        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify ) {
+            return;
+        }         
+        
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-        memory.remove( handle );
+        memory.remove( handle );               
 
         this.sink.propagateRetractObject( handle,
                                           context,
