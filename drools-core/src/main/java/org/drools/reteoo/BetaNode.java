@@ -27,6 +27,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
@@ -103,21 +104,19 @@ abstract class BetaNode extends TupleSource
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
+        
+        if ( this.constraints == null ) {
+            throw new RuntimeException( "cannot have null constraints, must atleast be an instanceof EmptyBetaCosntraints" );
+        }
     }
 
-    public AlphaNodeFieldConstraint[] getConstraints() {
-    
-        // Sanity check
-        if ( this.constraints == null ) {
-            return null;
-        }
-
+    public BetaNodeFieldConstraint[] getConstraints() {
         final LinkedList constraints = this.constraints.getConstraints();
 
-        final AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];
+        final BetaNodeFieldConstraint[] array = new BetaNodeFieldConstraint[constraints.size()];
         int i = 0;
         for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-            array[i++] = (AlphaNodeFieldConstraint) entry.getObject();
+            array[i++] = (BetaNodeFieldConstraint) entry.getObject();
         }
         return array;
     }
