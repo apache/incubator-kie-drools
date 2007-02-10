@@ -62,6 +62,7 @@ import org.drools.semantics.java.RuleBuilder;
 import org.drools.semantics.java.StaticMethodFunctionResolver;
 import org.drools.spi.FunctionResolver;
 import org.drools.xml.XmlPackageReader;
+import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.xml.sax.SAXException;
 
 /**
@@ -79,7 +80,7 @@ public class PackageBuilder {
     private MemoryResourceReader        src;
     private PackageBuilderConfiguration configuration;
     private Map                         errorHandlers;
-    private List                         generatedClassList;
+    private List                        generatedClassList;
     private TypeResolver                typeResolver;
     private FunctionFixer               functionFixer;
     private FunctionResolver            functionResolver;
@@ -604,11 +605,14 @@ public class PackageBuilder {
             case PackageBuilderConfiguration.ECLIPSE :
             default : {
                 final EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
-                eclipseSettings.getMap().put( "org.eclipse.jdt.core.compiler.codegen.targetPlatform",
-                                              this.configuration.getJavaLanguageLevel() );
-                eclipseSettings.getMap().put( "org.eclipse.jdt.core.compiler.source",
-                                              this.configuration.getJavaLanguageLevel() );
-                this.compiler = new EclipseJavaCompiler( eclipseSettings );
+                Map map = eclipseSettings.getMap();
+                map.put( CompilerOptions.OPTION_TargetPlatform,
+                                             this.configuration.getJavaLanguageLevel() );
+                
+                // We now default this to 1.5, so we can use static imports.
+                map.put( CompilerOptions.OPTION_Source,
+                         "1.5" );
+                this.compiler = new EclipseJavaCompiler( map );
                 break;
             }
         }
@@ -619,7 +623,7 @@ public class PackageBuilder {
     }
 
     public static class MissingPackageNameException extends IllegalArgumentException {
-        private static final long serialVersionUID = 4056984379574366454L;
+        private static final long serialVersionUID = 320L;
 
         public MissingPackageNameException(final String message) {
             super( message );

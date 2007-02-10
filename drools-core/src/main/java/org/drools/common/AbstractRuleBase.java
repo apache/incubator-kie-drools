@@ -266,8 +266,12 @@ abstract public class AbstractRuleBase
         for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
             final String identifier = (String) it.next();
             final Class type = (Class) newGlobals.get( identifier );
-            if ( this.globals.containsKey( identifier ) && !this.globals.get( identifier ).equals( type ) ) {
-                throw new PackageIntegrationException( pkg );
+            boolean f =  this.globals.containsKey( identifier );
+            if ( f ) {
+                boolean y = !this.globals.get( identifier ).equals( type );
+                if ( f &&  y ) {
+                    throw new PackageIntegrationException( pkg );
+                }
             }
         }
         this.globals.putAll( newGlobals );

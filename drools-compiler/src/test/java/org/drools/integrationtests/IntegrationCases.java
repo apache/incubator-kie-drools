@@ -1651,6 +1651,9 @@ public abstract class IntegrationCases extends TestCase {
 
         final XmlDumper xmlDumper = new XmlDumper();
         final String xmlResult = xmlDumper.dump( pkg );
+        
+        System.out.println( xmlResult );
+        
         builder = new PackageBuilder();
         builder.addPackageFromXml( new StringReader( xmlResult ) );
 

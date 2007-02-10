@@ -19,7 +19,6 @@ package org.drools.decisiontable.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.drools.decisiontable.model.Condition;
 import org.drools.decisiontable.model.Consequence;
 import org.drools.decisiontable.model.Rule;
