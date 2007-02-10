@@ -71,7 +71,15 @@ public class PackageBuilderConfiguration {
         return languageLevel;
     }
 
+    /**
+     * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
+     * @param level
+     */
     public void setJavaLanguageLevel(String level) {
+        if ( level.equals( "1.4" ) ) {
+            // can't set to 1.4, as we need static imports
+            level = "1.5";
+        }
         languageLevel = level;
     }
 

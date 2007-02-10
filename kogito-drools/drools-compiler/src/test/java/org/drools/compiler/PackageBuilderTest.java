@@ -937,27 +937,28 @@ public class PackageBuilderTest extends DroolsTestCase {
         EclipseJavaCompiler eclipseCompiler = (EclipseJavaCompiler) compiler;
         Field settingsField = eclipseCompiler.getClass().getDeclaredField( "settings" );
         settingsField.setAccessible( true );
-        EclipseJavaCompilerSettings settings = (EclipseJavaCompilerSettings) settingsField.get( eclipseCompiler );
+        Map map = (Map) settingsField.get( eclipseCompiler );
         assertEquals( "1.4",
-                      settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
-        assertEquals( "1.4",
-                      settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );
+                      map.get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
+        assertEquals( "1.5",
+                      map.get( "org.eclipse.jdt.core.compiler.source" ) );
 
         // test eclipse jdt core with property settings and jdk1.5 source level
         conf = new PackageBuilderConfiguration();
         conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
-        conf.setJavaLanguageLevel( "1.5" );
+        conf.setJavaLanguageLevel( "1.4" );
         builder = new PackageBuilder( conf );;
         compiler = (JavaCompiler) compilerField.get( builder );
         assertSame( EclipseJavaCompiler.class,
                     compiler.getClass() );
 
         eclipseCompiler = (EclipseJavaCompiler) compiler;
-        settings = (EclipseJavaCompilerSettings) settingsField.get( eclipseCompiler );
+        map = (Map) settingsField.get( eclipseCompiler );
         assertEquals( "1.5",
-                      settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
+                      map.get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
+        // it cannot be set below 1.5, so if they add 1.4, it still ends up at 1.5.        
         assertEquals( "1.5",
-                      settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );
+                      map.get( "org.eclipse.jdt.core.compiler.source" ) );
     }
 
     private void createReturnValueRule(final PackageDescr packageDescr,

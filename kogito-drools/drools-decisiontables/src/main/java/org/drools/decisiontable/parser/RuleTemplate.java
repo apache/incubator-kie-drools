@@ -23,9 +23,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 public class RuleTemplate
 {
     private String name;
@@ -81,11 +78,9 @@ public class RuleTemplate
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return new ToStringBuilder(this).append("name", this.name).append(
-				"notColumns", this.notColumns)
-				.append("contents", this.contents).append("columns",
-						this.columns).toString();
+        return "RuleTemplate[name,"+this.name+"notColumns,"+this.notColumns+"contents,"+this.columns+"columns";
 	}
+    
 	private String replaceOptionals(String contents) {
 		try {
 			final Pattern pattern = Pattern.compile("\\$(.[^\\$]*)\\$");

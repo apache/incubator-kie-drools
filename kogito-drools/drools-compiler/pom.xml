@@ -19,37 +19,7 @@
     </repository>
   </repositories>
 
-  <!-- This is needed to copy the generated jars into the IDE/Plugs lib directory -->
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>package</id>
-            <phase>package</phase>
-            <configuration>
-              <tasks>
-                <echo message="Copying file ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging} to ../drools-ide/lib/${project.artifactId}.${project.packaging}"/>
-                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" tofile="../drools-ide/lib/${project.artifactId}.${project.packaging}"/>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant-antlr</artifactId>
-            <version>1.6.5</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>
-  </build>
+  <build/>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -59,20 +29,6 @@
     </dependency>
 
     <!-- External dependencies -->
-    <!-- TODO will keep JCI local for now. Move to ibiblio when its updated -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-jci-janino</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-jci-eclipse</artifactId>
-    </dependency>
-    <!-- TODO only needed for the default expander in parser/lang.. to remove when it is refactored into another module. -->
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>stringtemplate</artifactId>
@@ -85,6 +41,14 @@
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>core</artifactId>
+    </dependency>        
+    <dependency>
+      <groupId>janino</groupId>
+      <artifactId>janino</artifactId>
+    </dependency>    
   </dependencies>
 
 </project>
