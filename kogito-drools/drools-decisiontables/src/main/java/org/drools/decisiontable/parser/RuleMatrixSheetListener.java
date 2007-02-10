@@ -24,6 +24,7 @@ import org.drools.decisiontable.model.Consequence;
 import org.drools.decisiontable.model.Rule;
 import org.drools.decisiontable.model.SnippetBuilder;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
+import org.drools.util.StringUtils;
 
 /**
  * @author <a href="mailto:stevearoonie@gmail.com"> Steven Williams </a><a

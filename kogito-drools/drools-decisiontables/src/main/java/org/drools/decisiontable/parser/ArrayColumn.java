@@ -16,6 +16,7 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 import org.antlr.stringtemplate.StringTemplate;
+import org.drools.util.StringUtils;
 
 public class ArrayColumn extends Column {
 
