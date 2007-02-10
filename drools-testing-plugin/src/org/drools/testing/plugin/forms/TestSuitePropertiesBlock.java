@@ -11,6 +11,7 @@
 package org.drools.testing.plugin.forms;
 import java.util.ArrayList;
 
+import org.drools.testing.core.beans.Scenario;
 import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.plugin.editors.RtlFormEditor;
 import org.drools.testing.plugin.resources.Messages;
@@ -58,12 +59,14 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 			if (inputElement instanceof TestSuite) {
 				TestSuite testSuite = (TestSuite) inputElement;
 				ch.add(testSuite);
-				/*Scenario[] scenarios = testSuite.getScenario();
-				Rule[] rules = testSuite.getRules();
+				Scenario[] scenarios = testSuite.getScenario();
 				for (int i=0; i<scenarios.length; i++)
 					ch.add((Scenario) scenarios[i]);
+				/*
+				Rule[] rules = testSuite.getRules();
 				for (int i=0; i<rules.length; i++)
-					ch.add((Rule) rules[i]);*/
+					ch.add((Rule) rules[i]);
+				*/	
 				return ch.toArray();
 			}
 			return new Object[0];
@@ -150,6 +153,6 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 	}
 	protected void registerPages(DetailsPart detailsPart) {
 		detailsPart.registerPage(TestSuite.class, new TestSuiteDetailsPage());
-		//detailsPart.registerPage(TypeTwo.class, new TypeTwoDetailsPage());
+		detailsPart.registerPage(Scenario.class, new ScenarioDetailsPage());
 	}
 }
