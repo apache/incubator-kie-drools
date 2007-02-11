@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,26 +16,24 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
-public final class LastSeat
-    implements
-    Serializable {
-    private final int seat;
+public class LastSeat implements Serializable {
+	private int seat;
+	
+	public LastSeat() {
+		
+	}
 
-    public LastSeat(int seat) {
-        this.seat = seat;
-    }
+	public LastSeat(int seat) {
+		this.seat = seat;
+	}
 
-    public final int getSeat() {
-        return this.seat;
-    }
+	public int getSeat() {
+		return this.seat;
+	}
 
-    public final String toString() {
-        return "[LastSeat seat=" + this.seat + "]";
-    }
+	public String toString() {
+		return "[LastSeat seat=" + this.seat + "]";
+	}
 }

@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,35 +16,38 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
+public class Path {
+	private int id;
 
+	private String guestName;
 
-public final class Path {
-    private final int    id;
-    private final String guestName;
-    private final int    seat;
+	private int seat;
 
-    public Path(int id,
-                int seat,
-                String guestName) {
-        this.id = id;
-        this.seat = seat;
-        this.guestName = guestName;
-    }
+	public Path() {
+		
+	}
+	
+	public Path(int id, int seat, String guestName) {
+		this.id = id;
+		this.seat = seat;
+		this.guestName = guestName;
+	}
 
-    public final int getSeat() {
-        return this.seat;
-    }
+	public int getSeat() {
+		return this.seat;
+	}
 
-    public final String getGuestName() {
-        return this.guestName;
-    }
+	public String getGuestName() {
+		return this.guestName;
+	}
 
-    public final int getId() {
-        return this.id;
-    }
+	public int getId() {
+		return this.id;
+	}
 
-    public final String toString() {
-        return "[Path id=" + this.id + ", seat=" + this.seat + ", guest=" + this.guestName + "]";
-    }
+	public String toString() {
+		return "[Path id=" + this.id + ", seat=" + this.seat + ", guest="
+				+ this.guestName + "]";
+	}
 
 }

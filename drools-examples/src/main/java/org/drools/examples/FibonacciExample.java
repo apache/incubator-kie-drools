@@ -42,7 +42,11 @@ public class FibonacciExample {
         private int  sequence;
 
         private long value;
-
+        
+        public Fibonacci() {
+        	
+        }
+        
         public Fibonacci(final int sequence) {
             this.sequence = sequence;
             this.value = -1;

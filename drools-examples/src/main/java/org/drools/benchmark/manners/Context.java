@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,61 +16,59 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
-public final class Context
-    implements
-    Serializable {
+public class Context implements Serializable {
 
-    public static final int START_UP      = 0;
-    public static final int ASSIGN_SEATS  = 1;
-    public static final int MAKE_PATH     = 2;
-    public static final int CHECK_DONE    = 3;
-    public static final int PRINT_RESULTS = 4;
-    
-    public static final String[] stateStrings = {
-                                  "START_UP",
-                                  "ASSIGN_SEATS",
-                                  "MAKE_PATH",
-                                  "CHECK_DONE",
-                                  "PRINT_RESULTS"
-    };
+	public static final int START_UP = 0;
 
-    private int             state;
+	public static final int ASSIGN_SEATS = 1;
 
-    public Context(String state) {
-        if ( "start".equals( state ) ) {
-            this.state = Context.START_UP;
-        } else {
-            throw new RuntimeException( "Context '" + state + "' does not exist for Context Enum" );
-        }
-    }
+	public static final int MAKE_PATH = 2;
 
-    public Context(int state) {
-        this.state = state;
-    }
+	public static final int CHECK_DONE = 3;
 
-    public final void setState(int state) {
-        this.state = state;
-    }
+	public static final int PRINT_RESULTS = 4;
 
-    public final boolean isState(int state) {
-        return this.state == state;
-    }
+	public static final String[] stateStrings = { "START_UP", "ASSIGN_SEATS",
+			"MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS" };
 
-    public final int getState() {
-        return this.state;
-    }
+	private int state;
+	
+	public Context() {
+		
+	}
 
-    public final String getStringValue() {
-        return stateStrings[this.state];
-    }
+	public Context(String state) {
+		if ("start".equals(state)) {
+			this.state = Context.START_UP;
+		} else {
+			throw new RuntimeException("Context '" + state
+					+ "' does not exist for Context Enum");
+		}
+	}
 
-    public final String toString() {
-        return "[Context state=" + getStringValue() + "]";
-    }
+	public Context(int state) {
+		this.state = state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public boolean isState(int state) {
+		return this.state == state;
+	}
+
+	public int getState() {
+		return this.state;
+	}
+
+	public String getStringValue() {
+		return stateStrings[this.state];
+	}
+
+	public String toString() {
+		return "[Context state=" + getStringValue() + "]";
+	}
 }

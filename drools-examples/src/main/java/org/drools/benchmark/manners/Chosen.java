@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,43 +16,40 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
-public final class Chosen
-    implements
-    Serializable {
+public class Chosen implements Serializable {
 
-    private final int    id;
+	private int id;
 
-    private final String guestName;
+	private String guestName;
 
-    private final Hobby  hobby;
+	private Hobby hobby;
+	
+	public Chosen() {
+		
+	}
 
-    public Chosen(int id,
-                  String guestName,
-                  Hobby hobby) {
-        this.id = id;
-        this.guestName = guestName;
-        this.hobby = hobby;
-    }
+	public Chosen(int id, String guestName, Hobby hobby) {
+		this.id = id;
+		this.guestName = guestName;
+		this.hobby = hobby;
+	}
 
-    public final int getId() {
-        return this.id;
-    }
+	public int getId() {
+		return this.id;
+	}
 
-    public final String getGuestName() {
-        return this.guestName;
-    }
+	public String getGuestName() {
+		return this.guestName;
+	}
 
-    public final Hobby getHobby() {
-        return this.hobby;
-    }
+	public Hobby getHobby() {
+		return this.hobby;
+	}
 
-    public final String toString() {
-        return "{Chosen id=" + this.id + ", name=" + this.guestName + ", hobbies=" + this.hobby + "}";
-    }
+	public String toString() {
+		return "{Chosen id=" + this.id + ", name=" + this.guestName
+				+ ", hobbies=" + this.hobby + "}";
+	}
 }

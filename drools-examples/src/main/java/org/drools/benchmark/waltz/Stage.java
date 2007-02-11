@@ -53,6 +53,10 @@ public class Stage implements Serializable {
 	
 	private int value;
 
+	public Stage() {
+		
+	}
+	
 	public Stage(int value) {
 		this.value = value;
 	}

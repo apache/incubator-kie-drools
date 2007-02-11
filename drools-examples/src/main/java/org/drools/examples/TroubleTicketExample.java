@@ -74,6 +74,10 @@ public class TroubleTicketExample {
         private String name;
         private String subscription;
 
+        public Customer() {
+        	
+        }
+        
         public Customer(final String name,
                         final String subscription) {
             super();
@@ -99,6 +103,10 @@ public class TroubleTicketExample {
         private Customer customer;
         private String   status;
 
+        public Ticket() {
+        	
+        }
+        
         public Ticket(final Customer customer) {
             super();
             this.customer = customer;

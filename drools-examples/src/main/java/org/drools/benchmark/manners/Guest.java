@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,42 +16,39 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
-public final class Guest
-    implements
-    Serializable {
-    private final String name;
+public class Guest implements Serializable {
+	private String name;
 
-    private final Sex    sex;
+	private Sex sex;
 
-    private final Hobby  hobby;
+	private Hobby hobby;
+	
+	public Guest() {
+		
+	}
 
-    public Guest(String name,
-                 Sex sex,
-                 Hobby hobby) {
-        this.name = name;
-        this.sex = sex;
-        this.hobby = hobby;
-    }
+	public Guest(String name, Sex sex, Hobby hobby) {
+		this.name = name;
+		this.sex = sex;
+		this.hobby = hobby;
+	}
 
-    public final String getName() {
-        return this.name;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public final Hobby getHobby() {
-        return this.hobby;
-    }
+	public Hobby getHobby() {
+		return this.hobby;
+	}
 
-    public final Sex getSex() {
-        return this.sex;
-    }
+	public Sex getSex() {
+		return this.sex;
+	}
 
-    public final String toString() {
-        return "[Guest name=" + this.name + ", sex=" + this.sex + ", hobbies=" + this.hobby + "]";
-    }
+	public String toString() {
+		return "[Guest name=" + this.name + ", sex=" + this.sex + ", hobbies="
+				+ this.hobby + "]";
+	}
 }

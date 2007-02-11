@@ -44,6 +44,10 @@ public class Junction {
 
 	private String type;
 
+	public Junction() {
+		
+	}
+	
 	public Junction(int p1, int p2, int p3, int basePoint, String type) {
 		this.p1 = p1;
 		this.p2 = p2;
