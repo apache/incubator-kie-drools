@@ -30,7 +30,11 @@ public class PropagationContextImpl
     private final Activation activation;
 
     private final long       propagationNumber;
-
+    
+    public final int                         activeActivations;
+    
+    public final int                         dormantActivations;
+    
     public PropagationContextImpl(final long number,
                                   final int type,
                                   final Rule rule,
@@ -39,6 +43,22 @@ public class PropagationContextImpl
         this.rule = rule;
         this.activation = activation;
         this.propagationNumber = number;
+        this.activeActivations = 0;
+        this.dormantActivations = 0;        
+    }    
+
+    public PropagationContextImpl(final long number,
+                                  final int type,
+                                  final Rule rule,
+                                  final Activation activation,
+                                  final int activeActivations,
+                                  final int dormantActivations) {
+        this.type = type;
+        this.rule = rule;
+        this.activation = activation;
+        this.propagationNumber = number;
+        this.activeActivations = activeActivations;
+        this.dormantActivations = dormantActivations;
     }
 
     public long getPropagationNumber() {
@@ -71,5 +91,14 @@ public class PropagationContextImpl
     public int getType() {
         return this.type;
     }
+    
+    public int getActiveActivations() {
+        return this.activeActivations;
+    }
+    
+    public int getDormantActivations() {
+        return this.dormantActivations;
+    }    
+    
 
 }

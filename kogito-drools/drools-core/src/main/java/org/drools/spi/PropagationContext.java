@@ -37,5 +37,9 @@ public interface PropagationContext
     public Activation getActivationOrigin();
 
     public int getType();
+    
+    public int getActiveActivations();
+    
+    public int getDormantActivations();    
 
 }

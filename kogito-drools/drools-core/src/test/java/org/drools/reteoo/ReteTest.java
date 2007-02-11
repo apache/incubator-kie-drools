@@ -27,6 +27,8 @@ import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.PropagationContextImpl;
+import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 
 /**
@@ -109,13 +111,13 @@ public class ReteTest extends DroolsTestCase {
         final DefaultFactHandle h1 = new DefaultFactHandle( 1,
                                                             new ArrayList() );
         rete.assertObject( h1,
-                           null,
+                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
                            workingMemory );
 
         // LinkedList matches two ObjectTypeNodes        
         h1.setObject( new LinkedList() );
         rete.assertObject( h1,
-                           null,
+                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
                            workingMemory );
 
         final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( rete );
@@ -166,7 +168,7 @@ public class ReteTest extends DroolsTestCase {
                                                             list );
 
         rete.assertObject( h2,
-                           null,
+                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
                            workingMemory );
 
         final List asserted = sink1.getAsserted();
@@ -215,11 +217,11 @@ public class ReteTest extends DroolsTestCase {
 
         // need  to assert first, to force it to build  up the cache
         rete.assertObject( h2,
-                           null,
+                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
                            workingMemory );
 
         rete.retractObject( h2,
-                            null,
+                            new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
                             workingMemory );
 
         final List retracted = sink1.getRetracted();
