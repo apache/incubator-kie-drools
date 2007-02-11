@@ -50,7 +50,7 @@ public class StateExampleWithDynamicRules {
         workingMemory.fireAllRules();
 
         builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "/StateExampleDynamicRule.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "StateExampleDynamicRule.drl" ) ) );
         ruleBase.addPackage( builder.getPackage() );
 
         workingMemory.fireAllRules();

@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,42 +16,44 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
+public class Count {
+	private int value;
+	
+	public Count() {
+		
+	}
 
+	public Count(int value) {
+		super();
+		this.value = value;
+	}
 
-public final class Count {
-    private int value;
+	public int getValue() {
+		return this.value;
+	}
 
-    public Count(int value) {
-        super();
-        this.value = value;
-    }
+	public void setValue(int value) {
+		this.value = value;
+	}
 
-    public final int getValue() {
-        return this.value;
-    }
+	public String toString() {
+		return "[Count value=" + this.value + "]";
+	}
 
-    public final void setValue(int value) {
-        this.value = value;
-    }
+	public boolean equals(Object object) {
+		if (object == this) {
+			return true;
+		}
 
-    public final String toString() {
-        return "[Count value=" + this.value + "]";
-    }
+		if ((object == null) || !(object instanceof Count)) {
+			return false;
+		}
 
-    public final boolean equals(Object object) {
-        if ( object == this ) {
-            return true;
-        }
+		return this.value == ((Count) object).value;
+	}
 
-        if ( (object == null) || !(object instanceof Count) ) {
-            return false;
-        }
-
-        return this.value == ((Count) object).value;
-    }
-
-    public final int hashCode() {
-        return this.value;
-    }
+	public int hashCode() {
+		return this.value;
+	}
 
 }

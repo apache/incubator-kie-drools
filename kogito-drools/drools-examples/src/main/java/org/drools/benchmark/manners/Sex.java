@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,46 +16,52 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
+public class Sex {
+	public static final Sex M = new Sex(0);
 
+	public static final Sex F = new Sex(1);
 
-public final class Sex {
-    public static final Sex    M       = new Sex( 0 );
-    public static final Sex    F       = new Sex( 1 );
+	public static final String stringM = "m";
 
-    public static final String stringM = "m";
-    public static final String stringF = "f";
-    public static final String[] sexList = new String[] { stringM, stringF };
+	public static final String stringF = "f";
 
-    private final int          sex;
+	public static final String[] sexList = new String[] { stringM, stringF };
 
-    private Sex(int sex) {
-        this.sex = sex;
-    }
+	private int sex;
 
-    public final String getSex() {
-        return sexList[this.sex];
-    }
+	public Sex() {
+		
+	}
+	
+	private Sex(int sex) {
+		this.sex = sex;
+	}
 
-    public final static Sex resolve(String sex) {
-        if ( stringM.equals( sex ) ) {
-            return Sex.M;
-        } else if ( stringF.equals( sex ) ) {
-            return Sex.F;
-        } else {
-            throw new RuntimeException( "Sex '" + sex + "' does not exist for Sex Enum" );
-        }
-    }
+	public  String getSex() {
+		return sexList[this.sex];
+	}
 
-    public final String toString() {
-        return getSex();
-    }
+	public  static Sex resolve(String sex) {
+		if (stringM.equals(sex)) {
+			return Sex.M;
+		} else if (stringF.equals(sex)) {
+			return Sex.F;
+		} else {
+			throw new RuntimeException("Sex '" + sex
+					+ "' does not exist for Sex Enum");
+		}
+	}
 
-    public final boolean equals(Object object) {
-        return this == object;
-    }
+	public  String toString() {
+		return getSex();
+	}
 
-    public final int hashCode() {
-        return this.sex;
-    }
+	public  boolean equals(Object object) {
+		return this == object;
+	}
+
+	public  int hashCode() {
+		return this.sex;
+	}
 
 }

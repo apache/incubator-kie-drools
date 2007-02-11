@@ -43,6 +43,10 @@ public class GolfingExample {
         private String color;
         private int position;
         
+        public Golfer() {
+        	
+        }
+        
         public Golfer(String name,
                       String color,
                       int position) {

@@ -72,6 +72,10 @@ public class HelloWorldExample {
 
         private int             status;
 
+        public Message() {
+        	
+        }
+        
         public String getMessage() {
             return this.message;
         }

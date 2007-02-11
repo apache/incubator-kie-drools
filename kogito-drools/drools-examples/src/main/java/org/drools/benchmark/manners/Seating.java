@@ -1,4 +1,5 @@
 package org.drools.benchmark.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,74 +16,71 @@ package org.drools.benchmark.manners;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
-public final class Seating
-    implements
-    Serializable {
-    private final int id, pid;
+public class Seating implements Serializable {
+	private int id, pid;
 
-    private final int leftSeat, rightSeat;
+	private int leftSeat, rightSeat;
 
-    private final String leftGuestName, rightGuestName;
+	private String leftGuestName, rightGuestName;
 
-    private boolean      pathDone;
+	private boolean pathDone;
+	
+	public Seating() {
+		
+	}
 
-    public Seating(final int id,
-                   final int pid,
-                   final boolean pathDone,
-                   final int leftSeat,
-                   final String leftGuestName,
-                   final int rightSeat,
-                   final String rightGuestName) {
-        super();
-        this.id = id;
-        this.pid = pid;
-        this.pathDone = pathDone;
-        this.leftSeat = leftSeat;
-        this.leftGuestName = leftGuestName;
-        this.rightSeat = rightSeat;
-        this.rightGuestName = rightGuestName;
-    }
+	public Seating( int id,  int pid,  boolean pathDone,
+			 int leftSeat,  String leftGuestName,
+			 int rightSeat,  String rightGuestName) {
+		super();
+		this.id = id;
+		this.pid = pid;
+		this.pathDone = pathDone;
+		this.leftSeat = leftSeat;
+		this.leftGuestName = leftGuestName;
+		this.rightSeat = rightSeat;
+		this.rightGuestName = rightGuestName;
+	}
 
-    public final boolean isPathDone() {
-        return this.pathDone;
-    }
+	public  boolean isPathDone() {
+		return this.pathDone;
+	}
 
-    public final void setPathDone(boolean pathDone) {
-        this.pathDone = pathDone;
-    }
+	public  void setPathDone(boolean pathDone) {
+		this.pathDone = pathDone;
+	}
 
-    public final int getId() {
-        return this.id;
-    }
+	public  int getId() {
+		return this.id;
+	}
 
-    public final String getLeftGuestName() {
-        return this.leftGuestName;
-    }
+	public  String getLeftGuestName() {
+		return this.leftGuestName;
+	}
 
-    public final int getLeftSeat() {
-        return this.leftSeat;
-    }
+	public  int getLeftSeat() {
+		return this.leftSeat;
+	}
 
-    public final int getPid() {
-        return this.pid;
-    }
+	public  int getPid() {
+		return this.pid;
+	}
 
-    public final String getRightGuestName() {
-        return this.rightGuestName;
-    }
+	public  String getRightGuestName() {
+		return this.rightGuestName;
+	}
 
-    public final int getRightSeat() {
-        return this.rightSeat;
-    }
+	public  int getRightSeat() {
+		return this.rightSeat;
+	}
 
-    public final String toString() {
-        return "[Seating id=" + this.id + " , pid=" + this.pid + " , pathDone=" + this.pathDone + " , leftSeat=" + this.leftSeat + ", leftGuestName=" + this.leftGuestName + ", rightSeat=" + this.rightSeat + ", rightGuestName=" + this.rightGuestName
-               + "]";
-    }
+	public  String toString() {
+		return "[Seating id=" + this.id + " , pid=" + this.pid + " , pathDone="
+				+ this.pathDone + " , leftSeat=" + this.leftSeat
+				+ ", leftGuestName=" + this.leftGuestName + ", rightSeat="
+				+ this.rightSeat + ", rightGuestName=" + this.rightGuestName
+				+ "]";
+	}
 }

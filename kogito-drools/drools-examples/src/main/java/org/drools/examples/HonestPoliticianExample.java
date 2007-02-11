@@ -47,6 +47,10 @@ public class HonestPoliticianExample {
     	
     	private boolean honest;
     	
+    	public Politician() {
+    		
+    	}
+    	
 		public Politician(String name, boolean honest) {
 			super();
 			this.name = name;
@@ -67,6 +71,10 @@ public class HonestPoliticianExample {
     }
 
     public static class Hope {
+    	
+    	public Hope() {
+    		
+    	}
     	
     }
     

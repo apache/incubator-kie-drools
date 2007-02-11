@@ -43,6 +43,10 @@ public class Edge {
 	
 	final public static String MINUS = "-";
 	
+	public Edge() {
+		
+	}
+	
 	public Edge(int p1, int p2, boolean joined, String label, boolean plotted) {
 		this.p1 = p1;
 		this.p2 = p2;
