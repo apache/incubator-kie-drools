@@ -255,8 +255,8 @@ public final class RuleTerminalNode extends BaseNode
                                                                              workingMemory );
             }
         }
-        
-        agenda.increaseActiveActivations();        
+
+        agenda.increaseActiveActivations();
     }
 
     public void retractTuple(final ReteTuple leftTuple,
@@ -274,14 +274,14 @@ public final class RuleTerminalNode extends BaseNode
 
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
                                                                            workingMemory );
-            ((InternalAgenda)workingMemory.getAgenda()).decreaseActiveActivations();
+            ((InternalAgenda) workingMemory.getAgenda()).decreaseActiveActivations();
         } else {
-            ((InternalAgenda)workingMemory.getAgenda()).decreaseDormantActivations();
+            ((InternalAgenda) workingMemory.getAgenda()).decreaseDormantActivations();
         }
 
-        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                             context,
-                                                                             this.rule );
+        workingMemory.removeLogicalDependencies( activation,
+                                                 context,
+                                                 this.rule );
     }
 
     public String toString() {

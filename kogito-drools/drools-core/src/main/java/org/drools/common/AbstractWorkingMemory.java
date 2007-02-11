@@ -117,13 +117,15 @@ public abstract class AbstractWorkingMemory
     /** Rule-firing agenda. */
     protected DefaultAgenda                   agenda;
 
-    protected final List                      factQueue                                     = new ArrayList();   
+    protected final List                      factQueue                                     = new ArrayList();
 
     protected final ReentrantLock             lock                                          = new ReentrantLock();
 
     protected final boolean                   discardOnLogicalOverride;
 
     protected long                            propagationIdCounter;
+    
+    private final boolean                     maintainTms;
 
     /** Flag to determine if a rule is currently being fired. */
     protected boolean                         firing;
@@ -144,16 +146,21 @@ public abstract class AbstractWorkingMemory
         this.id = id;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
-        this.tms = new TruthMaintenanceSystem( this );
+        this.maintainTms = this.ruleBase.getConfiguration().getMaintainTms();
+        
+        if ( this.maintainTms ) {
+            this.tms = new TruthMaintenanceSystem( this );
+        } else {
+            this.tms = null;
+        }
+        
         this.assertMap = new ObjectHashMap();
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-        
-        
-        
+
         if ( conf.getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
-            this.assertMap.setComparator( new IdentityAssertMapComparator( ) );
+            this.assertMap.setComparator( new IdentityAssertMapComparator() );
         } else {
-            this.assertMap.setComparator( new EqualityAssertMapComparator( ) );
+            this.assertMap.setComparator( new EqualityAssertMapComparator() );
         }
 
         // Only takes effect if are using idententity behaviour for assert        
@@ -343,22 +350,22 @@ public abstract class AbstractWorkingMemory
         if ( !this.factQueue.isEmpty() ) {
             propagateQueuedActions();
         }
-        
+
         boolean noneFired = true;
 
         if ( !this.firing ) {
             try {
                 this.firing = true;
-                
+
                 while ( this.agenda.fireNextItem( agendaFilter ) ) {
-                    noneFired = false;                    
+                    noneFired = false;
                 }
             } finally {
                 this.firing = false;
-                if (noneFired) {
-                    doOtherwise(agendaFilter);
+                if ( noneFired ) {
+                    doOtherwise( agendaFilter );
                 }
-                
+
             }
         }
     }
@@ -373,41 +380,40 @@ public abstract class AbstractWorkingMemory
         if ( !this.factQueue.isEmpty() ) {
             propagateQueuedActions();
         }
-        
+
         while ( this.agenda.fireNextItem( agendaFilter ) ) {
             ;
         }
-        
+
         this.retractObject( handle );
     }
 
-
-//
-//        MN: The following is the traditional fireAllRules (without otherwise).
-//            Purely kept here as this implementation of otherwise is still experimental.    
-//    
-//    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
-//        // If we're already firing a rule, then it'll pick up
-//        // the firing for any other assertObject(..) that get
-//        // nested inside, avoiding concurrent-modification
-//        // exceptions, depending on code paths of the actions.
-//
-//        if ( !this.factQueue.isEmpty() ) {
-//            propagateQueuedActions();
-//        }
-//
-//        if ( !this.firing ) {
-//            try {
-//                this.firing = true;
-//
-//                while ( this.agenda.fireNextItem( agendaFilter ) ) {
-//                    ;
-//                }
-//            } finally {
-//                this.firing = false;
-//            }
-//        }
-//    }    
+    //
+    //        MN: The following is the traditional fireAllRules (without otherwise).
+    //            Purely kept here as this implementation of otherwise is still experimental.    
+    //    
+    //    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
+    //        // If we're already firing a rule, then it'll pick up
+    //        // the firing for any other assertObject(..) that get
+    //        // nested inside, avoiding concurrent-modification
+    //        // exceptions, depending on code paths of the actions.
+    //
+    //        if ( !this.factQueue.isEmpty() ) {
+    //            propagateQueuedActions();
+    //        }
+    //
+    //        if ( !this.firing ) {
+    //            try {
+    //                this.firing = true;
+    //
+    //                while ( this.agenda.fireNextItem( agendaFilter ) ) {
+    //                    ;
+    //                }
+    //            } finally {
+    //                this.firing = false;
+    //            }
+    //        }
+    //    }    
 
     /**
      * Returns the fact Object for the given <code>FactHandle</code>. It
@@ -424,19 +430,19 @@ public abstract class AbstractWorkingMemory
     public Object getObject(final FactHandle handle) {
         try {
             this.lock.lock();
-                        
+
             // Make sure the FactHandle is from this WorkingMemory
-            InternalFactHandle internalHandle = ( InternalFactHandle ) this.assertMap.get( handle );
+            InternalFactHandle internalHandle = (InternalFactHandle) this.assertMap.get( handle );
             if ( internalHandle == null ) {
                 return null;
             }
-            
+
             Object object = internalHandle.getObject();
-            
+
             if ( object != null && internalHandle.isShadowFact() ) {
-                object = ( (ShadowProxy) object ).getShadowedObject();
+                object = ((ShadowProxy) object).getShadowedObject();
             }
-        
+
             return object;
         } finally {
             this.lock.unlock();
@@ -463,10 +469,10 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             List list = new ArrayList( this.assertMap.size() );
             org.drools.util.Iterator it = this.assertMap.iterator();
-            for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
-                list.add ( entry.getKey() );
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                list.add( entry.getKey() );
             }
-            return list; 
+            return list;
         } finally {
             this.lock.unlock();
         }
@@ -490,9 +496,9 @@ public abstract class AbstractWorkingMemory
         final List list = new ArrayList( this.assertMap.size() );
 
         org.drools.util.Iterator it = this.assertMap.iterator();
-        for ( ObjectEntry entry = (ObjectEntry)it.next(); entry != null; entry = (ObjectEntry)it.next() ) {
-            InternalFactHandle  handle  = (InternalFactHandle) entry.getKey();
-            Object object = ( handle.isShadowFact() ) ? ((ShadowProxy)handle.getObject()).getShadowedObject() : handle.getObject();
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            InternalFactHandle handle = (InternalFactHandle) entry.getKey();
+            Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
             list.add( object );
         }
         return list;
@@ -502,12 +508,12 @@ public abstract class AbstractWorkingMemory
         final List list = new ArrayList( this.assertMap.size() );
 
         org.drools.util.Iterator it = this.assertMap.iterator();
-        for ( ObjectEntry entry = (ObjectEntry)it.next(); entry != null; entry = (ObjectEntry)it.next() ) {
-            InternalFactHandle  handle  = (InternalFactHandle) entry.getKey();
-            Object object = ( handle.isShadowFact() ) ? ((ShadowProxy)handle.getObject()).getShadowedObject() : handle.getObject();
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            InternalFactHandle handle = (InternalFactHandle) entry.getKey();
+            Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
             if ( objectClass.isInstance( object ) ) {
                 list.add( object );
-            }       
+            }
         }
         return list;
     }
@@ -585,108 +591,120 @@ public abstract class AbstractWorkingMemory
             // check if the object already exists in the WM
             handle = (InternalFactHandle) this.assertMap.get( object );
 
-            EqualityKey key = null;
+            if ( this.maintainTms ) {
 
-            if ( handle == null ) {
-                // lets see if the object is already logical asserted
-                key = this.tms.get( object );
-            } else {
-                // Object is already asserted, so check and possibly correct its
-                // status and then return the handle
-                key = handle.getEqualityKey();
+                EqualityKey key = null;
 
-                if ( key.getStatus() == EqualityKey.STATED ) {
-                    // return null as you cannot justify a stated object.
+                if ( handle == null ) {
+                    // lets see if the object is already logical asserted
+                    key = this.tms.get( object );
+                } else {
+                    // Object is already asserted, so check and possibly correct its
+                    // status and then return the handle
+                    key = handle.getEqualityKey();
+
+                    if ( key.getStatus() == EqualityKey.STATED ) {
+                        // return null as you cannot justify a stated object.
+                        return handle;
+                    }
+
+                    if ( !logical ) {
+                        // this object was previously justified, so we have to
+                        // override it to stated
+                        key.setStatus( EqualityKey.STATED );
+                        this.tms.removeLogicalDependencies( handle );
+                    } else {
+                        // this was object is already justified, so just add new
+                        // logical dependency
+                        this.tms.addLogicalDependency( handle,
+                                                       activation,
+                                                       activation.getPropagationContext(),
+                                                       rule );
+                    }
+
                     return handle;
                 }
 
-                if ( !logical ) {
-                    // this object was previously justified, so we have to
-                    // override it to stated
-                    key.setStatus( EqualityKey.STATED );
-                    this.tms.removeLogicalDependencies( handle );
-                } else {
-                    // this was object is already justified, so just add new
-                    // logical dependency
-                    this.tms.addLogicalDependency( handle,
-                                                   activation,
-                                                   activation.getPropagationContext(),
-                                                   rule );
-                }
-
-                return handle;
-            }
-
-            // At this point we know the handle is null
-            if ( key == null ) {
-                // key is also null, so treat as a totally new stated/logical
-                // assert
-                handle = this.handleFactory.newFactHandle( object );
-                this.assertMap.put( handle,
-                                    handle,
-                                    false );
-                key = new EqualityKey( handle );
-                handle.setEqualityKey( key );
-                this.tms.put( key );
-                if ( !logical ) {
-                    key.setStatus( EqualityKey.STATED );
-                } else {
-                    key.setStatus( EqualityKey.JUSTIFIED );
-                    this.tms.addLogicalDependency( handle,
-                                                   activation,
-                                                   activation.getPropagationContext(),
-                                                   rule );
-                }
-            } else if ( !logical ) {
-                if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    // Its previous justified, so switch to stated and remove
-                    // logical dependencies
-                    final InternalFactHandle justifiedHandle = key.getFactHandle();
-                    this.tms.removeLogicalDependencies( justifiedHandle );
-
-                    if ( this.discardOnLogicalOverride ) {
-                        // override, setting to new instance, and return
-                        // existing handle
-                        key.setStatus( EqualityKey.STATED );
-                        handle = key.getFactHandle();
-                        handle.setObject( object );
-                        return handle;
-                    } else {
-                        // override, then instantiate new handle for assertion
-                        key.setStatus( EqualityKey.STATED );
-                        handle = this.handleFactory.newFactHandle( object );
-                        handle.setEqualityKey( key );
-                        key.addFactHandle( handle );
-                        this.assertMap.put( handle,
-                                            handle,
-                                            false );
-                    }
-
-                } else {
+                // At this point we know the handle is null
+                if ( key == null ) {
+                    // key is also null, so treat as a totally new stated/logical
+                    // assert
                     handle = this.handleFactory.newFactHandle( object );
                     this.assertMap.put( handle,
                                         handle,
                                         false );
-                    key.addFactHandle( handle );
+                    key = new EqualityKey( handle );
                     handle.setEqualityKey( key );
+                    this.tms.put( key );
+                    if ( !logical ) {
+                        key.setStatus( EqualityKey.STATED );
+                    } else {
+                        key.setStatus( EqualityKey.JUSTIFIED );
+                        this.tms.addLogicalDependency( handle,
+                                                       activation,
+                                                       activation.getPropagationContext(),
+                                                       rule );
+                    }
+                } else if ( !logical ) {
+                    if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                        // Its previous justified, so switch to stated and remove
+                        // logical dependencies
+                        final InternalFactHandle justifiedHandle = key.getFactHandle();
+                        this.tms.removeLogicalDependencies( justifiedHandle );
+
+                        if ( this.discardOnLogicalOverride ) {
+                            // override, setting to new instance, and return
+                            // existing handle
+                            key.setStatus( EqualityKey.STATED );
+                            handle = key.getFactHandle();
+                            handle.setObject( object );
+                            return handle;
+                        } else {
+                            // override, then instantiate new handle for assertion
+                            key.setStatus( EqualityKey.STATED );
+                            handle = this.handleFactory.newFactHandle( object );
+                            handle.setEqualityKey( key );
+                            key.addFactHandle( handle );
+                            this.assertMap.put( handle,
+                                                handle,
+                                                false );
+                        }
+
+                    } else {
+                        handle = this.handleFactory.newFactHandle( object );
+                        this.assertMap.put( handle,
+                                            handle,
+                                            false );
+                        key.addFactHandle( handle );
+                        handle.setEqualityKey( key );
+                    }
+
+                } else {
+                    if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                        // only add as logical dependency if this wasn't previously
+                        // stated
+                        this.tms.addLogicalDependency( key.getFactHandle(),
+                                                       activation,
+                                                       activation.getPropagationContext(),
+                                                       rule );
+                        return key.getFactHandle();
+                    } else {
+                        // You cannot justify a previously stated equality equal
+                        // object, so return null
+                        return null;
+                    }
                 }
 
             } else {
-                if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    // only add as logical dependency if this wasn't previously
-                    // stated
-                    this.tms.addLogicalDependency( key.getFactHandle(),
-                                                   activation,
-                                                   activation.getPropagationContext(),
-                                                   rule );
-                    return key.getFactHandle();
-                } else {
-                    // You cannot justify a previously stated equality equal
-                    // object, so return null
-                    return null;
+                if ( handle != null ) {
+                    return handle;
                 }
+                handle = this.handleFactory.newFactHandle( object );
+                this.assertMap.put( handle,
+                                    handle,
+                                    false );
             }
-
+            
             if ( dynamic ) {
                 addPropertyChangeListener( object );
             }
@@ -694,7 +712,9 @@ public abstract class AbstractWorkingMemory
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.ASSERTION,
                                                                                       rule,
-                                                                                      activation );
+                                                                                      activation,
+                                                                                      this.agenda.getActiveActivations(),
+                                                                                      this.agenda.getDormantActivations() );
 
             // this.ruleBase.assertObject( handle,
             // object,
@@ -750,7 +770,7 @@ public abstract class AbstractWorkingMemory
         try {
             object = getObject( handle );
 
-            if(object != null) {
+            if ( object != null ) {
                 final Method mehod = object.getClass().getMethod( "removePropertyChangeListener",
                                                                   AbstractWorkingMemory.ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
 
@@ -831,27 +851,31 @@ public abstract class AbstractWorkingMemory
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.RETRACTION,
                                                                                       rule,
-                                                                                      activation );
+                                                                                      activation,
+                                                                                      this.agenda.getActiveActivations(),
+                                                                                      this.agenda.getDormantActivations() );
 
             doRetract( handle,
                        propagationContext );
 
-            // Update the equality key, which maintains a list of stated
-            // FactHandles
-            final EqualityKey key = handle.getEqualityKey();
-
-            // Its justified so attempt to remove any logical dependencies for
-            // the handle
-            if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                this.tms.removeLogicalDependencies( handle );
-            }
-
-            key.removeFactHandle( handle );
-            handle.setEqualityKey( null );
-
-            // If the equality key is now empty, then remove it
-            if ( key.isEmpty() ) {
-                this.tms.remove( key );
+            if ( this.maintainTms ) {
+                // Update the equality key, which maintains a list of stated
+                // FactHandles
+                final EqualityKey key = handle.getEqualityKey();
+    
+                // Its justified so attempt to remove any logical dependencies for
+                // the handle
+                if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                    this.tms.removeLogicalDependencies( handle );
+                }
+    
+                key.removeFactHandle( handle );
+                handle.setEqualityKey( null );
+    
+                // If the equality key is now empty, then remove it
+                if ( key.isEmpty() ) {
+                    this.tms.remove( key );
+                }
             }
 
             final Object object = handle.getObject();
@@ -892,9 +916,13 @@ public abstract class AbstractWorkingMemory
                              final Activation activation) throws FactException {
         try {
             this.lock.lock();
-            final int status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
+            // only needed if we maintain tms, but either way we must get it before we do the retract
+            int status = -1;
+            if ( this.maintainTms ) {
+                status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
+            }
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = ( handle.isShadowFact() ) ? ((ShadowProxy)handle.getObject()).getShadowedObject() : handle.getObject();
+            final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
 
             if ( handle.getId() == -1 || object == null ) {
                 // the handle is invalid, most likely already  retracted, so return
@@ -906,39 +934,43 @@ public abstract class AbstractWorkingMemory
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      activation );
+                                                                                      activation,
+                                                                                      this.agenda.getActiveActivations(),
+                                                                                      this.agenda.getDormantActivations() );
             doRetract( handle,
-                       propagationContext );            
-            
+                       propagationContext );
+
             // set anyway, so that it updates the hashCodes
             handle.setObject( object );
 
-            // We only need to put objects, if its a new object
-            if ( originalObject != object ) {
-                this.assertMap.put( handle,
-                                    handle );
+            if ( this.maintainTms ) {            
+                // We only need to put objects, if its a new object
+                if ( originalObject != object ) {
+                    this.assertMap.put( handle,
+                                        handle );
+                }
+    
+                // the hashCode and equality has changed, so we must update the EqualityKey
+                EqualityKey key = handle.getEqualityKey();
+                key.removeFactHandle( handle );
+    
+                // If the equality key is now empty, then remove it
+                if ( key.isEmpty() ) {
+                    this.tms.remove( key );
+                }
+    
+                // now use an  existing  EqualityKey, if it exists, else create a new one
+                key = this.tms.get( object );
+                if ( key == null ) {
+                    key = new EqualityKey( handle,
+                                           status );
+                    this.tms.put( key );
+                } else {
+                    key.addFactHandle( handle );
+                }
+    
+                handle.setEqualityKey( key );
             }
-
-            // the hashCode and equality has changed, so we must update the EqualityKey
-            EqualityKey key = handle.getEqualityKey();
-            key.removeFactHandle( handle );
-
-            // If the equality key is now empty, then remove it
-            if ( key.isEmpty() ) {
-                this.tms.remove( key );
-            }
-
-            // now use an  existing  EqualityKey, if it exists, else create a new one
-            key = this.tms.get( object );
-            if ( key == null ) {
-                key = new EqualityKey( handle,
-                                       status );
-                this.tms.put( key );
-            } else {
-                key.addFactHandle( handle );
-            }
-
-            handle.setEqualityKey( key );
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
@@ -983,6 +1015,14 @@ public abstract class AbstractWorkingMemory
                                                                   ruleOrigin,
                                                                   activationOrigin ) );
     }
+    
+    public void removeLogicalDependencies(final Activation activation,
+                                          final PropagationContext context,
+                                          final Rule rule) throws FactException {
+        if ( this.maintainTms ) {
+            this.tms.removeLogicalDependencies( activation, context, rule );
+        }
+    }
 
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
@@ -1008,8 +1048,8 @@ public abstract class AbstractWorkingMemory
 
     public void clearNodeMemory(final NodeMemory node) {
         this.nodeMemories.remove( node.getId() );
-    }  
-    
+    }
+
     public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
         return this.workingMemoryEventSupport;
     }

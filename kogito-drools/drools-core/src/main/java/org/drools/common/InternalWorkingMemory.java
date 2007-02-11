@@ -2,9 +2,13 @@ package org.drools.common;
 
 import java.util.Map;
 
+import org.drools.FactException;
 import org.drools.WorkingMemory;
 import org.drools.event.AgendaEventSupport;
+import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
+import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 
 public interface InternalWorkingMemory
@@ -27,4 +31,8 @@ public interface InternalWorkingMemory
     public void propagateQueuedActions();
 
     public FactHandleFactory getFactHandleFactory();
+    
+    public void removeLogicalDependencies(final Activation activation,
+                                          final PropagationContext context,
+                                          final Rule rule) throws FactException;
 }

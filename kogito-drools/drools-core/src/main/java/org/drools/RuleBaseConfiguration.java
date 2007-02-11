@@ -56,7 +56,8 @@ public class RuleBaseConfiguration
     private static final long serialVersionUID = 320L;
 
     private boolean           immutable;
-
+    
+    private boolean           maintainTms;    
     private boolean           removeIdentities;
     private boolean           shareAlphaNodes;
     private boolean           shareBetaNodes;
@@ -71,6 +72,9 @@ public class RuleBaseConfiguration
     public RuleBaseConfiguration() {
         this.immutable = false;
 
+        setMaintainTms( Boolean.valueOf( System.getProperty( "drools.maintainTms",
+                             "true" ) ).booleanValue() );
+        
         setRemoveIdentities( Boolean.valueOf( System.getProperty( "drools.removeIdentities",
                                                                   "false" ) ).booleanValue() );
         
@@ -116,19 +120,30 @@ public class RuleBaseConfiguration
     public boolean isImmutable() {
         return this.immutable;
     }
+    
+    private void checkCanChange() {
+        if ( this.immutable ) {
+            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        }
+    }
         
     
+    public boolean getMaintainTms() {
+        return this.maintainTms;
+    }
     
+    public void setMaintainTms(boolean maintainTms) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.maintainTms = maintainTms;
+    }
+            
     public boolean isRemoveIdentities() {
         return removeIdentities;
     }
 
     public void setRemoveIdentities(boolean removeIdentities) {
-        if ( !this.immutable ) {
-            this.removeIdentities = removeIdentities;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.removeIdentities = removeIdentities;        
     }
 
     public boolean isAlphaMemory() {
@@ -136,11 +151,8 @@ public class RuleBaseConfiguration
     }
 
     public void setAlphaMemory(boolean alphaMemory) {
-        if ( !this.immutable ) {
-            this.alphaMemory = alphaMemory;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.alphaMemory = alphaMemory;
     }
 
     public boolean isShareAlphaNodes() {
@@ -148,11 +160,8 @@ public class RuleBaseConfiguration
     }
 
     public void setShareAlphaNodes(boolean shareAlphaNodes) {
-        if ( !this.immutable ) {
-            this.shareAlphaNodes = shareAlphaNodes;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.shareAlphaNodes = shareAlphaNodes;
     }
 
     public boolean isShareBetaNodes() {
@@ -160,11 +169,8 @@ public class RuleBaseConfiguration
     }
 
     public void setShareBetaNodes(boolean shareBetaNodes) {
-        if ( !this.immutable ) {
-            this.shareBetaNodes = shareBetaNodes;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.shareBetaNodes = shareBetaNodes;        
     }
 
     public int getAlphaNodeHashingThreshold() {
@@ -172,11 +178,8 @@ public class RuleBaseConfiguration
     }
 
     public void setAlphaNodeHashingThreshold(int alphaNodeHashingThreshold) {
-        if ( !this.immutable ) {
-            this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;        
+        this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
     public AssertBehaviour getAssertBehaviour() {
@@ -184,11 +187,8 @@ public class RuleBaseConfiguration
     }
 
     public void setAssertBehaviour(AssertBehaviour assertBehaviour) {
-        if ( !this.immutable ) {
-            this.assertBehaviour = assertBehaviour;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.assertBehaviour = assertBehaviour;
     }
 
     public int getCompositeKeyDepth() {
@@ -211,23 +211,17 @@ public class RuleBaseConfiguration
     }
 
     public void setIndexLeftBetaMemory(boolean indexLeftBetaMemory) {
-        if ( !this.immutable ) {
-            this.indexLeftBetaMemory = indexLeftBetaMemory;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.indexLeftBetaMemory = indexLeftBetaMemory;
     }
 
     public boolean isIndexRightBetaMemory() {
         return indexRightBetaMemory;
     }
 
-    public void setIndexRightBetaMemory(boolean indexRightBetaMemory) {
-        if ( !this.immutable ) {
-            this.indexRightBetaMemory = indexRightBetaMemory;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+    public void setIndexRightBetaMemory(boolean indexRightBetaMemory) {        
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.indexRightBetaMemory = indexRightBetaMemory;
     }
 
     public LogicalOverride getLogicalOverride() {
@@ -235,11 +229,8 @@ public class RuleBaseConfiguration
     }
 
     public void setLogicalOverride(LogicalOverride logicalOverride) {
-        if ( !this.immutable ) {
-            this.logicalOverride = logicalOverride;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.logicalOverride = logicalOverride;
     }
 
     public static class AssertBehaviour
