@@ -124,7 +124,7 @@ public abstract class AbstractWorkingMemory
     protected final boolean                   discardOnLogicalOverride;
 
     protected long                            propagationIdCounter;
-    
+
     private final boolean                     maintainTms;
 
     /** Flag to determine if a rule is currently being fired. */
@@ -147,13 +147,13 @@ public abstract class AbstractWorkingMemory
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.maintainTms = this.ruleBase.getConfiguration().getMaintainTms();
-        
+
         if ( this.maintainTms ) {
             this.tms = new TruthMaintenanceSystem( this );
         } else {
             this.tms = null;
         }
-        
+
         this.assertMap = new ObjectHashMap();
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
@@ -704,7 +704,7 @@ public abstract class AbstractWorkingMemory
                                     handle,
                                     false );
             }
-            
+
             if ( dynamic ) {
                 addPropertyChangeListener( object );
             }
@@ -862,16 +862,16 @@ public abstract class AbstractWorkingMemory
                 // Update the equality key, which maintains a list of stated
                 // FactHandles
                 final EqualityKey key = handle.getEqualityKey();
-    
+
                 // Its justified so attempt to remove any logical dependencies for
                 // the handle
                 if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                     this.tms.removeLogicalDependencies( handle );
                 }
-    
+
                 key.removeFactHandle( handle );
                 handle.setEqualityKey( null );
-    
+
                 // If the equality key is now empty, then remove it
                 if ( key.isEmpty() ) {
                     this.tms.remove( key );
@@ -943,22 +943,22 @@ public abstract class AbstractWorkingMemory
             // set anyway, so that it updates the hashCodes
             handle.setObject( object );
 
-            if ( this.maintainTms ) {            
+            if ( this.maintainTms ) {
                 // We only need to put objects, if its a new object
                 if ( originalObject != object ) {
                     this.assertMap.put( handle,
                                         handle );
                 }
-    
+
                 // the hashCode and equality has changed, so we must update the EqualityKey
                 EqualityKey key = handle.getEqualityKey();
                 key.removeFactHandle( handle );
-    
+
                 // If the equality key is now empty, then remove it
                 if ( key.isEmpty() ) {
                     this.tms.remove( key );
                 }
-    
+
                 // now use an  existing  EqualityKey, if it exists, else create a new one
                 key = this.tms.get( object );
                 if ( key == null ) {
@@ -968,7 +968,7 @@ public abstract class AbstractWorkingMemory
                 } else {
                     key.addFactHandle( handle );
                 }
-    
+
                 handle.setEqualityKey( key );
             }
 
@@ -1015,12 +1015,14 @@ public abstract class AbstractWorkingMemory
                                                                   ruleOrigin,
                                                                   activationOrigin ) );
     }
-    
+
     public void removeLogicalDependencies(final Activation activation,
                                           final PropagationContext context,
                                           final Rule rule) throws FactException {
         if ( this.maintainTms ) {
-            this.tms.removeLogicalDependencies( activation, context, rule );
+            this.tms.removeLogicalDependencies( activation,
+                                                context,
+                                                rule );
         }
     }
 
