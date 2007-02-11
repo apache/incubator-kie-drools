@@ -76,8 +76,8 @@ public class DefaultAgenda
     private final Map                  agendaGroups;
 
     private final Map                  activationGroups;
-    
-    private final Map				   ruleFlowGroups;
+
+    private final Map                  ruleFlowGroups;
 
     private final LinkedList           focusStack;
 
@@ -86,6 +86,9 @@ public class DefaultAgenda
     private AgendaGroup                main;
 
     private DefaultKnowledgeHelper     knowledgeHelper;
+
+    public int                         activeActivations;
+    public int                         dormantActivations;
 
     // ------------------------------------------------------------
     // Constructors
@@ -260,16 +263,16 @@ public class DefaultAgenda
         }
         return activationGroup;
     }
-    
+
     public RuleFlowGroup getRuleFlowGroup(final String name) {
-    	RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) this.ruleFlowGroups.get( name );
+        RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) this.ruleFlowGroups.get( name );
         if ( ruleFlowGroup == null ) {
-        	ruleFlowGroup = new RuleFlowGroupImpl( name );
+            ruleFlowGroup = new RuleFlowGroupImpl( name );
             this.ruleFlowGroups.put( name,
-            						 ruleFlowGroup );
+                                     ruleFlowGroup );
         }
         return ruleFlowGroup;
-    }    
+    }
 
     /* (non-Javadoc)
      * @see org.drools.common.AgendaI#focusStackSize()
@@ -332,7 +335,8 @@ public class DefaultAgenda
         if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
                 item.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory );
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                              this.workingMemory );
             }
         }
     }
@@ -367,7 +371,8 @@ public class DefaultAgenda
                 item.getActivationGroupNode().getActivationGroup().removeActivation( item );
             }
 
-            eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory  );
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                          this.workingMemory );
         }
         ((AgendaGroupImpl) agendaGroup).clear();
     }
@@ -387,16 +392,17 @@ public class DefaultAgenda
      */
     public void clearActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        
+
         for ( final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
-            ActivationGroupNode node = (ActivationGroupNode) it.next() ;             
+            ActivationGroupNode node = (ActivationGroupNode) it.next();
             final Activation activation = node.getActivation();
             activation.setActivationGroupNode( null );
 
             if ( activation.isActivated() ) {
                 activation.setActivated( false );
                 activation.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation, this.workingMemory  );
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                              this.workingMemory );
             }
         }
         activationGroup.clear();
@@ -438,9 +444,14 @@ public class DefaultAgenda
      *             If an error occurs while attempting to fire the consequence.
      */
     public synchronized void fireActivation(final Activation activation) throws ConsequenceException {
+        // We do this first as if a node modifies a fact that causes a recursion on an empty pattern
+        // we need to make sure it re-activates
+        increaseDormantActivations();
+        
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation, this.workingMemory  );
+        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation,
+                                                                        this.workingMemory );
 
         if ( activation.getActivationGroupNode() != null ) {
             // We know that this rule will cancel all other activatiosn in the group
@@ -449,7 +460,7 @@ public class DefaultAgenda
             activationGroup.removeActivation( activation );
             clearActivationGroup( activationGroup );
         }
-        activation.setActivated( false );        
+        activation.setActivated( false );
 
         try {
             this.knowledgeHelper.setActivation( activation );
@@ -460,20 +471,45 @@ public class DefaultAgenda
             throw new ConsequenceException( e,
                                             activation.getRule() );
         }
-        
+
         if ( activation.getRuleFlowGroupNode() != null ) {
             // Now the rule has fired, remove it and check if the rule flow group is empty
             // if its empty, activate the child groups. We do this after the consequence 
             // fired as we don't want to populate the Agenda prior to the rule actually firing.
             final RuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
             ruleFlowGroup.removeActivation( activation );
-            
+
             if ( ruleFlowGroup.isEmpty() ) {
                 ruleFlowGroup.activateChildren();
             }
         }
 
-        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
+        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );                        
+    }
+    
+    public void increaseActiveActivations() {
+        this.activeActivations++;
+    }
+    
+    public void decreaseActiveActivations() {
+        this.activeActivations--;        
+    }
+    
+    public void increaseDormantActivations() {
+        this.activeActivations--;
+        this.dormantActivations++;
+    }
+    
+    public void decreaseDormantActivations() {
+        this.dormantActivations--;
+    }
+    
+    public int getActiveActivations() {
+        return this.activeActivations;
+    }
+    
+    public int getDormantActivations() {
+        return this.dormantActivations;
     }
 
 }

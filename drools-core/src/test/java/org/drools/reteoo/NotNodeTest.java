@@ -28,6 +28,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -299,13 +300,12 @@ public class NotNodeTest extends DroolsTestCase {
     
 
     public void testGetConstraints_ReturnsNullEvenWithEmptyBinder() {
-        BetaConstraints nullConstraints = null;
+        BetaConstraints nullConstraints = EmptyBetaConstraints.getInstance();
         NotNode notNode = new NotNode( 1,
                                                 this.tupleSource,
                                                 this.objectSource, nullConstraints);        
-        AlphaNodeFieldConstraint[] constraints = notNode.getConstraints();
-        assertNull(constraints);
-        
+        BetaNodeFieldConstraint[] constraints = notNode.getConstraints();
+        assertEquals( 0, constraints.length );        
     }
 
 }

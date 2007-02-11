@@ -22,6 +22,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -59,18 +60,18 @@ public final class RuleTerminalNode extends BaseNode
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long  serialVersionUID = 320;
     /** The rule to invoke upon match. */
-    private final Rule        rule;
+    private final Rule         rule;
     /** 
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
      */
     private final GroupElement subrule;
-    private final TupleSource tupleSource;
+    private final TupleSource  tupleSource;
 
-    private TupleSinkNode     previousTupleSinkNode;
-    private TupleSinkNode     nextTupleSinkNode;
+    private TupleSinkNode      previousTupleSinkNode;
+    private TupleSinkNode      nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -135,9 +136,9 @@ public final class RuleTerminalNode extends BaseNode
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
-        
+
         //check if the rule is effective
-        if (!this.rule.isEffective()) {
+        if ( !this.rule.isEffective() ) {
             return;
         }
 
@@ -145,8 +146,8 @@ public final class RuleTerminalNode extends BaseNode
         // return
         if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
-        }        
-        
+        }
+
         //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
         final ReteTuple cloned = new ReteTuple( tuple );
 
@@ -223,24 +224,24 @@ public final class RuleTerminalNode extends BaseNode
                 }
                 memory.getActivationGroup().addActivation( item );
             }
-            
+
             if ( this.rule.getRuleFlowGroup() == null ) {
                 // No RuleFlowNode so add  it directly to  the Agenda
-            	
+
                 // Makes sure the Lifo is added to the AgendaGroup priority queue
                 // If the AgendaGroup is already in the priority queue it just
                 // returns.
-                agendaGroup.add( item );            	
+                agendaGroup.add( item );
             } else {
-            	//There is  a RuleFlowNode so add it there, instead  of the Agenda
-            	
+                //There is  a RuleFlowNode so add it there, instead  of the Agenda
+
                 // Lazy cache ruleFlowGroup
                 if ( memory.getRuleFlowGroup() == null ) {
                     memory.setRuleFlowGroup( workingMemory.getAgenda().getRuleFlowGroup( this.rule.getRuleFlowGroup() ) );
                 }
                 memory.getRuleFlowGroup().addActivation( item );
-            }  
-            
+            }
+
             item.setAgendaGroup( agendaGroup );
 
             tuple.setActivation( item );
@@ -254,6 +255,8 @@ public final class RuleTerminalNode extends BaseNode
                                                                              workingMemory );
             }
         }
+        
+        agenda.increaseActiveActivations();        
     }
 
     public void retractTuple(final ReteTuple leftTuple,
@@ -261,24 +264,24 @@ public final class RuleTerminalNode extends BaseNode
                              final InternalWorkingMemory workingMemory) {
         final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
         final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
-        //an activation is null if the tuple was never propagated as an assert
-        if ( tuple != null && tuple.getActivation() != null ) {
-            final Activation activation = tuple.getActivation();
-            if ( activation.isActivated() ) {
-                activation.remove();
+        final Activation activation = tuple.getActivation();
+        if ( activation.isActivated() ) {
+            activation.remove();
 
-                if ( activation.getActivationGroupNode() != null ) {
-                	activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
-                }
-
-                workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                               workingMemory );
+            if ( activation.getActivationGroupNode() != null ) {
+                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
             }
 
-            workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                                 context,
-                                                                                 this.rule );
+            workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                           workingMemory );
+            ((InternalAgenda)workingMemory.getAgenda()).decreaseActiveActivations();
+        } else {
+            ((InternalAgenda)workingMemory.getAgenda()).decreaseDormantActivations();
         }
+
+        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
+                                                                             context,
+                                                                             this.rule );
     }
 
     public String toString() {
@@ -390,7 +393,7 @@ public final class RuleTerminalNode extends BaseNode
             return true;
         }
 
-        if ( object == null || !(object instanceof RuleTerminalNode ) ) {
+        if ( object == null || !(object instanceof RuleTerminalNode) ) {
             return false;
         }
 
@@ -406,7 +409,7 @@ public final class RuleTerminalNode extends BaseNode
         private AgendaGroupImpl   agendaGroup;
 
         private ActivationGroup   activationGroup;
-        
+
         private RuleFlowGroup     ruleFlowGroup;
 
         private TupleHashTable    tupleMemory;
@@ -435,12 +438,12 @@ public final class RuleTerminalNode extends BaseNode
             return this.tupleMemory;
         }
 
-		public RuleFlowGroup getRuleFlowGroup() {
-			return ruleFlowGroup;
-		}
+        public RuleFlowGroup getRuleFlowGroup() {
+            return ruleFlowGroup;
+        }
 
-		public void setRuleFlowGroup(RuleFlowGroup ruleFlowGroup) {
-			this.ruleFlowGroup = ruleFlowGroup;
-		}                        
+        public void setRuleFlowGroup(RuleFlowGroup ruleFlowGroup) {
+            this.ruleFlowGroup = ruleFlowGroup;
+        }
     }
 }

@@ -22,6 +22,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.EmptyBetaConstraints;
+import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -151,7 +152,7 @@ public class ObjectTypeNode extends ObjectSource
             }
         }
         
-        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify ) {
+        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             // we do this after the shadowproxy update, just so that its up to date for the future
             return;
         }                
@@ -178,7 +179,7 @@ public class ObjectTypeNode extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify ) {
+        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             return;
         }         
         

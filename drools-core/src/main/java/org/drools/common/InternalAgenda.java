@@ -19,5 +19,17 @@ public interface InternalAgenda
     public void scheduleItem(final ScheduledAgendaItem item);
 
     public void addAgendaGroup(final AgendaGroup agendaGroup);
+    
+    public void increaseActiveActivations();
+    
+    public void decreaseActiveActivations();
+    
+    public void increaseDormantActivations();
+    
+    public void decreaseDormantActivations();
+    
+    public int getActiveActivations();
+    
+    public int getDormantActivations();
 
 }

@@ -149,12 +149,11 @@ public class NotNode extends BetaNode {
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 final int matches = tuple.getMatches();
                 tuple.setMatches( matches + 1 );
-                this.sink.propagateRetractTuple( tuple,
-                                                 context,
-                                                 workingMemory );
-                //                if ( matches == 0 ) {
-                //                    this.sink.propagateRetractTuple( tuple, context, workingMemory );
-                //                }
+                if ( matches == 0 ) {
+                    this.sink.propagateRetractTuple( tuple,
+                                                     context,
+                                                     workingMemory );
+                }
             }
         }
     }
