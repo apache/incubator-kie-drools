@@ -24,6 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
+ * 
+ * Container for a set of templates (residing in one file).
+ * This class will parse the template file. 
+ *
+ */
 public class DefaultTemplateContainer implements TemplateContainer {
 	private String header;
 

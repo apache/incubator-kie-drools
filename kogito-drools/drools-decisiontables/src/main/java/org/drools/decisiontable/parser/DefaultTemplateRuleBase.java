@@ -35,6 +35,20 @@ import org.drools.decisiontable.model.Rule;
 import org.drools.decisiontable.model.SnippetBuilder;
 import org.drools.rule.Package;
 
+/**
+ * 
+ * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
+ * 
+ * Create a rule base for the set of rule templates in the 
+ * TemplateContainer. These rules are used internally by the
+ * engine to generate the actual decision table rules based on
+ * which columns have been filled in.
+ * 
+ * Basically, if a rule template requires columns A and B then 
+ * the template rule base will generate a rule with columns A and B
+ * as the LHS and a RHS which triggers the rule to be generated.
+ * 
+ */
 public class DefaultTemplateRuleBase implements TemplateRuleBase {
 	private RuleBase ruleBase;
 
@@ -62,26 +76,38 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 		for (Iterator it = templates.values().iterator(); it.hasNext();) {
 			RuleTemplate template = (RuleTemplate) it.next();
 
-			Rule rule = new Rule(template.getName(), null, i++);
-			Condition condition = new Condition();
-			condition.setSnippet("r : Row()");
-			rule.addCondition(condition);
-			List templateColumns = template.getColumns();
-			for (Iterator it1 = templateColumns.iterator(); it1.hasNext();) {
-				String column = (String) it1.next();
-				rule.addCondition(createCondition(column));
-			}
-			String[] templateNotColumns = template.getNotColumns();
-			for (int j = 0; j < templateNotColumns.length; j++) {
-				rule.addCondition(createNotCondition(templateNotColumns[j]));
-			}
-			rule.addConsequence(createConsequence(template));
-			p.addRule(rule);
+			createTemplateRule(p, i++, template);
 		}
 		DRLOutput out = new DRLOutput();
 		p.renderDRL(out);
 		return out.getDRL();
 
+	}
+
+	private void createTemplateRule(org.drools.decisiontable.model.Package p, int index, RuleTemplate template) {
+		Rule rule = new Rule(template.getName(), null, index);
+		Condition condition = new Condition();
+		condition.setSnippet("r : Row()");
+		rule.addCondition(condition);
+		createColumnConditions(template, rule);
+		createNotColumnConditions(template, rule);
+		rule.addConsequence(createConsequence(template));
+		p.addRule(rule);
+	}
+
+	private void createNotColumnConditions(RuleTemplate template, Rule rule) {
+		String[] templateNotColumns = template.getNotColumns();
+		for (int j = 0; j < templateNotColumns.length; j++) {
+			rule.addCondition(createNotCondition(templateNotColumns[j]));
+		}
+	}
+
+	private void createColumnConditions(RuleTemplate template, Rule rule) {
+		List templateColumns = template.getColumns();
+		for (Iterator it1 = templateColumns.iterator(); it1.hasNext();) {
+			String column = (String) it1.next();
+			rule.addCondition(createCondition(column));
+		}
 	}
 
 
@@ -129,7 +155,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 	}
 	private RuleBase readRule(String drl) {
 		try {
-//			System.out.println(drl);
+			System.out.println(drl);
 			// read in the source
 			Reader source = new StringReader(drl);
 			PackageBuilder builder = new PackageBuilder();
