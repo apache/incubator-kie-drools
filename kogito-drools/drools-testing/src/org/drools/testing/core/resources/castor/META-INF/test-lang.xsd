@@ -17,6 +17,7 @@
             </xs:sequence>
             <xs:attribute name="name" use="required" type="xs:string"/>
             <xs:attribute name="description" type="xs:string"/>
+            <xs:attribute name="fileName" use="required" type="xs:string"/>
         </xs:complexType>
     </xs:element>
     

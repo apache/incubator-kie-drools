@@ -7,9 +7,8 @@ rule rule1
 		$acc : Account (status == "active", balance == 0)
 		$person : Person ( age < 60 )
 	then
-		$acc.setBalance(new Integer(0));
+		$acc.setBalance(new Integer(10));
 		modify($acc);
-		System.out.println("firing rule1");
 end
 
 rule rule2
@@ -18,7 +17,6 @@ rule rule2
 	then
 		$acc.setStatus("overdrawn");
 		modify($acc);
-		System.out.println("Your account is overdrawn. Balance: "+$acc.getBalance());	
 end
 
 rule rule3
