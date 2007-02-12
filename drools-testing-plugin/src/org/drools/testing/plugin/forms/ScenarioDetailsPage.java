@@ -94,7 +94,7 @@ public class ScenarioDetailsPage implements IDetailsPage {
 		gd = new GridData();
 		gd.horizontalSpan = 2;
 		
-		toolkit.createLabel(client, Messages.getString("ScenarioDetailsPage.label")); //$NON-NLS-1$
+		toolkit.createLabel(client, Messages.getString("ScenarioDetailsPage.name.label")); //$NON-NLS-1$
 		text = toolkit.createText(client, "", SWT.SINGLE); //$NON-NLS-1$
 		text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -142,6 +142,7 @@ public class ScenarioDetailsPage implements IDetailsPage {
 	 * @see org.eclipse.ui.forms.IDetailsPage#commit()
 	 */
 	public void commit(boolean onSave) {
+		
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.IDetailsPage#setFocus()
