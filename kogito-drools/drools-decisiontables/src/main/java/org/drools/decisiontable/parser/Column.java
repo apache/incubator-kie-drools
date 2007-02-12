@@ -17,6 +17,11 @@ package org.drools.decisiontable.parser;
  */
 import org.antlr.stringtemplate.StringTemplate;
 
+/**
+ * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
+ * 
+ * A column in a decision table
+ */
 public class Column {
 	private String name;
 

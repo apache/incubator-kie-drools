@@ -47,6 +47,15 @@ import org.drools.rule.Package;
  * Basically, if a rule template requires columns A and B then 
  * the template rule base will generate a rule with columns A and B
  * as the LHS and a RHS which triggers the rule to be generated.
+ * ie.
+ * rule "template1"
+ *   when
+ *     r : Row()
+ *     Cell(row == r, column == "column1")
+ *     Cell(row == r, column == "column2")
+ *   then
+ *     generator.generate( "template1", r);
+ *   end
  * 
  */
 public class DefaultTemplateRuleBase implements TemplateRuleBase {
