@@ -15,6 +15,12 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
+ * 
+ * Factory to produce a column of the correct type based on its declaration.
+ * [] indicates a column that represents an array (comma-delimited) of values.
+ */
 public class ColumnFactory {
 
 	public Column getColumn(String value) {

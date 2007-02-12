@@ -23,7 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.stringtemplate.StringTemplate;
-
+/**
+ * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
+ * 
+ * Generate the rules for a decision table row from a rule template.
+ */
 public class DefaultGenerator implements Generator {
 
 	Map ruleTemplates;

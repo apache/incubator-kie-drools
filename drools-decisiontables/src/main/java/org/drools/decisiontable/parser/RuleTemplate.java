@@ -25,6 +25,13 @@ import java.util.regex.Pattern;
 
 import org.drools.util.StringUtils;
 
+/**
+ * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
+ * 
+ * A rule template made up of a name, the decision table columns required, 
+ * the decision table columns that must be empty and the contents of the
+ * rule.
+ */
 public class RuleTemplate
 {
     private String name;
@@ -80,9 +87,13 @@ public class RuleTemplate
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-        return "RuleTemplate[name,"+this.name+"notColumns,"+this.notColumns+"contents,"+this.columns+"columns";
+	       return "RuleTemplate[name,"+this.name+"notColumns,"+this.notColumns+"contents,"+this.columns+"columns";
 	}
-    
+	/*
+	 * Replace the optional columns in the rule contents with an if statement.
+	 * if (column is empty) do not show the line.
+	 * This is based on antlr StringTemplate and should be replaced with MVEL.
+	 */
 	private String replaceOptionals(String contents) {
 		try {
 			final Pattern pattern = Pattern.compile("\\$(.[^\\$]*)\\$");

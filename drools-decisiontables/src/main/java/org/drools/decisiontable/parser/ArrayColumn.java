@@ -17,7 +17,12 @@ package org.drools.decisiontable.parser;
  */
 import org.antlr.stringtemplate.StringTemplate;
 import org.drools.util.StringUtils;
-
+/**
+ * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
+ * 
+ * A column in a decision table that represents an array (comma-delimited)
+ * of values.
+ */
 public class ArrayColumn extends Column {
 
 	public void addValue(StringTemplate t, Object value) {

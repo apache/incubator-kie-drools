@@ -15,6 +15,10 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * <a href="stevearoonie@gmail.com">Steven Williams</a>
+ * Generate the rules for a decision table
+ */
 public interface Generator {
 
 	void generate(String templateName, Row row);
