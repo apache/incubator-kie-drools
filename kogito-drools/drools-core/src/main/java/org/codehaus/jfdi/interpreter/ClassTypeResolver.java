@@ -32,6 +32,18 @@ public class ClassTypeResolver
     private final ClassLoader classLoader;
 
     private Map               cachedImports = new HashMap();
+    
+    private static Map internalNamesMap = new HashMap();
+    static {
+        internalNamesMap.put( "int", "I" );
+        internalNamesMap.put( "boolean", "Z" );
+        internalNamesMap.put( "float", "F" );
+        internalNamesMap.put( "long", "J" );
+        internalNamesMap.put( "short", "S" );
+        internalNamesMap.put( "byte", "B" );
+        internalNamesMap.put( "double", "D" );
+        internalNamesMap.put( "char", "C" );
+    }
 
     public ClassTypeResolver() {
         this( Collections.EMPTY_LIST );
@@ -99,47 +111,24 @@ public class ClassTypeResolver
     public Class resolveType(String className) throws ClassNotFoundException {
         Class clazz = null;
         boolean isArray = false;
+        StringBuffer arrayClassName = new StringBuffer();
 
-        //is the class a primitive?
-        if ( "boolean".equals( className ) ) {
-            clazz = boolean.class;
-        } else if ( "byte".equals( className ) ) {
-            clazz = byte.class;
-        } else if ( "short".equals( className ) ) {
-            clazz = short.class;
-        } else if ( "char".equals( className ) ) {
-            clazz = char.class;
-        } else if ( "int".equals( className ) ) {
-            clazz = int.class;
-        } else if ( "long".equals( className ) ) {
-            clazz = long.class;
-        } else if ( "float".equals( className ) ) {
-            clazz = float.class;
-        } else if ( "double".equals( className ) ) {
-            clazz = double.class;
+        //is the class a primitive type ?
+        if (internalNamesMap.containsKey(className)) {
+            clazz = Class.forName( "[" + internalNamesMap.get(className),
+                                   true,
+                                   classLoader).getComponentType();
             // Could also be a primitive array
-        } else if ( "boolean[]".equals( className ) ) {
-            clazz = boolean[].class;
-        } else if ( "byte[]".equals( className ) ) {
-            clazz = byte[].class;
-        } else if ( "short[]".equals( className ) ) {
-            clazz = short[].class;
-        } else if ( "char[]".equals( className ) ) {
-            clazz = char[].class;
-        } else if ( "int[]".equals( className ) ) {
-            clazz = int[].class;
-        } else if ( "long[]".equals( className ) ) {
-            clazz = long[].class;
-        } else if ( "float[]".equals( className ) ) {
-            clazz = float[].class;
-        } else if ( "double[]".equals( className ) ) {
-            clazz = double[].class;
-            // Could be primitive array of objects
-        } else if ( className.endsWith( "[]" ) ) {
-            String componentName = className.substring( 0,
-                                                        className.length() - 2 );
-            className = componentName;
+        } else if ( className.indexOf('[') > 0 ) {
             isArray = true;
+            int bracketIndex = className.indexOf('[');
+            String componentName = className.substring( 0,
+                                                        bracketIndex );
+            arrayClassName.append('[');
+            while( (bracketIndex = className.indexOf( '[', bracketIndex+1 )) > 0 ) {
+                arrayClassName.append('[');
+            }
+            className = componentName;
         }
 
         if ( clazz == null ) {
@@ -195,10 +184,19 @@ public class ClassTypeResolver
         }
 
         // If array component class was found, try to resolve the array class of it 
-        if( isArray && clazz != null ) {
-            String arrayClassName = new StringBuffer().append( "[L" ).append( clazz.getName() ).append( ";" ).toString();
+        if( isArray ) {
+            if (clazz == null && internalNamesMap.containsKey( className ) ) {
+                arrayClassName.append( internalNamesMap.get( className ) );
+            } else {
+                if( clazz != null ) {
+                    arrayClassName.append( "L" ).append( clazz.getName() ).append( ";" );                
+                } else {
+                    // we know we will probably not be able to resolve this name, but nothing else we can do. 
+                    arrayClassName.append( "L" ).append( className ).append( ";" );                
+                }
+            }
             try {
-                clazz = Class.forName( arrayClassName );
+                clazz = Class.forName( arrayClassName.toString() );
             } catch ( ClassNotFoundException e ) {
                 clazz = null;
             }
