@@ -23,7 +23,7 @@ public class TestingTest extends TestCase {
 	
 	public void testGenerateRTL () throws Exception {
 		PackageDescr paDescr = TransformerService.parseDrl("/org/drools/testing/core/resources/drl/test.drl");
-		Testing testing = new Testing("The Test Test Suite", paDescr);
+		Testing testing = new Testing("The Test Test Suite", paDescr,TestingTest.class.getClassLoader());
 		Scenario scenario = testing.generateScenario("Scenario One",paDescr.getRules());
 		testing.addScenarioToSuite(scenario);
 		TestSuite testSuite = testing.getTestSuite();
