@@ -21,6 +21,9 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.eclipse.ui.dialogs.ResourceSelectionDialog;
+import org.eclipse.ui.dialogs.SelectionDialog;
+import org.eclipse.ui.dialogs.WizardResourceImportPage;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -60,7 +63,7 @@ public class RtlNewPage extends WizardPage {
 		layout.verticalSpacing = 9;
 		
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&File name:");
+		label.setText("&Drl:");
 
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -132,6 +135,10 @@ public class RtlNewPage extends WizardPage {
 		dialog.setFilterExtensions(extensions);
 		dialog.setFilterPath(".");
 		fileText.setText(dialog.open());
+		
+		
+
+
 	}
 	
 	private void handleBrowse() {
