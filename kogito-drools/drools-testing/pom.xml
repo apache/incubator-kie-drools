@@ -34,7 +34,7 @@
     </repository>
   </repositories>
   <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
+    <sourceDirectory>${basedir}/</sourceDirectory>
     <outputDirectory>${basedir}/target/classes</outputDirectory>
     <testOutputDirectory>${basedir}/target/test-classes</testOutputDirectory>
     <resources>

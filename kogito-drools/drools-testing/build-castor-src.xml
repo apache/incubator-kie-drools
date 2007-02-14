@@ -46,12 +46,12 @@
     <taskdef name="castor-srcgen"
                 classname="org.exolab.castor.tools.ant.taskdefs.CastorSourceGenTask"
                 />
-    <castor-srcgen dir="C:\eclipse\workspace\testing-core\src\org\drools\testing\core\resources\castor\META-INF\"
+    <castor-srcgen dir="C:\eclipse\workspace\drools-testing\src\org\drools\testing\core\resources\castor\META-INF\"
                       todir="${gen}"
                       package="org.drools.testing.core.beans"
                       types="j2"
                       warnings="true"
-    				  bindingfile="C:\eclipse\workspace\testing-core\src\org\drools\testing\core\resources\castor\binding\binding.xml"
+    				  bindingfile="C:\eclipse\workspace\drools-testing\src\org\drools\testing\core\resources\castor\binding\binding.xml"
     				  nodesc="true">
     		
     </castor-srcgen>	
