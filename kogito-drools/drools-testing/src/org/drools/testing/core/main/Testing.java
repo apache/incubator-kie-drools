@@ -38,7 +38,7 @@ public final class Testing {
 	private Random rng;
 	private List facts = new ArrayList();
 	private ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
-	
+	private ClassLoader classLoader;
 	
 	public Testing () {
 		
@@ -48,6 +48,18 @@ public final class Testing {
 		this.testSuite = new TestSuite();
 		this.testSuite.setName(suiteName);
 		this.packageDescr = packageDescr;
+	}
+	
+	/**
+	 * Instantiate with a class loader
+	 * @param suiteName
+	 * @param packageDescr
+	 */
+	public Testing (String suiteName, PackageDescr packageDescr, ClassLoader classLoader) {
+		this.testSuite = new TestSuite();
+		this.testSuite.setName(suiteName);
+		this.packageDescr = packageDescr;
+		this.classLoader = classLoader;
 	}
 	
 	/**
@@ -105,7 +117,7 @@ public final class Testing {
 			// each columndescr is for a "when" statment in the drl
 			ColumnDescr columnDescr = (ColumnDescr) i.next();
 			
-			Class classDefn = ObjectUtils.getClassDefn(columnDescr.getObjectType(), this.packageDescr.getImports());
+			Class classDefn = ObjectUtils.getClassDefn(columnDescr.getObjectType(), this.packageDescr.getImports(),this.classLoader);
 				
 			FactWrapper fact = new FactWrapper();
 			fact.setType(classDefn.getName());

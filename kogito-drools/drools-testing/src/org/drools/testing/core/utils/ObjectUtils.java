@@ -29,10 +29,14 @@ public final class ObjectUtils {
 	      return classDefinition;
 	}
 	
-	public static Class getClassDefn (String className, List imports) {
+	public static Class getClassDefn (String className, List imports, ClassLoader classLoader) {
 		Class classDefinition = null;
 		try {
-			ClassTypeResolver cResolver = new ClassTypeResolver(imports); 
+			ClassTypeResolver cResolver;
+			if (classLoader == null)
+				cResolver = new ClassTypeResolver(imports);
+			else
+				cResolver = new ClassTypeResolver(imports, classLoader);
 			classDefinition = cResolver.resolveType(className);
 		}catch (Exception e) {
 			System.out.println(e);
