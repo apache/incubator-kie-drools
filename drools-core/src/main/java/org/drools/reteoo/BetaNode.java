@@ -104,7 +104,7 @@ abstract class BetaNode extends TupleSource
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
-        
+
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must atleast be an instanceof EmptyBetaCosntraints" );
         }
@@ -218,13 +218,16 @@ abstract class BetaNode extends TupleSource
             return true;
         }
 
-        if ( object == null || !( object instanceof BetaNode) ) {
+        if ( object == null || !(object instanceof BetaNode) ) {
             return false;
         }
 
         final BetaNode other = (BetaNode) object;
 
-        return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
+        return this.getClass() == other.getClass() &&
+               this.leftInput.equals( other.leftInput ) && 
+               this.rightInput.equals( other.rightInput ) && 
+               this.constraints.equals( other.constraints );
     }
 
     /**
