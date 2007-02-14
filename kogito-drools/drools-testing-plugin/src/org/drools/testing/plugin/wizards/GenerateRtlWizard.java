@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLClassLoader;
 
 import org.drools.lang.descr.RuleDescr;
 import org.drools.testing.core.beans.Scenario;
@@ -14,8 +15,10 @@ import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.main.Testing;
 import org.drools.testing.plugin.model.RtlModel;
+import org.drools.testing.plugin.utils.ClassPathUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -24,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -138,7 +142,15 @@ public class GenerateRtlWizard extends Wizard implements INewWizard {
 		final IFile file = container.getFile(new Path(fileName));
 		
 		try {
-			Testing testing = new Testing("The Test Test Suite", rtlModel.getPackageDescr());
+			//URLClassLoader urClassLoader = new URLClassLoader(
+			//		ClassPathUtils.getClasspathAsURLArray(
+			//				ResourcesPlugin.getWorkspace().getRoot().getProject("test")));
+			
+			if (resource instanceof IProject)
+				System.out.println("fuck me");
+			IJavaProject proj = (IJavaProject) resource.getAdapter(IJavaProject.class);
+
+			Testing testing = new Testing("The Test Test Suite", rtlModel.getPackageDescr(),GenerateRtlWizard.class.getClassLoader());
 			Scenario scenario = testing.generateScenario("Scenario One",rtlModel.getPackageDescr().getRules());
 			testing.addScenarioToSuite(scenario);
 			TestSuite testSuite = testing.getTestSuite();
@@ -160,11 +172,11 @@ public class GenerateRtlWizard extends Wizard implements INewWizard {
 			throwCoreException(e.getMessage());
 			
 		} catch (IOException e) {
-			throwCoreException(e.getMessage());
+			throwCoreException(e.toString());
 		}catch (MarshalException e) {
-			throwCoreException(e.getMessage());
+			throwCoreException(e.toString());
 		}catch (ValidationException e) {
-			throwCoreException(e.getMessage());
+			throwCoreException(e.toString());
 		}
 		
 		
