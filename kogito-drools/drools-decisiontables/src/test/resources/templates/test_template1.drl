@@ -23,4 +23,17 @@ rule "How cool is $name$ $row.rowNumber$"
 		user.setCoolness("$coolness$");
 end
 end template
+template "uncoolness"
+name
+age
+log
+rule "How uncool is $name$ $row.rowNumber$"
+	when
+		user.getName().equals("$name$")
+		user.getAge() >= $age1$ && user.getAge() <= $age2$
+	then
+		System.out.println( "$log$" );
+		user.setCoolness("Not so cool"); //$coolness$ putting the column in the comments makes the line conditionally display
+end		
+end template
 
