@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URLClassLoader;
 
 import org.drools.lang.descr.RuleDescr;
 import org.drools.testing.core.beans.Scenario;
@@ -15,10 +14,9 @@ import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.main.Testing;
 import org.drools.testing.plugin.model.RtlModel;
-import org.drools.testing.plugin.utils.ClassPathUtils;
+import org.drools.testing.plugin.utils.ProjectClassLoader;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,6 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -141,44 +140,48 @@ public class GenerateRtlWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
 		
+		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+		ClassLoader newLoader = GenerateRtlWizard.class.getClassLoader();
+		if (resource.getProject().getNature("org.eclipse.jdt.core.javanature") != null) {
+			IJavaProject project = JavaCore.create(resource.getProject());
+			newLoader = ProjectClassLoader.getProjectClassLoader(project);
+		}
 		try {
-			//URLClassLoader urClassLoader = new URLClassLoader(
-			//		ClassPathUtils.getClasspathAsURLArray(
-			//				ResourcesPlugin.getWorkspace().getRoot().getProject("test")));
-			
-			if (resource instanceof IProject)
-				System.out.println("fuck me");
-			IJavaProject proj = (IJavaProject) resource.getAdapter(IJavaProject.class);
+			Thread.currentThread().setContextClassLoader(newLoader);
 
-			Testing testing = new Testing("The Test Test Suite", rtlModel.getPackageDescr(),GenerateRtlWizard.class.getClassLoader());
-			Scenario scenario = testing.generateScenario("Scenario One",rtlModel.getPackageDescr().getRules());
+			Testing testing = new Testing("The Test Test Suite", rtlModel
+					.getPackageDescr(), newLoader);
+			Scenario scenario = testing.generateScenario("Scenario One",
+					rtlModel.getPackageDescr().getRules());
 			testing.addScenarioToSuite(scenario);
 			TestSuite testSuite = testing.getTestSuite();
 			FileWriter out = new FileWriter(fileName);
 			Marshaller marshaller = new Marshaller(out);
-        	marshaller.setSuppressXSIType(true);
-        	marshaller.setSupressXMLDeclaration(true);
-        	marshaller.marshal(testSuite);
-        	out.close();
-        	
-        	InputStream stream = openContentStream(fileName);
+			marshaller.setSuppressXSIType(true);
+			marshaller.setSupressXMLDeclaration(true);
+			marshaller.marshal(testSuite);
+			out.close();
+
+			InputStream stream = openContentStream(fileName);
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
 				file.create(stream, true, monitor);
 			}
 			stream.close();
-		}catch (RuleTestLanguageException e) {
+
+		} catch (RuleTestLanguageException e) {
 			throwCoreException(e.getMessage());
-			
 		} catch (IOException e) {
 			throwCoreException(e.toString());
-		}catch (MarshalException e) {
+		} catch (MarshalException e) {
 			throwCoreException(e.toString());
-		}catch (ValidationException e) {
+		} catch (ValidationException e) {
 			throwCoreException(e.toString());
-		}
-		
+		} finally {
+			Thread.currentThread().setContextClassLoader(oldLoader);
+		}   
+
 		
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
