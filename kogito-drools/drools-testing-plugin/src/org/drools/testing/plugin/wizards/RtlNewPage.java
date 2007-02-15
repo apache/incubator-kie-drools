@@ -21,9 +21,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.eclipse.ui.dialogs.ResourceSelectionDialog;
-import org.eclipse.ui.dialogs.SelectionDialog;
-import org.eclipse.ui.dialogs.WizardResourceImportPage;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -79,6 +76,8 @@ public class RtlNewPage extends WizardPage {
 		buttonFileName.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				handleFileBrowse();
+				rtlFileText.setText(fileText.getText());
+				stripIllegalChars(rtlFileText);
 			}
 		});
 		
@@ -230,4 +229,14 @@ public class RtlNewPage extends WizardPage {
 		model.setFileName(fileText.getText());
 	}
 	
+	private void stripIllegalChars (Text txt) {
+		
+		String x = txt.getText();
+		if (x.indexOf("\\") != -1 || x.indexOf(".") != -1) {
+			x =	txt.getText().substring(
+					txt.getText().lastIndexOf("\\")+1, 
+					txt.getText().indexOf("."));
+		}
+		txt.setText(x);
+	}
 }
