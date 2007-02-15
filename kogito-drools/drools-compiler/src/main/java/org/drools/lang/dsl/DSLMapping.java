@@ -1,7 +1,5 @@
-package org.drools.lang;
-
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2006 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +14,23 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-public class ExpanderException extends GeneralParseException {
+package org.drools.lang.dsl;
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 4842957918475578512L;
+import java.util.List;
 
-    public ExpanderException(final String message,
-                             final int line) {
-        super( message,
-               line );
-    }
+
+/**
+ * An interface that represents a DSL Mapping source
+ * 
+ * Implementations of this interface are capable of parsing 
+ * different DSL mapping file layouts.
+ * 
+ * @author etirelli
+ */
+public interface DSLMapping {
     
+    public String getIdentifier();
+
+    public List getEntries();
+
 }

@@ -16,8 +16,13 @@ package org.drools.lang;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.drools.lang.dsl.DSLMapping;
 
 public class MockExpander
     implements
@@ -37,6 +42,31 @@ public class MockExpander
 
     public boolean checkPattern(final String pat) {
         return this.patterns.contains( pat );
+    }
+
+    public void addDSLMapping(DSLMapping mapping) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public String expand(Reader drl) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String expand(String source) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List getErrors() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean hasErrors() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

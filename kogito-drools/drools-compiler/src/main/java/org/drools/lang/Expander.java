@@ -1,5 +1,11 @@
 package org.drools.lang;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
+
+import org.drools.lang.dsl.DSLMapping;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -39,19 +45,43 @@ package org.drools.lang;
 public interface Expander {
 
     /**
-     * The parser should call this on an expression/line that potentially needs expanding 
-     * BEFORE it parses that line (as the line may change radically as the result of expansion).
+     * Expands (process) the expression Just-In-Time for the parser.
+     * If the source is not meant to be expanded, or if no
+     * appropriate match was found for expansion, it will echo back 
+     * the same expression.
      * 
-     * Expands the expression Just-In-Time for the parser.
-     * If the expression is not meant to be expanded, or if no
-     * appropriate expander is found, it will echo back the same 
-     * expression.
-     * 
-     * @param scope The current scope of the expansion (eg "when" for LHS)
-     * @param expression The line of text to be expanded.
-     * @return A correct expression for the parser to reparse.
+     * @param drl the source code to be pre-processed
+     * @return source code after running pre-processors
      */
-    public String expand(String scope,
-                         String pattern);
+    public String expand( Reader drl ) throws IOException;
+
+    /**
+     * Expands (process) the expression Just-In-Time for the parser.
+     * If the source is not meant to be expanded, or if no
+     * appropriate match was found for expansion, it will echo back 
+     * the same expression.
+     * 
+     * @param source the source code to be expanded
+     * @return source code after running pre-processors
+     */
+    public String expand( String source );
+
+    /**
+     * Add the new mapping to this expander.
+     * @param mapping
+     */
+    public void addDSLMapping(DSLMapping mapping);
+    
+    /**
+     * Returns the list of errors from the last expansion made
+     * @return
+     */
+    public List getErrors();
+    
+    /**
+     * Returns true in case the last expansion had any errors
+     * @return
+     */
+    public boolean hasErrors();
 
 }

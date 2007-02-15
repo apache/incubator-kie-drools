@@ -13,9 +13,6 @@ options {backtrack=true;}
 }
 
 @parser::members {
-	private ExpanderResolver expanderResolver;
-	private Expander expander;
-	private boolean expanderDebug = false;
 	private PackageDescr packageDescr;
 	private List errors = new ArrayList();
 	private String source = "unknown";
@@ -42,13 +39,6 @@ options {backtrack=true;}
 		return factory;
 	}	
 
-	/**
-	 * This may be set to enable debuggin of DSLs/expanders.
-	 * If set to true, expander stuff will be sent to the Std out.
-	 */	
-	public void setExpanderDebug(boolean status) {
-		expanderDebug = status;
-	}
 	public String getSource() {
 		return this.source;
 	}
@@ -66,14 +56,6 @@ options {backtrack=true;}
 	 */
 	public void setLineOffset(int i) {
 	 	this.lineOffset = i;
-	}
-	
-	public void setExpanderResolver(ExpanderResolver expanderResolver) {
-		this.expanderResolver = expanderResolver;
-	}
-	
-	public ExpanderResolver getExpanderResolver() {
-		return expanderResolver;
 	}
 	
 	private String getString(Token token) {

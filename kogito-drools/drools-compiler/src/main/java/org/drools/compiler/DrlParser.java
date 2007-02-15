@@ -23,10 +23,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
+import org.drools.lang.Expander;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 
@@ -106,11 +106,18 @@ public class DrlParser {
      */
     public PackageDescr parse(final String source,
                               final Reader dsl) throws DroolsParserException {
-        final DefaultExpanderResolver resolver = new DefaultExpanderResolver( dsl );
-        final DRLParser parser = getParser( source );
-        parser.setExpanderResolver( resolver );
-        compile( parser );
-        return parser.getPackageDescr();
+        DefaultExpanderResolver resolver;
+        try {
+            resolver = new DefaultExpanderResolver( dsl );
+        } catch ( IOException e ) {
+            throw new DroolsParserException( "Error parsing the DSL.", e);
+        }
+        Expander expander = resolver.get( "*", null );
+        String expanded = expander.expand( source );
+        if( expander.hasErrors() ) {
+            this.results.addAll( expander.getErrors() );
+        }
+        return this.parse( expanded );
     }
 
     private StringBuffer getDRLText(final Reader reader) throws IOException {

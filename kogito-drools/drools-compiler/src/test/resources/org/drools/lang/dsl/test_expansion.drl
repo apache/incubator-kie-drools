@@ -1,0 +1,36 @@
+# Example DRL with expansion 
+# (ie "domain specific language")
+
+# declare expanders for domain specific and natural language extensions
+expander test_metainfo.dsl
+
+consulta "a query" 
+   # a comment in the middle of the query
+   the Customer
+   - first name is "bob"
+   - last name is not "dylan"
+fim
+
+regra "average \"bob\"" salience -10
+ faça
+   # a comment in the consequence
+   Log "just an average bob"
+   Show last name
+   >System.out.println("and this is code")
+ se
+   # a comment in the middle of a rule
+   the Customer
+   # a comment before an attribute
+   - first name is "bob"
+   - last name is not "dylan"
+fim
+
+regra "a second rule" agenda-group test
+ faça
+>  System.out.println("bla")
+ se
+   the Product
+   - store is "Wall Mart"
+   - shop category is "grocery"
+fim
+

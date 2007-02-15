@@ -16,6 +16,7 @@ package org.drools.lang.dsl;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +54,12 @@ public class DefaultExpanderResolver
      * 
      * This is the constructor most people should use.
      */
-    public DefaultExpanderResolver(final Reader reader) {
-        final DefaultExpander expander = new DefaultExpander( reader );
+    public DefaultExpanderResolver(final Reader reader) throws IOException {
+        DSLMappingFile file = new DSLMappingFile("default", reader);
+        file.parseFile();
+        file.close();
+        final Expander expander = new DefaultExpander();
+        expander.addDSLMapping( file );
         this.expanders.put( "*",
                        expander );
     }
