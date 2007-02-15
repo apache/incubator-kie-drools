@@ -41,5 +41,9 @@ public class ParserError extends DroolsError {
     public int getRow() {
         return this.row;
     }
+    
+    public String toString() {
+        return "["+row+","+col+"]: "+message;
+    }
 
 }

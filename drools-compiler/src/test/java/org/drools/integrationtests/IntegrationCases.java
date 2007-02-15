@@ -1188,7 +1188,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void FIXME_testWithExpanderDSL() throws Exception {
+    public void testWithExpanderDSL() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl.drl" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
@@ -1228,7 +1228,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void FIXME_testWithExpanderMore() throws Exception {
+    public void testWithExpanderMore() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl_more.drl" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
