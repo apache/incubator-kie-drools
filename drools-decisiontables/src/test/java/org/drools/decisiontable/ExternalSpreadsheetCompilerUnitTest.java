@@ -29,38 +29,6 @@ import junit.framework.TestCase;
  *         itself is correct).
  */
 public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
-	// public void testRE() throws Exception
-	// {
-	// String test = "Something(test == \"yes\" OPTIONAL[, $something$ ==
-	// \"$else$\"]) OPTIONAL[Hope(it == \"$works$\")]";
-	// Pattern pattern = Pattern.compile("OPTIONAL\\[(.[^\\]]*)\\]");
-	// Pattern pattern2 = Pattern.compile("\\$(.[^\\$]*)\\$");
-	// Matcher matcher = pattern.matcher(test);
-	// StringBuffer newTest = new StringBuffer();
-	// while (matcher.find()) {
-	// String expression = matcher.group(1);
-	// Matcher matcher2 = pattern2.matcher(expression);
-	// int j = 0;
-	// StringBuffer newExpression = new StringBuffer();
-	// StringBuffer newEndExpression = new StringBuffer();
-	// while (matcher2.find(j)) {
-	// newExpression.append("\\$if(").append(matcher2.group(1)).append(")\\$");
-	// newEndExpression.append("\\$endif\\$");
-	// j = matcher2.end();
-	// }
-	// newExpression.append(escape(expression)).append(newEndExpression);
-	// System.out.println(newExpression);
-	// matcher.appendReplacement(newTest, newExpression.toString());
-	// }
-	// System.out.println(newTest);
-	// }
-	//
-	// private String escape(String expression) {
-	// System.out.println("expression: " + expression);
-	// String newExp = expression.replaceAll("\\$", "\\\\\\$");
-	// System.out.println("newExp: " + newExp);
-	// return newExp;
-	// }
 	public void testLoadFromClassPath() {
 		final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
 		final String drl = converter.compile("/data/MultiSheetDST.xls",
@@ -78,7 +46,8 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
 	public void testLoadSpecificWorksheet() {
 		final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
 		final String drl = converter.compile("/data/MultiSheetDST.xls",
-				"Another Sheet", "/templates/test_template1.drl", 11, 2);
+				"Another Sheet", "/templates/test_template1.drl", 21, 2);
+//		System.out.println(drl);
 		assertNotNull(drl);
 	}
 
