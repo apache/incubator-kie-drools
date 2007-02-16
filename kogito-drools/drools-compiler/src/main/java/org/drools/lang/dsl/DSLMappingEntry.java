@@ -16,6 +16,7 @@
 
 package org.drools.lang.dsl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,7 @@ public interface DSLMappingEntry {
     public static final Section CONDITION   = new ConditionSection();
     public static final Section CONSEQUENCE = new ConsequenceSection();
     public static final Section ANY         = new AnySection();
+    public static final MetaData EMPTY_METADATA = new DefaultDSLEntryMetaData("");
 
     /**
      * Returns the section this mapping entry refers to
@@ -37,14 +39,14 @@ public interface DSLMappingEntry {
      * @return
      */
     public DSLMappingEntry.Section getSection();
-    
+
     /**
      * Returns the meta data info about this mapping entry
      * 
      * @return
      */
     public DSLMappingEntry.MetaData getMetaData();
-    
+
     /**
      * Returns the key of this mapping, i.e., the source
      * that needs to be translated
@@ -52,7 +54,7 @@ public interface DSLMappingEntry {
      * @return
      */
     public String getMappingKey();
-    
+
     /**
      * Returns the result of the translation
      * 
@@ -60,7 +62,6 @@ public interface DSLMappingEntry {
      */
     public String getMappingValue();
 
-    
     /**
      * Returns the compiled pattern based on the given MappingKey
      * @return the keyPattern
@@ -78,17 +79,44 @@ public interface DSLMappingEntry {
      * @return the variables
      */
     public Map getVariables();
+
+    /**
+     * @param key the key to set
+     */
+    public void setMappingKey(String key);
+
+    /**
+     * @param section the section to set
+     */
+    public void setSection(Section section);
+
+    /**
+     * @param value the value to set
+     */
+    public void setMappingValue(String value);
+
+    /**
+     * @param metadata the metadata to set
+     */
+    public void setMetaData(MetaData metadata);
     
-    
+    /**
+     * Returns a list of errors found in this mapping
+     * @return
+     */
+    public List getErrors();
+
     /**
      * An inner interface for DSL mapping sections
      * @author etirelli
      *
      */
-    public static interface Section {
+    public static interface Section
+        extends
+        Comparable {
         public String getSymbol();
     }
-    
+
     /**
      * An inner interface to represent any metadata
      * associated with this entry. It is obviously
@@ -97,7 +125,9 @@ public interface DSLMappingEntry {
      * @author etirelli
      *
      */
-    public static interface MetaData {
+    public static interface MetaData
+        extends
+        Comparable {
         public String toString();
 
         public String getMetaData();
@@ -119,7 +149,7 @@ public interface DSLMappingEntry {
         public String getSymbol() {
             return symbol;
         }
-        
+
         public String toString() {
             return symbol;
         }
@@ -140,6 +170,10 @@ public interface DSLMappingEntry {
                 if ( other.getSymbol() != null ) return false;
             } else if ( !symbol.equals( other.getSymbol() ) ) return false;
             return true;
+        }
+
+        public int compareTo(Object arg0) {
+            return this.toString().compareTo( arg0.toString() );
         }
     }
 
@@ -180,6 +214,10 @@ public interface DSLMappingEntry {
                 if ( other.getSymbol() != null ) return false;
             } else if ( !symbol.equals( other.getSymbol() ) ) return false;
             return true;
+        }
+
+        public int compareTo(Object arg0) {
+            return this.toString().compareTo( arg0.toString() );
         }
     }
 
@@ -222,6 +260,10 @@ public interface DSLMappingEntry {
             } else if ( !symbol.equals( other.getSymbol() ) ) return false;
             return true;
         }
+
+        public int compareTo(Object arg0) {
+            return this.toString().compareTo( arg0.toString() );
+        }
     }
 
     /**
@@ -262,6 +304,33 @@ public interface DSLMappingEntry {
                 if ( other.getSymbol() != null ) return false;
             } else if ( !symbol.equals( other.getSymbol() ) ) return false;
             return true;
+        }
+
+        public int compareTo(Object arg0) {
+            return this.toString().compareTo( arg0.toString() );
+        }
+    }
+
+    public static class DefaultDSLEntryMetaData
+        implements
+        DSLMappingEntry.MetaData {
+
+        private String metadata;
+
+        public DefaultDSLEntryMetaData(String metadata) {
+            this.metadata = metadata;
+        }
+
+        public String getMetaData() {
+            return this.metadata;
+        }
+
+        public String toString() {
+            return (this.metadata == null) ? "" : this.metadata;
+        }
+
+        public int compareTo(Object arg0) {
+            return this.toString().compareTo( arg0.toString() );
         }
     }
 

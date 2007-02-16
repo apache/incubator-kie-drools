@@ -19,6 +19,7 @@ package org.drools.lang.dsl;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,16 +33,16 @@ public class DefaultDSLMappingEntry
     implements
     DSLMappingEntry {
 
-    private Section  section;
-    private MetaData metadata;
-    private String   key;
-    private String   value;
-    
-    private Map      variables = Collections.EMPTY_MAP;
-    
-    private Pattern  keyPattern;
-    private String   valuePattern;
-    
+    private Section              section;
+    private MetaData             metadata;
+    private String               key;
+    private String               value;
+
+    private Map                  variables = Collections.EMPTY_MAP;
+
+    private Pattern              keyPattern;
+    private String               valuePattern;
+
     // following pattern is used to extract all variables names and positions from a mapping.
     // Example: for the following String:
     //
@@ -50,9 +51,14 @@ public class DefaultDSLMappingEntry
     // it will return variables:
     // This, pattern, easy, say
     //
-    private static final Pattern varFinder = Pattern.compile( "(^|[^\\\\])\\{([(\\\\\\{)|[^\\{]]*?)\\}", Pattern.MULTILINE | Pattern.DOTALL );
+    static final Pattern varFinder = Pattern.compile( "(^|[^\\\\])\\{([(\\\\\\{)|[^\\{]]*?)\\}",
+                                                              Pattern.MULTILINE | Pattern.DOTALL );
 
     public DefaultDSLMappingEntry() {
+        this( DSLMappingEntry.ANY,
+              DSLMappingEntry.EMPTY_METADATA,
+              null,
+              null );
     }
 
     public DefaultDSLMappingEntry(Section section,
@@ -98,30 +104,40 @@ public class DefaultDSLMappingEntry
      */
     public void setMappingKey(String key) {
         this.key = key;
-        
-        // retrieving variables list and creating key pattern 
-        Matcher m = varFinder.matcher( key.replaceAll("\\$", "\\\\\\$") );
-        StringBuffer buf = new StringBuffer();
-        int counter = 1;
-        while( m.find() ) {
-            if( this.variables == Collections.EMPTY_MAP ) {
-                this.variables = new HashMap(2);
+
+        if( key != null ) {
+            // retrieving variables list and creating key pattern 
+            Matcher m = varFinder.matcher( key.replaceAll( "\\$",
+                                                           "\\\\\\$" ) );
+            StringBuffer buf = new StringBuffer();
+            int counter = 1;
+            while ( m.find() ) {
+                if ( this.variables == Collections.EMPTY_MAP ) {
+                    this.variables = new HashMap( 2 );
+                }
+                this.variables.put( m.group( 2 ),
+                                    new Integer( counter++ ) );
+                m.appendReplacement( buf,
+                                     m.group( 1 ) + "(.*?)" );
             }
-            this.variables.put( m.group( 2 ), new Integer( counter++ ) );
-            m.appendReplacement( buf, m.group( 1 )+"(.*?)" );
+            m.appendTail( buf );
+            if ( buf.toString().endsWith( "(.*?)" ) ) {
+                buf.append( "$" );
+            }
+
+            // setting the key pattern and making it space insensitive
+            String pat = buf.toString().replaceAll( "\\s+",
+                                                    "\\\\s*" );
+            if ( pat.trim().startsWith( "-" ) && (!pat.trim().startsWith( "-\\s*" )) ) {
+                pat = pat.substring( 0,
+                                     pat.indexOf( '-' ) + 1 ) + "\\s*" + pat.substring( pat.indexOf( '-' ) + 1 );
+            }
+            this.keyPattern = Pattern.compile( pat,
+                                               Pattern.DOTALL | Pattern.MULTILINE );
+
+        } else {
+            this.keyPattern = null;
         }
-        m.appendTail( buf );
-        if( buf.toString().endsWith( "(.*?)" ) ) {
-            buf.append( "$" );
-        }
-        
-        // setting the key pattern and making it space insensitive
-        String pat = buf.toString().replaceAll( "\\s+", "\\\\s*" );
-        if( pat.trim().startsWith( "-" ) && (! pat.trim().startsWith( "-\\s*" ) )) {
-            pat = pat.substring( 0, pat.indexOf( '-' )+1 ) + "\\s*" + pat.substring( pat.indexOf( '-' )+1 );
-        }
-        this.keyPattern = Pattern.compile( pat, Pattern.DOTALL | Pattern.MULTILINE );
-        
         // update value mapping
         this.setMappingValue( this.value );
     }
@@ -139,14 +155,17 @@ public class DefaultDSLMappingEntry
     public void setMappingValue(String value) {
         this.valuePattern = value;
         this.value = value;
-        if( value != null ) {
-            this.valuePattern = this.valuePattern.replaceAll( "\\\\n", "\n" ).replaceAll( "\\$", "\\\\\\$" );
-            for( Iterator it = this.variables.entrySet().iterator(); it.hasNext(); ) {
+        if ( value != null ) {
+            this.valuePattern = this.valuePattern.replaceAll( "\\\\n",
+                                                              "\n" ).replaceAll( "\\$",
+                                                                                 "\\\\\\$" );
+            for ( Iterator it = this.variables.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) it.next();
                 String var = (String) entry.getKey();
                 int pos = ((Integer) entry.getValue()).intValue();
-                
-                this.valuePattern = valuePattern.replaceAll( "\\{"+var+"\\}", "\\$"+pos );
+
+                this.valuePattern = valuePattern.replaceAll( "\\{" + var + "\\}",
+                                                             "\\$" + pos );
             }
         }
     }
@@ -178,13 +197,13 @@ public class DefaultDSLMappingEntry
     public Map getVariables() {
         return variables;
     }
-    
+
     public String toPatternString() {
-        return this.section+"["+this.metadata+"]"+this.keyPattern.pattern()+"="+this.valuePattern;
+        return this.section + "[" + this.metadata + "]" + this.keyPattern.pattern() + "=" + this.valuePattern;
     }
-    
+
     public String toString() {
-        return this.section+"["+this.metadata+"]"+this.key+"="+this.value;
+        return this.section + "[" + this.metadata + "]" + this.key + "=" + this.value;
     }
 
     /* (non-Javadoc)
@@ -221,6 +240,11 @@ public class DefaultDSLMappingEntry
             if ( other.value != null ) return false;
         } else if ( !value.equals( other.value ) ) return false;
         return true;
+    }
+
+    public List getErrors() {
+        // TODO Need to implement validation here
+        return Collections.EMPTY_LIST;
     }
 
 }

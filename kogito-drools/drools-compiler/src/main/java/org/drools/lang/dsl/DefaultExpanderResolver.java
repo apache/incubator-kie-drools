@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.lang.Expander;
 import org.drools.lang.ExpanderResolver;
 
@@ -55,13 +56,15 @@ public class DefaultExpanderResolver
      * This is the constructor most people should use.
      */
     public DefaultExpanderResolver(final Reader reader) throws IOException {
-        DSLMappingFile file = new DSLMappingFile("default", reader);
-        file.parseFile();
-        file.close();
-        final Expander expander = new DefaultExpander();
-        expander.addDSLMapping( file );
-        this.expanders.put( "*",
-                       expander );
+        DSLMappingFile file = new DSLMappingFile();
+        if( file.parseAndLoad( reader ) ) {
+            final Expander expander = new DefaultExpander();
+            expander.addDSLMapping( file.getMapping() );
+            this.expanders.put( "*",
+                           expander );
+        } else {
+            throw new RuntimeDroolsException("Error parsing and loading DSL file."+file.getErrors());
+        }
     }
 
     /**

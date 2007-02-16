@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 public class DefaultDSLMappingEntryTest extends TestCase {
 
-    private DefaultDSLMappingEntry entry;
+    private DSLMappingEntry entry;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -28,7 +28,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         String expectedKeyP = "The\\s*Customer\\s*name\\s*is\\s*(.*?)\\s*and\\s*surname\\s*is\\s*(.*?)\\s*and\\s*it\\s*has\\s*US\\$\\s*50,00\\s*on\\s*his\\s*(.*?)$";
         String expectedValP = "Customer( name == \"$1\", surname == \"$2\", money > \\$money )";
 
-        DefaultDSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+        DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
                                                                    null,
                                                                    inputKey,
                                                                    inputValue );
@@ -51,7 +51,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
         String expectedValP = "name == \"$1\"";
 
-        DefaultDSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+        DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
                                                                    null,
                                                                    inputKey,
                                                                    inputValue );
@@ -74,7 +74,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
         String expectedValP = "name == \"$1\"";
 
-        DefaultDSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+        DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
                                                                    null,
                                                                    inputKey,
                                                                    inputValue );

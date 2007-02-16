@@ -11,41 +11,25 @@ public class DSLMappingFileTest extends TestCase {
     private final String   filename = "test_metainfo.dsl";
 
     protected void setUp() throws Exception {
-        Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
-        file = new DSLMappingFile( filename,
-                                   reader );
-
         super.setUp();
     }
 
     protected void tearDown() throws Exception {
-        file.close();
         super.tearDown();
     }
 
-    public void testGetDslFileName() {
-        assertEquals( filename, file.getDslFileName() );
-    }
-
-    public void testClose() {
-        try {
-            assertFalse( file.isClosed() );
-            file.close();
-            assertTrue( file.isClosed() );
-        } catch ( IOException e ) {
-            e.printStackTrace();
-            fail( "Should not raise exception ");
-        }
-    }
-    
     public void testParseFile() {
         try {
-            boolean parsingResult = file.parseFile();
+            Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
+            file = new DSLMappingFile( );
+
+            boolean parsingResult = file.parseAndLoad( reader );
+            reader.close();
             
             assertTrue( file.getErrors().toString(), parsingResult );
             assertTrue( file.getErrors().isEmpty() );
             
-            assertEquals( 31, file.getEntries().size() );
+            assertEquals( 31, file.getMapping().getEntries().size() );
         } catch ( IOException e ) {
             e.printStackTrace();
             fail( "Should not raise exception ");

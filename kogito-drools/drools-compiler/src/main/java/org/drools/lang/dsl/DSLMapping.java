@@ -18,19 +18,68 @@ package org.drools.lang.dsl;
 
 import java.util.List;
 
+import org.drools.lang.dsl.DSLMappingEntry.Section;
 
 /**
- * An interface that represents a DSL Mapping source
- * 
- * Implementations of this interface are capable of parsing 
- * different DSL mapping file layouts.
+ * An interface that represents a DSL Mapping 
  * 
  * @author etirelli
  */
 public interface DSLMapping {
-    
-    public String getIdentifier();
 
+    /**
+     * Returns the string identifier for this mapping
+     * @return
+     */
+    public String getIdentifier();
+    
+    /**
+     * Sets the identifier for this mapping
+     * @param identifier
+     */
+    public void setIdentifier( String identifier );
+    
+    /**
+     * Returns a String description of this mapping
+     * @return
+     */
+    public String getDescription();
+    
+    /**
+     * Sets the description for this mapping
+     * @param description
+     */
+    public void setDescription( String description );
+
+    /**
+     * Returns the list of entries in this mapping
+     * @return
+     */
     public List getEntries();
+
+    /**
+     * Add one entry to the list of the entries
+     * @param entry
+     */
+    public void addEntry(DSLMappingEntry entry);
+
+    /**
+     * Adds all entries in the given list to this DSL Mapping
+     * @param entries
+     */
+    public void addEntries(List entries);
+
+    /**
+     * Removes the given entry from the list of entries
+     * @param entry
+     */
+    public void removeEntry(DSLMappingEntry entry);
+
+    /**
+     * Returns the list of mappings for the given section 
+     * @param section
+     * @return
+     */
+    public List getEntries(Section section);
 
 }
