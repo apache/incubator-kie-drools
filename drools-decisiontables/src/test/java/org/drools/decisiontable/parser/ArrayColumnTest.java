@@ -16,8 +16,16 @@ public class ArrayColumnTest extends TestCase {
 	public void testGetValueTrailingComma() {
 		ArrayColumn ac = new ArrayColumn("array column");
 		String[] value = (String[]) ac.getValue("value1,");
-		assertEquals(1, value.length);
+		assertEquals(2, value.length);
 		assertEquals("value1", value[0]);
+		assertEquals("", value[1]);
+	}
+	
+	public void testGetValueLeadingComma() {
+		ArrayColumn ac = new ArrayColumn("array column");
+		String[] value = (String[]) ac.getValue(",value2");
+		assertEquals(2, value.length);
+		assertEquals("value2", value[1]);
 	}
 	
 	public void testGetValueMultiple() {

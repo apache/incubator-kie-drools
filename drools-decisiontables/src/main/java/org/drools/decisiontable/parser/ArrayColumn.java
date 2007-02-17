@@ -38,7 +38,7 @@ public class ArrayColumn extends Column {
 	}
 
 	public Object getValue(String cellValue) {
-		return StringUtils.split(cellValue, ",");
+		return StringUtils.splitPreserveAllTokens(cellValue, ",");
 	}
 
 }
