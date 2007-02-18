@@ -60,10 +60,31 @@ public class RtlNewPage extends WizardPage {
 		layout.verticalSpacing = 9;
 		
 		Label label = new Label(container, SWT.NULL);
+		label.setText("&Container:");
+
+		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		containerText.setLayoutData(gd);
+		containerText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+		});
+
+		Button button = new Button(container, SWT.PUSH);
+		button.setText("Browse...");
+		button.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				handleBrowse();
+			}
+		});
+		
+		
+		label = new Label(container, SWT.NULL);
 		label.setText("&Drl:");
 
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fileText.setLayoutData(gd);
 		fileText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -94,26 +115,6 @@ public class RtlNewPage extends WizardPage {
 			}
 		});
 		
-		label = new Label(container, SWT.NULL);
-		label.setText("&Container:");
-
-		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		containerText.setLayoutData(gd);
-		containerText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
-
-		Button button = new Button(container, SWT.PUSH);
-		button.setText("Browse...");
-		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				handleBrowse();
-			}
-		});
-		
 		initialize();
 		dialogChanged();
 		setControl(container);
@@ -133,6 +134,7 @@ public class RtlNewPage extends WizardPage {
 		String[] extensions = {"*.drl"};
 		dialog.setFilterExtensions(extensions);
 		dialog.setFilterPath(".");
+		dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerName()).getFullPath().toString());
 		fileText.setText(dialog.open());
 		
 		
@@ -162,6 +164,15 @@ public class RtlNewPage extends WizardPage {
 		IResource container = ResourcesPlugin.getWorkspace().getRoot()
 		.findMember(new Path(getContainerName()));
 
+		if (container == null
+				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
+			updateStatus("File container must exist");
+			return;
+		}
+		if (!container.isAccessible()) {
+			updateStatus("Project must be writable");
+			return;
+		}
 		if (fileName.length() == 0) {
 			updateStatus("File name must be specified");
 			return;
@@ -176,15 +187,6 @@ public class RtlNewPage extends WizardPage {
 		}
 		if (getContainerName().length() == 0) {
 			updateStatus("File container must be specified");
-			return;
-		}
-		if (container == null
-				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
-			updateStatus("File container must exist");
-			return;
-		}
-		if (!container.isAccessible()) {
-			updateStatus("Project must be writable");
 			return;
 		}
 		int dotLoc = fileName.lastIndexOf('.');
