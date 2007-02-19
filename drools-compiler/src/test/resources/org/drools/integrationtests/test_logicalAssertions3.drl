@@ -1,0 +1,20 @@
+package org.drools
+
+global java.util.List events;
+
+rule "#1: hot"
+when
+    $s : Sensor( temperature > 100 )
+then
+    events.add( "It is hot: " + $s );
+    System.out.println("It is hot: " + $s);
+    assertLogical(new Alarm("FIRE"));
+end
+
+rule "#2: print out"
+when
+    Alarm( message == "FIRE" )
+then
+    events.add( "Fire alarm is ON" );
+    System.out.println("Fire alarm is ON");
+end 

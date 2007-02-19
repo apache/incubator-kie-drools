@@ -2264,7 +2264,7 @@ public abstract class IntegrationCases extends TestCase {
                       workingMemory.getObjects().get( 1 ) );
     }
 
-    public void FIXME_testLogicalAssertions() throws Exception {
+    public void testLogicalAssertions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3908,6 +3908,57 @@ public abstract class IntegrationCases extends TestCase {
             e.printStackTrace();
             fail("Should not raise any exception");
         }
+    }
+
+    public void testLogicalAssertions3() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions3.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "events",
+                                 list );
+
+        // asserting the sensor object
+        final Sensor sensor = new Sensor( 150,
+                                        100 );
+        final FactHandle sensorHandle = workingMemory.assertObject( sensor );
+
+        workingMemory.fireAllRules();
+
+        // alarm must sound
+        assertEquals( 2,
+                      list.size() );
+        assertEquals( 2,
+                      workingMemory.getObjects().size() );
+
+        // modifying sensor
+        sensor.setTemperature( 125 );
+        workingMemory.modifyObject( sensorHandle, sensor );
+        workingMemory.fireAllRules();
+
+        // alarm must continue to sound
+        assertEquals( 4,
+                      list.size() );
+        assertEquals( 2,
+                      workingMemory.getObjects().size() );
+
+
+        // modifying sensor
+        sensor.setTemperature( 80 );
+        workingMemory.modifyObject( sensorHandle, sensor );
+        workingMemory.fireAllRules();
+
+        // no alarms anymore
+        assertEquals( 4,
+                      list.size() );
+        assertEquals( 1,
+                      workingMemory.getObjects().size() );
+
     }
 
 }

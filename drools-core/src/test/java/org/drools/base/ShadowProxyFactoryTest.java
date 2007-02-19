@@ -37,6 +37,10 @@ public class ShadowProxyFactoryTest extends TestCase {
             Assert.assertEquals( originalPrice,
                                  cheeseProxy.getPrice() );
             Assert.assertSame( cheese, ((ShadowProxy)cheeseProxy).getShadowedObject() );
+            
+            // proxy must recongnize the original object on equals()/hashcode() calls
+            //Assert.assertEquals( cheeseProxy.hashCode(), cheese.hashCode() );
+            Assert.assertEquals( cheeseProxy, cheese );
 
             // changing original values
             final String actualType = "rotten stilton";
