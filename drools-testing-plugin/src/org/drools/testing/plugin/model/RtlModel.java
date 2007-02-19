@@ -8,6 +8,7 @@ import org.drools.lang.descr.PackageDescr;
 public class RtlModel {
 
 	private String fileName;
+	private String containerName;
 	private PackageDescr packageDescr;
 	private List ruleDescrs = new ArrayList();
 	
@@ -37,5 +38,13 @@ public class RtlModel {
 
 	public void setRuleDescrs(List ruleDescrs) {
 		this.ruleDescrs = ruleDescrs;
+	}
+
+	public String getContainerName() {
+		return containerName;
+	}
+
+	public void setContainerName(String containerName) {
+		this.containerName = containerName;
 	}
 }
