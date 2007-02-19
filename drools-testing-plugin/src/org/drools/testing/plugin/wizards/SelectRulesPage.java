@@ -1,7 +1,6 @@
 package org.drools.testing.plugin.wizards;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +12,9 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.testing.plugin.listeners.TreeViewSelectionListener;
 import org.drools.testing.plugin.model.RtlModel;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -111,18 +112,18 @@ public class SelectRulesPage extends WizardPage {
 		
 		GenerateRtlWizard wizard = (GenerateRtlWizard)getWizard();
 		RtlModel model = wizard.getRtlModel();
-		fileName = model.getFileName();
-		File in = new File(getFileName());
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getProject(
+				model.getContainerName()).getFile(model.getFileName());
 		DrlParser drlParser = new DrlParser();
+		
 		try {
-			Reader reader = new FileReader(in);
+			Reader reader = new InputStreamReader(file.getContents());
 			PackageDescr packageDescr = drlParser.parse(reader);
 			model.setPackageDescr(packageDescr);
 			viewer.setInput(packageDescr);
 		}catch (Exception e) {
 			System.out.println(e);
 		}
-		
 	}
 	
 	private void saveDataToModel() {
