@@ -1,0 +1,33 @@
+package org.drools
+
+global java.util.List results;
+
+rule "Or condition followed by fact"
+  when
+    Cheese( type == "stilton" ) or Cheese( type == "brie" )
+    Person( )
+  then
+    results.add("Or condition followed by fact is ok");
+end
+
+rule "Fact followed by or condition"
+  when
+    Person( )
+    Cheese( type == "stilton" ) or Cheese( type == "brie" )
+  then
+    results.add("Fact followed by or condition is ok");
+end
+
+rule "Single fact"
+  when
+    Person( )
+  then
+    results.add("Single fact is ok");
+end
+
+rule "Single or"
+  when
+    Cheese( type == "stilton" ) or Cheese( type == "brie" )
+  then
+    results.add("Single or is ok");
+end

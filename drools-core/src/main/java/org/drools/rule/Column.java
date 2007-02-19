@@ -69,7 +69,7 @@ public class Column
         this.index = index;
         this.offset = offset;
         this.objectType = objectType;
-        if ( identifier != null ) {
+        if ( identifier != null && ( ! identifier.equals( "" ) ) ) {
             this.declaration = new Declaration( identifier,
                                                 new ColumnExtractor( objectType ),
                                                 this );
@@ -81,7 +81,9 @@ public class Column
     }
     
     public Object clone() {
-        Column clone = new Column( this.index, this.objectType, this.declaration.getIdentifier() );
+        String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;  
+        Column clone = new Column( this.index, this.objectType, identifier );
+
         for( Iterator it = this.constraints.iterator(); it.hasNext(); ) {
             Object constr = it.next();
             if( constr instanceof Declaration ) {
