@@ -3881,4 +3881,33 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
+    public void testEmptyIdentifier() throws Exception {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_emptyIdentifier.drl" ) ) );
+            final Package pkg = builder.getPackage();
+
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            final List result = new ArrayList();
+            workingMemory.setGlobal( "results",
+                                     result );
+
+            final Person person = new Person("bob");
+            final Cheese cheese = new Cheese("brie", 10);
+
+            workingMemory.assertObject( person );
+            workingMemory.assertObject( cheese );
+
+            workingMemory.fireAllRules();
+            assertEquals( 4,
+                          result.size() );
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail("Should not raise any exception");
+        }
+    }
+
 }
