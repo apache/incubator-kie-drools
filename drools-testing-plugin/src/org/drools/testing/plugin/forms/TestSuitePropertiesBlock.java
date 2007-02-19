@@ -80,7 +80,12 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 			implements
 				ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
-			return obj.toString();
+			if (obj instanceof Scenario)
+				return ((Scenario)obj).getName();
+			else if (obj instanceof TestSuite)
+				return ((TestSuite)obj).getName();
+			else
+				return obj.toString();
 		}
 		public Image getColumnImage(Object obj, int index) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
