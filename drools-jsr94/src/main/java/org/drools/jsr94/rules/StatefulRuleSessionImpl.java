@@ -27,6 +27,7 @@ import javax.rules.InvalidHandleException;
 import javax.rules.InvalidRuleSessionException;
 import javax.rules.ObjectFilter;
 import javax.rules.RuleExecutionSetNotFoundException;
+import javax.rules.RuleRuntime;
 import javax.rules.StatefulRuleSession;
 
 import org.drools.FactException;
@@ -85,7 +86,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
                             final Map properties,
                             final RuleExecutionSetRepository repository) throws RuleExecutionSetNotFoundException {
         super( repository );
-        this.setProperties( properties );
+        setProperties( properties );
 
         final RuleExecutionSetImpl ruleSet = (RuleExecutionSetImpl) repository.getRuleExecutionSet( bindUri );
 
@@ -95,7 +96,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
 
         this.setRuleExecutionSet( ruleSet );
 
-        this.initWorkingMemory();
+        initWorkingMemory( true );
     }
 
     // ----------------------------------------------------------------------
@@ -114,7 +115,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public boolean containsObject(final Handle objectHandle) {
         if ( objectHandle instanceof FactHandle ) {
-            return this.getWorkingMemory().getObject( (FactHandle) objectHandle ) != null;
+            return getWorkingMemory().getObject( (FactHandle) objectHandle ) != null;
         }
 
         return false;
@@ -136,14 +137,8 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      *             on illegal rule session state.
      */
     public Handle addObject(final Object object) throws InvalidRuleSessionException {
-        this.checkRuleSessionValidity();
-
-        try {
-            return (Handle) this.getWorkingMemory().assertObject( object );
-        } catch ( final FactException e ) {
-            throw new InvalidRuleSessionException( "cannot assert object",
-                                                   e );
-        }
+        checkRuleSessionValidity();
+        return (Handle) getWorkingMemory().assertObject( object );
     }
 
     /**
@@ -161,12 +156,12 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      *             on illegal rule session state.
      */
     public List addObjects(final List objList) throws InvalidRuleSessionException {
-        this.checkRuleSessionValidity();
+        checkRuleSessionValidity();
 
         final List handles = new ArrayList();
 
         for ( final Iterator objectIter = objList.iterator(); objectIter.hasNext(); ) {
-            handles.add( this.addObject( objectIter.next() ) );
+            handles.add( addObject( objectIter.next() ) );
         }
         return handles;
     }
@@ -191,16 +186,11 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
     public void updateObject(final Handle objectHandle,
                              final Object newObject) throws InvalidRuleSessionException,
                                                     InvalidHandleException {
-        this.checkRuleSessionValidity();
+        checkRuleSessionValidity();
 
         if ( objectHandle instanceof FactHandle ) {
-            try {
-                this.getWorkingMemory().modifyObject( (FactHandle) objectHandle,
-                                                      newObject );
-            } catch ( final FactException e ) {
-                throw new InvalidRuleSessionException( "cannot update object",
-                                                       e );
-            }
+            getWorkingMemory().modifyObject( (FactHandle) objectHandle,
+                                             newObject );
         } else {
             throw new InvalidHandleException( "invalid handle" );
 
@@ -221,76 +211,13 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public void removeObject(final Handle handleObject) throws InvalidRuleSessionException,
                                                        InvalidHandleException {
-        this.checkRuleSessionValidity();
+        checkRuleSessionValidity();
 
         if ( handleObject instanceof FactHandle ) {
-            try {
-                this.getWorkingMemory().retractObject( (FactHandle) handleObject );
-            } catch ( final FactException e ) {
-                throw new InvalidRuleSessionException( "cannot remove object",
-                                                       e );
-            }
+            getWorkingMemory().retractObject( (FactHandle) handleObject );
         } else {
             throw new InvalidHandleException( "invalid handle" );
         }
-    }
-
-    /**
-     * Returns a List of all objects in the rule session state of this rule
-     * session. The objects should pass the default filter test of the default
-     * <code>RuleExecutionSet</code> filter (if present). <p/> This may not
-     * neccessarily include all objects added by calls to <code>addObject</code>,
-     * and may include <code>Object</code>s created by side-effects. The
-     * execution of a <code>RuleExecutionSet</code> can add, remove and update
-     * objects as part of the rule session state. Therefore the rule session
-     * state is dependent on the rules that are part of the executed
-     * <code>RuleExecutionSet</code> as well as the rule vendor's specific
-     * rule engine behavior.
-     * 
-     * @return a <code>List</code> of all objects part of the rule session
-     *         state.
-     * 
-     * @throws InvalidRuleSessionException
-     *             on illegal rule session state.
-     */
-    public List getObjects() throws InvalidRuleSessionException {
-        this.checkRuleSessionValidity();
-
-        return this.getObjects( this.getRuleExecutionSet().getObjectFilter() );
-    }
-
-    /**
-     * Returns a <code>List</code> over the objects in rule session state of
-     * this rule session. The objects should pass the filter test on the
-     * specified <code>ObjectFilter</code>. <p/> This may not neccessarily
-     * include all objects added by calls to <code>addObject</code>, and may
-     * include <code>Object</code>s created by side-effects. The execution of
-     * a <code>RuleExecutionSet</code> can add, remove and update objects as
-     * part of the rule session state. Therefore the rule session state is
-     * dependent on the rules that are part of the executed
-     * <code>RuleExecutionSet</code> as well as the rule vendor's specific
-     * rule engine behavior.
-     * 
-     * @param filter
-     *            the object filter.
-     * 
-     * @return a <code>List</code> of all the objects in the rule session
-     *         state of this rule session based upon the given object filter.
-     * 
-     * @throws InvalidRuleSessionException
-     *             on illegal rule session state.
-     */
-    public List getObjects(final ObjectFilter filter) throws InvalidRuleSessionException {
-        this.checkRuleSessionValidity();
-
-        final List objects = new ArrayList();
-
-        objects.addAll( this.getWorkingMemory().getObjects() );
-
-        this.applyFilter( objects,
-                          filter );
-
-        return objects;
     }
 
     /**
@@ -303,13 +230,8 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      *             on illegal rule session state.
      */
     public void executeRules() throws InvalidRuleSessionException {
-        this.checkRuleSessionValidity();
-
-        //		try {
-        this.getWorkingMemory().fireAllRules();
-        //		} catch (DroolsException e) {
-        //			throw new InvalidRuleSessionException("cannot execute rules", e);
-        //		}
+        checkRuleSessionValidity();
+        getWorkingMemory().fireAllRules();
     }
 
     /**
@@ -317,15 +239,10 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public Object getObject(final Handle handle) throws InvalidRuleSessionException,
                                                 InvalidHandleException {
-        this.checkRuleSessionValidity();
+       checkRuleSessionValidity();
 
         if ( handle instanceof FactHandle ) {
-            try {
-                return this.getWorkingMemory().getObject( (FactHandle) handle );
-            } catch ( final NoSuchFactObjectException e ) {
-                throw new InvalidHandleException( "invalid handle",
-                                                  e );
-            }
+            return getWorkingMemory().getObject( (FactHandle) handle );
         } else {
             throw new InvalidHandleException( "invalid handle" );
         }
@@ -340,12 +257,29 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public List getHandles() {
         final List handles = new LinkedList();
-        for ( final Iterator i = this.getWorkingMemory().getFactHandles().iterator(); i.hasNext(); ) {
+        for ( final Iterator i = getWorkingMemory().getFactHandles().iterator(); i.hasNext(); ) {
             final Object object = i.next();
             if ( object instanceof Handle ) {
                 handles.add( object );
             }
         }
         return handles;
+    }
+
+    /**
+     * Resets this rule session. Calling this method will bring the rule session
+     * state to its initial state for this rule session and will reset any other
+     * state associated with this rule session.
+     * <p/>
+     * A reset will not reset the state on the default object filter for a
+     * <code>RuleExecutionSet</code>.
+     */
+    public void reset() {
+        // stateful rule sessions should not be high load, thus safe to keep references
+        initWorkingMemory( true );
+    }
+
+    public int getType() throws InvalidRuleSessionException {
+        return RuleRuntime.STATEFUL_SESSION_TYPE;
     }
 }

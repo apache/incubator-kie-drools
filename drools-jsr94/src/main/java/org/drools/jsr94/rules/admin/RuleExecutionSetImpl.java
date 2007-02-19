@@ -31,7 +31,6 @@ import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.Jsr94FactHandleFactory;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.util.UUIDGenerator;
 
 /**
  * The Drools implementation of the <code>RuleExecutionSet</code> interface
@@ -114,8 +113,7 @@ public class RuleExecutionSetImpl
         this.pkg = pkg;
         this.description = pkg.getName();//..getDocumentation( );
 
-        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
-                                                                                                new Jsr94FactHandleFactory() );
+        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase( new Jsr94FactHandleFactory() );
         ruleBase.addPackage( pkg );
 
         this.ruleBase = ruleBase;
@@ -158,8 +156,8 @@ public class RuleExecutionSetImpl
      *
      * @return A new WorkingMemory object.
      */
-    public WorkingMemory newWorkingMemory() {
-        return this.ruleBase.newWorkingMemory();
+    public WorkingMemory newWorkingMemory(boolean keepReference) {
+        return this.ruleBase.newWorkingMemory(keepReference);
     }
 
     // JSR94 interface methods start here -------------------------------------
