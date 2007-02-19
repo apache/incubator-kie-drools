@@ -1,6 +1,7 @@
 package org.drools.testing.plugin.wizards;
 
 import org.drools.testing.plugin.model.RtlModel;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -17,10 +18,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.eclipse.ui.dialogs.ResourceListSelectionDialog;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -130,16 +131,23 @@ public class RtlNewPage extends WizardPage {
 	}
 
 	private void handleFileBrowse () {
-		FileDialog dialog = new FileDialog(getShell());
+		/*FileDialog dialog = new FileDialog(getShell());
 		String[] extensions = {"*.drl"};
 		dialog.setFilterExtensions(extensions);
 		dialog.setFilterPath(".");
 		dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerName()).getFullPath().toString());
-		fileText.setText(dialog.open());
-		
-		
-
-
+		fileText.setText(dialog.open());*/
+		IContainer container = (IContainer) ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(getContainerName()));
+		ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(getShell(),
+				container,
+				IResource.FILE);
+		if (dialog.open() == ResourceListSelectionDialog.OK) {
+			Object[] result = dialog.getResult();
+			if (result.length == 1) {
+				IResource resource = (IResource) result[0];
+				fileText.setText(resource.getName());
+			}
+		}
 	}
 	
 	private void handleBrowse() {
@@ -229,6 +237,7 @@ public class RtlNewPage extends WizardPage {
 		GenerateRtlWizard wizard = (GenerateRtlWizard)getWizard();
 		RtlModel model = wizard.getRtlModel();
 		model.setFileName(fileText.getText());
+		model.setContainerName(containerText.getText());
 	}
 	
 	private void stripIllegalChars (Text txt) {
