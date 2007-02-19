@@ -243,6 +243,8 @@ abstract public class AbstractRuleBase
     public void addPackage(final Package newPkg) throws PackageIntegrationException {
         newPkg.checkValidity();
         final Package pkg = (Package) this.pkgs.get( newPkg.getName() );
+        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
+        // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
         AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
@@ -290,6 +292,8 @@ abstract public class AbstractRuleBase
         } finally {
             // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
             // of the new rule addition. Unlock after fireAllRules();
+            
+            // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
             for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
                 wms[lastAquiredLock].fireAllRules();
                 wms[lastAquiredLock].getLock().unlock();
@@ -356,6 +360,8 @@ abstract public class AbstractRuleBase
     public void removePackage(final String packageName) {
         final Package pkg = (Package) this.pkgs.get( packageName );
 
+        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
+        // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
         AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
@@ -397,6 +403,8 @@ abstract public class AbstractRuleBase
         } finally {
             // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
             // of the new rule addition. Unlock after fireAllRules();
+
+            // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
             for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
                 wms[lastAquiredLock].fireAllRules();
                 wms[lastAquiredLock].getLock().unlock();
@@ -409,6 +417,8 @@ abstract public class AbstractRuleBase
         final Package pkg = (Package) this.pkgs.get( packageName );
         final Rule rule = pkg.getRule( ruleName );
 
+        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
+        // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
         AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
@@ -426,6 +436,8 @@ abstract public class AbstractRuleBase
         } finally {
             // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
             // of the new rule addition. Unlock after fireAllRules();
+
+            // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
             for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
                 wms[lastAquiredLock].getLock().unlock();
             }
