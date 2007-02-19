@@ -689,7 +689,7 @@ public class ShadowProxyFactory {
             mv.visitVarInsn( Opcodes.ALOAD,
                              1 );
             mv.visitTypeInsn( Opcodes.INSTANCEOF,
-                              className );
+                              Type.getInternalName( clazz ) );
             Label l4 = new Label();
             mv.visitJumpInsn( Opcodes.IFNE,
                               l4 );
@@ -704,7 +704,7 @@ public class ShadowProxyFactory {
             mv.visitVarInsn( Opcodes.ALOAD,
                              1 );
             mv.visitTypeInsn( Opcodes.CHECKCAST,
-                              className );
+                              Type.getInternalName( clazz ) );
             mv.visitVarInsn( Opcodes.ASTORE,
                              2 );
 
@@ -785,12 +785,12 @@ public class ShadowProxyFactory {
                                      2 );
                     if ( clazz.isInterface() ) {
                         mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                            className,
+                                            Type.getInternalName( clazz ),
                                             method.getName(),
                                             Type.getMethodDescriptor( method ) );
                     } else {
                         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            className,
+                                            Type.getInternalName( clazz ),
                                             method.getName(),
                                             Type.getMethodDescriptor( method ) );
                     }
@@ -835,12 +835,12 @@ public class ShadowProxyFactory {
                                      2 );
                     if ( clazz.isInterface() ) {
                         mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                            className,
+                                            Type.getInternalName( clazz ),
                                             method.getName(),
                                             Type.getMethodDescriptor( method ) );
                     } else {
                         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            className,
+                                            Type.getInternalName( clazz ),
                                             method.getName(),
                                             Type.getMethodDescriptor( method ) );
                     }
@@ -866,12 +866,12 @@ public class ShadowProxyFactory {
                                      2 );
                     if ( clazz.isInterface() ) {
                         mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                            className,
+                                            Type.getInternalName( clazz ),
                                             method.getName(),
                                             Type.getMethodDescriptor( method ) );
                     } else {
                         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            className,
+                                            Type.getInternalName( clazz ),
                                             method.getName(),
                                             Type.getMethodDescriptor( method ) );
                     }
@@ -923,7 +923,7 @@ public class ShadowProxyFactory {
                                    lastLabel,
                                    1 );
             mv.visitLocalVariable( "other",
-                                   "L" + className + ";",
+                                   Type.getDescriptor( clazz ),
                                    null,
                                    l0,
                                    lastLabel,
