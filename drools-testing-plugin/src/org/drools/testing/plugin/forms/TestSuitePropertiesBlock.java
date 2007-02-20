@@ -16,7 +16,9 @@ import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.plugin.editors.RtlFormEditor;
 import org.drools.testing.plugin.resources.Messages;
 import org.drools.testing.plugin.resources.TestResourcesPlugin;
+import org.drools.testing.plugin.utils.LoadModel;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
@@ -45,7 +48,11 @@ import org.eclipse.ui.forms.widgets.Section;
  *
  */
 public class TestSuitePropertiesBlock extends MasterDetailsBlock {
+	
 	private FormPage page;
+	private TableViewer viewer;
+	private Composite parent;
+	
 	public TestSuitePropertiesBlock(FormPage page) {
 		this.page = page;
 	}
@@ -94,7 +101,7 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 	}
 	protected void createMasterPart(final IManagedForm managedForm,
 			Composite parent) {
-		//final ScrolledForm form = managedForm.getForm();
+		this.parent = parent;
 		FormToolkit toolkit = managedForm.getToolkit();
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION|Section.TITLE_BAR);
 		section.setText(Messages.getString("TestSuitePropertiesBlock.sname")); //$NON-NLS-1$
@@ -120,7 +127,7 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 		section.setClient(client);
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
-		TableViewer viewer = new TableViewer(t);
+		viewer = new TableViewer(t);
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(spart, event.getSelection());
@@ -129,6 +136,12 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 		viewer.setContentProvider(new MasterContentProvider());
 		viewer.setLabelProvider(new MasterLabelProvider());
 		viewer.setInput(((RtlFormEditor)page.getEditor()).getTestSuite());
+		viewer.getTable().getDisplay()
+			.asyncExec(new Runnable() {
+				public void run () {
+					updateTableTreeFromTextEditor();
+				}
+			});
 	}
 	protected void createToolBarActions(IManagedForm managedForm) {
 		final ScrolledForm form = managedForm.getForm();
@@ -159,5 +172,15 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 	protected void registerPages(DetailsPart detailsPart) {
 		detailsPart.registerPage(TestSuite.class, new TestSuiteDetailsPage());
 		detailsPart.registerPage(Scenario.class, new ScenarioDetailsPage());
+	}
+	
+	private void updateTableTreeFromTextEditor () {
+		TextEditor textEditor = ((RtlFormEditor)page.getEditor()).getTextEditor();
+		String content = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).get();
+		try {
+			viewer.setInput(LoadModel.loadTestSuite(content));
+		}catch (Exception e) {
+			MessageDialog.openError(parent.getShell(), "Error", e.getMessage());
+		}
 	}
 }
