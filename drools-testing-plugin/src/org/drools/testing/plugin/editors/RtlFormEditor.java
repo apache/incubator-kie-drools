@@ -1,11 +1,9 @@
 package org.drools.testing.plugin.editors;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-
 import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.plugin.forms.InputForm;
 import org.drools.testing.plugin.forms.MasterDetailsPage;
+import org.drools.testing.plugin.utils.LoadModel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -15,11 +13,11 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.FileEditorInput;
-import org.exolab.castor.xml.Unmarshaller;
 
 public class RtlFormEditor extends FormEditor {
 
 	private TestSuite testSuite;
+	private TextEditor textEditor;
 	
 	public RtlFormEditor() {
 		
@@ -33,8 +31,8 @@ public class RtlFormEditor extends FormEditor {
 	protected void addPages() {
 		initialiseModel();
 		try {
-			TextEditor editor = new TextEditor();
-			int index = addPage(editor, getEditorInput());
+			textEditor = new TextEditor();
+			int index = addPage(textEditor, getEditorInput());
 			setPageText(index, EditorConstants.EditorPageTitles.TITLE_FREE_FORM);
 			addPage(new MasterDetailsPage(this));
 			addPage(new InputForm(this));
@@ -60,10 +58,7 @@ public class RtlFormEditor extends FormEditor {
 	
 	private void initialiseModel () {
 		try {
-			FileEditorInput fileEditorInput = ((FileEditorInput)getEditorInput());
-			BufferedReader br = new BufferedReader(new FileReader(fileEditorInput.getFile().getName()));
-			Unmarshaller unmarshaller = new Unmarshaller(TestSuite.class);
-			testSuite = (TestSuite) unmarshaller.unmarshal(br);
+			LoadModel.loadTestSuite((FileEditorInput)getEditorInput());
 		}catch (Exception e) {	
 			MessageDialog.openError(this.getSite().getShell(), "Error", e.getMessage());
 		}
@@ -75,6 +70,14 @@ public class RtlFormEditor extends FormEditor {
 
 	public void setTestSuite(TestSuite testSuite) {
 		this.testSuite = testSuite;
+	}
+
+	public TextEditor getTextEditor() {
+		return textEditor;
+	}
+
+	public void setTextEditor(TextEditor textEditor) {
+		this.textEditor = textEditor;
 	}
 	
 }
