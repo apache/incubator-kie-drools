@@ -18,7 +18,6 @@ package org.drools.semantics.java;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,7 +32,6 @@ import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -133,10 +131,12 @@ public class RuleBuilderTest extends TestCase {
         
         attributes.add( new AttributeDescr("no-loop", "true") );
         attributes.add( new AttributeDescr("enabled", "false") );
+        attributes.add( new AttributeDescr("ruleflow-group", "mygroup") );
         builder.setAttributes( rule, attributes );
         
         assertTrue(rule.getNoLoop());
         assertFalse(rule.isEffective());
+        assertEquals("mygroup", rule.getRuleFlowGroup() );
         
         attributes = new ArrayList();
         attributes.add(new AttributeDescr("date-effective", "10-Jul-1974"));

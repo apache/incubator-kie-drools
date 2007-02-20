@@ -349,6 +349,22 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
+    public void testRuleFlowGroup() throws Exception {
+        final RuleDescr rule = parseResource( "ruleflowgroup.drl" ).rule();
+
+        assertNotNull( rule );
+
+        assertEquals( "rule1",
+                      rule.getName() );
+        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( 0 );
+        assertEquals( "a group",
+                      att.getValue() );
+        assertEquals( "ruleflow-group",
+                      att.getName() );
+
+        assertFalse( this.parser.hasErrors() );
+    }
+
     public void testConsequenceWithDeclaration() throws Exception {
         final RuleDescr rule = parseResource( "declaration-in-consequence.drl" ).rule();
 
