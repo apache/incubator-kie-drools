@@ -225,6 +225,8 @@ public class RuleBuilder {
                 rule.setAgendaGroup( attributeDescr.getValue() );
             } else if ( name.equals( "activation-group" ) ) {
                 rule.setActivationGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "ruleflow-group" ) ) {
+                rule.setRuleFlowGroup( attributeDescr.getValue() );
             } else if ( name.equals( "duration" ) ) {
                 rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
                 rule.setAgendaGroup( "" );

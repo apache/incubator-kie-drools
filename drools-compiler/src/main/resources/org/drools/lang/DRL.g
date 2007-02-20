@@ -451,6 +451,7 @@ rule_attribute returns [AttributeDescr d]
 		|       a=date_effective {d = a; }
 		|	a=date_expires {d = a; }
 		|       a=enabled {d=a;}
+		|       a=ruleflow_group { d = a; }
 		
 	;
 	
@@ -581,6 +582,20 @@ activation_group returns [AttributeDescr d]
 		loc=ACTIVATION_GROUP n=STRING   
 		{
 			d = new AttributeDescr( "activation-group", getString( n ) );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
+		}
+	;
+
+ruleflow_group returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+		loc=RULEFLOW_GROUP n=STRING   
+		{
+			d = new AttributeDescr( "ruleflow-group", getString( n ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
@@ -1508,6 +1523,9 @@ ACTIVATION_GROUP
 	
 AGENDA_GROUP 
 	:	'agenda-group';
+	
+RULEFLOW_GROUP 
+	:	'ruleflow-group';
 	
 DURATION 
 	:	'duration';
