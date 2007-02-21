@@ -42,9 +42,9 @@ public class ShadowProxyFactory {
 
     //private static final String FIELD_NAME_PREFIX   = "__";
 
-    private static final String FIELD_SET_FLAG      = "IsSet";
+    public static final String FIELD_SET_FLAG      = "IsSet";
 
-    private static final String DELEGATE_FIELD_NAME = "delegate";
+    public static final String DELEGATE_FIELD_NAME = "delegate";
 
     public static Class getProxy(final Class clazz) {
         try {
