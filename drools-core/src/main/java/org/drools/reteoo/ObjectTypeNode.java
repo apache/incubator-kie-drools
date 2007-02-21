@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.EmptyBetaConstraints;
@@ -148,7 +149,16 @@ public class ObjectTypeNode extends ObjectSource
                 handle.setObject( this.objectType.getShadow( handle.getObject() ) );
                 handle.setShadowFact( true );
             } else {
-                ((ShadowProxy) handle.getObject()).updateProxy();
+                // we need to check if the shadow proxy matches the current object type
+                // because in a class hirarchy it may happen that the shadow proxy does not
+                // match a class down the hirarchy. See: JBRULES-696.
+                if( this.objectType.matches( handle.getObject() ) ) {
+                    ((ShadowProxy) handle.getObject()).updateProxy();
+                } else {
+                    // replaces the old shadow proxy for a more specialized version of it
+                    handle.setObject( this.objectType.getShadow( ((ShadowProxy)handle.getObject()).getShadowedObject() ) );
+                    handle.setShadowFact( true );
+                }
             }
         }
         
