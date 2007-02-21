@@ -29,6 +29,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -3960,5 +3961,65 @@ public abstract class IntegrationCases extends TestCase {
                       workingMemory.getObjects().size() );
 
     }
+
+    public void testDuplicateVariableBinding() throws Exception {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
+            final Package pkg = builder.getPackage();
+
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            final Map result = new HashMap();
+            workingMemory.setGlobal( "results",
+                                     result );
+
+            final Cheese stilton = new Cheese("stilton", 20);
+            final Cheese brie    = new Cheese("brie", 10);
+
+            workingMemory.assertObject( stilton );
+            workingMemory.assertObject( brie );
+
+            workingMemory.fireAllRules();
+            assertEquals( 5,
+                          result.size() );
+            assertEquals( stilton.getPrice(), ((Integer)result.get( stilton.getType() )).intValue());
+            assertEquals( brie.getPrice(), ((Integer)result.get( brie.getType() )).intValue());
+
+            assertEquals( stilton.getPrice(), ((Integer)result.get( stilton )).intValue());
+            assertEquals( brie.getPrice(), ((Integer)result.get( brie )).intValue());
+
+            assertEquals( stilton.getPrice(), ((Integer)result.get( "test3"+stilton.getType() )).intValue());
+            
+            workingMemory.assertObject( new Person("bob", brie.getType()) );
+            workingMemory.fireAllRules();
+            
+            assertEquals( 6,
+                          result.size() );
+            assertEquals( brie.getPrice(), ((Integer)result.get( "test3"+brie.getType() )).intValue());
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail("Should not raise any exception");
+        }
+    }
+
+    public void testDuplicateVariableBindingError() throws Exception {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
+            final Package pkg = builder.getPackage();
+            
+            assertFalse( pkg.isValid() );
+            assertEquals( 6, pkg.getErrorSummary().split( "\n" ).length);
+            
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail("Should not raise any exception");
+        }
+    }
+
+
 
 }

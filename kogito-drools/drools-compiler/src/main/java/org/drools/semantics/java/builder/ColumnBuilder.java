@@ -124,6 +124,15 @@ public class ColumnBuilder {
 
         Column column;
         if ( columnDescr.getIdentifier() != null && !columnDescr.getIdentifier().equals( "" ) ) {
+            
+            if ( context.getDeclarationResolver().isDuplicated( columnDescr.getIdentifier() ) ) {
+                // This declaration already  exists, so throw an Exception
+                context.getErrors().add( new RuleError( context.getRule(),
+                                                        columnDescr,
+                                                        null,
+                                                        "Duplicate declaration for variable '" + columnDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
+            }
+
             column = new Column( context.getNextColumnId(),
                                  0, // offset is 0 by default
                                  objectType,
@@ -319,8 +328,7 @@ public class ColumnBuilder {
                        final Column column,
                        final FieldBindingDescr fieldBindingDescr) {
 
-        Declaration declaration = (Declaration) context.getDeclarationResolver().getDeclaration( fieldBindingDescr.getIdentifier() );
-        if ( declaration != null ) {
+        if ( context.getDeclarationResolver().isDuplicated( fieldBindingDescr.getIdentifier() ) ) {
             // This declaration already  exists, so throw an Exception
             context.getErrors().add( new RuleError( context.getRule(),
                                                     fieldBindingDescr,
@@ -338,8 +346,8 @@ public class ColumnBuilder {
             return;
         }
 
-        declaration = column.addDeclaration( fieldBindingDescr.getIdentifier(),
-                                             extractor );
+        column.addDeclaration( fieldBindingDescr.getIdentifier(),
+                               extractor );
     }
 
     private void build(final BuildContext context,
@@ -381,7 +389,7 @@ public class ColumnBuilder {
 
         final String[] localDeclarationTypes = new String[localDeclarations.length];
         for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] ); 
+            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] );
         }
 
         st.setAttribute( "localDeclarations",
@@ -598,7 +606,7 @@ public class ColumnBuilder {
 
         final String[] localDeclarationTypes = new String[localDeclarations.length];
         for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] ); 
+            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] );
         }
 
         st.setAttribute( "localDeclarations",

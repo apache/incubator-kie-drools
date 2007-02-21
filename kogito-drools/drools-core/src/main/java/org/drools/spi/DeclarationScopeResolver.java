@@ -5,8 +5,14 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 
+/**
+ * A class capable of resolving a declaration in the current build context
+ * 
+ * @author etirelli
+ */
 public class DeclarationScopeResolver {
     private static final Stack EMPTY_STACK = new Stack(  );
     private Map[] maps;
@@ -64,6 +70,27 @@ public class DeclarationScopeResolver {
         for( int i = this.buildStack.size()-1; i >= 0; i-- ) {
             Declaration declaration = ( Declaration ) (( RuleConditionElement ) this.buildStack.get( i )).getInnerDeclarations().get( name );
             if( declaration != null ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isDuplicated( final String name ) {
+        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
+            if ( this.maps[i].containsKey( (name) ) ) {
+                return true;
+            }
+        }
+        for( int i = this.buildStack.size()-1; i >= 0; i-- ) {
+            RuleConditionElement rce = ( RuleConditionElement ) this.buildStack.get( i );
+            Declaration declaration = ( Declaration ) rce.getInnerDeclarations().get( name );
+            if( declaration != null ) {
+                if( ( rce instanceof GroupElement ) && ( (GroupElement)rce).isOr() ) {
+                    // if it is an OR and it is duplicated, we can stop looking for duplication now
+                    // as it is a separate logical branch
+                    return false;
+                }
                 return true;
             }
         }
