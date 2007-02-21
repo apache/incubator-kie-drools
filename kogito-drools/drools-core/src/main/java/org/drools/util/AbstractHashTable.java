@@ -368,6 +368,10 @@ public abstract class AbstractHashTable
         public boolean equals(final Object object) {
             return (object == this) || (this.handle == ((FactEntry) object).handle);
         }
+        
+        public String toString() {
+            return "FactEntry( handle="+this.handle+" hashcode="+this.hashCode+" next="+this.next+" )";
+        }
     }
 
     public static class FieldIndex {

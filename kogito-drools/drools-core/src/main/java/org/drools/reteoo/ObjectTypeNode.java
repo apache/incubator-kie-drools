@@ -19,11 +19,9 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
+import org.drools.base.ShadowProxyHelper;
 import org.drools.common.BaseNode;
-import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -156,8 +154,13 @@ public class ObjectTypeNode extends ObjectSource
                     ((ShadowProxy) handle.getObject()).updateProxy();
                 } else {
                     // replaces the old shadow proxy for a more specialized version of it
-                    handle.setObject( this.objectType.getShadow( ((ShadowProxy)handle.getObject()).getShadowedObject() ) );
+                    ShadowProxy old = (ShadowProxy)handle.getObject();
+                    handle.setObject( this.objectType.getShadow( old.getShadowedObject() ) );
                     handle.setShadowFact( true );
+
+                    // we MUST copy state from one proxy to the other as we are in a dynamic rules engine
+                    // and new rules with different object types may be added at any moment
+                    ShadowProxyHelper.copyState( old, (ShadowProxy)handle.getObject() );
                 }
             }
         }
@@ -189,6 +192,7 @@ public class ObjectTypeNode extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
+
         if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             return;
         }         

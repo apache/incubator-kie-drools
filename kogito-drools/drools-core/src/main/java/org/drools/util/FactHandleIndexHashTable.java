@@ -131,7 +131,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         final Object object = handle.getObject();
         //this.index.setCachedValue( object );
         final int hashCode = this.index.hashCodeOf( object );
-
+        
         final int index = indexOf( hashCode,
                              this.table.length );
 
@@ -335,6 +335,10 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         public boolean equals(final Object object) {
             final FieldIndexEntry other = (FieldIndexEntry) object;
             return this.hashCode == other.hashCode && this.index == other.index;
+        }
+        
+        public String toString() {
+            return "FieldIndexEntry( hashCode="+hashCode+" first="+this.first+" )";
         }
     }
 }

@@ -143,6 +143,7 @@ public class JoinNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
         memory.getFactHandleMemory().add( handle );
 
         final Iterator it = memory.getTupleMemory().iterator(handle);
