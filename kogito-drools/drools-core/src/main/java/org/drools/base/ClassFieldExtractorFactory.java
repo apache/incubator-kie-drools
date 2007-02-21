@@ -220,7 +220,7 @@ public class ClassFieldExtractorFactory {
             overridingMethod = superClass.getMethod( getOverridingMethodName( fieldType ),
                                                      new Class[]{Object.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report back to JBRules team.",
+            throw new RuntimeDroolsException( "This is a bug. Please report back to JBoss Rules team.",
                                               e );
         }
         final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
