@@ -61,7 +61,6 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.lang.dsl.DefaultExpander;
-import org.drools.lang.dsl.DefaultExpanderResolver;
 
 public class RuleParserTest extends TestCase {
 
@@ -922,38 +921,6 @@ public class RuleParserTest extends TestCase {
         //System.out.println(rhs);
         assertEquals( "\n first\n\n\n\n\n\n\n second",
                       rhs );
-    }
-
-    public void testMultiBindings() throws Exception {
-        final RuleDescr rule = parseResource( "multiple_bindings.drl" ).rule();
-        assertNotNull( rule );
-        assertEquals( "simple_rule",
-                      rule.getName() );
-
-        assertEquals( 2,
-                      rule.getLhs().getDescrs().size() );
-        assertEquals( "foo",
-                      ((ColumnDescr) rule.getLhs().getDescrs().get( 0 )).getIdentifier() );
-        assertEquals( "baz",
-                      ((ColumnDescr) rule.getLhs().getDescrs().get( 1 )).getIdentifier() );
-
-    }
-
-    public void testMultiBindingsMore() throws Exception {
-        final RuleDescr rule = parseResource( "multiple_bindings_more.drl" ).rule();
-        assertNotNull( rule );
-        assertEquals( "simple_rule",
-                      rule.getName() );
-
-        assertEquals( 3,
-                      rule.getLhs().getDescrs().size() );
-        assertEquals( "foo",
-                      ((ColumnDescr) rule.getLhs().getDescrs().get( 0 )).getIdentifier() );
-        assertEquals( "something foo",
-                      ((EvalDescr) rule.getLhs().getDescrs().get( 1 )).getText() );
-        assertEquals( "another foo",
-                      ((EvalDescr) rule.getLhs().getDescrs().get( 2 )).getText() );
-
     }
 
     public void testLhsSemicolonDelim() throws Exception {

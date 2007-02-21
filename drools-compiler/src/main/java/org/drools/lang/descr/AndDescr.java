@@ -18,10 +18,7 @@ package org.drools.lang.descr;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class AndDescr extends BaseDescr
     implements
@@ -31,7 +28,6 @@ public class AndDescr extends BaseDescr
      */
     private static final long serialVersionUID = 8225023304408452585L;
     private List descrs       = Collections.EMPTY_LIST;
-    private final Map  boundColumns = new HashMap();
 
     public AndDescr() {
     }
@@ -41,48 +37,7 @@ public class AndDescr extends BaseDescr
             this.descrs = new ArrayList( 1 );
         }
 
-        if ( baseDescr instanceof ColumnDescr ) {
-            addColumn( (ColumnDescr) baseDescr );
-        } else {
-            this.descrs.add( baseDescr );
-        }
-    }
-
-    /**
-     * NOTE: to be used possibly in a future version... wire in above...
-     * This will check the column binding, and add the patterns 
-     * to a previously bound column
-     * if one exists. 
-     * If its not a bound column, or it is a unique bound variable column,
-     * it will just add it to the list of children descrs.
-     */
-    private void addColumn(final ColumnDescr col) {
-        final String identifier = col.getIdentifier();
-        if ( identifier == null || "".equals( identifier ) ) {
-            this.descrs.add( col );
-        } else {
-            if ( this.boundColumns.containsKey( identifier ) ) {
-                final ColumnDescr existingCol = (ColumnDescr) this.boundColumns.get( identifier );
-                if ( existingCol.getObjectType().equals( col.getObjectType() ) ) {
-                    combinePatterns( existingCol,
-                                     col.getDescrs() );
-                } else {
-                    this.descrs.add( col );
-                }
-            } else {
-                this.boundColumns.put( identifier,
-                                  col );
-                this.descrs.add( col );
-            }
-        }
-    }
-
-    private void combinePatterns(final ColumnDescr existingCol,
-                                 final List newColPatterns) {
-        for ( final Iterator iter = newColPatterns.iterator(); iter.hasNext(); ) {
-            existingCol.addDescr( (BaseDescr) iter.next() );
-        }
-
+        this.descrs.add( baseDescr );
     }
 
     public List getDescrs() {
