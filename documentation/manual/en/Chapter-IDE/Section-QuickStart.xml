@@ -582,7 +582,7 @@
 
     <para>You can debug rules during the execution of your Drools application.
     You can add breakpoints in the consequences of your rules, and whenever
-    such a breakpoint is encounter during the execution of the rules, the execution
+    such a breakpoint is encounted during the execution of the rules, the execution
     is halted.  You can then inspect the variables known at that point and use any
     of the default debugging actions to decide what should happen next (step over,
     continue, etc.).  You can also use the debug views to inspect the content of the
@@ -621,7 +621,7 @@
         screenshot below)</para>
       </listitem>
       <listitem>
-        <para>Select the "Drools Application" item in the left tree and click the "New
+        <para>Select the "JBoss Rules Application" item in the left tree and click the "New
         launch configuration" button (leftmost icon in the toolbar above the tree).  This
         will create a new configuration and already fill in some of the properties
         (like the project and main class) based on main class you selected in the beginning.
@@ -640,13 +640,13 @@
    
     <mediaobject>
       <imageobject>
-        <imagedata fileref="debug_rules_configuration.jpg" />
+        <imagedata fileref="debug_rules_configuration.JPG" />
       </imageobject>
     </mediaobject>
 
    <para>You only have to define your debug configuration once.  The next time you try to run your
-   Drools application, you don't have to create a new one but select the one you defined
-   previously by selecting it in the tree on the left, as a sub-element of the "Drools Application"
+   JBoss Rules application, you don't have to create a new one but select the one you defined
+   previously by selecting it in the tree on the left, as a sub-element of the "JBoss Rules Application"
    tree node, and then click the Debug button.  The eclipse toolbar also contains shortcut
    buttons to quickly re-execute the one of your previous configurations (at least when the
    Java, Java Debug, or JBoss Rules perspective has been selected).
@@ -662,6 +662,12 @@
    (you don't have to select a working memory now, the current executing working memory
    is automatically shown).
    </para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="debug_rules_configuration.JPG" />
+      </imageobject>
+    </mediaobject>
 
   </section>
     
