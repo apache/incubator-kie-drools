@@ -16,8 +16,13 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.lang.reflect.Field;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.ObjectType;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
 
 /**
  * Java class semantics <code>ObjectType</code>.
@@ -29,10 +34,10 @@ import org.drools.spi.ObjectType;
 public class ClassObjectType
     implements
     ObjectType {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
 
+    // Objenesis instance without cache (false) 
+    private static final Objenesis OBJENESIS = new ObjenesisStd(false);
+    
     /**
      * 
      */
@@ -46,6 +51,10 @@ public class ClassObjectType
     protected boolean         shadowEnabled;
 
     protected Class           shadowClass;
+    
+    protected ObjectInstantiator instantiator;
+
+    private Field delegate;
 
     // ------------------------------------------------------------
     // Constructors
@@ -77,7 +86,14 @@ public class ClassObjectType
         this.valueType = ValueType.determineValueType( objectTypeClass );
         if ( shadowClass != null ) {
             this.shadowClass = shadowClass;
+            this.instantiator = OBJENESIS.getInstantiatorOf( this.shadowClass ); 
             this.shadowEnabled = true;
+            try {
+                delegate = this.shadowClass.getDeclaredField( ShadowProxyFactory.DELEGATE_FIELD_NAME );
+                delegate.setAccessible( true );
+            } catch ( Exception e ) {
+                throw new RuntimeDroolsException("Error retriving delegate field for shadow proxy class: "+this.shadowClass.getName(), e );
+            }
         }
     }
 
@@ -120,7 +136,8 @@ public class ClassObjectType
         ShadowProxy proxy = null;
         if ( isShadowEnabled() ) {
             try {
-                proxy = (ShadowProxy) this.shadowClass.getConstructor( new Class[]{this.objectTypeClass} ).newInstance( new Object[]{fact} );
+                proxy = (ShadowProxy) this.instantiator.newInstance();
+                delegate.set( proxy, fact );
             } catch ( final Exception e ) {
                 throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,
                                                   e );
