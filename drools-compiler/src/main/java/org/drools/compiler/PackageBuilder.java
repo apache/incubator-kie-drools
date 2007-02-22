@@ -71,8 +71,8 @@ import org.xml.sax.SAXException;
  * This can be done by merging into existing binary packages, or totally from source.
  */
 public class PackageBuilder {
-    private static final JavaCompiler cachedJavaCompiler = null;
-    
+    private static final JavaCompiler   cachedJavaCompiler = null;
+
     private JavaCompiler                compiler;
     private Package                     pkg;
     private List                        results;
@@ -86,7 +86,9 @@ public class PackageBuilder {
     private FunctionResolver            functionResolver;
     private ClassFieldExtractorCache    classFieldExtractorCache;
     private Map                         lineMappings;
-    
+
+    private RuleBuilder                 builder;
+
     /**
      * Use this when package is starting from scratch. 
      */
@@ -203,6 +205,10 @@ public class PackageBuilder {
             this.pkg = newPackage( packageDescr );
         }
 
+        builder = new RuleBuilder( getTypeResolver(),
+                                   getFunctionFixer(),
+                                   this.classFieldExtractorCache );
+
         //only try to compile if there are no parse errors
         if ( !hasErrors() ) {
             for ( final Iterator it = packageDescr.getFactTemplates().iterator(); it.hasNext(); ) {
@@ -306,7 +312,7 @@ public class PackageBuilder {
 
         final String fileName = className.replace( '.',
                                                    '/' ) + ".java";
-                
+
         src.add( fileName,
                  text.getBytes() );
 
@@ -316,17 +322,17 @@ public class PackageBuilder {
     }
 
     private void addFunction(final FunctionDescr functionDescr) {
-    	
-    	String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-    	functionDescr.setClassName(functionClassName);
-    	
+
+        String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+        functionDescr.setClassName( functionClassName );
+
         final FunctionBuilder builder = new FunctionBuilder();
         this.pkg.addFunction( functionDescr.getName() );
 
         addClassCompileTask( functionClassName,
                              functionDescr,
                              builder.build( this.pkg,
-                                            functionDescr,                                            
+                                            functionDescr,
                                             getFunctionFixer(),
                                             getTypeResolver(),
                                             lineMappings ),
@@ -372,11 +378,6 @@ public class PackageBuilder {
                                                          "java",
                                                          this.src );
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
-
-        // TODO: cache the builder!!!
-        final RuleBuilder builder = new RuleBuilder( getTypeResolver(),
-                                                     getFunctionFixer(),
-                                                     this.classFieldExtractorCache );
 
         builder.build( this.pkg,
                        ruleDescr );
@@ -607,8 +608,8 @@ public class PackageBuilder {
                 final EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
                 Map map = eclipseSettings.getMap();
                 map.put( CompilerOptions.OPTION_TargetPlatform,
-                                             this.configuration.getJavaLanguageLevel() );
-                
+                         this.configuration.getJavaLanguageLevel() );
+
                 // We now default this to 1.5, so we can use static imports.
                 map.put( CompilerOptions.OPTION_Source,
                          "1.5" );
@@ -685,7 +686,7 @@ public class PackageBuilder {
     public static class RuleErrorHandler extends ErrorHandler {
 
         private BaseDescr descr;
-        private Rule         rule;
+        private Rule      rule;
 
         public RuleErrorHandler(final BaseDescr ruleDescr,
                                 final Rule rule,
