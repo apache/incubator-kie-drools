@@ -1,8 +1,8 @@
 package org.drools.testing.plugin.editors;
 
 import org.drools.testing.core.beans.TestSuite;
-import org.drools.testing.plugin.forms.InputForm;
 import org.drools.testing.plugin.forms.MasterDetailsPage;
+import org.drools.testing.plugin.forms.TestSuitePropertiesBlock;
 import org.drools.testing.plugin.utils.LoadModel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -35,7 +35,6 @@ public class RtlFormEditor extends FormEditor {
 			int index = addPage(textEditor, getEditorInput());
 			setPageText(index, EditorConstants.EditorPageTitles.TITLE_FREE_FORM);
 			addPage(new MasterDetailsPage(this));
-			addPage(new InputForm(this));
 		}
 		catch (PartInitException e) {
 			//
@@ -53,7 +52,7 @@ public class RtlFormEditor extends FormEditor {
 	}
 
 	public boolean isSaveAsAllowed() {
-		return false;
+		return true;
 	}
 	
 	private void initialiseModel () {
@@ -78,6 +77,17 @@ public class RtlFormEditor extends FormEditor {
 
 	public void setTextEditor(TextEditor textEditor) {
 		this.textEditor = textEditor;
+	}
+	
+	protected void pageChange ( int newPageIndex ) {
+		switch (newPageIndex) {
+			case 1 :
+				TestSuitePropertiesBlock block = ((MasterDetailsPage)getSelectedPage()).getBlock();
+				block.updateTableFromTextEditor();
+				System.out.println("page change event running..");
+				break;
+		}
+		super.pageChange(newPageIndex);
 	}
 	
 }
