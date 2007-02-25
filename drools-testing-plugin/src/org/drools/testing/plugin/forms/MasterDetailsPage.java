@@ -35,4 +35,7 @@ public class MasterDetailsPage extends FormPage {
 				TestResourcesPlugin.IMG_FORM_BG));
 		block.createContent(managedForm);
 	}
+	public TestSuitePropertiesBlock getBlock() {
+		return block;
+	}
 }
