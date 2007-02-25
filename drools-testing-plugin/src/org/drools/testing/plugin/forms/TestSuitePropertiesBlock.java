@@ -18,7 +18,6 @@ import org.drools.testing.plugin.resources.Messages;
 import org.drools.testing.plugin.resources.TestResourcesPlugin;
 import org.drools.testing.plugin.utils.LoadModel;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -51,7 +50,6 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 	
 	private FormPage page;
 	private TableViewer viewer;
-	private Composite parent;
 	
 	public TestSuitePropertiesBlock(FormPage page) {
 		this.page = page;
@@ -61,6 +59,7 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 	 * @param title
 	 */
 	class MasterContentProvider implements IStructuredContentProvider {
+		
 		public Object[] getElements(Object inputElement) {
 			ArrayList ch = new ArrayList();
 			if (inputElement instanceof TestSuite) {
@@ -81,6 +80,7 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 		public void dispose() {
 		}
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			
 		}
 	}
 	class MasterLabelProvider extends LabelProvider
@@ -98,10 +98,10 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
 					ISharedImages.IMG_OBJ_ELEMENT);
 		}
+		
 	}
 	protected void createMasterPart(final IManagedForm managedForm,
 			Composite parent) {
-		this.parent = parent;
 		FormToolkit toolkit = managedForm.getToolkit();
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION|Section.TITLE_BAR);
 		section.setText(Messages.getString("TestSuitePropertiesBlock.sname")); //$NON-NLS-1$
@@ -139,7 +139,7 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 		viewer.getTable().getDisplay()
 			.asyncExec(new Runnable() {
 				public void run () {
-					updateTableTreeFromTextEditor();
+					updateTableFromTextEditor();
 				}
 			});
 	}
@@ -174,13 +174,18 @@ public class TestSuitePropertiesBlock extends MasterDetailsBlock {
 		detailsPart.registerPage(Scenario.class, new ScenarioDetailsPage());
 	}
 	
-	private void updateTableTreeFromTextEditor () {
+	public void updateTableFromTextEditor () {
 		TextEditor textEditor = ((RtlFormEditor)page.getEditor()).getTextEditor();
 		String content = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).get();
 		try {
+			TestSuite s = LoadModel.loadTestSuite(content);
 			viewer.setInput(LoadModel.loadTestSuite(content));
+			viewer.refresh(true);
 		}catch (Exception e) {
-			MessageDialog.openError(parent.getShell(), "Error", e.getMessage());
+			System.out.println("aahh");
 		}
+	}
+	public TableViewer getViewer() {
+		return viewer;
 	}
 }
