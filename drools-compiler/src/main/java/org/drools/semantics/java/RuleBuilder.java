@@ -26,6 +26,7 @@ import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.evaluators.DateFactory;
+import org.drools.dialect.java.JavaEvalBuilder;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -48,7 +49,7 @@ import org.drools.semantics.java.builder.CollectBuilder;
 import org.drools.semantics.java.builder.ColumnBuilder;
 import org.drools.semantics.java.builder.ConditionalElementBuilder;
 import org.drools.semantics.java.builder.ConsequenceBuilder;
-import org.drools.semantics.java.builder.EvalBuilder;
+import org.drools.semantics.java.builder.JavaConsequenceBuilder;
 import org.drools.semantics.java.builder.ForallBuilder;
 import org.drools.semantics.java.builder.FromBuilder;
 import org.drools.semantics.java.builder.GroupElementBuilder;
@@ -88,7 +89,7 @@ public class RuleBuilder {
         // if we want to
         this.builders = new HashMap();
         builders.put( EvalDescr.class,
-                      new EvalBuilder() );
+                      new JavaEvalBuilder() );
         builders.put( FromDescr.class,
                       new FromBuilder() );
         builders.put( CollectDescr.class,
@@ -117,7 +118,7 @@ public class RuleBuilder {
 
         this.columnBuilder = new ColumnBuilder();
 
-        this.consequenceBuilder = new ConsequenceBuilder();
+        this.consequenceBuilder = new JavaConsequenceBuilder();
         
         this.classBuilder = new RuleClassBuilder();
     }

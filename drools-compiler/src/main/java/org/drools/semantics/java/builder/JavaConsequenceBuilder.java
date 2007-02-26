@@ -28,8 +28,11 @@ import org.drools.rule.Declaration;
  * @author etirelli
  *
  */
-public class ConsequenceBuilder {
+public class JavaConsequenceBuilder implements ConsequenceBuilder {
 
+    /* (non-Javadoc)
+     * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
+     */
     public void buildConsequence(final BuildContext context,
                                  final BuildUtils utils,
                                  final RuleDescr ruleDescr) {

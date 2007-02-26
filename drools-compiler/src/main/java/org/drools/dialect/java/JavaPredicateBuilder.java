@@ -1,24 +1,32 @@
-package org.drools.semantics.java.builder;
+package org.drools.dialect.java;
 
 import java.util.List;
 
 import org.antlr.stringtemplate.StringTemplate;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.ReturnValueRestriction;
+import org.drools.rule.PredicateConstraint;
+import org.drools.semantics.java.builder.BuildContext;
+import org.drools.semantics.java.builder.BuildUtils;
+import org.drools.semantics.java.builder.PredicateBuilder;
 
-public class JavaReturnValueBuilder {
+public class JavaPredicateBuilder
+    implements
+    PredicateBuilder {
+
     public void build(final BuildContext context,
                       final BuildUtils utils,
                       final List[] usedIdentifiers,
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
-                      final ReturnValueRestriction returnValueRestriction,
-                      final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        final String className = "returnValue" + context.getNextId();
-        returnValueRestrictionDescr.setClassMethodName( className );
+                      final PredicateConstraint predicateConstraint,
+                      final PredicateDescr predicateDescr) {
+        // generate 
+        // generate Invoker
+        final String className = "predicate" + context.getNextId();
+        predicateDescr.setClassMethodName( className );
 
-        StringTemplate st = utils.getRuleGroup().getInstanceOf( "returnValueMethod" );
+        StringTemplate st = utils.getRuleGroup().getInstanceOf( "predicateMethod" );
 
         utils.setStringTemplateAttributes( context,
                                            st,
@@ -38,13 +46,14 @@ public class JavaReturnValueBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String returnValueText = returnValueRestrictionDescr.getText();
+        final String predicateText = predicateDescr.getText();
+
         st.setAttribute( "text",
-                         returnValueText );
+                         predicateText );
 
         context.getMethods().add( st.toString() );
 
-        st = utils.getInvokerGroup().getInstanceOf( "returnValueInvoker" );
+        st = utils.getInvokerGroup().getInstanceOf( "predicateInvoker" );
 
         st.setAttribute( "package",
                          context.getPkg().getName() );
@@ -66,14 +75,15 @@ public class JavaReturnValueBuilder {
                          localDeclarationTypes );
 
         st.setAttribute( "hashCode",
-                         returnValueText.hashCode() );
+                         predicateText.hashCode() );
 
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker";
         context.getInvokers().put( invokerClassName,
                                    st.toString() );
         context.getInvokerLookups().put( invokerClassName,
-                                         returnValueRestriction );
+                                         predicateConstraint );
         context.getDescrLookups().put( invokerClassName,
-                                       returnValueRestrictionDescr );
+                                       predicateDescr );
     }
+
 }
