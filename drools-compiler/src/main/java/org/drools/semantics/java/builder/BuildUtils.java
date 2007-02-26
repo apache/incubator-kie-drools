@@ -31,7 +31,6 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.semantics.java.DeclarationTypeFixer;
-import org.drools.semantics.java.FunctionFixer;
 import org.drools.semantics.java.JavaExprAnalyzer;
 import org.drools.semantics.java.KnowledgeHelperFixer;
 import org.drools.semantics.java.RuleBuilder;
@@ -51,9 +50,7 @@ public class BuildUtils {
                                                                                    AngleBracketTemplateLexer.class );
 
     private final KnowledgeHelperFixer     knowledgeHelperFixer;
-
-    private final FunctionFixer            functionFixer;
-    
+  
     private final DeclarationTypeFixer     typeFixer;
 
     private final JavaExprAnalyzer         analyzer;
@@ -64,14 +61,12 @@ public class BuildUtils {
     
     private final Map                      builders;
 
-    public BuildUtils(final FunctionFixer functionFixer,
-                      final KnowledgeHelperFixer knowledgeHelperFixer,
+    public BuildUtils(final KnowledgeHelperFixer knowledgeHelperFixer,
                       final DeclarationTypeFixer typeFixer,
                       final JavaExprAnalyzer analyzer,
                       final TypeResolver typeResolver,
                       final ClassFieldExtractorCache classFieldExtractorCache,
                       final Map builders ) {
-        this.functionFixer = functionFixer;
         this.knowledgeHelperFixer = knowledgeHelperFixer;
         this.typeFixer = typeFixer;
         this.analyzer = analyzer;
@@ -181,14 +176,6 @@ public class BuildUtils {
      */
     public KnowledgeHelperFixer getKnowledgeHelperFixer() {
         return knowledgeHelperFixer;
-    }
-
-    /**
-     * Returns the function fixer instance
-     * @return
-     */
-    public FunctionFixer getFunctionFixer() {
-        return functionFixer;
     }
 
     /**

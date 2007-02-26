@@ -81,14 +81,7 @@ public class RuleBuilderTest extends TestCase {
             typeResolver.addImport( pkgDescr.getName() + ".*" );
             typeResolver.addImport( "java.lang.*" );
 
-            FunctionResolver functionResolver = new StaticMethodFunctionResolver( pkg.getFunctionImports(),
-                                                                                  typeResolver );
-
-            FunctionFixer functionFixer = new FunctionFixer( pkg,
-                                                             functionResolver );
-
             final RuleBuilder builder = new RuleBuilder( typeResolver,
-                                                         functionFixer,
                                                          new ClassFieldExtractorCache() );
 
             builder.build( pkg,
@@ -125,7 +118,7 @@ public class RuleBuilderTest extends TestCase {
     }
     
     public void testBuildAttributes() throws Exception {
-        RuleBuilder builder = new RuleBuilder(null, null, null);
+        RuleBuilder builder = new RuleBuilder(null,  null);
         Rule rule = new Rule("myrule");
         List attributes = new ArrayList();
         

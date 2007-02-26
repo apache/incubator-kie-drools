@@ -75,8 +75,7 @@ public class EvalBuilder
         st.setAttribute( "methodName",
                          className );
 
-        final String evalText = utils.getFunctionFixer().fix( evalDescr.getText(),
-                                                              context.getDeclarationResolver() );
+        final String evalText = evalDescr.getText();
         st.setAttribute( "text",
                          evalText );
 

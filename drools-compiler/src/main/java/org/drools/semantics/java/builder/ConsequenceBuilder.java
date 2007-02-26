@@ -60,8 +60,7 @@ public class ConsequenceBuilder {
                                            declarations,
                                            (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
         st.setAttribute( "text",
-                         utils.getFunctionFixer().fix( utils.getKnowledgeHelperFixer().fix( ruleDescr.getConsequence() ),
-                                                       context.getDeclarationResolver() ) );
+                         utils.getKnowledgeHelperFixer().fix( ruleDescr.getConsequence() ) );
 
         context.getMethods().add( st.toString() );
 

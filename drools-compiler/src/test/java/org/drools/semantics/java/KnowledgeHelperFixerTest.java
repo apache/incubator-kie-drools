@@ -93,7 +93,7 @@ public class KnowledgeHelperFixerTest extends TestCase {
     }
 
     public void testLeaveLargeAlone() {
-        final String original = "yeah yeah yeah this is a long() thing Person (name=='drools') modify a thing";
+        final String original = "yeah yeah yeah massert( xxx ) this is a long() thing Person (name=='drools') modify a thing";
         final String result = KnowledgeHelperFixerTest.fixer.fix( original );
         assertEquals( original,
                       result );

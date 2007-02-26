@@ -44,7 +44,6 @@ public class FunctionBuilder {
 
     public String build(final Package pkg,
                         final FunctionDescr functionDescr,
-                        final FunctionFixer fixer,
                         final TypeResolver typeResolver,
                         final Map lineMappings) {
         final StringTemplate st = FunctionBuilder.functionGroup.getInstanceOf( "function" );
@@ -82,7 +81,7 @@ public class FunctionBuilder {
         }                   
         
         st.setAttribute( "text",
-                         fixer.fix( functionDescr.getText(), new DeclarationScopeResolver( new Map[] { params } ) ) );
+                         functionDescr.getText() );
         
         String text = st.toString();
         
