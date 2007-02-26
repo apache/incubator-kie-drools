@@ -124,7 +124,7 @@ public class ColumnBuilder {
 
         Column column;
         if ( columnDescr.getIdentifier() != null && !columnDescr.getIdentifier().equals( "" ) ) {
-            
+
             if ( context.getDeclarationResolver().isDuplicated( columnDescr.getIdentifier() ) ) {
                 // This declaration already  exists, so throw an Exception
                 context.getErrors().add( new RuleError( context.getRule(),
@@ -354,11 +354,6 @@ public class ColumnBuilder {
                        final BuildUtils utils,
                        final Column column,
                        final PredicateDescr predicateDescr) {
-        // generate 
-        // generate Invoker
-        final String className = "predicate" + context.getNextId();
-        predicateDescr.setClassMethodName( className );
-
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  predicateDescr,
                                                                  predicateDescr.getText() );
@@ -380,64 +375,16 @@ public class ColumnBuilder {
                                                                                  localDeclarations );
         column.addConstraint( predicateConstraint );
 
-        StringTemplate st = utils.getRuleGroup().getInstanceOf( "predicateMethod" );
+        JavaPredicateBuilder builder = new JavaPredicateBuilder();
 
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           previousDeclarations,
-                                           (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+        builder.build( context,
+                       utils,
+                       usedIdentifiers,
+                       previousDeclarations,
+                       localDeclarations,
+                       predicateConstraint,
+                       predicateDescr );
 
-        final String[] localDeclarationTypes = new String[localDeclarations.length];
-        for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] );
-        }
-
-        st.setAttribute( "localDeclarations",
-                         localDeclarations );
-        st.setAttribute( "localDeclarationTypes",
-                         localDeclarationTypes );
-
-        st.setAttribute( "methodName",
-                         className );
-
-        final String predicateText = predicateDescr.getText();
-        
-        st.setAttribute( "text",
-                         predicateText );
-
-        context.getMethods().add( st.toString() );
-
-        st = utils.getInvokerGroup().getInstanceOf( "predicateInvoker" );
-
-        st.setAttribute( "package",
-                         context.getPkg().getName() );
-        st.setAttribute( "ruleClassName",
-                         utils.ucFirst( context.getRuleDescr().getClassName() ) );
-        st.setAttribute( "invokerClassName",
-                         context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker" );
-        st.setAttribute( "methodName",
-                         className );
-
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           previousDeclarations,
-                                           (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-
-        st.setAttribute( "localDeclarations",
-                         localDeclarations );
-        st.setAttribute( "localDeclarationTypes",
-                         localDeclarationTypes );
-
-        st.setAttribute( "hashCode",
-                         predicateText.hashCode() );
-
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker";
-        context.getInvokers().put( invokerClassName,
-                                   st.toString() );
-        context.getInvokerLookups().put( invokerClassName,
-                                         predicateConstraint );
-        context.getDescrLookups().put( invokerClassName,
-                                       predicateDescr );
     }
 
     private Restriction buildRestriction(final BuildContext context,
@@ -564,9 +511,6 @@ public class ColumnBuilder {
                                                     final FieldExtractor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        final String className = "returnValue" + context.getNextId();
-        returnValueRestrictionDescr.setClassMethodName( className );
-
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  returnValueRestrictionDescr,
                                                                  returnValueRestrictionDescr.getText() );
@@ -597,63 +541,15 @@ public class ColumnBuilder {
                                                                                           localDeclarations,
                                                                                           evaluator );
 
-        StringTemplate st = utils.getRuleGroup().getInstanceOf( "returnValueMethod" );
+        JavaReturnValueBuilder builder = new JavaReturnValueBuilder();
 
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           previousDeclarations,
-                                           (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-
-        final String[] localDeclarationTypes = new String[localDeclarations.length];
-        for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] );
-        }
-
-        st.setAttribute( "localDeclarations",
-                         localDeclarations );
-        st.setAttribute( "localDeclarationTypes",
-                         localDeclarationTypes );
-
-        st.setAttribute( "methodName",
-                         className );
-
-        final String returnValueText = returnValueRestrictionDescr.getText();
-        st.setAttribute( "text",
-                         returnValueText );
-
-        context.getMethods().add( st.toString() );
-
-        st = utils.getInvokerGroup().getInstanceOf( "returnValueInvoker" );
-
-        st.setAttribute( "package",
-                         context.getPkg().getName() );
-        st.setAttribute( "ruleClassName",
-                         utils.ucFirst( context.getRuleDescr().getClassName() ) );
-        st.setAttribute( "invokerClassName",
-                         context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker" );
-        st.setAttribute( "methodName",
-                         className );
-
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           previousDeclarations,
-                                           (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-
-        st.setAttribute( "localDeclarations",
-                         localDeclarations );
-        st.setAttribute( "localDeclarationTypes",
-                         localDeclarationTypes );
-
-        st.setAttribute( "hashCode",
-                         returnValueText.hashCode() );
-
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker";
-        context.getInvokers().put( invokerClassName,
-                                   st.toString() );
-        context.getInvokerLookups().put( invokerClassName,
-                                         returnValueRestriction );
-        context.getDescrLookups().put( invokerClassName,
-                                       returnValueRestrictionDescr );
+        builder.build( context,
+                       utils,
+                       usedIdentifiers,
+                       previousDeclarations,
+                       localDeclarations,
+                       returnValueRestriction,
+                       returnValueRestrictionDescr );
 
         return returnValueRestriction;
     }
