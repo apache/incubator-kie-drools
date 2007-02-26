@@ -1,53 +1,31 @@
 package org.drools.dialect.mvel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
-import org.codehaus.jfdi.interpreter.ClassTypeResolver;
-import org.codehaus.jfdi.interpreter.TypeResolver;
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.semantics.java.DeclarationTypeFixer;
-import org.drools.semantics.java.JavaExprAnalyzer;
-import org.drools.semantics.java.KnowledgeHelperFixer;
+import org.drools.rule.Package;
 import org.drools.semantics.java.builder.BuildContext;
-import org.drools.semantics.java.builder.BuildUtils;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.FieldExtractor;
-import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class MVELEvalBuilderTest extends TestCase {
 
-    //private BuildUtils         utils;
-
-    public void setUp() {
-        TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
-                                                           Thread.currentThread().getContextClassLoader() );
-
-        //        this.utils = new BuildUtils( new KnowledgeHelperFixer(),
-        //                                     new DeclarationTypeFixer(),
-        //                                     new JavaExprAnalyzer(),
-        //                                     typeResolver,
-        //                                     null,
-        //                                     null );        
+    public void setUp() {     
     }
 
     public void test1() {
