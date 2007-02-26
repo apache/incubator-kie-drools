@@ -42,6 +42,10 @@ public class RuleClassBuilder {
         for ( final Iterator it = context.getPkg().getImports().iterator(); it.hasNext(); ) {
             buffer.append( "import " + it.next() + ";" + lineSeparator );
         }
+        
+        for ( final Iterator it = context.getPkg().getStaticImports().iterator(); it.hasNext(); ) {
+            buffer.append( "import static " + it.next() + ";" + lineSeparator );
+        }        
 
         buffer.append( "public class " + utils.ucFirst( ruleDescr.getClassName() ) + " {" + lineSeparator );
         buffer.append( "    private static final long serialVersionUID  = 320L;" + lineSeparator );

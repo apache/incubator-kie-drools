@@ -56,10 +56,8 @@ import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.semantics.java.FunctionBuilder;
-import org.drools.semantics.java.FunctionFixer;
 import org.drools.semantics.java.PackageStore;
 import org.drools.semantics.java.RuleBuilder;
-import org.drools.semantics.java.StaticMethodFunctionResolver;
 import org.drools.spi.FunctionResolver;
 import org.drools.xml.XmlPackageReader;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
@@ -82,7 +80,6 @@ public class PackageBuilder {
     private Map                         errorHandlers;
     private List                        generatedClassList;
     private TypeResolver                typeResolver;
-    private FunctionFixer               functionFixer;
     private FunctionResolver            functionResolver;
     private ClassFieldExtractorCache    classFieldExtractorCache;
     private Map                         lineMappings;
@@ -206,7 +203,6 @@ public class PackageBuilder {
         }
 
         builder = new RuleBuilder( getTypeResolver(),
-                                   getFunctionFixer(),
                                    this.classFieldExtractorCache );
 
         //only try to compile if there are no parse errors
@@ -274,7 +270,7 @@ public class PackageBuilder {
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
-            pkg.addFunctionImport( ((FunctionImportDescr) it.next()).getTarget() );
+            pkg.addStaticImport( ((FunctionImportDescr) it.next()).getTarget() );
         }
 
         final TypeResolver typeResolver = new ClassTypeResolver( pkg.getImports(),
@@ -324,6 +320,7 @@ public class PackageBuilder {
     private void addFunction(final FunctionDescr functionDescr) {
 
         String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
 
         final FunctionBuilder builder = new FunctionBuilder();
@@ -333,7 +330,6 @@ public class PackageBuilder {
                              functionDescr,
                              builder.build( this.pkg,
                                             functionDescr,
-                                            getFunctionFixer(),
                                             getTypeResolver(),
                                             lineMappings ),
                              this.src,
@@ -415,23 +411,6 @@ public class PackageBuilder {
             this.typeResolver.addImport( this.pkg.getName() + ".*" );
         }
         return this.typeResolver;
-    }
-
-    private FunctionResolver getFunctionResolver() {
-        if ( this.functionResolver == null ) {
-            this.functionResolver = new StaticMethodFunctionResolver( this.pkg.getFunctionImports(),
-                                                                      getTypeResolver() );
-        }
-
-        return this.functionResolver;
-    }
-
-    private FunctionFixer getFunctionFixer() {
-        if ( this.functionFixer == null ) {
-            this.functionFixer = new FunctionFixer( this.pkg,
-                                                    getFunctionResolver() );
-        }
-        return this.functionFixer;
     }
 
     /**

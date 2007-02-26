@@ -81,7 +81,6 @@ public class RuleBuilder {
 
     // Constructor
     public RuleBuilder(final TypeResolver typeResolver,
-                       final FunctionFixer functionFixer,
                        final ClassFieldExtractorCache cache) {
 
         // statically adding all builders to the map
@@ -109,8 +108,7 @@ public class RuleBuilder {
                       gebuilder);
         
         
-        this.utils = new BuildUtils( functionFixer,
-                                     new KnowledgeHelperFixer(),
+        this.utils = new BuildUtils( new KnowledgeHelperFixer(),
                                      new DeclarationTypeFixer(),
                                      new JavaExprAnalyzer(),
                                      typeResolver,

@@ -99,9 +99,9 @@ public class AccumulateBuilder
         st.setAttribute( "methodName",
                          className );
 
-        final String initCode = utils.getFunctionFixer().fix( accumDescr.getInitCode() );
-        final String actionCode = utils.getFunctionFixer().fix( accumDescr.getActionCode() );
-        final String resultCode = utils.getFunctionFixer().fix( accumDescr.getResultCode() );
+        final String initCode = accumDescr.getInitCode();
+        final String actionCode = accumDescr.getActionCode();
+        final String resultCode = accumDescr.getResultCode();
         st.setAttribute( "initCode",
                          initCode );
         st.setAttribute( "actionCode",

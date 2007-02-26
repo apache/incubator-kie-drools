@@ -400,8 +400,8 @@ public class ColumnBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String predicateText = utils.getFunctionFixer().fix( predicateDescr.getText(),
-                                                                   context.getDeclarationResolver() );
+        final String predicateText = predicateDescr.getText();
+        
         st.setAttribute( "text",
                          predicateText );
 
@@ -617,8 +617,7 @@ public class ColumnBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String returnValueText = utils.getFunctionFixer().fix( returnValueRestrictionDescr.getText(),
-                                                                     context.getDeclarationResolver() );
+        final String returnValueText = returnValueRestrictionDescr.getText();
         st.setAttribute( "text",
                          returnValueText );
 
