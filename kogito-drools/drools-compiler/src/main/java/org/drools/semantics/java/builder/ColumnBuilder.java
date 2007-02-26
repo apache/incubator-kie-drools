@@ -28,6 +28,8 @@ import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.compiler.RuleError;
+import org.drools.dialect.java.JavaPredicateBuilder;
+import org.drools.dialect.java.JavaReturnValueBuilder;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
