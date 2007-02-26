@@ -69,7 +69,7 @@ public class Package
 
     private List                   functions;
 
-    private List                   functionImports;
+    private List                   staticImports;
 
     private Map                    globals;
 
@@ -119,7 +119,7 @@ public class Package
                    final ClassLoader parentClassLoader) {
         this.name = name;
         this.imports = new ArrayList( 1 );
-        this.functionImports = Collections.EMPTY_LIST;
+        this.staticImports = Collections.EMPTY_LIST;
         this.rules = new LinkedHashMap();
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
@@ -136,7 +136,7 @@ public class Package
         stream.writeObject( this.packageCompilationData );
         stream.writeObject( this.name );
         stream.writeObject( this.imports );
-        stream.writeObject( this.functionImports );
+        stream.writeObject( this.staticImports );
         stream.writeObject( this.globals );
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
@@ -159,7 +159,7 @@ public class Package
         this.packageCompilationData = (PackageCompilationData) stream.readObject();
         this.name = (String) stream.readObject();
         this.imports = (List) stream.readObject();
-        this.functionImports = (List) stream.readObject();
+        this.staticImports = (List) stream.readObject();
         this.globals = (Map) stream.readObject();
 
         // Return the rules stored as a byte[]
@@ -197,11 +197,11 @@ public class Package
         return this.imports;
     }
 
-    public void addFunctionImport(final String functionImport) {
-        if ( this.functionImports == Collections.EMPTY_LIST ) {
-            this.functionImports = new ArrayList( 1 );
+    public void addStaticImport(final String functionImport) {
+        if ( this.staticImports == Collections.EMPTY_LIST ) {
+            this.staticImports = new ArrayList( 1 );
         }
-        this.functionImports.add( functionImport );
+        this.staticImports.add( functionImport );
     }
 
     public void addFunction(final String functionName) {
@@ -217,11 +217,11 @@ public class Package
     }
 
     public void removeFunctionImport(final String functionImport) {
-        this.functionImports.remove( functionImport );
+        this.staticImports.remove( functionImport );
     }
 
-    public List getFunctionImports() {
-        return this.functionImports;
+    public List getStaticImports() {
+        return this.staticImports;
     }
 
     public void addGlobal(final String identifier,
