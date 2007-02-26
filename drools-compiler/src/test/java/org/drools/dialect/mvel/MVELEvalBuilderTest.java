@@ -28,7 +28,7 @@ public class MVELEvalBuilderTest extends TestCase {
     public void setUp() {     
     }
 
-    public void test1() {
+    public void testSimpleExpression() {
         Package pkg = new Package( "pkg1" );
         RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
