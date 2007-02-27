@@ -37,7 +37,7 @@ public class MVELDataProvider
     public Iterator getResults(final Tuple tuple,
                                final WorkingMemory wm,
                                final PropagationContext ctx) {
-        factory.setContext( tuple, wm );
+        factory.setContext( tuple, null, wm );
                         
         //this.expression.
         Object result = MVEL.executeExpression(this.expression, factory);

@@ -27,6 +27,7 @@ public class MVELEvalExpression
                             Declaration[] requiredDeclarations,
                             WorkingMemory workingMemory) throws Exception {
         factory.setContext( tuple,
+                            null,
                             workingMemory );
         Boolean result = (Boolean) MVEL.executeExpression( this.expr,
                                                            factory );
