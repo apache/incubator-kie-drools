@@ -1,4 +1,4 @@
-package org.drools.rule.builder.dialect.java;
+package org.drools.rule.builder;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -41,14 +41,13 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.BuildUtils;
-import org.drools.rule.builder.CollectBuilder;
-import org.drools.rule.builder.ColumnBuilder;
-import org.drools.rule.builder.ConditionalElementBuilder;
-import org.drools.rule.builder.ConsequenceBuilder;
-import org.drools.rule.builder.ForallBuilder;
-import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
+import org.drools.rule.builder.dialect.java.JavaAccumulateBuilder;
+import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;
+import org.drools.rule.builder.dialect.java.JavaEvalBuilder;
+import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
+import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
+import org.drools.rule.builder.dialect.java.RuleClassBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 
 /**

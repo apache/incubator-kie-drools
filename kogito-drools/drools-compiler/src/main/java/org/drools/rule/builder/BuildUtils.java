@@ -33,7 +33,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
 import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
-import org.drools.rule.builder.dialect.java.RuleBuilder;
 
 /**
  * A holder class for utility functions
