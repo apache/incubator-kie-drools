@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "reversed references"
+when
+    $item : OrderItem( $order : order )
+    Order( this == $order )
+then
+    results.add( $item );
+end 
