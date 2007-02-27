@@ -1,4 +1,4 @@
-package org.drools.base;
+package org.drools.base.mvel;
 
 import java.util.Collections;
 import java.util.HashMap;

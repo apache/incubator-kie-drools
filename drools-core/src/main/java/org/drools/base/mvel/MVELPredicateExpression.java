@@ -3,7 +3,6 @@ package org.drools.base.mvel;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
-import org.drools.base.DroolsMVELFactory;
 import org.drools.rule.Declaration;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
