@@ -31,6 +31,7 @@ import org.drools.semantics.java.builder.BuildContext;
 import org.drools.semantics.java.builder.BuildUtils;
 import org.drools.semantics.java.builder.ColumnBuilder;
 import org.drools.semantics.java.builder.ConditionalElementBuilder;
+import org.drools.semantics.java.builder.FromBuilder;
 import org.drools.spi.DataProvider;
 import org.mvel.CompiledExpression;
 import org.mvel.ExpressionParser;
@@ -43,10 +44,10 @@ import org.mvel.MVEL;
  */
 public class MVELFromBuilder
     implements
-    ConditionalElementBuilder {
+    ConditionalElementBuilder, FromBuilder {
 
-    /**
-     * @inheritDoc
+    /* (non-Javadoc)
+     * @see org.drools.dialect.mvel.FromBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
