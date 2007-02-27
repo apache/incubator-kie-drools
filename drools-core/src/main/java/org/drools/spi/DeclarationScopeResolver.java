@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
@@ -32,6 +33,12 @@ public class DeclarationScopeResolver {
     }
 
     public Class getType(final String name) {
+        for( int i = this.buildStack.size()-1; i >= 0; i-- ) {
+            Declaration declaration = ( Declaration ) (( RuleConditionElement ) this.buildStack.get( i )).getInnerDeclarations().get( name );
+            if( declaration != null ) {
+                return declaration.getExtractor().getExtractToClass();
+            }
+        }
         for ( int i = 0, length = this.maps.length; i < length; i++ ) {
             final Object object = this.maps[i].get( name );
             if ( object != null ) {
@@ -42,19 +49,23 @@ public class DeclarationScopeResolver {
                 }
             }
         }
-        for( int i = this.buildStack.size()-1; i >= 0; i-- ) {
-            Declaration declaration = ( Declaration ) (( RuleConditionElement ) this.buildStack.get( i )).getInnerDeclarations().get( name );
-            if( declaration != null ) {
-                return declaration.getExtractor().getExtractToClass();
-            }
-        }
         return null;
     }
     
     public Declaration getDeclaration( final String name ) {
+        // it may be a local bound variable
         for( int i = this.buildStack.size()-1; i >= 0; i-- ) {
             Declaration declaration = ( Declaration ) (( RuleConditionElement ) this.buildStack.get( i )).getInnerDeclarations().get( name );
             if( declaration != null ) {
+                return declaration;
+            }
+        }
+        // it may be a global or something
+        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
+            if ( this.maps[i].containsKey( (name) ) ) {
+                GlobalExtractor global = new GlobalExtractor( this.maps[i].get( name ));
+                Column dummy = new Column(0, global.getObjectType());
+                Declaration declaration  = new Declaration(name, global, dummy);
                 return declaration;
             }
         }
@@ -62,14 +73,14 @@ public class DeclarationScopeResolver {
     }
 
     public boolean available(final String name) {
-        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
-            if ( this.maps[i].containsKey( (name) ) ) {
-                return true;
-            }
-        }
         for( int i = this.buildStack.size()-1; i >= 0; i-- ) {
             Declaration declaration = ( Declaration ) (( RuleConditionElement ) this.buildStack.get( i )).getInnerDeclarations().get( name );
             if( declaration != null ) {
+                return true;
+            }
+        }
+        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
+            if ( this.maps[i].containsKey( (name) ) ) {
                 return true;
             }
         }
