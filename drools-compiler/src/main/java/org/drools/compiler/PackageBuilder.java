@@ -57,6 +57,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.java.FunctionBuilder;
+import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.rule.builder.dialect.java.PackageStore;
 import org.drools.spi.FunctionResolver;
 import org.drools.xml.XmlPackageReader;
@@ -323,7 +324,7 @@ public class PackageBuilder {
         this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
 
-        final FunctionBuilder builder = new FunctionBuilder();
+        final JavaFunctionBuilder builder = new FunctionBuilder();
         this.pkg.addFunction( functionDescr.getName() );
 
         addClassCompileTask( functionClassName,
