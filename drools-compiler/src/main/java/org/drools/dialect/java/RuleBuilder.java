@@ -1,4 +1,4 @@
-package org.drools.semantics.java;
+package org.drools.dialect.java;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -26,9 +26,6 @@ import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.evaluators.DateFactory;
-import org.drools.dialect.java.JavaAccumulateBuilder;
-import org.drools.dialect.java.JavaConsequenceBuilder;
-import org.drools.dialect.java.JavaEvalBuilder;
 import org.drools.dialect.mvel.MVELFromBuilder;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -45,15 +42,15 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.semantics.java.builder.ForallBuilder;
-import org.drools.semantics.java.builder.BuildContext;
-import org.drools.semantics.java.builder.BuildUtils;
-import org.drools.semantics.java.builder.CollectBuilder;
-import org.drools.semantics.java.builder.ColumnBuilder;
-import org.drools.semantics.java.builder.ConditionalElementBuilder;
-import org.drools.semantics.java.builder.ConsequenceBuilder;
-import org.drools.semantics.java.builder.GroupElementBuilder;
-import org.drools.semantics.java.builder.RuleClassBuilder;
+import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.BuildUtils;
+import org.drools.rule.builder.CollectBuilder;
+import org.drools.rule.builder.ColumnBuilder;
+import org.drools.rule.builder.ConditionalElementBuilder;
+import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.ForallBuilder;
+import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.RuleClassBuilder;
 
 /**
  * This builds the rule structure from an AST.

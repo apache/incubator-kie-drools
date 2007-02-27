@@ -1,4 +1,4 @@
-package org.drools.semantics.java.builder;
+package org.drools.rule.builder;
 
 import org.drools.lang.descr.RuleDescr;
 

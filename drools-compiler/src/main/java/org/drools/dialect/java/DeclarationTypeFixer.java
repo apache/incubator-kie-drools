@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.drools.semantics.java;
+package org.drools.dialect.java;
 
 import org.drools.rule.Declaration;
 

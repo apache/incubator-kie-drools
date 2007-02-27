@@ -6,8 +6,8 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;
-import org.drools.semantics.java.builder.BuildContext;
-import org.drools.semantics.java.builder.BuildUtils;
+import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.BuildUtils;
 
 public class JavaReturnValueBuilder {
     public void build(final BuildContext context,

@@ -6,9 +6,9 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
-import org.drools.semantics.java.builder.BuildContext;
-import org.drools.semantics.java.builder.BuildUtils;
-import org.drools.semantics.java.builder.PredicateBuilder;
+import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.BuildUtils;
+import org.drools.rule.builder.PredicateBuilder;
 
 public class JavaPredicateBuilder
     implements
