@@ -13,6 +13,8 @@ public class MVELEvalExpression
     implements
     EvalExpression {
     
+    private static final long          serialVersionUID = 320L;
+    
     private final Serializable expr;
     private final DroolsMVELFactory factory;
     
