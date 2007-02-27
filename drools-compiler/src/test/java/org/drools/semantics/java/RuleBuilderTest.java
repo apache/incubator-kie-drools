@@ -35,7 +35,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.rule.builder.dialect.java.RuleBuilder;
+import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.FunctionResolver;
 
 /**
@@ -59,7 +59,7 @@ public class RuleBuilderTest extends TestCase {
     }
 
     /**
-     * Test method for {@link org.drools.rule.builder.dialect.java.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
+     * Test method for {@link org.drools.rule.builder.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
      */
     public void testBuild() {
         try {
