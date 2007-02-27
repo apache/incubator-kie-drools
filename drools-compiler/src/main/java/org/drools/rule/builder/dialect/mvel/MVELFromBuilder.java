@@ -18,8 +18,8 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
 
-import org.drools.base.DroolsMVELFactory;
 import org.drools.base.dataproviders.MVELDataProvider;
+import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -69,7 +69,7 @@ public class MVELFromBuilder
 //            JFDIParser parser = createParser( utils,
 //                                              accessor.toString() );
             DroolsMVELFactory factory = new DroolsMVELFactory( );
-            factory.setDeclarationMap( context.getDeclarationResolver().getDeclarations() );
+            factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
             factory.setGlobalsMap( context.getPkg().getGlobals() );
             
             //parser.setValueHandlerFactory( factory );

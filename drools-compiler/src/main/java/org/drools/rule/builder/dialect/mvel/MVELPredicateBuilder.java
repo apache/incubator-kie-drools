@@ -17,20 +17,27 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
+import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
+import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.BuildContext;
 import org.drools.rule.builder.ColumnBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
+import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.dialect.java.BuildUtils;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.DeclarationScopeResolver;
 import org.mvel.MVEL;
 
@@ -38,28 +45,19 @@ import org.mvel.MVEL;
  * @author etirelli
  *
  */
-public class MVELEvalBuilder
+public class MVELPredicateBuilder
     implements
-    ConditionalElementBuilder {
+    PredicateBuilder {
 
-    /**
-     * Builds and returns an Eval Conditional Element
-     * 
-     * @param context The current build context
-     * @param utils The current build utils instance
-     * @param columnBuilder not used by EvalBuilder
-     * @param descr The Eval Descriptor to build the eval conditional element from
-     * 
-     * @return the Eval Conditional Element
-     */
-    public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
-                                    final BaseDescr descr) {
-        // it must be an EvalDescr
-        EvalDescr evalDescr = (EvalDescr) descr;
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final List[] usedIdentifiers,
+                      final Declaration[] previousDeclarations,
+                      final Declaration[] localDeclarations,
+                      final PredicateConstraint predicate,
+                      final PredicateDescr predicateDescr) {
 
-        final Declaration[] declarations = new Declaration[0];
+        //final Declaration[] declarations = new Declaration[0];
 //        final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
 //                                                                 evalDescr,
 //                                                                 evalDescr.getText() );
@@ -68,16 +66,25 @@ public class MVELEvalBuilder
 //        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
 //            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
 //        }
-
+        
         DroolsMVELFactory factory = new DroolsMVELFactory( );
-        factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
+        
+        Map map = new HashMap();
+        for ( int i = 0, length = previousDeclarations.length; i < length; i++ ) {
+            map.put( previousDeclarations[i].getIdentifier(), previousDeclarations[i] );
+        }        
+        factory.setPreviousDeclarationMap( map );
+        
+        map = new HashMap();
+        for ( int i = 0, length = localDeclarations.length; i < length; i++ ) {
+            map.put( localDeclarations[i].getIdentifier(), localDeclarations[i] );
+        }                
+        factory.setLocalDeclarationMap( map );
+        
         factory.setGlobalsMap( context.getPkg().getGlobals() );        
         
-        Serializable expr = MVEL.compileExpression( evalDescr.getText() );       
-        final EvalCondition eval = new EvalCondition( declarations );
-        eval.setEvalExpression( new MVELEvalExpression(expr,factory) );
-        
-        return eval;
+        Serializable expr = MVEL.compileExpression( predicateDescr.getText() );
+        predicate.setPredicateExpression( new MVELPredicateExpression(expr,factory) );        
     }
     
 }
