@@ -16,6 +16,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
+import org.drools.rule.builder.FunctionBuilder;
 
 public class JavaFunctionBuilder
     implements
