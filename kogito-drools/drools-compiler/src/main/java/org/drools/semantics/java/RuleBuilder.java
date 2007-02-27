@@ -29,6 +29,7 @@ import org.drools.base.evaluators.DateFactory;
 import org.drools.dialect.java.JavaAccumulateBuilder;
 import org.drools.dialect.java.JavaConsequenceBuilder;
 import org.drools.dialect.java.JavaEvalBuilder;
+import org.drools.dialect.mvel.MVELFromBuilder;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -51,7 +52,6 @@ import org.drools.semantics.java.builder.CollectBuilder;
 import org.drools.semantics.java.builder.ColumnBuilder;
 import org.drools.semantics.java.builder.ConditionalElementBuilder;
 import org.drools.semantics.java.builder.ConsequenceBuilder;
-import org.drools.semantics.java.builder.FromBuilder;
 import org.drools.semantics.java.builder.GroupElementBuilder;
 import org.drools.semantics.java.builder.RuleClassBuilder;
 
@@ -91,7 +91,7 @@ public class RuleBuilder {
         builders.put( EvalDescr.class,
                       new JavaEvalBuilder() );
         builders.put( FromDescr.class,
-                      new FromBuilder() );
+                      new MVELFromBuilder() );
         builders.put( CollectDescr.class,
                       new CollectBuilder() );
         builders.put( AccumulateDescr.class,
