@@ -24,10 +24,10 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.semantics.java.builder.BuildContext;
-import org.drools.semantics.java.builder.BuildUtils;
-import org.drools.semantics.java.builder.ColumnBuilder;
-import org.drools.semantics.java.builder.ConditionalElementBuilder;
+import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.BuildUtils;
+import org.drools.rule.builder.ColumnBuilder;
+import org.drools.rule.builder.ConditionalElementBuilder;
 
 /**
  * @author etirelli

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.semantics.java.builder;
+package org.drools.rule.builder;
 
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.ConditionalElement;

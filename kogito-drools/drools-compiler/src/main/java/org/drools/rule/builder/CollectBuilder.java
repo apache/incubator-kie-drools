@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.semantics.java.builder;
-
-import java.util.Iterator;
+package org.drools.rule.builder;
 
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.CollectDescr;
+import org.drools.rule.Collect;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
-import org.drools.rule.Forall;
 
 /**
  * @author etirelli
  *
  */
-public class ForallBuilder
+public class CollectBuilder
     implements
     ConditionalElementBuilder {
 
@@ -40,29 +37,23 @@ public class ForallBuilder
                                     BuildUtils utils,
                                     ColumnBuilder columnBuilder,
                                     BaseDescr descr) {
-        ForallDescr forallDescr = (ForallDescr) descr;
         
-        Column baseColumn = columnBuilder.build( context, utils, forallDescr.getBaseColumn() );
+        CollectDescr collectDescr = (CollectDescr) descr;
+        
+        Column sourceColumn = columnBuilder.build( context, utils, collectDescr.getSourceColumn() );
 
-        if ( baseColumn == null ) {
+        if ( sourceColumn == null ) {
             return null;
         }
 
-        Forall forall = new Forall( baseColumn );
-        
-        // adding the newly created forall CE to the build stack
-        // this is necessary in case of local declaration usage
-        context.getBuildStack().push( forall );
-        
-        for( Iterator it = forallDescr.getRemainingColumns().iterator(); it.hasNext(); ) {
-            Column anotherColumn = columnBuilder.build( context, utils, (ColumnDescr) it.next() );
-            forall.addRemainingColumn( anotherColumn );
-        }
-        
-        // poping the forall
-        context.getBuildStack().pop();
-        
-        return forall;
+        Column resultColumn = columnBuilder.build( context, utils, collectDescr.getResultColumn() );
+
+        final String className = "collect" + context.getNextId();
+        collectDescr.setClassMethodName( className );
+
+        Collect collect = new Collect( sourceColumn,
+                                       resultColumn );
+        return collect;
     }
 
 }

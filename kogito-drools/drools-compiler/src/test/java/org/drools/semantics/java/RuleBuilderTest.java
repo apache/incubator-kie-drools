@@ -29,6 +29,7 @@ import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.compiler.DrlParser;
+import org.drools.dialect.java.RuleBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -58,7 +59,7 @@ public class RuleBuilderTest extends TestCase {
     }
 
     /**
-     * Test method for {@link org.drools.semantics.java.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
+     * Test method for {@link org.drools.dialect.java.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
      */
     public void testBuild() {
         try {
