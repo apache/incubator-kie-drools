@@ -25,7 +25,7 @@ import org.drools.util.asm.TestAbstractImpl;
 import org.drools.util.asm.TestInterface;
 import org.drools.util.asm.TestInterfaceImpl;
 
-public abstract class BaseClassFieldExtractorFactoryTest extends TestCase {
+public class BaseClassFieldExtractorFactoryTest extends TestCase {
 
     public void testIt() throws Exception {
         FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
@@ -38,8 +38,8 @@ public abstract class BaseClassFieldExtractorFactoryTest extends TestCase {
                                                                 "age" );
         assertEquals( 1,
                       ex.getIndex() );
-        assertEquals( new Integer( 42 ),
-                      ex.getValue( new TestBean() ) );
+        assertEquals( 42,
+                      ((Number)ex.getValue( new TestBean() )).intValue() );
 
     }
 
@@ -66,6 +66,14 @@ public abstract class BaseClassFieldExtractorFactoryTest extends TestCase {
                                                                                      "text" );
         assertEquals( "hola",
                       ex.getValue( new BeanInherit() ) );
+    }
+
+    public void testSelfReference() throws Exception {
+        final FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( BeanInherit.class,
+                                                                                     "this" );
+        TestBean bean = new TestBean();
+        assertEquals( bean,
+                      ex.getValue( bean ) );
     }
 
 }

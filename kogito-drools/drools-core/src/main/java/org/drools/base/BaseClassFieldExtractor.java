@@ -33,6 +33,27 @@ abstract public class BaseClassFieldExtractor
 
     private final ValueType valueType;
 
+    /**
+     * This constructor is not supposed to be used from outside the class hirarchy
+     * 
+     * @param index
+     * @param fieldType
+     * @param valueType
+     */
+    protected BaseClassFieldExtractor(final int index,
+                                   final Class fieldType,
+                                   final ValueType valueType) {
+        this.index = index;
+        this.fieldType = fieldType;
+        this.valueType = valueType;
+    }
+
+    /**
+     * This is the constructor to be used
+     * 
+     * @param clazz
+     * @param fieldName
+     */
     public BaseClassFieldExtractor(final Class clazz,
                                    final String fieldName) {
         try {

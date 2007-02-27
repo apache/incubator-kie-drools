@@ -50,6 +50,8 @@ import org.drools.FactB;
 import org.drools.FactHandle;
 import org.drools.FromTestClass;
 import org.drools.IndexedNumber;
+import org.drools.Order;
+import org.drools.OrderItem;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.Precondition;
@@ -4035,6 +4037,42 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.assertObject( new Child("gp") );
 
             workingMemory.fireAllRules();
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail("Should not raise any exception");
+        }
+    }
+
+    public void testSelfReference() throws Exception {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference.drl" ) ) );
+            final Package pkg = builder.getPackage();
+
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            
+            List results = new ArrayList();
+            workingMemory.setGlobal( "results", results );
+
+            Order order = new Order( 10 );
+            OrderItem item1 = new OrderItem( order, 1 );
+            OrderItem item2 = new OrderItem( order, 2 );
+            OrderItem anotherItem1 = new OrderItem( null, 3 );
+            OrderItem anotherItem2 = new OrderItem( null, 4 );
+            workingMemory.assertObject( order );
+            workingMemory.assertObject( item1 );
+            workingMemory.assertObject( item2 );
+            workingMemory.assertObject( anotherItem1 );
+            workingMemory.assertObject( anotherItem2 );
+
+            workingMemory.fireAllRules();
+            
+            assertEquals( 2, results.size() );
+            assertTrue( results.contains( item1 ) );
+            assertTrue( results.contains( item2 ) );
 
         } catch ( Exception e ) {
             e.printStackTrace();

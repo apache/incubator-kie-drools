@@ -36,6 +36,7 @@ import org.drools.base.extractors.BaseIntClassFieldExtractor;
 import org.drools.base.extractors.BaseLongClassFieldExtractors;
 import org.drools.base.extractors.BaseObjectClassFieldExtractor;
 import org.drools.base.extractors.BaseShortClassFieldExtractor;
+import org.drools.base.extractors.SelfReferenceClassFieldExtractor;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
@@ -50,6 +51,8 @@ import org.drools.util.asm.ClassFieldInspector;
 public class ClassFieldExtractorFactory {
 
     private static final String BASE_PACKAGE = "org/drools/base";
+    
+    private static final String SELF_REFERENCE_FIELD = "this";
 
     private static final ProtectionDomain PROTECTION_DOMAIN;
 
@@ -64,26 +67,33 @@ public class ClassFieldExtractorFactory {
     public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
                                                                  final String fieldName) {
         try {
-            final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-            final Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
-            final Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
-            final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + "$" + getterMethod.getName();
+            // if it is a self reference
+            if( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
+                // then just create an instance of the special class field extractor
+                return new SelfReferenceClassFieldExtractor(clazz, fieldName);
+            } else {
+                // otherwise, bytecode generate a specific extractor
+                final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+                final Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
+                final Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
+                final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + "$" + getterMethod.getName();
 
-            // generating byte array to create target class
-            final byte[] bytes = dump( clazz,
-                                       className,
-                                       getterMethod,
-                                       fieldType,
-                                       clazz.isInterface() );
-            // use bytes to get a class 
-            final ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
-            final Class newClass = classLoader.defineClass( className.replace( '/',
-                                                                               '.' ),
-                                                            bytes,
-                                                            PROTECTION_DOMAIN);
-            // instantiating target class
-            final Object[] params = {clazz, fieldName};
-            return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
+                // generating byte array to create target class
+                final byte[] bytes = dump( clazz,
+                                           className,
+                                           getterMethod,
+                                           fieldType,
+                                           clazz.isInterface() );
+                // use bytes to get a class 
+                final ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
+                final Class newClass = classLoader.defineClass( className.replace( '/',
+                                                                                   '.' ),
+                                                                bytes,
+                                                                PROTECTION_DOMAIN);
+                // instantiating target class
+                final Object[] params = {clazz, fieldName};
+                return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
+            }
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }

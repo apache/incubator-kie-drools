@@ -4,10 +4,19 @@ import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.ValueType;
 
 public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtractor {
 
     private static final long serialVersionUID = 91214567753008212L;
+
+    protected BaseObjectClassFieldExtractor(final int index,
+                                            final Class fieldType,
+                                            final ValueType valueType) {
+        super( index,
+               fieldType,
+               valueType );
+    }
 
     public BaseObjectClassFieldExtractor(final Class clazz,
                                          final String fieldName) {
@@ -99,15 +108,17 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue", new Class[] { Object.class } );
+            return this.getClass().getDeclaredMethod( "getValue",
+                                                      new Class[]{Object.class} );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
-    
+
     public int getHashCode(Object object) {
-        Object value = getValue( object ); 
+        Object value = getValue( object );
         return (value != null) ? value.hashCode() : 0;
     }
-    
+
 }
