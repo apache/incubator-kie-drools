@@ -1,4 +1,4 @@
-package org.drools.base.MVEL;
+package org.drools.base.MVEL2;
 
 import java.io.Serializable;
 
