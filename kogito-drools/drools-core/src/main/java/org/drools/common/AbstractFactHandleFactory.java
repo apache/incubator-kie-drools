@@ -26,7 +26,7 @@ public abstract class AbstractFactHandleFactory
     /**
      * 
      */
-    private static final long          serialVersionUID = 7764705574438965876L;
+    private static final long          serialVersionUID = 320L;
 
     protected final PrimitiveLongStack factHandlePool   = new PrimitiveLongStack();
 
