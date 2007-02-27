@@ -17,6 +17,7 @@
 package org.drools.spi;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -32,16 +33,17 @@ public class GlobalExtractor
     Extractor {
 
     private static final long serialVersionUID = -756967384190918798L;
-    private Object            value;
+    private String            key;
+    private Map               map;
     private ObjectType        objectType;
 
-    public GlobalExtractor(final Object object) {
-        this.value = object;
-        this.objectType = new ClassObjectType( object.getClass() );
+    public GlobalExtractor(final String key, final Map map) {
+        this.map = map;
+        this.objectType = new ClassObjectType( Object.class );
     }
 
     public Object getValue(final Object object) {
-        return value;
+        return this.map.get( key );
     }
     
     public ObjectType getObjectType() {
@@ -49,7 +51,7 @@ public class GlobalExtractor
     }
 
     public Class getExtractToClass() {
-        return this.value.getClass();
+        return Object.class;
     }
 
     public ValueType getValueType() {
@@ -57,59 +59,91 @@ public class GlobalExtractor
     }
 
     public boolean getBooleanValue(final Object object) {
-        if ( this.objectType.getValueType().isBoolean() ) {
-            return ((Boolean) value).booleanValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Boolean ) {
+                return ((Boolean) value).booleanValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to boolean not supported for a null value" );
     }
 
     public byte getByteValue(final Object object) {
-        if ( this.objectType.getValueType().isNumber() ) {
-            return ((Number) value).byteValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Number ) {
+                return ((Number) value).byteValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to byte not supported for a null value" );
     }
 
     public char getCharValue(final Object object) {
-        if ( this.objectType.getValueType().isChar() ) {
-            return ((Character) value).charValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Character ) {
+                return ((Character) value).charValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to char not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to char not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to char not supported for a null value" );
     }
 
     public double getDoubleValue(final Object object) {
-        if ( this.objectType.getValueType().isNumber() ) {
-            return ((Number) value).doubleValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Number ) {
+                return ((Number) value).doubleValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to double not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to double not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to double not supported for a null value" );
     }
 
     public float getFloatValue(final Object object) {
-        if ( this.objectType.getValueType().isNumber() ) {
-            return ((Number) value).floatValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Number ) {
+                return ((Number) value).floatValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to float not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to float not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to float not supported for a null value" );
     }
 
     public int getIntValue(final Object object) {
-        if ( this.objectType.getValueType().isNumber() ) {
-            return ((Number) value).intValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Number ) {
+                return ((Number) value).intValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to int not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to int not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to int not supported for a null value" );
     }
 
     public long getLongValue(final Object object) {
-        if ( this.objectType.getValueType().isNumber() ) {
-            return ((Number) value).longValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Number ) {
+                return ((Number) value).longValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to long not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to long not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to long not supported for a null value" );
     }
 
     public short getShortValue(final Object object) {
-        if ( this.objectType.getValueType().isNumber() ) {
-            return ((Number) value).shortValue();
+        Object value = this.map.get( this.key );
+        if( value != null ) {
+            if ( value instanceof Number ) {
+                return ((Number) value).shortValue();
+            }
+            throw new RuntimeDroolsException( "Conversion to short not supported for type: " + value.getClass() );
         }
-        throw new RuntimeDroolsException( "Conversion to short not supported for type: " + value.getClass() );
+        throw new RuntimeDroolsException( "Conversion to short not supported for a null value" );
     }
 
     public Method getNativeReadMethod() {
@@ -121,7 +155,8 @@ public class GlobalExtractor
     }
 
     public int getHashCode(Object object) {
-        return value.hashCode();
+        Object value = this.map.get( this.key );
+        return value != null ? value.hashCode() : 0;
     }
     
     public int hashCode() {
@@ -136,6 +171,8 @@ public class GlobalExtractor
             return false;
         }
         GlobalExtractor other = (GlobalExtractor) obj;
-        return this.value.equals( other.value );
+        Object value = this.map.get( this.key );
+        Object othervalue = other.map.get( this.key );
+        return value == null ? othervalue == null : value.equals( othervalue );
     }
 }

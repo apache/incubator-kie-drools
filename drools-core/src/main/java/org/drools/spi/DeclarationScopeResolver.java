@@ -63,7 +63,7 @@ public class DeclarationScopeResolver {
         // it may be a global or something
         for ( int i = 0, length = this.maps.length; i < length; i++ ) {
             if ( this.maps[i].containsKey( (name) ) ) {
-                GlobalExtractor global = new GlobalExtractor( this.maps[i].get( name ));
+                GlobalExtractor global = new GlobalExtractor( name, this.maps[i]);
                 Column dummy = new Column(0, global.getObjectType());
                 Declaration declaration  = new Declaration(name, global, dummy);
                 return declaration;
