@@ -28,7 +28,7 @@ public class AccumulateTemplateTest extends TestCase {
     }
 
     public void testMethodGeneration() {
-        StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
+        StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( AccumulateTemplateTest.class.getResourceAsStream( "javaRule.stg" ) ),
                                                                  AngleBracketTemplateLexer.class );
         StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateMethod" );
 
@@ -75,7 +75,7 @@ public class AccumulateTemplateTest extends TestCase {
     }
 
     public void testInvokerGeneration() {
-        StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
+        StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( AccumulateTemplateTest.class.getResourceAsStream( "javaInvokers.stg" ) ),
                                                                  AngleBracketTemplateLexer.class );
         StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateInvoker" );
 
