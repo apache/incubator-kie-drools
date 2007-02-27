@@ -1,6 +1,6 @@
 // $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\JavaParser.g 2006-11-22 14:58:22
 
-	package org.drools.semantics.java.parser;
+	package org.drools.rule.builder.dialect.java.parser;
 	import java.util.Iterator;
 
 

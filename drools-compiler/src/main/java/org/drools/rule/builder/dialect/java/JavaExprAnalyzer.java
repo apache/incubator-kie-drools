@@ -26,8 +26,8 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
-import org.drools.semantics.java.parser.JavaParserLexer;
-import org.drools.semantics.java.parser.JavaParserParser;
+import org.drools.rule.builder.dialect.java.parser.JavaParserLexer;
+import org.drools.rule.builder.dialect.java.parser.JavaParserParser;
 
 /**
  * Expression analyzer.
