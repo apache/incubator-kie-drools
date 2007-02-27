@@ -3,14 +3,14 @@ package org.drools.base.mvel;
 import org.drools.rule.Declaration;
 import org.mvel.integration.VariableResolver;
 
-public class DroolsMVELDeclarationVariable
+public class DroolsMVELPreviousDeclarationVariable
     implements
     VariableResolver {
     
     private Declaration declaration;
     private DroolsMVELFactory factory;
        
-    public DroolsMVELDeclarationVariable(Declaration declaration,
+    public DroolsMVELPreviousDeclarationVariable(Declaration declaration,
     		DroolsMVELFactory factory ) {
         this.declaration = declaration;
         this.factory =  factory;

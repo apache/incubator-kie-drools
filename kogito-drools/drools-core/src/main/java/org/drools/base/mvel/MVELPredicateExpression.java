@@ -28,6 +28,7 @@ public class MVELPredicateExpression
                             Declaration[] requiredDeclarations,
                             WorkingMemory workingMemory) throws Exception {
         factory.setContext( tuple,
+                            object,
                             workingMemory );
         Boolean result = (Boolean) MVEL.executeExpression( this.expr,
                                                            factory );
