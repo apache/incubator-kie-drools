@@ -195,7 +195,7 @@ public class RuleBuilder {
      * @param rule
      * @param attributes
      */
-    void setAttributes(final Rule rule,
+    public void setAttributes(final Rule rule,
                                final List attributes) {
         
         for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
