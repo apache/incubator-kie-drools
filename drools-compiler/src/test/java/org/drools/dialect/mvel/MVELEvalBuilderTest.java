@@ -20,6 +20,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
 import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.FieldExtractor;
 

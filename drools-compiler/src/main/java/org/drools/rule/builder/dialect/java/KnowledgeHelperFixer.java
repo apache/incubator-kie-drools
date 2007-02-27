@@ -1,4 +1,4 @@
-package org.drools.dialect.java;
+package org.drools.rule.builder.dialect.java;
 
 /*
  * Copyright 2005 JBoss Inc

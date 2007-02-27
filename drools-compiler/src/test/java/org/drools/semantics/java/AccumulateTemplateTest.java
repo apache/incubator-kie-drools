@@ -13,8 +13,8 @@ import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.dialect.java.RuleBuilder;
 import org.drools.rule.Declaration;
+import org.drools.rule.builder.dialect.java.RuleBuilder;
 import org.drools.spi.ColumnExtractor;
 
 public class AccumulateTemplateTest extends TestCase {
