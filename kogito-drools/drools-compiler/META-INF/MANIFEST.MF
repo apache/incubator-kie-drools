@@ -10,8 +10,8 @@ Export-Package: org.drools.lang,
  org.drools.lang.descr,
  org.drools.lang.dsl,
  org.drools.lang.dsl.template,
- org.drools.semantics.java,
- org.drools.semantics.java.parser
+ org.drools.rule.builder.dialect.java.parser,
+ org.drools.semantics.java
 Require-Bundle: org.eclipse.osgi,
  org.drools.core
 Bundle-ClassPath: lib/antlr-2.7.6.jar,
