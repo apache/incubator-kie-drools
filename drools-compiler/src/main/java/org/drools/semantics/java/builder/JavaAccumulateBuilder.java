@@ -32,12 +32,15 @@ import org.drools.rule.Declaration;
  * @author etirelli
  *
  */
-public class AccumulateBuilder
+public class JavaAccumulateBuilder
     implements
-    ConditionalElementBuilder {
+    ConditionalElementBuilder, AccumulateBuilder {
 
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
+     */
+    /* (non-Javadoc)
+     * @see org.drools.semantics.java.builder.AccumulateBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
      */
     public ConditionalElement build(BuildContext context,
                                     BuildUtils utils,

@@ -26,6 +26,7 @@ import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.evaluators.DateFactory;
+import org.drools.dialect.java.JavaConsequenceBuilder;
 import org.drools.dialect.java.JavaEvalBuilder;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -42,15 +43,14 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.semantics.java.builder.AccumulateBuilder;
+import org.drools.semantics.java.builder.ForallBuilder;
+import org.drools.semantics.java.builder.JavaAccumulateBuilder;
 import org.drools.semantics.java.builder.BuildContext;
 import org.drools.semantics.java.builder.BuildUtils;
 import org.drools.semantics.java.builder.CollectBuilder;
 import org.drools.semantics.java.builder.ColumnBuilder;
 import org.drools.semantics.java.builder.ConditionalElementBuilder;
 import org.drools.semantics.java.builder.ConsequenceBuilder;
-import org.drools.semantics.java.builder.JavaConsequenceBuilder;
-import org.drools.semantics.java.builder.ForallBuilder;
 import org.drools.semantics.java.builder.FromBuilder;
 import org.drools.semantics.java.builder.GroupElementBuilder;
 import org.drools.semantics.java.builder.RuleClassBuilder;
@@ -95,7 +95,7 @@ public class RuleBuilder {
         builders.put( CollectDescr.class,
                       new CollectBuilder() );
         builders.put( AccumulateDescr.class,
-                      new AccumulateBuilder() );
+                      new JavaAccumulateBuilder() );
         builders.put( ForallDescr.class,
                       new ForallBuilder() );
         GroupElementBuilder gebuilder = new GroupElementBuilder();
