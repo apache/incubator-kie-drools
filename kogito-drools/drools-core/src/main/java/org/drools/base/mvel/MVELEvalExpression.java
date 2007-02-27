@@ -3,7 +3,6 @@ package org.drools.base.mvel;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
-import org.drools.base.DroolsMVELFactory;
 import org.drools.rule.Declaration;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
@@ -12,12 +11,12 @@ import org.mvel.MVEL;
 public class MVELEvalExpression
     implements
     EvalExpression {
-    
-    private static final long          serialVersionUID = 320L;
-    
-    private final Serializable expr;
+
+    private static final long       serialVersionUID = 320L;
+
+    private final Serializable      expr;
     private final DroolsMVELFactory factory;
-    
+
     public MVELEvalExpression(final Serializable expr,
                               final DroolsMVELFactory factory) {
         this.expr = expr;
@@ -26,10 +25,12 @@ public class MVELEvalExpression
 
     public boolean evaluate(Tuple tuple,
                             Declaration[] requiredDeclarations,
-                            WorkingMemory workingMemory) throws Exception {                
-        factory.setContext( tuple, workingMemory );   
-        Boolean result = ( Boolean ) MVEL.executeExpression(this.expr, factory);        
-        return result.booleanValue(); 
+                            WorkingMemory workingMemory) throws Exception {
+        factory.setContext( tuple,
+                            workingMemory );
+        Boolean result = (Boolean) MVEL.executeExpression( this.expr,
+                                                           factory );
+        return result.booleanValue();
     }
 
 }

@@ -178,6 +178,7 @@ public class PredicateConstraint
                                              localDeclarations,
                                              ctx.workingMemory );
         } catch ( Exception e ) {
+            e.printStackTrace();
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
         }

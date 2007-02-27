@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import org.drools.WorkingMemory;
-import org.drools.base.DroolsMVELFactory;
+import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.DataProvider;

@@ -1,4 +1,4 @@
-package org.drools.base;
+package org.drools.base.mvel;
 
 import org.drools.rule.Declaration;
 import org.mvel.integration.VariableResolver;
