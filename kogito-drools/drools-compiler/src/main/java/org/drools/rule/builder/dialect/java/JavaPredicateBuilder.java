@@ -7,7 +7,6 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.BuildUtils;
 import org.drools.rule.builder.PredicateBuilder;
 
 public class JavaPredicateBuilder

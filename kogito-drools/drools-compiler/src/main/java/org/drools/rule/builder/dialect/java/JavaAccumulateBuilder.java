@@ -29,7 +29,6 @@ import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.BuildUtils;
 import org.drools.rule.builder.ColumnBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 

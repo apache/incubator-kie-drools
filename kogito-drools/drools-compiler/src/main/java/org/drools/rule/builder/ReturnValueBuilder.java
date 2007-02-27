@@ -5,6 +5,7 @@ import java.util.List;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;
+import org.drools.rule.builder.dialect.java.BuildUtils;
 
 public interface ReturnValueBuilder {
     public void build(final BuildContext context,

@@ -24,7 +24,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.BuildUtils;
 import org.drools.rule.builder.ConsequenceBuilder;
 
 /**

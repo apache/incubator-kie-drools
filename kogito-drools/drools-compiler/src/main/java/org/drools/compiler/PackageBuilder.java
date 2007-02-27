@@ -324,7 +324,7 @@ public class PackageBuilder {
         this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
 
-        final JavaFunctionBuilder builder = new FunctionBuilder();
+        final FunctionBuilder builder = new JavaFunctionBuilder();
         this.pkg.addFunction( functionDescr.getName() );
 
         addClassCompileTask( functionClassName,

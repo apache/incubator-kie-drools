@@ -24,6 +24,7 @@ import org.drools.lang.descr.ForallDescr;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Forall;
+import org.drools.rule.builder.dialect.java.BuildUtils;
 
 /**
  * @author etirelli

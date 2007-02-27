@@ -22,7 +22,7 @@ public class JavaFunctionBuilder
     implements
     FunctionBuilder {
 
-    private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( FunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
+    private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
                                                                                       AngleBracketTemplateLexer.class );
 
     public JavaFunctionBuilder() {

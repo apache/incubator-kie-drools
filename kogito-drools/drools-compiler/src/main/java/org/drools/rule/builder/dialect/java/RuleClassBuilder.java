@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.BuildUtils;
 
 /**
  * @author etirelli
