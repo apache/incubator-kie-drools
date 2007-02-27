@@ -28,12 +28,12 @@ import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.compiler.RuleError;
-import org.drools.dialect.java.DeclarationTypeFixer;
-import org.drools.dialect.java.JavaExprAnalyzer;
-import org.drools.dialect.java.KnowledgeHelperFixer;
-import org.drools.dialect.java.RuleBuilder;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
+import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
+import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
+import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
+import org.drools.rule.builder.dialect.java.RuleBuilder;
 
 /**
  * A holder class for utility functions

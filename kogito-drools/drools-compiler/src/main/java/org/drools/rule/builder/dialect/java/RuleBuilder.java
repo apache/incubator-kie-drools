@@ -1,4 +1,4 @@
-package org.drools.dialect.java;
+package org.drools.rule.builder.dialect.java;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -26,7 +26,6 @@ import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.evaluators.DateFactory;
-import org.drools.dialect.mvel.MVELFromBuilder;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -51,6 +50,7 @@ import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.RuleClassBuilder;
+import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 
 /**
  * This builds the rule structure from an AST.

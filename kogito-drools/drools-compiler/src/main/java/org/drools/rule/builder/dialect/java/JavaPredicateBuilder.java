@@ -1,4 +1,4 @@
-package org.drools.dialect.java;
+package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
 

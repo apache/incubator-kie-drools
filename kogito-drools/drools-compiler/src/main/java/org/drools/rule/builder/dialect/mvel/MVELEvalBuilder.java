@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.dialect.mvel;
+package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
 import java.util.List;
