@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.rule.builder;
+package org.drools.rule.builder.dialect.java;
 
 import java.util.Iterator;
 
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.BuildUtils;
 
 /**
  * @author etirelli

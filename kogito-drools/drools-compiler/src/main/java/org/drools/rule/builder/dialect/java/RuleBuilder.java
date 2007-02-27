@@ -49,7 +49,6 @@ import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
-import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 
 /**
