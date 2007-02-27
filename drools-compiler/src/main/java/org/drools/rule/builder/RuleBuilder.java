@@ -41,6 +41,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
 import org.drools.rule.builder.dialect.java.JavaAccumulateBuilder;
 import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;

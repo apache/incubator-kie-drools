@@ -53,6 +53,7 @@ import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
+import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.drools.rule.builder.dialect.java.JavaPredicateBuilder;
 import org.drools.rule.builder.dialect.java.JavaReturnValueBuilder;
 import org.drools.spi.Evaluator;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.rule.builder;
+package org.drools.rule.builder.dialect.java;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -30,9 +30,9 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
-import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
-import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
+import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.ConditionalElementBuilder;
+import org.drools.rule.builder.RuleBuilder;
 
 /**
  * A holder class for utility functions
@@ -42,10 +42,10 @@ import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
 public class BuildUtils {
 
     // the string template groups
-    private final StringTemplateGroup      ruleGroup    = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
+    private final StringTemplateGroup      ruleGroup    = new StringTemplateGroup( new InputStreamReader( BuildUtils.class.getResourceAsStream( "javaRule.stg" ) ),
                                                                                    AngleBracketTemplateLexer.class );
 
-    private final StringTemplateGroup      invokerGroup = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
+    private final StringTemplateGroup      invokerGroup = new StringTemplateGroup( new InputStreamReader( BuildUtils.class.getResourceAsStream( "javaInvokers.stg" ) ),
                                                                                    AngleBracketTemplateLexer.class );
 
     private final KnowledgeHelperFixer     knowledgeHelperFixer;
