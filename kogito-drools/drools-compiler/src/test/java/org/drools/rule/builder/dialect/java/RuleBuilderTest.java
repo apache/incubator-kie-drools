@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.semantics.java;
+package org.drools.rule.builder.dialect.java;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;

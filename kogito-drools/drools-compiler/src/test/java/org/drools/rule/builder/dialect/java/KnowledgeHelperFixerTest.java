@@ -1,4 +1,4 @@
-package org.drools.semantics.java;
+package org.drools.rule.builder.dialect.java;
 
 /*
  * Copyright 2005 JBoss Inc
