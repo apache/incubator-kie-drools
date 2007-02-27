@@ -12,8 +12,8 @@ import org.mvel.MVEL;
 public class MVELPredicateExpression
     implements
     PredicateExpression {
-    private static final long          serialVersionUID = 320L;
-    
+    private static final long       serialVersionUID = 320L;
+
     private final Serializable      expr;
     private final DroolsMVELFactory factory;
 
