@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.semantics.java.builder;
+package org.drools.dialect.java;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,11 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
+import org.drools.semantics.java.builder.AccumulateBuilder;
+import org.drools.semantics.java.builder.BuildContext;
+import org.drools.semantics.java.builder.BuildUtils;
+import org.drools.semantics.java.builder.ColumnBuilder;
+import org.drools.semantics.java.builder.ConditionalElementBuilder;
 
 /**
  * @author etirelli
