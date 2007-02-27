@@ -1,4 +1,4 @@
-package org.drools.dialect.mvel;
+package org.drools.rule.builder.dialect.mvel;
 
 import java.util.HashMap;
 import java.util.Map;
