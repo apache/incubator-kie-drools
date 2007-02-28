@@ -20,7 +20,7 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 478782161375380651L;
+    private static final long serialVersionUID = 320L;
     private String            evaluator;
     private String            text;
     private String[]          declarations;
