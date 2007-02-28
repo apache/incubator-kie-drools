@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.stringtemplate.StringTemplate;
+import org.apache.commons.jci.utils.ClassUtils;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
@@ -108,7 +109,7 @@ public class ColumnBuilder {
                     // otherwise, create and load
                     byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( userProvidedClass );
                     if ( proxyBytes != null ) {
-                        context.getPkg().getPackageCompilationData().write( shadowProxyName,
+                        context.getPkg().getPackageCompilationData().write( ClassUtils.convertClassToResourcePath( shadowProxyName ),
                                                                             proxyBytes );
                         shadowClass = context.getPkg().getPackageCompilationData().getClassLoader().loadClass( shadowProxyName );
                     }

@@ -15,7 +15,7 @@ public class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     	defaultEclipseSettings.put(CompilerOptions.OPTION_SourceFileAttribute, CompilerOptions.GENERATE);
     	defaultEclipseSettings.put(CompilerOptions.OPTION_ReportUnusedImport, CompilerOptions.IGNORE);
         defaultEclipseSettings.put(CompilerOptions.OPTION_LocalVariableAttribute, CompilerOptions.GENERATE);
-    }         
+    }
     
     public Map getMap() {
         final Map map = new HashMap(defaultEclipseSettings);
