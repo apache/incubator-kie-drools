@@ -34,7 +34,7 @@ public class ReturnValueConstraint
     /**
      * 
      */
-    private static final long            serialVersionUID = -3888281054472597050L;
+    private static final long            serialVersionUID = 320L;
 
     private final FieldExtractor         fieldExtractor;
     private final ReturnValueRestriction restriction;
