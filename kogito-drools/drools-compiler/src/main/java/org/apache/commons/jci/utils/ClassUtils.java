@@ -9,8 +9,16 @@ public final class ClassUtils {
 	 * Please do not use - internal
 	 * org/my/Class.xxx -> org.my.Class
 	 */
-	public static String convertResourceNameToClassName( final String pResourceName ) {
+	public static String convertResourceToClassName( final String pResourceName ) {
 		return ClassUtils.stripExtension(pResourceName).replace('/', '.');
+	}
+
+	/**
+	 * Please do not use - internal
+	 * org.my.Class -> org/my/Class.class
+	 */
+	public static String convertClassToResourcePath( final String pName ) {
+		return pName.replace('.', '/') + ".class";
 	}
 
 	/**
@@ -38,4 +46,11 @@ public final class ClassUtils {
 	    return clazzName;
 	}
 
+	public static String relative( final File base, final File file ) {
+	    final int rootLength = base.getAbsolutePath().length();
+	    final String absFileName = file.getAbsolutePath();
+	    final String relFileName = absFileName.substring(rootLength + 1);
+		return relFileName;
+	}
+	
 }

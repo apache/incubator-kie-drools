@@ -81,7 +81,6 @@ public class PackageBuilder {
     private Map                         errorHandlers;
     private List                        generatedClassList;
     private TypeResolver                typeResolver;
-    private FunctionResolver            functionResolver;
     private ClassFieldExtractorCache    classFieldExtractorCache;
     private Map                         lineMappings;
 
@@ -315,7 +314,7 @@ public class PackageBuilder {
 
         this.errorHandlers.put( fileName,
                                 handler );
-        this.generatedClassList.add( className );
+        this.generatedClassList.add( fileName );
     }
 
     private void addFunction(final FunctionDescr functionDescr) {

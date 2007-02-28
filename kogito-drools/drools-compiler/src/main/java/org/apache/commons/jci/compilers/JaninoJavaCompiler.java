@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.ResourceStore;
+import org.apache.commons.jci.utils.ClassUtils;
 import org.codehaus.janino.ClassLoaderIClassLoader;
 import org.codehaus.janino.CompileException;
 import org.codehaus.janino.DebuggingInformation;
@@ -49,6 +50,8 @@ import org.codehaus.janino.util.ClassFile;
  * @author art@gramlich-net.com
  */
 public final class JaninoJavaCompiler extends AbstractJavaCompiler {
+
+//    private final Log log = LogFactory.getLog(JaninoJavaCompiler.class);
 
     private class CompilingIClassLoader extends IClassLoader {
 
@@ -103,8 +106,10 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
                         problems.add(problem);
                     }
                 });
+//                log.debug("compile " + className);
                 final ClassFile[] classFiles = uc.compileUnit(DebuggingInformation.ALL);
                 for (int i = 0; i < classFiles.length; i++) {
+//                    log.debug("compiled " + classFiles[i].getThisClassName());
                     classes.put(classFiles[i].getThisClassName(), classFiles[i].toByteArray());
                 }
                 final IClass ic = uc.findClass(className);
@@ -123,9 +128,7 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
                     try {
                         scanner.close();
                     } catch (IOException e) {
-                    	// @TODO: we need to handle this better, maybe a runtime exception?
-                    	e.printStackTrace();
-                        //log.error("IOException occured while compiling " + className, e);
+//                        log.error("IOException occured while compiling " + className, e);
                     }
                 }
             }
@@ -141,21 +144,20 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
             ) {
         final Map classFilesByName = new HashMap();       
         
-        final CompilingIClassLoader icl = new CompilingIClassLoader(pResourceReader, classFilesByName, classLoader);                
-        
-        try {
-            for (int i = 0; i < pClasses.length; i++) {
-                icl.loadIClass(Descriptor.fromClassName(pClasses[i]));
-            }
-        } catch ( ClassNotFoundException e ) {
-            // @TODO: if an exception is thrown here, how do we handle it?
-            e.printStackTrace();
+        final CompilingIClassLoader icl = new CompilingIClassLoader(pResourceReader, classFilesByName, classLoader);
+        for (int i = 0; i < pClasses.length; i++) {
+            try {
+				icl.loadIClass(Descriptor.fromClassName(ClassUtils.convertResourceToClassName(pClasses[i])));
+			} catch (ClassNotFoundException e) {
+				// @TODO: if an exception is thrown here, how do we handle it?
+				e.printStackTrace();
+			}
         }
-        
         // Store all fully compiled classes
         for (Iterator i = classFilesByName.entrySet().iterator(); i.hasNext();) {
             final Map.Entry entry = (Map.Entry)i.next();
-            pStore.write((String)entry.getKey(), (byte[])entry.getValue());
+            final String clazzName = (String)entry.getKey(); 
+            pStore.write(ClassUtils.convertClassToResourcePath(clazzName), (byte[])entry.getValue());
         }
         
         final Collection problems = icl.getProblems();
