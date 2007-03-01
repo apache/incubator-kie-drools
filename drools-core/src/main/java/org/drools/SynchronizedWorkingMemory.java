@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.drools.event.AgendaEventListener;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.ruleflow.common.instance.IProcessInstance;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -181,5 +182,9 @@ public class SynchronizedWorkingMemory
                           final Object value) {
         this.workingMemory.setGlobal( name,
                                       value );
+    }
+    
+    public synchronized IProcessInstance startProcess(String processId) {
+    	return this.workingMemory.startProcess(processId);
     }
 }

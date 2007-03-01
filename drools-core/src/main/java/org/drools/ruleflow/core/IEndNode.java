@@ -1,4 +1,4 @@
-package org.drools.spi;
+package org.drools.ruleflow.core;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +15,19 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import java.util.Iterator;
 
-public interface RuleFlowGroup {
-	
-    String getName();
+/**
+ * Represents an end node in a RuleFlow. 
+ * An end node has one incoming and no outgoing connections.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
+public interface IEndNode extends INode {
     
-    public Iterator iterator();
-
-    boolean isEmpty();
+	/**
+	 * Convenience method for returning the incoming <code>IConnection</code>.
+	 * @return the incoming <code>IConnection</code>
+	 */
+    IConnection getFrom();
     
-    int size();
-    
-    boolean isActive();
-
-    boolean isAutoDeactivate();
-    
-    /**
-     * Sets the auto-deactivate status of this RuleFlowGroup.
-     * If this is set to true, an active RuleFlowGroup automatically
-     * deactivates if it has no more activations.  If it had no
-     * activations when it was activated, it will be deactivated immediately. 
-     */
-    void setAutoDeactivate(boolean autoDeactivate);
 }

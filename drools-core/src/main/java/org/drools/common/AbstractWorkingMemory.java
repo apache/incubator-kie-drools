@@ -46,6 +46,11 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.rule.Rule;
+import org.drools.ruleflow.common.core.IProcess;
+import org.drools.ruleflow.common.instance.IProcessInstance;
+import org.drools.ruleflow.core.IRuleFlowProcess;
+import org.drools.ruleflow.instance.IRuleFlowProcessInstance;
+import org.drools.ruleflow.instance.impl.RuleFlowProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -1138,6 +1143,22 @@ public abstract class AbstractWorkingMemory
                            this.ruleOrigin,
                            this.activationOrigin );
         }
+    }
+    
+    public IProcessInstance startProcess(String processId) {
+    	IProcess process = getRuleBase().getProcess(processId);
+    	if (process == null) {
+    		throw new IllegalArgumentException("Unknown process ID: " + processId);
+    	}
+    	if (process instanceof IRuleFlowProcess) {
+            IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
+            processInstance.setAgenda(agenda);
+            processInstance.setProcess(process);
+            processInstance.start();
+            return processInstance;
+    	} else {
+    		throw new IllegalArgumentException("Unknown process type: " + process.getClass());
+    	}
     }
 
 }

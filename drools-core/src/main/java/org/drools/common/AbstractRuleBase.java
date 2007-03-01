@@ -43,6 +43,7 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
+import org.drools.ruleflow.common.core.IProcess;
 import org.drools.spi.FactHandleFactory;
 
 /**
@@ -67,6 +68,8 @@ abstract public class AbstractRuleBase
     protected RuleBaseConfiguration                 config;
 
     protected Map                                   pkgs;
+
+    protected Map                                   processes;
 
     protected transient CompositePackageClassLoader packageClassLoader;
 
@@ -112,6 +115,7 @@ abstract public class AbstractRuleBase
 
         this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
         this.pkgs = new HashMap();
+        this.processes = new HashMap();
         this.globals = new HashMap();
         this.workingMemories = new WeakHashMap();
     }
@@ -214,6 +218,10 @@ abstract public class AbstractRuleBase
 
     public FactHandleFactory newFactHandleFactory() {
         return this.factHandleFactory.newInstance();
+    }
+
+    public IProcess[] getProcesses() {
+        return (IProcess[]) this.processes.values().toArray( new IProcess[this.processes.size()] );
     }
 
     public Package[] getPackages() {
@@ -445,6 +453,18 @@ abstract public class AbstractRuleBase
     }
 
     protected abstract void removeRule(Rule rule);
+    
+    public void addProcess(IProcess process) {
+    	processes.put(process.getId(), process);
+    }
+
+    public void removeProcess(String id) {
+    	processes.remove(id);
+    }
+    
+    public IProcess getProcess(String id) {
+    	return (IProcess) processes.get(id);
+    }
 
     protected void addWorkingMemory(final WorkingMemory workingMemory,
                                     final boolean keepReference) {

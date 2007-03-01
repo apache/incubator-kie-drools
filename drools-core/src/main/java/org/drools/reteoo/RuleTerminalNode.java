@@ -22,12 +22,11 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
-import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -225,6 +224,7 @@ public final class RuleTerminalNode extends BaseNode
                 memory.getActivationGroup().addActivation( item );
             }
 
+            item.setAgendaGroup( agendaGroup );
             if ( this.rule.getRuleFlowGroup() == null ) {
                 // No RuleFlowNode so add  it directly to  the Agenda
 
@@ -239,10 +239,8 @@ public final class RuleTerminalNode extends BaseNode
                 if ( memory.getRuleFlowGroup() == null ) {
                     memory.setRuleFlowGroup( workingMemory.getAgenda().getRuleFlowGroup( this.rule.getRuleFlowGroup() ) );
                 }
-                memory.getRuleFlowGroup().addActivation( item );
-            }
-
-            item.setAgendaGroup( agendaGroup );
+                ((InternalRuleFlowGroup) memory.getRuleFlowGroup()).addActivation( item );
+            }  
 
             tuple.setActivation( item );
             memory.getTupleMemory().add( tuple );
@@ -269,7 +267,12 @@ public final class RuleTerminalNode extends BaseNode
             activation.remove();
 
             if ( activation.getActivationGroupNode() != null ) {
-                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+            	activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+            }
+
+            if ( activation.getRuleFlowGroupNode() != null ) {
+                final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+                ruleFlowGroup.removeActivation( activation );
             }
 
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.event.AgendaEventListener;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.ruleflow.common.instance.IProcessInstance;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -298,4 +299,9 @@ public interface WorkingMemory
      * 
      */
     void dispose();
+    
+    /**
+     * Starts a new process instance for the process with the given id. 
+     */
+    IProcessInstance startProcess(String processId);
 }

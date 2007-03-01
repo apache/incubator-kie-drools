@@ -1,4 +1,4 @@
-package org.drools.spi;
+package org.drools.ruleflow.common.datatype.impl.type;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +15,24 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import java.util.Iterator;
+import org.drools.ruleflow.common.datatype.IDataType;
 
-public interface RuleFlowGroup {
-	
-    String getName();
-    
-    public Iterator iterator();
+/**
+ * Representation of an integer datatype.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
+public class IntegerDataType implements IDataType {
 
-    boolean isEmpty();
-    
-    int size();
-    
-    boolean isActive();
+    private static final long serialVersionUID = 3256443611980838707L;
 
-    boolean isAutoDeactivate();
-    
-    /**
-     * Sets the auto-deactivate status of this RuleFlowGroup.
-     * If this is set to true, an active RuleFlowGroup automatically
-     * deactivates if it has no more activations.  If it had no
-     * activations when it was activated, it will be deactivated immediately. 
-     */
-    void setAutoDeactivate(boolean autoDeactivate);
+    public boolean verifyDataType(Object value) {
+    	if (value instanceof Integer) {
+    		return true;
+    	} else if (value == null) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 }

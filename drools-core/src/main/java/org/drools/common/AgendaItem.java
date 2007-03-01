@@ -23,7 +23,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleFlowGroup;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
 import org.drools.util.Queue;
@@ -77,7 +76,7 @@ public class AgendaItem
 
     private ActivationGroupNode      activationGroupNode;
 
-    private RuleFlowGroupNode        ruleFlowGroupNode;
+    private RuleFlowGroupNode     	 ruleFlowGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
