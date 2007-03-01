@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.asm.ClassWriter;
@@ -50,30 +52,38 @@ import org.drools.util.asm.ClassFieldInspector;
 
 public class ClassFieldExtractorFactory {
 
-    private static final String BASE_PACKAGE = "org/drools/base";
-    
-    private static final String SELF_REFERENCE_FIELD = "this";
+    private static final String           BASE_PACKAGE         = "org/drools/base";
+
+    private static final String           SELF_REFERENCE_FIELD = "this";
 
     private static final ProtectionDomain PROTECTION_DOMAIN;
 
+    private static final Map              inspectors           = new HashMap();
+
     static {
-            PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
-                public Object run() {
-                    return ClassFieldExtractorFactory.class.getProtectionDomain();
-                }
-            } );
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+            public Object run() {
+                return ClassFieldExtractorFactory.class.getProtectionDomain();
+            }
+        } );
     }
 
     public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
                                                                  final String fieldName) {
         try {
             // if it is a self reference
-            if( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
+            if ( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
                 // then just create an instance of the special class field extractor
-                return new SelfReferenceClassFieldExtractor(clazz, fieldName);
+                return new SelfReferenceClassFieldExtractor( clazz,
+                                                             fieldName );
             } else {
                 // otherwise, bytecode generate a specific extractor
-                final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+                ClassFieldInspector inspector = (ClassFieldInspector) inspectors.get( clazz );
+                if ( inspector == null ) {
+                    inspector = new ClassFieldInspector( clazz );
+                    inspectors.put( clazz,
+                                    inspector );
+                }
                 final Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
                 final Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
                 final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + "$" + getterMethod.getName();
@@ -89,9 +99,11 @@ public class ClassFieldExtractorFactory {
                 final Class newClass = classLoader.defineClass( className.replace( '/',
                                                                                    '.' ),
                                                                 bytes,
-                                                                PROTECTION_DOMAIN);
+                                                                PROTECTION_DOMAIN );
                 // instantiating target class
-                final Object[] params = {clazz, fieldName};
+                int index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
+                ValueType valueType = ValueType.determineValueType( fieldType );
+                final Object[] params = { index, fieldType, valueType };
                 return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
             }
         } catch ( final Exception e ) {
@@ -112,9 +124,13 @@ public class ClassFieldExtractorFactory {
                           className,
                           cw );
 
-        buildConstructor( superClass,
-                          className,
-                          cw );
+//        buildConstructor( superClass,
+//                          className,
+//                          cw );
+
+        build3ArgConstructor( superClass,
+                              className,
+                              cw );
 
         buildGetMethod( originalClass,
                         className,
@@ -148,23 +164,85 @@ public class ClassFieldExtractorFactory {
                         null );
     }
 
+//    /**
+//     * Creates a constructor for the field extractor receiving
+//     * the class instance and field name
+//     * 
+//     * @param originalClassName
+//     * @param className
+//     * @param cw
+//     */
+//    private static void buildConstructor(final Class superClazz,
+//                                         final String className,
+//                                         final ClassWriter cw) {
+//        MethodVisitor mv;
+//        {
+//            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+//                                 "<init>",
+//                                 Type.getMethodDescriptor( Type.VOID_TYPE,
+//                                                           new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ),
+//                                 null,
+//                                 null );
+//            mv.visitCode();
+//            final Label l0 = new Label();
+//            mv.visitLabel( l0 );
+//            mv.visitVarInsn( Opcodes.ALOAD,
+//                             0 );
+//            mv.visitVarInsn( Opcodes.ALOAD,
+//                             1 );
+//            mv.visitVarInsn( Opcodes.ALOAD,
+//                             2 );
+//            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+//                                Type.getInternalName( superClazz ),
+//                                "<init>",
+//                                Type.getMethodDescriptor( Type.VOID_TYPE,
+//                                                          new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ) );
+//            final Label l1 = new Label();
+//            mv.visitLabel( l1 );
+//            mv.visitInsn( Opcodes.RETURN );
+//            final Label l2 = new Label();
+//            mv.visitLabel( l2 );
+//            mv.visitLocalVariable( "this",
+//                                   "L" + className + ";",
+//                                   null,
+//                                   l0,
+//                                   l2,
+//                                   0 );
+//            mv.visitLocalVariable( "clazz",
+//                                   Type.getDescriptor( Class.class ),
+//                                   null,
+//                                   l0,
+//                                   l2,
+//                                   1 );
+//            mv.visitLocalVariable( "fieldName",
+//                                   Type.getDescriptor( String.class ),
+//                                   null,
+//                                   l0,
+//                                   l2,
+//                                   2 );
+//            mv.visitMaxs( 0,
+//                          0 );
+//            mv.visitEnd();
+//        }
+//    }
+
     /**
-     * Creates a constructor for the shadow proxy receiving
-     * the actual delegate class as parameter
+     * Creates a constructor for the field extractor receiving
+     * the index, field type and value type
      * 
      * @param originalClassName
      * @param className
      * @param cw
      */
-    private static void buildConstructor(final Class superClazz,
-                                         final String className,
-                                         final ClassWriter cw) {
+    private static void build3ArgConstructor(final Class superClazz,
+                                             final String className,
+                                             final ClassWriter cw) {
         MethodVisitor mv;
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  "<init>",
                                  Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ),
+                                                           new Type[]{Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class )} ),
                                  null,
                                  null );
             mv.visitCode();
@@ -172,15 +250,17 @@ public class ClassFieldExtractorFactory {
             mv.visitLabel( l0 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
-            mv.visitVarInsn( Opcodes.ALOAD,
+            mv.visitVarInsn( Opcodes.ILOAD,
                              1 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              2 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             3 );
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
                                 Type.getInternalName( superClazz ),
                                 "<init>",
                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ) );
+                                                          new Type[]{Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class )} ) );
             final Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitInsn( Opcodes.RETURN );
@@ -192,18 +272,24 @@ public class ClassFieldExtractorFactory {
                                    l0,
                                    l2,
                                    0 );
-            mv.visitLocalVariable( "clazz",
-                                   Type.getDescriptor( Class.class ),
+            mv.visitLocalVariable( "index",
+                                   Type.getDescriptor( int.class ),
                                    null,
                                    l0,
                                    l2,
                                    1 );
-            mv.visitLocalVariable( "fieldName",
-                                   Type.getDescriptor( String.class ),
+            mv.visitLocalVariable( "fieldType",
+                                   Type.getDescriptor( Class.class ),
                                    null,
                                    l0,
                                    l2,
                                    2 );
+            mv.visitLocalVariable( "valueType",
+                                   Type.getDescriptor( ValueType.class ),
+                                   null,
+                                   l0,
+                                   l2,
+                                   3 );
             mv.visitMaxs( 0,
                           0 );
             mv.visitEnd();
@@ -234,10 +320,10 @@ public class ClassFieldExtractorFactory {
                                               e );
         }
         final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                           overridingMethod.getName(),
-                                           Type.getMethodDescriptor( overridingMethod ),
-                                           null,
-                                           null );
+                                                 overridingMethod.getName(),
+                                                 Type.getMethodDescriptor( overridingMethod ),
+                                                 null,
+                                                 null );
 
         mv.visitCode();
 
@@ -349,7 +435,7 @@ public class ClassFieldExtractorFactory {
 
         public Class defineClass(final String name,
                                  final byte[] bytes,
-                                 ProtectionDomain domain ) {
+                                 ProtectionDomain domain) {
             return defineClass( name,
                                 bytes,
                                 0,
