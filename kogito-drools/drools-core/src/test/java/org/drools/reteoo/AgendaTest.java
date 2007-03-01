@@ -676,6 +676,12 @@ public class AgendaTest extends DroolsTestCase {
 
     }
 
+    /** 
+     * Basic RuleFlowGroup test where there are three rules, each in their own
+     * RuleFlowGroup.  First only rule-flow-group-0 is activated and rule0 is
+     * executed.  When the two remaining groups are activated, the rule with the
+     * highest priority is executed first.
+     */ 
     public void testRuleFlowGroup() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
@@ -736,9 +742,6 @@ public class AgendaTest extends DroolsTestCase {
         final RuleFlowGroup ruleFlowGroup1 = agenda.getRuleFlowGroup( "rule-flow-group-1" );
         final RuleFlowGroup ruleFlowGroup2 = agenda.getRuleFlowGroup( "rule-flow-group-2" );
 
-        ruleFlowGroup0.addChild( ruleFlowGroup1 );
-        ruleFlowGroup0.addChild( ruleFlowGroup2 );
-
         final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
         node0.assertTuple( tuple0,
@@ -774,7 +777,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // Activate the RuleFlowGroup, the nodes stay in the group, but should now also be in the Agenda
-        ruleFlowGroup0.activate();
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
         assertEquals( 2,
                       ruleFlowGroup0.size() );
         assertEquals( 2,
@@ -787,17 +790,23 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.agendaSize() );
 
-        // on firing the last activation the child rule flow groups should 
-        // activate and thus repopulate the agenda
+        // After firing all activations of RuleFlowGroup 0, the agenda is empty
         agenda.fireNextItem( null );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        // Now we activate two RuleFlowGroups together
+        // All their activations should be added to the agenda.
+        agenda.activateRuleFlowGroup("rule-flow-group-1");
+        agenda.activateRuleFlowGroup("rule-flow-group-2");
         assertEquals( 1,
-                      ruleFlowGroup1.size() );
+                	  ruleFlowGroup1.size() );
         assertEquals( 1,
-                      ruleFlowGroup2.size() );        
+                 	  ruleFlowGroup2.size() );        
         assertEquals( 2,
-                      agenda.agendaSize() );        
+                	  agenda.agendaSize() );        
 
         // we set the salience higher on rule2, so it sould fire first and empty ruleFlowGroup2
         agenda.fireNextItem( null );
@@ -808,7 +817,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.agendaSize() );
         
-        // this is the last activation, so everything shoud be empty after this
+        // this is the last activation, so everything should be empty after this
         agenda.fireNextItem( null );
         assertEquals( 0,
                       ruleFlowGroup0.size() );        
@@ -819,4 +828,383 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );        
     }
+    
+    /**
+     * RuleFlowGroup test that makes sure that, if new activations are created
+     * for an active RuleFlowGroup, those activations get added to the agenda
+     * directly as well.
+     */
+    public void testRuleFlowGroup1() {
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        // create rule1
+        final Consequence consequence1 = new Consequence() {
+            private static final long serialVersionUID = -2596133893109870505L;
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
+            	// do nothing
+            }
+        };
+
+        final Rule rule1 = new Rule( "test-rule1" );
+        rule1.setRuleFlowGroup( "rule-flow-group-0" );
+        rule1.setConsequence( consequence1 );
+
+        final RuleTerminalNode node1 = new RuleTerminalNode( 4,
+                                                             new MockTupleSource( 2 ),
+                                                             rule1,
+                                                             rule1.getLhs() );
+        
+        // create context
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+														                PropagationContext.ASSERTION,
+														                rule1,
+														                null );
+
+        // create rule0
+        final Consequence consequence0 = new Consequence() {
+            private static final long serialVersionUID = -2596133893109870505L;
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory w) {
+            	// activate rule1
+                final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+                node1.assertTuple( tuple1,
+                                   context0,
+                                   workingMemory );
+            }
+        };
+
+        final Rule rule0 = new Rule( "test-rule0" );
+        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setConsequence( consequence0 );
+
+        final RuleTerminalNode node0 = new RuleTerminalNode( 3,
+                                                             new MockTupleSource( 2 ),
+                                                             rule0,
+                                                             rule0.getLhs() );
+
+        final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
+
+        // Create one activation for rule0 only
+        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+        node0.assertTuple( tuple0,
+                           context0,
+                           workingMemory );
+
+        // RuleFlowGroup should be populated, but the agenda shouldn't be
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        // Activate the RuleFlowGroup, the activation stays in the group, but should now also be in the Agenda
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertEquals( 1,
+                      agenda.agendaSize() );
+
+        // As we fire the rule, an new activation is created for rule1, and it should be added to group AND the agenda. 
+        agenda.fireNextItem( null );
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertEquals( 1,
+                      agenda.agendaSize() );
+
+        // After firing all activations of RuleFlowGroup 0, the agenda is empty
+        agenda.fireNextItem( null );
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );   
+    }
+    
+    /**
+     * RuleFlowGroup test that makes sure that, if an activation in an active
+     * RuleFlowGroup gets deactivated, the activation is no longer executed.
+     */
+    public void testRuleFlowGroup2() {
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        // create rule1
+        final Consequence consequence1 = new Consequence() {
+            private static final long serialVersionUID = -2596133893109870505L;
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
+            	// do nothing
+            }
+        };
+
+        final Rule rule1 = new Rule( "test-rule1" );
+        rule1.setRuleFlowGroup( "rule-flow-group-0" );
+        rule1.setConsequence( consequence1 );
+
+        final RuleTerminalNode node1 = new RuleTerminalNode( 4,
+                                                             new MockTupleSource( 2 ),
+                                                             rule1,
+                                                             rule1.getLhs() );
+        
+        // create context
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+														                PropagationContext.ASSERTION,
+														                rule1,
+														                null );
+
+        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+
+        // create rule0
+        final Consequence consequence0 = new Consequence() {
+            private static final long serialVersionUID = -2596133893109870505L;
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory w) {
+            	// deactivate rule1
+                node1.retractTuple( tuple1,
+                                    context0,
+                                    workingMemory );
+            }
+        };
+
+        final Rule rule0 = new Rule( "test-rule0" );
+        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setConsequence( consequence0 );
+        rule0.setSalience(10);
+
+        final RuleTerminalNode node0 = new RuleTerminalNode( 3,
+                                                             new MockTupleSource( 2 ),
+                                                             rule0,
+                                                             rule0.getLhs() );
+
+        final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
+
+        // Create an activation for both rules
+        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+        node0.assertTuple( tuple0,
+                           context0,
+                           workingMemory );
+
+        node1.assertTuple( tuple1,
+                           context0,
+                           workingMemory );
+
+        // RuleFlowGroup should be populated, but the agenda shouldn't be
+        assertEquals( 2,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        // Activate the RuleFlowGroup, the activations stay in the group, but should now also be in the Agenda
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 2,
+                      ruleFlowGroup0.size() );
+        assertEquals( 2,
+                      agenda.agendaSize() );
+
+        // As we fire the rule, rule0 should execute first, as it has higher salience.
+        // Rule0 should deactivate rule1 as well, so the everything should be empty
+        agenda.fireNextItem( null );
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+    }
+    
+    /**
+     * RuleFlowGroup test that makes sure that, when deactivating a RuleFlowGroup,
+     * all activations for that group are no longer on the agenda.  When
+     * reactivating the RuleFlowGroup however, they get added to the agenda again. 
+     */
+    public void testRuleFlowGroup3() {
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        // create rule0
+        final Consequence consequence0 = new Consequence() {
+            private static final long serialVersionUID = -2596133893109870505L;
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory w) {
+            	// do nothing
+            }
+        };
+
+        final Rule rule0 = new Rule( "test-rule0" );
+        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setConsequence( consequence0 );
+
+        final RuleTerminalNode node0 = new RuleTerminalNode( 1,
+                                                             new MockTupleSource( 2 ),
+                                                             rule0,
+                                                             rule0.getLhs() );
+
+        final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
+
+        // create context
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+														                PropagationContext.ASSERTION,
+														                rule0,
+														                null );
+
+        // Create two activation for this rule
+        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+        node0.assertTuple( tuple0,
+                           context0,
+                           workingMemory );
+        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+        node0.assertTuple( tuple1,
+                           context0,
+                           workingMemory );
+
+        // RuleFlowGroup should be populated, but the agenda shouldn't be
+        assertEquals( 2,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        // Activate the RuleFlowGroup, the activations stay in the group, but 
+        // should now also be in the Agenda
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 2,
+                      ruleFlowGroup0.size() );
+        assertEquals( 2,
+                      agenda.agendaSize() );
+
+        // Reactivate an already active RuleFlowGroup should not have any effect
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 2,
+                      ruleFlowGroup0.size() );
+        assertEquals( 2,
+                      agenda.agendaSize() );
+
+        // Deactivate the RuleFlowGroup, the activations should be removed from
+        // the agenda but still in the RuleFlowGroup
+        agenda.deactivateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 2,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        // Reactivate the RuleFlowGroup, the activations stay in the group, but 
+        // should now also be in the Agenda again
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 2,
+                      ruleFlowGroup0.size() );
+        assertEquals( 2,
+                      agenda.agendaSize() );
+
+    }
+
+    /**
+     * Test auto-deactivation of RuleFlowGroup. 
+     */
+    public void testRuleFlowGroup4() {
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        // create rule0
+        final Consequence consequence0 = new Consequence() {
+            private static final long serialVersionUID = -2596133893109870505L;
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory w) {
+            	// do nothing
+            }
+        };
+
+        final Rule rule0 = new Rule( "test-rule0" );
+        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setConsequence( consequence0 );
+
+        final RuleTerminalNode node0 = new RuleTerminalNode( 1,
+                                                             new MockTupleSource( 2 ),
+                                                             rule0,
+                                                             rule0.getLhs() );
+
+        final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
+        assertTrue( ruleFlowGroup0.isAutoDeactivate() );
+        ruleFlowGroup0.setAutoDeactivate(false);
+        assertFalse( ruleFlowGroup0.isAutoDeactivate() );
+
+        // create context
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+														                PropagationContext.ASSERTION,
+														                rule0,
+														                null );
+
+        // Create an activation for this rule
+        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+        node0.assertTuple( tuple0,
+                           context0,
+                           workingMemory );
+        
+        // RuleFlowGroup should be populated, but the agenda shouldn't be
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        // Activate the RuleFlowGroup, the activations stay in the group, but 
+        // should now also be in the Agenda
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertEquals( 1,
+                      agenda.agendaSize() );
+
+        // Execute activation
+        agenda.fireNextItem( null );
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+        assertTrue(   ruleFlowGroup0.isActive() );
+        
+        // Set auto-deactivation status to true
+        ruleFlowGroup0.setAutoDeactivate(true);
+        assertTrue( ruleFlowGroup0.isAutoDeactivate() );
+        assertFalse( ruleFlowGroup0.isActive() );
+
+        // Add another activation and activate RuleFlowGroup again
+        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+        node0.assertTuple( tuple1,
+                           context0,
+                           workingMemory );
+        agenda.activateRuleFlowGroup("rule-flow-group-0");
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertEquals( 1,
+                      agenda.agendaSize() );
+        assertTrue(   ruleFlowGroup0.isActive() );
+
+        // Execute the activation, the RuleFlowGroup should automatically deactivate
+        agenda.fireNextItem( null );
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+        assertFalse( ruleFlowGroup0.isActive() );
+
+        // A new activation should now be added to the RuleFlowGroup but not to the agenda 
+        final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 1, "cheese" ) );
+        node0.assertTuple( tuple2,
+                           context0,
+                           workingMemory );
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+    }
+
 }

@@ -265,13 +265,21 @@ public class DefaultAgenda
     }
 
     public RuleFlowGroup getRuleFlowGroup(final String name) {
-        RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) this.ruleFlowGroups.get( name );
+    	RuleFlowGroup ruleFlowGroup = (RuleFlowGroup) this.ruleFlowGroups.get( name );
         if ( ruleFlowGroup == null ) {
             ruleFlowGroup = new RuleFlowGroupImpl( name );
             this.ruleFlowGroups.put( name,
                                      ruleFlowGroup );
         }
         return ruleFlowGroup;
+    }
+    
+    public void activateRuleFlowGroup(String name) {
+    	((InternalRuleFlowGroup) getRuleFlowGroup(name)).setActive(true);
+    }
+    
+    public void deactivateRuleFlowGroup(String name) {
+    	((InternalRuleFlowGroup) getRuleFlowGroup(name)).setActive(false);
     }
 
     /* (non-Javadoc)
@@ -371,8 +379,12 @@ public class DefaultAgenda
                 item.getActivationGroupNode().getActivationGroup().removeActivation( item );
             }
 
-            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                          this.workingMemory );
+            if ( item.getRuleFlowGroupNode() != null ) {
+                final InternalRuleFlowGroup ruleFlowGroup = item.getRuleFlowGroupNode().getRuleFlowGroup();
+                ruleFlowGroup.removeActivation( item );
+            }
+
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory  );
         }
         ((AgendaGroupImpl) agendaGroup).clear();
     }
@@ -401,8 +413,13 @@ public class DefaultAgenda
             if ( activation.isActivated() ) {
                 activation.setActivated( false );
                 activation.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                              this.workingMemory );
+                
+                if ( activation.getRuleFlowGroupNode() != null ) {
+                    final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+                    ruleFlowGroup.removeActivation( activation );
+                }
+
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation, this.workingMemory  );
             }
         }
         activationGroup.clear();
@@ -473,15 +490,8 @@ public class DefaultAgenda
         }
 
         if ( activation.getRuleFlowGroupNode() != null ) {
-            // Now the rule has fired, remove it and check if the rule flow group is empty
-            // if its empty, activate the child groups. We do this after the consequence 
-            // fired as we don't want to populate the Agenda prior to the rule actually firing.
-            final RuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+            final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
             ruleFlowGroup.removeActivation( activation );
-
-            if ( ruleFlowGroup.isEmpty() ) {
-                ruleFlowGroup.activateChildren();
-            }
         }
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );                        

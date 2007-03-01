@@ -1,4 +1,4 @@
-package org.drools.spi;
+package org.drools.ruleflow.common.datatype;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +15,19 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import java.util.Iterator;
+import java.io.Serializable;
 
-public interface RuleFlowGroup {
+/**
+ * Abstract representation of a datatype.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
+public interface IDataType extends Serializable {
 	
-    String getName();
+	
+	/**
+	 * Returns true if the given value is a valid value of this data type.
+	 */
+	boolean verifyDataType(Object value);
     
-    public Iterator iterator();
-
-    boolean isEmpty();
-    
-    int size();
-    
-    boolean isActive();
-
-    boolean isAutoDeactivate();
-    
-    /**
-     * Sets the auto-deactivate status of this RuleFlowGroup.
-     * If this is set to true, an active RuleFlowGroup automatically
-     * deactivates if it has no more activations.  If it had no
-     * activations when it was activated, it will be deactivated immediately. 
-     */
-    void setAutoDeactivate(boolean autoDeactivate);
 }

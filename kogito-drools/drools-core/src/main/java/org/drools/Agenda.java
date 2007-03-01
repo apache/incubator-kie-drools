@@ -20,6 +20,22 @@ public interface Agenda {
     public AgendaGroup getAgendaGroup(String name);
     
     public RuleFlowGroup getRuleFlowGroup(String name);
+    
+    /**
+     * Activates the <code>RuleFlowGroup</code> with the given name.
+     * All activations in the given <code>RuleFlowGroup</code> are added to the agenda.
+     * As long as the <code>RuleFlowGroup</code> remains active,
+     * its activations are automatically added to the agenda. 
+     */
+    public void activateRuleFlowGroup(String name);
+
+    /**
+     * Deactivates the <code>RuleFlowGroup</code> with the given name.
+     * All activations in the given <code>RuleFlowGroup</code> are removed from the agenda.
+     * As long as the <code>RuleFlowGroup</code> remains deactive,
+     * its activations are not added to the agenda
+     */
+    public void deactivateRuleFlowGroup(String name);
 
     public AgendaGroup[] getAgendaGroups();
 

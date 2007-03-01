@@ -1,4 +1,4 @@
-package org.drools.spi;
+package org.drools.ruleflow.core.impl;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +15,27 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import java.util.Iterator;
+import org.drools.ruleflow.core.IRuleFlowProcessValidationError;
 
-public interface RuleFlowGroup {
+/**
+ * Default implementation of a RuleFlow validation error.
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
+public class RuleFlowProcessValidationError implements
+		IRuleFlowProcessValidationError {
+
+	private String type;
 	
-    String getName();
-    
-    public Iterator iterator();
+	public RuleFlowProcessValidationError(String type) {
+		this.type = type;
+	}
+	
+	public String toString() {
+		return type;
+	}
 
-    boolean isEmpty();
-    
-    int size();
-    
-    boolean isActive();
-
-    boolean isAutoDeactivate();
-    
-    /**
-     * Sets the auto-deactivate status of this RuleFlowGroup.
-     * If this is set to true, an active RuleFlowGroup automatically
-     * deactivates if it has no more activations.  If it had no
-     * activations when it was activated, it will be deactivated immediately. 
-     */
-    void setAutoDeactivate(boolean autoDeactivate);
+	public String getType() {
+		return type;
+	}
 }
