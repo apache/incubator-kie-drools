@@ -103,7 +103,7 @@ public class ClassFieldExtractorFactory {
                 // instantiating target class
                 int index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
                 ValueType valueType = ValueType.determineValueType( fieldType );
-                final Object[] params = { index, fieldType, valueType };
+                final Object[] params = { new Integer(index), fieldType, valueType };
                 return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
             }
         } catch ( final Exception e ) {
