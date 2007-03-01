@@ -72,7 +72,7 @@ public class RuleBuilder {
 
     // the builder for the consequence
     private ConsequenceBuilder consequenceBuilder;
-    
+
     // the builder for the rule class
     private RuleClassBuilder   classBuilder;
 
@@ -96,15 +96,14 @@ public class RuleBuilder {
                       new ForallBuilder() );
         GroupElementBuilder gebuilder = new GroupElementBuilder();
         builders.put( AndDescr.class,
-                      gebuilder);
+                      gebuilder );
         builders.put( OrDescr.class,
-                      gebuilder);
+                      gebuilder );
         builders.put( NotDescr.class,
-                      gebuilder);
+                      gebuilder );
         builders.put( ExistsDescr.class,
-                      gebuilder);
-        
-        
+                      gebuilder );
+
         this.utils = new BuildUtils( new KnowledgeHelperFixer(),
                                      new DeclarationTypeFixer(),
                                      new JavaExprAnalyzer(),
@@ -115,7 +114,7 @@ public class RuleBuilder {
         this.columnBuilder = new ColumnBuilder();
 
         this.consequenceBuilder = new JavaConsequenceBuilder();
-        
+
         this.classBuilder = new RuleClassBuilder();
     }
 
@@ -169,26 +168,30 @@ public class RuleBuilder {
                        ruleDescr.getAttributes() );
 
         ConditionalElementBuilder builder = utils.getBuilder( ruleDescr.getLhs().getClass() );
-        if( builder != null ) {
-            GroupElement ce = (GroupElement) builder.build( this.context, this.utils, this.columnBuilder, ruleDescr.getLhs() );
+        if ( builder != null ) {
+            GroupElement ce = (GroupElement) builder.build( this.context,
+                                                            this.utils,
+                                                            this.columnBuilder,
+                                                            ruleDescr.getLhs() );
             this.context.getRule().setLhs( ce );
         } else {
-            throw new RuntimeDroolsException("BUG: builder not found for descriptor class "+ruleDescr.getLhs().getClass() );
+            throw new RuntimeDroolsException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
         }
 
         // Build the consequence and generate it's invoker/s
         // generate the main rule from the previously generated s.
         if ( !(ruleDescr instanceof QueryDescr) ) {
             // do not build the consequence if we have a query
-            this.consequenceBuilder.buildConsequence( this.context,
-                                                      this.utils,
-                                                      ruleDescr );
+            this.consequenceBuilder.build( this.context,
+                                           this.utils,
+                                           ruleDescr );
         }
-        this.classBuilder.buildRule( this.context, this.utils, ruleDescr );
+        this.classBuilder.buildRule( this.context,
+                                     this.utils,
+                                     ruleDescr );
 
         return this.context.getRule();
     }
-
 
     /**
      * Sets rule Attributes
@@ -197,8 +200,8 @@ public class RuleBuilder {
      * @param attributes
      */
     public void setAttributes(final Rule rule,
-                               final List attributes) {
-        
+                              final List attributes) {
+
         for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
             final AttributeDescr attributeDescr = (AttributeDescr) it.next();
             final String name = attributeDescr.getName();
@@ -225,21 +228,21 @@ public class RuleBuilder {
             } else if ( name.equals( "duration" ) ) {
                 rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
                 rule.setAgendaGroup( "" );
-            } else if (name.equals( "enabled" )){
-                if (attributeDescr.getValue() == null) {
+            } else if ( name.equals( "enabled" ) ) {
+                if ( attributeDescr.getValue() == null ) {
                     rule.setEnabled( true );
                 } else {
-                    rule.setEnabled( Boolean.valueOf( attributeDescr.getValue() ).booleanValue());
+                    rule.setEnabled( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
                 }
-            } else if (name.equals( "date-effective" )) {                
+            } else if ( name.equals( "date-effective" ) ) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
                 rule.setDateEffective( cal );
-            } else if (name.equals( "date-expires" )) {     
+            } else if ( name.equals( "date-expires" ) ) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
                 rule.setDateExpires( cal );
-                
+
             } else if ( name.equals( "language" ) ) {
                 //@todo: we don't currently  support multiple languages
             }
