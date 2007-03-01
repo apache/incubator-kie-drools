@@ -25,7 +25,7 @@ import org.drools.rule.builder.BuildContext;
  * @author etirelli
  *
  */
-public class RuleClassBuilder {
+public class JavaRuleClassBuilder {
 
     public void buildRule(final BuildContext context,
                            final BuildUtils utils,
