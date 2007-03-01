@@ -5,8 +5,8 @@ import org.drools.rule.builder.dialect.java.BuildUtils;
 
 public interface ConsequenceBuilder {
 
-    public void buildConsequence(final BuildContext context,
-                                 final BuildUtils utils,
-                                 final RuleDescr ruleDescr);
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleDescr ruleDescr);
 
 }

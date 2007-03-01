@@ -1,0 +1,118 @@
+package org.drools.rule.builder.dialect.mvel;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import junit.framework.TestCase;
+
+import org.drools.Cheese;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
+import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.common.AgendaItem;
+import org.drools.common.InternalFactHandle;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
+import org.drools.rule.Declaration;
+import org.drools.rule.EvalCondition;
+import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
+import org.drools.spi.ColumnExtractor;
+import org.drools.spi.DeclarationScopeResolver;
+import org.drools.spi.FieldExtractor;
+import org.drools.spi.ObjectType;
+
+public class MVELConsequenceBuilderTest extends TestCase {
+
+    public void setUp() {
+    }
+
+    public void testSimpleExpression() throws Exception {
+        Package pkg = new Package( "pkg1" );
+        RuleDescr ruleDescr = new RuleDescr( "rule 1" );
+        ruleDescr.setConsequence( "cheese.setPrice( 5 );" );
+
+        InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
+                                                                         ruleDescr );
+        
+        InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
+        
+        ObjectType cheeseObjeectType = new ClassObjectType( Cheese.class );
+        
+        Column column = new Column( 0,
+                                    cheeseObjeectType );
+        
+        ColumnExtractor extractor = new ColumnExtractor( cheeseObjeectType );
+        
+        Declaration declaration = new Declaration( "cheese",
+                                                   extractor,
+                                                   column );
+        Map map = new HashMap();
+        map.put( "cheese",
+                 declaration );
+        declarationResolver.setDeclarations( map );
+        context.setDeclarationResolver( declarationResolver );
+
+        MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
+        builder.build( context,
+                       null,
+                       ruleDescr );
+
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        WorkingMemory wm = ruleBase.newWorkingMemory();
+
+        Cheese cheddar = new Cheese( "cheddar",
+                                     10 );
+        InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        ReteTuple tuple = new ReteTuple( f0 );
+
+        AgendaItem item = new AgendaItem(0, tuple, null, context.getRule(), null);
+        DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper(item, wm);
+        context.getRule().getConsequence().evaluate( kbHelper, wm );
+        
+        assertEquals( 5, cheddar.getPrice() );
+    }
+
+    public static class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
+        private Map declarations;
+
+        public InstrumentedDeclarationScopeResolver() {
+            super( null );
+        }
+
+        public void setDeclarations(Map map) {
+            this.declarations = map;
+        }
+
+        public Map getDeclarations() {
+            return this.declarations;
+        }
+    }
+
+    public static class InstrumentedBuildContent extends BuildContext {
+        private DeclarationScopeResolver declarationScopeResolver;
+
+        public InstrumentedBuildContent(Package pkg,
+                                        RuleDescr ruleDescr) {
+            super( pkg,
+                   ruleDescr );
+        }
+
+        public void setDeclarationResolver(DeclarationScopeResolver declarationScopeResolver) {
+            this.declarationScopeResolver = declarationScopeResolver;
+        }
+
+        public DeclarationScopeResolver getDeclarationResolver() {
+            return this.declarationScopeResolver;
+        }
+
+    }
+
+}

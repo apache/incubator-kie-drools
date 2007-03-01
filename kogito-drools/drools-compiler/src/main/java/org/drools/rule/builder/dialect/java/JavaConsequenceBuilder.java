@@ -30,18 +30,20 @@ import org.drools.rule.builder.ConsequenceBuilder;
  * @author etirelli
  *
  */
-public class JavaConsequenceBuilder implements ConsequenceBuilder {
+public class JavaConsequenceBuilder
+    implements
+    ConsequenceBuilder {
 
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
-    public void buildConsequence(final BuildContext context,
-                                 final BuildUtils utils,
-                                 final RuleDescr ruleDescr) {
-        
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleDescr ruleDescr) {
+
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
-        
+
         // generate 
         // generate Invoker
         final String className = "consequence";
@@ -110,7 +112,7 @@ public class JavaConsequenceBuilder implements ConsequenceBuilder {
                                          context.getRule() );
         context.getDescrLookups().put( invokerClassName,
                                        ruleDescr );
-        
+
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
     }
