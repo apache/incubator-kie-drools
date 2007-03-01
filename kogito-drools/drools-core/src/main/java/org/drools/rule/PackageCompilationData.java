@@ -136,23 +136,22 @@ public class PackageCompilationData
         final byte[] bytes = null;
 
         if ( this.store != null ) {
-            return (byte[]) this.store.get( resourceName.replace( '.',
-                                                                  '/' ) + ".class" );
+            return (byte[]) this.store.get( resourceName );
         }
         return bytes;
     }
 
     public void write(final String resourceName,
                       final byte[] clazzData) throws RuntimeDroolsException {
-        if ( this.store.put( resourceName.replace( '.',
-                                                   '/' ) + ".class",
+        if ( this.store.put( resourceName,
                              clazzData ) != null ) {
             // we are updating an existing class so reload();
             reload();
         } else {
             try {
-                wire( resourceName );
+                wire( convertResourceToClassName( resourceName ) );
             } catch ( final Exception e ) {
+                e.printStackTrace();
                 throw new RuntimeDroolsException( e );
             }
         }
@@ -161,8 +160,7 @@ public class PackageCompilationData
 
     public void remove(final String resourceName) throws RuntimeDroolsException {
         this.invokerLookups.remove( resourceName );
-        if ( this.store.remove( resourceName.replace( '.',
-                                                      '/' ) + ".class" ) != null ) {
+        if ( this.store.remove( convertClassToResourcePath( resourceName ) ) != null ) {
             // we need to make sure the class is removed from the classLoader
             reload();
         }
@@ -176,9 +174,7 @@ public class PackageCompilationData
 
         for ( final Iterator it = this.store.keySet().iterator(); it.hasNext(); ) {
             final String name = (String) it.next();
-            names.add( name.replace( '/',
-                                     '.' ).substring( 0,
-                                                      name.length() - 6 ) );
+            names.add( name );
         }
 
         return (String[]) names.toArray( new String[this.store.size()] );
@@ -300,7 +296,7 @@ public class PackageCompilationData
             final Class clazz = findLoadedClass( name );
 
             if ( clazz == null ) {
-                final byte[] clazzBytes = read( name );
+                final byte[] clazzBytes = read( convertClassToResourcePath(name) );
                 if ( clazzBytes != null ) {
                     return defineClass( name,
                                         clazzBytes,
@@ -359,6 +355,32 @@ public class PackageCompilationData
                 return input;
             }
         }
+    }
+    
+    /**
+     * Please do not use - internal
+     * org/my/Class.xxx -> org.my.Class
+     */
+    public static String convertResourceToClassName( final String pResourceName ) {
+        return stripExtension(pResourceName).replace('/', '.');
+    }
+
+    /**
+     * Please do not use - internal
+     * org.my.Class -> org/my/Class.class
+     */
+    public static String convertClassToResourcePath( final String pName ) {
+        return pName.replace('.', '/') + ".class";
+    }
+
+    /**
+     * Please do not use - internal
+     * org/my/Class.xxx -> org/my/Class
+     */
+    public static String stripExtension( final String pResourceName ) {
+        final int i = pResourceName.lastIndexOf('.');
+        final String withoutExtension = pResourceName.substring(0, i);
+        return withoutExtension;
     }
 
 }
