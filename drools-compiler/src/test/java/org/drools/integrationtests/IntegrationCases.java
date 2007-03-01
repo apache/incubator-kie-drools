@@ -70,6 +70,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
+import org.drools.compiler.ProcessBuilder;
 import org.drools.compiler.RuleError;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -85,6 +86,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.ruleflow.common.instance.IProcessInstance;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.xml.XmlDumper;
@@ -3963,6 +3965,59 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 1,
                       workingMemory.getObjects().size() );
 
+    }
+    
+    public void testRuleFlow() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.addProcessFromFile(new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase.addProcess( processBuilder.getProcesses()[0]);
+        
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        workingMemory.fireAllRules();
+        assertEquals(0, list.size());
+        
+        IProcessInstance processInstance = workingMemory.startProcess("0");
+        assertEquals(IProcessInstance.STATE_ACTIVE, processInstance.getState());
+        workingMemory.fireAllRules();
+        assertEquals(4, list.size());
+        assertEquals("Rule1", list.get(0));
+        assertEquals("Rule3", list.get(1));
+        assertEquals("Rule2", list.get(2));
+        assertEquals("Rule4", list.get(3));
+        assertEquals(IProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+
+    public void testRuleFlowGroup() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        workingMemory.assertObject("Test");
+        workingMemory.fireAllRules();
+        assertEquals(0, list.size());
+
+        workingMemory.getAgenda().activateRuleFlowGroup("Group1");
+        workingMemory.fireAllRules();
+
+        assertEquals(1, list.size());
     }
 
     public void testDuplicateVariableBinding() throws Exception {
