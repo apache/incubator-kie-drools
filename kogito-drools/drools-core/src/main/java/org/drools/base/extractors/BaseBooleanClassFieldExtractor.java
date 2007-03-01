@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.ValueType;
 
 /**
  * A Base class for primitive boolean class field
@@ -35,6 +36,21 @@ public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtra
                                           final String fieldName) {
         super( clazz,
                fieldName );
+    }
+
+    /**
+     * This constructor is not supposed to be used from outside the class hirarchy
+     * 
+     * @param index
+     * @param fieldType
+     * @param valueType
+     */
+    protected BaseBooleanClassFieldExtractor(final int index,
+                                             final Class fieldType,
+                                             final ValueType valueType) {
+        super( index,
+               fieldType,
+               valueType );
     }
 
     public Object getValue(final Object object) {
@@ -70,15 +86,17 @@ public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtra
     public short getShortValue(final Object object) {
         throw new RuntimeDroolsException( "Conversion to short not supported from boolean" );
     }
-    
+
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getBooleanValue", new Class[] { Object.class } );
+            return this.getClass().getDeclaredMethod( "getBooleanValue",
+                                                      new Class[]{Object.class} );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
-    
+
     public int getHashCode(Object object) {
         return getBooleanValue( object ) ? 1231 : 1237;
     }

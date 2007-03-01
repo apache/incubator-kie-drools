@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.ValueType;
 
 public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtractor {
 
@@ -13,6 +14,21 @@ public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtrac
                                          final String fieldName) {
         super( clazz,
                fieldName );
+    }
+
+    /**
+     * This constructor is not supposed to be used from outside the class hirarchy
+     * 
+     * @param index
+     * @param fieldType
+     * @param valueType
+     */
+    protected BaseDoubleClassFieldExtractor(final int index,
+                                             final Class fieldType,
+                                             final ValueType valueType) {
+        super( index,
+               fieldType,
+               valueType );
     }
 
     public Object getValue(final Object object) {
