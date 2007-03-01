@@ -20,13 +20,17 @@ import java.util.Iterator;
 
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleClassBuilder;
 
 /**
  * @author etirelli
  *
  */
-public class JavaRuleClassBuilder {
+public class JavaRuleClassBuilder implements RuleClassBuilder {
 
+    /* (non-Javadoc)
+     * @see org.drools.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.rule.builder.BuildContext, org.drools.rule.builder.dialect.java.BuildUtils, org.drools.lang.descr.RuleDescr)
+     */
     public void buildRule(final BuildContext context,
                            final BuildUtils utils,
                            final RuleDescr ruleDescr) {

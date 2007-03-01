@@ -48,7 +48,7 @@ import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;
 import org.drools.rule.builder.dialect.java.JavaEvalBuilder;
 import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
-import org.drools.rule.builder.dialect.java.RuleClassBuilder;
+import org.drools.rule.builder.dialect.java.JavaRuleClassBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 
 /**
@@ -75,23 +75,24 @@ public class RuleBuilder {
 
     // the builder for the rule class
     private RuleClassBuilder   classBuilder;
+    
+    private Dialect dialect;
 
     // Constructor
     public RuleBuilder(final TypeResolver typeResolver,
-                       final ClassFieldExtractorCache cache) {
+                       final ClassFieldExtractorCache cache,
+                       Dialect dialect) {
 
+        this.dialect = dialect;
+        
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
         this.builders = new HashMap();
-        builders.put( EvalDescr.class,
-                      new JavaEvalBuilder() );
-        builders.put( FromDescr.class,
-                      new MVELFromBuilder() );
+                
         builders.put( CollectDescr.class,
-                      new CollectBuilder() );
-        builders.put( AccumulateDescr.class,
-                      new JavaAccumulateBuilder() );
+                      new CollectBuilder() );        
+        
         builders.put( ForallDescr.class,
                       new ForallBuilder() );
         GroupElementBuilder gebuilder = new GroupElementBuilder();
@@ -102,20 +103,30 @@ public class RuleBuilder {
         builders.put( NotDescr.class,
                       gebuilder );
         builders.put( ExistsDescr.class,
-                      gebuilder );
+                      gebuilder );               
+               
+        // dialect specific        
+        this.columnBuilder = new ColumnBuilder( this.dialect );
+        
+        builders.put( FromDescr.class,
+                      this.dialect.getFromBuilder() );
+        
+        builders.put( AccumulateDescr.class,
+                      this.dialect.getAccumulateBuilder() );
 
+        builders.put( EvalDescr.class,
+                      this.dialect.getEvalBuilder() );
+        
+        this.consequenceBuilder = (ConsequenceBuilder) this.dialect.getConsequenceBuilder();       
+
+        this.classBuilder = ( RuleClassBuilder) this.dialect.getRuleClassBuilder();
+                        
         this.utils = new BuildUtils( new KnowledgeHelperFixer(),
                                      new DeclarationTypeFixer(),
                                      new JavaExprAnalyzer(),
                                      typeResolver,
                                      cache,
-                                     builders );
-
-        this.columnBuilder = new ColumnBuilder();
-
-        this.consequenceBuilder = new JavaConsequenceBuilder();
-
-        this.classBuilder = new RuleClassBuilder();
+                                     builders );        
     }
 
     public Map getInvokers() {

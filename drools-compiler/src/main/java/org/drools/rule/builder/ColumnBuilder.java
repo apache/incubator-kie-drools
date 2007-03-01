@@ -19,6 +19,7 @@ package org.drools.rule.builder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.apache.commons.jci.utils.ClassUtils;
@@ -69,6 +70,12 @@ import org.drools.spi.Restriction;
  * @author etirelli
  */
 public class ColumnBuilder {
+
+    private Dialect dialect;
+
+    public ColumnBuilder(Dialect dialect) {
+        this.dialect = dialect;
+    }
 
     /**
      * Build a column for the given descriptor in the current 
@@ -379,7 +386,7 @@ public class ColumnBuilder {
                                                                                  localDeclarations );
         column.addConstraint( predicateConstraint );
 
-        JavaPredicateBuilder builder = new JavaPredicateBuilder();
+        PredicateBuilder builder = (PredicateBuilder) dialect.getPredicateBuilder();
 
         builder.build( context,
                        utils,
@@ -545,7 +552,7 @@ public class ColumnBuilder {
                                                                                           localDeclarations,
                                                                                           evaluator );
 
-        JavaReturnValueBuilder builder = new JavaReturnValueBuilder();
+        ReturnValueBuilder builder = (ReturnValueBuilder) this.dialect.getReturnValueBuilder();
 
         builder.build( context,
                        utils,

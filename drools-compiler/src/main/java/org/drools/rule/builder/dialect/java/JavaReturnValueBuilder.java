@@ -7,8 +7,9 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.ReturnValueBuilder;
 
-public class JavaReturnValueBuilder {
+public class JavaReturnValueBuilder implements ReturnValueBuilder {
     public void build(final BuildContext context,
                       final BuildUtils utils,
                       final List[] usedIdentifiers,
