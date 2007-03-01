@@ -24,7 +24,7 @@ public class RuleDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 8285211076343653883L;
+    private static final long serialVersionUID = 320L;
     private String   name;
     private String   documentation;
 

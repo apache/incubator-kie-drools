@@ -75,8 +75,8 @@ public class RuleBuilder {
 
     // the builder for the rule class
     private RuleClassBuilder   classBuilder;
-    
-    private Dialect dialect;
+
+    private Dialect            dialect;
 
     // Constructor
     public RuleBuilder(final TypeResolver typeResolver,
@@ -84,15 +84,15 @@ public class RuleBuilder {
                        Dialect dialect) {
 
         this.dialect = dialect;
-        
+
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
         this.builders = new HashMap();
-                
+
         builders.put( CollectDescr.class,
-                      new CollectBuilder() );        
-        
+                      new CollectBuilder() );
+
         builders.put( ForallDescr.class,
                       new ForallBuilder() );
         GroupElementBuilder gebuilder = new GroupElementBuilder();
@@ -103,30 +103,30 @@ public class RuleBuilder {
         builders.put( NotDescr.class,
                       gebuilder );
         builders.put( ExistsDescr.class,
-                      gebuilder );               
-               
+                      gebuilder );
+
         // dialect specific        
         this.columnBuilder = new ColumnBuilder( this.dialect );
-        
+
         builders.put( FromDescr.class,
                       this.dialect.getFromBuilder() );
-        
+
         builders.put( AccumulateDescr.class,
                       this.dialect.getAccumulateBuilder() );
 
         builders.put( EvalDescr.class,
                       this.dialect.getEvalBuilder() );
-        
-        this.consequenceBuilder = (ConsequenceBuilder) this.dialect.getConsequenceBuilder();       
 
-        this.classBuilder = ( RuleClassBuilder) this.dialect.getRuleClassBuilder();
-                        
+        this.consequenceBuilder = (ConsequenceBuilder) this.dialect.getConsequenceBuilder();
+
+        this.classBuilder = (RuleClassBuilder) this.dialect.getRuleClassBuilder();
+
         this.utils = new BuildUtils( new KnowledgeHelperFixer(),
                                      new DeclarationTypeFixer(),
                                      new JavaExprAnalyzer(),
                                      typeResolver,
                                      cache,
-                                     builders );        
+                                     builders );
     }
 
     public Map getInvokers() {
