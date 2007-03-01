@@ -57,6 +57,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.rule.builder.dialect.java.PackageStore;
 import org.drools.spi.FunctionResolver;
@@ -70,8 +71,6 @@ import org.xml.sax.SAXException;
  * This can be done by merging into existing binary packages, or totally from source.
  */
 public class PackageBuilder {
-    private static final JavaCompiler   cachedJavaCompiler = null;
-
     private JavaCompiler                compiler;
     private Package                     pkg;
     private List                        results;
@@ -203,7 +202,8 @@ public class PackageBuilder {
         }
 
         builder = new RuleBuilder( getTypeResolver(),
-                                   this.classFieldExtractorCache );
+                                   this.classFieldExtractorCache,
+                                   new JavaDialect() );
 
         //only try to compile if there are no parse errors
         if ( !hasErrors() ) {
