@@ -18,6 +18,7 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.ruleflow.common.instance.IProcessInstance;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -236,6 +237,10 @@ public class ExternalSheetListenerTest extends TestCase {
 
 				public void setGlobalResolver(GlobalResolver globalResolver) {
 					
+				}
+
+				public IProcessInstance startProcess(String processId) {
+					return null;
 				}
 			};
 		}
