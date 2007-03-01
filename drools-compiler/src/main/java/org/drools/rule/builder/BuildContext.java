@@ -49,15 +49,20 @@ public class BuildContext {
     // current Rule descriptor
     private RuleDescr          ruleDescr;
 
-    // the class name for the rule
-    private String             ruleClass;
-
     // available declarationResolver 
     private DeclarationScopeResolver declarationResolver;
 
+    // a simple counter for columns
+    private int                columnId = -1;
+    
     // errors found when building the current context
     private List               errors;
 
+    
+    
+    // the class name for the rule    
+    private String             ruleClass;
+    
     // list of generated methods
     private List               methods;
 
@@ -73,8 +78,6 @@ public class BuildContext {
     // a simple counter for generated names
     private int                counter;
 
-    // a simple counter for columns
-    private int                columnId = -1;
 
     /**
      * Default constructor

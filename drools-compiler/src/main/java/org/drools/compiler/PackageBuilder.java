@@ -71,19 +71,20 @@ import org.xml.sax.SAXException;
  * This can be done by merging into existing binary packages, or totally from source.
  */
 public class PackageBuilder {
-    private JavaCompiler                compiler;
+    
     private Package                     pkg;
+    
     private List                        results;
-    private PackageStore                packageStoreWrapper;
-    private MemoryResourceReader        src;
+        
     private PackageBuilderConfiguration configuration;
-    private Map                         errorHandlers;
-    private List                        generatedClassList;
+
     private TypeResolver                typeResolver;
+    
     private ClassFieldExtractorCache    classFieldExtractorCache;
-    private Map                         lineMappings;
 
     private RuleBuilder                 builder;
+    
+    private CompilerHelper              helper;
 
     /**
      * Use this when package is starting from scratch. 
@@ -117,19 +118,12 @@ public class PackageBuilder {
             configuration = new PackageBuilderConfiguration();
         }
 
+        this.helper = new CompilerHelper(pkg, configuration);
+        
         this.configuration = configuration;
-        loadCompiler();
-        this.src = new MemoryResourceReader();
         this.results = new ArrayList();
-        this.errorHandlers = new HashMap();
-        this.pkg = pkg;
-        this.generatedClassList = new ArrayList();
+        this.pkg = pkg;        
         this.classFieldExtractorCache = new ClassFieldExtractorCache();
-
-        if ( pkg != null ) {
-            this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
-            this.lineMappings = pkg.getPackageCompilationData().getLineMappings();
-        }
     }
 
     /**
@@ -221,10 +215,10 @@ public class PackageBuilder {
                 addRule( (RuleDescr) it.next() );
             }
         }
-
-        if ( this.generatedClassList.size() > 0 ) {
-            this.compileAll();
-        }
+        
+        this.helper.compileAll();
+        
+        this.results.addAll( this.helper.getResults() );
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
@@ -251,10 +245,8 @@ public class PackageBuilder {
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
                                          this.configuration.getClassLoader() );
-        this.lineMappings = new HashMap();
-        pkg.getPackageCompilationData().setLineMappings( this.lineMappings );
-
-        this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
+        
+        this.helper.init( pkg );
 
         mergePackage( pkg,
                       packageDescr );
@@ -293,54 +285,10 @@ public class PackageBuilder {
         }
     }
 
-    /** 
-     * This adds a compile "task" for when the compiler of 
-     * semantics (JCI) is called later on with compileAll()\
-     * which actually does the compiling.
-     * The ErrorHandler is required to map the errors back to the 
-     * element that caused it.
-     */
-    private void addClassCompileTask(final String className,
-                                     final BaseDescr descr,
-                                     final String text,
-                                     final MemoryResourceReader src,
-                                     final ErrorHandler handler) {
 
-        final String fileName = className.replace( '.',
-                                                   '/' ) + ".java";
-
-        src.add( fileName,
-                 text.getBytes() );
-
-        this.errorHandlers.put( fileName,
-                                handler );
-        this.generatedClassList.add( fileName );
-    }
 
     private void addFunction(final FunctionDescr functionDescr) {
-
-        String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
-        functionDescr.setClassName( functionClassName );
-
-        final FunctionBuilder builder = new JavaFunctionBuilder();
-        this.pkg.addFunction( functionDescr.getName() );
-
-        addClassCompileTask( functionClassName,
-                             functionDescr,
-                             builder.build( this.pkg,
-                                            functionDescr,
-                                            getTypeResolver(),
-                                            lineMappings ),
-                             this.src,
-                             new FunctionErrorHandler( functionDescr,
-                                                       "Function Compilation error" ) );
-
-        LineMappings mapping = new LineMappings( functionClassName );
-        mapping.setStartLine( functionDescr.getLine() );
-        mapping.setOffset( functionDescr.getOffset() );
-        this.lineMappings.put( functionClassName,
-                               mapping );
+        this.helper.addFunction(functionDescr, getTypeResolver() );
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
@@ -368,35 +316,22 @@ public class PackageBuilder {
     }
 
     private void addRule(final RuleDescr ruleDescr) {
-
-        final String ruleClassName = getUniqueLegalName( this.pkg.getName(),
-                                                         ruleDescr.getName(),
-                                                         "java",
-                                                         this.src );
-        ruleDescr.setClassName( ucFirst( ruleClassName ) );
-
+        this.helper.init( ruleDescr );
+        
         builder.build( this.pkg,
                        ruleDescr );
+        
 
         this.results.addAll( builder.getErrors() );
 
         final Rule rule = builder.getRule();
 
-        // Check if there is any code to compile. If so compile it.       
-        if ( builder.getRuleClass() != null ) {
-            addRuleSemantics( builder,
-                              rule,
-                              ruleDescr );
-        }
 
+        this.helper.addRuleSemantics( builder,
+                                      rule,
+                                      ruleDescr );                      
+        
         this.pkg.addRule( rule );
-
-        String name = pkg.getName() + "." + ucFirst( ruleDescr.getClassName() );
-        LineMappings mapping = new LineMappings( name );
-        mapping.setStartLine( ruleDescr.getConsequenceLine() );
-        mapping.setOffset( ruleDescr.getConsequenceOffset() );
-        this.lineMappings.put( name,
-                               mapping );
     }
 
     /**
@@ -414,47 +349,6 @@ public class PackageBuilder {
     }
 
     /**
-     * This will setup the semantic components of the rule for compiling later on.
-     * It will not actually call the compiler
-     */
-    private void addRuleSemantics(final RuleBuilder builder,
-                                  final Rule rule,
-                                  final RuleDescr ruleDescr) {
-        // The compilation result is for th entire rule, so difficult to associate with any descr
-        addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
-                             ruleDescr,
-                             builder.getRuleClass(),
-                             this.src,
-                             new RuleErrorHandler( ruleDescr,
-                                                   rule,
-                                                   "Rule Compilation error" ) );
-
-        for ( final Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
-            final String className = (String) it.next();
-
-            // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
-            // If so we add it to the PackageCompilationData as it will get wired up on compilation
-            final Object invoker = builder.getInvokerLookups().get( className );
-            if ( invoker != null ) {
-                this.pkg.getPackageCompilationData().putInvoker( className,
-                                                                 invoker );
-            }
-            final String text = (String) builder.getInvokers().get( className );
-
-            //System.out.println( className + ":\n" + text );
-            final BaseDescr descr = (BaseDescr) builder.getDescrLookups().get( className );
-            addClassCompileTask( className,
-                                 descr,
-                                 text,
-                                 this.src,
-                                 new RuleInvokerErrorHandler( descr,
-                                                              rule,
-                                                              "Unable to generate rule invoker." ) );
-
-        }
-    }
-
-    /**
      * @return The compiled package. The package may contain errors, which you can report on
      * by calling getErrors or printErrors. If you try to add an invalid package (or rule)
      * to a RuleBase, you will get a runtime exception.
@@ -467,49 +361,6 @@ public class PackageBuilder {
             this.pkg.setError( this.printErrors() );
         }
         return this.pkg;
-    }
-
-    /**
-     * This actually triggers the compiling of all the resources.
-     * Errors are mapped back to the element that originally generated the semantic
-     * code.
-     */
-    private void compileAll() {
-        final String[] classes = new String[this.generatedClassList.size()];
-        this.generatedClassList.toArray( classes );
-
-        final CompilationResult result = this.compiler.compile( classes,
-                                                                this.src,
-                                                                this.packageStoreWrapper,
-                                                                this.pkg.getPackageCompilationData().getClassLoader() );
-
-        //this will sort out the errors based on what class/file they happened in
-        if ( result.getErrors().length > 0 ) {
-            for ( int i = 0; i < result.getErrors().length; i++ ) {
-                final CompilationProblem err = result.getErrors()[i];
-
-                final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
-                if ( handler instanceof RuleErrorHandler ) {
-                    final RuleErrorHandler rh = (RuleErrorHandler) handler;
-                }
-                handler.addError( err );
-            }
-
-            final Collection errors = this.errorHandlers.values();
-            for ( final Iterator iter = errors.iterator(); iter.hasNext(); ) {
-                final ErrorHandler handler = (ErrorHandler) iter.next();
-                if ( handler.isInError() ) {
-                    if ( !(handler instanceof RuleInvokerErrorHandler) ) {
-                        this.results.add( handler.getError() );
-                    } else {
-                        //we don't really want to report invoker errors.
-                        //mostly as they can happen when there is a syntax error in the RHS
-                        //and otherwise, it is a programmatic error in drools itself.
-                        System.err.println( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere." );
-                    }
-                }
-            }
-        }
     }
 
     /** This will return true if there were errors in the package building and compiling phase */
@@ -536,70 +387,6 @@ public class PackageBuilder {
             buf.append( "\n" );
         }
         return buf.toString();
-    }
-
-    /**
-     * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.
-     * 
-     * @param packageName
-     * @param name
-     * @param ext
-     * @return
-     */
-    private String getUniqueLegalName(final String packageName,
-                                      final String name,
-                                      final String ext,
-                                      final ResourceReader src) {
-        // replaces all non alphanumeric or $ chars with _
-        String newName = "Rule_" + name.replaceAll( "[^\\w$]",
-                                                    "_" );
-
-        // make sure the class name does not exist, if it does increase the counter
-        int counter = -1;
-        boolean exists = true;
-        while ( exists ) {
-
-            counter++;
-            final String fileName = packageName.replaceAll( "\\.",
-                                                            "/" ) + newName + "_" + counter + ext;
-
-            exists = src.isAvailable( fileName );
-        }
-        // we have duplicate file names so append counter
-        if ( counter >= 0 ) {
-            newName = newName + "_" + counter;
-        }
-
-        return newName;
-    }
-
-    private void loadCompiler() {
-        switch ( this.configuration.getCompiler() ) {
-            case PackageBuilderConfiguration.JANINO : {
-                if ( !"1.4".equals( this.configuration.getJavaLanguageLevel() ) ) {
-                    throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
-                }
-                this.compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
-                break;
-            }
-            case PackageBuilderConfiguration.ECLIPSE :
-            default : {
-                final EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
-                Map map = eclipseSettings.getMap();
-                map.put( CompilerOptions.OPTION_TargetPlatform,
-                         this.configuration.getJavaLanguageLevel() );
-
-                // We now default this to 1.5, so we can use static imports.
-                map.put( CompilerOptions.OPTION_Source,
-                         "1.5" );
-                this.compiler = new EclipseJavaCompiler( map );
-                break;
-            }
-        }
-    }
-
-    private String ucFirst(final String name) {
-        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
     public static class MissingPackageNameException extends IllegalArgumentException {

@@ -83,7 +83,8 @@ public class RuleBuilderTest extends TestCase {
             typeResolver.addImport( "java.lang.*" );
 
             final RuleBuilder builder = new RuleBuilder( typeResolver,
-                                                         new ClassFieldExtractorCache() );
+                                                         new ClassFieldExtractorCache(),
+                                                         new JavaDialect() );
 
             builder.build( pkg,
                            ruleDescr );
@@ -119,7 +120,7 @@ public class RuleBuilderTest extends TestCase {
     }
     
     public void testBuildAttributes() throws Exception {
-        RuleBuilder builder = new RuleBuilder(null,  null);
+        RuleBuilder builder = new RuleBuilder(null,  null, new JavaDialect() );
         Rule rule = new Rule("myrule");
         List attributes = new ArrayList();
         
