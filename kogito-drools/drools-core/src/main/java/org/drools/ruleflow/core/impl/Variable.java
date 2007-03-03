@@ -28,7 +28,7 @@ import org.drools.ruleflow.core.IVariable;
  */
 public class Variable implements IVariable, Serializable {
 
-    private static final long serialVersionUID = 3256441400072353336L;
+    private static final long serialVersionUID = 320L;
 
     private String name;
     private IDataType type;
@@ -65,7 +65,7 @@ public class Variable implements IVariable, Serializable {
     	if (this.type.verifyDataType(value)) {
     		this.value = value;
     	} else {
-    		StringBuilder sb = new StringBuilder();
+    		StringBuffer sb = new StringBuffer();
     		sb.append("Value <");
     		sb.append(value);
     		sb.append("> is not valid for datatype: ");

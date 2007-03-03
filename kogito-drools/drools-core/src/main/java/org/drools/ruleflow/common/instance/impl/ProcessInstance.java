@@ -54,7 +54,7 @@ public abstract class ProcessInstance implements IProcessInstance {
     }
     
     public String toString() {
-    	StringBuilder b = new StringBuilder("ProcessInstance ");
+    	StringBuffer b = new StringBuffer("ProcessInstance ");
     	b.append(getId());
     	b.append(" [processId=");
     	b.append(process.getId());

@@ -27,7 +27,7 @@ import org.drools.ruleflow.core.INode;
  */
 public class Connection implements IConnection, Serializable {
     
-    private static final long serialVersionUID = 3256439218229424434L;
+    private static final long serialVersionUID = 320L;
 
     private int type;
     private Node from;
@@ -95,7 +95,7 @@ public class Connection implements IConnection, Serializable {
     }
     
     public String toString() {
-    	StringBuilder sb = new StringBuilder("Connection ");
+    	StringBuffer sb = new StringBuffer("Connection ");
     	sb.append(getFrom());
     	sb.append(" - ");
     	sb.append(getTo());
