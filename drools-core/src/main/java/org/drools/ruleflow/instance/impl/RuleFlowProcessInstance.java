@@ -128,7 +128,7 @@ public class RuleFlowProcessInstance extends ProcessInstance implements IRuleFlo
 	}
 	
 	public String toString() {
-    	StringBuilder sb = new StringBuilder("RuleFlowProcessInstance");
+    	StringBuffer sb = new StringBuffer("RuleFlowProcessInstance");
     	sb.append(getId());
     	sb.append(" [processId=");
     	sb.append(getProcess().getId());
