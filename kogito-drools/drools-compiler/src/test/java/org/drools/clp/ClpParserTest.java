@@ -18,6 +18,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -27,7 +28,7 @@ public class ClpParserTest extends TestCase {
     private CLPParser parser;
     
     public void testRule() throws Exception {
-        RuleDescr rule = parse("(defrule xxx (name (name \"yyy\"&~\"zzz\"|~=(ppp)) )").rule();
+        RuleDescr rule = parse("(defrule xxx (name (name \"yyy\"&~\"zzz\"|~=(ppp)&:(ooo)) )").rule();
         
         assertEquals( "xxx", rule.getName() );
         
@@ -39,12 +40,13 @@ public class ClpParserTest extends TestCase {
         assertEquals("name", col.getObjectType() );
         
         List colList = col.getDescrs();
-        assertEquals(1, colList.size());
+        assertEquals(2, colList.size());
         FieldConstraintDescr fieldConstraintDescr = ( FieldConstraintDescr ) colList.get( 0 );
         List restrictionList = fieldConstraintDescr.getRestrictions();
         
-        assertEquals("name", fieldConstraintDescr.getFieldName() );
-        assertEquals(5, restrictionList.size());
+        assertEquals("name", fieldConstraintDescr.getFieldName() );        
+        // @todo the 6th one has no constraint, as its a predicate, have to figure out how to handle this
+        assertEquals(6, restrictionList.size());
                 
         
         LiteralRestrictionDescr litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 0 );
@@ -63,7 +65,10 @@ public class ClpParserTest extends TestCase {
         
         ReturnValueRestrictionDescr retDescr = ( ReturnValueRestrictionDescr ) restrictionList.get( 4 );
         assertEquals("!=", retDescr.getEvaluator() );
-        assertEquals("ppp", retDescr.getText() );        
+        assertEquals("ppp", retDescr.getText() );
+        
+        PredicateDescr predicateDescr = ( PredicateDescr ) colList.get( 1 );
+        assertEquals( "ooo", predicateDescr.getText() );
     }
     
     private CLPParser parse(final String text) throws Exception {
