@@ -28,7 +28,7 @@ public class ClpParserTest extends TestCase {
     private CLPParser parser;
     
     public void testRule() throws Exception {
-        RuleDescr rule = parse("(defrule xxx (name (name \"yyy\"&~\"zzz\"|~=(ppp)&:(ooo)) )").rule();
+        RuleDescr rule = parse("(defrule xxx ?b <- (name (name \"yyy\"&~\"zzz\"|~=(ppp)&:(ooo)) )").rule();
         
         assertEquals( "xxx", rule.getName() );
         
@@ -37,6 +37,7 @@ public class ClpParserTest extends TestCase {
         assertEquals(1, lhsList.size());
         
         ColumnDescr col = ( ColumnDescr ) lhsList.get( 0 );
+        assertEquals("?b", col.getIdentifier() );
         assertEquals("name", col.getObjectType() );
         
         List colList = col.getDescrs();

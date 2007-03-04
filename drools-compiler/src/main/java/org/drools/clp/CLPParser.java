@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-04 23:15:10
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-04 23:41:19
 
 	package org.drools.clp;
 	import java.util.List;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class CLPParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "LEFT_PAREN", "ID", "RIGHT_PAREN", "VAR", "STRING", "INT", "FLOAT", "BOOL", "NULL", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "MULTI_LINE_COMMENT", "MISC", "';'", "'defrule'", "'&'", "'|'", "'~'", "'='", "':'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "LEFT_PAREN", "ID", "RIGHT_PAREN", "VAR", "STRING", "INT", "FLOAT", "BOOL", "NULL", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "MULTI_LINE_COMMENT", "MISC", "';'", "'defrule'", "'<-'", "'&'", "'|'", "'~'", "'='", "':'"
     };
     public static final int LEFT_PAREN=4;
     public static final int RIGHT_CURLY=24;
@@ -339,18 +339,29 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start bound_pattern
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:243:1: bound_pattern returns [ColumnDescr column] : id= VAR ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:243:1: bound_pattern returns [ColumnDescr column] : id= VAR '<-' col= pattern ;
     public ColumnDescr bound_pattern() throws RecognitionException {
         ColumnDescr column = null;
 
         Token id=null;
+        ColumnDescr col = null;
+
 
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:245:4: (id= VAR )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:245:4: id= VAR
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:245:4: (id= VAR '<-' col= pattern )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:245:4: id= VAR '<-' col= pattern
             {
             id=(Token)input.LT(1);
             match(input,VAR,FOLLOW_VAR_in_bound_pattern148); 
+            match(input,29,FOLLOW_29_in_bound_pattern152); 
+            pushFollow(FOLLOW_pattern_in_bound_pattern158);
+            col=pattern();
+            _fsp--;
+
+            
+            	    col.setIdentifier( id.getText() );
+              		column = col;
+            	
 
             }
 
@@ -367,23 +378,23 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start pattern
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:254:1: pattern returns [ColumnDescr column] : LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:255:1: pattern returns [ColumnDescr column] : LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN ;
     public ColumnDescr pattern() throws RecognitionException {
         ColumnDescr column = null;
 
         Token name=null;
 
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:255:5: ( LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:255:5: LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:256:5: ( LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:256:5: LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_pattern167); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_pattern177); 
             name=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_pattern175); 
+            match(input,ID,FOLLOW_ID_in_pattern185); 
             
             	      column = new ColumnDescr(name.getText());
             	  
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:260:4: ( field_constriant[column] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:261:4: ( field_constriant[column] )*
             loop3:
             do {
                 int alt3=2;
@@ -395,9 +406,9 @@ public class CLPParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:260:4: field_constriant[column]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:261:4: field_constriant[column]
             	    {
-            	    pushFollow(FOLLOW_field_constriant_in_pattern186);
+            	    pushFollow(FOLLOW_field_constriant_in_pattern196);
             	    field_constriant(column);
             	    _fsp--;
 
@@ -410,7 +421,7 @@ public class CLPParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_pattern194); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_pattern204); 
 
             }
 
@@ -427,7 +438,7 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start field_constriant
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:265:1: field_constriant[ColumnDescr column] : LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:266:1: field_constriant[ColumnDescr column] : LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN ;
     public void field_constriant(ColumnDescr column) throws RecognitionException {
         Token f=null;
 
@@ -438,41 +449,41 @@ public class CLPParser extends Parser {
         		String op = "==";
         	
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:272:4: ( LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:272:4: LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:273:4: ( LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:273:4: LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_field_constriant222); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_field_constriant232); 
             f=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_field_constriant230); 
+            match(input,ID,FOLLOW_ID_in_field_constriant240); 
             
             			fc = new FieldConstraintDescr(f.getText());
             			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
             			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
              	        column.addDescr( fc );			
             	  
-            pushFollow(FOLLOW_restriction_in_field_constriant252);
+            pushFollow(FOLLOW_restriction_in_field_constriant262);
             restriction(fc,  column);
             _fsp--;
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:282:4: ( connective[fc] restriction[fc, column] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:283:4: ( connective[fc] restriction[fc, column] )*
             loop4:
             do {
                 int alt4=2;
                 int LA4_0 = input.LA(1);
-                if ( ((LA4_0>=29 && LA4_0<=30)) ) {
+                if ( ((LA4_0>=30 && LA4_0<=31)) ) {
                     alt4=1;
                 }
 
 
                 switch (alt4) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:283:5: connective[fc] restriction[fc, column]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:284:5: connective[fc] restriction[fc, column]
             	    {
-            	    pushFollow(FOLLOW_connective_in_field_constriant264);
+            	    pushFollow(FOLLOW_connective_in_field_constriant274);
             	    connective(fc);
             	    _fsp--;
 
-            	    pushFollow(FOLLOW_restriction_in_field_constriant281);
+            	    pushFollow(FOLLOW_restriction_in_field_constriant291);
             	    restriction(fc,  column);
             	    _fsp--;
 
@@ -485,7 +496,7 @@ public class CLPParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_field_constriant309); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_field_constriant319); 
 
             }
 
@@ -502,32 +513,32 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start connective
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:290:1: connective[FieldConstraintDescr fc] : ( '&' | '|' ) ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:291:1: connective[FieldConstraintDescr fc] : ( '&' | '|' ) ;
     public void connective(FieldConstraintDescr fc) throws RecognitionException {
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:292:8: ( ( '&' | '|' ) )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:292:8: ( '&' | '|' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:293:8: ( ( '&' | '|' ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:293:8: ( '&' | '|' )
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:292:8: ( '&' | '|' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:293:8: ( '&' | '|' )
             int alt5=2;
             int LA5_0 = input.LA(1);
-            if ( (LA5_0==29) ) {
+            if ( (LA5_0==30) ) {
                 alt5=1;
             }
-            else if ( (LA5_0==30) ) {
+            else if ( (LA5_0==31) ) {
                 alt5=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("292:8: ( '&' | '|' )", 5, 0, input);
+                    new NoViableAltException("293:8: ( '&' | '|' )", 5, 0, input);
 
                 throw nvae;
             }
             switch (alt5) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:292:11: '&'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:293:11: '&'
                     {
-                    match(input,29,FOLLOW_29_in_connective335); 
+                    match(input,30,FOLLOW_30_in_connective345); 
                     
                     		   		fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));
                     	         
@@ -535,9 +546,9 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:297:11: '|'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:298:11: '|'
                     {
-                    match(input,30,FOLLOW_30_in_connective371); 
+                    match(input,31,FOLLOW_31_in_connective381); 
                     
                      				fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	      
                     	         
@@ -563,7 +574,7 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start restriction
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:304:1: restriction[FieldConstraintDescr fc, ColumnDescr column] : ( '~' )? ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint ) ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:1: restriction[FieldConstraintDescr fc, ColumnDescr column] : ( '~' )? ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint ) ;
     public void restriction(FieldConstraintDescr fc, ColumnDescr column) throws RecognitionException {
         String lc = null;
 
@@ -572,20 +583,20 @@ public class CLPParser extends Parser {
         			String op = "==";
         	
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:309:7: ( ( '~' )? ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint ) )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:309:7: ( '~' )? ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:310:7: ( ( '~' )? ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:310:7: ( '~' )? ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint )
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:309:7: ( '~' )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:310:7: ( '~' )?
             int alt6=2;
             int LA6_0 = input.LA(1);
-            if ( (LA6_0==31) ) {
+            if ( (LA6_0==32) ) {
                 alt6=1;
             }
             switch (alt6) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:309:8: '~'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:310:8: '~'
                     {
-                    match(input,31,FOLLOW_31_in_restriction434); 
+                    match(input,32,FOLLOW_32_in_restriction444); 
                     op = "!=";
 
                     }
@@ -593,13 +604,13 @@ public class CLPParser extends Parser {
 
             }
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:310:7: ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:311:7: ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint )
             int alt7=3;
             switch ( input.LA(1) ) {
-            case 32:
+            case 33:
                 alt7=1;
                 break;
-            case 33:
+            case 34:
                 alt7=2;
                 break;
             case STRING:
@@ -611,16 +622,16 @@ public class CLPParser extends Parser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("310:7: ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint )", 7, 0, input);
+                    new NoViableAltException("311:7: ( return_value_constraint[op, fc] | predicate_constraint[op, column] | lc= literal_constraint )", 7, 0, input);
 
                 throw nvae;
             }
 
             switch (alt7) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:311:8: return_value_constraint[op, fc]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:312:8: return_value_constraint[op, fc]
                     {
-                    pushFollow(FOLLOW_return_value_constraint_in_restriction461);
+                    pushFollow(FOLLOW_return_value_constraint_in_restriction471);
                     return_value_constraint(op,  fc);
                     _fsp--;
 
@@ -628,9 +639,9 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:313:8: predicate_constraint[op, column]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:314:8: predicate_constraint[op, column]
                     {
-                    pushFollow(FOLLOW_predicate_constraint_in_restriction480);
+                    pushFollow(FOLLOW_predicate_constraint_in_restriction490);
                     predicate_constraint(op,  column);
                     _fsp--;
 
@@ -638,9 +649,9 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:315:7: lc= literal_constraint
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:316:7: lc= literal_constraint
                     {
-                    pushFollow(FOLLOW_literal_constraint_in_restriction508);
+                    pushFollow(FOLLOW_literal_constraint_in_restriction518);
                     lc=literal_constraint();
                     _fsp--;
 
@@ -670,7 +681,7 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start return_value_constraint
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:323:1: return_value_constraint[String op, FieldConstraintDescr fc] : '=' LEFT_PAREN id= ID RIGHT_PAREN ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:324:1: return_value_constraint[String op, FieldConstraintDescr fc] : '=' LEFT_PAREN id= ID RIGHT_PAREN ;
     public void return_value_constraint(String op, FieldConstraintDescr fc) throws RecognitionException {
         Token id=null;
 
@@ -678,17 +689,17 @@ public class CLPParser extends Parser {
         		PredicateDescr d = null;
         	
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:329:3: ( '=' LEFT_PAREN id= ID RIGHT_PAREN )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:329:3: '=' LEFT_PAREN id= ID RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:330:3: ( '=' LEFT_PAREN id= ID RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:330:3: '=' LEFT_PAREN id= ID RIGHT_PAREN
             {
-            match(input,32,FOLLOW_32_in_return_value_constraint560); 
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_return_value_constraint561); 
+            match(input,33,FOLLOW_33_in_return_value_constraint570); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_return_value_constraint571); 
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_return_value_constraint568); 
+            match(input,ID,FOLLOW_ID_in_return_value_constraint578); 
              
             			fc.addRestriction( new ReturnValueRestrictionDescr(op, id.getText() ) );
             		
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_return_value_constraint577); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_return_value_constraint587); 
 
             }
 
@@ -705,22 +716,22 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start predicate_constraint
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:337:1: predicate_constraint[String op, ColumnDescr column] : ':' LEFT_PAREN id= ID RIGHT_PAREN ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:338:1: predicate_constraint[String op, ColumnDescr column] : ':' LEFT_PAREN id= ID RIGHT_PAREN ;
     public void predicate_constraint(String op, ColumnDescr column) throws RecognitionException {
         Token id=null;
 
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:339:3: ( ':' LEFT_PAREN id= ID RIGHT_PAREN )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:339:3: ':' LEFT_PAREN id= ID RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:340:3: ( ':' LEFT_PAREN id= ID RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:340:3: ':' LEFT_PAREN id= ID RIGHT_PAREN
             {
-            match(input,33,FOLLOW_33_in_predicate_constraint593); 
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_predicate_constraint594); 
+            match(input,34,FOLLOW_34_in_predicate_constraint603); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_predicate_constraint604); 
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_predicate_constraint601); 
+            match(input,ID,FOLLOW_ID_in_predicate_constraint611); 
              
             			column.addDescr( new PredicateDescr( id.getText() ) );
             		
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_predicate_constraint610); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_predicate_constraint620); 
 
             }
 
@@ -737,7 +748,7 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start literal_constraint
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:348:1: literal_constraint returns [String text] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:349:1: literal_constraint returns [String text] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
     public String literal_constraint() throws RecognitionException {
         String text = null;
 
@@ -747,10 +758,10 @@ public class CLPParser extends Parser {
         		text = null;
         	
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:352:4: ( (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL ) )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:352:4: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:353:4: ( (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:353:4: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL )
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:352:4: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:353:4: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL )
             int alt8=5;
             switch ( input.LA(1) ) {
             case STRING:
@@ -770,53 +781,53 @@ public class CLPParser extends Parser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("352:4: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL )", 8, 0, input);
+                    new NoViableAltException("353:4: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL )", 8, 0, input);
 
                 throw nvae;
             }
 
             switch (alt8) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:352:6: t= STRING
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:353:6: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal_constraint637); 
+                    match(input,STRING,FOLLOW_STRING_in_literal_constraint647); 
                      text = getString( t ); 
 
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:353:5: t= INT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:354:5: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal_constraint648); 
+                    match(input,INT,FOLLOW_INT_in_literal_constraint658); 
                      text = t.getText(); 
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:354:5: t= FLOAT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:355:5: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint661); 
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint671); 
                      text = t.getText(); 
 
                     }
                     break;
                 case 4 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:355:5: t= BOOL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:356:5: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint672); 
+                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint682); 
                      text = t.getText(); 
 
                     }
                     break;
                 case 5 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:356:5: t= NULL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:357:5: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_literal_constraint684); 
+                    match(input,NULL,FOLLOW_NULL_in_literal_constraint694); 
                      text = null; 
 
                     }
@@ -840,11 +851,11 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start function
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:361:1: function : ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:362:1: function : ;
     public void function() throws RecognitionException {
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:364:2: ()
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:364:2: 
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:365:2: ()
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:365:2: 
             {
             }
 
@@ -865,35 +876,37 @@ public class CLPParser extends Parser {
     public static final BitSet FOLLOW_bound_pattern_in_rule89 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_pattern_in_rule105 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_rule130 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_bound_pattern148 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_pattern167 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_pattern175 = new BitSet(new long[]{0x0000000000000050L});
-    public static final BitSet FOLLOW_field_constriant_in_pattern186 = new BitSet(new long[]{0x0000000000000050L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_pattern194 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_field_constriant222 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_field_constriant230 = new BitSet(new long[]{0x0000000380001F00L});
-    public static final BitSet FOLLOW_restriction_in_field_constriant252 = new BitSet(new long[]{0x0000000060000040L});
-    public static final BitSet FOLLOW_connective_in_field_constriant264 = new BitSet(new long[]{0x0000000380001F00L});
-    public static final BitSet FOLLOW_restriction_in_field_constriant281 = new BitSet(new long[]{0x0000000060000040L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_field_constriant309 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_29_in_connective335 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_30_in_connective371 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_31_in_restriction434 = new BitSet(new long[]{0x0000000300001F00L});
-    public static final BitSet FOLLOW_return_value_constraint_in_restriction461 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_predicate_constraint_in_restriction480 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_constraint_in_restriction508 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_32_in_return_value_constraint560 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_return_value_constraint561 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_return_value_constraint568 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_return_value_constraint577 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_33_in_predicate_constraint593 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_predicate_constraint594 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_predicate_constraint601 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_predicate_constraint610 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal_constraint637 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal_constraint648 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal_constraint661 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_literal_constraint672 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_literal_constraint684 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_bound_pattern148 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_bound_pattern152 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_pattern_in_bound_pattern158 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_pattern177 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_pattern185 = new BitSet(new long[]{0x0000000000000050L});
+    public static final BitSet FOLLOW_field_constriant_in_pattern196 = new BitSet(new long[]{0x0000000000000050L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_pattern204 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_field_constriant232 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_field_constriant240 = new BitSet(new long[]{0x0000000700001F00L});
+    public static final BitSet FOLLOW_restriction_in_field_constriant262 = new BitSet(new long[]{0x00000000C0000040L});
+    public static final BitSet FOLLOW_connective_in_field_constriant274 = new BitSet(new long[]{0x0000000700001F00L});
+    public static final BitSet FOLLOW_restriction_in_field_constriant291 = new BitSet(new long[]{0x00000000C0000040L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_field_constriant319 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_30_in_connective345 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_31_in_connective381 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_32_in_restriction444 = new BitSet(new long[]{0x0000000600001F00L});
+    public static final BitSet FOLLOW_return_value_constraint_in_restriction471 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_predicate_constraint_in_restriction490 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_constraint_in_restriction518 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_33_in_return_value_constraint570 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_return_value_constraint571 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_return_value_constraint578 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_return_value_constraint587 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_34_in_predicate_constraint603 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_predicate_constraint604 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_predicate_constraint611 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_predicate_constraint620 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal_constraint647 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal_constraint658 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal_constraint671 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_literal_constraint682 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_literal_constraint694 = new BitSet(new long[]{0x0000000000000002L});
 
 }
