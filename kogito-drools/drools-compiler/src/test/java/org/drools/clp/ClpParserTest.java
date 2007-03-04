@@ -19,6 +19,7 @@ import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 
 public class ClpParserTest extends TestCase {
@@ -26,7 +27,7 @@ public class ClpParserTest extends TestCase {
     private CLPParser parser;
     
     public void testRule() throws Exception {
-        RuleDescr rule = parse("(defrule xxx (name (name =(xxx)\"yyy\"&~\"zzz\") )").rule();
+        RuleDescr rule = parse("(defrule xxx (name (name \"yyy\"&~\"zzz\"|~=(ppp)) )").rule();
         
         assertEquals( "xxx", rule.getName() );
         
@@ -43,7 +44,8 @@ public class ClpParserTest extends TestCase {
         List restrictionList = fieldConstraintDescr.getRestrictions();
         
         assertEquals("name", fieldConstraintDescr.getFieldName() );
-        assertEquals(3, restrictionList.size());
+        assertEquals(5, restrictionList.size());
+                
         
         LiteralRestrictionDescr litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 0 );
         assertEquals("==", litDescr.getEvaluator() );
@@ -55,6 +57,13 @@ public class ClpParserTest extends TestCase {
         litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 2 );
         assertEquals("!=", litDescr.getEvaluator() );
         assertEquals("zzz", litDescr.getText() );
+        
+        connDescr = ( RestrictionConnectiveDescr ) restrictionList.get( 3 );
+        assertEquals(RestrictionConnectiveDescr.OR, connDescr.getConnective() );
+        
+        ReturnValueRestrictionDescr retDescr = ( ReturnValueRestrictionDescr ) restrictionList.get( 4 );
+        assertEquals("!=", retDescr.getEvaluator() );
+        assertEquals("ppp", retDescr.getText() );        
     }
     
     private CLPParser parse(final String text) throws Exception {
