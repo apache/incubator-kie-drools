@@ -22,9 +22,9 @@ RIGHT_SQUARE=22
 C_STYLE_SINGLE_LINE_COMMENT=20
 ID=5
 '&'=30
-':'=34
+':'=33
 '|'=31
-'='=33
+'='=34
 '<-'=29
 'defrule'=28
 ';'=27
