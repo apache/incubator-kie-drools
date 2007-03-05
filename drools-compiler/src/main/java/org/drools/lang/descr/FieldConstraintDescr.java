@@ -2,6 +2,7 @@ package org.drools.lang.descr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /*
@@ -49,6 +50,16 @@ public class FieldConstraintDescr extends BaseDescr {
     public List getRestrictions() {
         return this.restrictions;
     }
+    
+/*    public boolean isBound(String identifier) {
+        for ( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
+            Object object = it.next();
+            if ( object instanceof FieldBindingDescr ) {
+                FieldBindingDescr descr = 
+            }
+        }
+        return false;
+    }*/
 
     
 }

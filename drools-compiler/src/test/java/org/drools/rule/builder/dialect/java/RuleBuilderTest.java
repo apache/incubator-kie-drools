@@ -29,6 +29,7 @@ import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -84,7 +85,7 @@ public class RuleBuilderTest extends TestCase {
 
             final RuleBuilder builder = new RuleBuilder( typeResolver,
                                                          new ClassFieldExtractorCache(),
-                                                         new JavaDialect() );
+                                                         new JavaDialect(null, new PackageBuilderConfiguration() ) );
 
             builder.build( pkg,
                            ruleDescr );
@@ -120,7 +121,7 @@ public class RuleBuilderTest extends TestCase {
     }
     
     public void testBuildAttributes() throws Exception {
-        RuleBuilder builder = new RuleBuilder(null,  null, new JavaDialect() );
+        RuleBuilder builder = new RuleBuilder(null,  null, new JavaDialect(null, new PackageBuilderConfiguration()) );
         Rule rule = new Rule("myrule");
         List attributes = new ArrayList();
         
