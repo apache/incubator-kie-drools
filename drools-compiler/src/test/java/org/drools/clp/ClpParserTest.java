@@ -22,13 +22,14 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 
 public class ClpParserTest extends TestCase {
     
     private CLPParser parser;
     
     public void testRule() throws Exception {
-        RuleDescr rule = parse("(defrule xxx ?b <- (name (name \"yyy\"&~\"zzz\"|~=(ppp)&:(ooo)) )").rule();
+        RuleDescr rule = parse("(defrule xxx ?b <- (name (name \"yyy\"&?bf|~\"zzz\"|~=(ppp)&:(ooo)) )").rule();
         
         assertEquals( "xxx", rule.getName() );
         
@@ -46,8 +47,8 @@ public class ClpParserTest extends TestCase {
         List restrictionList = fieldConstraintDescr.getRestrictions();
         
         assertEquals("name", fieldConstraintDescr.getFieldName() );        
-        // @todo the 6th one has no constraint, as its a predicate, have to figure out how to handle this
-        assertEquals(6, restrictionList.size());
+        // @todo the 7th one has no constraint, as its a predicate, have to figure out how to handle this
+        assertEquals(8, restrictionList.size());
                 
         
         LiteralRestrictionDescr litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 0 );
@@ -57,14 +58,21 @@ public class ClpParserTest extends TestCase {
         RestrictionConnectiveDescr connDescr = ( RestrictionConnectiveDescr ) restrictionList.get( 1 );
         assertEquals(RestrictionConnectiveDescr.AND, connDescr.getConnective() );
         
-        litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 2 );
-        assertEquals("!=", litDescr.getEvaluator() );
-        assertEquals("zzz", litDescr.getText() );
+        VariableRestrictionDescr varDescr = ( VariableRestrictionDescr ) restrictionList.get( 2 );
+        assertEquals("==", varDescr.getEvaluator() );
+        assertEquals("?bf", varDescr.getIdentifier() );        
         
         connDescr = ( RestrictionConnectiveDescr ) restrictionList.get( 3 );
         assertEquals(RestrictionConnectiveDescr.OR, connDescr.getConnective() );
         
-        ReturnValueRestrictionDescr retDescr = ( ReturnValueRestrictionDescr ) restrictionList.get( 4 );
+        litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 4 );
+        assertEquals("!=", litDescr.getEvaluator() );
+        assertEquals("zzz", litDescr.getText() );
+        
+        connDescr = ( RestrictionConnectiveDescr ) restrictionList.get( 5 );
+        assertEquals(RestrictionConnectiveDescr.OR, connDescr.getConnective() );
+        
+        ReturnValueRestrictionDescr retDescr = ( ReturnValueRestrictionDescr ) restrictionList.get( 6 );
         assertEquals("!=", retDescr.getEvaluator() );
         assertEquals("ppp", retDescr.getText() );
         

@@ -239,9 +239,22 @@ rule returns [RuleDescr rule]
 	  RIGHT_PAREN
 	;
 
+/*
+group_ce
+	:
+		LEFT_PAREN
+			( 'and' 
+			  {
+			  	AndDescr andDescr = new AndDescr();	 
+			  }
+				
+			  |
+			  'exists'
+			)
+	;
+*/
 
 bound_pattern returns[ColumnDescr column]
-//    @init{ ColumnDescr column = null; }
 	: id=VAR 
 	'<-' 
 	col=pattern
@@ -309,11 +322,13 @@ restriction[FieldConstraintDescr fc, ColumnDescr column]
 	:	      
 	  	  ('~'{op = "!=";})?	 	  	 
 	  	  (
-	  	  	return_value_constraint[op, fc]
-	  	  	|
 	  	  	predicate_constraint[op, column]	  	  	
+	  	    |	  	  
+	  	  	return_value_restriction[op, fc]
+	  	  	|
+	  	    variable_restriction[op, fc]
 	  	    |
-		    lc=literal_constraint
+		    lc=literal_restriction
 		    {
      	      fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
 		      op = "==";
@@ -321,7 +336,18 @@ restriction[FieldConstraintDescr fc, ColumnDescr column]
 	  	  )		
 	;		
 
-return_value_constraint[String op, FieldConstraintDescr fc]
+predicate_constraint[String op, ColumnDescr column]	
+	:
+		':'LEFT_PAREN 
+		id=ID
+		{ 
+			column.addDescr( new PredicateDescr( id.getText() ) );
+		} 
+		RIGHT_PAREN
+	;
+
+
+return_value_restriction[String op, FieldConstraintDescr fc]
 	@init 
 	{
 		PredicateDescr d = null;
@@ -334,19 +360,17 @@ return_value_constraint[String op, FieldConstraintDescr fc]
 		} 
 		RIGHT_PAREN
 	;
-	
-predicate_constraint[String op, ColumnDescr column]	
+		
+variable_restriction[String op, FieldConstraintDescr fc]
 	:
-		':'LEFT_PAREN 
-		id=ID
-		{ 
-			column.addDescr( new PredicateDescr( id.getText() ) );
-		} 
-		RIGHT_PAREN
-	;
+	var=VAR
+	{
+		fc.addRestriction( new VariableRestrictionDescr(op, var.getText()) );
+	}
+	;	
 
 	
-literal_constraint returns [String text]
+literal_restriction returns [String text]
 	@init {
 		text = null;
 	}
