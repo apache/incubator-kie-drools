@@ -29,17 +29,18 @@ public class ClpParserTest extends TestCase {
     private CLPParser parser;
     
     public void testRule() throws Exception {
-        RuleDescr rule = parse("(defrule xxx ?b <- (name (name \"yyy\"&?bf|~\"zzz\"|~=(ppp)&:(ooo)) )").rule();
+        RuleDescr rule = parse("(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(ppp)&:(ooo)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) )").rule();
         
         assertEquals( "xxx", rule.getName() );
         
         AndDescr lhs = rule.getLhs();
         List lhsList = lhs.getDescrs();
-        assertEquals(1, lhsList.size());
+        assertEquals(2, lhsList.size());
         
+        // Parse the first column
         ColumnDescr col = ( ColumnDescr ) lhsList.get( 0 );
         assertEquals("?b", col.getIdentifier() );
-        assertEquals("name", col.getObjectType() );
+        assertEquals("person", col.getObjectType() );
         
         List colList = col.getDescrs();
         assertEquals(2, colList.size());
@@ -78,6 +79,39 @@ public class ClpParserTest extends TestCase {
         
         PredicateDescr predicateDescr = ( PredicateDescr ) colList.get( 1 );
         assertEquals( "ooo", predicateDescr.getText() );
+        
+        
+        // Parse the second column
+        col = ( ColumnDescr ) lhsList.get( 1 );
+        assertEquals("?c", col.getIdentifier() );
+        assertEquals("hobby", col.getObjectType() );   
+
+        colList = col.getDescrs();
+        assertEquals(2, colList.size());
+        fieldConstraintDescr = ( FieldConstraintDescr ) colList.get( 0 );
+        restrictionList = fieldConstraintDescr.getRestrictions();
+        
+        assertEquals("type", fieldConstraintDescr.getFieldName() );        
+        
+        varDescr = ( VariableRestrictionDescr ) restrictionList.get( 0 );
+        assertEquals("==", varDescr.getEvaluator() );
+        assertEquals("?bf2", varDescr.getIdentifier() );  
+        
+        connDescr = ( RestrictionConnectiveDescr ) restrictionList.get( 1 );
+        assertEquals(RestrictionConnectiveDescr.AND, connDescr.getConnective() );
+        
+        litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 2 );
+        assertEquals("!=", litDescr.getEvaluator() );
+        assertEquals("iii", litDescr.getText() );
+        
+        fieldConstraintDescr = ( FieldConstraintDescr ) colList.get( 1 );
+        restrictionList = fieldConstraintDescr.getRestrictions();        
+        
+        assertEquals("rating", fieldConstraintDescr.getFieldName() );
+        
+        litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 0 );
+        assertEquals("==", litDescr.getEvaluator() );
+        assertEquals("fivestar", litDescr.getText() );        
     }
     
     private CLPParser parse(final String text) throws Exception {
