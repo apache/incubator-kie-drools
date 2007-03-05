@@ -55,6 +55,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
@@ -71,20 +72,22 @@ import org.xml.sax.SAXException;
  * This can be done by merging into existing binary packages, or totally from source.
  */
 public class PackageBuilder {
-    
+
     private Package                     pkg;
-    
+
     private List                        results;
-        
+
     private PackageBuilderConfiguration configuration;
 
     private TypeResolver                typeResolver;
-    
+
     private ClassFieldExtractorCache    classFieldExtractorCache;
 
     private RuleBuilder                 builder;
-    
-    private CompilerHelper              helper;
+
+    private Dialect                     dialect;
+
+    private DialectRegistry             dialects;
 
     /**
      * Use this when package is starting from scratch. 
@@ -116,14 +119,19 @@ public class PackageBuilder {
                           PackageBuilderConfiguration configuration) {
         if ( configuration == null ) {
             configuration = new PackageBuilderConfiguration();
-        }
+        }        
 
-        this.helper = new CompilerHelper(pkg, configuration);
-        
         this.configuration = configuration;
         this.results = new ArrayList();
-        this.pkg = pkg;        
+        this.pkg = pkg;
         this.classFieldExtractorCache = new ClassFieldExtractorCache();
+
+        this.dialects = new DialectRegistry();
+        this.dialects.addDialect( "java",
+                                  new JavaDialect( pkg,
+                                                   configuration ) );
+        
+        this.dialect = this.dialects.getDialect( "java" );
     }
 
     /**
@@ -197,7 +205,7 @@ public class PackageBuilder {
 
         builder = new RuleBuilder( getTypeResolver(),
                                    this.classFieldExtractorCache,
-                                   new JavaDialect() );
+                                   this.dialect );
 
         //only try to compile if there are no parse errors
         if ( !hasErrors() ) {
@@ -215,10 +223,10 @@ public class PackageBuilder {
                 addRule( (RuleDescr) it.next() );
             }
         }
-        
-        this.helper.compileAll();
-        
-        this.results.addAll( this.helper.getResults() );
+
+        this.dialect.compileAll();
+
+        this.results.addAll( this.dialect.getResults() );
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
@@ -245,8 +253,8 @@ public class PackageBuilder {
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
                                          this.configuration.getClassLoader() );
-        
-        this.helper.init( pkg );
+
+        this.dialect.init( pkg );
 
         mergePackage( pkg,
                       packageDescr );
@@ -285,10 +293,9 @@ public class PackageBuilder {
         }
     }
 
-
-
     private void addFunction(final FunctionDescr functionDescr) {
-        this.helper.addFunction(functionDescr, getTypeResolver() );
+        this.dialect.addFunction( functionDescr,
+                                 getTypeResolver() );
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
@@ -316,21 +323,19 @@ public class PackageBuilder {
     }
 
     private void addRule(final RuleDescr ruleDescr) {
-        this.helper.init( ruleDescr );
-        
+        this.dialect.init( ruleDescr );
+
         builder.build( this.pkg,
                        ruleDescr );
-        
 
         this.results.addAll( builder.getErrors() );
 
         final Rule rule = builder.getRule();
 
-
-        this.helper.addRuleSemantics( builder,
+        this.dialect.addRuleSemantics( builder,
                                       rule,
-                                      ruleDescr );                      
-        
+                                      ruleDescr );
+
         this.pkg.addRule( rule );
     }
 
