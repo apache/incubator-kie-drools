@@ -12,19 +12,19 @@ T32 : '~' ;
 T33 : ':' ;
 T34 : '=' ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 391
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 392
 VAR 	: '?'ID	
         ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 394
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 395
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
 	;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 398
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 399
 NULL	:	'null';
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 400
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 401
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
@@ -33,7 +33,7 @@ WS      :       (	' '
                 { $channel=HIDDEN; }
         ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 408
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 409
 fragment
 EOL 	:	     
    		(       ( '\r\n' )=> '\r\n'  // Evil DOS
@@ -42,27 +42,27 @@ EOL 	:
                 )
         ;  
         
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 416
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 417
 INT	
 	:	('-')?('0'..'9')+
 	;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 420
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 421
 FLOAT
 	:	('-')?('0'..'9')+ '.' ('0'..'9')+
 	;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 424
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 425
 STRING
     :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
      | ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'')
     ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 429
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 430
 fragment
 HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 432
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 433
 fragment
 EscapeSequence
     :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
@@ -70,7 +70,7 @@ EscapeSequence
     |   OctalEscape
     ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 439
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 440
 fragment
 OctalEscape
     :   '\\' ('0'..'3') ('0'..'7') ('0'..'7')
@@ -78,68 +78,68 @@ OctalEscape
     |   '\\' ('0'..'7')
     ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 446
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 447
 fragment
 UnicodeEscape
     :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
     ;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 451
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 452
 BOOL
 	:	('true'|'false') 
 	;
 	
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 455
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 456
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
                 { $channel=HIDDEN; }
 	;
         
         
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 461
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 462
 C_STYLE_SINGLE_LINE_COMMENT	
 	:	'//' ( options{greedy=false;} : .)* EOL // ('\r')? '\n' 
                 { $channel=HIDDEN; }
 	;
 
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 467
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 468
 LEFT_PAREN
 	:	'('
 	;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 471
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 472
 RIGHT_PAREN
 	:	')'
 	;
         
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 475
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 476
 LEFT_SQUARE
 	:	'['
 	;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 479
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 480
 RIGHT_SQUARE
 	:	']'
 	;        
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 483
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 484
 LEFT_CURLY
 	:	'{'
 	;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 487
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 488
 RIGHT_CURLY
 	:	'}'
 	;
         
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 491
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 492
 MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
 	;
 
-// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 496
+// $ANTLR src "C:\dev\jbossrules\trunk\drools-compiler\src\main\resources\org\drools\clp\CLP.g" 497
 MISC 	:
 		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+'  | '?' | '|' | ',' | '=' | '/' | '\'' | '\\'
 	;		

@@ -235,7 +235,7 @@ rule returns [RuleDescr rule]
 	    {
 	        lhs.addDescr( column );
 	    }
-	  )	
+	  )*	
 	  RIGHT_PAREN
 	;
 
@@ -375,6 +375,7 @@ literal_restriction returns [String text]
 		text = null;
 	}
 	:	(	t=STRING { text = getString( t ); } 
+		|   t=ID     { text = t.getText(); }
 		|	t=INT    { text = t.getText(); }
 		|	t=FLOAT	 { text = t.getText(); }
 		|	t=BOOL 	 { text = t.getText(); }
