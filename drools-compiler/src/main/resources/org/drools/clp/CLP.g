@@ -227,54 +227,102 @@ rule returns [RuleDescr rule]
    	        lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );				
 	  }
-	  ( column=bound_pattern
-	    {
-	        lhs.addDescr( column );
-	    }
-	  | column=pattern 	  	  
-	    {
-	        lhs.addDescr( column );
-	    }
-	  )*	
+	  lhs[lhs]*
 	  RIGHT_PAREN
 	;
 
-/*
-group_ce
+
+lhs[ConditionalElementDescr in_ce]
 	:
-		LEFT_PAREN
-			( 'and' 
-			  {
-			  	AndDescr andDescr = new AndDescr();	 
-			  }
-				
-			  |
-			  'exists'
-			)
+	(   and_ce[in_ce]	
+	  | or_ce[in_ce]
+	  | normal_pattern[in_ce]
+	  | bound_pattern[in_ce]
+	)
 	;
-*/
-
-bound_pattern returns[ColumnDescr column]
-	: id=VAR 
-	'<-' 
-	col=pattern
-	{
-	    col.setIdentifier( id.getText() );
-  		column = col;
-	}
+	
+ce[ConditionalElementDescr in_ce]
+	:
+	(   and_ce[in_ce]	
+	  | or_ce[in_ce]
+	  | normal_pattern[in_ce]
+	)
 	;
+	
+	
+and_ce[ConditionalElementDescr in_ce]
+    @init
+    {
+        AndDescr andDescr= null;
+        
+    }
+	:
+		LEFT_PAREN	
+		'and'
+		{
+		    andDescr = new AndDescr();
+		    in_ce.addDescr( andDescr );
+		}
+		ce[andDescr]*		 
+		RIGHT_PAREN					
+	;	
+	
+or_ce[ConditionalElementDescr in_ce]
+    @init
+    {
+        OrDescr orDescr= null;
+         
+    }
+	:
+		LEFT_PAREN	
+		'or'
+		{
+		    orDescr = new OrDescr();
+		    in_ce.addDescr( orDescr );
+		}
+		ce[orDescr]*		 
+		RIGHT_PAREN					
+	;	
 
-
-pattern returns[ColumnDescr column]
+normal_pattern[ConditionalElementDescr in_ce]
+    @init
+    {
+        ColumnDescr column = null;
+    }
 	:  LEFT_PAREN 
 	  name=ID 
 	  {
 	      column = new ColumnDescr(name.getText());
+	      in_ce.addDescr( column );
 	  }
-	  field_constriant[column]* 
+      field_constriant[column]* 	  
 	  RIGHT_PAREN
 	;		
 	
+
+
+bound_pattern[ConditionalElementDescr in_ce]
+    @init
+    {
+        ColumnDescr column = null;
+        String identifier = null;
+    }
+	: 
+	var=VAR 
+	{
+	    identifier = var.getText();
+	}
+	'<-' 
+    LEFT_PAREN 
+	name=ID 
+	{
+	    column = new ColumnDescr(name.getText());
+	    column.setIdentifier( identifier );
+        in_ce.addDescr( column );	    
+	}
+    field_constriant[column]* 
+	RIGHT_PAREN	
+	;			
 	
 field_constriant[ColumnDescr column] 
 	@init {

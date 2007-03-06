@@ -18,6 +18,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -112,6 +113,55 @@ public class ClpParserTest extends TestCase {
         litDescr = ( LiteralRestrictionDescr ) restrictionList.get( 0 );
         assertEquals("==", litDescr.getEvaluator() );
         assertEquals("fivestar", litDescr.getText() );        
+    }
+    
+    public void testNestedCERule() throws Exception {
+        RuleDescr rule = parse("(defrule xxx ?b <- (person (name yyy)) (or (and (hobby1 (type qqq1)) (hobby2 (type ~qqq2))) (food (veg ~shroom) ) ) )").rule();
+        
+        assertEquals( "xxx", rule.getName() );
+        
+        AndDescr lhs = rule.getLhs();
+        List lhsList = lhs.getDescrs();
+        assertEquals(2, lhsList.size());
+        
+        // Parse the first column
+        ColumnDescr col = ( ColumnDescr ) lhsList.get( 0 );
+        assertEquals("?b", col.getIdentifier() );
+        assertEquals("person", col.getObjectType() );        
+        FieldConstraintDescr fieldConstraintDescr = ( FieldConstraintDescr ) col.getDescrs().get( 0 );
+        assertEquals("name", fieldConstraintDescr.getFieldName() );                //         
+        LiteralRestrictionDescr litDescr = ( LiteralRestrictionDescr ) fieldConstraintDescr.getRestrictions().get( 0 );
+        assertEquals("==", litDescr.getEvaluator() );
+        assertEquals("yyy", litDescr.getText() );        
+        
+        OrDescr orDescr = ( OrDescr ) lhsList.get( 1 );
+        assertEquals( 2, orDescr.getDescrs().size() );
+        
+        AndDescr andDescr = ( AndDescr ) orDescr.getDescrs().get( 0 );
+        col = ( ColumnDescr ) andDescr.getDescrs().get( 0 );
+        assertEquals("hobby1", col.getObjectType() );        
+        fieldConstraintDescr = ( FieldConstraintDescr ) col.getDescrs().get( 0 );
+        assertEquals("type", fieldConstraintDescr.getFieldName() );                //         
+        litDescr = ( LiteralRestrictionDescr ) fieldConstraintDescr.getRestrictions().get( 0 );
+        assertEquals("==", litDescr.getEvaluator() );
+        assertEquals("qqq1", litDescr.getText() );
+        
+        col = ( ColumnDescr ) andDescr.getDescrs().get( 1 );
+        assertEquals("hobby2", col.getObjectType() );        
+        fieldConstraintDescr = ( FieldConstraintDescr ) col.getDescrs().get( 0 );
+        assertEquals("type", fieldConstraintDescr.getFieldName() );                //         
+        litDescr = ( LiteralRestrictionDescr ) fieldConstraintDescr.getRestrictions().get( 0 );
+        assertEquals("!=", litDescr.getEvaluator() );
+        assertEquals("qqq2", litDescr.getText() );        
+        
+        
+        col = ( ColumnDescr ) orDescr.getDescrs().get( 1 );
+        assertEquals("food", col.getObjectType() );        
+        fieldConstraintDescr = ( FieldConstraintDescr ) col.getDescrs().get( 0 );
+        assertEquals("veg", fieldConstraintDescr.getFieldName() );                //         
+        litDescr = ( LiteralRestrictionDescr ) fieldConstraintDescr.getRestrictions().get( 0 );
+        assertEquals("!=", litDescr.getEvaluator() );
+        assertEquals("shroom", litDescr.getText() );       
     }
     
     private CLPParser parse(final String text) throws Exception {
