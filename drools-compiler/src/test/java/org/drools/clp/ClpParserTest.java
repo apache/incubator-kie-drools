@@ -16,6 +16,7 @@ import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -215,7 +216,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testNotExistsRule() throws Exception {
-        RuleDescr rule = parse( "(defrule (or (hobby1 (type qqq1)) (not (and (exists (person (name ppp))) (person (name yyy))))))" ).rule();
+        RuleDescr rule = parse( "(defrule xxx (or (hobby1 (type qqq1)) (not (and (exists (person (name ppp))) (person (name yyy))))))" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -225,7 +226,7 @@ public class ClpParserTest extends TestCase {
         assertEquals( 1,
                       lhsList.size() );
 
-        OrDescr orDescr = (OrDescr) lhsList.get( 1 );
+        OrDescr orDescr = (OrDescr) lhsList.get( 0 );
         assertEquals( 2,
                       orDescr.getDescrs().size() );
 
@@ -258,9 +259,9 @@ public class ClpParserTest extends TestCase {
         assertEquals( "==",
                       litDescr.getEvaluator() );
         assertEquals( "ppp",
-                      litDescr.getText() );      
+                      litDescr.getText() );              
         
-        col = (ColumnDescr) andDescr.getDescrs().get( 0 );
+        col = (ColumnDescr) andDescr.getDescrs().get( 1 );
         assertEquals( "person",
                       col.getObjectType() );
         fieldConstraintDescr = (FieldConstraintDescr) col.getDescrs().get( 0 );
@@ -271,6 +272,21 @@ public class ClpParserTest extends TestCase {
                       litDescr.getEvaluator() );
         assertEquals( "yyy",
                       litDescr.getText() );  
+    }
+    
+    public void testTestRule() throws Exception {
+        RuleDescr rule = parse( "(defrule xxx (test (yyy)" ).rule();
+
+        assertEquals( "xxx",
+                      rule.getName() );
+
+        AndDescr lhs = rule.getLhs();
+        List lhsList = lhs.getDescrs();
+        assertEquals( 1,
+                      lhsList.size() );
+
+        EvalDescr evalDescr = (EvalDescr) lhsList.get( 0 );
+        assertEquals( "yyy", evalDescr.getText() );
     }
 
     private CLPParser parse(final String text) throws Exception {
