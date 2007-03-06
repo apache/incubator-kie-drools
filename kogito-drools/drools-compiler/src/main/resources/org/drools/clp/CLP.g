@@ -258,8 +258,7 @@ and_ce[ConditionalElementDescr in_ce]
     }
 	:
 		LEFT_PAREN	
-		'and'
-		{
+		'and' {
 		    andDescr = new AndDescr();
 		    in_ce.addDescr( andDescr );
 		}
@@ -268,30 +267,53 @@ and_ce[ConditionalElementDescr in_ce]
 	;	
 	
 or_ce[ConditionalElementDescr in_ce]
-    @init
-    {
-        OrDescr orDescr= null;
-         
+    @init {
+        OrDescr orDescr= null;         
     }
 	:
 		LEFT_PAREN	
-		'or'
-		{
+		'or' {
 		    orDescr = new OrDescr();
 		    in_ce.addDescr( orDescr );
 		}
 		ce[orDescr]*		 
 		RIGHT_PAREN					
 	;	
+	
+not_ce[ConditionalElementDescr in_ce]
+    @init {
+        NotDescr notDescr= null;         
+    }
+	:
+		LEFT_PAREN	
+		'not' {
+		    notDescr = new NotDescr();
+		    in_ce.addDescr( notDescr );
+		}
+		ce[notDescr]?		 
+		RIGHT_PAREN					
+	;		
+	
+exists_ce[ConditionalElementDescr in_ce]
+    @init {
+        ExistsDescr existsDescr= null;         
+    }
+	:
+		LEFT_PAREN	
+		'not' {
+		    existsDescr = new ExistsDescr();
+		    in_ce.addDescr( existsDescr );
+		}
+		ce[existsDescr]?		 
+		RIGHT_PAREN					
+	;		
 
 normal_pattern[ConditionalElementDescr in_ce]
-    @init
-    {
+    @init {
         ColumnDescr column = null;
     }
 	:  LEFT_PAREN 
-	  name=ID 
-	  {
+	  name=ID {
 	      column = new ColumnDescr(name.getText());
 	      in_ce.addDescr( column );
 	  }
@@ -302,20 +324,17 @@ normal_pattern[ConditionalElementDescr in_ce]
 
 
 bound_pattern[ConditionalElementDescr in_ce]
-    @init
-    {
+    @init {
         ColumnDescr column = null;
         String identifier = null;
     }
 	: 
-	var=VAR 
-	{
+	var=VAR {
 	    identifier = var.getText();
 	}
 	'<-' 
     LEFT_PAREN 
-	name=ID 
-	{
+	name=ID {
 	    column = new ColumnDescr(name.getText());
 	    column.setIdentifier( identifier );
         in_ce.addDescr( column );	    
@@ -332,8 +351,7 @@ field_constriant[ColumnDescr column]
 		String op = "==";
 	}    
 	: LEFT_PAREN 
-	  f=ID 
-      {
+	  f=ID {
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
@@ -351,15 +369,8 @@ field_constriant[ColumnDescr column]
 	
 connective	[FieldConstraintDescr fc]
 	:
-	      (  '&'
-	         {
-		   		fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));
-	         }
-	         |
-	         '|'
-	         {
- 				fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	      
-	         }	      
+	      (   '&' { fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
+	        | '|' {fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }	      
 	      )		
 	;
 	
@@ -369,28 +380,20 @@ restriction[FieldConstraintDescr fc, ColumnDescr column]
 	}
 	:	      
 	  	  ('~'{op = "!=";})?	 	  	 
-	  	  (
-	  	  	predicate_constraint[op, column]	  	  	
-	  	    |	  	  
-	  	  	return_value_restriction[op, fc]
-	  	  	|
-	  	    variable_restriction[op, fc]
-	  	    |
-		    lc=literal_restriction
-		    {
-     	      fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
-		      op = "==";
-		    } 	  	  	  
+	  	  (   predicate_constraint[op, column]	  	  	
+	  	    | return_value_restriction[op, fc]
+	  	  	| variable_restriction[op, fc]
+	  	    |   lc=literal_restriction {
+     	        fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
+		        op = "==";
+		      } 	  	  	  
 	  	  )		
 	;		
 
 predicate_constraint[String op, ColumnDescr column]	
 	:
 		':'LEFT_PAREN 
-		id=ID
-		{ 
-			column.addDescr( new PredicateDescr( id.getText() ) );
-		} 
+		id=ID { column.addDescr( new PredicateDescr( id.getText() ) ); } 
 		RIGHT_PAREN
 	;
 
@@ -402,10 +405,7 @@ return_value_restriction[String op, FieldConstraintDescr fc]
 	}
 	:
 		'='LEFT_PAREN 
-		id=ID
-		{ 
-			fc.addRestriction( new ReturnValueRestrictionDescr(op, id.getText() ) );
-		} 
+		id=ID{ fc.addRestriction( new ReturnValueRestrictionDescr(op, id.getText() ) ); }		
 		RIGHT_PAREN
 	;
 		
@@ -422,12 +422,12 @@ literal_restriction returns [String text]
 	@init {
 		text = null;
 	}
-	:	(	t=STRING { text = getString( t ); } 
-		|   t=ID     { text = t.getText(); }
-		|	t=INT    { text = t.getText(); }
-		|	t=FLOAT	 { text = t.getText(); }
-		|	t=BOOL 	 { text = t.getText(); }
-		|	t=NULL   { text = null; }
+	:	(   t=STRING { text = getString( t ); } 
+		  | t=ID     { text = t.getText(); }
+		  | t=INT    { text = t.getText(); }
+		  | t=FLOAT	 { text = t.getText(); }
+		  | t=BOOL 	 { text = t.getText(); }
+		  | t=NULL   { text = null; }
 		)
 	;
 
