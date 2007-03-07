@@ -101,9 +101,9 @@ public class ClassFieldExtractorFactory {
                                                                 bytes,
                                                                 PROTECTION_DOMAIN );
                 // instantiating target class
-                int index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
+                Integer index = (Integer) inspector.getFieldNames().get( fieldName );
                 ValueType valueType = ValueType.determineValueType( fieldType );
-                final Object[] params = { new Integer(index), fieldType, valueType };
+                final Object[] params = { index, fieldType, valueType };
                 return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
             }
         } catch ( final Exception e ) {
