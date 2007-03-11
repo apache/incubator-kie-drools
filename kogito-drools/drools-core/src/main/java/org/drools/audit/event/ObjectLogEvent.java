@@ -63,4 +63,22 @@ public class ObjectLogEvent extends LogEvent {
     public String getObjectToString() {
         return this.objectToString;
     }
+    
+    public String toString() {
+        String msg = null;
+        switch ( this.getType() ) {
+            case OBJECT_ASSERTED :
+                msg = "OBJECT ASSERTED";
+                break;
+            case OBJECT_MODIFIED :
+                msg = "OBJECT MODIFIED";
+                break;
+                
+            case OBJECT_RETRACTED :
+                msg = "OBJECT RETRACTED";
+                break;                
+        }
+        return msg + " value:" + this.objectToString + " factId: " + factId;
+           
+    }    
 }
