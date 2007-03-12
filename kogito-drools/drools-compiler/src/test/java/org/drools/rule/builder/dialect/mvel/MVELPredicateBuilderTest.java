@@ -71,7 +71,7 @@ public class MVELPredicateBuilderTest extends TestCase {
         context.setDeclarationResolver( declarationResolver );
 
         PredicateDescr predicateDescr = new PredicateDescr();
-        predicateDescr.setText( "a == b" );
+        predicateDescr.setContent( "a == b" );
 
         MVELPredicateBuilder builder = new MVELPredicateBuilder();
 

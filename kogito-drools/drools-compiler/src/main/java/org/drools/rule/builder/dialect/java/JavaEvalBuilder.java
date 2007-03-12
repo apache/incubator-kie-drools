@@ -59,7 +59,7 @@ public class JavaEvalBuilder
 
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  evalDescr,
-                                                                 evalDescr.getText() );
+                                                                 evalDescr.getContent() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -78,7 +78,7 @@ public class JavaEvalBuilder
         st.setAttribute( "methodName",
                          className );
 
-        final String evalText = evalDescr.getText();
+        final String evalText = (String) evalDescr.getContent();
         st.setAttribute( "text",
                          evalText );
 

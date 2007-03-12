@@ -3672,7 +3672,7 @@ public class DRLParser extends Parser {
               
               		        if( text != null ) {
               			        String body = text.substring(1, text.length()-1);
-              			        d.setText( body );
+              			        d.setContent( body );
               				column.addDescr( d );
               		        }
               		
@@ -4799,7 +4799,7 @@ public class DRLParser extends Parser {
               		        if( c != null ) {
               		            String body = c.substring(1, c.length()-1);
               			    checkTrailingSemicolon( body, offset(loc.getLine()) );
-              			    ((EvalDescr) d).setText( body );
+              			    ((EvalDescr) d).setContent( body );
               			}
               		
             }

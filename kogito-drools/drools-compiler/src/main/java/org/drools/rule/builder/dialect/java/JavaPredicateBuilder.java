@@ -45,7 +45,7 @@ public class JavaPredicateBuilder
         st.setAttribute( "methodName",
                          className );
 
-        final String predicateText = predicateDescr.getText();
+        final String predicateText = (String) predicateDescr.getContent();
 
         st.setAttribute( "text",
                          predicateText );

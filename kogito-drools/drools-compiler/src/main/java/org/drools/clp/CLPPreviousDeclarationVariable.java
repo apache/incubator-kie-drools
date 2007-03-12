@@ -1,0 +1,86 @@
+package org.drools.clp;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import org.drools.base.ValueType;
+import org.drools.common.InternalFactHandle;
+import org.drools.rule.Declaration;
+import org.mvel.integration.VariableResolver;
+
+public class CLPPreviousDeclarationVariable implements VariableValueHandler {
+
+    private Declaration declaration;
+    
+    public CLPPreviousDeclarationVariable(Declaration declaration) {
+        this.declaration = declaration;
+    }
+
+    public String getIdentifier() {
+        return this.declaration.getIdentifier();
+    }
+
+    public Class getKnownType() {
+        return declaration.getExtractor().getExtractToClass();
+    }
+    
+    public ValueType getValueType() {
+        return this.declaration.getValueType();
+    }
+
+    public void setValue(ExecutionContext context,
+                         Object object) {
+        throw new UnsupportedOperationException( "External Variable identifer='" + getIdentifier() + "' type='" + getKnownType() + "' is final, it cannot be set" );
+    }
+    
+    public Object getValue(ExecutionContext context) {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return declaration.getValue( handle.getObject() );
+    }
+    
+    public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return (BigDecimal) declaration.getValue( handle.getObject() );
+    }
+
+    public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return (BigInteger) declaration.getValue( handle.getObject() );
+    }
+
+    public boolean getBooleanValue(ExecutionContext context) throws ClassCastException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return declaration.getBooleanValue( handle.getObject() );
+    }
+
+    public double getDoubleValue(ExecutionContext context) throws NumberFormatException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return declaration.getDoubleValue( handle.getObject() );
+    }
+
+    public float getFloatValue(ExecutionContext context) throws NumberFormatException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return declaration.getFloatValue( handle.getObject() );
+    }
+
+    public int getIntValue(ExecutionContext context) throws NumberFormatException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return declaration.getIntValue( handle.getObject() );
+    }
+
+    public long getLongValue(ExecutionContext context) throws NumberFormatException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return declaration.getLongValue( handle.getObject() );
+    }
+
+    public short getShortValue(ExecutionContext context) throws NumberFormatException {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return declaration.getShortValue( handle.getObject() );
+    }
+
+    public String getStringValue(ExecutionContext context) {
+        InternalFactHandle handle = context.getTuple().get( this.declaration );
+        return (String) declaration.getValue( handle.getObject() );
+    }
+        
+}

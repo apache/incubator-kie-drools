@@ -50,7 +50,7 @@ public class MVELEvalBuilderTest extends TestCase {
         context.setDeclarationResolver( declarationResolver );
 
         EvalDescr evalDescr = new EvalDescr();
-        evalDescr.setText( "a == 10" );
+        evalDescr.setContent( "a == 10" );
 
         MVELEvalBuilder builder = new MVELEvalBuilder();
         EvalCondition eval = ( EvalCondition ) builder.build( context,

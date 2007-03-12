@@ -83,7 +83,7 @@ public class MVELPredicateBuilder
         
         factory.setGlobalsMap( context.getPkg().getGlobals() );        
         
-        Serializable expr = MVEL.compileExpression( predicateDescr.getText() );
+        Serializable expr = MVEL.compileExpression( (String) predicateDescr.getContent() );
         predicate.setPredicateExpression( new MVELPredicateExpression(expr,factory) );        
     }
     

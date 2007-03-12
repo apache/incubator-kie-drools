@@ -22,7 +22,7 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
      */
     private static final long serialVersionUID = 320L;
     private String            evaluator;
-    private String            text;
+    private Object            content;
     private String[]          declarations;
 
     private String            classMethodName;
@@ -32,9 +32,9 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
     }
 
     public ReturnValueRestrictionDescr(final String evaluator,
-                                       final String text) {
+                                       final Object content) {
         this.evaluator = evaluator;
-        this.text = text;
+        this.content = content;
     }
 
     public String getClassMethodName() {
@@ -49,12 +49,12 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
         return this.evaluator;
     }
 
-    public String getText() {
-        return this.text;
+    public Object getContent() {
+        return this.content;
     }
 
-    public void setText(final String text) {
-        this.text = text;
+    public void setContent(final String text) {
+        this.content = text;
     }
 
     public void setDeclarations(final String[] declarations) {
@@ -66,6 +66,6 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
     }
 
     public String toString() {
-        return "[ReturnValue: evaluator=" + this.evaluator + "; text=" + this.text + "]";
+        return "[ReturnValue: evaluator=" + this.evaluator + "; text=" + this.content + "]";
     }
 }

@@ -29,7 +29,7 @@ public class RuleDescr extends BaseDescr {
     private String   documentation;
 
     private AndDescr lhs;
-    private String   consequence;
+    private Object   consequence;
     private int      consequenceLine;
     private int      consequenceColumn;
     private int      offset;
@@ -87,11 +87,11 @@ public class RuleDescr extends BaseDescr {
         this.lhs = lhs;
     }
 
-    public String getConsequence() {
+    public Object getConsequence() {
         return this.consequence;
     }
 
-    public void setConsequence(final String consequence) {
+    public void setConsequence(final Object consequence) {
         this.consequence = consequence;
     }
 

@@ -27,7 +27,7 @@ public class EvalDescr extends BaseDescr
      */
     private static final long serialVersionUID = 325264120108029570L;
 
-    private String   text;
+    private Object   content;
 
     private String[] declarations;
 
@@ -36,16 +36,16 @@ public class EvalDescr extends BaseDescr
     public EvalDescr() {
     }
 
-    public EvalDescr(final String text) {
-        this.text = text;
+    public EvalDescr(final Object content) {
+        this.content = content;
     }
 
-    public String getText() {
-        return this.text;
+    public Object getContent() {
+        return this.content;
     }
 
-    public void setText(final String text) {
-        this.text = text;
+    public void setContent(final Object content) {
+        this.content = content;
     }
 
     public String getClassMethodName() {

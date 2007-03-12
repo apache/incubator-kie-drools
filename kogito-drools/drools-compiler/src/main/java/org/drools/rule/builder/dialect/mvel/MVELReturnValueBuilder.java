@@ -76,7 +76,7 @@ public class MVELReturnValueBuilder
         
         factory.setGlobalsMap( context.getPkg().getGlobals() );        
         
-        Serializable expr = MVEL.compileExpression( returnValueRestrictionDescr.getText() );
+        Serializable expr = MVEL.compileExpression( (String) returnValueRestrictionDescr.getContent() );
         returnValueRestriction.setReturnValueExpression( new MVELReturnValueExpression(expr,factory) );        
     }
     
@@ -114,7 +114,7 @@ public class MVELReturnValueBuilder
         
         factory.setGlobalsMap( context.getPkg().getGlobals() );        
         
-        Serializable expr = MVEL.compileExpression( predicateDescr.getText() );
+        Serializable expr = MVEL.compileExpression( (String) predicateDescr.getContent() );
         predicate.setPredicateExpression( new MVELPredicateExpression(expr,factory) );        
     }
     

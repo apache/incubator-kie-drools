@@ -77,7 +77,7 @@ class PredicateHandler extends BaseAbstractHandler
                                          this.xmlPackageReader.getLocator() );
         }
 
-        predicateDescr.setText( expression );
+        predicateDescr.setContent( expression );
 
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );

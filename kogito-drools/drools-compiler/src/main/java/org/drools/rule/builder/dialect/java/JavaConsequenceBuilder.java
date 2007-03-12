@@ -55,7 +55,7 @@ public class JavaConsequenceBuilder
 
         final List[] usedIdentifiers = utils.getUsedCIdentifiers( context,
                                                                   ruleDescr,
-                                                                  ruleDescr.getConsequence() );
+                                                                  (String) ruleDescr.getConsequence() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -67,7 +67,7 @@ public class JavaConsequenceBuilder
                                            declarations,
                                            (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
         st.setAttribute( "text",
-                         utils.getKnowledgeHelperFixer().fix( ruleDescr.getConsequence() ) );
+                         utils.getKnowledgeHelperFixer().fix( (String) ruleDescr.getConsequence() ) );
 
         context.getMethods().add( st.toString() );
 

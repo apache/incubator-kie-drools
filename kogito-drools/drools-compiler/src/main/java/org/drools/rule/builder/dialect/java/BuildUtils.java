@@ -76,10 +76,10 @@ public class BuildUtils {
 
     public List[] getUsedIdentifiers(final BuildContext context,
                                      final BaseDescr descr,
-                                     final String text) {
+                                     final Object content) {
         List[] usedIdentifiers = null;
         try {
-            usedIdentifiers = this.analyzer.analyzeExpression( text,
+            usedIdentifiers = this.analyzer.analyzeExpression( (String) content,
                                                                new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),

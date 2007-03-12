@@ -73,7 +73,7 @@ public class MVELEvalBuilder
         factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
         factory.setGlobalsMap( context.getPkg().getGlobals() );        
         
-        Serializable expr = MVEL.compileExpression( evalDescr.getText() );       
+        Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent() );       
         final EvalCondition eval = new EvalCondition( declarations );
         eval.setEvalExpression( new MVELEvalExpression(expr,factory) );
         
