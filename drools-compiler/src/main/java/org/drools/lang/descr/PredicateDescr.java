@@ -22,7 +22,7 @@ public class PredicateDescr extends BaseDescr {
      */
     private static final long serialVersionUID = 320;
     //private final String fieldName;
-    private String       text;
+    private Object       content;
 
     //private final String declaration;
     private String[]     declarations;
@@ -42,8 +42,8 @@ public class PredicateDescr extends BaseDescr {
 //        this.declaration = declaration;
 //        this.text = text;
 //    }
-    public PredicateDescr( final String text ) {
-        this.text = text;
+    public PredicateDescr( final Object text ) {
+        this.content = text;
     }
 
     public PredicateDescr( ) {
@@ -61,12 +61,12 @@ public class PredicateDescr extends BaseDescr {
         this.classMethodName = classMethodName;
     }
 
-    public String getText() {
-        return this.text;
+    public Object getContent() {
+        return this.content;
     }
 
-    public void setText(final String text) {
-        this.text = text;
+    public void setContent(final Object text) {
+        this.content = text;
     }
 
 //    public String getDeclaration() {

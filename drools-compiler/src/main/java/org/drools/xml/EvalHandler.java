@@ -85,7 +85,7 @@ class EvalHandler extends BaseAbstractHandler
                                          this.xmlPackageReader.getLocator() );
         }
 
-        evalDescr.setText( expression );
+        evalDescr.setContent( expression );
 
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );

@@ -105,7 +105,7 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitEvalDescr(final EvalDescr descr) {
         this.template = new String();
-        this.template = "<eval>" + replaceIllegalChars( descr.getText() ) + "</eval>" + XmlDumper.eol;
+        this.template = "<eval>" + replaceIllegalChars( (String) descr.getContent() ) + "</eval>" + XmlDumper.eol;
     }
 
     public void visitExistsDescr(final ExistsDescr descr) {
@@ -169,12 +169,12 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitPredicateDescr(final PredicateDescr descr) {
         this.template = new String();
-        this.template = "<predicate>" + replaceIllegalChars( descr.getText() ) + "</predicate>" + XmlDumper.eol;
+        this.template = "<predicate>" + replaceIllegalChars( (String) descr.getContent() ) + "</predicate>" + XmlDumper.eol;
     }
 
     public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
         this.template = new String();
-        this.template = "<return-value-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\" >" + replaceIllegalChars( descr.getText() ) + "</return-value-restriction>" + XmlDumper.eol;
+        this.template = "<return-value-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\" >" + replaceIllegalChars( (String) descr.getContent() ) + "</return-value-restriction>" + XmlDumper.eol;
     }
 
     public void visitQueryDescr(final QueryDescr descr) {
@@ -198,7 +198,7 @@ public class XmlDumper extends ReflectiveVisitor
                 lhs = "<lhs> </lhs>";
             }
 
-            final String rhs = "<rhs>" + replaceIllegalChars( ruleDescr.getConsequence() ) + "</rhs>" + XmlDumper.eol;
+            final String rhs = "<rhs>" + replaceIllegalChars( (String) ruleDescr.getConsequence() ) + "</rhs>" + XmlDumper.eol;
             rule += attribute;
             rule += lhs;
             rule += rhs;

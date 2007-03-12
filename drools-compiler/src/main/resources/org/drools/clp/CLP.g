@@ -212,6 +212,8 @@ rule returns [RuleDescr rule]
 	        rule = null; 
 	        AndDescr lhs = null;
 	        ColumnDescr colum = null;
+	        ExecutionEngine engine = new BlockExecutionEngine();
+			ExecutionBuildContext context = new ExecutionBuildContext( engine );  	        
 	      }
 	: loc=LEFT_PAREN 'defrule' 
 	  ruleName=ID 
@@ -228,10 +230,12 @@ rule returns [RuleDescr rule]
 			lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );				
 	  }
 	  lhs[lhs]*
+	  function[context]* { rule.setConsequence( engine ); }
 	  RIGHT_PAREN
 	;
 
 
+/* lhs is slightly different to ce as lhs allows pattern bindings, ce doesn't */
 lhs[ConditionalElementDescr in_ce]
 	:	(   and_ce[in_ce]	
 		  | or_ce[in_ce]
@@ -259,7 +263,7 @@ and_ce[ConditionalElementDescr in_ce]
         AndDescr andDescr= null;        
     }
 	:	LEFT_PAREN	
-		'and' {
+		AND {
 	    	andDescr = new AndDescr();
 			in_ce.addDescr( andDescr );
 		}
@@ -272,7 +276,7 @@ or_ce[ConditionalElementDescr in_ce]
         OrDescr orDescr= null;         
     }
 	:	LEFT_PAREN	
-		'or' {
+		OR {
 	    	orDescr = new OrDescr();
 			in_ce.addDescr( orDescr );
 		}
@@ -285,7 +289,7 @@ not_ce[ConditionalElementDescr in_ce]
         NotDescr notDescr= null;         
     }
 	:	LEFT_PAREN	
-		'not' {
+		NOT {
 			notDescr = new NotDescr();
 		    in_ce.addDescr( notDescr );
 		}
@@ -295,10 +299,10 @@ not_ce[ConditionalElementDescr in_ce]
 	
 exists_ce[ConditionalElementDescr in_ce]
     @init {
-        ExistsDescr existsDescr= null;         
+        ExistsDescr existsDescr= null;        
     }
 	:	LEFT_PAREN	
-		'exists' {
+		EXISTS {
 		    existsDescr = new ExistsDescr();
 		    in_ce.addDescr( existsDescr );
 		}
@@ -308,18 +312,18 @@ exists_ce[ConditionalElementDescr in_ce]
 
 eval_ce[ConditionalElementDescr in_ce]
     @init {
-        EvalDescr evalDescr= null;         
+        EvalDescr evalDescr= null;    
+   		ExecutionEngine engine = new CLPEval();     
+		ExecutionBuildContext context = new ExecutionBuildContext( engine );   		         
     }
 	:	LEFT_PAREN	
-		'test' {
+		TEST {
 		    evalDescr = new EvalDescr();
 		    in_ce.addDescr( evalDescr );
 		}
-		LEFT_PAREN		 
-		t=ID {
-			evalDescr.setText( t.getText() );
-		}
-		RIGHT_PAREN
+		function[context] {					
+			evalDescr.setContent( engine );			
+		}			 
 		RIGHT_PAREN					
 	;		
 
@@ -391,30 +395,37 @@ restriction[FieldConstraintDescr fc, ColumnDescr column]
 			String op = "==";
 	}
 	:	('~'{op = "!=";})?	 	  	 
-		(   predicate_constraint[op, column]	  	  	
-	  	    | return_value_restriction[op, fc]
-	  	  	| variable_restriction[op, fc]
+		(		predicate_constraint[op, column]	  	  	
+	  	    |	return_value_restriction[op, fc]
+	  	  	|	variable_restriction[op, fc]
 	  	    | 	lc=literal_restriction {
-     	      	fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
+     	    	fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
 		      	op = "==";
 		      } 	  	  	  
 		)		
 	;		
 
 predicate_constraint[String op, ColumnDescr column]	
-	:	':'LEFT_PAREN 
-		id=ID { column.addDescr( new PredicateDescr( id.getText() ) ); } 
-		RIGHT_PAREN
+    @init {
+   		ExecutionEngine engine = new CLPPredicate();
+		ExecutionBuildContext context = new ExecutionBuildContext( engine );    
+    }
+	:	':'
+		function[context] {	
+			column.addDescr( new PredicateDescr( engine ) );
+		}	
 	;
 
 
 return_value_restriction[String op, FieldConstraintDescr fc]
 	@init {
-		PredicateDescr d = null;
+		ExecutionEngine engine = new CLPReturnValue();
+		ExecutionBuildContext context = new ExecutionBuildContext( engine );
 	}
-	:	'='LEFT_PAREN 
-		id=ID{ fc.addRestriction( new ReturnValueRestrictionDescr(op, id.getText() ) ); }		
-		RIGHT_PAREN
+	:	'=' 
+		function[context] {					
+			fc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
+		}		
 	;
 		
 variable_restriction[String op, FieldConstraintDescr fc]
@@ -434,16 +445,76 @@ literal_restriction returns [String text]
 	    }
 	;		
 
-function     
+function[ExecutionBuildContext context] returns[Function f]
+	@init {
+	    FunctionFactory factory = FunctionFactory.getInstance();
+	}
 	:	LEFT_PAREN
-		ID
-	    (   VAR
-	      | literal
-	      | function
-	    )
+		name=ID {
+			if ( name.getText().equals("bind") ) {
+		  		context.createLocalVariable( name.getText() );
+			}
+		  	f = factory.createFunction( name.getText() );		  
+		}
+	    	
+		function_params[context, f]+ 
 	    RIGHT_PAREN
 	;
 
+
+modify_function[ExecutionBuildContext context] returns[Function f]
+	@init {
+	    FunctionFactory factory = FunctionFactory.getInstance();
+		f = factory.createFunction( "modify" );
+	}
+	:
+		LEFT_PAREN
+			'modify'
+			slot_name_value_pair[context, f]+
+		RIGHT_PAREN		
+	;	
+	
+function_params[ExecutionBuildContext context, Function f]
+	@init {
+		ValueHandler value  =  null;		
+	}
+	:
+		(		t=VAR		{ value = context.getVariableValueHandler(t.getText() ); }
+			|	t=STRING    { value = new ObjectLiteralValue( getString( t ) ); }
+			| 	t=ID        { value = new ObjectLiteralValue( t.getText() ); }			
+			|	t=FLOAT     { value = new DoubleLiteralValue( t.getText() ); }
+			|	t=INT       { value = new LongLiteralValue( t.getText() ); }			
+			|	t=BOOL      { value = new BooleanLiteralValue( t.getText() ); }						
+			|	t=NULL      { value = ObjectLiteralValue.NULL; }
+			|	nf=function[context] { value = nf; }			
+		)	
+		{ f.addParameter( value ); }	
+		
+	;		
+	
+slot_name_value_pair[ExecutionBuildContext context, Function f]
+	@init {
+		SlotNameValuePair nameValuePair = null;
+		String name = null;
+	}
+	:
+		LEFT_PAREN
+		id=ID {
+			name = id.getText();
+		}
+		(		t=VAR       { nameValuePair = new SlotNameValuePair(name, context.getVariableValueHandler( t.getText() ) ); }
+			| 	t=STRING    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( getString( t ) ) ); }
+			| 	t=ID        { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
+			|	t=FLOAT     { nameValuePair = new SlotNameValuePair(name, new DoubleLiteralValue( t.getText() ) ); }
+			|	t=INT       { nameValuePair = new SlotNameValuePair(name, new LongLiteralValue( t.getText() ) ); }			
+			|	t=BOOL      { nameValuePair = new SlotNameValuePair(name, new BooleanLiteralValue( t.getText() ) ) ; }						
+			|	t=NULL      { nameValuePair = new SlotNameValuePair(name, ObjectLiteralValue.NULL ); }
+			|	nf=function[context]
+			                { nameValuePair = new SlotNameValuePair(name, nf ); }
+		)	
+		{ f.addParameter( nameValuePair ); }		
+		RIGHT_PAREN
+	;	
 	
 literal returns [String text]
 	@init {
@@ -457,6 +528,14 @@ literal returns [String text]
 		  | t=NULL   { text = null; }
 		)
 	;
+	
+	
+DEFRULE	:	'defrule';
+OR 		:	'or';
+AND 	:	'and';
+NOT 	:	'not';
+EXISTS 	:	'exists';
+TEST 	:	'test';
 
 VAR 	: '?'ID	
         ;

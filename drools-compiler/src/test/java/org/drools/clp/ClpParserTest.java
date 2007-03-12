@@ -32,8 +32,13 @@ public class ClpParserTest extends TestCase {
 
     private CLPParser parser;
 
-    public void testRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(ppp)&:(ooo)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) )" ).rule();
+    public void testParseFunction() throws Exception {
+        ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate() );
+        parse( "(< 1 2)" ).function( context );
+    }
+    
+    public void testPatternsRule() throws Exception {
+        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 2)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) )" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -96,11 +101,11 @@ public class ClpParserTest extends TestCase {
         assertEquals( "!=",
                       retDescr.getEvaluator() );
         assertEquals( "ppp",
-                      retDescr.getText() );
+                      retDescr.getContent() );
 
         PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );
         assertEquals( "ooo",
-                      predicateDescr.getText() );
+                      predicateDescr.getContent() );
 
         // Parse the second column
         col = (ColumnDescr) lhsList.get( 1 );
@@ -286,7 +291,7 @@ public class ClpParserTest extends TestCase {
                       lhsList.size() );
 
         EvalDescr evalDescr = (EvalDescr) lhsList.get( 0 );
-        assertEquals( "yyy", evalDescr.getText() );
+        assertEquals( "yyy", evalDescr.getContent() );
     }
 
     private CLPParser parse(final String text) throws Exception {

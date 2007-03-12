@@ -82,7 +82,7 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
                                          this.xmlPackageReader.getLocator() );
         }
 
-        returnValueDescr.setText( expression );
+        returnValueDescr.setContent( expression );
 
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );

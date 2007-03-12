@@ -367,7 +367,7 @@ public class ColumnBuilder {
                        final PredicateDescr predicateDescr) {
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  predicateDescr,
-                                                                 predicateDescr.getText() );
+                                                                 predicateDescr.getContent() );
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
@@ -524,7 +524,7 @@ public class ColumnBuilder {
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  returnValueRestrictionDescr,
-                                                                 returnValueRestrictionDescr.getText() );
+                                                                 returnValueRestrictionDescr.getContent() );
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();

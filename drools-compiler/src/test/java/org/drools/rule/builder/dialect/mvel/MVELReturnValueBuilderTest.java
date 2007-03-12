@@ -75,7 +75,7 @@ public class MVELReturnValueBuilderTest extends TestCase {
         context.setDeclarationResolver( declarationResolver );
 
         ReturnValueRestrictionDescr returnValueDescr = new ReturnValueRestrictionDescr("=");
-        returnValueDescr.setText( "a + b" );
+        returnValueDescr.setContent( "a + b" );
 
         MVELReturnValueBuilder builder = new MVELReturnValueBuilder();
 

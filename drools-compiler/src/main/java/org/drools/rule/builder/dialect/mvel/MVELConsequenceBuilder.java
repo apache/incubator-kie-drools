@@ -27,7 +27,7 @@ public class MVELConsequenceBuilder
         factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
         factory.setGlobalsMap( context.getPkg().getGlobals() );
 
-        Serializable expr = MVEL.compileExpression( ruleDescr.getConsequence() );
+        Serializable expr = MVEL.compileExpression( (String) ruleDescr.getConsequence() );
 
         context.getRule().setConsequence( new MVELConsequence( expr,
                                                                factory ) );

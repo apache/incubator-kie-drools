@@ -113,7 +113,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitEvalDescr(final EvalDescr descr) {
         this.template = new String();
-        this.template = "\t\teval ( " + descr.getText() + " )" + DrlDumper.eol;
+        this.template = "\t\teval ( " + descr.getContent() + " )" + DrlDumper.eol;
     }
 
     public void visitExistsDescr(final ExistsDescr descr) {
@@ -202,13 +202,13 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitPredicateDescr(final PredicateDescr descr) {
         this.template = new String();
-        this.template = "( " + descr.getText() + " )";
+        this.template = "( " + descr.getContent() + " )";
 
     }
 
     public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
         this.template = new String();
-        this.template = descr.getEvaluator() + " ( " + descr.getText() + ")";
+        this.template = descr.getEvaluator() + " ( " + descr.getContent() + ")";
     }
 
     public void visitQueryDescr(final QueryDescr descr) {
@@ -232,7 +232,7 @@ public class DrlDumper extends ReflectiveVisitor
                 lhs = "\t when";
             }
 
-            String rhs = ruleDescr.getConsequence();
+            String rhs = (String) ruleDescr.getConsequence();
             if ( rhs == null ) {
                 rhs = "\t then" + DrlDumper.eol + "\t";
             } else {

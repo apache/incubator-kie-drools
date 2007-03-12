@@ -40,7 +40,7 @@ public class JavaReturnValueBuilder implements ReturnValueBuilder {
         st.setAttribute( "methodName",
                          className );
 
-        final String returnValueText = returnValueRestrictionDescr.getText();
+        final String returnValueText = (String) returnValueRestrictionDescr.getContent();
         st.setAttribute( "text",
                          returnValueText );
 
