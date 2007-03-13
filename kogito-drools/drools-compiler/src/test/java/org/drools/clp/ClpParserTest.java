@@ -105,15 +105,15 @@ public class ClpParserTest extends TestCase {
         CLPReturnValue clprv = ( CLPReturnValue ) retDescr.getContent();
         Function f = clprv.getFunctions()[0];
         assertEquals( "+", f.getName() );        
-        assertSame( new LongLiteralValue( 2 ), f.getParameters()[0] );
-        
-        
-//        assertEquals( "ppp",
-//                       );
+        assertEquals( new LongLiteralValue( 2 ), f.getParameters()[0] );
+        assertEquals( new LongLiteralValue( 3 ), f.getParameters()[1] );       
 
-        PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );
-        assertEquals( "ooo",
-                      predicateDescr.getContent() );
+        PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );        
+        CLPPredicate clpp = ( CLPPredicate ) predicateDescr.getContent();
+        f = clpp.getFunctions()[0];
+        assertEquals( "<", f.getName() );        
+        assertEquals( new LongLiteralValue( 1 ), f.getParameters()[0] );
+        assertEquals( new LongLiteralValue( 2 ), f.getParameters()[1] );        
 
         // Parse the second column
         col = (ColumnDescr) lhsList.get( 1 );
@@ -288,7 +288,7 @@ public class ClpParserTest extends TestCase {
     }
     
     public void testTestRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx (test (yyy)" ).rule();
+        RuleDescr rule = parse( "(defrule xxx (test (< 9.0 1.3)" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -299,7 +299,13 @@ public class ClpParserTest extends TestCase {
                       lhsList.size() );
 
         EvalDescr evalDescr = (EvalDescr) lhsList.get( 0 );
-        assertEquals( "yyy", evalDescr.getContent() );
+        
+        CLPEval clpe = ( CLPEval ) evalDescr.getContent();
+        Function f = clpe.getFunctions()[0];
+        assertEquals( "<", f.getName() );        
+        assertEquals( new DoubleLiteralValue( 9.0 ), f.getParameters()[0] );
+        assertEquals( new DoubleLiteralValue( 1.3 ), f.getParameters()[1] );  
+        
     }
 
     private CLPParser parse(final String text) throws Exception {
