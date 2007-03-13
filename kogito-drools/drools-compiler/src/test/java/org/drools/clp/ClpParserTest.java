@@ -32,11 +32,15 @@ public class ClpParserTest extends TestCase {
 
     public void testParseFunction() throws Exception {
         ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate() );
-        parse( "(< 1 2)" ).function( context );
+        Function f = parse( "(< 1 2)" ).function( context );
+        
+        assertEquals( "<", f.getName() );        
+        assertEquals( new LongLiteralValue( 1 ), f.getParameters()[0] );
+        assertEquals( new LongLiteralValue( 2 ), f.getParameters()[1] );
     }
     
     public void testPatternsRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 2)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) )" ).rule();
+        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 3)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) )" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -98,8 +102,14 @@ public class ClpParserTest extends TestCase {
         ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) restrictionList.get( 6 );
         assertEquals( "!=",
                       retDescr.getEvaluator() );
-        assertEquals( "ppp",
-                      retDescr.getContent() );
+        CLPReturnValue clprv = ( CLPReturnValue ) retDescr.getContent();
+        Function f = clprv.getFunctions()[0];
+        assertEquals( "+", f.getName() );        
+        assertSame( new LongLiteralValue( 2 ), f.getParameters()[0] );
+        
+        
+//        assertEquals( "ppp",
+//                       );
 
         PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );
         assertEquals( "ooo",

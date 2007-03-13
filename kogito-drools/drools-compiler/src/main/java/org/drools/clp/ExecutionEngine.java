@@ -4,4 +4,6 @@ public interface ExecutionEngine {
     public void addFunction(Function function);
     
     public int getNextIndex();
+    
+    public Function[] getFunctions();
 }

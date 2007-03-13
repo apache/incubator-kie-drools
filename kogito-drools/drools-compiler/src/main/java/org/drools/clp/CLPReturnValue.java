@@ -34,6 +34,10 @@ public class CLPReturnValue
     public void addFunction(Function function) {
         setFunction( function );        
     }  
+    
+    public Function[] getFunctions() {
+        return new Function[] { this.function };
+    }
 
     public int getNextIndex() {
         return  this.index++;
