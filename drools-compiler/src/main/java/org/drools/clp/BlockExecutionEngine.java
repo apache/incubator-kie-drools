@@ -31,6 +31,10 @@ public class BlockExecutionEngine
                           this.functions.length - 1 );
         temp[temp.length - 1] = function;
         this.functions = temp;
+    } 
+    
+    public Function[] getFunctions() {
+        return this.functions;
     }    
 
     public int getNextIndex() {

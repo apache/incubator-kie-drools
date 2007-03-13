@@ -56,5 +56,27 @@ public class LongLiteralValue extends BaseValueHandler {
 
     public String getStringValue(ExecutionContext context) {
         return Long.toString( this.longValue );
+    }
+    
+    public String toString() {
+        return "[LongLiteralValue value='" + this.longValue + "']";
+    }
+
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + (int) (longValue ^ (longValue >>> 32));
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( ! ( obj instanceof LongLiteralValue ) ) return false;
+        final LongLiteralValue other = (LongLiteralValue) obj;
+        if ( longValue != other.longValue ) return false;
+        return true;
     }      
+    
+    
 }

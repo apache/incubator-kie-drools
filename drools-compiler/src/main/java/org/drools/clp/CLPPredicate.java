@@ -33,6 +33,10 @@ public class CLPPredicate
         this.function = function;
     }
     
+    public Function[] getFunctions() {
+        return new Function[] { this.function };
+    }    
+    
     public int getNextIndex() {
         return  this.index++;
     }    
