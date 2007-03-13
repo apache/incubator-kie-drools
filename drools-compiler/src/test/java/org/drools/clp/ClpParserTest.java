@@ -12,8 +12,6 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.SwitchingCommonTokenStream;
-import org.drools.lang.DRLLexer;
-import org.drools.lang.DRLParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
