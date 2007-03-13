@@ -56,5 +56,29 @@ public class DoubleLiteralValue extends BaseValueHandler {
 
     public String getStringValue(ExecutionContext context) {
         return Double.toString( this.doubleValue );
-    }      
+    }
+
+    public String toString() {
+        return "[DoubleLiteralValue value='" + this.doubleValue + "']";
+    }    
+    
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits( doubleValue );
+        result = PRIME * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( !(obj instanceof DoubleLiteralValue) ) return false;
+        final DoubleLiteralValue other = (DoubleLiteralValue) obj;
+        if ( Double.doubleToLongBits( doubleValue ) != Double.doubleToLongBits( other.doubleValue ) ) return false;
+        return true;
+    }
+    
+    
 }
