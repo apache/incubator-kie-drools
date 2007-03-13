@@ -459,6 +459,7 @@ function[ExecutionBuildContext context] returns[Function f]
 	    	
 		function_params[context, f]+ 
 	    RIGHT_PAREN
+	    { context.addFunction( f ); }
 	;
 
 
