@@ -16,6 +16,7 @@ package org.codehaus.jfdi.interpreter;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,22 +28,30 @@ import java.util.Set;
 public class ClassTypeResolver
     implements
     TypeResolver {
-    private final List        imports;
+    private List              imports;
 
     private final ClassLoader classLoader;
 
-    private Map               cachedImports = new HashMap();
-    
-    private static Map internalNamesMap = new HashMap();
+    private Map               cachedImports    = new HashMap();
+
+    private static Map        internalNamesMap = new HashMap();
     static {
-        internalNamesMap.put( "int", "I" );
-        internalNamesMap.put( "boolean", "Z" );
-        internalNamesMap.put( "float", "F" );
-        internalNamesMap.put( "long", "J" );
-        internalNamesMap.put( "short", "S" );
-        internalNamesMap.put( "byte", "B" );
-        internalNamesMap.put( "double", "D" );
-        internalNamesMap.put( "char", "C" );
+        internalNamesMap.put( "int",
+                              "I" );
+        internalNamesMap.put( "boolean",
+                              "Z" );
+        internalNamesMap.put( "float",
+                              "F" );
+        internalNamesMap.put( "long",
+                              "J" );
+        internalNamesMap.put( "short",
+                              "S" );
+        internalNamesMap.put( "byte",
+                              "B" );
+        internalNamesMap.put( "double",
+                              "D" );
+        internalNamesMap.put( "char",
+                              "C" );
     }
 
     public ClassTypeResolver() {
@@ -90,6 +99,9 @@ public class ClassTypeResolver
      * @see org.drools.semantics.java.TypeResolver#addImport(java.lang.String)
      */
     public void addImport(final String importEntry) {
+        if ( this.imports == Collections.EMPTY_LIST ) {
+            this.imports = new ArrayList();
+        }
         if ( !this.imports.contains( importEntry ) ) {
             this.imports.add( importEntry );
         }
@@ -114,19 +126,20 @@ public class ClassTypeResolver
         StringBuffer arrayClassName = new StringBuffer();
 
         //is the class a primitive type ?
-        if (internalNamesMap.containsKey(className)) {
-            clazz = Class.forName( "[" + internalNamesMap.get(className),
+        if ( internalNamesMap.containsKey( className ) ) {
+            clazz = Class.forName( "[" + internalNamesMap.get( className ),
                                    true,
-                                   classLoader).getComponentType();
+                                   classLoader ).getComponentType();
             // Could also be a primitive array
-        } else if ( className.indexOf('[') > 0 ) {
+        } else if ( className.indexOf( '[' ) > 0 ) {
             isArray = true;
-            int bracketIndex = className.indexOf('[');
+            int bracketIndex = className.indexOf( '[' );
             String componentName = className.substring( 0,
                                                         bracketIndex );
-            arrayClassName.append('[');
-            while( (bracketIndex = className.indexOf( '[', bracketIndex+1 )) > 0 ) {
-                arrayClassName.append('[');
+            arrayClassName.append( '[' );
+            while ( (bracketIndex = className.indexOf( '[',
+                                                       bracketIndex + 1 )) > 0 ) {
+                arrayClassName.append( '[' );
             }
             className = componentName;
         }
@@ -184,15 +197,15 @@ public class ClassTypeResolver
         }
 
         // If array component class was found, try to resolve the array class of it 
-        if( isArray ) {
-            if (clazz == null && internalNamesMap.containsKey( className ) ) {
+        if ( isArray ) {
+            if ( clazz == null && internalNamesMap.containsKey( className ) ) {
                 arrayClassName.append( internalNamesMap.get( className ) );
             } else {
-                if( clazz != null ) {
-                    arrayClassName.append( "L" ).append( clazz.getName() ).append( ";" );                
+                if ( clazz != null ) {
+                    arrayClassName.append( "L" ).append( clazz.getName() ).append( ";" );
                 } else {
                     // we know we will probably not be able to resolve this name, but nothing else we can do. 
-                    arrayClassName.append( "L" ).append( className ).append( ";" );                
+                    arrayClassName.append( "L" ).append( className ).append( ";" );
                 }
             }
             try {
@@ -201,7 +214,7 @@ public class ClassTypeResolver
                 clazz = null;
             }
         }
-        
+
         // We still can't find the class so throw an exception 
         if ( clazz == null ) {
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
