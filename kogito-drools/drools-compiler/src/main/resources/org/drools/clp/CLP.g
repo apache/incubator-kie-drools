@@ -385,8 +385,8 @@ field_constriant[ColumnDescr column]
 	;
 	
 connective	[FieldConstraintDescr fc]
-	:	(	'&' { fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
-	    	| '|' {fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }	      
+	:	(	AMPERSAND { fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
+	    	| PIPE {fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }	      
 		)		
 	;
 	
@@ -394,7 +394,7 @@ restriction[FieldConstraintDescr fc, ColumnDescr column]
 	@init {
 			String op = "==";
 	}
-	:	('~'{op = "!=";})?	 	  	 
+	:	(TILDE{op = "!=";})?	 	  	 
 		(		predicate_constraint[op, column]	  	  	
 	  	    |	return_value_restriction[op, fc]
 	  	  	|	variable_restriction[op, fc]
@@ -450,7 +450,7 @@ function[ExecutionBuildContext context] returns[Function f]
 	    FunctionFactory factory = FunctionFactory.getInstance();
 	}
 	:	LEFT_PAREN
-		name=ID {
+		name=function_name {
 			if ( name.getText().equals("bind") ) {
 		  		context.createLocalVariable( name.getText() );
 			}
@@ -529,20 +529,24 @@ literal returns [String text]
 		)
 	;
 	
+function_name returns [Token tok]
+	:
+	(	t=ID	
+	|	t=MISC
+	|	t=SYMBOL
+	)
+	{
+	    tok = t;
+	}
+	;
+	
 	
 DEFRULE	:	'defrule';
-OR 		:	'or';
+OR 	:	'or';
 AND 	:	'and';
 NOT 	:	'not';
 EXISTS 	:	'exists';
 TEST 	:	'test';
-
-VAR 	: '?'ID	
-        ;
-
-ID	
-	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
-	;
 
 NULL	:	'null';
 
@@ -601,6 +605,13 @@ BOOL
 	:	('true'|'false') 
 	;
 	
+VAR 	: '?'('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
+        ;
+
+ID	
+	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
+	;
+
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
                 { $channel=HIDDEN; }
@@ -636,6 +647,17 @@ LEFT_CURLY
 RIGHT_CURLY
 	:	'}'
 	;
+	
+TILDE	:	'~'
+	;	
+	
+AMPERSAND 
+	:	'&'
+	;
+	
+PIPE
+	:	'|'
+	;		
         
 MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
@@ -643,5 +665,11 @@ MULTI_LINE_COMMENT
 	;
 
 MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+'  | '?' | '|' | ',' | '=' | '/' | '\'' | '\\'
+		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | ',' | '=' | '/' | '\'' | '\\' | 
+		'<' | '>' | '<=' | '>=' 
 	;		
+
+SYMBOL
+	:	(~(' '|'('|')'|'~'|'"'|'?'|'&'|'|') )+
+	;
+
