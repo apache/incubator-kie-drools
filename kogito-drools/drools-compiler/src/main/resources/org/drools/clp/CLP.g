@@ -214,7 +214,7 @@ rule returns [RuleDescr rule]
 	        ColumnDescr colum = null;	        
 	      }
 	:	loc=LEFT_PAREN 'defrule' 	
-		(	d=agenda_group {  rule.addAttribute( d ); } )?
+		(	d=agenda_group {  rule.addAttribute( d ); } '::' )?
 		
 	  	ruleName=ID 
 	  	{ 
