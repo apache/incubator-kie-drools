@@ -1,0 +1,31 @@
+package org.drools;
+
+global java.util.List results;
+
+rule High
+   when 
+      RandomNumber(randomValue:value)
+      // literal constraint
+      Guess(guess: value > 10)
+   then 
+      results.add("LOWER");
+end
+
+rule Low
+   when 
+      RandomNumber(randomValue:value)
+      // return value constraint
+      Guess(guess: value < ( 10 ) )
+   then 
+      results.add("HIGHER");
+end
+
+rule Win
+   when 
+      RandomNumber(randomValue:value)
+      // variable constraint
+      Guess(value==randomValue)
+   then 
+      results.add("CORRECT");
+end
+

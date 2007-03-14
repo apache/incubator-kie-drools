@@ -37,28 +37,28 @@ public class ValueType
     // wrapper types
     public static final ValueType  CHAR_TYPE         = new ValueType( "Character",
                                                                       Character.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      CharacterFactory.getInstance() );
     public static final ValueType  BYTE_TYPE         = new ValueType( "Byte",
                                                                       Byte.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      ByteFactory.getInstance() );
     public static final ValueType  SHORT_TYPE        = new ValueType( "Short",
                                                                       Short.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      ShortFactory.getInstance() );
     public static final ValueType  INTEGER_TYPE      = new ValueType( "Integer",
                                                                       Integer.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      IntegerFactory.getInstance() );
     public static final ValueType  LONG_TYPE         = new ValueType( "Long",
                                                                       Long.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      LongFactory.getInstance() );
     public static final ValueType  FLOAT_TYPE        = new ValueType( "Float",
                                                                       Float.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      FloatFactory.getInstance() );
     public static final ValueType  DOUBLE_TYPE       = new ValueType( "Double",
                                                                       Double.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      DoubleFactory.getInstance() );
     public static final ValueType  BOOLEAN_TYPE      = new ValueType( "Boolean",
                                                                       Boolean.class,
-                                                                      ObjectFactory.getInstance() );
+                                                                      BooleanFactory.getInstance() );
     // primitive types
     public static final ValueType  PCHAR_TYPE        = new ValueType( "char",
                                                                       Character.TYPE,
