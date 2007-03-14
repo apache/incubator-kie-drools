@@ -23,6 +23,14 @@ import java.beans.PropertyDescriptor;
 public class Cheese
     implements
     CheeseInterface {
+    
+    public static String staticString;
+    
+    static {
+        staticString = "Cheese is tasty";
+    }
+    
+    
     private String type;
 
     private int    price;
