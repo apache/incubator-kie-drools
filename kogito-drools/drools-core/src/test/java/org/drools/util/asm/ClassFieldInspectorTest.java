@@ -212,10 +212,15 @@ public class ClassFieldInspectorTest extends TestCase {
     }
 
     static class Person {
+        public static String aStaticString;
         private boolean happy;
         private String  name;
         private int     age;
         private String  URI;
+        
+        static {
+            aStaticString = "A static String";
+        }
 
         public int getAge() {
             return this.age;
