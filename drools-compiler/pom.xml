@@ -40,15 +40,19 @@
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>core</artifactId>
-    </dependency>        
+    </dependency>       
     <dependency>
       <groupId>janino</groupId>
       <artifactId>janino</artifactId>
     </dependency>    
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xerces</artifactId>
+    </dependency>        
   </dependencies>
 
 </project>

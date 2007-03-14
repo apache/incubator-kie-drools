@@ -68,10 +68,6 @@
       <groupId>jsr94</groupId>
       <artifactId>jsr94-sigtest</artifactId>
     </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-    </dependency>
   </dependencies>
 
 </project>
