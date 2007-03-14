@@ -107,18 +107,15 @@ public class VariableRestriction
     }
     
     private final VariableContextEntry createContextEntry(FieldExtractor fieldExtractor) {
-        final Class classType = fieldExtractor.getValueType().getClassType();
-        if ( classType.isPrimitive() ) {
-            if ( classType == Boolean.TYPE ) {
-                return new BooleanVariableContextEntry( fieldExtractor,
-                                                        this.declaration );
-            } else if ( (classType == Double.TYPE) || (classType == Float.TYPE) ) {
-                return new DoubleVariableContextEntry( fieldExtractor,
-                                                       this.declaration );
-            } else {
-                return new LongVariableContextEntry( fieldExtractor,
-                                                     this.declaration );
-            }
+        if ( fieldExtractor.getValueType().isBoolean() ) {
+            return new BooleanVariableContextEntry( fieldExtractor,
+                                                    this.declaration );
+        } else if ( fieldExtractor.getValueType().isFloatNumber() ) {
+            return new DoubleVariableContextEntry( fieldExtractor,
+                                                   this.declaration );
+        } else if ( fieldExtractor.getValueType().isIntegerNumber() ) {
+            return new LongVariableContextEntry( fieldExtractor,
+                                                 this.declaration );
         } else {
             return new ObjectVariableContextEntry( fieldExtractor,
                                                    this.declaration );

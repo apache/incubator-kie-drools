@@ -49,6 +49,7 @@ import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.FactHandle;
 import org.drools.FromTestClass;
+import org.drools.Guess;
 import org.drools.IndexedNumber;
 import org.drools.Order;
 import org.drools.OrderItem;
@@ -58,6 +59,7 @@ import org.drools.Precondition;
 import org.drools.Primitives;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
+import org.drools.RandomNumber;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.Sensor;
@@ -4135,5 +4137,60 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
+    public void testNumberComparisons() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NumberComparisons.drl" ) ) );
+        final Package pkg = builder.getPackage();
 
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        // asserting the sensor object
+        RandomNumber rn = new RandomNumber();
+        rn.setValue( 10 );
+        workingMemory.assertObject( rn );
+        
+        Guess guess = new Guess();
+        guess.setValue( new Integer(5) );
+        
+        FactHandle handle = workingMemory.assertObject( guess );
+        
+        workingMemory.fireAllRules();
+
+        // HIGHER
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( "HIGHER",
+                      list.get( 0 ) );
+        
+        guess.setValue( new Integer(15) );
+        workingMemory.modifyObject( handle, guess );
+
+        workingMemory.fireAllRules();
+
+        // LOWER
+        assertEquals( 2,
+                      list.size() );
+        assertEquals( "LOWER",
+                      list.get( 1 ) );
+        
+        guess.setValue( new Integer(10) );
+        workingMemory.modifyObject( handle, guess );
+
+        workingMemory.fireAllRules();
+
+        // CORRECT
+        assertEquals( 3,
+                      list.size() );
+        assertEquals( "CORRECT",
+                      list.get( 2 ) );
+        
+
+    }
+    
 }
