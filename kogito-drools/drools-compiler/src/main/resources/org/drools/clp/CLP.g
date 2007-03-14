@@ -211,13 +211,13 @@ rule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
 	        AndDescr lhs = null;
-	        ColumnDescr colum = null;
-	        ExecutionEngine engine = new BlockExecutionEngine();
-			ExecutionBuildContext context = new ExecutionBuildContext( engine );  	        
+	        ColumnDescr colum = null;	        
 	      }
-	: loc=LEFT_PAREN 'defrule' 
-	  ruleName=ID 
-	  { 
+	:	loc=LEFT_PAREN 'defrule' 	
+		(	d=agenda_group {  rule.addAttribute( d ); } )?
+		
+	  	ruleName=ID 
+	  	{ 
 	  		debug( "start rule: " + ruleName.getText() );
 	        rule = new RuleDescr( ruleName.getText(), null ); 
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -228,13 +228,55 @@ rule returns [RuleDescr rule]
   	        rule.setLhs( lhs ); 
    	        lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );				
-	  }
-	  lhs[lhs]*
-	  function[context]* { rule.setConsequence( engine ); }
-	  RIGHT_PAREN
+		}
+		documentation=STRING {
+	    	// do nothing here for now
+		}
+		ruleAttribute[rule]*
+		
+		lhs[lhs]*
+		
+		rhs[rule]
+		
+		RIGHT_PAREN
 	;
 
+ruleAttribute[RuleDescr rule]
+	:
+		LEFT_PAREN 'declare'
+			LEFT_PAREN d=salience { rule.addAttribute( d ); }
+			RIGHT_PAREN
+		RIGHT_PAREN
+	;
 
+agenda_group returns [AttributeDescr d ]
+	@init {
+		d = null;
+	}
+	:
+		loc=SALIENCE i=INT   
+		{
+			d = new AttributeDescr( "agenda-group", i.getText() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
+		}	
+	;	
+
+salience returns [AttributeDescr d ]
+	@init {
+		d = null;
+	}
+	:	
+		loc=SALIENCE i=INT   
+		{
+			d = new AttributeDescr( "salience", i.getText() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
+		}
+	;
+		
 /* lhs is slightly different to ce as lhs allows pattern bindings, ce doesn't */
 lhs[ConditionalElementDescr in_ce]
 	:	(   and_ce[in_ce]	
@@ -246,6 +288,17 @@ lhs[ConditionalElementDescr in_ce]
 		  | bound_pattern[in_ce]
 		)
 	;
+
+rhs[RuleDescr rule]
+	@init {
+	        ExecutionEngine engine = new BlockExecutionEngine();
+			ExecutionBuildContext context = new ExecutionBuildContext( engine );  	
+	}
+	
+	:
+		'=>'
+	  function[context]* { rule.setConsequence( engine ); }		
+	;	
 	
 ce[ConditionalElementDescr in_ce]
 	:	(   and_ce[in_ce]	
@@ -557,7 +610,13 @@ WS      :       (	' '
                 |	EOL
                 )
                 { $channel=HIDDEN; }
-        ;
+        ;        
+        
+DECLARE 
+	:	'declare';        		
+
+SALIENCE 
+	:	'salience';
 
 fragment
 EOL 	:	     
