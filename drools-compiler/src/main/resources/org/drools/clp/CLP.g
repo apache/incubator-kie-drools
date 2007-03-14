@@ -254,12 +254,12 @@ agenda_group returns [AttributeDescr d ]
 		d = null;
 	}
 	:
-		loc=SALIENCE i=INT   
+		t=ID   
 		{
-			d = new AttributeDescr( "agenda-group", i.getText() );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
+			d = new AttributeDescr( "agenda-group", t.getText() );
+			d.setLocation( offset(t.getLine()), t.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)t).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)t).getStopIndex() );
 		}	
 	;	
 

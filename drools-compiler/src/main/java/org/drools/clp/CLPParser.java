@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-14 21:57:04
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-14 22:17:40
 
 	package org.drools.clp;
 	import java.util.List;
@@ -279,8 +279,11 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:217:3: (d= agenda_group )?
             int alt2=2;
             int LA2_0 = input.LA(1);
-            if ( (LA2_0==SALIENCE) ) {
-                alt2=1;
+            if ( (LA2_0==ID) ) {
+                int LA2_1 = input.LA(2);
+                if ( (LA2_1==ID) ) {
+                    alt2=1;
+                }
             }
             switch (alt2) {
                 case 1 :
@@ -431,29 +434,26 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start agenda_group
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:252:1: agenda_group returns [AttributeDescr d ] : loc= SALIENCE i= INT ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:252:1: agenda_group returns [AttributeDescr d ] : t= ID ;
     public AttributeDescr agenda_group() throws RecognitionException {
         AttributeDescr d = null;
 
-        Token loc=null;
-        Token i=null;
+        Token t=null;
 
         
         		d = null;
         	
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:257:3: (loc= SALIENCE i= INT )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:257:3: loc= SALIENCE i= INT
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:257:3: (t= ID )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:257:3: t= ID
             {
-            loc=(Token)input.LT(1);
-            match(input,SALIENCE,FOLLOW_SALIENCE_in_agenda_group198); 
-            i=(Token)input.LT(1);
-            match(input,INT,FOLLOW_INT_in_agenda_group202); 
+            t=(Token)input.LT(1);
+            match(input,ID,FOLLOW_ID_in_agenda_group198); 
             
-            			d = new AttributeDescr( "agenda-group", i.getText() );
-            			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-            			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-            			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
+            			d = new AttributeDescr( "agenda-group", t.getText() );
+            			d.setLocation( offset(t.getLine()), t.getCharPositionInLine() );
+            			d.setStartCharacter( ((CommonToken)t).getStartIndex() );
+            			d.setEndCharacter( ((CommonToken)t).getStopIndex() );
             		
 
             }
@@ -486,9 +486,9 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:271:3: loc= SALIENCE i= INT
             {
             loc=(Token)input.LT(1);
-            match(input,SALIENCE,FOLLOW_SALIENCE_in_salience237); 
+            match(input,SALIENCE,FOLLOW_SALIENCE_in_salience233); 
             i=(Token)input.LT(1);
-            match(input,INT,FOLLOW_INT_in_salience241); 
+            match(input,INT,FOLLOW_INT_in_salience237); 
             
             			d = new AttributeDescr( "salience", i.getText() );
             			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -522,11 +522,8 @@ public class CLPParser extends Parser {
             int LA5_0 = input.LA(1);
             if ( (LA5_0==LEFT_PAREN) ) {
                 switch ( input.LA(2) ) {
-                case OR:
-                    alt5=2;
-                    break;
-                case AND:
-                    alt5=1;
+                case ID:
+                    alt5=6;
                     break;
                 case NOT:
                     alt5=3;
@@ -534,11 +531,14 @@ public class CLPParser extends Parser {
                 case TEST:
                     alt5=5;
                     break;
+                case AND:
+                    alt5=1;
+                    break;
                 case EXISTS:
                     alt5=4;
                     break;
-                case ID:
-                    alt5=6;
+                case OR:
+                    alt5=2;
                     break;
                 default:
                     NoViableAltException nvae =
@@ -561,7 +561,7 @@ public class CLPParser extends Parser {
                 case 1 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:282:8: and_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_and_ce_in_lhs268);
+                    pushFollow(FOLLOW_and_ce_in_lhs264);
                     and_ce(in_ce);
                     _fsp--;
 
@@ -571,7 +571,7 @@ public class CLPParser extends Parser {
                 case 2 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:283:7: or_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_or_ce_in_lhs278);
+                    pushFollow(FOLLOW_or_ce_in_lhs274);
                     or_ce(in_ce);
                     _fsp--;
 
@@ -581,7 +581,7 @@ public class CLPParser extends Parser {
                 case 3 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:284:7: not_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_not_ce_in_lhs287);
+                    pushFollow(FOLLOW_not_ce_in_lhs283);
                     not_ce(in_ce);
                     _fsp--;
 
@@ -591,7 +591,7 @@ public class CLPParser extends Parser {
                 case 4 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:285:7: exists_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_exists_ce_in_lhs296);
+                    pushFollow(FOLLOW_exists_ce_in_lhs292);
                     exists_ce(in_ce);
                     _fsp--;
 
@@ -601,7 +601,7 @@ public class CLPParser extends Parser {
                 case 5 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:286:8: eval_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_eval_ce_in_lhs310);
+                    pushFollow(FOLLOW_eval_ce_in_lhs306);
                     eval_ce(in_ce);
                     _fsp--;
 
@@ -611,7 +611,7 @@ public class CLPParser extends Parser {
                 case 6 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:287:7: normal_pattern[in_ce]
                     {
-                    pushFollow(FOLLOW_normal_pattern_in_lhs324);
+                    pushFollow(FOLLOW_normal_pattern_in_lhs320);
                     normal_pattern(in_ce);
                     _fsp--;
 
@@ -621,7 +621,7 @@ public class CLPParser extends Parser {
                 case 7 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:7: bound_pattern[in_ce]
                     {
-                    pushFollow(FOLLOW_bound_pattern_in_lhs333);
+                    pushFollow(FOLLOW_bound_pattern_in_lhs329);
                     bound_pattern(in_ce);
                     _fsp--;
 
@@ -657,7 +657,7 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:299:3: ( '=>' ( function[context] )* )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:299:3: '=>' ( function[context] )*
             {
-            match(input,40,FOLLOW_40_in_rhs360); 
+            match(input,40,FOLLOW_40_in_rhs356); 
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:300:4: ( function[context] )*
             loop6:
             do {
@@ -672,7 +672,7 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:300:4: function[context]
             	    {
-            	    pushFollow(FOLLOW_function_in_rhs365);
+            	    pushFollow(FOLLOW_function_in_rhs361);
             	    function(context);
             	    _fsp--;
 
@@ -716,20 +716,20 @@ public class CLPParser extends Parser {
                 case EXISTS:
                     alt7=4;
                     break;
+                case ID:
+                    alt7=6;
+                    break;
                 case TEST:
                     alt7=5;
+                    break;
+                case AND:
+                    alt7=1;
                     break;
                 case OR:
                     alt7=2;
                     break;
                 case NOT:
                     alt7=3;
-                    break;
-                case AND:
-                    alt7=1;
-                    break;
-                case ID:
-                    alt7=6;
                     break;
                 default:
                     NoViableAltException nvae =
@@ -749,7 +749,7 @@ public class CLPParser extends Parser {
                 case 1 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:304:8: and_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_and_ce_in_ce389);
+                    pushFollow(FOLLOW_and_ce_in_ce385);
                     and_ce(in_ce);
                     _fsp--;
 
@@ -759,7 +759,7 @@ public class CLPParser extends Parser {
                 case 2 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:10: or_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_or_ce_in_ce402);
+                    pushFollow(FOLLOW_or_ce_in_ce398);
                     or_ce(in_ce);
                     _fsp--;
 
@@ -769,7 +769,7 @@ public class CLPParser extends Parser {
                 case 3 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:306:7: not_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_not_ce_in_ce411);
+                    pushFollow(FOLLOW_not_ce_in_ce407);
                     not_ce(in_ce);
                     _fsp--;
 
@@ -779,7 +779,7 @@ public class CLPParser extends Parser {
                 case 4 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:307:7: exists_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_exists_ce_in_ce420);
+                    pushFollow(FOLLOW_exists_ce_in_ce416);
                     exists_ce(in_ce);
                     _fsp--;
 
@@ -789,7 +789,7 @@ public class CLPParser extends Parser {
                 case 5 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:308:8: eval_ce[in_ce]
                     {
-                    pushFollow(FOLLOW_eval_ce_in_ce434);
+                    pushFollow(FOLLOW_eval_ce_in_ce430);
                     eval_ce(in_ce);
                     _fsp--;
 
@@ -799,7 +799,7 @@ public class CLPParser extends Parser {
                 case 6 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:309:10: normal_pattern[in_ce]
                     {
-                    pushFollow(FOLLOW_normal_pattern_in_ce458);
+                    pushFollow(FOLLOW_normal_pattern_in_ce454);
                     normal_pattern(in_ce);
                     _fsp--;
 
@@ -834,8 +834,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:318:4: ( LEFT_PAREN AND ( ce[andDescr] )* RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:318:4: LEFT_PAREN AND ( ce[andDescr] )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_and_ce490); 
-            match(input,AND,FOLLOW_AND_in_and_ce495); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_and_ce486); 
+            match(input,AND,FOLLOW_AND_in_and_ce491); 
             
             	    	andDescr = new AndDescr();
             			in_ce.addDescr( andDescr );
@@ -854,7 +854,7 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:323:3: ce[andDescr]
             	    {
-            	    pushFollow(FOLLOW_ce_in_and_ce501);
+            	    pushFollow(FOLLOW_ce_in_and_ce497);
             	    ce(andDescr);
             	    _fsp--;
 
@@ -867,7 +867,7 @@ public class CLPParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_and_ce510); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_and_ce506); 
 
             }
 
@@ -893,8 +893,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:331:4: ( LEFT_PAREN OR ( ce[orDescr] )* RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:331:4: LEFT_PAREN OR ( ce[orDescr] )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_or_ce538); 
-            match(input,OR,FOLLOW_OR_in_or_ce543); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_or_ce534); 
+            match(input,OR,FOLLOW_OR_in_or_ce539); 
             
             	    	orDescr = new OrDescr();
             			in_ce.addDescr( orDescr );
@@ -913,7 +913,7 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:336:3: ce[orDescr]
             	    {
-            	    pushFollow(FOLLOW_ce_in_or_ce549);
+            	    pushFollow(FOLLOW_ce_in_or_ce545);
             	    ce(orDescr);
             	    _fsp--;
 
@@ -926,7 +926,7 @@ public class CLPParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_or_ce558); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_or_ce554); 
 
             }
 
@@ -952,8 +952,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:344:4: ( LEFT_PAREN NOT ( ce[notDescr] )? RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:344:4: LEFT_PAREN NOT ( ce[notDescr] )? RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_not_ce586); 
-            match(input,NOT,FOLLOW_NOT_in_not_ce591); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_not_ce582); 
+            match(input,NOT,FOLLOW_NOT_in_not_ce587); 
             
             			notDescr = new NotDescr();
             		    in_ce.addDescr( notDescr );
@@ -968,7 +968,7 @@ public class CLPParser extends Parser {
                 case 1 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:349:3: ce[notDescr]
                     {
-                    pushFollow(FOLLOW_ce_in_not_ce597);
+                    pushFollow(FOLLOW_ce_in_not_ce593);
                     ce(notDescr);
                     _fsp--;
 
@@ -978,7 +978,7 @@ public class CLPParser extends Parser {
 
             }
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_not_ce606); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_not_ce602); 
 
             }
 
@@ -1004,8 +1004,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:357:4: ( LEFT_PAREN EXISTS ( ce[existsDescr] )? RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:357:4: LEFT_PAREN EXISTS ( ce[existsDescr] )? RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_exists_ce635); 
-            match(input,EXISTS,FOLLOW_EXISTS_in_exists_ce640); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_exists_ce631); 
+            match(input,EXISTS,FOLLOW_EXISTS_in_exists_ce636); 
             
             		    existsDescr = new ExistsDescr();
             		    in_ce.addDescr( existsDescr );
@@ -1020,7 +1020,7 @@ public class CLPParser extends Parser {
                 case 1 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:362:3: ce[existsDescr]
                     {
-                    pushFollow(FOLLOW_ce_in_exists_ce646);
+                    pushFollow(FOLLOW_ce_in_exists_ce642);
                     ce(existsDescr);
                     _fsp--;
 
@@ -1030,7 +1030,7 @@ public class CLPParser extends Parser {
 
             }
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_exists_ce655); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_exists_ce651); 
 
             }
 
@@ -1058,20 +1058,20 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:372:4: ( LEFT_PAREN TEST function[context] RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:372:4: LEFT_PAREN TEST function[context] RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_eval_ce683); 
-            match(input,TEST,FOLLOW_TEST_in_eval_ce688); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_eval_ce679); 
+            match(input,TEST,FOLLOW_TEST_in_eval_ce684); 
             
             		    evalDescr = new EvalDescr();
             		    in_ce.addDescr( evalDescr );
             		
-            pushFollow(FOLLOW_function_in_eval_ce694);
+            pushFollow(FOLLOW_function_in_eval_ce690);
             function(context);
             _fsp--;
 
             					
             			evalDescr.setContent( engine );			
             		
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_eval_ce705); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_eval_ce701); 
 
             }
 
@@ -1099,9 +1099,9 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:387:4: ( LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:387:4: LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_normal_pattern733); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_normal_pattern729); 
             name=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_normal_pattern740); 
+            match(input,ID,FOLLOW_ID_in_normal_pattern736); 
             
             			column = new ColumnDescr(name.getText());
             			in_ce.addDescr( column );
@@ -1120,7 +1120,7 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:392:3: field_constriant[column]
             	    {
-            	    pushFollow(FOLLOW_field_constriant_in_normal_pattern746);
+            	    pushFollow(FOLLOW_field_constriant_in_normal_pattern742);
             	    field_constriant(column);
             	    _fsp--;
 
@@ -1133,7 +1133,7 @@ public class CLPParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_normal_pattern756); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_normal_pattern752); 
 
             }
 
@@ -1164,14 +1164,14 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:403:4: var= VAR '<-' LEFT_PAREN name= ID ( field_constriant[column] )* RIGHT_PAREN
             {
             var=(Token)input.LT(1);
-            match(input,VAR,FOLLOW_VAR_in_bound_pattern784); 
+            match(input,VAR,FOLLOW_VAR_in_bound_pattern780); 
             
             			identifier = var.getText();
             		
-            match(input,41,FOLLOW_41_in_bound_pattern790); 
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_bound_pattern795); 
+            match(input,41,FOLLOW_41_in_bound_pattern786); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_bound_pattern791); 
             name=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_bound_pattern802); 
+            match(input,ID,FOLLOW_ID_in_bound_pattern798); 
             
             			column = new ColumnDescr(name.getText());
             			column.setIdentifier( identifier );
@@ -1191,7 +1191,7 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:413:3: field_constriant[column]
             	    {
-            	    pushFollow(FOLLOW_field_constriant_in_bound_pattern808);
+            	    pushFollow(FOLLOW_field_constriant_in_bound_pattern804);
             	    field_constriant(column);
             	    _fsp--;
 
@@ -1204,7 +1204,7 @@ public class CLPParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_bound_pattern815); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_bound_pattern811); 
 
             }
 
@@ -1235,16 +1235,16 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:424:4: ( LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:424:4: LEFT_PAREN f= ID restriction[fc, column] ( connective[fc] restriction[fc, column] )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_field_constriant843); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_field_constriant839); 
             f=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_field_constriant850); 
+            match(input,ID,FOLLOW_ID_in_field_constriant846); 
             
             			fc = new FieldConstraintDescr(f.getText());
             			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
             			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
             			column.addDescr( fc );			
             		
-            pushFollow(FOLLOW_restriction_in_field_constriant862);
+            pushFollow(FOLLOW_restriction_in_field_constriant858);
             restriction(fc,  column);
             _fsp--;
 
@@ -1262,11 +1262,11 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:434:5: connective[fc] restriction[fc, column]
             	    {
-            	    pushFollow(FOLLOW_connective_in_field_constriant874);
+            	    pushFollow(FOLLOW_connective_in_field_constriant870);
             	    connective(fc);
             	    _fsp--;
 
-            	    pushFollow(FOLLOW_restriction_in_field_constriant891);
+            	    pushFollow(FOLLOW_restriction_in_field_constriant887);
             	    restriction(fc,  column);
             	    _fsp--;
 
@@ -1279,7 +1279,7 @@ public class CLPParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_field_constriant914); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_field_constriant910); 
 
             }
 
@@ -1321,7 +1321,7 @@ public class CLPParser extends Parser {
                 case 1 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:441:6: AMPERSAND
                     {
-                    match(input,AMPERSAND,FOLLOW_AMPERSAND_in_connective932); 
+                    match(input,AMPERSAND,FOLLOW_AMPERSAND_in_connective928); 
                      fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); 
 
                     }
@@ -1329,7 +1329,7 @@ public class CLPParser extends Parser {
                 case 2 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:442:9: PIPE
                     {
-                    match(input,PIPE,FOLLOW_PIPE_in_connective944); 
+                    match(input,PIPE,FOLLOW_PIPE_in_connective940); 
                     fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); 
 
                     }
@@ -1375,7 +1375,7 @@ public class CLPParser extends Parser {
                 case 1 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:450:5: TILDE
                     {
-                    match(input,TILDE,FOLLOW_TILDE_in_restriction979); 
+                    match(input,TILDE,FOLLOW_TILDE_in_restriction975); 
                     op = "!=";
 
                     }
@@ -1414,7 +1414,7 @@ public class CLPParser extends Parser {
                 case 1 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:451:6: predicate_constraint[op, column]
                     {
-                    pushFollow(FOLLOW_predicate_constraint_in_restriction996);
+                    pushFollow(FOLLOW_predicate_constraint_in_restriction992);
                     predicate_constraint(op,  column);
                     _fsp--;
 
@@ -1424,7 +1424,7 @@ public class CLPParser extends Parser {
                 case 2 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:452:11: return_value_restriction[op, fc]
                     {
-                    pushFollow(FOLLOW_return_value_restriction_in_restriction1016);
+                    pushFollow(FOLLOW_return_value_restriction_in_restriction1012);
                     return_value_restriction(op,  fc);
                     _fsp--;
 
@@ -1434,7 +1434,7 @@ public class CLPParser extends Parser {
                 case 3 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:453:10: variable_restriction[op, fc]
                     {
-                    pushFollow(FOLLOW_variable_restriction_in_restriction1028);
+                    pushFollow(FOLLOW_variable_restriction_in_restriction1024);
                     variable_restriction(op,  fc);
                     _fsp--;
 
@@ -1444,7 +1444,7 @@ public class CLPParser extends Parser {
                 case 4 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:454:12: lc= literal_restriction
                     {
-                    pushFollow(FOLLOW_literal_restriction_in_restriction1044);
+                    pushFollow(FOLLOW_literal_restriction_in_restriction1040);
                     lc=literal_restriction();
                     _fsp--;
 
@@ -1484,8 +1484,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:466:4: ( ':' function[context] )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:466:4: ':' function[context]
             {
-            match(input,42,FOLLOW_42_in_predicate_constraint1086); 
-            pushFollow(FOLLOW_function_in_predicate_constraint1090);
+            match(input,42,FOLLOW_42_in_predicate_constraint1082); 
+            pushFollow(FOLLOW_function_in_predicate_constraint1086);
             function(context);
             _fsp--;
 
@@ -1518,8 +1518,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:478:4: ( '=' function[context] )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:478:4: '=' function[context]
             {
-            match(input,43,FOLLOW_43_in_return_value_restriction1113); 
-            pushFollow(FOLLOW_function_in_return_value_restriction1118);
+            match(input,43,FOLLOW_43_in_return_value_restriction1109); 
+            pushFollow(FOLLOW_function_in_return_value_restriction1114);
             function(context);
             _fsp--;
 
@@ -1551,7 +1551,7 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:485:4: var= VAR
             {
             var=(Token)input.LT(1);
-            match(input,VAR,FOLLOW_VAR_in_variable_restriction1139); 
+            match(input,VAR,FOLLOW_VAR_in_variable_restriction1135); 
             
             			fc.addRestriction( new VariableRestrictionDescr(op, var.getText()) );
             		
@@ -1585,7 +1585,7 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:496:6: (t= literal )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:496:6: t= literal
             {
-            pushFollow(FOLLOW_literal_in_literal_restriction1172);
+            pushFollow(FOLLOW_literal_in_literal_restriction1168);
             t=literal();
             _fsp--;
 
@@ -1622,8 +1622,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:505:4: ( LEFT_PAREN name= function_name ( function_params[context, f] )+ RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:505:4: LEFT_PAREN name= function_name ( function_params[context, f] )+ RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_function1197); 
-            pushFollow(FOLLOW_function_name_in_function1203);
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_function1193); 
+            pushFollow(FOLLOW_function_name_in_function1199);
             name=function_name();
             _fsp--;
 
@@ -1648,7 +1648,7 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:513:3: function_params[context, f]
             	    {
-            	    pushFollow(FOLLOW_function_params_in_function1216);
+            	    pushFollow(FOLLOW_function_params_in_function1212);
             	    function_params(context,  f);
             	    _fsp--;
 
@@ -1665,7 +1665,7 @@ public class CLPParser extends Parser {
                 cnt18++;
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_function1226); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_function1222); 
              context.addFunction( f ); 
 
             }
@@ -1695,8 +1695,8 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:525:3: ( LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:525:3: LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_modify_function1257); 
-            match(input,44,FOLLOW_44_in_modify_function1262); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_modify_function1253); 
+            match(input,44,FOLLOW_44_in_modify_function1258); 
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:527:4: ( slot_name_value_pair[context, f] )+
             int cnt19=0;
             loop19:
@@ -1712,7 +1712,7 @@ public class CLPParser extends Parser {
             	case 1 :
             	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:527:4: slot_name_value_pair[context, f]
             	    {
-            	    pushFollow(FOLLOW_slot_name_value_pair_in_modify_function1267);
+            	    pushFollow(FOLLOW_slot_name_value_pair_in_modify_function1263);
             	    slot_name_value_pair(context,  f);
             	    _fsp--;
 
@@ -1729,7 +1729,7 @@ public class CLPParser extends Parser {
                 cnt19++;
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_modify_function1273); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_modify_function1269); 
 
             }
 
@@ -1798,7 +1798,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:536:6: t= VAR
                     {
                     t=(Token)input.LT(1);
-                    match(input,VAR,FOLLOW_VAR_in_function_params1302); 
+                    match(input,VAR,FOLLOW_VAR_in_function_params1298); 
                      value = context.getVariableValueHandler(t.getText() ); 
 
                     }
@@ -1807,7 +1807,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:537:6: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_function_params1314); 
+                    match(input,STRING,FOLLOW_STRING_in_function_params1310); 
                      value = new ObjectLiteralValue( getString( t ) ); 
 
                     }
@@ -1816,7 +1816,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:538:7: t= ID
                     {
                     t=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_function_params1329); 
+                    match(input,ID,FOLLOW_ID_in_function_params1325); 
                      value = new ObjectLiteralValue( t.getText() ); 
 
                     }
@@ -1825,7 +1825,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:539:6: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_function_params1350); 
+                    match(input,FLOAT,FOLLOW_FLOAT_in_function_params1346); 
                      value = new DoubleLiteralValue( t.getText() ); 
 
                     }
@@ -1834,7 +1834,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:540:6: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_function_params1365); 
+                    match(input,INT,FOLLOW_INT_in_function_params1361); 
                      value = new LongLiteralValue( t.getText() ); 
 
                     }
@@ -1843,7 +1843,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:541:6: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_function_params1385); 
+                    match(input,BOOL,FOLLOW_BOOL_in_function_params1381); 
                      value = new BooleanLiteralValue( t.getText() ); 
 
                     }
@@ -1852,7 +1852,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:542:6: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_function_params1407); 
+                    match(input,NULL,FOLLOW_NULL_in_function_params1403); 
                      value = ObjectLiteralValue.NULL; 
 
                     }
@@ -1860,7 +1860,7 @@ public class CLPParser extends Parser {
                 case 8 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:543:6: nf= function[context]
                     {
-                    pushFollow(FOLLOW_function_in_function_params1423);
+                    pushFollow(FOLLOW_function_in_function_params1419);
                     nf=function(context);
                     _fsp--;
 
@@ -1903,9 +1903,9 @@ public class CLPParser extends Parser {
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:555:3: ( LEFT_PAREN id= ID (t= VAR | t= STRING | t= ID | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN )
             // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:555:3: LEFT_PAREN id= ID (t= VAR | t= STRING | t= ID | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_slot_name_value_pair1465); 
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_slot_name_value_pair1461); 
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_slot_name_value_pair1471); 
+            match(input,ID,FOLLOW_ID_in_slot_name_value_pair1467); 
             
             			name = id.getText();
             		
@@ -1948,7 +1948,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:559:6: t= VAR
                     {
                     t=(Token)input.LT(1);
-                    match(input,VAR,FOLLOW_VAR_in_slot_name_value_pair1482); 
+                    match(input,VAR,FOLLOW_VAR_in_slot_name_value_pair1478); 
                      nameValuePair = new SlotNameValuePair(name, context.getVariableValueHandler( t.getText() ) ); 
 
                     }
@@ -1957,7 +1957,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:560:7: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_slot_name_value_pair1500); 
+                    match(input,STRING,FOLLOW_STRING_in_slot_name_value_pair1496); 
                      nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( getString( t ) ) ); 
 
                     }
@@ -1966,7 +1966,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:561:7: t= ID
                     {
                     t=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_slot_name_value_pair1515); 
+                    match(input,ID,FOLLOW_ID_in_slot_name_value_pair1511); 
                      nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); 
 
                     }
@@ -1975,7 +1975,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:562:6: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_slot_name_value_pair1536); 
+                    match(input,FLOAT,FOLLOW_FLOAT_in_slot_name_value_pair1532); 
                      nameValuePair = new SlotNameValuePair(name, new DoubleLiteralValue( t.getText() ) ); 
 
                     }
@@ -1984,7 +1984,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:563:6: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_slot_name_value_pair1551); 
+                    match(input,INT,FOLLOW_INT_in_slot_name_value_pair1547); 
                      nameValuePair = new SlotNameValuePair(name, new LongLiteralValue( t.getText() ) ); 
 
                     }
@@ -1993,7 +1993,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:564:6: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_slot_name_value_pair1571); 
+                    match(input,BOOL,FOLLOW_BOOL_in_slot_name_value_pair1567); 
                      nameValuePair = new SlotNameValuePair(name, new BooleanLiteralValue( t.getText() ) ) ; 
 
                     }
@@ -2002,7 +2002,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:565:6: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_slot_name_value_pair1593); 
+                    match(input,NULL,FOLLOW_NULL_in_slot_name_value_pair1589); 
                      nameValuePair = new SlotNameValuePair(name, ObjectLiteralValue.NULL ); 
 
                     }
@@ -2010,7 +2010,7 @@ public class CLPParser extends Parser {
                 case 8 :
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:566:6: nf= function[context]
                     {
-                    pushFollow(FOLLOW_function_in_slot_name_value_pair1609);
+                    pushFollow(FOLLOW_function_in_slot_name_value_pair1605);
                     nf=function(context);
                     _fsp--;
 
@@ -2022,7 +2022,7 @@ public class CLPParser extends Parser {
             }
 
              f.addParameter( nameValuePair ); 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_slot_name_value_pair1646); 
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_slot_name_value_pair1642); 
 
             }
 
@@ -2085,7 +2085,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:577:8: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal1675); 
+                    match(input,STRING,FOLLOW_STRING_in_literal1671); 
                      text = getString( t ); 
 
                     }
@@ -2094,7 +2094,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:578:7: t= ID
                     {
                     t=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_literal1688); 
+                    match(input,ID,FOLLOW_ID_in_literal1684); 
                      text = t.getText(); 
 
                     }
@@ -2103,7 +2103,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:7: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal1704); 
+                    match(input,INT,FOLLOW_INT_in_literal1700); 
                      text = t.getText(); 
 
                     }
@@ -2112,7 +2112,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:580:7: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1719); 
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1715); 
                      text = t.getText(); 
 
                     }
@@ -2121,7 +2121,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:581:7: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal1732); 
+                    match(input,BOOL,FOLLOW_BOOL_in_literal1728); 
                      text = t.getText(); 
 
                     }
@@ -2130,7 +2130,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:582:7: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_literal1746); 
+                    match(input,NULL,FOLLOW_NULL_in_literal1742); 
                      text = null; 
 
                     }
@@ -2188,7 +2188,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:588:4: t= ID
                     {
                     t=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_function_name1775); 
+                    match(input,ID,FOLLOW_ID_in_function_name1771); 
 
                     }
                     break;
@@ -2196,7 +2196,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:589:4: t= MISC
                     {
                     t=(Token)input.LT(1);
-                    match(input,MISC,FOLLOW_MISC_in_function_name1783); 
+                    match(input,MISC,FOLLOW_MISC_in_function_name1779); 
 
                     }
                     break;
@@ -2204,7 +2204,7 @@ public class CLPParser extends Parser {
                     // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:590:4: t= SYMBOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,SYMBOL,FOLLOW_SYMBOL_in_function_name1790); 
+                    match(input,SYMBOL,FOLLOW_SYMBOL_in_function_name1786); 
 
                     }
                     break;
@@ -2233,7 +2233,7 @@ public class CLPParser extends Parser {
 
     public static final BitSet FOLLOW_39_in_opt_semicolon38 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_rule64 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_DEFRULE_in_rule66 = new BitSet(new long[]{0x0000000000000120L});
+    public static final BitSet FOLLOW_DEFRULE_in_rule66 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_agenda_group_in_rule76 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_ID_in_rule92 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_STRING_in_rule105 = new BitSet(new long[]{0x0000010000008010L});
@@ -2247,109 +2247,108 @@ public class CLPParser extends Parser {
     public static final BitSet FOLLOW_salience_in_ruleAttribute162 = new BitSet(new long[]{0x0000000000000080L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_ruleAttribute169 = new BitSet(new long[]{0x0000000000000080L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_ruleAttribute173 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SALIENCE_in_agenda_group198 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_INT_in_agenda_group202 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SALIENCE_in_salience237 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_INT_in_salience241 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_ce_in_lhs268 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_or_ce_in_lhs278 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_not_ce_in_lhs287 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exists_ce_in_lhs296 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_eval_ce_in_lhs310 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_normal_pattern_in_lhs324 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_bound_pattern_in_lhs333 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_40_in_rhs360 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_function_in_rhs365 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_and_ce_in_ce389 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_or_ce_in_ce402 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_not_ce_in_ce411 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exists_ce_in_ce420 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_eval_ce_in_ce434 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_normal_pattern_in_ce458 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_and_ce490 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_AND_in_and_ce495 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_ce_in_and_ce501 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_and_ce510 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_or_ce538 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_OR_in_or_ce543 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_ce_in_or_ce549 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_or_ce558 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_not_ce586 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_NOT_in_not_ce591 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_ce_in_not_ce597 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_not_ce606 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_exists_ce635 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_EXISTS_in_exists_ce640 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_ce_in_exists_ce646 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_exists_ce655 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_eval_ce683 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_TEST_in_eval_ce688 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_function_in_eval_ce694 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_eval_ce705 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_normal_pattern733 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_normal_pattern740 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_field_constriant_in_normal_pattern746 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_normal_pattern756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_bound_pattern784 = new BitSet(new long[]{0x0000020000000000L});
-    public static final BitSet FOLLOW_41_in_bound_pattern790 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_bound_pattern795 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_bound_pattern802 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_field_constriant_in_bound_pattern808 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_bound_pattern815 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_field_constriant843 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_field_constriant850 = new BitSet(new long[]{0x00000C00003C8260L});
-    public static final BitSet FOLLOW_restriction_in_field_constriant862 = new BitSet(new long[]{0x0000000000030080L});
-    public static final BitSet FOLLOW_connective_in_field_constriant874 = new BitSet(new long[]{0x00000C00003C8260L});
-    public static final BitSet FOLLOW_restriction_in_field_constriant891 = new BitSet(new long[]{0x0000000000030080L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_field_constriant914 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_AMPERSAND_in_connective932 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PIPE_in_connective944 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_TILDE_in_restriction979 = new BitSet(new long[]{0x00000C0000388260L});
-    public static final BitSet FOLLOW_predicate_constraint_in_restriction996 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_return_value_restriction_in_restriction1016 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_variable_restriction_in_restriction1028 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_restriction_in_restriction1044 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_predicate_constraint1086 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_function_in_predicate_constraint1090 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_return_value_restriction1113 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_function_in_return_value_restriction1118 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_variable_restriction1139 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_literal_restriction1172 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_function1197 = new BitSet(new long[]{0x0000000000C00020L});
-    public static final BitSet FOLLOW_function_name_in_function1203 = new BitSet(new long[]{0x0000000000388270L});
-    public static final BitSet FOLLOW_function_params_in_function1216 = new BitSet(new long[]{0x00000000003882F0L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_function1226 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_modify_function1257 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_modify_function1262 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_slot_name_value_pair_in_modify_function1267 = new BitSet(new long[]{0x0000000000000090L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_modify_function1273 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_function_params1302 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_function_params1314 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_function_params1329 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_function_params1350 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_function_params1365 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_function_params1385 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_function_params1407 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_function_in_function_params1423 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_slot_name_value_pair1465 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_slot_name_value_pair1471 = new BitSet(new long[]{0x0000000000388270L});
-    public static final BitSet FOLLOW_VAR_in_slot_name_value_pair1482 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_STRING_in_slot_name_value_pair1500 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_ID_in_slot_name_value_pair1515 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_FLOAT_in_slot_name_value_pair1536 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_INT_in_slot_name_value_pair1551 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_BOOL_in_slot_name_value_pair1571 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_NULL_in_slot_name_value_pair1593 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_function_in_slot_name_value_pair1609 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_slot_name_value_pair1646 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal1675 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_literal1688 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal1704 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal1719 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_literal1732 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_literal1746 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_function_name1775 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MISC_in_function_name1783 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SYMBOL_in_function_name1790 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_agenda_group198 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SALIENCE_in_salience233 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_INT_in_salience237 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_ce_in_lhs264 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_or_ce_in_lhs274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_not_ce_in_lhs283 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exists_ce_in_lhs292 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_eval_ce_in_lhs306 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_normal_pattern_in_lhs320 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_bound_pattern_in_lhs329 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_40_in_rhs356 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_function_in_rhs361 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_and_ce_in_ce385 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_or_ce_in_ce398 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_not_ce_in_ce407 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exists_ce_in_ce416 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_eval_ce_in_ce430 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_normal_pattern_in_ce454 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_and_ce486 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_AND_in_and_ce491 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_ce_in_and_ce497 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_and_ce506 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_or_ce534 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_OR_in_or_ce539 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_ce_in_or_ce545 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_or_ce554 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_not_ce582 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_NOT_in_not_ce587 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_ce_in_not_ce593 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_not_ce602 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_exists_ce631 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_EXISTS_in_exists_ce636 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_ce_in_exists_ce642 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_exists_ce651 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_eval_ce679 = new BitSet(new long[]{0x0000000000004000L});
+    public static final BitSet FOLLOW_TEST_in_eval_ce684 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_function_in_eval_ce690 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_eval_ce701 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_normal_pattern729 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_normal_pattern736 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_field_constriant_in_normal_pattern742 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_normal_pattern752 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_bound_pattern780 = new BitSet(new long[]{0x0000020000000000L});
+    public static final BitSet FOLLOW_41_in_bound_pattern786 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_bound_pattern791 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_bound_pattern798 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_field_constriant_in_bound_pattern804 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_bound_pattern811 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_field_constriant839 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_field_constriant846 = new BitSet(new long[]{0x00000C00003C8260L});
+    public static final BitSet FOLLOW_restriction_in_field_constriant858 = new BitSet(new long[]{0x0000000000030080L});
+    public static final BitSet FOLLOW_connective_in_field_constriant870 = new BitSet(new long[]{0x00000C00003C8260L});
+    public static final BitSet FOLLOW_restriction_in_field_constriant887 = new BitSet(new long[]{0x0000000000030080L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_field_constriant910 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_AMPERSAND_in_connective928 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PIPE_in_connective940 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_TILDE_in_restriction975 = new BitSet(new long[]{0x00000C0000388260L});
+    public static final BitSet FOLLOW_predicate_constraint_in_restriction992 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_return_value_restriction_in_restriction1012 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_variable_restriction_in_restriction1024 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_restriction_in_restriction1040 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_42_in_predicate_constraint1082 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_function_in_predicate_constraint1086 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_return_value_restriction1109 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_function_in_return_value_restriction1114 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_variable_restriction1135 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_literal_restriction1168 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_function1193 = new BitSet(new long[]{0x0000000000C00020L});
+    public static final BitSet FOLLOW_function_name_in_function1199 = new BitSet(new long[]{0x0000000000388270L});
+    public static final BitSet FOLLOW_function_params_in_function1212 = new BitSet(new long[]{0x00000000003882F0L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_function1222 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_modify_function1253 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_modify_function1258 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_slot_name_value_pair_in_modify_function1263 = new BitSet(new long[]{0x0000000000000090L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_modify_function1269 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_function_params1298 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_function_params1310 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_function_params1325 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_function_params1346 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_function_params1361 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_function_params1381 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_function_params1403 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_function_in_function_params1419 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_slot_name_value_pair1461 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_ID_in_slot_name_value_pair1467 = new BitSet(new long[]{0x0000000000388270L});
+    public static final BitSet FOLLOW_VAR_in_slot_name_value_pair1478 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_STRING_in_slot_name_value_pair1496 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_ID_in_slot_name_value_pair1511 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_FLOAT_in_slot_name_value_pair1532 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_INT_in_slot_name_value_pair1547 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_BOOL_in_slot_name_value_pair1567 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_NULL_in_slot_name_value_pair1589 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_function_in_slot_name_value_pair1605 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_slot_name_value_pair1642 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal1671 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_literal1684 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal1700 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal1715 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_literal1728 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_literal1742 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_function_name1771 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MISC_in_function_name1779 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SYMBOL_in_function_name1786 = new BitSet(new long[]{0x0000000000000002L});
 
 }
