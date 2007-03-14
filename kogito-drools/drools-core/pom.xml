@@ -24,19 +24,16 @@
     <dependency>
       <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>1.1.3</version>
     </dependency>
     
     <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
-      <version>1.1.3.4.O</version>
     </dependency>
     
 	 <dependency>
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel14</artifactId>    
-			<version>1.2beta13</version>
     </dependency>      
     
   </dependencies>
