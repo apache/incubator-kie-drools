@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-13 02:48:08
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-14 21:57:04
 
 	package org.drools.clp;
 
@@ -10,117 +10,55 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 public class CLPLexer extends Lexer {
-    public static final int EXISTS=10;
-    public static final int LEFT_PAREN=4;
-    public static final int RIGHT_CURLY=35;
-    public static final int BOOL=19;
-    public static final int DEFRULE=23;
-    public static final int HexDigit=27;
-    public static final int WS=25;
-    public static final int MISC=21;
-    public static final int STRING=16;
-    public static final int FLOAT=17;
-    public static final int T40=40;
-    public static final int TILDE=15;
-    public static final int OR=8;
-    public static final int PIPE=14;
-    public static final int VAR=12;
-    public static final int UnicodeEscape=28;
-    public static final int AND=7;
-    public static final int T37=37;
-    public static final int EscapeSequence=26;
-    public static final int INT=18;
-    public static final int EOF=-1;
-    public static final int NULL=20;
-    public static final int EOL=24;
-    public static final int SYMBOL=22;
-    public static final int LEFT_SQUARE=32;
-    public static final int Tokens=42;
-    public static final int OctalEscape=29;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=30;
-    public static final int MULTI_LINE_COMMENT=36;
-    public static final int AMPERSAND=13;
-    public static final int TEST=11;
-    public static final int T38=38;
+    public static final int EXISTS=13;
+    public static final int DEFRULE=24;
+    public static final int HexDigit=29;
+    public static final int MISC=22;
+    public static final int FLOAT=19;
+    public static final int TILDE=18;
+    public static final int OR=11;
+    public static final int PIPE=17;
+    public static final int AND=10;
+    public static final int EscapeSequence=28;
+    public static final int INT=9;
+    public static final int SYMBOL=23;
+    public static final int LEFT_SQUARE=34;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=32;
+    public static final int AMPERSAND=16;
+    public static final int DECLARE=27;
     public static final int T41=41;
-    public static final int NOT=9;
-    public static final int RIGHT_PAREN=6;
-    public static final int LEFT_CURLY=34;
+    public static final int LEFT_CURLY=36;
     public static final int T39=39;
-    public static final int RIGHT_SQUARE=33;
     public static final int ID=5;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=31;
+    public static final int T44=44;
+    public static final int LEFT_PAREN=4;
+    public static final int RIGHT_CURLY=37;
+    public static final int BOOL=20;
+    public static final int WS=26;
+    public static final int STRING=6;
+    public static final int T43=43;
+    public static final int T42=42;
+    public static final int T40=40;
+    public static final int VAR=15;
+    public static final int UnicodeEscape=30;
+    public static final int EOF=-1;
+    public static final int EOL=25;
+    public static final int NULL=21;
+    public static final int Tokens=45;
+    public static final int OctalEscape=31;
+    public static final int SALIENCE=8;
+    public static final int MULTI_LINE_COMMENT=38;
+    public static final int TEST=14;
+    public static final int RIGHT_PAREN=7;
+    public static final int NOT=12;
+    public static final int RIGHT_SQUARE=35;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=33;
     public CLPLexer() {;} 
     public CLPLexer(CharStream input) {
         super(input);
-        ruleMemo = new HashMap[40+1];
+        ruleMemo = new HashMap[43+1];
      }
     public String getGrammarFileName() { return "C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g"; }
-
-    // $ANTLR start T37
-    public void mT37() throws RecognitionException {
-        try {
-            ruleNestingLevel++;
-            int _type = T37;
-            int _start = getCharIndex();
-            int _line = getLine();
-            int _charPosition = getCharPositionInLine();
-            int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:6:7: ( ';' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:6:7: ';'
-            {
-            match(';'); if (failed) return ;
-
-            }
-
-
-            if ( backtracking==0 ) {
-
-                      if ( token==null && ruleNestingLevel==1 ) {
-                          emit(_type,_line,_charPosition,_channel,_start,getCharIndex()-1);
-                      }
-
-                      
-            }
-        }
-        finally {
-            ruleNestingLevel--;
-        }
-    }
-    // $ANTLR end T37
-
-    // $ANTLR start T38
-    public void mT38() throws RecognitionException {
-        try {
-            ruleNestingLevel++;
-            int _type = T38;
-            int _start = getCharIndex();
-            int _line = getLine();
-            int _charPosition = getCharPositionInLine();
-            int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:7:7: ( '<-' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:7:7: '<-'
-            {
-            match("<-"); if (failed) return ;
-
-
-            }
-
-
-            if ( backtracking==0 ) {
-
-                      if ( token==null && ruleNestingLevel==1 ) {
-                          emit(_type,_line,_charPosition,_channel,_start,getCharIndex()-1);
-                      }
-
-                      
-            }
-        }
-        finally {
-            ruleNestingLevel--;
-        }
-    }
-    // $ANTLR end T38
 
     // $ANTLR start T39
     public void mT39() throws RecognitionException {
@@ -131,10 +69,10 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:8:7: ( ':' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:8:7: ':'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:6:7: ( ';' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:6:7: ';'
             {
-            match(':'); if (failed) return ;
+            match(';'); if (failed) return ;
 
             }
 
@@ -163,10 +101,11 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:9:7: ( '=' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:9:7: '='
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:7:7: ( '=>' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:7:7: '=>'
             {
-            match('='); if (failed) return ;
+            match("=>"); if (failed) return ;
+
 
             }
 
@@ -195,10 +134,10 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:10:7: ( 'modify' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:10:7: 'modify'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:8:7: ( '<-' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:8:7: '<-'
             {
-            match("modify"); if (failed) return ;
+            match("<-"); if (failed) return ;
 
 
             }
@@ -219,6 +158,103 @@ public class CLPLexer extends Lexer {
     }
     // $ANTLR end T41
 
+    // $ANTLR start T42
+    public void mT42() throws RecognitionException {
+        try {
+            ruleNestingLevel++;
+            int _type = T42;
+            int _start = getCharIndex();
+            int _line = getLine();
+            int _charPosition = getCharPositionInLine();
+            int _channel = Token.DEFAULT_CHANNEL;
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:9:7: ( ':' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:9:7: ':'
+            {
+            match(':'); if (failed) return ;
+
+            }
+
+
+            if ( backtracking==0 ) {
+
+                      if ( token==null && ruleNestingLevel==1 ) {
+                          emit(_type,_line,_charPosition,_channel,_start,getCharIndex()-1);
+                      }
+
+                      
+            }
+        }
+        finally {
+            ruleNestingLevel--;
+        }
+    }
+    // $ANTLR end T42
+
+    // $ANTLR start T43
+    public void mT43() throws RecognitionException {
+        try {
+            ruleNestingLevel++;
+            int _type = T43;
+            int _start = getCharIndex();
+            int _line = getLine();
+            int _charPosition = getCharPositionInLine();
+            int _channel = Token.DEFAULT_CHANNEL;
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:10:7: ( '=' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:10:7: '='
+            {
+            match('='); if (failed) return ;
+
+            }
+
+
+            if ( backtracking==0 ) {
+
+                      if ( token==null && ruleNestingLevel==1 ) {
+                          emit(_type,_line,_charPosition,_channel,_start,getCharIndex()-1);
+                      }
+
+                      
+            }
+        }
+        finally {
+            ruleNestingLevel--;
+        }
+    }
+    // $ANTLR end T43
+
+    // $ANTLR start T44
+    public void mT44() throws RecognitionException {
+        try {
+            ruleNestingLevel++;
+            int _type = T44;
+            int _start = getCharIndex();
+            int _line = getLine();
+            int _charPosition = getCharPositionInLine();
+            int _channel = Token.DEFAULT_CHANNEL;
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:11:7: ( 'modify' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:11:7: 'modify'
+            {
+            match("modify"); if (failed) return ;
+
+
+            }
+
+
+            if ( backtracking==0 ) {
+
+                      if ( token==null && ruleNestingLevel==1 ) {
+                          emit(_type,_line,_charPosition,_channel,_start,getCharIndex()-1);
+                      }
+
+                      
+            }
+        }
+        finally {
+            ruleNestingLevel--;
+        }
+    }
+    // $ANTLR end T44
+
     // $ANTLR start DEFRULE
     public void mDEFRULE() throws RecognitionException {
         try {
@@ -228,8 +264,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:545:11: ( 'defrule' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:545:11: 'defrule'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:598:11: ( 'defrule' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:598:11: 'defrule'
             {
             match("defrule"); if (failed) return ;
 
@@ -261,8 +297,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:546:7: ( 'or' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:546:7: 'or'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:599:7: ( 'or' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:599:7: 'or'
             {
             match("or"); if (failed) return ;
 
@@ -294,8 +330,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:547:8: ( 'and' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:547:8: 'and'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:600:8: ( 'and' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:600:8: 'and'
             {
             match("and"); if (failed) return ;
 
@@ -327,8 +363,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:548:8: ( 'not' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:548:8: 'not'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:601:8: ( 'not' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:601:8: 'not'
             {
             match("not"); if (failed) return ;
 
@@ -360,8 +396,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:549:11: ( 'exists' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:549:11: 'exists'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:602:11: ( 'exists' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:602:11: 'exists'
             {
             match("exists"); if (failed) return ;
 
@@ -393,8 +429,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:550:9: ( 'test' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:550:9: 'test'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:603:9: ( 'test' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:603:9: 'test'
             {
             match("test"); if (failed) return ;
 
@@ -426,8 +462,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:552:8: ( 'null' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:552:8: 'null'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:605:8: ( 'null' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:605:8: 'null'
             {
             match("null"); if (failed) return ;
 
@@ -459,10 +495,10 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:554:17: ( ( ' ' | '\\t' | '\\f' | EOL ) )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:554:17: ( ' ' | '\\t' | '\\f' | EOL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:607:17: ( ( ' ' | '\\t' | '\\f' | EOL ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:607:17: ( ' ' | '\\t' | '\\f' | EOL )
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:554:17: ( ' ' | '\\t' | '\\f' | EOL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:607:17: ( ' ' | '\\t' | '\\f' | EOL )
             int alt1=4;
             switch ( input.LA(1) ) {
             case ' ':
@@ -481,35 +517,35 @@ public class CLPLexer extends Lexer {
             default:
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("554:17: ( ' ' | '\\t' | '\\f' | EOL )", 1, 0, input);
+                    new NoViableAltException("607:17: ( ' ' | '\\t' | '\\f' | EOL )", 1, 0, input);
 
                 throw nvae;
             }
 
             switch (alt1) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:554:19: ' '
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:607:19: ' '
                     {
                     match(' '); if (failed) return ;
 
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:555:19: '\\t'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:608:19: '\\t'
                     {
                     match('\t'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:556:19: '\\f'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:609:19: '\\f'
                     {
                     match('\f'); if (failed) return ;
 
                     }
                     break;
                 case 4 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:557:19: EOL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:610:19: EOL
                     {
                     mEOL(); if (failed) return ;
 
@@ -540,14 +576,80 @@ public class CLPLexer extends Lexer {
     }
     // $ANTLR end WS
 
+    // $ANTLR start DECLARE
+    public void mDECLARE() throws RecognitionException {
+        try {
+            ruleNestingLevel++;
+            int _type = DECLARE;
+            int _start = getCharIndex();
+            int _line = getLine();
+            int _charPosition = getCharPositionInLine();
+            int _channel = Token.DEFAULT_CHANNEL;
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:616:4: ( 'declare' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:616:4: 'declare'
+            {
+            match("declare"); if (failed) return ;
+
+
+            }
+
+
+            if ( backtracking==0 ) {
+
+                      if ( token==null && ruleNestingLevel==1 ) {
+                          emit(_type,_line,_charPosition,_channel,_start,getCharIndex()-1);
+                      }
+
+                      
+            }
+        }
+        finally {
+            ruleNestingLevel--;
+        }
+    }
+    // $ANTLR end DECLARE
+
+    // $ANTLR start SALIENCE
+    public void mSALIENCE() throws RecognitionException {
+        try {
+            ruleNestingLevel++;
+            int _type = SALIENCE;
+            int _start = getCharIndex();
+            int _line = getLine();
+            int _charPosition = getCharPositionInLine();
+            int _channel = Token.DEFAULT_CHANNEL;
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:619:4: ( 'salience' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:619:4: 'salience'
+            {
+            match("salience"); if (failed) return ;
+
+
+            }
+
+
+            if ( backtracking==0 ) {
+
+                      if ( token==null && ruleNestingLevel==1 ) {
+                          emit(_type,_line,_charPosition,_channel,_start,getCharIndex()-1);
+                      }
+
+                      
+            }
+        }
+        finally {
+            ruleNestingLevel--;
+        }
+    }
+    // $ANTLR end SALIENCE
+
     // $ANTLR start EOL
     public void mEOL() throws RecognitionException {
         try {
             ruleNestingLevel++;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:564:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:564:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:564:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             int alt2=3;
             int LA2_0 = input.LA(1);
             if ( (LA2_0=='\r') ) {
@@ -564,13 +666,13 @@ public class CLPLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("564:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
+                    new NoViableAltException("623:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
 
                 throw nvae;
             }
             switch (alt2) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:564:14: ( '\\r\\n' )=> '\\r\\n'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:14: ( '\\r\\n' )=> '\\r\\n'
                     {
                     match("\r\n"); if (failed) return ;
 
@@ -578,14 +680,14 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:565:25: '\\r'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:624:25: '\\r'
                     {
                     match('\r'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:566:25: '\\n'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:625:25: '\\n'
                     {
                     match('\n'); if (failed) return ;
 
@@ -613,10 +715,10 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:571:4: ( ( '-' )? ( '0' .. '9' )+ )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:571:4: ( '-' )? ( '0' .. '9' )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:630:4: ( ( '-' )? ( '0' .. '9' )+ )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:630:4: ( '-' )? ( '0' .. '9' )+
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:571:4: ( '-' )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:630:4: ( '-' )?
             int alt3=2;
             int LA3_0 = input.LA(1);
             if ( (LA3_0=='-') ) {
@@ -624,7 +726,7 @@ public class CLPLexer extends Lexer {
             }
             switch (alt3) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:571:5: '-'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:630:5: '-'
                     {
                     match('-'); if (failed) return ;
 
@@ -633,7 +735,7 @@ public class CLPLexer extends Lexer {
 
             }
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:571:10: ( '0' .. '9' )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:630:10: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -646,7 +748,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:571:11: '0' .. '9'
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:630:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -691,10 +793,10 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:4: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:4: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:4: ( '-' )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:4: ( '-' )?
             int alt5=2;
             int LA5_0 = input.LA(1);
             if ( (LA5_0=='-') ) {
@@ -702,7 +804,7 @@ public class CLPLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:5: '-'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:5: '-'
                     {
                     match('-'); if (failed) return ;
 
@@ -711,7 +813,7 @@ public class CLPLexer extends Lexer {
 
             }
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:10: ( '0' .. '9' )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:10: ( '0' .. '9' )+
             int cnt6=0;
             loop6:
             do {
@@ -724,7 +826,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:11: '0' .. '9'
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -742,7 +844,7 @@ public class CLPLexer extends Lexer {
             } while (true);
 
             match('.'); if (failed) return ;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:26: ( '0' .. '9' )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:26: ( '0' .. '9' )+
             int cnt7=0;
             loop7:
             do {
@@ -755,7 +857,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:27: '0' .. '9'
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:634:27: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -800,7 +902,7 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:8: ( ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' ) | ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:638:8: ( ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' ) | ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' ) )
             int alt10=2;
             int LA10_0 = input.LA(1);
             if ( (LA10_0=='\"') ) {
@@ -812,19 +914,19 @@ public class CLPLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("578:1: STRING : ( ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' ) | ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' ) );", 10, 0, input);
+                    new NoViableAltException("637:1: STRING : ( ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' ) | ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' ) );", 10, 0, input);
 
                 throw nvae;
             }
             switch (alt10) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:8: ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:638:8: ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' )
                     {
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:8: ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:9: '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:638:8: ( '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:638:9: '\"' ( EscapeSequence | ~ ('\\\\'|'\"'))* '\"'
                     {
                     match('\"'); if (failed) return ;
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:13: ( EscapeSequence | ~ ('\\\\'|'\"'))*
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:638:13: ( EscapeSequence | ~ ('\\\\'|'\"'))*
                     loop8:
                     do {
                         int alt8=3;
@@ -839,14 +941,14 @@ public class CLPLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:15: EscapeSequence
+                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:638:15: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:579:32: ~ ('\\\\'|'\"')
+                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:638:32: ~ ('\\\\'|'\"')
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -876,13 +978,13 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:580:8: ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:639:8: ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' )
                     {
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:580:8: ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:580:9: '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\''
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:639:8: ( '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\'' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:639:9: '\\'' ( EscapeSequence | ~ ('\\\\'|'\\''))* '\\''
                     {
                     match('\''); if (failed) return ;
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:580:14: ( EscapeSequence | ~ ('\\\\'|'\\''))*
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:639:14: ( EscapeSequence | ~ ('\\\\'|'\\''))*
                     loop9:
                     do {
                         int alt9=3;
@@ -897,14 +999,14 @@ public class CLPLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:580:16: EscapeSequence
+                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:639:16: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:580:33: ~ ('\\\\'|'\\'')
+                    	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:639:33: ~ ('\\\\'|'\\'')
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -955,8 +1057,8 @@ public class CLPLexer extends Lexer {
     public void mHexDigit() throws RecognitionException {
         try {
             ruleNestingLevel++;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:584:12: ( ('0'..'9'|'a'..'f'|'A'..'F'))
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:584:12: ('0'..'9'|'a'..'f'|'A'..'F')
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:643:12: ( ('0'..'9'|'a'..'f'|'A'..'F'))
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:643:12: ('0'..'9'|'a'..'f'|'A'..'F')
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -983,14 +1085,11 @@ public class CLPLexer extends Lexer {
     public void mEscapeSequence() throws RecognitionException {
         try {
             ruleNestingLevel++;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:588:9: ( '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\') | UnicodeEscape | OctalEscape )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:647:9: ( '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\') | UnicodeEscape | OctalEscape )
             int alt11=3;
             int LA11_0 = input.LA(1);
             if ( (LA11_0=='\\') ) {
                 switch ( input.LA(2) ) {
-                case 'u':
-                    alt11=2;
-                    break;
                 case '\"':
                 case '\'':
                 case '\\':
@@ -1000,6 +1099,9 @@ public class CLPLexer extends Lexer {
                 case 'r':
                 case 't':
                     alt11=1;
+                    break;
+                case 'u':
+                    alt11=2;
                     break;
                 case '0':
                 case '1':
@@ -1014,7 +1116,7 @@ public class CLPLexer extends Lexer {
                 default:
                     if (backtracking>0) {failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("586:1: fragment EscapeSequence : ( '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\') | UnicodeEscape | OctalEscape );", 11, 1, input);
+                        new NoViableAltException("645:1: fragment EscapeSequence : ( '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\') | UnicodeEscape | OctalEscape );", 11, 1, input);
 
                     throw nvae;
                 }
@@ -1023,13 +1125,13 @@ public class CLPLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("586:1: fragment EscapeSequence : ( '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\') | UnicodeEscape | OctalEscape );", 11, 0, input);
+                    new NoViableAltException("645:1: fragment EscapeSequence : ( '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\') | UnicodeEscape | OctalEscape );", 11, 0, input);
 
                 throw nvae;
             }
             switch (alt11) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:588:9: '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\')
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:647:9: '\\\\' ('b'|'t'|'n'|'f'|'r'|'\\\"'|'\\''|'\\\\')
                     {
                     match('\\'); if (failed) return ;
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -1047,14 +1149,14 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:589:9: UnicodeEscape
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:648:9: UnicodeEscape
                     {
                     mUnicodeEscape(); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:590:9: OctalEscape
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:649:9: OctalEscape
                     {
                     mOctalEscape(); if (failed) return ;
 
@@ -1073,7 +1175,7 @@ public class CLPLexer extends Lexer {
     public void mOctalEscape() throws RecognitionException {
         try {
             ruleNestingLevel++;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:9: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:9: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt12=3;
             int LA12_0 = input.LA(1);
             if ( (LA12_0=='\\') ) {
@@ -1081,8 +1183,8 @@ public class CLPLexer extends Lexer {
                 if ( ((LA12_1>='0' && LA12_1<='3')) ) {
                     int LA12_2 = input.LA(3);
                     if ( ((LA12_2>='0' && LA12_2<='7')) ) {
-                        int LA12_5 = input.LA(4);
-                        if ( ((LA12_5>='0' && LA12_5<='7')) ) {
+                        int LA12_4 = input.LA(4);
+                        if ( ((LA12_4>='0' && LA12_4<='7')) ) {
                             alt12=1;
                         }
                         else {
@@ -1102,7 +1204,7 @@ public class CLPLexer extends Lexer {
                 else {
                     if (backtracking>0) {failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("593:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 1, input);
+                        new NoViableAltException("652:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 1, input);
 
                     throw nvae;
                 }
@@ -1110,31 +1212,31 @@ public class CLPLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("593:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 0, input);
+                    new NoViableAltException("652:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 0, input);
 
                 throw nvae;
             }
             switch (alt12) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:14: ( '0' .. '3' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:15: '0' .. '3'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:14: ( '0' .. '3' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:15: '0' .. '3'
                     {
                     matchRange('0','3'); if (failed) return ;
 
                     }
 
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:25: ( '0' .. '7' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:26: '0' .. '7'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:25: ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
                     }
 
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:36: ( '0' .. '7' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:595:37: '0' .. '7'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:36: ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:654:37: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -1144,18 +1246,18 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:596:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:655:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:596:14: ( '0' .. '7' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:596:15: '0' .. '7'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:655:14: ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:655:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
                     }
 
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:596:25: ( '0' .. '7' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:596:26: '0' .. '7'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:655:25: ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:655:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -1165,11 +1267,11 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:597:9: '\\\\' ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:656:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:597:14: ( '0' .. '7' )
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:597:15: '0' .. '7'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:656:14: ( '0' .. '7' )
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:656:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -1191,8 +1293,8 @@ public class CLPLexer extends Lexer {
     public void mUnicodeEscape() throws RecognitionException {
         try {
             ruleNestingLevel++;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:602:9: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:602:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:661:9: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:661:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); if (failed) return ;
             match('u'); if (failed) return ;
@@ -1219,10 +1321,10 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:4: ( ( 'true' | 'false' ) )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:4: ( 'true' | 'false' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:665:4: ( ( 'true' | 'false' ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:665:4: ( 'true' | 'false' )
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:4: ( 'true' | 'false' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:665:4: ( 'true' | 'false' )
             int alt13=2;
             int LA13_0 = input.LA(1);
             if ( (LA13_0=='t') ) {
@@ -1234,13 +1336,13 @@ public class CLPLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("606:4: ( 'true' | 'false' )", 13, 0, input);
+                    new NoViableAltException("665:4: ( 'true' | 'false' )", 13, 0, input);
 
                 throw nvae;
             }
             switch (alt13) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:5: 'true'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:665:5: 'true'
                     {
                     match("true"); if (failed) return ;
 
@@ -1248,7 +1350,7 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:12: 'false'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:665:12: 'false'
                     {
                     match("false"); if (failed) return ;
 
@@ -1286,8 +1388,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:609:8: ( '?' ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))* )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:609:8: '?' ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:668:8: ( '?' ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))* )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:668:8: '?' ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
             {
             match('?'); if (failed) return ;
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
@@ -1301,7 +1403,7 @@ public class CLPLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:609:57: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:668:57: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
             loop14:
             do {
                 int alt14=2;
@@ -1313,7 +1415,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt14) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:609:58: ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff')
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:668:58: ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff')
             	    {
             	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
             	        input.consume();
@@ -1363,8 +1465,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:613:4: ( ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))* )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:613:4: ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:672:4: ( ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))* )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:672:4: ('a'..'z'|'A'..'Z'|'_'|'$'|'\\u00c0'..'\\u00ff') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
                 input.consume();
@@ -1377,7 +1479,7 @@ public class CLPLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:613:50: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:672:50: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff'))*
             loop15:
             do {
                 int alt15=2;
@@ -1389,7 +1491,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:613:51: ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff')
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:672:51: ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\\u00c0'..'\\u00ff')
             	    {
             	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
             	        input.consume();
@@ -1439,11 +1541,11 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:617:4: ( '#' ( options {greedy=false; } : . )* EOL )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:617:4: '#' ( options {greedy=false; } : . )* EOL
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:676:4: ( '#' ( options {greedy=false; } : . )* EOL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:676:4: '#' ( options {greedy=false; } : . )* EOL
             {
             match('#'); if (failed) return ;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:617:8: ( options {greedy=false; } : . )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:676:8: ( options {greedy=false; } : . )*
             loop16:
             do {
                 int alt16=2;
@@ -1461,7 +1563,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:617:35: .
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:676:35: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -1505,12 +1607,12 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:4: ( '//' ( options {greedy=false; } : . )* EOL )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:4: '//' ( options {greedy=false; } : . )* EOL
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:682:4: ( '//' ( options {greedy=false; } : . )* EOL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:682:4: '//' ( options {greedy=false; } : . )* EOL
             {
             match("//"); if (failed) return ;
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:9: ( options {greedy=false; } : . )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:682:9: ( options {greedy=false; } : . )*
             loop17:
             do {
                 int alt17=2;
@@ -1528,7 +1630,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:623:36: .
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:682:36: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -1572,8 +1674,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:629:4: ( '(' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:629:4: '('
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:688:4: ( '(' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:688:4: '('
             {
             match('('); if (failed) return ;
 
@@ -1604,8 +1706,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:633:4: ( ')' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:633:4: ')'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:692:4: ( ')' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:692:4: ')'
             {
             match(')'); if (failed) return ;
 
@@ -1636,8 +1738,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:637:4: ( '[' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:637:4: '['
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:696:4: ( '[' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:696:4: '['
             {
             match('['); if (failed) return ;
 
@@ -1668,8 +1770,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:641:4: ( ']' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:641:4: ']'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:700:4: ( ']' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:700:4: ']'
             {
             match(']'); if (failed) return ;
 
@@ -1700,8 +1802,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:645:4: ( '{' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:645:4: '{'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:704:4: ( '{' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:704:4: '{'
             {
             match('{'); if (failed) return ;
 
@@ -1732,8 +1834,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:649:4: ( '}' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:649:4: '}'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:708:4: ( '}' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:708:4: '}'
             {
             match('}'); if (failed) return ;
 
@@ -1764,8 +1866,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:652:9: ( '~' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:652:9: '~'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:711:9: ( '~' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:711:9: '~'
             {
             match('~'); if (failed) return ;
 
@@ -1796,8 +1898,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:656:4: ( '&' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:656:4: '&'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:715:4: ( '&' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:715:4: '&'
             {
             match('&'); if (failed) return ;
 
@@ -1828,8 +1930,8 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:660:4: ( '|' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:660:4: '|'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:719:4: ( '|' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:719:4: '|'
             {
             match('|'); if (failed) return ;
 
@@ -1860,12 +1962,12 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:664:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:664:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:723:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:723:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); if (failed) return ;
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:664:9: ( options {greedy=false; } : . )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:723:9: ( options {greedy=false; } : . )*
             loop18:
             do {
                 int alt18=2;
@@ -1888,7 +1990,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:664:35: .
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:723:35: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -1933,7 +2035,7 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:3: ( '!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '?' | ',' | '=' | '/' | '\\'' | '\\\\' | '<' | '>' | '<=' | '>=' )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:3: ( '!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '?' | ',' | '=' | '/' | '\\'' | '\\\\' | '<' | '>' | '<=' | '>=' )
             int alt19=19;
             switch ( input.LA(1) ) {
             case '!':
@@ -2000,133 +2102,133 @@ public class CLPLexer extends Lexer {
             default:
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("668:1: MISC : ( '!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '?' | ',' | '=' | '/' | '\\'' | '\\\\' | '<' | '>' | '<=' | '>=' );", 19, 0, input);
+                    new NoViableAltException("727:1: MISC : ( '!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '?' | ',' | '=' | '/' | '\\'' | '\\\\' | '<' | '>' | '<=' | '>=' );", 19, 0, input);
 
                 throw nvae;
             }
 
             switch (alt19) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:3: '!'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:3: '!'
                     {
                     match('!'); if (failed) return ;
 
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:9: '@'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:9: '@'
                     {
                     match('@'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:15: '$'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:15: '$'
                     {
                     match('$'); if (failed) return ;
 
                     }
                     break;
                 case 4 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:21: '%'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:21: '%'
                     {
                     match('%'); if (failed) return ;
 
                     }
                     break;
                 case 5 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:27: '^'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:27: '^'
                     {
                     match('^'); if (failed) return ;
 
                     }
                     break;
                 case 6 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:33: '*'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:33: '*'
                     {
                     match('*'); if (failed) return ;
 
                     }
                     break;
                 case 7 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:39: '_'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:39: '_'
                     {
                     match('_'); if (failed) return ;
 
                     }
                     break;
                 case 8 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:45: '-'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:45: '-'
                     {
                     match('-'); if (failed) return ;
 
                     }
                     break;
                 case 9 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:51: '+'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:51: '+'
                     {
                     match('+'); if (failed) return ;
 
                     }
                     break;
                 case 10 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:58: '?'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:58: '?'
                     {
                     match('?'); if (failed) return ;
 
                     }
                     break;
                 case 11 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:64: ','
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:64: ','
                     {
                     match(','); if (failed) return ;
 
                     }
                     break;
                 case 12 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:70: '='
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:70: '='
                     {
                     match('='); if (failed) return ;
 
                     }
                     break;
                 case 13 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:76: '/'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:76: '/'
                     {
                     match('/'); if (failed) return ;
 
                     }
                     break;
                 case 14 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:82: '\\''
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:82: '\\''
                     {
                     match('\''); if (failed) return ;
 
                     }
                     break;
                 case 15 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:669:89: '\\\\'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:728:89: '\\\\'
                     {
                     match('\\'); if (failed) return ;
 
                     }
                     break;
                 case 16 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:670:3: '<'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:729:3: '<'
                     {
                     match('<'); if (failed) return ;
 
                     }
                     break;
                 case 17 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:670:9: '>'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:729:9: '>'
                     {
                     match('>'); if (failed) return ;
 
                     }
                     break;
                 case 18 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:670:15: '<='
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:729:15: '<='
                     {
                     match("<="); if (failed) return ;
 
@@ -2134,7 +2236,7 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 19 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:670:22: '>='
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:729:22: '>='
                     {
                     match(">="); if (failed) return ;
 
@@ -2168,10 +2270,10 @@ public class CLPLexer extends Lexer {
             int _line = getLine();
             int _charPosition = getCharPositionInLine();
             int _channel = Token.DEFAULT_CHANNEL;
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:4: ( ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) ) (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))* )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:4: ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) ) (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:4: ( ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) ) (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))* )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:4: ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) ) (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))*
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:4: ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:4: ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) )
             int alt20=2;
             int LA20_0 = input.LA(1);
             if ( ((LA20_0>='\u0000' && LA20_0<='\b')||(LA20_0>='\u000B' && LA20_0<='\f')||(LA20_0>='\u000E' && LA20_0<='\u001F')||LA20_0=='!'||LA20_0=='#'||LA20_0=='%'||LA20_0=='\''||(LA20_0>='*' && LA20_0<=':')||(LA20_0>='<' && LA20_0<='>')||(LA20_0>='@' && LA20_0<='{')||LA20_0=='}'||(LA20_0>='\u007F' && LA20_0<='\uFFFE')) ) {
@@ -2183,16 +2285,16 @@ public class CLPLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("674:4: ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) )", 20, 0, input);
+                    new NoViableAltException("733:4: ( (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')) | ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')) )", 20, 0, input);
 
                 throw nvae;
             }
             switch (alt20) {
                 case 1 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:5: (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$'))
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:5: (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$'))
                     {
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:5: (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$'))
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:6: ~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:5: (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$'))
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:6: ~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$')
                     {
                     if ( (input.LA(1)>='\u0000' && input.LA(1)<='\b')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\u001F')||input.LA(1)=='!'||input.LA(1)=='#'||input.LA(1)=='%'||input.LA(1)=='\''||(input.LA(1)>='*' && input.LA(1)<=':')||(input.LA(1)>='<' && input.LA(1)<='>')||(input.LA(1)>='@' && input.LA(1)<='{')||input.LA(1)=='}'||(input.LA(1)>='\u007F' && input.LA(1)<='\uFFFE') ) {
                         input.consume();
@@ -2212,10 +2314,10 @@ public class CLPLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:65: ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'))
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:65: ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'))
                     {
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:65: ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'))
-                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:674:66: '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:65: ( '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'))
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:733:66: '$' ~ ('?'|' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<')
                     {
                     match('$'); if (failed) return ;
                     if ( (input.LA(1)>='\u0000' && input.LA(1)<='\b')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\u001F')||input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='%')||input.LA(1)=='\''||(input.LA(1)>='*' && input.LA(1)<=':')||(input.LA(1)>='=' && input.LA(1)<='>')||(input.LA(1)>='@' && input.LA(1)<='{')||input.LA(1)=='}'||(input.LA(1)>='\u007F' && input.LA(1)<='\uFFFE') ) {
@@ -2238,7 +2340,7 @@ public class CLPLexer extends Lexer {
 
             }
 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:675:11: (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:734:11: (~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))*
             loop21:
             do {
                 int alt21=2;
@@ -2250,7 +2352,7 @@ public class CLPLexer extends Lexer {
 
                 switch (alt21) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:675:12: ~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?')
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:734:12: ~ (' '|'\\t'|'\\n'|'\\r'|'\"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?')
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\b')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\u001F')||input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='%')||input.LA(1)=='\''||(input.LA(1)>='*' && input.LA(1)<=':')||(input.LA(1)>='=' && input.LA(1)<='>')||(input.LA(1)>='@' && input.LA(1)<='{')||input.LA(1)=='}'||(input.LA(1)>='\u007F' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -2292,236 +2394,257 @@ public class CLPLexer extends Lexer {
     // $ANTLR end SYMBOL
 
     public void mTokens() throws RecognitionException {
-        // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:10: ( T37 | T38 | T39 | T40 | T41 | DEFRULE | OR | AND | NOT | EXISTS | TEST | NULL | WS | INT | FLOAT | STRING | BOOL | VAR | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | TILDE | AMPERSAND | PIPE | MULTI_LINE_COMMENT | MISC | SYMBOL )
-        int alt22=33;
+        // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:10: ( T39 | T40 | T41 | T42 | T43 | T44 | DEFRULE | OR | AND | NOT | EXISTS | TEST | NULL | WS | DECLARE | SALIENCE | INT | FLOAT | STRING | BOOL | VAR | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | TILDE | AMPERSAND | PIPE | MULTI_LINE_COMMENT | MISC | SYMBOL )
+        int alt22=36;
         alt22 = dfa22.predict(input);
         switch (alt22) {
             case 1 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:10: T37
-                {
-                mT37(); if (failed) return ;
-
-                }
-                break;
-            case 2 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:14: T38
-                {
-                mT38(); if (failed) return ;
-
-                }
-                break;
-            case 3 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:18: T39
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:10: T39
                 {
                 mT39(); if (failed) return ;
 
                 }
                 break;
-            case 4 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:22: T40
+            case 2 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:14: T40
                 {
                 mT40(); if (failed) return ;
 
                 }
                 break;
-            case 5 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:26: T41
+            case 3 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:18: T41
                 {
                 mT41(); if (failed) return ;
 
                 }
                 break;
+            case 4 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:22: T42
+                {
+                mT42(); if (failed) return ;
+
+                }
+                break;
+            case 5 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:26: T43
+                {
+                mT43(); if (failed) return ;
+
+                }
+                break;
             case 6 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:30: DEFRULE
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:30: T44
+                {
+                mT44(); if (failed) return ;
+
+                }
+                break;
+            case 7 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:34: DEFRULE
                 {
                 mDEFRULE(); if (failed) return ;
 
                 }
                 break;
-            case 7 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:38: OR
+            case 8 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:42: OR
                 {
                 mOR(); if (failed) return ;
 
                 }
                 break;
-            case 8 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:41: AND
+            case 9 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:45: AND
                 {
                 mAND(); if (failed) return ;
 
                 }
                 break;
-            case 9 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:45: NOT
+            case 10 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:49: NOT
                 {
                 mNOT(); if (failed) return ;
 
                 }
                 break;
-            case 10 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:49: EXISTS
+            case 11 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:53: EXISTS
                 {
                 mEXISTS(); if (failed) return ;
 
                 }
                 break;
-            case 11 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:56: TEST
+            case 12 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:60: TEST
                 {
                 mTEST(); if (failed) return ;
 
                 }
                 break;
-            case 12 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:61: NULL
+            case 13 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:65: NULL
                 {
                 mNULL(); if (failed) return ;
 
                 }
                 break;
-            case 13 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:66: WS
+            case 14 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:70: WS
                 {
                 mWS(); if (failed) return ;
 
                 }
                 break;
-            case 14 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:69: INT
+            case 15 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:73: DECLARE
+                {
+                mDECLARE(); if (failed) return ;
+
+                }
+                break;
+            case 16 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:81: SALIENCE
+                {
+                mSALIENCE(); if (failed) return ;
+
+                }
+                break;
+            case 17 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:90: INT
                 {
                 mINT(); if (failed) return ;
 
                 }
                 break;
-            case 15 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:73: FLOAT
+            case 18 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:94: FLOAT
                 {
                 mFLOAT(); if (failed) return ;
 
                 }
                 break;
-            case 16 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:79: STRING
+            case 19 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:100: STRING
                 {
                 mSTRING(); if (failed) return ;
 
                 }
                 break;
-            case 17 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:86: BOOL
+            case 20 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:107: BOOL
                 {
                 mBOOL(); if (failed) return ;
 
                 }
                 break;
-            case 18 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:91: VAR
+            case 21 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:112: VAR
                 {
                 mVAR(); if (failed) return ;
 
                 }
                 break;
-            case 19 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:95: ID
+            case 22 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:116: ID
                 {
                 mID(); if (failed) return ;
 
                 }
                 break;
-            case 20 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:98: SH_STYLE_SINGLE_LINE_COMMENT
+            case 23 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:119: SH_STYLE_SINGLE_LINE_COMMENT
                 {
                 mSH_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
 
                 }
                 break;
-            case 21 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:127: C_STYLE_SINGLE_LINE_COMMENT
+            case 24 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:148: C_STYLE_SINGLE_LINE_COMMENT
                 {
                 mC_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
 
                 }
                 break;
-            case 22 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:155: LEFT_PAREN
+            case 25 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:176: LEFT_PAREN
                 {
                 mLEFT_PAREN(); if (failed) return ;
 
                 }
                 break;
-            case 23 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:166: RIGHT_PAREN
+            case 26 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:187: RIGHT_PAREN
                 {
                 mRIGHT_PAREN(); if (failed) return ;
 
                 }
                 break;
-            case 24 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:178: LEFT_SQUARE
+            case 27 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:199: LEFT_SQUARE
                 {
                 mLEFT_SQUARE(); if (failed) return ;
 
                 }
                 break;
-            case 25 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:190: RIGHT_SQUARE
+            case 28 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:211: RIGHT_SQUARE
                 {
                 mRIGHT_SQUARE(); if (failed) return ;
 
                 }
                 break;
-            case 26 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:203: LEFT_CURLY
+            case 29 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:224: LEFT_CURLY
                 {
                 mLEFT_CURLY(); if (failed) return ;
 
                 }
                 break;
-            case 27 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:214: RIGHT_CURLY
+            case 30 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:235: RIGHT_CURLY
                 {
                 mRIGHT_CURLY(); if (failed) return ;
 
                 }
                 break;
-            case 28 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:226: TILDE
+            case 31 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:247: TILDE
                 {
                 mTILDE(); if (failed) return ;
 
                 }
                 break;
-            case 29 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:232: AMPERSAND
+            case 32 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:253: AMPERSAND
                 {
                 mAMPERSAND(); if (failed) return ;
 
                 }
                 break;
-            case 30 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:242: PIPE
+            case 33 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:263: PIPE
                 {
                 mPIPE(); if (failed) return ;
 
                 }
                 break;
-            case 31 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:247: MULTI_LINE_COMMENT
+            case 34 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:268: MULTI_LINE_COMMENT
                 {
                 mMULTI_LINE_COMMENT(); if (failed) return ;
 
                 }
                 break;
-            case 32 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:266: MISC
+            case 35 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:287: MISC
                 {
                 mMISC(); if (failed) return ;
 
                 }
                 break;
-            case 33 :
-                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:271: SYMBOL
+            case 36 :
+                // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:1:292: SYMBOL
                 {
                 mSYMBOL(); if (failed) return ;
 
@@ -2535,404 +2658,464 @@ public class CLPLexer extends Lexer {
 
     protected DFA22 dfa22 = new DFA22(this);
     public static final String DFA22_eotS =
-        "\2\uffff\1\56\1\57\1\60\7\63\1\uffff\1\14\1\56\1\76\1\uffff\1\56"+
-        "\1\63\1\56\1\63\1\53\1\56\2\uffff\1\111\1\112\1\113\1\114\3\uffff"+
-        "\2\56\1\63\3\56\1\63\4\56\1\uffff\1\116\1\56\3\uffff\2\63\1\uffff"+
-        "\1\63\1\121\6\63\1\76\1\53\1\uffff\2\53\1\20\1\63\1\uffff\1\63\1"+
-        "\53\1\uffff\2\53\4\uffff\1\56\1\uffff\2\63\1\uffff\1\145\1\146\4"+
-        "\63\1\153\4\53\1\63\2\53\2\uffff\1\53\2\63\2\uffff\1\163\1\63\1"+
-        "\165\1\166\1\uffff\3\53\1\63\1\140\2\63\1\uffff\1\63\2\uffff\2\53"+
-        "\1\166\1\176\1\63\1\u0080\1\53\1\uffff\1\u0082\1\uffff\1\53\1\uffff";
+        "\2\uffff\1\56\1\61\1\62\7\65\1\uffff\1\14\1\65\1\61\1\101\1\uffff"+
+        "\1\61\1\65\1\61\1\65\1\54\1\61\2\uffff\1\114\1\115\1\116\1\117\3"+
+        "\uffff\2\61\1\65\3\61\1\65\4\61\1\uffff\1\121\1\uffff\1\122\1\61"+
+        "\2\uffff\2\65\1\uffff\1\65\1\126\7\65\1\101\1\54\1\uffff\2\54\1"+
+        "\21\1\65\1\uffff\1\65\1\uffff\3\54\4\uffff\1\61\2\uffff\3\65\1\uffff"+
+        "\1\154\1\155\5\65\1\163\4\54\1\65\2\54\2\uffff\1\54\3\65\2\uffff"+
+        "\1\174\1\65\1\176\1\177\1\65\1\uffff\3\54\1\65\1\146\3\65\1\uffff"+
+        "\1\65\2\uffff\1\65\2\54\1\176\1\u008a\2\65\1\u008d\1\65\1\54\1\uffff"+
+        "\1\u0090\1\u0091\1\uffff\1\65\1\54\2\uffff\1\u0093\1\uffff";
     public static final String DFA22_eofS =
-        "\u0083\uffff";
+        "\u0094\uffff";
     public static final String DFA22_minS =
-        "\1\0\1\uffff\12\0\1\uffff\3\0\1\uffff\2\0\1\44\3\0\2\uffff\4\0\3"+
-        "\uffff\13\0\1\uffff\2\0\3\uffff\2\0\1\uffff\11\0\1\60\1\uffff\1"+
-        "\42\3\0\1\uffff\2\0\1\uffff\2\0\4\uffff\1\0\1\uffff\2\0\1\uffff"+
-        "\10\0\1\60\5\0\2\uffff\3\0\2\uffff\4\0\1\uffff\1\60\6\0\1\uffff"+
-        "\1\0\2\uffff\1\60\5\0\1\60\1\uffff\1\0\1\uffff\1\0\1\uffff";
+        "\1\0\1\uffff\12\0\1\uffff\4\0\1\uffff\2\0\1\44\3\0\2\uffff\4\0\3"+
+        "\uffff\13\0\1\uffff\1\0\1\uffff\2\0\2\uffff\2\0\1\uffff\12\0\1\60"+
+        "\1\uffff\1\42\3\0\1\uffff\1\0\1\uffff\3\0\4\uffff\1\0\2\uffff\3"+
+        "\0\1\uffff\11\0\1\60\5\0\2\uffff\4\0\2\uffff\5\0\1\uffff\1\60\7"+
+        "\0\1\uffff\1\0\2\uffff\1\0\1\60\7\0\1\60\1\uffff\2\0\1\uffff\2\0"+
+        "\2\uffff\1\0\1\uffff";
     public static final String DFA22_maxS =
-        "\1\ufffe\1\uffff\12\ufffe\1\uffff\3\ufffe\1\uffff\2\ufffe\1\u00ff"+
-        "\3\ufffe\2\uffff\4\ufffe\3\uffff\13\ufffe\1\uffff\2\ufffe\3\uffff"+
-        "\2\ufffe\1\uffff\11\ufffe\1\71\1\uffff\1\165\3\ufffe\1\uffff\2\ufffe"+
-        "\1\uffff\2\ufffe\4\uffff\1\ufffe\1\uffff\2\ufffe\1\uffff\10\ufffe"+
-        "\1\146\5\ufffe\2\uffff\3\ufffe\2\uffff\4\ufffe\1\uffff\1\146\6\ufffe"+
-        "\1\uffff\1\ufffe\2\uffff\1\146\5\ufffe\1\146\1\uffff\1\ufffe\1\uffff"+
-        "\1\ufffe\1\uffff";
+        "\1\ufffe\1\uffff\12\ufffe\1\uffff\4\ufffe\1\uffff\2\ufffe\1\u00ff"+
+        "\3\ufffe\2\uffff\4\ufffe\3\uffff\13\ufffe\1\uffff\1\ufffe\1\uffff"+
+        "\2\ufffe\2\uffff\2\ufffe\1\uffff\12\ufffe\1\71\1\uffff\1\165\3\ufffe"+
+        "\1\uffff\1\ufffe\1\uffff\3\ufffe\4\uffff\1\ufffe\2\uffff\3\ufffe"+
+        "\1\uffff\11\ufffe\1\146\5\ufffe\2\uffff\4\ufffe\2\uffff\5\ufffe"+
+        "\1\uffff\1\146\7\ufffe\1\uffff\1\ufffe\2\uffff\1\ufffe\1\146\7\ufffe"+
+        "\1\146\1\uffff\2\ufffe\1\uffff\2\ufffe\2\uffff\1\ufffe\1\uffff";
     public static final String DFA22_acceptS =
-        "\1\uffff\1\1\12\uffff\1\15\3\uffff\1\20\6\uffff\1\26\1\27\4\uffff"+
-        "\1\34\1\35\1\36\13\uffff\1\41\2\uffff\1\40\1\3\1\4\2\uffff\1\23"+
-        "\12\uffff\1\16\4\uffff\1\22\2\uffff\1\24\2\uffff\1\30\1\31\1\32"+
-        "\1\33\1\uffff\1\2\2\uffff\1\7\16\uffff\1\37\1\25\3\uffff\1\10\1"+
-        "\11\4\uffff\1\17\7\uffff\1\14\1\uffff\1\13\1\21\7\uffff\1\5\1\uffff"+
-        "\1\12\1\uffff\1\6";
+        "\1\uffff\1\1\12\uffff\1\16\4\uffff\1\23\6\uffff\1\31\1\32\4\uffff"+
+        "\1\37\1\40\1\41\13\uffff\1\44\1\uffff\1\5\2\uffff\1\43\1\4\2\uffff"+
+        "\1\26\13\uffff\1\21\4\uffff\1\25\1\uffff\1\27\3\uffff\1\33\1\34"+
+        "\1\35\1\36\1\uffff\1\2\1\3\3\uffff\1\10\17\uffff\1\42\1\30\4\uffff"+
+        "\1\11\1\12\5\uffff\1\22\10\uffff\1\15\1\uffff\1\24\1\14\12\uffff"+
+        "\1\6\2\uffff\1\13\2\uffff\1\17\1\7\1\uffff\1\20";
     public static final String DFA22_specialS =
-        "\u0083\uffff}>";
+        "\u0094\uffff}>";
     public static final String[] DFA22_transition = {
-        "\11\53\2\14\1\53\1\15\1\14\22\53\1\14\1\40\1\20\1\25\1\24\1\43\1"+
-        "\36\1\21\1\27\1\30\1\45\1\47\1\50\1\16\1\53\1\26\12\17\1\3\1\1\1"+
-        "\2\1\4\1\52\1\23\1\41\32\46\1\31\1\51\1\32\1\44\1\42\1\53\1\10\2"+
-        "\46\1\6\1\12\1\22\6\46\1\5\1\11\1\7\4\46\1\13\6\46\1\33\1\37\1\34"+
-        "\1\35\101\53\100\46\ufeff\53",
+        "\11\54\2\14\1\54\1\15\1\14\22\54\1\14\1\41\1\21\1\26\1\25\1\44\1"+
+        "\37\1\22\1\30\1\31\1\46\1\50\1\51\1\17\1\54\1\27\12\20\1\4\1\1\1"+
+        "\3\1\2\1\53\1\24\1\42\32\47\1\32\1\52\1\33\1\45\1\43\1\54\1\10\2"+
+        "\47\1\6\1\12\1\23\6\47\1\5\1\11\1\7\3\47\1\16\1\13\6\47\1\34\1\40"+
+        "\1\35\1\36\101\54\100\47\ufeff\54",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\3\53\1\54\15\53\2\uffff\1\55\1\53\1\uffff\74\53\1"+
-        "\uffff\1\53\1\uffff\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\16\62\1\61\13\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\4\62\1\64\25\62\1\53\1\uffff\1\53\1\uffff\101\53\100"+
-        "\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\21\62\1\65\10\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\15\62\1\66\14\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\16\62\1\67\5\62\1\70\5\62\1\53\1\uffff\1\53\1\uffff"+
-        "\101\53\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\27\62\1\71\2\62\1\53\1\uffff\1\53\1\uffff\101\53\100"+
-        "\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\4\62\1\72\14\62\1\73\10\62\1\53\1\uffff\1\53\1\uffff"+
-        "\101\53\100\62\ufeff\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\1\54\1\55\1\uffff\74\54\1\uffff\1\54"+
+        "\1\uffff\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\3\54\1\57\15\54\2\uffff\1\60\1\54\1\uffff\74\54\1"+
+        "\uffff\1\54\1\uffff\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\16\64\1\63\13\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\66\25\64\1\54\1\uffff\1\54\1\uffff\101\54\100"+
+        "\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\21\64\1\67\10\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\15\64\1\70\14\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\16\64\1\71\5\64\1\72\5\64\1\54\1\uffff\1\54\1\uffff"+
+        "\101\54\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\27\64\1\73\2\64\1\54\1\uffff\1\54\1\uffff\101\54\100"+
+        "\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\75\14\64\1\74\10\64\1\54\1\uffff\1\54\1\uffff"+
+        "\101\54\100\64\ufeff\54",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\74\1\53\2\uffff\2\53\1\uffff\74\53\1\uffff"+
-        "\1\53\1\uffff\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\4\53\1\75\1\53\12\74\1\53\2\uffff\2\53\1\uffff\74"+
-        "\53\1\uffff\1\53\1\uffff\uff80\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\1\76\31\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64"+
+        "\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\77\1\54\2\uffff\2\54\1\uffff\74\54\1\uffff"+
+        "\1\54\1\uffff\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\4\54\1\100\1\54\12\77\1\54\2\uffff\2\54\1\uffff\74"+
+        "\54\1\uffff\1\54\1\uffff\uff80\54",
         "",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\21\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20\1\100\1\20"+
-        "\uff80\100",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\1\102\31\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62"+
-        "\ufeff\53",
-        "\1\103\34\uffff\32\103\4\uffff\1\103\1\uffff\32\103\105\uffff\100"+
-        "\103",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\104\1\53\2\uffff\2\53\1\uffff\1\53\32\104"+
-        "\4\53\1\104\1\53\32\104\1\53\1\uffff\1\53\1\uffff\101\53\100\104"+
-        "\ufeff\53",
-        "\11\105\2\106\2\105\1\106\22\105\1\106\1\105\1\106\3\105\1\106\1"+
-        "\105\2\106\21\105\2\106\2\105\1\106\74\105\1\106\1\105\1\106\uff80"+
-        "\105",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\1\107\4\53\1\110\13\53\2\uffff\2\53\1\uffff\74\53"+
-        "\1\uffff\1\53\1\uffff\uff80\53",
-        "",
-        "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\21\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21\1\103\1\21"+
+        "\uff80\103",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\1\105\31\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64"+
+        "\ufeff\54",
+        "\1\106\34\uffff\32\106\4\uffff\1\106\1\uffff\32\106\105\uffff\100"+
+        "\106",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\107\1\54\2\uffff\2\54\1\uffff\1\54\32\107"+
+        "\4\54\1\107\1\54\32\107\1\54\1\uffff\1\54\1\uffff\101\54\100\107"+
+        "\ufeff\54",
+        "\11\111\2\110\2\111\1\110\22\111\1\110\1\111\1\110\3\111\1\110\1"+
+        "\111\2\110\21\111\2\110\2\111\1\110\74\111\1\110\1\111\1\110\uff80"+
+        "\111",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\1\112\4\54\1\113\13\54\2\uffff\2\54\1\uffff\74\54"+
+        "\1\uffff\1\54\1\uffff\uff80\54",
         "",
         "",
-        "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\1\115\1\53\1\uffff\74\53\1\uffff\1\53"+
-        "\1\uffff\uff80\53",
-        "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
         "",
         "",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\3\62\1\117\26\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\1\120\1\54\1\uffff\74\54\1\uffff\1\54"+
+        "\1\uffff\uff80\54",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\5\62\1\120\24\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\3\62\1\122\26\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\23\62\1\123\6\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\13\62\1\124\16\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\10\62\1\125\21\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\22\62\1\126\7\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\24\62\1\127\5\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\4\53\1\75\1\53\12\74\1\53\2\uffff\2\53\1\uffff\74"+
-        "\53\1\uffff\1\53\1\uffff\uff80\53",
-        "\12\130",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
         "",
-        "\1\20\4\uffff\1\131\10\uffff\4\133\4\134\44\uffff\1\131\5\uffff"+
-        "\1\131\3\uffff\1\131\7\uffff\1\131\3\uffff\1\131\1\uffff\1\131\1"+
-        "\132",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\21\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20\1\100\1\20"+
-        "\uff80\100",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\13\62\1\135\16\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\105\2\106\2\105\1\106\22\105\1\106\1\105\1\106\3\105\1\106\1"+
-        "\105\2\106\21\105\2\106\2\105\1\106\74\105\1\106\1\105\1\106\uff80"+
-        "\105",
-        "",
-        "\11\137\2\140\2\137\1\140\22\137\1\140\1\137\1\140\3\137\1\140\1"+
-        "\137\2\140\1\136\20\137\2\140\2\137\1\140\74\137\1\140\1\137\1\140"+
-        "\uff80\137",
-        "\11\142\2\141\2\142\1\141\22\142\1\141\1\142\1\141\3\142\1\141\1"+
-        "\142\2\141\21\142\2\141\2\142\1\141\74\142\1\141\1\142\1\141\uff80"+
-        "\142",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
         "",
         "",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\3\64\1\123\26\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\2\64\1\124\2\64\1\125\24\64\1\54\1\uffff\1\54\1\uffff"+
+        "\101\54\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\3\64\1\127\26\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\23\64\1\130\6\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\13\64\1\131\16\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\10\64\1\132\21\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\24\64\1\133\5\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\22\64\1\134\7\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\13\64\1\135\16\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\4\54\1\100\1\54\12\77\1\54\2\uffff\2\54\1\uffff\74"+
+        "\54\1\uffff\1\54\1\uffff\uff80\54",
+        "\12\136",
+        "",
+        "\1\21\4\uffff\1\137\10\uffff\4\141\4\142\44\uffff\1\137\5\uffff"+
+        "\1\137\3\uffff\1\137\7\uffff\1\137\3\uffff\1\137\1\uffff\1\137\1"+
+        "\140",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\21\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21\1\103\1\21"+
+        "\uff80\103",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\13\64\1\143\16\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "",
+        "\11\111\2\110\2\111\1\110\22\111\1\110\1\111\1\110\3\111\1\110\1"+
+        "\111\2\110\21\111\2\110\2\111\1\110\74\111\1\110\1\111\1\110\uff80"+
+        "\111",
+        "\11\145\2\146\2\145\1\146\22\145\1\146\1\145\1\146\3\145\1\146\1"+
+        "\145\2\146\1\144\20\145\2\146\2\145\1\146\74\145\1\146\1\145\1\146"+
+        "\uff80\145",
+        "\11\150\2\147\2\150\1\147\22\150\1\147\1\150\1\147\3\150\1\147\1"+
+        "\150\2\147\21\150\2\147\2\150\1\147\74\150\1\147\1\150\1\147\uff80"+
+        "\150",
         "",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\21\53\2\uffff\2\53\1\uffff\74\53\1\uffff\1\53\1\uffff"+
-        "\uff80\53",
-        "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\10\62\1\143\21\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\21\62\1\144\10\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\13\62\1\147\16\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\22\62\1\150\7\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\23\62\1\151\6\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\4\62\1\152\25\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\130\1\53\2\uffff\2\53\1\uffff\74\53\1\uffff"+
-        "\1\53\1\uffff\uff80\53",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\21\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20\1\100\1\20"+
-        "\uff80\100",
-        "\12\154\7\uffff\6\154\32\uffff\6\154",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\6\100\10\155\3\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20"+
-        "\1\100\1\20\uff80\100",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\6\100\10\156\3\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20"+
-        "\1\100\1\20\uff80\100",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\22\62\1\157\7\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\137\2\140\2\137\1\140\22\137\1\140\1\137\1\140\3\137\1\140\1"+
-        "\137\2\140\1\136\4\137\1\160\13\137\2\140\2\137\1\140\74\137\1\140"+
-        "\1\137\1\140\uff80\137",
-        "\11\137\2\140\2\137\1\140\22\137\1\140\1\137\1\140\3\137\1\140\1"+
-        "\137\2\140\1\136\20\137\2\140\2\137\1\140\74\137\1\140\1\137\1\140"+
-        "\uff80\137",
         "",
         "",
-        "\11\142\2\141\2\142\1\141\22\142\1\141\1\142\1\141\3\142\1\141\1"+
-        "\142\2\141\21\142\2\141\2\142\1\141\74\142\1\141\1\142\1\141\uff80"+
-        "\142",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\5\62\1\161\24\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\24\62\1\162\5\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\21\54\2\uffff\2\54\1\uffff\74\54\1\uffff\1\54\1\uffff"+
+        "\uff80\54",
         "",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\23\62\1\164\6\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\10\64\1\151\21\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\13\64\1\152\16\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\21\64\1\153\10\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
         "",
-        "\12\167\7\uffff\6\167\32\uffff\6\167",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\6\100\10\170\3\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20"+
-        "\1\100\1\20\uff80\100",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\21\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20\1\100\1\20"+
-        "\uff80\100",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\4\62\1\171\25\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\137\2\uffff\2\137\1\uffff\22\137\1\uffff\1\137\1\uffff\3\137"+
-        "\1\uffff\1\137\2\uffff\1\136\20\137\2\uffff\2\137\1\uffff\74\137"+
-        "\1\uffff\1\137\1\uffff\uff80\137",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\30\62\1\172\1\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\13\62\1\173\16\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\13\64\1\156\16\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\22\64\1\157\7\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\160\25\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\23\64\1\161\6\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\10\64\1\162\21\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\136\1\54\2\uffff\2\54\1\uffff\74\54\1\uffff"+
+        "\1\54\1\uffff\uff80\54",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\21\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21\1\103\1\21"+
+        "\uff80\103",
+        "\12\164\7\uffff\6\164\32\uffff\6\164",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\6\103\10\165\3\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21"+
+        "\1\103\1\21\uff80\103",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\6\103\10\166\3\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21"+
+        "\1\103\1\21\uff80\103",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\22\64\1\167\7\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\145\2\146\2\145\1\146\22\145\1\146\1\145\1\146\3\145\1\146\1"+
+        "\145\2\146\1\144\4\145\1\170\13\145\2\146\2\145\1\146\74\145\1\146"+
+        "\1\145\1\146\uff80\145",
+        "\11\145\2\146\2\145\1\146\22\145\1\146\1\145\1\146\3\145\1\146\1"+
+        "\145\2\146\1\144\20\145\2\146\2\145\1\146\74\145\1\146\1\145\1\146"+
+        "\uff80\145",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\22\62\1\174\7\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
+        "",
+        "\11\150\2\147\2\150\1\147\22\150\1\147\1\150\1\147\3\150\1\147\1"+
+        "\150\2\147\21\150\2\147\2\150\1\147\74\150\1\147\1\150\1\147\uff80"+
+        "\150",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\5\64\1\171\24\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\1\172\31\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64"+
+        "\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\24\64\1\173\5\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
         "",
         "",
-        "\12\175\7\uffff\6\175\32\uffff\6\175",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\21\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20\1\100\1\20"+
-        "\uff80\100",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\4\62\1\177\25\62\1\53\1\uffff\1\53\1\uffff\101\53"+
-        "\100\62\ufeff\53",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\23\64\1\175\6\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\u0080\25\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "",
         "\12\u0081\7\uffff\6\u0081\32\uffff\6\u0081",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\6\103\10\u0082\3\103\2\21\2\103\1\21\34\103\1\102\37\103\1"+
+        "\21\1\103\1\21\uff80\103",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\21\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21\1\103\1\21"+
+        "\uff80\103",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\u0083\25\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\145\2\uffff\2\145\1\uffff\22\145\1\uffff\1\145\1\uffff\3\145"+
+        "\1\uffff\1\145\2\uffff\1\144\20\145\2\uffff\2\145\1\uffff\74\145"+
+        "\1\uffff\1\145\1\uffff\uff80\145",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\30\64\1\u0084\1\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\21\64\1\u0085\10\64\1\54\1\uffff\1\54\1\uffff\101"+
+        "\54\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\13\64\1\u0086\16\64\1\54\1\uffff\1\54\1\uffff\101"+
+        "\54\100\64\ufeff\54",
         "",
-        "\11\53\2\uffff\2\53\1\uffff\22\53\1\uffff\1\53\1\uffff\3\53\1\uffff"+
-        "\1\53\2\uffff\6\53\12\62\1\53\2\uffff\2\53\1\uffff\1\53\32\62\4"+
-        "\53\1\62\1\53\32\62\1\53\1\uffff\1\53\1\uffff\101\53\100\62\ufeff"+
-        "\53",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\22\64\1\u0087\7\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
         "",
-        "\11\100\2\20\2\100\1\20\22\100\1\20\1\100\1\20\3\100\1\20\1\101"+
-        "\2\20\21\100\2\20\2\100\1\20\34\100\1\77\37\100\1\20\1\100\1\20"+
-        "\uff80\100",
+        "",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\15\64\1\u0088\14\64\1\54\1\uffff\1\54\1\uffff\101"+
+        "\54\100\64\ufeff\54",
+        "\12\u0089\7\uffff\6\u0089\32\uffff\6\u0089",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\21\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21\1\103\1\21"+
+        "\uff80\103",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\u008b\25\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\u008c\25\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\2\64\1\u008e\27\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\12\u008f\7\uffff\6\u008f\32\uffff\6\u008f",
+        "",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
+        "",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\4\64\1\u0092\25\64\1\54\1\uffff\1\54\1\uffff\101\54"+
+        "\100\64\ufeff\54",
+        "\11\103\2\21\2\103\1\21\22\103\1\21\1\103\1\21\3\103\1\21\1\104"+
+        "\2\21\21\103\2\21\2\103\1\21\34\103\1\102\37\103\1\21\1\103\1\21"+
+        "\uff80\103",
+        "",
+        "",
+        "\11\54\2\uffff\2\54\1\uffff\22\54\1\uffff\1\54\1\uffff\3\54\1\uffff"+
+        "\1\54\2\uffff\6\54\12\64\1\54\2\uffff\2\54\1\uffff\1\54\32\64\4"+
+        "\54\1\64\1\54\32\64\1\54\1\uffff\1\54\1\uffff\101\54\100\64\ufeff"+
+        "\54",
         ""
     };
 
@@ -2953,7 +3136,7 @@ public class CLPLexer extends Lexer {
             }
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T37 | T38 | T39 | T40 | T41 | DEFRULE | OR | AND | NOT | EXISTS | TEST | NULL | WS | INT | FLOAT | STRING | BOOL | VAR | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | TILDE | AMPERSAND | PIPE | MULTI_LINE_COMMENT | MISC | SYMBOL );";
+            return "1:1: Tokens : ( T39 | T40 | T41 | T42 | T43 | T44 | DEFRULE | OR | AND | NOT | EXISTS | TEST | NULL | WS | DECLARE | SALIENCE | INT | FLOAT | STRING | BOOL | VAR | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | TILDE | AMPERSAND | PIPE | MULTI_LINE_COMMENT | MISC | SYMBOL );";
         }
     }
  
