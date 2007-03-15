@@ -13,6 +13,7 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.SwitchingCommonTokenStream;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -40,7 +41,7 @@ public class ClpParserTest extends TestCase {
     }
     
     public void testPatternsRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 3)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) )" ).rule();
+        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 3)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) ) => )" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -161,7 +162,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testNestedCERule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name yyy)) (or (and (hobby1 (type qqq1)) (hobby2 (type ~qqq2))) (food (veg ~shroom) ) ) )" ).rule();
+        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name yyy)) (or (and (hobby1 (type qqq1)) (hobby2 (type ~qqq2))) (food (veg ~shroom) ) ) => )" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -229,7 +230,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testNotExistsRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx (or (hobby1 (type qqq1)) (not (and (exists (person (name ppp))) (person (name yyy))))))" ).rule();
+        RuleDescr rule = parse( "(defrule xxx (or (hobby1 (type qqq1)) (not (and (exists (person (name ppp))) (person (name yyy))))) => )" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -288,7 +289,7 @@ public class ClpParserTest extends TestCase {
     }
     
     public void testTestRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx (test (< 9.0 1.3)" ).rule();
+        RuleDescr rule = parse( "(defrule xxx (test (< 9.0 1.3) ) => )" ).rule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -304,10 +305,24 @@ public class ClpParserTest extends TestCase {
         Function f = clpe.getFunctions()[0];
         assertEquals( "<", f.getName() );        
         assertEquals( new DoubleLiteralValue( 9.0 ), f.getParameters()[0] );
-        assertEquals( new DoubleLiteralValue( 1.3 ), f.getParameters()[1] );  
-        
+        assertEquals( new DoubleLiteralValue( 1.3 ), f.getParameters()[1] );          
     }
 
+    public void testRuleHeader() throws Exception {
+        RuleDescr rule = parse( "(defrule MAIN::name \"documentation\" (declare (salience -100) ) => )" ).rule();
+        
+        List attributes = rule.getAttributes();
+        AttributeDescr module = ( AttributeDescr ) attributes.get( 0 );
+        assertEquals( "agenda-group", module.getName() );
+        assertEquals( "MAIN", module.getValue() );
+        
+        AttributeDescr salience = ( AttributeDescr ) attributes.get( 1 );
+        assertEquals( "salience", salience.getName() );
+        assertEquals( "-100", salience.getValue() );
+        
+        
+    }
+    
     private CLPParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
