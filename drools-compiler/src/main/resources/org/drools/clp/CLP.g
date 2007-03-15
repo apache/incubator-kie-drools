@@ -213,13 +213,21 @@ rule returns [RuleDescr rule]
 	        AndDescr lhs = null;
 	        ColumnDescr colum = null;	        
 	      }
-	:	loc=LEFT_PAREN 'defrule' 	
-		(	d=agenda_group {  rule.addAttribute( d ); }  )?
+	:	loc=LEFT_PAREN 
+		
+		'defrule' 	
+		
+		(	{ System.err.println( "before" ); } module=agenda_group )
 		
 	  	ruleName=ID 
 	  	{ 
 	  		debug( "start rule: " + ruleName.getText() );
 	        rule = new RuleDescr( ruleName.getText(), null ); 
+	        
+	        if ( module != null ) {
+		        rule.addAttribute( module );
+		    }
+	        
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			rule.setStartCharacter( ((CommonToken)loc).getStartIndex() ); 
 		
@@ -244,15 +252,18 @@ rule returns [RuleDescr rule]
 agenda_group returns [AttributeDescr d ]
 	@init {
 		d = null;
+		System.out.println( "agenda group init" );
 	}
 	:
-		t=ID'::'
+		t=MODULE
 		{
+			System.out.println( "agenda group body" );		
 			d = new AttributeDescr( "agenda-group", t.getText() );
 			d.setLocation( offset(t.getLine()), t.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)t).getStartIndex() );
 			d.setEndCharacter( ((CommonToken)t).getStopIndex() );
-		}			
+		}	
+//		MODULE_SEPERATOR		
 	;
 
 ruleAttribute[RuleDescr rule]
@@ -611,6 +622,10 @@ WS      :       (	' '
                 )
                 { $channel=HIDDEN; }
         ;        
+        
+MODULE
+	: ID'::'
+	;        
         
 DECLARE 
 	:	'declare';        		
