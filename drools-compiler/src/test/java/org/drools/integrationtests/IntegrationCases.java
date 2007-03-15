@@ -167,6 +167,35 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
+    public void testNullHandling() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHandling.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        // add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+        Cheese nullCheese = new Cheese(null, 2);
+        workingMemory.assertObject( nullCheese );
+
+        Person nullPerson = new Person("shoes butt back");
+        nullPerson.setBigDecimal( new BigDecimal("42.42") );
+        
+        workingMemory.assertObject( nullPerson );
+        
+        workingMemory.fireAllRules();
+        System.out.println(list.get( 0 ));
+        assertEquals( 2, list.size() );
+        
+        
+    }
+    
     public void testEmptyColumn() throws Exception {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
