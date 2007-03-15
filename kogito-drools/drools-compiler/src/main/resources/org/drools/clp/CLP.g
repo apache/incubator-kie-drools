@@ -212,38 +212,46 @@ rule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
 	        AndDescr lhs = null;
-	        ColumnDescr colum = null;	        
+	        ColumnDescr colum = null;
+	        AttributeDescr module = null;	        
 	      }
 	:	loc=LEFT_PAREN 
 		
-		DEFRULE
-		
-		(	{ System.err.println( "before" ); } module=agenda_group )?
-		
-	  	ruleName=ID
+		DEFRULE ruleName=SYMBOL
 	  	{ 	  			  		
 	  		debug( "start rule: " + ruleName.getText() );
-	        rule = new RuleDescr( ruleName.getText(), null ); 
-	        
-	        if ( module != null ) {
-		        rule.addAttribute( module );
-		    }
-	        
+	  		String ruleStr = ruleName.getText();
+
+	        	if ( ruleStr.indexOf("::") >= 0 ) {
+	        	        String mod = ruleStr.substring(0, ruleStr.indexOf("::")+2);
+	        	        ruleStr = ruleStr.substring(ruleStr.indexOf("::")+2);
+				module = new AttributeDescr( "agenda-group", mod );
+				module.setLocation( offset(ruleName.getLine()), ruleName.getCharPositionInLine() );
+				module.setStartCharacter( ((CommonToken)ruleName).getStartIndex() );
+				module.setEndCharacter( ((CommonToken)ruleName).getStopIndex() );
+			}
+		        rule = new RuleDescr( ruleStr, null ); 
+		        if( module != null ) {
+		        	rule.addAttribute( module );
+		        }
+		        
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			rule.setStartCharacter( ((CommonToken)loc).getStartIndex() ); 
 		
 			// not sure how you define where a LHS starts in clips, so just putting it here for now
-  	        lhs = new AndDescr(); 
-  	        rule.setLhs( lhs ); 
-   	        lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+  	        	lhs = new AndDescr(); 
+	  	        rule.setLhs( lhs ); 
+   		        lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );				
 		}
 		documentation=STRING {
 	    	// do nothing here for now
 		}
-		ruleAttribute[rule]*
+		ruleAttribute[rule]
 		
 		lhs[lhs]*
+		
+		'=>'
 		
 		rhs[rule]
 		
@@ -251,29 +259,11 @@ rule returns [RuleDescr rule]
 	;
 
 
-agenda_group returns [AttributeDescr d ]
-	@init {
-		d = null;
-		System.out.println( "agenda group init" );
-	}
-	:
-		t=MODULE
-		{
-			System.out.println( "agenda group body" );		
-			d = new AttributeDescr( "agenda-group", t.getText() );
-			d.setLocation( offset(t.getLine()), t.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)t).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)t).getStopIndex() );
-		}	
-//		MODULE_SEPERATOR		
-	;
-
 ruleAttribute[RuleDescr rule]
 	:
-		LEFT_PAREN 'declare'
-			LEFT_PAREN d=salience { rule.addAttribute( d ); }
-			RIGHT_PAREN
-		RIGHT_PAREN
+		( LEFT_PAREN 'declare'
+			LEFT_PAREN d=salience { rule.addAttribute( d ); } RIGHT_PAREN
+		RIGHT_PAREN )?
 	;	
 
 salience returns [AttributeDescr d ]
@@ -309,7 +299,6 @@ rhs[RuleDescr rule]
 	}
 	
 	:
-		'=>'
 	  function[context]* { rule.setConsequence( engine ); }		
 	;	
 	
@@ -398,7 +387,7 @@ normal_pattern[ConditionalElementDescr in_ce]
         ColumnDescr column = null;
     }
 	:	LEFT_PAREN 
-		name=ID {
+		name=SYMBOL {
 			column = new ColumnDescr(name.getText());
 			in_ce.addDescr( column );
 		}
@@ -418,7 +407,7 @@ bound_pattern[ConditionalElementDescr in_ce]
 		}
 		'<-' 
 		LEFT_PAREN 
-		name=ID {
+		name=SYMBOL {
 			column = new ColumnDescr(name.getText());
 			column.setIdentifier( identifier );
 			in_ce.addDescr( column );	    
@@ -435,7 +424,7 @@ field_constriant[ColumnDescr column]
 		String op = "==";
 	}    
 	:	LEFT_PAREN 
-		f=ID {
+		f=SYMBOL {
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
@@ -548,7 +537,7 @@ function_params[ExecutionBuildContext context, Function f]
 	:
 		(		t=VAR		{ value = context.getVariableValueHandler(t.getText() ); }
 			|	t=STRING    { value = new ObjectLiteralValue( getString( t ) ); }
-			| 	t=ID        { value = new ObjectLiteralValue( t.getText() ); }			
+			| 	t=SYMBOL    { value = new ObjectLiteralValue( t.getText() ); }			
 			|	t=FLOAT     { value = new DoubleLiteralValue( t.getText() ); }
 			|	t=INT       { value = new LongLiteralValue( t.getText() ); }			
 			|	t=BOOL      { value = new BooleanLiteralValue( t.getText() ); }						
@@ -566,12 +555,12 @@ slot_name_value_pair[ExecutionBuildContext context, Function f]
 	}
 	:
 		LEFT_PAREN
-		id=ID {
+		id=SYMBOL {
 			name = id.getText();
 		}
 		(		t=VAR       { nameValuePair = new SlotNameValuePair(name, context.getVariableValueHandler( t.getText() ) ); }
 			| 	t=STRING    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( getString( t ) ) ); }
-			| 	t=ID        { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
+			| 	t=SYMBOL    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
 			|	t=FLOAT     { nameValuePair = new SlotNameValuePair(name, new DoubleLiteralValue( t.getText() ) ); }
 			|	t=INT       { nameValuePair = new SlotNameValuePair(name, new LongLiteralValue( t.getText() ) ); }			
 			|	t=BOOL      { nameValuePair = new SlotNameValuePair(name, new BooleanLiteralValue( t.getText() ) ) ; }						
@@ -588,7 +577,7 @@ literal returns [String text]
 		text = null;
 	}
 	:	(   t=STRING { text = getString( t ); } 
-		  | t=ID     { text = t.getText(); }
+		  | t=SYMBOL     { text = t.getText(); }
 		  | t=INT    { text = t.getText(); }
 		  | t=FLOAT	 { text = t.getText(); }
 		  | t=BOOL 	 { text = t.getText(); }
@@ -598,9 +587,8 @@ literal returns [String text]
 	
 function_name returns [Token tok]
 	:
-	(	t=ID	
+	(	t=SYMBOL	
 	|	t=MISC
-	|	t=SYMBOL
 	)
 	{
 	    tok = t;
@@ -616,9 +604,6 @@ TEST 	:	'test';
 
 NULL	:	'null';
 
-MODULE
-	: ('A'..'Z')+'::'
-	;  	
 
 WS      :       (	' '
                 |	'\t'
@@ -684,9 +669,9 @@ BOOL
 VAR 	: '?'('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
         ;
 
-ID	
-	:	('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
-	;
+//ID	
+//	:	('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
+//	;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
@@ -739,7 +724,7 @@ MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
 	;
-
+	
 MISC 	:
 		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | ',' | '=' | '/' | '\'' | '\\' | 
 		'<' | '>' | '<=' | '>=' 

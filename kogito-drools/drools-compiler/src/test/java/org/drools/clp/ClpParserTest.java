@@ -30,6 +30,11 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 public class ClpParserTest extends TestCase {
 
     private CLPParser parser;
+    
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        this.parser = null;
+    }
 
     public void testParseFunction() throws Exception {
         ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate() );
@@ -309,7 +314,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testRuleHeader() throws Exception {
-        RuleDescr rule = parse( "(defrule MAIN:: name \"docs\"(declare (salience -100) ) => )" ).rule();
+        RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).rule();
         
         List attributes = rule.getAttributes();
         AttributeDescr module = ( AttributeDescr ) attributes.get( 0 );
