@@ -214,7 +214,7 @@ rule returns [RuleDescr rule]
 	        ColumnDescr colum = null;	        
 	      }
 	:	loc=LEFT_PAREN 'defrule' 	
-		(	d=agenda_group {  rule.addAttribute( d ); } '::' )?
+		(	d=agenda_group {  rule.addAttribute( d ); }  )?
 		
 	  	ruleName=ID 
 	  	{ 
@@ -241,26 +241,26 @@ rule returns [RuleDescr rule]
 		RIGHT_PAREN
 	;
 
+agenda_group returns [AttributeDescr d ]
+	@init {
+		d = null;
+	}
+	:
+		t=ID'::'
+		{
+			d = new AttributeDescr( "agenda-group", t.getText() );
+			d.setLocation( offset(t.getLine()), t.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)t).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)t).getStopIndex() );
+		}			
+	;
+
 ruleAttribute[RuleDescr rule]
 	:
 		LEFT_PAREN 'declare'
 			LEFT_PAREN d=salience { rule.addAttribute( d ); }
 			RIGHT_PAREN
 		RIGHT_PAREN
-	;
-
-agenda_group returns [AttributeDescr d ]
-	@init {
-		d = null;
-	}
-	:
-		t=ID   
-		{
-			d = new AttributeDescr( "agenda-group", t.getText() );
-			d.setLocation( offset(t.getLine()), t.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)t).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)t).getStopIndex() );
-		}	
 	;	
 
 salience returns [AttributeDescr d ]
