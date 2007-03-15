@@ -19,9 +19,6 @@ grammar CLP;
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
 	
-	// THE FOLLOWING LINE IS A DUMMY ATTRIBUTE TO WORK AROUND AN ANTLR BUG
-	private BaseDescr from = null;
-	
 	public void setParserDebug(boolean parserDebug) {
 		this.parserDebug = parserDebug;
 	}
@@ -168,13 +165,19 @@ opt_semicolon
 	: ';'?
 	;
 
-/*
+
 compilation_unit
-	:	prolog 
+	:	
 		( statement )+
 	;
-	
-prolog
+
+statement
+	:
+	/* later we add the other possible statements here */
+	( rule /* do something with the returned rule here */)
+	;
+		
+/* prolog
 	@init {
 		String packageName = "";
 	}
@@ -217,7 +220,7 @@ rule returns [RuleDescr rule]
 	      }
 	:	loc=LEFT_PAREN 
 		
-		DEFRULE ruleName=SYMBOL
+		DEFRULE ruleName=NAME
 	  	{ 	  			  		
 	  		debug( "start rule: " + ruleName.getText() );
 	  		String ruleStr = ruleName.getText();
@@ -249,7 +252,7 @@ rule returns [RuleDescr rule]
 		}
 		ruleAttribute[rule]
 		
-		lhs[lhs]*
+		ce[lhs]*
 		
 		'=>'
 		
@@ -262,7 +265,7 @@ rule returns [RuleDescr rule]
 ruleAttribute[RuleDescr rule]
 	:
 		( LEFT_PAREN 'declare'
-			LEFT_PAREN d=salience { rule.addAttribute( d ); } RIGHT_PAREN
+			( LEFT_PAREN d=salience { rule.addAttribute( d ); } RIGHT_PAREN )?
 		RIGHT_PAREN )?
 	;	
 
@@ -280,8 +283,8 @@ salience returns [AttributeDescr d ]
 		}
 	;
 		
-/* lhs is slightly different to ce as lhs allows pattern bindings, ce doesn't */
-lhs[ConditionalElementDescr in_ce]
+
+ce[ConditionalElementDescr in_ce]
 	:	(   and_ce[in_ce]	
 		  | or_ce[in_ce]
 		  | not_ce[in_ce]
@@ -302,17 +305,6 @@ rhs[RuleDescr rule]
 	  function[context]* { rule.setConsequence( engine ); }		
 	;	
 	
-ce[ConditionalElementDescr in_ce]
-	:	(   and_ce[in_ce]	
-	      | or_ce[in_ce]
-		  | not_ce[in_ce]
-		  | exists_ce[in_ce]		  
- 		  | eval_ce[in_ce] 		  	      
-	      | normal_pattern[in_ce]
-	    )
-	;
-	
-	
 and_ce[ConditionalElementDescr in_ce]
     @init {
         AndDescr andDescr= null;        
@@ -322,7 +314,7 @@ and_ce[ConditionalElementDescr in_ce]
 	    	andDescr = new AndDescr();
 			in_ce.addDescr( andDescr );
 		}
-		ce[andDescr]*		 
+		ce[andDescr]+		 
 		RIGHT_PAREN					
 	;	
 	
@@ -335,7 +327,7 @@ or_ce[ConditionalElementDescr in_ce]
 	    	orDescr = new OrDescr();
 			in_ce.addDescr( orDescr );
 		}
-		ce[orDescr]*		 
+		ce[orDescr]+		 
 		RIGHT_PAREN					
 	;	
 	
@@ -348,7 +340,7 @@ not_ce[ConditionalElementDescr in_ce]
 			notDescr = new NotDescr();
 		    in_ce.addDescr( notDescr );
 		}
-		ce[notDescr]?		 
+		ce[notDescr]		 
 		RIGHT_PAREN					
 	;		
 	
@@ -361,7 +353,7 @@ exists_ce[ConditionalElementDescr in_ce]
 		    existsDescr = new ExistsDescr();
 		    in_ce.addDescr( existsDescr );
 		}
-		ce[existsDescr]?		 
+		ce[existsDescr]		 
 		RIGHT_PAREN					
 	;		
 
@@ -387,7 +379,7 @@ normal_pattern[ConditionalElementDescr in_ce]
         ColumnDescr column = null;
     }
 	:	LEFT_PAREN 
-		name=SYMBOL {
+		name=NAME {
 			column = new ColumnDescr(name.getText());
 			in_ce.addDescr( column );
 		}
@@ -405,9 +397,8 @@ bound_pattern[ConditionalElementDescr in_ce]
 	:	var=VAR {
 			identifier = var.getText();
 		}
-		'<-' 
-		LEFT_PAREN 
-		name=SYMBOL {
+		ASSIGN_OP LEFT_PAREN name=NAME 
+		{
 			column = new ColumnDescr(name.getText());
 			column.setIdentifier( identifier );
 			in_ce.addDescr( column );	    
@@ -423,40 +414,43 @@ field_constriant[ColumnDescr column]
 		FieldConstraintDescr fc = null;
 		String op = "==";
 	}    
-	:	LEFT_PAREN 
-		f=SYMBOL {
+	:	
+		LEFT_PAREN f=NAME 
+		{
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
 			column.addDescr( fc );			
 		}	  
 		
-		restriction[fc, column] 
-		(
-		  connective[fc]	      
-	      restriction[fc, column]      	      
-		)*
+		connected_constraint[fc, column] 
 		RIGHT_PAREN		
 	;
 	
-connective	[FieldConstraintDescr fc]
-	:	(	AMPERSAND { fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
-	    	| PIPE {fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }	      
-		)		
-	;
+connected_constraint[FieldConstraintDescr fc, ColumnDescr column]
+	:
+	restriction[fc, column]
+	( 
+	    AMPERSAND { fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
+	    connected_constraint[fc, column]
+	| 
+	    PIPE {fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }
+	    connected_constraint[fc, column]
+	)?
+	;	
 	
 restriction[FieldConstraintDescr fc, ColumnDescr column]
 	@init {
 			String op = "==";
 	}
 	:	(TILDE{op = "!=";})?	 	  	 
-		(		predicate_constraint[op, column]	  	  	
-	  	    |	return_value_restriction[op, fc]
-	  	  	|	variable_restriction[op, fc]
-	  	    | 	lc=literal_restriction {
-     	    	fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
-		      	op = "==";
-		      } 	  	  	  
+		(	predicate_constraint[op, column]	  	  	
+	  	|	return_value_restriction[op, fc]
+	  	|	variable_restriction[op, fc]
+	  	| 	lc=literal_restriction {
+     	    			fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
+		      		op = "==";
+		        } 	  	  	  
 		)		
 	;		
 
@@ -465,7 +459,7 @@ predicate_constraint[String op, ColumnDescr column]
    		ExecutionEngine engine = new CLPPredicate();
 		ExecutionBuildContext context = new ExecutionBuildContext( engine );    
     }
-	:	':'
+	:	COLON
 		function[context] {	
 			column.addDescr( new PredicateDescr( engine ) );
 		}	
@@ -477,7 +471,7 @@ return_value_restriction[String op, FieldConstraintDescr fc]
 		ExecutionEngine engine = new CLPReturnValue();
 		ExecutionBuildContext context = new ExecutionBuildContext( engine );
 	}
-	:	'=' 
+	:	EQUALS 
 		function[context] {					
 			fc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
 		}		
@@ -505,7 +499,7 @@ function[ExecutionBuildContext context] returns[Function f]
 	    FunctionFactory factory = FunctionFactory.getInstance();
 	}
 	:	LEFT_PAREN
-		name=function_name {
+		name=NAME {
 			if ( name.getText().equals("bind") ) {
 		  		context.createLocalVariable( name.getText() );
 			}
@@ -537,7 +531,7 @@ function_params[ExecutionBuildContext context, Function f]
 	:
 		(		t=VAR		{ value = context.getVariableValueHandler(t.getText() ); }
 			|	t=STRING    { value = new ObjectLiteralValue( getString( t ) ); }
-			| 	t=SYMBOL    { value = new ObjectLiteralValue( t.getText() ); }			
+			| 	t=NAME    { value = new ObjectLiteralValue( t.getText() ); }			
 			|	t=FLOAT     { value = new DoubleLiteralValue( t.getText() ); }
 			|	t=INT       { value = new LongLiteralValue( t.getText() ); }			
 			|	t=BOOL      { value = new BooleanLiteralValue( t.getText() ); }						
@@ -555,12 +549,12 @@ slot_name_value_pair[ExecutionBuildContext context, Function f]
 	}
 	:
 		LEFT_PAREN
-		id=SYMBOL {
+		id=NAME {
 			name = id.getText();
 		}
 		(		t=VAR       { nameValuePair = new SlotNameValuePair(name, context.getVariableValueHandler( t.getText() ) ); }
 			| 	t=STRING    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( getString( t ) ) ); }
-			| 	t=SYMBOL    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
+			| 	t=NAME    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
 			|	t=FLOAT     { nameValuePair = new SlotNameValuePair(name, new DoubleLiteralValue( t.getText() ) ); }
 			|	t=INT       { nameValuePair = new SlotNameValuePair(name, new LongLiteralValue( t.getText() ) ); }			
 			|	t=BOOL      { nameValuePair = new SlotNameValuePair(name, new BooleanLiteralValue( t.getText() ) ) ; }						
@@ -577,7 +571,7 @@ literal returns [String text]
 		text = null;
 	}
 	:	(   t=STRING { text = getString( t ); } 
-		  | t=SYMBOL     { text = t.getText(); }
+		  | t=NAME     { text = t.getText(); }
 		  | t=INT    { text = t.getText(); }
 		  | t=FLOAT	 { text = t.getText(); }
 		  | t=BOOL 	 { text = t.getText(); }
@@ -585,16 +579,14 @@ literal returns [String text]
 		)
 	;
 	
-function_name returns [Token tok]
-	:
-	(	t=SYMBOL	
-	|	t=MISC
-	)
-	{
-	    tok = t;
-	}
-	;
-	
+WS      :       (	' '
+                |	'\t'
+                |	'\f'
+                |	EOL
+                )
+                { $channel=HIDDEN; }
+        ;                      
+        
 DEFRULE	:	'defrule';
 OR 	:	'or';
 AND 	:	'and';
@@ -604,20 +596,9 @@ TEST 	:	'test';
 
 NULL	:	'null';
 
+DECLARE :	'declare';        		
 
-WS      :       (	' '
-                |	'\t'
-                |	'\f'
-                |	EOL
-                )
-                { $channel=HIDDEN; }
-        ;                      
-        
-DECLARE 
-	:	'declare';        		
-
-SALIENCE 
-	:	'salience';
+SALIENCE:	'salience';
 
 fragment
 EOL 	:	     
@@ -666,12 +647,8 @@ BOOL
 	:	('true'|'false') 
 	;
 	
-VAR 	: '?'('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
+VAR 	: '?'('a'..'z'|'A'..'Z'|'_'|'$')SYMBOL* 
         ;
-
-//ID	
-//	:	('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
-//	;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
@@ -719,17 +696,23 @@ AMPERSAND
 PIPE
 	:	'|'
 	;		
+	
+ASSIGN_OP 
+	:	'<-'	
+	;
+
+COLON	:	':';
+
+EQUALS	:	'=';	
         
 MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
 	;
-	
-MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | ',' | '=' | '/' | '\'' | '\\' | 
-		'<' | '>' | '<=' | '>=' 
-	;		
 
+NAME	:	SYMBOL	;
+	
+fragment	
 SYMBOL
 	:	((~(' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$'))|('$' ~('?'|' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'<'))) 
 	         (~(' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))*
