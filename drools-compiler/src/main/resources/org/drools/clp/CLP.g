@@ -207,6 +207,7 @@ package_statement returns [String packageName]
 		}
 	;	
 */
+
 rule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
@@ -215,12 +216,12 @@ rule returns [RuleDescr rule]
 	      }
 	:	loc=LEFT_PAREN 
 		
-		'defrule' 	
+		DEFRULE
 		
 		(	{ System.err.println( "before" ); } module=agenda_group )?
 		
-	  	ruleName=ID 
-	  	{ 
+	  	ruleName=ID
+	  	{ 	  			  		
 	  		debug( "start rule: " + ruleName.getText() );
 	        rule = new RuleDescr( ruleName.getText(), null ); 
 	        
@@ -248,6 +249,7 @@ rule returns [RuleDescr rule]
 		
 		RIGHT_PAREN
 	;
+
 
 agenda_group returns [AttributeDescr d ]
 	@init {
@@ -605,7 +607,6 @@ function_name returns [Token tok]
 	}
 	;
 	
-	
 DEFRULE	:	'defrule';
 OR 	:	'or';
 AND 	:	'and';
@@ -615,17 +616,17 @@ TEST 	:	'test';
 
 NULL	:	'null';
 
+MODULE
+	: ('A'..'Z')+'::'
+	;  	
+
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
                 |	EOL
                 )
                 { $channel=HIDDEN; }
-        ;        
-        
-MODULE
-	: ID'::'
-	;        
+        ;                      
         
 DECLARE 
 	:	'declare';        		

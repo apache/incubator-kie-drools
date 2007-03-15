@@ -309,7 +309,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testRuleHeader() throws Exception {
-        RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).rule();
+        RuleDescr rule = parse( "(defrule MAIN:: name \"docs\"(declare (salience -100) ) => )" ).rule();
         
         List attributes = rule.getAttributes();
         AttributeDescr module = ( AttributeDescr ) attributes.get( 0 );
