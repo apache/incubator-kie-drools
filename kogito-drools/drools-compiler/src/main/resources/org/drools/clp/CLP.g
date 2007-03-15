@@ -217,7 +217,7 @@ rule returns [RuleDescr rule]
 		
 		'defrule' 	
 		
-		(	{ System.err.println( "before" ); } module=agenda_group )
+		(	{ System.err.println( "before" ); } module=agenda_group )?
 		
 	  	ruleName=ID 
 	  	{ 
@@ -680,11 +680,11 @@ BOOL
 	:	('true'|'false') 
 	;
 	
-VAR 	: '?'('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
+VAR 	: '?'('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
         ;
 
 ID	
-	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
+	:	('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
 	;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
