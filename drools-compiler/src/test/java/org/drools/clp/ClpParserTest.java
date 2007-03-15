@@ -309,7 +309,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testRuleHeader() throws Exception {
-        RuleDescr rule = parse( "(defrule MAIN:: name \"docs\"(declare (salience -100) ) => )" ).rule();
+        RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).rule();
         
         List attributes = rule.getAttributes();
         AttributeDescr module = ( AttributeDescr ) attributes.get( 0 );
@@ -324,16 +324,16 @@ public class ClpParserTest extends TestCase {
     }
     
     private CLPParser parse(final String text) throws Exception {
-        return newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
-        //return this.parser;
+        this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
+        return this.parser;
     }
 
-//    private CLPParser parse(final String source,
-//                            final String text) throws Exception {
-//        this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
-//        this.parser.setSource( source );
-//        return this.parser;
-//    }
+    private CLPParser parse(final String source,
+                            final String text) throws Exception {
+        this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
+        this.parser.setSource( source );
+        return this.parser;
+    }
 
     private Reader getReader(final String name) throws Exception {
         final InputStream in = getClass().getResourceAsStream( name );
@@ -341,25 +341,25 @@ public class ClpParserTest extends TestCase {
         return new InputStreamReader( in );
     }
 
-//    private CLPParser parseResource(final String name) throws Exception {
-//
-//        //        System.err.println( getClass().getResource( name ) );
-//        Reader reader = getReader( name );
-//
-//        final StringBuffer text = new StringBuffer();
-//
-//        final char[] buf = new char[1024];
-//        int len = 0;
-//
-//        while ( (len = reader.read( buf )) >= 0 ) {
-//            text.append( buf,
-//                         0,
-//                         len );
-//        }
-//
-//        return parse( name,
-//                      text.toString() );
-//    }
+    private CLPParser parseResource(final String name) throws Exception {
+
+        //        System.err.println( getClass().getResource( name ) );
+        Reader reader = getReader( name );
+
+        final StringBuffer text = new StringBuffer();
+
+        final char[] buf = new char[1024];
+        int len = 0;
+
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
+
+        return parse( name,
+                      text.toString() );
+    }
 
     private CharStream newCharStream(final String text) {
         return new ANTLRStringStream( text );
