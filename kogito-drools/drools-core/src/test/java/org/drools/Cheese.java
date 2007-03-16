@@ -32,7 +32,7 @@ public class Cheese
     
     
     private String type;
-
+    
     private int    price;
 
     public Cheese() {
@@ -42,6 +42,10 @@ public class Cheese
                   final int price) {
         this.type = type;
         this.price = price;
+    }
+    
+    public static String getStaticString() {
+        return staticString;
     }
 
     /* (non-Javadoc)

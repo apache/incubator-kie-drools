@@ -132,7 +132,7 @@ public class ShadowProxyFactory {
         final Map fieldTypes = new HashMap();
         final Method[] methods = getMethods( clazz );
         for ( int i = 0; i < methods.length; i++ ) {
-            if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) ) {
+            if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) && (! Modifier.isStatic( methods[i].getModifiers()) ) ) {
                 if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "hashCode" )) && (!methods[i].getName().equals( "toString" )) ) {
 
                     final String fieldName = methods[i].getName();
@@ -795,10 +795,6 @@ public class ShadowProxyFactory {
                                             Type.getMethodDescriptor( method ) );
                     }
 
-                    //                    mv.visitFieldInsn( Opcodes.GETFIELD,
-                    //                                       className,
-                    //                                       name,
-                    //                                       Type.getDescriptor( fieldType ) );
                     if ( fieldType.equals( Long.TYPE ) ) {
                         mv.visitInsn( Opcodes.LCMP );
                         mv.visitJumpInsn( Opcodes.IFEQ,

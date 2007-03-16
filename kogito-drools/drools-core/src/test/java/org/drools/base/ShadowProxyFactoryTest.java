@@ -1,5 +1,6 @@
 package org.drools.base;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.CheeseInterface;
+import org.drools.RLIRecord;
 
 public class ShadowProxyFactoryTest extends TestCase {
 
@@ -229,6 +231,30 @@ public class ShadowProxyFactoryTest extends TestCase {
         result = PRIME * result + ((cheese.getType() == null) ? 0 : cheese.getType().hashCode());
         result = PRIME * result + cheese.getPrice();
         return result;
+    }
+    
+    public void testClassWithStaticMethod() {
+        try {
+            // creating original object
+            final String originalType = "stilton";
+            final int originalPrice = 15;
+            final Cheese cheese = new Cheese( originalType,
+                                        originalPrice );
+
+            // creating proxy
+            final Class proxy = ShadowProxyFactory.getProxy( Cheese.class );
+            final Cheese cheeseProxy1 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
+            final Cheese cheeseProxy2 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
+
+            int cheesehash = cheeseHashCode( cheese );
+            Assert.assertEquals( cheeseProxy1, cheeseProxy2 );
+            Assert.assertEquals( cheeseProxy2, cheeseProxy1 );
+            Assert.assertEquals( cheesehash, cheeseProxy1.hashCode() );
+            
+        } catch ( final Exception e ) {
+            e.printStackTrace();
+            fail( "Error: " + e.getMessage() );
+        }
     }
 
 }
