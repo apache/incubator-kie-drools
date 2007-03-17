@@ -1,6 +1,5 @@
 package org.drools.base;
 
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.CheeseInterface;
-import org.drools.RLIRecord;
 
 public class ShadowProxyFactoryTest extends TestCase {
 
