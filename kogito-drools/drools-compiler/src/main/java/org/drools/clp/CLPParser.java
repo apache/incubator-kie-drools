@@ -1,4 +1,4 @@
-// $ANTLR 3.0b5 D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-15 15:42:56
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-18 12:17:59
 
 	package org.drools.clp;
 	import java.util.List;
@@ -64,7 +64,7 @@ public class CLPParser extends Parser {
         
 
     public String[] getTokenNames() { return tokenNames; }
-    public String getGrammarFileName() { return "D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g"; }
+    public String getGrammarFileName() { return "C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g"; }
 
     
     	private PackageDescr packageDescr;
@@ -214,13 +214,13 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start opt_semicolon
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:164:1: opt_semicolon : ( ';' )? ;
-    public void opt_semicolon() throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:164:1: opt_semicolon : ( ';' )? ;
+    public void opt_semicolon() throws RecognitionException {
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ( ( ';' )? )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ( ';' )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ( ( ';' )? )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ( ';' )?
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ( ';' )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ( ';' )?
             int alt1=2;
             int LA1_0 = input.LA(1);
             if ( (LA1_0==41) ) {
@@ -228,7 +228,7 @@ public class CLPParser extends Parser {
             }
             switch (alt1) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ';'
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:165:4: ';'
                     {
                     match(input,41,FOLLOW_41_in_opt_semicolon38); 
 
@@ -246,20 +246,20 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end opt_semicolon
 
 
     // $ANTLR start compilation_unit
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:169:1: compilation_unit : ( statement )+ ;
-    public void compilation_unit() throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:169:1: compilation_unit : ( statement )+ ;
+    public void compilation_unit() throws RecognitionException {
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:3: ( ( statement )+ )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:3: ( statement )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:3: ( ( statement )+ )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:3: ( statement )+
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:3: ( statement )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:3: ( statement )+
             int cnt2=0;
             loop2:
             do {
@@ -272,7 +272,7 @@ public class CLPParser extends Parser {
 
                 switch (alt2) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:5: statement
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:171:5: statement
             	    {
             	    pushFollow(FOLLOW_statement_in_compilation_unit56);
             	    statement();
@@ -300,21 +300,21 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end compilation_unit
 
 
     // $ANTLR start statement
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:174:1: statement : ( rule ) ;
-    public void statement() throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:174:1: statement : ( rule ) ;
+    public void statement() throws RecognitionException {
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:2: ( ( rule ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:2: ( rule )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:2: ( ( rule ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:2: ( rule )
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:2: ( rule )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:4: rule
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:2: ( rule )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:177:4: rule
             {
             pushFollow(FOLLOW_rule_in_statement76);
             rule();
@@ -332,15 +332,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end statement
 
 
     // $ANTLR start rule
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:214:1: rule returns [RuleDescr rule] : loc= LEFT_PAREN DEFRULE ruleName= NAME documentation= STRING ruleAttribute[rule] ( ce[lhs] )* '=>' rhs[rule] RIGHT_PAREN ;
-    public RuleDescr rule() throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:214:1: rule returns [RuleDescr rule] : loc= LEFT_PAREN DEFRULE ruleName= NAME documentation= STRING ruleAttribute[rule] ( ce[lhs] )* '=>' rhs[rule] RIGHT_PAREN ;
+    public RuleDescr rule() throws RecognitionException {
         RuleDescr rule = null;
 
         Token loc=null;
@@ -354,8 +354,8 @@ public class CLPParser extends Parser {
         	        AttributeDescr module = null;	        
         	      
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:221:4: (loc= LEFT_PAREN DEFRULE ruleName= NAME documentation= STRING ruleAttribute[rule] ( ce[lhs] )* '=>' rhs[rule] RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:221:4: loc= LEFT_PAREN DEFRULE ruleName= NAME documentation= STRING ruleAttribute[rule] ( ce[lhs] )* '=>' rhs[rule] RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:221:4: (loc= LEFT_PAREN DEFRULE ruleName= NAME documentation= STRING ruleAttribute[rule] ( ce[lhs] )* '=>' rhs[rule] RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:221:4: loc= LEFT_PAREN DEFRULE ruleName= NAME documentation= STRING ruleAttribute[rule] ( ce[lhs] )* '=>' rhs[rule] RIGHT_PAREN
             {
             loc=(Token)input.LT(1);
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_rule107); 
@@ -367,7 +367,7 @@ public class CLPParser extends Parser {
             	  		String ruleStr = ruleName.getText();
             
             	        	if ( ruleStr.indexOf("::") >= 0 ) {
-            	        	        String mod = ruleStr.substring(0, ruleStr.indexOf("::")+2);
+            	        	        String mod = ruleStr.substring(0, ruleStr.indexOf("::"));
             	        	        ruleStr = ruleStr.substring(ruleStr.indexOf("::")+2);
             				module = new AttributeDescr( "agenda-group", mod );
             				module.setLocation( offset(ruleName.getLine()), ruleName.getCharPositionInLine() );
@@ -397,7 +397,7 @@ public class CLPParser extends Parser {
             ruleAttribute(rule);
             _fsp--;
 
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:255:3: ( ce[lhs] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:255:3: ( ce[lhs] )*
             loop3:
             do {
                 int alt3=2;
@@ -409,7 +409,7 @@ public class CLPParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:255:3: ce[lhs]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:255:3: ce[lhs]
             	    {
             	    pushFollow(FOLLOW_ce_in_rule145);
             	    ce(lhs);
@@ -439,23 +439,23 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return rule;
     }
     // $ANTLR end rule
 
 
     // $ANTLR start ruleAttribute
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:265:1: ruleAttribute[RuleDescr rule] : ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )? ;
-    public void ruleAttribute(RuleDescr rule) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:265:1: ruleAttribute[RuleDescr rule] : ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )? ;
+    public void ruleAttribute(RuleDescr rule) throws RecognitionException {
         AttributeDescr d = null;
 
 
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:3: ( ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )? )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:3: ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:3: ( ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )? )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:3: ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )?
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:3: ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:3: ( LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN )?
             int alt5=2;
             int LA5_0 = input.LA(1);
             if ( (LA5_0==LEFT_PAREN) ) {
@@ -466,11 +466,11 @@ public class CLPParser extends Parser {
             }
             switch (alt5) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:5: LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:267:5: LEFT_PAREN 'declare' ( LEFT_PAREN d= salience RIGHT_PAREN )? RIGHT_PAREN
                     {
                     match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_ruleAttribute186); 
                     match(input,DECLARE,FOLLOW_DECLARE_in_ruleAttribute188); 
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:268:4: ( LEFT_PAREN d= salience RIGHT_PAREN )?
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:268:4: ( LEFT_PAREN d= salience RIGHT_PAREN )?
                     int alt4=2;
                     int LA4_0 = input.LA(1);
                     if ( (LA4_0==LEFT_PAREN) ) {
@@ -478,7 +478,7 @@ public class CLPParser extends Parser {
                     }
                     switch (alt4) {
                         case 1 :
-                            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:268:6: LEFT_PAREN d= salience RIGHT_PAREN
+                            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:268:6: LEFT_PAREN d= salience RIGHT_PAREN
                             {
                             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_ruleAttribute195); 
                             pushFollow(FOLLOW_salience_in_ruleAttribute199);
@@ -509,15 +509,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end ruleAttribute
 
 
     // $ANTLR start salience
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:272:1: salience returns [AttributeDescr d ] : loc= SALIENCE i= INT ;
-    public AttributeDescr salience() throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:272:1: salience returns [AttributeDescr d ] : loc= SALIENCE i= INT ;
+    public AttributeDescr salience() throws RecognitionException {
         AttributeDescr d = null;
 
         Token loc=null;
@@ -527,8 +527,8 @@ public class CLPParser extends Parser {
         		d = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:277:3: (loc= SALIENCE i= INT )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:277:3: loc= SALIENCE i= INT
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:277:3: (loc= SALIENCE i= INT )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:277:3: loc= SALIENCE i= INT
             {
             loc=(Token)input.LT(1);
             match(input,SALIENCE,FOLLOW_SALIENCE_in_salience240); 
@@ -549,20 +549,20 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return d;
     }
     // $ANTLR end salience
 
 
     // $ANTLR start ce
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:287:1: ce[ConditionalElementDescr in_ce] : ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] ) ;
-    public void ce(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:287:1: ce[ConditionalElementDescr in_ce] : ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] ) ;
+    public void ce(ConditionalElementDescr in_ce) throws RecognitionException {
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:4: ( ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:4: ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:4: ( ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:4: ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] )
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:4: ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:4: ( and_ce[in_ce] | or_ce[in_ce] | not_ce[in_ce] | exists_ce[in_ce] | eval_ce[in_ce] | normal_pattern[in_ce] | bound_pattern[in_ce] )
             int alt6=7;
             int LA6_0 = input.LA(1);
             if ( (LA6_0==LEFT_PAREN) ) {
@@ -604,7 +604,7 @@ public class CLPParser extends Parser {
             }
             switch (alt6) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:8: and_ce[in_ce]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:288:8: and_ce[in_ce]
                     {
                     pushFollow(FOLLOW_and_ce_in_ce270);
                     and_ce(in_ce);
@@ -614,7 +614,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:289:7: or_ce[in_ce]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:289:7: or_ce[in_ce]
                     {
                     pushFollow(FOLLOW_or_ce_in_ce280);
                     or_ce(in_ce);
@@ -624,7 +624,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:290:7: not_ce[in_ce]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:290:7: not_ce[in_ce]
                     {
                     pushFollow(FOLLOW_not_ce_in_ce289);
                     not_ce(in_ce);
@@ -634,7 +634,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:291:7: exists_ce[in_ce]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:291:7: exists_ce[in_ce]
                     {
                     pushFollow(FOLLOW_exists_ce_in_ce298);
                     exists_ce(in_ce);
@@ -644,7 +644,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:292:8: eval_ce[in_ce]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:292:8: eval_ce[in_ce]
                     {
                     pushFollow(FOLLOW_eval_ce_in_ce312);
                     eval_ce(in_ce);
@@ -654,7 +654,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:293:7: normal_pattern[in_ce]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:293:7: normal_pattern[in_ce]
                     {
                     pushFollow(FOLLOW_normal_pattern_in_ce326);
                     normal_pattern(in_ce);
@@ -664,7 +664,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:294:7: bound_pattern[in_ce]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:294:7: bound_pattern[in_ce]
                     {
                     pushFollow(FOLLOW_bound_pattern_in_ce335);
                     bound_pattern(in_ce);
@@ -685,24 +685,24 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end ce
 
 
     // $ANTLR start rhs
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:298:1: rhs[RuleDescr rule] : ( function[context] )* ;
-    public void rhs(RuleDescr rule) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:298:1: rhs[RuleDescr rule] : ( function[context] )* ;
+    public void rhs(RuleDescr rule) throws RecognitionException {
         
         	        ExecutionEngine engine = new BlockExecutionEngine();
         			ExecutionBuildContext context = new ExecutionBuildContext( engine );  	
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: ( ( function[context] )* )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: ( function[context] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: ( ( function[context] )* )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: ( function[context] )*
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: ( function[context] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: ( function[context] )*
             loop7:
             do {
                 int alt7=2;
@@ -714,7 +714,7 @@ public class CLPParser extends Parser {
 
                 switch (alt7) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: function[context]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:305:4: function[context]
             	    {
             	    pushFollow(FOLLOW_function_in_rhs363);
             	    function(context);
@@ -739,21 +739,21 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end rhs
 
 
     // $ANTLR start and_ce
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:308:1: and_ce[ConditionalElementDescr in_ce] : LEFT_PAREN AND ( ce[andDescr] )+ RIGHT_PAREN ;
-    public void and_ce(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:308:1: and_ce[ConditionalElementDescr in_ce] : LEFT_PAREN AND ( ce[andDescr] )+ RIGHT_PAREN ;
+    public void and_ce(ConditionalElementDescr in_ce) throws RecognitionException {
         
                 AndDescr andDescr= null;        
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:312:4: ( LEFT_PAREN AND ( ce[andDescr] )+ RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:312:4: LEFT_PAREN AND ( ce[andDescr] )+ RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:312:4: ( LEFT_PAREN AND ( ce[andDescr] )+ RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:312:4: LEFT_PAREN AND ( ce[andDescr] )+ RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_and_ce392); 
             match(input,AND,FOLLOW_AND_in_and_ce397); 
@@ -761,7 +761,7 @@ public class CLPParser extends Parser {
             	    	andDescr = new AndDescr();
             			in_ce.addDescr( andDescr );
             		
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:317:3: ( ce[andDescr] )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:317:3: ( ce[andDescr] )+
             int cnt8=0;
             loop8:
             do {
@@ -774,7 +774,7 @@ public class CLPParser extends Parser {
 
                 switch (alt8) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:317:3: ce[andDescr]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:317:3: ce[andDescr]
             	    {
             	    pushFollow(FOLLOW_ce_in_and_ce403);
             	    ce(andDescr);
@@ -803,21 +803,21 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end and_ce
 
 
     // $ANTLR start or_ce
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:321:1: or_ce[ConditionalElementDescr in_ce] : LEFT_PAREN OR ( ce[orDescr] )+ RIGHT_PAREN ;
-    public void or_ce(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:321:1: or_ce[ConditionalElementDescr in_ce] : LEFT_PAREN OR ( ce[orDescr] )+ RIGHT_PAREN ;
+    public void or_ce(ConditionalElementDescr in_ce) throws RecognitionException {
         
                 OrDescr orDescr= null;         
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:325:4: ( LEFT_PAREN OR ( ce[orDescr] )+ RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:325:4: LEFT_PAREN OR ( ce[orDescr] )+ RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:325:4: ( LEFT_PAREN OR ( ce[orDescr] )+ RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:325:4: LEFT_PAREN OR ( ce[orDescr] )+ RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_or_ce440); 
             match(input,OR,FOLLOW_OR_in_or_ce445); 
@@ -825,7 +825,7 @@ public class CLPParser extends Parser {
             	    	orDescr = new OrDescr();
             			in_ce.addDescr( orDescr );
             		
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:330:3: ( ce[orDescr] )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:330:3: ( ce[orDescr] )+
             int cnt9=0;
             loop9:
             do {
@@ -838,7 +838,7 @@ public class CLPParser extends Parser {
 
                 switch (alt9) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:330:3: ce[orDescr]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:330:3: ce[orDescr]
             	    {
             	    pushFollow(FOLLOW_ce_in_or_ce451);
             	    ce(orDescr);
@@ -867,21 +867,21 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end or_ce
 
 
     // $ANTLR start not_ce
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:334:1: not_ce[ConditionalElementDescr in_ce] : LEFT_PAREN NOT ce[notDescr] RIGHT_PAREN ;
-    public void not_ce(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:334:1: not_ce[ConditionalElementDescr in_ce] : LEFT_PAREN NOT ce[notDescr] RIGHT_PAREN ;
+    public void not_ce(ConditionalElementDescr in_ce) throws RecognitionException {
         
                 NotDescr notDescr= null;         
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:338:4: ( LEFT_PAREN NOT ce[notDescr] RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:338:4: LEFT_PAREN NOT ce[notDescr] RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:338:4: ( LEFT_PAREN NOT ce[notDescr] RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:338:4: LEFT_PAREN NOT ce[notDescr] RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_not_ce488); 
             match(input,NOT,FOLLOW_NOT_in_not_ce493); 
@@ -903,21 +903,21 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end not_ce
 
 
     // $ANTLR start exists_ce
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:347:1: exists_ce[ConditionalElementDescr in_ce] : LEFT_PAREN EXISTS ce[existsDescr] RIGHT_PAREN ;
-    public void exists_ce(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:347:1: exists_ce[ConditionalElementDescr in_ce] : LEFT_PAREN EXISTS ce[existsDescr] RIGHT_PAREN ;
+    public void exists_ce(ConditionalElementDescr in_ce) throws RecognitionException {
         
                 ExistsDescr existsDescr= null;        
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:351:4: ( LEFT_PAREN EXISTS ce[existsDescr] RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:351:4: LEFT_PAREN EXISTS ce[existsDescr] RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:351:4: ( LEFT_PAREN EXISTS ce[existsDescr] RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:351:4: LEFT_PAREN EXISTS ce[existsDescr] RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_exists_ce536); 
             match(input,EXISTS,FOLLOW_EXISTS_in_exists_ce541); 
@@ -939,23 +939,23 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end exists_ce
 
 
     // $ANTLR start eval_ce
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:360:1: eval_ce[ConditionalElementDescr in_ce] : LEFT_PAREN TEST function[context] RIGHT_PAREN ;
-    public void eval_ce(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:360:1: eval_ce[ConditionalElementDescr in_ce] : LEFT_PAREN TEST function[context] RIGHT_PAREN ;
+    public void eval_ce(ConditionalElementDescr in_ce) throws RecognitionException {
         
                 EvalDescr evalDescr= null;    
            		ExecutionEngine engine = new CLPEval();     
         		ExecutionBuildContext context = new ExecutionBuildContext( engine );   		         
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:366:4: ( LEFT_PAREN TEST function[context] RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:366:4: LEFT_PAREN TEST function[context] RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:366:4: ( LEFT_PAREN TEST function[context] RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:366:4: LEFT_PAREN TEST function[context] RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_eval_ce583); 
             match(input,TEST,FOLLOW_TEST_in_eval_ce588); 
@@ -980,23 +980,23 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end eval_ce
 
 
     // $ANTLR start normal_pattern
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:377:1: normal_pattern[ConditionalElementDescr in_ce] : LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN ;
-    public void normal_pattern(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:377:1: normal_pattern[ConditionalElementDescr in_ce] : LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN ;
+    public void normal_pattern(ConditionalElementDescr in_ce) throws RecognitionException {
         Token name=null;
 
         
                 ColumnDescr column = null;
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:381:4: ( LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:381:4: LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:381:4: ( LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:381:4: LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_normal_pattern633); 
             name=(Token)input.LT(1);
@@ -1005,7 +1005,7 @@ public class CLPParser extends Parser {
             			column = new ColumnDescr(name.getText());
             			in_ce.addDescr( column );
             		
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:386:3: ( field_constriant[column] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:386:3: ( field_constriant[column] )*
             loop10:
             do {
                 int alt10=2;
@@ -1017,7 +1017,7 @@ public class CLPParser extends Parser {
 
                 switch (alt10) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:386:3: field_constriant[column]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:386:3: field_constriant[column]
             	    {
             	    pushFollow(FOLLOW_field_constriant_in_normal_pattern646);
             	    field_constriant(column);
@@ -1042,15 +1042,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end normal_pattern
 
 
     // $ANTLR start bound_pattern
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:392:1: bound_pattern[ConditionalElementDescr in_ce] : var= VAR ASSIGN_OP LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN ;
-    public void bound_pattern(ConditionalElementDescr in_ce) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:392:1: bound_pattern[ConditionalElementDescr in_ce] : var= VAR ASSIGN_OP LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN ;
+    public void bound_pattern(ConditionalElementDescr in_ce) throws RecognitionException {
         Token var=null;
         Token name=null;
 
@@ -1059,8 +1059,8 @@ public class CLPParser extends Parser {
                 String identifier = null;
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:397:4: (var= VAR ASSIGN_OP LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:397:4: var= VAR ASSIGN_OP LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:397:4: (var= VAR ASSIGN_OP LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:397:4: var= VAR ASSIGN_OP LEFT_PAREN name= NAME ( field_constriant[column] )* RIGHT_PAREN
             {
             var=(Token)input.LT(1);
             match(input,VAR,FOLLOW_VAR_in_bound_pattern684); 
@@ -1076,7 +1076,7 @@ public class CLPParser extends Parser {
             			column.setIdentifier( identifier );
             			in_ce.addDescr( column );	    
             		
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:406:3: ( field_constriant[column] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:406:3: ( field_constriant[column] )*
             loop11:
             do {
                 int alt11=2;
@@ -1088,7 +1088,7 @@ public class CLPParser extends Parser {
 
                 switch (alt11) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:406:3: field_constriant[column]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:406:3: field_constriant[column]
             	    {
             	    pushFollow(FOLLOW_field_constriant_in_bound_pattern705);
             	    field_constriant(column);
@@ -1113,15 +1113,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end bound_pattern
 
 
     // $ANTLR start field_constriant
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:410:1: field_constriant[ColumnDescr column] : LEFT_PAREN f= NAME connected_constraint[fc, column] RIGHT_PAREN ;
-    public void field_constriant(ColumnDescr column) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:410:1: field_constriant[ColumnDescr column] : LEFT_PAREN f= NAME connected_constraint[fc, column] RIGHT_PAREN ;
+    public void field_constriant(ColumnDescr column) throws RecognitionException {
         Token f=null;
 
         
@@ -1131,8 +1131,8 @@ public class CLPParser extends Parser {
         		String op = "==";
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:418:3: ( LEFT_PAREN f= NAME connected_constraint[fc, column] RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:418:3: LEFT_PAREN f= NAME connected_constraint[fc, column] RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:418:3: ( LEFT_PAREN f= NAME connected_constraint[fc, column] RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:418:3: LEFT_PAREN f= NAME connected_constraint[fc, column] RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_field_constriant743); 
             f=(Token)input.LT(1);
@@ -1157,24 +1157,24 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end field_constriant
 
 
     // $ANTLR start connected_constraint
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:430:1: connected_constraint[FieldConstraintDescr fc, ColumnDescr column] : restriction[fc, column] ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )? ;
-    public void connected_constraint(FieldConstraintDescr fc, ColumnDescr column) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:430:1: connected_constraint[FieldConstraintDescr fc, ColumnDescr column] : restriction[fc, column] ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )? ;
+    public void connected_constraint(FieldConstraintDescr fc, ColumnDescr column) throws RecognitionException {
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:432:2: ( restriction[fc, column] ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )? )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:432:2: restriction[fc, column] ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:432:2: ( restriction[fc, column] ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )? )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:432:2: restriction[fc, column] ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )?
             {
             pushFollow(FOLLOW_restriction_in_connected_constraint784);
             restriction(fc,  column);
             _fsp--;
 
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:433:2: ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:433:2: ( AMPERSAND connected_constraint[fc, column] | PIPE connected_constraint[fc, column] )?
             int alt12=3;
             int LA12_0 = input.LA(1);
             if ( (LA12_0==AMPERSAND) ) {
@@ -1185,7 +1185,7 @@ public class CLPParser extends Parser {
             }
             switch (alt12) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:434:6: AMPERSAND connected_constraint[fc, column]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:434:6: AMPERSAND connected_constraint[fc, column]
                     {
                     match(input,AMPERSAND,FOLLOW_AMPERSAND_in_connected_constraint796); 
                      fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); 
@@ -1197,7 +1197,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:437:6: PIPE connected_constraint[fc, column]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:437:6: PIPE connected_constraint[fc, column]
                     {
                     match(input,PIPE,FOLLOW_PIPE_in_connected_constraint817); 
                     fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); 
@@ -1220,15 +1220,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end connected_constraint
 
 
     // $ANTLR start restriction
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:442:1: restriction[FieldConstraintDescr fc, ColumnDescr column] : ( TILDE )? ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction ) ;
-    public void restriction(FieldConstraintDescr fc, ColumnDescr column) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:442:1: restriction[FieldConstraintDescr fc, ColumnDescr column] : ( TILDE )? ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction ) ;
+    public void restriction(FieldConstraintDescr fc, ColumnDescr column) throws RecognitionException {
         String lc = null;
 
 
@@ -1236,10 +1236,10 @@ public class CLPParser extends Parser {
         			String op = "==";
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:4: ( ( TILDE )? ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:4: ( TILDE )? ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:4: ( ( TILDE )? ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:4: ( TILDE )? ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction )
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:4: ( TILDE )?
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:4: ( TILDE )?
             int alt13=2;
             int LA13_0 = input.LA(1);
             if ( (LA13_0==TILDE) ) {
@@ -1247,7 +1247,7 @@ public class CLPParser extends Parser {
             }
             switch (alt13) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:5: TILDE
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:446:5: TILDE
                     {
                     match(input,TILDE,FOLLOW_TILDE_in_restriction852); 
                     op = "!=";
@@ -1257,7 +1257,7 @@ public class CLPParser extends Parser {
 
             }
 
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:447:3: ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:447:3: ( predicate_constraint[op, column] | return_value_restriction[op, fc] | variable_restriction[op, fc] | lc= literal_restriction )
             int alt14=4;
             switch ( input.LA(1) ) {
             case COLON:
@@ -1286,7 +1286,7 @@ public class CLPParser extends Parser {
 
             switch (alt14) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:447:5: predicate_constraint[op, column]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:447:5: predicate_constraint[op, column]
                     {
                     pushFollow(FOLLOW_predicate_constraint_in_restriction868);
                     predicate_constraint(op,  column);
@@ -1296,7 +1296,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:448:7: return_value_restriction[op, fc]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:448:7: return_value_restriction[op, fc]
                     {
                     pushFollow(FOLLOW_return_value_restriction_in_restriction884);
                     return_value_restriction(op,  fc);
@@ -1306,7 +1306,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:449:7: variable_restriction[op, fc]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:449:7: variable_restriction[op, fc]
                     {
                     pushFollow(FOLLOW_variable_restriction_in_restriction893);
                     variable_restriction(op,  fc);
@@ -1316,7 +1316,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:450:8: lc= literal_restriction
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:450:8: lc= literal_restriction
                     {
                     pushFollow(FOLLOW_literal_restriction_in_restriction905);
                     lc=literal_restriction();
@@ -1341,22 +1341,22 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end restriction
 
 
     // $ANTLR start predicate_constraint
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:457:1: predicate_constraint[String op, ColumnDescr column] : COLON function[context] ;
-    public void predicate_constraint(String op, ColumnDescr column) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:457:1: predicate_constraint[String op, ColumnDescr column] : COLON function[context] ;
+    public void predicate_constraint(String op, ColumnDescr column) throws RecognitionException {
         
            		ExecutionEngine engine = new CLPPredicate();
         		ExecutionBuildContext context = new ExecutionBuildContext( engine );    
             
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:462:4: ( COLON function[context] )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:462:4: COLON function[context]
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:462:4: ( COLON function[context] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:462:4: COLON function[context]
             {
             match(input,COLON,FOLLOW_COLON_in_predicate_constraint947); 
             pushFollow(FOLLOW_function_in_predicate_constraint951);
@@ -1375,22 +1375,22 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end predicate_constraint
 
 
     // $ANTLR start return_value_restriction
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:469:1: return_value_restriction[String op, FieldConstraintDescr fc] : EQUALS function[context] ;
-    public void return_value_restriction(String op, FieldConstraintDescr fc) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:469:1: return_value_restriction[String op, FieldConstraintDescr fc] : EQUALS function[context] ;
+    public void return_value_restriction(String op, FieldConstraintDescr fc) throws RecognitionException {
         
         		ExecutionEngine engine = new CLPReturnValue();
         		ExecutionBuildContext context = new ExecutionBuildContext( engine );
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:474:4: ( EQUALS function[context] )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:474:4: EQUALS function[context]
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:474:4: ( EQUALS function[context] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:474:4: EQUALS function[context]
             {
             match(input,EQUALS,FOLLOW_EQUALS_in_return_value_restriction974); 
             pushFollow(FOLLOW_function_in_return_value_restriction979);
@@ -1409,20 +1409,20 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end return_value_restriction
 
 
     // $ANTLR start variable_restriction
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:480:1: variable_restriction[String op, FieldConstraintDescr fc] : var= VAR ;
-    public void variable_restriction(String op, FieldConstraintDescr fc) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:480:1: variable_restriction[String op, FieldConstraintDescr fc] : var= VAR ;
+    public void variable_restriction(String op, FieldConstraintDescr fc) throws RecognitionException {
         Token var=null;
 
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:481:4: (var= VAR )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:481:4: var= VAR
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:481:4: (var= VAR )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:481:4: var= VAR
             {
             var=(Token)input.LT(1);
             match(input,VAR,FOLLOW_VAR_in_variable_restriction1000); 
@@ -1438,15 +1438,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end variable_restriction
 
 
     // $ANTLR start literal_restriction
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:487:1: literal_restriction returns [String text] : t= literal ;
-    public String literal_restriction() throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:487:1: literal_restriction returns [String text] : t= literal ;
+    public String literal_restriction() throws RecognitionException {
         String text = null;
 
         String t = null;
@@ -1456,8 +1456,8 @@ public class CLPParser extends Parser {
         		text = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:492:6: (t= literal )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:492:6: t= literal
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:492:6: (t= literal )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:492:6: t= literal
             {
             pushFollow(FOLLOW_literal_in_literal_restriction1033);
             t=literal();
@@ -1475,15 +1475,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return text;
     }
     // $ANTLR end literal_restriction
 
 
     // $ANTLR start function
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:497:1: function[ExecutionBuildContext context] returns [Function f] : LEFT_PAREN name= NAME ( function_params[context, f] )+ RIGHT_PAREN ;
-    public Function function(ExecutionBuildContext context) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:497:1: function[ExecutionBuildContext context] returns [Function f] : LEFT_PAREN name= NAME ( function_params[context, f] )+ RIGHT_PAREN ;
+    public Function function(ExecutionBuildContext context) throws RecognitionException {
         Function f = null;
 
         Token name=null;
@@ -1492,8 +1492,8 @@ public class CLPParser extends Parser {
         	    FunctionFactory factory = FunctionFactory.getInstance();
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:501:4: ( LEFT_PAREN name= NAME ( function_params[context, f] )+ RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:501:4: LEFT_PAREN name= NAME ( function_params[context, f] )+ RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:501:4: ( LEFT_PAREN name= NAME ( function_params[context, f] )+ RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:501:4: LEFT_PAREN name= NAME ( function_params[context, f] )+ RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_function1058); 
             name=(Token)input.LT(1);
@@ -1504,7 +1504,7 @@ public class CLPParser extends Parser {
             			}
             		  	f = factory.createFunction( name.getText() );		  
             		
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:509:3: ( function_params[context, f] )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:509:3: ( function_params[context, f] )+
             int cnt15=0;
             loop15:
             do {
@@ -1517,7 +1517,7 @@ public class CLPParser extends Parser {
 
                 switch (alt15) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:509:3: function_params[context, f]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:509:3: function_params[context, f]
             	    {
             	    pushFollow(FOLLOW_function_params_in_function1077);
             	    function_params(context,  f);
@@ -1547,15 +1547,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return f;
     }
     // $ANTLR end function
 
 
     // $ANTLR start modify_function
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:515:1: modify_function[ExecutionBuildContext context] returns [Function f] : LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN ;
-    public Function modify_function(ExecutionBuildContext context) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:515:1: modify_function[ExecutionBuildContext context] returns [Function f] : LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN ;
+    public Function modify_function(ExecutionBuildContext context) throws RecognitionException {
         Function f = null;
 
         
@@ -1563,12 +1563,12 @@ public class CLPParser extends Parser {
         		f = factory.createFunction( "modify" );
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:521:3: ( LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:521:3: LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:521:3: ( LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:521:3: LEFT_PAREN 'modify' ( slot_name_value_pair[context, f] )+ RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_modify_function1118); 
             match(input,43,FOLLOW_43_in_modify_function1123); 
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:523:4: ( slot_name_value_pair[context, f] )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:523:4: ( slot_name_value_pair[context, f] )+
             int cnt16=0;
             loop16:
             do {
@@ -1581,7 +1581,7 @@ public class CLPParser extends Parser {
 
                 switch (alt16) {
             	case 1 :
-            	    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:523:4: slot_name_value_pair[context, f]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:523:4: slot_name_value_pair[context, f]
             	    {
             	    pushFollow(FOLLOW_slot_name_value_pair_in_modify_function1128);
             	    slot_name_value_pair(context,  f);
@@ -1610,15 +1610,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return f;
     }
     // $ANTLR end modify_function
 
 
     // $ANTLR start function_params
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:527:1: function_params[ExecutionBuildContext context, Function f] : (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) ;
-    public void function_params(ExecutionBuildContext context, Function f) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:527:1: function_params[ExecutionBuildContext context, Function f] : (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) ;
+    public void function_params(ExecutionBuildContext context, Function f) throws RecognitionException {
         Token t=null;
         Function nf = null;
 
@@ -1627,10 +1627,10 @@ public class CLPParser extends Parser {
         		ValueHandler value  =  null;		
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:3: ( (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:3: (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:3: ( (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:3: (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] )
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:3: (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:3: (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] )
             int alt17=8;
             switch ( input.LA(1) ) {
             case VAR:
@@ -1666,7 +1666,7 @@ public class CLPParser extends Parser {
 
             switch (alt17) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:6: t= VAR
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:532:6: t= VAR
                     {
                     t=(Token)input.LT(1);
                     match(input,VAR,FOLLOW_VAR_in_function_params1163); 
@@ -1675,7 +1675,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:533:6: t= STRING
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:533:6: t= STRING
                     {
                     t=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_function_params1175); 
@@ -1684,7 +1684,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:534:7: t= NAME
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:534:7: t= NAME
                     {
                     t=(Token)input.LT(1);
                     match(input,NAME,FOLLOW_NAME_in_function_params1190); 
@@ -1693,7 +1693,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:535:6: t= FLOAT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:535:6: t= FLOAT
                     {
                     t=(Token)input.LT(1);
                     match(input,FLOAT,FOLLOW_FLOAT_in_function_params1207); 
@@ -1702,7 +1702,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:536:6: t= INT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:536:6: t= INT
                     {
                     t=(Token)input.LT(1);
                     match(input,INT,FOLLOW_INT_in_function_params1222); 
@@ -1711,7 +1711,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:537:6: t= BOOL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:537:6: t= BOOL
                     {
                     t=(Token)input.LT(1);
                     match(input,BOOL,FOLLOW_BOOL_in_function_params1242); 
@@ -1720,7 +1720,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:538:6: t= NULL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:538:6: t= NULL
                     {
                     t=(Token)input.LT(1);
                     match(input,NULL,FOLLOW_NULL_in_function_params1264); 
@@ -1729,7 +1729,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:539:6: nf= function[context]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:539:6: nf= function[context]
                     {
                     pushFollow(FOLLOW_function_in_function_params1280);
                     nf=function(context);
@@ -1752,15 +1752,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end function_params
 
 
     // $ANTLR start slot_name_value_pair
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:545:1: slot_name_value_pair[ExecutionBuildContext context, Function f] : LEFT_PAREN id= NAME (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN ;
-    public void slot_name_value_pair(ExecutionBuildContext context, Function f) throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:545:1: slot_name_value_pair[ExecutionBuildContext context, Function f] : LEFT_PAREN id= NAME (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN ;
+    public void slot_name_value_pair(ExecutionBuildContext context, Function f) throws RecognitionException {
         Token id=null;
         Token t=null;
         Function nf = null;
@@ -1771,8 +1771,8 @@ public class CLPParser extends Parser {
         		String name = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:551:3: ( LEFT_PAREN id= NAME (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:551:3: LEFT_PAREN id= NAME (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:551:3: ( LEFT_PAREN id= NAME (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:551:3: LEFT_PAREN id= NAME (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] ) RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_slot_name_value_pair1322); 
             id=(Token)input.LT(1);
@@ -1780,7 +1780,7 @@ public class CLPParser extends Parser {
             
             			name = id.getText();
             		
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:555:3: (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:555:3: (t= VAR | t= STRING | t= NAME | t= FLOAT | t= INT | t= BOOL | t= NULL | nf= function[context] )
             int alt18=8;
             switch ( input.LA(1) ) {
             case VAR:
@@ -1816,7 +1816,7 @@ public class CLPParser extends Parser {
 
             switch (alt18) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:555:6: t= VAR
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:555:6: t= VAR
                     {
                     t=(Token)input.LT(1);
                     match(input,VAR,FOLLOW_VAR_in_slot_name_value_pair1339); 
@@ -1825,7 +1825,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:556:7: t= STRING
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:556:7: t= STRING
                     {
                     t=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_slot_name_value_pair1357); 
@@ -1834,7 +1834,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:557:7: t= NAME
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:557:7: t= NAME
                     {
                     t=(Token)input.LT(1);
                     match(input,NAME,FOLLOW_NAME_in_slot_name_value_pair1372); 
@@ -1843,7 +1843,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:558:6: t= FLOAT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:558:6: t= FLOAT
                     {
                     t=(Token)input.LT(1);
                     match(input,FLOAT,FOLLOW_FLOAT_in_slot_name_value_pair1389); 
@@ -1852,7 +1852,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:559:6: t= INT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:559:6: t= INT
                     {
                     t=(Token)input.LT(1);
                     match(input,INT,FOLLOW_INT_in_slot_name_value_pair1404); 
@@ -1861,7 +1861,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:560:6: t= BOOL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:560:6: t= BOOL
                     {
                     t=(Token)input.LT(1);
                     match(input,BOOL,FOLLOW_BOOL_in_slot_name_value_pair1424); 
@@ -1870,7 +1870,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:561:6: t= NULL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:561:6: t= NULL
                     {
                     t=(Token)input.LT(1);
                     match(input,NULL,FOLLOW_NULL_in_slot_name_value_pair1446); 
@@ -1879,7 +1879,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:562:6: nf= function[context]
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:562:6: nf= function[context]
                     {
                     pushFollow(FOLLOW_function_in_slot_name_value_pair1462);
                     nf=function(context);
@@ -1903,15 +1903,15 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return ;
     }
     // $ANTLR end slot_name_value_pair
 
 
     // $ANTLR start literal
-    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:569:1: literal returns [String text] : (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
-    public String literal() throws RecognitionException {   
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:569:1: literal returns [String text] : (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
+    public String literal() throws RecognitionException {
         String text = null;
 
         Token t=null;
@@ -1920,10 +1920,10 @@ public class CLPParser extends Parser {
         		text = null;
         	
         try {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:4: ( (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) )
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:4: ( (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
             {
-            // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
             int alt19=6;
             switch ( input.LA(1) ) {
             case STRING:
@@ -1953,7 +1953,7 @@ public class CLPParser extends Parser {
 
             switch (alt19) {
                 case 1 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:8: t= STRING
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:573:8: t= STRING
                     {
                     t=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_literal1528); 
@@ -1962,7 +1962,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:574:7: t= NAME
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:574:7: t= NAME
                     {
                     t=(Token)input.LT(1);
                     match(input,NAME,FOLLOW_NAME_in_literal1541); 
@@ -1971,7 +1971,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:7: t= INT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:575:7: t= INT
                     {
                     t=(Token)input.LT(1);
                     match(input,INT,FOLLOW_INT_in_literal1557); 
@@ -1980,7 +1980,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:576:7: t= FLOAT
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:576:7: t= FLOAT
                     {
                     t=(Token)input.LT(1);
                     match(input,FLOAT,FOLLOW_FLOAT_in_literal1572); 
@@ -1989,7 +1989,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:577:7: t= BOOL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:577:7: t= BOOL
                     {
                     t=(Token)input.LT(1);
                     match(input,BOOL,FOLLOW_BOOL_in_literal1585); 
@@ -1998,7 +1998,7 @@ public class CLPParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // D:\\workspace\\jboss\\jbossrules\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:578:7: t= NULL
+                    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:578:7: t= NULL
                     {
                     t=(Token)input.LT(1);
                     match(input,NULL,FOLLOW_NULL_in_literal1599); 
@@ -2018,7 +2018,7 @@ public class CLPParser extends Parser {
             recover(input,re);
         }
         finally {
-       }
+        }
         return text;
     }
     // $ANTLR end literal

@@ -319,7 +319,9 @@ public class ClpParserTest extends TestCase {
         List attributes = rule.getAttributes();
         AttributeDescr module = ( AttributeDescr ) attributes.get( 0 );
         assertEquals( "agenda-group", module.getName() );
-        assertEquals( "MAIN::", module.getValue() );
+        assertEquals( "MAIN", module.getValue() );
+        
+        assertEquals("name", rule.getName() );
         
         AttributeDescr salience = ( AttributeDescr ) attributes.get( 1 );
         assertEquals( "salience", salience.getName() );
