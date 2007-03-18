@@ -793,7 +793,8 @@ fact_binding returns [BaseDescr d]
  		id=ID ':' 
  		{
  		        // handling incomplete parsing
- 		        d = new ColumnDescr( id.getText() );
+ 		        d = new ColumnDescr( );
+ 		        d.setIdentifier( id.getText() );
  		}
  		fe=fact_expression[id.getText()]
  		{
