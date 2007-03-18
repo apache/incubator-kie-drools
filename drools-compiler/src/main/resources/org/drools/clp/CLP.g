@@ -226,7 +226,7 @@ rule returns [RuleDescr rule]
 	  		String ruleStr = ruleName.getText();
 
 	        	if ( ruleStr.indexOf("::") >= 0 ) {
-	        	        String mod = ruleStr.substring(0, ruleStr.indexOf("::")+2);
+	        	        String mod = ruleStr.substring(0, ruleStr.indexOf("::"));
 	        	        ruleStr = ruleStr.substring(ruleStr.indexOf("::")+2);
 				module = new AttributeDescr( "agenda-group", mod );
 				module.setLocation( offset(ruleName.getLine()), ruleName.getCharPositionInLine() );
