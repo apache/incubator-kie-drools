@@ -17,4 +17,11 @@ rule "another rule"
 		Person( bigDecimal != null )
     then 
     	list.add( new Integer(6) );
-end    	
+end   
+
+rule "number not null"
+    when
+     	Person( name== "whee", bigDecimal != 3 )
+    then
+    	list.add( new Integer(7) );
+end     	

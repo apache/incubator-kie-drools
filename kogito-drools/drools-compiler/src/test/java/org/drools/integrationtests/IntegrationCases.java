@@ -184,14 +184,20 @@ public abstract class IntegrationCases extends TestCase {
         Cheese nullCheese = new Cheese(null, 2);
         workingMemory.assertObject( nullCheese );
 
-        Person nullPerson = new Person("shoes butt back");
-        nullPerson.setBigDecimal( new BigDecimal("42.42") );
+        Person notNullPerson = new Person("shoes butt back");
+        notNullPerson.setBigDecimal( new BigDecimal("42.42") );
+        
+        workingMemory.assertObject( notNullPerson );
+        
+        Person nullPerson = new Person("whee");
+        nullPerson.setBigDecimal( null );
         
         workingMemory.assertObject( nullPerson );
         
+        
         workingMemory.fireAllRules();
         System.out.println(list.get( 0 ));
-        assertEquals( 2, list.size() );
+        assertEquals( 3, list.size() );
         
         
     }
