@@ -1139,15 +1139,9 @@ square_chunk[BaseDescr descr]  returns [String text]
 retval_constraint returns [String text]
 	@init {
 		text = null;
-		CLPReturnValue engine = new CLPReturnValue();
-		Function function;
 	}
 	:	
-		f=function {
-		    engine.setFunction( f );
-		}
-		//c=paren_chunk[null] { text = c.substring(1, c.length()-1); }
-		//{ 		
+		c=paren_chunk[null] { text = c.substring(1, c.length()-1); }
 	;
 
 lhs_or returns [BaseDescr d]
