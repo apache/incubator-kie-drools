@@ -6,6 +6,7 @@ import org.drools.testing.plugin.forms.TestSuitePropertiesBlock;
 import org.drools.testing.plugin.utils.LoadModel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
@@ -57,12 +58,22 @@ public class RtlFormEditor extends FormEditor {
 	
 	private void initialiseModel () {
 		try {
-			LoadModel.loadTestSuite((FileEditorInput)getEditorInput());
+			testSuite = LoadModel.loadTestSuite((FileEditorInput)getEditorInput());
 		}catch (Exception e) {	
 			MessageDialog.openError(this.getSite().getShell(), "Error", e.getMessage());
 		}
 	}
 
+	private void refreshModelFromTextEditor () {
+		try {
+			testSuite = LoadModel.loadTestSuite(textEditor.getDocumentProvider()
+					.getDocument(
+							textEditor.getEditorInput()).get());
+		}catch (Exception e) {	
+			MessageDialog.openError(this.getSite().getShell(), "Error", e.getMessage());
+		}
+	}
+	
 	public TestSuite getTestSuite() {
 		return testSuite;
 	}
@@ -82,8 +93,17 @@ public class RtlFormEditor extends FormEditor {
 	protected void pageChange ( int newPageIndex ) {
 		switch (newPageIndex) {
 			case 1 :
+				refreshModelFromTextEditor();
 				TestSuitePropertiesBlock block = ((MasterDetailsPage)getSelectedPage()).getBlock();
-				block.updateTableFromTextEditor();
+				TableViewer viewer = block.getViewer();
+				if (viewer != null) {
+					try {
+						viewer.setInput(getTestSuite());
+					}catch (Exception e) {
+						System.out.println(e);
+					}
+					viewer.refresh(true);
+				}	
 				System.out.println("page change event running..");
 				break;
 		}
