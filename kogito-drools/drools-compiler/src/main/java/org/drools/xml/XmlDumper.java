@@ -37,6 +37,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PackageDescrDumper;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
@@ -83,9 +84,9 @@ public class XmlDumper extends ReflectiveVisitor
         this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
-                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + processDescrList( descr.getDescrs() ) + "</column>" + XmlDumper.eol;
+                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >"  + XmlDumper.eol + processDescrList( descr.getDescrs() )  + XmlDumper.eol + "</column>" + XmlDumper.eol;
             } else {
-                this.template = "<column object-type=\"" + descr.getObjectType() + "\" >" + processDescrList( descr.getDescrs() ) + "</column>" + XmlDumper.eol;
+                this.template = "<column object-type=\"" + descr.getObjectType() + "\" >"  + XmlDumper.eol + processDescrList( descr.getDescrs() )  + XmlDumper.eol + "</column>" + XmlDumper.eol;
             }
         } else {
             if ( descr.getIdentifier() != null ) {
@@ -99,7 +100,7 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
         if ( !descr.getRestrictions().isEmpty() ) {
-            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> " + processFieldConstraint( descr.getRestrictions() ) + "</field-constraint>";            
+            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> "  + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol +"</field-constraint>";            
         }
     }
 
@@ -219,6 +220,14 @@ public class XmlDumper extends ReflectiveVisitor
         return descrString;
     }
 
+    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
+        if ( descr.getConnective() == RestrictionConnectiveDescr.OR ) {
+            this.template = "<restriction-connective connective=\"|\"/>" + XmlDumper.eol;
+        } else {
+            this.template = "<restriction-connective connective=\"&amp;\"/>" + XmlDumper.eol;
+        }
+    }
+
     private String processDescrList(final List descr) {
         String descrString = "";
         for ( final Iterator iterator = descr.iterator(); iterator.hasNext(); ) {
@@ -306,15 +315,19 @@ public class XmlDumper extends ReflectiveVisitor
      */
     private String replaceIllegalChars(String code) {
         StringBuffer sb = new StringBuffer();
-        int n = code.length();
-        for (int i = 0; i < n; i++) {
-           char c = code.charAt(i);
-           switch (c) {
-              case '<': sb.append("&lt;"); break;
-              case '>': sb.append("&gt;"); break;
-              case '&': sb.append("&amp;"); break;                   
-              default:  sb.append(c); break;
-           }
+        if( code != null ) {
+            int n = code.length();
+            for (int i = 0; i < n; i++) {
+               char c = code.charAt(i);
+               switch (c) {
+                  case '<': sb.append("&lt;"); break;
+                  case '>': sb.append("&gt;"); break;
+                  case '&': sb.append("&amp;"); break;                   
+                  default:  sb.append(c); break;
+               }
+            }
+        } else {
+            sb.append( "null" );
         }
         return sb.toString();
     }    
