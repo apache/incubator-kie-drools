@@ -167,6 +167,8 @@ public class XmlPackageReader extends DefaultHandler {
                            new ReturnValueRestrictionHandler( this ) );
         this.handlers.put( "field-binding",
                            new FieldBindingHandler( this ) );
+        this.handlers.put( "restriction-connective",
+                           new RestrictionConnectiveHandler( this ) );
 
         initEntityResolver();
 

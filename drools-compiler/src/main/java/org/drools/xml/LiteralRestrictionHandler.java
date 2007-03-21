@@ -22,6 +22,7 @@ import java.util.ListIterator;
 
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -53,6 +54,7 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
             this.validPeers.add( LiteralRestrictionDescr.class );
             this.validPeers.add( ReturnValueRestrictionDescr.class );
             this.validPeers.add( VariableRestrictionDescr.class );
+            this.validPeers.add( RestrictionConnectiveDescr.class );
             this.allowNesting = false;
         }
     }

@@ -61,7 +61,7 @@ public class DumperTest extends TestCase {
         final DrlDumper dumper = new DrlDumper();
         final String result = dumper.dump( pkgOriginal );
         assertNotNull( result );
-
+        
         parser = new DrlParser();
         final PackageDescr pkgDumped = parser.parse( new StringReader( result ) );
 

@@ -19,15 +19,66 @@
 		</body>		
 	</function>
 	
-	<rule name="my rule">
-		<rule-attribute name="salience" value="10" />
-		
-		<lhs>					
-	       <column object-type="Foo" />			
-		</lhs>
-		
-	    <rhs>
-	    	System.out.println( "hello" );	    
-		</rhs>
-	</rule>
+<rule name="simple_rule">
+	<rule-attribute name="salience" value="10" />
+	<rule-attribute name="no-loop" value="true" />
+	<rule-attribute name="agenda-group" value="agenda-group" />
+	<rule-attribute name="activation-group" value="activation-group" />
+
+	<lhs>
+		<column identifier="foo3" object-type="Bar" >
+			<field-constraint field-name="a"> 
+				<literal-restriction evaluator="==" value="3" />
+				<restriction-connective connective="|"/>
+				<literal-restriction evaluator="==" value="4" />
+			</field-constraint>
+			<field-constraint field-name="a3"> 
+				<literal-restriction evaluator="==" value="hello" />
+			</field-constraint>
+			<field-constraint field-name="a4"> 
+				<literal-restriction evaluator="==" value="null" />
+			</field-constraint>
+		</column>
+
+		<column identifier="foo4" object-type="Bar" >
+			<field-binding field-name="a" identifier="a4" />
+			<field-constraint field-name="a"> 
+				<literal-restriction evaluator="!=" value="4" />
+				<restriction-connective connective="&amp;"/>
+				<literal-restriction evaluator="!=" value="5" />
+			</field-constraint>
+		</column>
+
+		<column identifier="foo5" object-type="Bar" >
+			<field-constraint field-name="b"> 
+				<return-value-restriction evaluator="==" >a4 + 1</return-value-restriction>
+				<restriction-connective connective="|"/>
+				<variable-restriction evaluator="&gt;" identifier="a4" />
+			</field-constraint>
+		</column>
+
+		<column identifier="foo6" object-type="Bar" >
+			<field-binding field-name="a" identifier="a4" />
+			<field-constraint field-name="b"> 
+				<literal-restriction evaluator="==" value="6" />
+			</field-constraint>
+		</column>
+
+		<column identifier="foo7" object-type="Bar" >
+			<field-binding field-name="a" identifier="a4" />
+			<field-binding field-name="b" identifier="b4" />
+		</column>
+
+		<column object-type="Baz" > </column>
+	</lhs>
+	<rhs>  
+		  if ( a == b ) {
+		    assert( foo3 );
+		  } else {
+		    retract( foo4 );
+		  } 
+		  System.out.println( a4 );
+	</rhs>
+</rule>
+
 </package>

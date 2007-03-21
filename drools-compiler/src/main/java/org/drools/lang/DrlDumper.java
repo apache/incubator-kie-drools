@@ -144,12 +144,15 @@ public class DrlDumper extends ReflectiveVisitor
     public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
         this.template = new String();
         String text = descr.getText();
-        try {
-            Integer.parseInt( text );
-        } catch ( final NumberFormatException e ) {
-            text = "\"" + text + "\"";
+        if( text == null ) {
+            text = "null";
+        } else {
+            try {
+                Integer.parseInt( text );
+            } catch ( final NumberFormatException e ) {
+                text = "\"" + text + "\"";
+            }
         }
-
         this.template = descr.getEvaluator() + " " + text;
     }
     
