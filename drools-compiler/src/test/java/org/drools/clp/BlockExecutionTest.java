@@ -10,7 +10,7 @@ import org.drools.clp.functions.BindFunction;
 import org.drools.clp.functions.ModifyFunction;
 
 public class BlockExecutionTest extends TestCase {
-    public void test1() {
+    public void testAddWithModify() {
         BlockExecutionEngine engine = new BlockExecutionEngine();        
         ExecutionBuildContext build = new ExecutionBuildContext(engine);                
         
