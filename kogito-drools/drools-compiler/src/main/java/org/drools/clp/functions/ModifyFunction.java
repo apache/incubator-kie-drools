@@ -7,9 +7,7 @@ import org.drools.clp.ValueHandler;
 import org.mvel.PropertyAccessor;
 
 public class ModifyFunction  implements Function {
-    private static final String name = "modify"; 
-    
-    //private static final String modifyExpr
+    private static final String name = "modify";    
     
     public ModifyFunction() {
     }

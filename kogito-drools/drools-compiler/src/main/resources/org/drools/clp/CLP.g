@@ -168,6 +168,7 @@ grammar CLP;
 	package org.drools.clp;
 }
 
+/*
 opt_semicolon
 	: ';'?
 	;
@@ -177,13 +178,14 @@ compilation_unit
 	:	
 		( statement )+
 	;
-
+*/
+/*
 statement
 	:
-	/* later we add the other possible statements here */
-	( /* do something with the returned rule here */)
+	//later we add the other possible statements here 
+	(  //do something with the returned rule here )
 	;
-		
+*/		
 /* prolog
 	@init {
 		String packageName = "";
@@ -268,7 +270,7 @@ defrule returns [RuleDescr rule]
 		
 		'=>'
 		
-		rhs[rule]
+		engine=rhs { rule.setConsequence( engine ); }
 		
 		RIGHT_PAREN
 	;
@@ -307,14 +309,14 @@ ce[ConditionalElementDescr in_ce]
 		)
 	;
 
-rhs[RuleDescr rule]
+rhs returns[ExecutionEngine engine]
 	@init {
-	        ExecutionEngine engine = new BlockExecutionEngine();
+	        engine = new BlockExecutionEngine();
 			ExecutionBuildContext context = new ExecutionBuildContext( engine );  	
 	}
 	
 	:
-	  function[context]* { rule.setConsequence( engine ); }		
+	  ( fc=function[context] { System.out.println( "addfunction" + fc.getName() ); context.addFunction( fc ); } )* //{ rule.setConsequence( engine ); }		
 	;	
 	
 and_ce[ConditionalElementDescr in_ce]
@@ -380,7 +382,8 @@ eval_ce[ConditionalElementDescr in_ce]
 		    evalDescr = new EvalDescr();
 		    in_ce.addDescr( evalDescr );
 		}
-		function[context] {					
+		fc=function[context] {					
+		    engine.addFunction( fc );		
 			evalDescr.setContent( engine );			
 		}			 
 		RIGHT_PAREN					
@@ -472,9 +475,11 @@ predicate_constraint[String op, ColumnDescr column]
 		ExecutionBuildContext context = new ExecutionBuildContext( engine );    
     }
 	:	COLON
-		function[context] {	
+		fc=function[context] {	
+		    engine.addFunction( fc );
 			column.addDescr( new PredicateDescr( engine ) );
 		}	
+		
 	;
 
 
@@ -484,7 +489,8 @@ return_value_restriction[String op, FieldConstraintDescr fc]
 		ExecutionBuildContext context = new ExecutionBuildContext( engine );
 	}
 	:	EQUALS 
-		function[context] {					
+		func=function[context] {					
+   		    engine.addFunction( func );
 			fc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
 		}		
 	;
@@ -521,7 +527,7 @@ function[ExecutionBuildContext context] returns[FunctionCaller fc]
 	    	
 		function_params[context, fc]+ 
 	    RIGHT_PAREN
-	    { context.addFunction( fc ); }
+	    //{ context.addFunction( fc ); }
 	;
 
 
@@ -548,7 +554,7 @@ function_params[ExecutionBuildContext context, FunctionCaller fc]
 			|	t=INT       { value = new LongLiteralValue( t.getText() ); }			
 			|	t=BOOL      { value = new BooleanLiteralValue( t.getText() ); }						
 			|	t=NULL      { value = ObjectLiteralValue.NULL; }
-			|	nf=function[context] { value = nf; }			
+			|	nfc=function[context]	 { value = nfc; }	
 		)	
 		{ fc.addParameter( value ); }	
 		
