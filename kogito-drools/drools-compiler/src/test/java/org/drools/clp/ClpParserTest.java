@@ -38,15 +38,15 @@ public class ClpParserTest extends TestCase {
 
     public void testParseFunction() throws Exception {
         ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate() );
-        Function f = parse( "(< 1 2)" ).function( context );
+        FunctionCaller fc = parse( "(< 1 2)" ).function( context );
         
-        assertEquals( "<", f.getName() );        
-        assertEquals( new LongLiteralValue( 1 ), f.getParameters()[0] );
-        assertEquals( new LongLiteralValue( 2 ), f.getParameters()[1] );
+        assertEquals( "<", fc.getName() );        
+        assertEquals( new LongLiteralValue( 1 ), fc.getParameters()[0] );
+        assertEquals( new LongLiteralValue( 2 ), fc.getParameters()[1] );
     }
     
     public void testPatternsRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 3)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) ) => )" ).rule();
+        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 3)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) ) => )" ).defrule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -109,17 +109,17 @@ public class ClpParserTest extends TestCase {
         assertEquals( "!=",
                       retDescr.getEvaluator() );
         CLPReturnValue clprv = ( CLPReturnValue ) retDescr.getContent();
-        Function f = clprv.getFunctions()[0];
-        assertEquals( "+", f.getName() );        
-        assertEquals( new LongLiteralValue( 2 ), f.getParameters()[0] );
-        assertEquals( new LongLiteralValue( 3 ), f.getParameters()[1] );       
+        FunctionCaller fc = clprv.getFunctions()[0];
+        assertEquals( "+", fc.getName() );        
+        assertEquals( new LongLiteralValue( 2 ), fc.getParameters()[0] );
+        assertEquals( new LongLiteralValue( 3 ), fc.getParameters()[1] );       
 
         PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );        
         CLPPredicate clpp = ( CLPPredicate ) predicateDescr.getContent();
-        f = clpp.getFunctions()[0];
-        assertEquals( "<", f.getName() );        
-        assertEquals( new LongLiteralValue( 1 ), f.getParameters()[0] );
-        assertEquals( new LongLiteralValue( 2 ), f.getParameters()[1] );        
+        fc = clpp.getFunctions()[0];
+        assertEquals( "<", fc.getName() );        
+        assertEquals( new LongLiteralValue( 1 ), fc.getParameters()[0] );
+        assertEquals( new LongLiteralValue( 2 ), fc.getParameters()[1] );        
 
         // Parse the second column
         col = (ColumnDescr) lhsList.get( 1 );
@@ -167,7 +167,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testNestedCERule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name yyy)) (or (and (hobby1 (type qqq1)) (hobby2 (type ~qqq2))) (food (veg ~shroom) ) ) => )" ).rule();
+        RuleDescr rule = parse( "(defrule xxx ?b <- (person (name yyy)) (or (and (hobby1 (type qqq1)) (hobby2 (type ~qqq2))) (food (veg ~shroom) ) ) => )" ).defrule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -235,7 +235,7 @@ public class ClpParserTest extends TestCase {
     }
 
     public void testNotExistsRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx (or (hobby1 (type qqq1)) (not (and (exists (person (name ppp))) (person (name yyy))))) => )" ).rule();
+        RuleDescr rule = parse( "(defrule xxx (or (hobby1 (type qqq1)) (not (and (exists (person (name ppp))) (person (name yyy))))) => )" ).defrule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -294,7 +294,7 @@ public class ClpParserTest extends TestCase {
     }
     
     public void testTestRule() throws Exception {
-        RuleDescr rule = parse( "(defrule xxx (test (< 9.0 1.3) ) => )" ).rule();
+        RuleDescr rule = parse( "(defrule xxx (test (< 9.0 1.3) ) => )" ).defrule();
 
         assertEquals( "xxx",
                       rule.getName() );
@@ -307,14 +307,14 @@ public class ClpParserTest extends TestCase {
         EvalDescr evalDescr = (EvalDescr) lhsList.get( 0 );
         
         CLPEval clpe = ( CLPEval ) evalDescr.getContent();
-        Function f = clpe.getFunctions()[0];
+        FunctionCaller f = clpe.getFunctions()[0];
         assertEquals( "<", f.getName() );        
         assertEquals( new DoubleLiteralValue( 9.0 ), f.getParameters()[0] );
         assertEquals( new DoubleLiteralValue( 1.3 ), f.getParameters()[1] );          
     }
 
     public void testRuleHeader() throws Exception {
-        RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).rule();
+        RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).defrule();
         
         List attributes = rule.getAttributes();
         AttributeDescr module = ( AttributeDescr ) attributes.get( 0 );
@@ -382,6 +382,7 @@ public class ClpParserTest extends TestCase {
 
     private CLPParser newParser(final TokenStream tokenStream) {
         final CLPParser p = new CLPParser( tokenStream );
+        p.setFunctionRegistry( new FunctionRegistry( BuiltinFunctions.getInstance() )  );
         //p.setParserDebug( true );
         return p;
     }

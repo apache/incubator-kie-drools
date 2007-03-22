@@ -78,6 +78,10 @@ public class Person
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     /* (non-Javadoc)
      * @see org.drools.PersonInterface#getAge()
      */

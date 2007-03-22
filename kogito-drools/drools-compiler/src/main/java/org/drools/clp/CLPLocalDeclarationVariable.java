@@ -37,12 +37,22 @@ public class CLPLocalDeclarationVariable implements VariableValueHandler {
     }
     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
-        return (BigDecimal) declaration.getValue( context.getObject() );
+        Object object = declaration.getValue( context.getObject() );
+        if ( object instanceof BigDecimal ) {
+            return (BigDecimal) object;
+        } else {
+            return new BigDecimal( object.toString() );
+        }
     }
 
     public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException {
-        return (BigInteger) declaration.getValue( context.getObject() );
-    }
+        Object object = declaration.getValue( context.getObject() );
+        if ( object instanceof BigInteger ) {
+            return (BigInteger) object;
+        } else {
+            return new BigInteger( object.toString() );
+        }
+    }    
 
     public boolean getBooleanValue(ExecutionContext context) throws ClassCastException {
         return declaration.getBooleanValue( context.getObject() );

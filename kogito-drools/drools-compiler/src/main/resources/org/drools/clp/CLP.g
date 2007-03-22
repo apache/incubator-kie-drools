@@ -18,10 +18,17 @@ grammar CLP;
 	private int lineOffset = 0;
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
+	private FunctionRegistry functionRegistry;
+	
+    FunctionRegistry factoryRegistry;
+	
+	public void setFunctionRegistry(FunctionRegistry functionRegistry) {
+		this.functionRegistry = functionRegistry;
+	}
 	
 	public void setParserDebug(boolean parserDebug) {
 		this.parserDebug = parserDebug;
-	}
+	}		
 	
 	public void debug(String message) {
 		if ( parserDebug ) 
@@ -174,7 +181,7 @@ compilation_unit
 statement
 	:
 	/* later we add the other possible statements here */
-	( rule /* do something with the returned rule here */)
+	( /* do something with the returned rule here */)
 	;
 		
 /* prolog
@@ -211,7 +218,11 @@ package_statement returns [String packageName]
 	;	
 */
 
-rule returns [RuleDescr rule]
+deffunction
+	:
+	;
+
+defrule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
 	        AndDescr lhs = null;
@@ -225,18 +236,19 @@ rule returns [RuleDescr rule]
 	  		debug( "start rule: " + ruleName.getText() );
 	  		String ruleStr = ruleName.getText();
 
-	        	if ( ruleStr.indexOf("::") >= 0 ) {
-	        	        String mod = ruleStr.substring(0, ruleStr.indexOf("::"));
-	        	        ruleStr = ruleStr.substring(ruleStr.indexOf("::")+2);
+	        if ( ruleStr.indexOf("::") >= 0 ) {
+	            String mod = ruleStr.substring(0, ruleStr.indexOf("::"));
+	            ruleStr = ruleStr.substring(ruleStr.indexOf("::")+2);
 				module = new AttributeDescr( "agenda-group", mod );
 				module.setLocation( offset(ruleName.getLine()), ruleName.getCharPositionInLine() );
 				module.setStartCharacter( ((CommonToken)ruleName).getStartIndex() );
 				module.setEndCharacter( ((CommonToken)ruleName).getStopIndex() );
 			}
-		        rule = new RuleDescr( ruleStr, null ); 
-		        if( module != null ) {
-		        	rule.addAttribute( module );
-		        }
+		    
+		    rule = new RuleDescr( ruleStr, null ); 
+		    if( module != null ) {
+		    	rule.addAttribute( module );
+		    }
 		        
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			rule.setStartCharacter( ((CommonToken)loc).getStartIndex() ); 
@@ -494,37 +506,37 @@ literal_restriction returns [String text]
 	    }
 	;		
 
-function[ExecutionBuildContext context] returns[Function f]
+function[ExecutionBuildContext context] returns[FunctionCaller fc]
 	@init {
-	    FunctionFactory factory = FunctionFactory.getInstance();
+		Function f = null;        
 	}
 	:	LEFT_PAREN
 		name=NAME {
 			if ( name.getText().equals("bind") ) {
 		  		context.createLocalVariable( name.getText() );
 			}
-		  	f = factory.createFunction( name.getText() );		  
+		  	f = functionRegistry.getFunction( name.getText() );		  
+			fc= new FunctionCaller( f );
 		}
 	    	
-		function_params[context, f]+ 
+		function_params[context, fc]+ 
 	    RIGHT_PAREN
-	    { context.addFunction( f ); }
+	    { context.addFunction( fc ); }
 	;
 
 
-modify_function[ExecutionBuildContext context] returns[Function f]
-	@init {
-	    FunctionFactory factory = FunctionFactory.getInstance();
-		f = factory.createFunction( "modify" );
-	}
+modify_function[ExecutionBuildContext context] returns[FunctionCaller fc]
 	:
 		LEFT_PAREN
-			'modify'
-			slot_name_value_pair[context, f]+
+			'modify' {
+				fc = new FunctionCaller( functionRegistry.getFunction( "modify" ) );
+			}
+			t=VAR		{ fc.addParameter( context.getVariableValueHandler( t.getText() ) ); }			
+			slot_name_value_pair[context, fchg]+
 		RIGHT_PAREN		
 	;	
 	
-function_params[ExecutionBuildContext context, Function f]
+function_params[ExecutionBuildContext context, FunctionCaller fc]
 	@init {
 		ValueHandler value  =  null;		
 	}
@@ -538,11 +550,11 @@ function_params[ExecutionBuildContext context, Function f]
 			|	t=NULL      { value = ObjectLiteralValue.NULL; }
 			|	nf=function[context] { value = nf; }			
 		)	
-		{ f.addParameter( value ); }	
+		{ fc.addParameter( value ); }	
 		
 	;		
 	
-slot_name_value_pair[ExecutionBuildContext context, Function f]
+slot_name_value_pair[ExecutionBuildContext context, FunctionCaller fc]
 	@init {
 		SlotNameValuePair nameValuePair = null;
 		String name = null;
@@ -562,7 +574,7 @@ slot_name_value_pair[ExecutionBuildContext context, Function f]
 			|	nf=function[context]
 			                { nameValuePair = new SlotNameValuePair(name, nf ); }
 		)	
-		{ f.addParameter( nameValuePair ); }		
+		{ fc.addParameter( nameValuePair ); }		
 		RIGHT_PAREN
 	;	
 	

@@ -39,7 +39,7 @@ public class ExecutionContext {
 
     public Object getLocalVariable(int index) {
         return localVariables[index];
-    }
+    }    
 
     public void setLocalVariable(int index, Object object) {
         this.localVariables[index] = object;

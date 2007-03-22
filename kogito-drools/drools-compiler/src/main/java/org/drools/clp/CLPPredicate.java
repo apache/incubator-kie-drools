@@ -3,6 +3,8 @@
  */
 package org.drools.clp;
 
+import java.util.Map;
+
 import org.drools.WorkingMemory;
 import org.drools.base.FieldFactory;
 import org.drools.common.InternalWorkingMemory;
@@ -15,26 +17,26 @@ public class CLPPredicate
     implements
     PredicateExpression,
     ExecutionEngine {
-    private Function function;
+    private FunctionCaller function;
     private int      index;
     
     public CLPPredicate() {        
     }
     
-    public CLPPredicate(Function function) {
+    public CLPPredicate(FunctionCaller function) {
         this.function = function;
     }
 
-    public void addFunction(Function function) {
+    public void addFunction(FunctionCaller function) {
         setFunction( function );        
     }
     
-    public void setFunction(Function function) {
+    public void setFunction(FunctionCaller function) {
         this.function = function;
     }
     
-    public Function[] getFunctions() {
-        return new Function[] { this.function };
+    public FunctionCaller[] getFunctions() {
+        return new FunctionCaller[] { this.function };
     }    
     
     public int getNextIndex() {
@@ -52,4 +54,8 @@ public class CLPPredicate
                                                          this.index-1 );
         return this.function.getBooleanValue( context );
     }
+    
+    public void replaceTempTokens(Map variables) {
+        this.function.replaceTempTokens( variables );
+    }    
 }

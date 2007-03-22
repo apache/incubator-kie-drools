@@ -40,13 +40,23 @@ public class CLPPreviousDeclarationVariable implements VariableValueHandler {
     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
         InternalFactHandle handle = context.getTuple().get( this.declaration );
-        return (BigDecimal) declaration.getValue( handle.getObject() );
+        Object object = declaration.getValue(  handle.getObject() );
+        if ( object instanceof BigDecimal ) {
+            return (BigDecimal) object;
+        } else {
+            return new BigDecimal( object.toString() );
+        }
     }
 
     public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException {
         InternalFactHandle handle = context.getTuple().get( this.declaration );
-        return (BigInteger) declaration.getValue( handle.getObject() );
-    }
+        Object object = declaration.getValue(  handle.getObject() );
+        if ( object instanceof BigInteger ) {
+            return (BigInteger) object;
+        } else {
+            return new BigInteger( object.toString() );
+        }
+    }    
 
     public boolean getBooleanValue(ExecutionContext context) throws ClassCastException {
         InternalFactHandle handle = context.getTuple().get( this.declaration );

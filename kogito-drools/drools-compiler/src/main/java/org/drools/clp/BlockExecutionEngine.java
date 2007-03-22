@@ -1,5 +1,7 @@
 package org.drools.clp;
 
+import java.util.Map;
+
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
@@ -18,22 +20,22 @@ public class BlockExecutionEngine
     ExecutionEngine {
     //private Map variableMap = new HashMap();
 
-    private Function[] functions;
+    private FunctionCaller[] functions;
 
     private int        index;               
 
-    public void addFunction(Function function) {
-        Function[] temp = new Function[functions.length];
-        System.arraycopy( this.functions,
-                          0,
-                          temp,
-                          0,
-                          this.functions.length - 1 );
-        temp[temp.length - 1] = function;
-        this.functions = temp;
+    public void addFunction(FunctionCaller function) {
+        if (this.functions == null) {
+            this.functions = new FunctionCaller[] { function };
+        } else {
+            FunctionCaller[] temp =  new FunctionCaller[ functions.length + 1 ];
+            System.arraycopy( this.functions, 0, temp, 0, this.functions.length );
+            temp[ temp.length - 1] = function;
+            this.functions = temp;             
+        }                     
     } 
     
-    public Function[] getFunctions() {
+    public FunctionCaller[] getFunctions() {
         return this.functions;
     }    
 
@@ -58,6 +60,10 @@ public class BlockExecutionEngine
     }
 
     public void execute(ExecutionContext context) {
+        if ( this.functions == null ) {
+            return;
+        }
+        
         for ( int i = 0, length = functions.length; i < length; i++ ) {
             this.functions[i].getValue( context );
         }
@@ -71,9 +77,10 @@ public class BlockExecutionEngine
         execute( context );
     }
 
-    public void getVariableValueHandler(String name) {
-        // TODO Auto-generated method stub
-        
+    public void replaceTempTokens(Map variables) {
+        for ( int i = 0, length = functions.length; i < length; i++ ) {
+            this.functions[i].replaceTempTokens( variables );
+        }
     }
 
 }

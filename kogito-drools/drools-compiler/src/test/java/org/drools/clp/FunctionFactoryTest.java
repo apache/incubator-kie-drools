@@ -4,10 +4,10 @@ import junit.framework.TestCase;
 
 public class FunctionFactoryTest extends TestCase {
     public void testInit() {
-        FunctionFactory factory = FunctionFactory.getInstance();
+        FunctionRegistry factory = new FunctionRegistry( BuiltinFunctions.getInstance() );
         assertEquals( 3, factory.getFunctionSize() );
         
-        assertSame( AddFunction.class , factory.createFunction( "+" ).getClass() );
-        assertSame( BindFunction.class , factory.createFunction( "bind" ).getClass() );
+        assertSame( "+", factory.getFunction( "+" ).getName() );
+        assertSame( "bind" , factory.getFunction( "bind" ).getName() );
     }
 }
