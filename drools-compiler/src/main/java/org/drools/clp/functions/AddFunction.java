@@ -21,7 +21,7 @@ public class AddFunction implements Function {
         for ( int i = 0, length = args.length; i < length; i++ ) {
             bdval = bdval.add( args[i].getBigDecimalValue( context ) );
         }                
-        return bdval;        
+        return new BigDecimal( bdval.intValue() );     
     }
     
     
