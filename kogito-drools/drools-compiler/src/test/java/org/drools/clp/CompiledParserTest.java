@@ -24,7 +24,11 @@ public class CompiledParserTest extends TestCase {
         
         Person p = new Person("mark");        
         Map vars = new HashMap();
-        vars.put( "?p", p );
+        
+        // CONAN, is this correct?
+        vars.put( "?x", new LocalVariableValue( "?x", 0 ) );
+        
+        vars.put( "?p", new ObjectLiteralValue( p ) );
         engine.replaceTempTokens( vars );
         
         engine.execute( context );

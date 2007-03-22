@@ -2,9 +2,10 @@ package org.drools.clp;
 
 public class FunctionDelegator implements Function {    
     private Function function;
+    private String name;
     
-    public FunctionDelegator() {
-        
+    public FunctionDelegator( String name ) {
+        this.name = name;
     }
 
     public FunctionDelegator(Function function) {
@@ -22,9 +23,7 @@ public class FunctionDelegator implements Function {
     }
 
     public String getName() {
-        return function.getName();
+        return this.function == null ? this.name : function.getName();
     }
-    
-    
-    
+
 }

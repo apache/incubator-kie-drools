@@ -54,7 +54,7 @@ public class FunctionRegistry {
         
         if ( function == null ) {
             // Allows for late binidng FunctionDelegators
-            function = new FunctionDelegator();
+            function = new FunctionDelegator( name );
             this.functions.put( name, function );            
         }
         return function;
@@ -78,7 +78,7 @@ public class FunctionRegistry {
         FunctionDelegator delegator = ( FunctionDelegator ) this.functions.get( function.getName() );
         
         if ( delegator == null ) {
-            delegator = new FunctionDelegator();
+            delegator = new FunctionDelegator( function.getName() );
             this.functions.put( function.getName(), delegator );
         }
         delegator.setFunction( function );
