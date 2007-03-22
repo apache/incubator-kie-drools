@@ -33,17 +33,5 @@ public abstract class BaseFunction extends BaseValueHandler implements Function 
                          Object object) {
         throw new RuntimeException( "You cannot set the value on a Function" );
     }
-    
-    public void replaceTempTokens(Map variables) {
-        for ( int i = 0; i < this.parameters.length; i++ ) {
-            if ( this.parameters[i] instanceof TempTokenVariable ) {
-                TempTokenVariable var = ( TempTokenVariable ) this.parameters[i]; 
-                this.parameters[i] = ( ValueHandler ) variables.get( var.getIdentifier() );
-            } else if ( this.parameters[i] instanceof Function ) {
-                Function function = ( Function ) this.parameters[i];
-                function.replaceTempTokens( variables );
-            }
-        }
-        
-    }
+   
 }

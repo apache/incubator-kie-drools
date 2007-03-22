@@ -2,6 +2,7 @@ package org.drools.clp;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 
 import org.drools.base.ValueType;
 
@@ -31,5 +32,5 @@ public interface ValueHandler {
     public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException;
 
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException;
-
+        
 }

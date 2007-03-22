@@ -11,7 +11,7 @@ public class ExecutionBuildContext {
         this.engine = engine;
     }
     
-    public void addFunction(Function function) {
+    public void addFunction(FunctionCaller function) {
         this.engine.addFunction( function );
     }
     
@@ -19,6 +19,7 @@ public class ExecutionBuildContext {
         ValueHandler var = ( ValueHandler ) this.vars.get( identifier ) ;
         if (  var == null ) {
             var = new LocalVariableValue(identifier, this.engine.getNextIndex() );
+            this.vars.put( identifier, var );
         }
         return var;
     }

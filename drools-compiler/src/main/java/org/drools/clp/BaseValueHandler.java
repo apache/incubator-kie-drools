@@ -8,11 +8,21 @@ import org.drools.base.ValueType;
 public abstract class BaseValueHandler implements ValueHandler {        
     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
-        return (BigDecimal) getValue(context);
+        Object object = getValue( context );
+        if ( object instanceof BigDecimal ) {
+            return (BigDecimal) object;
+        } else {
+            return new BigDecimal( object.toString() );
+        }
     }
 
     public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException {
-        return (BigInteger) getValue(context);
+        Object object = getValue( context );
+        if ( object instanceof BigInteger ) {
+            return (BigInteger) object;
+        } else {
+            return new BigInteger( object.toString() );
+        }
     }
 
     public boolean getBooleanValue(ExecutionContext context) throws ClassCastException {
