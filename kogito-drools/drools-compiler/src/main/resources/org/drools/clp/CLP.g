@@ -316,7 +316,13 @@ rhs returns[ExecutionEngine engine]
 	}
 	
 	:
-	  ( fc=function[context] { System.out.println( "addfunction" + fc.getName() ); context.addFunction( fc ); } )* //{ rule.setConsequence( engine ); }		
+	  ( 
+	  ( 
+	  fc=modify_function[context]
+	  |
+	  fc=function[context]
+	  )
+	  { System.out.println( "addfunction" + fc.getName() ); context.addFunction( fc ); } )*//{ rule.setConsequence( engine ); }		
 	;	
 	
 and_ce[ConditionalElementDescr in_ce]
@@ -534,7 +540,7 @@ function[ExecutionBuildContext context] returns[FunctionCaller fc]
 modify_function[ExecutionBuildContext context] returns[FunctionCaller fc]
 	:
 		LEFT_PAREN
-			'modify' {
+			MODIFY {
 				fc = new FunctionCaller( functionRegistry.getFunction( "modify" ) );
 			}
 			t=VAR		{ fc.addParameter( context.getVariableValueHandler( t.getText() ) ); }			
@@ -617,6 +623,8 @@ NULL	:	'null';
 DECLARE :	'declare';        		
 
 SALIENCE:	'salience';
+
+MODIFY  :	'modify';
 
 fragment
 EOL 	:	     
