@@ -532,7 +532,7 @@ modify_function[ExecutionBuildContext context] returns[FunctionCaller fc]
 				fc = new FunctionCaller( functionRegistry.getFunction( "modify" ) );
 			}
 			t=VAR		{ fc.addParameter( context.getVariableValueHandler( t.getText() ) ); }			
-			slot_name_value_pair[context, fchg]+
+			slot_name_value_pair[context, fc]+
 		RIGHT_PAREN		
 	;	
 	

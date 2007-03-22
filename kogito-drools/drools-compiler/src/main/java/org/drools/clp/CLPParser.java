@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-21 20:40:58
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-22 11:46:14
 
 	package org.drools.clp;
 	import java.util.List;
@@ -1571,15 +1571,15 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start modify_function
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:528:1: modify_function[ExecutionBuildContext context] returns [FunctionCaller fc] : LEFT_PAREN 'modify' t= VAR ( slot_name_value_pair[context, fchg] )+ RIGHT_PAREN ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:528:1: modify_function[ExecutionBuildContext context] returns [FunctionCaller fc] : LEFT_PAREN 'modify' t= VAR ( slot_name_value_pair[context, fc] )+ RIGHT_PAREN ;
     public FunctionCaller modify_function(ExecutionBuildContext context) throws RecognitionException {
         FunctionCaller fc = null;
 
         Token t=null;
 
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:530:3: ( LEFT_PAREN 'modify' t= VAR ( slot_name_value_pair[context, fchg] )+ RIGHT_PAREN )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:530:3: LEFT_PAREN 'modify' t= VAR ( slot_name_value_pair[context, fchg] )+ RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:530:3: ( LEFT_PAREN 'modify' t= VAR ( slot_name_value_pair[context, fc] )+ RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:530:3: LEFT_PAREN 'modify' t= VAR ( slot_name_value_pair[context, fc] )+ RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_modify_function1119); 
             match(input,43,FOLLOW_43_in_modify_function1124); 
@@ -1589,7 +1589,7 @@ public class CLPParser extends Parser {
             t=(Token)input.LT(1);
             match(input,VAR,FOLLOW_VAR_in_modify_function1133); 
              fc.addParameter( context.getVariableValueHandler( t.getText() ) ); 
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:535:4: ( slot_name_value_pair[context, fchg] )+
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:535:4: ( slot_name_value_pair[context, fc] )+
             int cnt16=0;
             loop16:
             do {
@@ -1602,10 +1602,10 @@ public class CLPParser extends Parser {
 
                 switch (alt16) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:535:4: slot_name_value_pair[context, fchg]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:535:4: slot_name_value_pair[context, fc]
             	    {
             	    pushFollow(FOLLOW_slot_name_value_pair_in_modify_function1144);
-            	    slot_name_value_pair(context,  fchg);
+            	    slot_name_value_pair(context,  fc);
             	    _fsp--;
 
 
