@@ -317,11 +317,11 @@ rhs returns[ExecutionEngine engine]
 	
 	:
 	  ( 
-	  ( 
-	  fc=modify_function[context]
-	  |
+//	  ( 
+//	  fc=modify_function[context]
+//	  |
 	  fc=function[context]
-	  )
+//	  )
 	  { System.out.println( "addfunction" + fc.getName() ); context.addFunction( fc ); } )*//{ rule.setConsequence( engine ); }		
 	;	
 	
@@ -537,16 +537,16 @@ function[ExecutionBuildContext context] returns[FunctionCaller fc]
 	;
 
 
-modify_function[ExecutionBuildContext context] returns[FunctionCaller fc]
-	:
-		LEFT_PAREN
-			MODIFY {
-				fc = new FunctionCaller( functionRegistry.getFunction( "modify" ) );
-			}
-			t=VAR		{ fc.addParameter( context.getVariableValueHandler( t.getText() ) ); }			
-			slot_name_value_pair[context, fc]+
-		RIGHT_PAREN		
-	;	
+//modify_function[ExecutionBuildContext context] returns[FunctionCaller fc]
+//	:
+//		LEFT_PAREN
+//			MODIFY {
+//				fc = new FunctionCaller( functionRegistry.getFunction( "modify" ) );
+//			}
+//			t=VAR		{ fc.addParameter( context.getVariableValueHandler( t.getText() ) ); }			
+//			slot_name_value_pair[context, fc]+
+//		RIGHT_PAREN		
+//	;	
 	
 function_params[ExecutionBuildContext context, FunctionCaller fc]
 	@init {
@@ -566,29 +566,29 @@ function_params[ExecutionBuildContext context, FunctionCaller fc]
 		
 	;		
 	
-slot_name_value_pair[ExecutionBuildContext context, FunctionCaller fc]
-	@init {
-		SlotNameValuePair nameValuePair = null;
-		String name = null;
-	}
-	:
-		LEFT_PAREN
-		id=NAME {
-			name = id.getText();
-		}
-		(		t=VAR       { nameValuePair = new SlotNameValuePair(name, context.getVariableValueHandler( t.getText() ) ); }
-			| 	t=STRING    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( getString( t ) ) ); }
-			| 	t=NAME    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
-			|	t=FLOAT     { nameValuePair = new SlotNameValuePair(name, new DoubleLiteralValue( t.getText() ) ); }
-			|	t=INT       { nameValuePair = new SlotNameValuePair(name, new LongLiteralValue( t.getText() ) ); }			
-			|	t=BOOL      { nameValuePair = new SlotNameValuePair(name, new BooleanLiteralValue( t.getText() ) ) ; }						
-			|	t=NULL      { nameValuePair = new SlotNameValuePair(name, ObjectLiteralValue.NULL ); }
-			|	nf=function[context]
-			                { nameValuePair = new SlotNameValuePair(name, nf ); }
-		)	
-		{ fc.addParameter( nameValuePair ); }		
-		RIGHT_PAREN
-	;	
+//slot_name_value_pair[ExecutionBuildContext context, FunctionCaller fc]
+//	@init {
+//		SlotNameValuePair nameValuePair = null;
+//		String name = null;
+//	}
+//	:
+//		LEFT_PAREN
+//		id=NAME {
+//			name = id.getText();
+//		}
+//		(		t=VAR       { nameValuePair = new SlotNameValuePair(name, context.getVariableValueHandler( t.getText() ) ); }
+//			| 	t=STRING    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( getString( t ) ) ); }
+//			| 	t=NAME    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
+//			|	t=FLOAT     { nameValuePair = new SlotNameValuePair(name, new DoubleLiteralValue( t.getText() ) ); }
+//			|	t=INT       { nameValuePair = new SlotNameValuePair(name, new LongLiteralValue( t.getText() ) ); }			
+//			|	t=BOOL      { nameValuePair = new SlotNameValuePair(name, new BooleanLiteralValue( t.getText() ) ) ; }						
+//			|	t=NULL      { nameValuePair = new SlotNameValuePair(name, ObjectLiteralValue.NULL ); }
+//			|	nf=function[context]
+//			                { nameValuePair = new SlotNameValuePair(name, nf ); }
+//		)	
+//		{ fc.addParameter( nameValuePair ); }		
+//		RIGHT_PAREN
+//	;	
 	
 literal returns [String text]
 	@init {
@@ -624,7 +624,7 @@ DECLARE :	'declare';
 
 SALIENCE:	'salience';
 
-MODIFY  :	'modify';
+//MODIFY  :	'modify';
 
 fragment
 EOL 	:	     
