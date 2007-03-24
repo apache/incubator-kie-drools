@@ -7,7 +7,7 @@ import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 import org.mvel.PropertyAccessor;
 
-public class ModifyFunction  implements Function {
+public class ModifyFunction  extends BaseFunction  implements Function {
     private static final String name = "modify";    
     
     public ModifyFunction() {
@@ -31,9 +31,5 @@ public class ModifyFunction  implements Function {
     
     public String getName() {
         return name;
-    }
-
-    public String toString() {
-        return "[Function '" + getName() + "']";
     }
 }

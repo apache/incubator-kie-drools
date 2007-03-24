@@ -33,7 +33,7 @@ public class FunctionCaller extends BaseValueHandler {
     
     public void addParameter(ValueHandler valueHandler) {
         if (this.parameters == null) {
-            this.parameters = new ValueHandler[] { valueHandler};
+            this.parameters = new ValueHandler[] { valueHandler};            
         } else {
             ValueHandler[] temp =  new ValueHandler[ parameters.length + 1 ];
             System.arraycopy( this.parameters, 0, temp, 0, this.parameters.length );

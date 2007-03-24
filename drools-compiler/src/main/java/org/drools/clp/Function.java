@@ -6,9 +6,9 @@ public interface Function { //extends ValueHandler {
     
     public String getName();    
     
-    public LispList createList(int index);
+    public void initCallback(ExecutionBuildContext context);
     
-    //public void addParameter(ValueHandler valueHandler);
+    public ValueHandler addParameterCallback(int index, ValueHandler valueHandler, ExecutionBuildContext context );
     
-    //public ValueHandler[] getParameters();                
+    public LispList createList(int index);               
 }

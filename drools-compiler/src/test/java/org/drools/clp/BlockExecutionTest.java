@@ -10,9 +10,16 @@ import org.drools.clp.functions.BindFunction;
 import org.drools.clp.functions.ModifyFunction;
 
 public class BlockExecutionTest extends TestCase {
+    
+    FunctionRegistry registry;
+    
+    public void setUp() {
+        this.registry = new FunctionRegistry( BuiltinFunctions.getInstance() );
+    }    
+    
     public void testAddWithModify() {
         BlockExecutionEngine engine = new BlockExecutionEngine();        
-        ExecutionBuildContext build = new ExecutionBuildContext(engine);                
+        ExecutionBuildContext build = new ExecutionBuildContext(engine, this.registry );                
         
         FunctionCaller addCaller = new FunctionCaller( new AddFunction() );
         addCaller.addParameter( new ObjectLiteralValue( new BigDecimal( 20) ) );

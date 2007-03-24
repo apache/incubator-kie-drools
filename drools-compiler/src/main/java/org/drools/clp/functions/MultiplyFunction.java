@@ -8,7 +8,7 @@ import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 
-public class MultiplyFunction implements Function {
+public class MultiplyFunction extends BaseFunction  implements Function {
     private static final String name = "*";
 
     public MultiplyFunction() {
@@ -26,14 +26,6 @@ public class MultiplyFunction implements Function {
     
     public String getName() {
         return name;
-    }
-    
-    public LispList createList(int index) {
-        return new LispForm();
     }    
-    
-    public String toString() {
-        return "[Function '" + getName() + "']";
-    }
 
 }

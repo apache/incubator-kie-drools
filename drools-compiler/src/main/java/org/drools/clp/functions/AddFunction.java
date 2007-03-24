@@ -8,7 +8,7 @@ import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 
-public class AddFunction implements Function {
+public class AddFunction extends BaseFunction implements Function {
     private static final String name = "+";
 
     public AddFunction() {
@@ -26,14 +26,5 @@ public class AddFunction implements Function {
     
     public String getName() {
         return name;
-    }
-    
-    public LispList createList(int index) {
-        return new LispForm();
-    }
-    
-    public String toString() {
-        return "[Function '" + getName() + "']";
-    }
-
+    }    
 }
