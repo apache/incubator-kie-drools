@@ -5,10 +5,12 @@ public class CLPGlobalVariable extends BaseValueHandler implements VariableValue
     
     private String identifier;
     private Class knownType;
+    private int simpleType;
     private CLPFactory factory;
        
     public CLPGlobalVariable(String identifier,
                                     Class knownType,
+                                    int simpleType,
                                     CLPFactory factory ) {
         this.identifier = identifier;
         this.factory =  factory;
@@ -18,6 +20,10 @@ public class CLPGlobalVariable extends BaseValueHandler implements VariableValue
     public String getIdentifier() {
         return this.identifier;
     }
+    
+    public int getValueType(ExecutionContext context) {
+        return this.simpleType;
+    }    
 
     public Class getKnownType() {
         return this.knownType;

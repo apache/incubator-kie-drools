@@ -17,6 +17,10 @@ public class FunctionDelegator
     public void setFunction(Function function) {
         this.function = function;
     }
+    
+    public Function getFunction() {
+        return this.function;
+    }
 
     public ValueHandler addParameterCallback(int index,
                                              ValueHandler valueHandler,
@@ -30,7 +34,7 @@ public class FunctionDelegator
         this.function.initCallback( context );
     }
 
-    public Object execute(ValueHandler[] args,
+    public ValueHandler execute(ValueHandler[] args,
                           ExecutionContext context) {
         return function.execute( args,
                                  context );

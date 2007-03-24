@@ -7,7 +7,7 @@ public class ExecutionContext {
     private InternalWorkingMemory workingMemory;
     private ReteTuple             tuple;
     private Object                object;
-    private Object[]              localVariables;
+    private ValueHandler[]        localVariables;
 
     public ExecutionContext(InternalWorkingMemory workingMemory,
                             ReteTuple tuple,
@@ -25,7 +25,7 @@ public class ExecutionContext {
         this.workingMemory = workingMemory;
         this.tuple = tuple;
         this.object = object;
-        this.localVariables = new Object[localVariableSize];
+        this.localVariables = new ValueHandler[localVariableSize];
     }
 
     public ReteTuple getTuple() {
@@ -40,13 +40,13 @@ public class ExecutionContext {
         return this.object;
     }
 
-    public Object getLocalVariable(int index) {
+    public ValueHandler getLocalVariable(int index) {
         return localVariables[index];
     }
 
     public void setLocalVariable(int index,
-                                 Object object) {
-        this.localVariables[index] = object;
+                                 ValueHandler valueHandler) {
+        this.localVariables[index] = valueHandler;
     }
 
 }

@@ -19,21 +19,54 @@ import junit.framework.TestCase;
 public class CompiledParserTest extends TestCase {
    private CLPParser parser;
    
-    public void test1() throws Exception { 
+    public void testBindAndModify() throws Exception { 
         BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (+ 20 11) ) (modify ?p (age ?x) )").rhs();
         ExecutionContext context = new ExecutionContext(null, null, 2);
-        
-        Person p = new Person("mark");        
+                       
         Map vars = new HashMap();
-                
-        //vars.put( "?x", new LocalVariableValue( "?x", 0 ) );        
-        vars.put( "?p", new ObjectLiteralValue( p ) );
+        Person p = new Person("mark");                   
+        vars.put( "?p", new ObjectValueHandler( p ) );
         engine.replaceTempTokens( vars );
         
         engine.execute( context );
         
         assertEquals( 31, p.getAge() );
     }
+    
+    public void testSimpleCreate$() throws Exception {
+        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (create$ 1 2 3) )").rhs();
+        ExecutionContext context = new ExecutionContext(null, null, 1);
+        engine.execute( context );
+        
+        ListValueHandler list = ( ListValueHandler ) context.getLocalVariable( 0 ).getValue( context );
+        
+        assertEquals( 3, list.size() );
+        
+        assertEquals( 1, list.getList()[0].getIntValue( context ) );
+        assertEquals( 2, list.getList()[1].getIntValue( context ) );
+        assertEquals( 3, list.getList()[2].getIntValue( context ) );
+    }
+    
+    public void testNestedCreate$() throws Exception {
+        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (create$ 1 2 3) ) (bind ?y (create$ 1 ?x (create$ a b ?x c) 3) )").rhs();
+        ExecutionContext context = new ExecutionContext(null, null, 2);
+        engine.execute( context );
+        
+        // check ?x
+        ListValueHandler list = ( ListValueHandler ) context.getLocalVariable( 0 ).getValue( context );;
+        assertEquals( 3, list.size() );        
+        assertEquals( 1, list.getList()[0].getIntValue( context ) );
+        assertEquals( 2, list.getList()[1].getIntValue( context ) );
+        assertEquals( 3, list.getList()[2].getIntValue( context ) );
+        
+        // check ?y
+        list = ( ListValueHandler ) context.getLocalVariable( 1 ).getValue( context );;        
+        assertEquals( 11, list.size() );
+        
+//        assertEquals( 1, list.getList()[0].getIntValue( context ) );
+//        assertEquals( 2, list.getList()[1].getIntValue( context ) );
+//        assertEquals( 3, list.getList()[2].getIntValue( context ) );
+    }    
     
     public void testIf() throws Exception {
         BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(if (< ?x ?y ) then (modify ?p (age 15) ) else (modify ?p (age 5)))").rhs();
@@ -42,17 +75,17 @@ public class CompiledParserTest extends TestCase {
         Person p = new Person("mark");        
         Map vars = new HashMap();
         
-        vars.put( "?x", new LongLiteralValue( 10 ) );
+        vars.put( "?x", new LongValueHandler( 10 ) );
         vars.put( "?y", new LocalVariableValue( "?y", 0 ) );     
-        vars.put( "?p", new ObjectLiteralValue( p ) );
+        vars.put( "?p", new ObjectValueHandler( p ) );
         engine.replaceTempTokens( vars );
         
-        context.setLocalVariable( 0, new Long( 20 ) );
+        context.setLocalVariable( 0, new LongValueHandler( 20 ) );
         
         engine.execute( context );        
         assertEquals( 15, p.getAge() );
         
-        context.setLocalVariable( 0, new Long( 7 ) );
+        context.setLocalVariable( 0, new LongValueHandler( 7 ) );
         engine.execute( context );
         assertEquals( 5, p.getAge() );
     }
@@ -67,11 +100,11 @@ public class CompiledParserTest extends TestCase {
         vars.put( "?y", new LocalVariableValue( "?y", 1 ) );     
         engine.replaceTempTokens( vars );
         
-        context.setLocalVariable( 0, new Long( 0 ) );
-        context.setLocalVariable( 1, new Long( 10 ) );
+        context.setLocalVariable( 0, new LongValueHandler( 0 ) );
+        context.setLocalVariable( 1, new LongValueHandler( 10 ) );
         
         engine.execute( context );        
-        assertEquals( new BigDecimal(10), context.getLocalVariable( 0 ) );
+        assertEquals( new BigDecimal(10), context.getLocalVariable( 0 ).getValue( context ) );
     }    
     
     private CLPParser parse(final String text) throws Exception {

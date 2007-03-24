@@ -1,6 +1,5 @@
 package org.drools.clp;
 
-import org.drools.base.ValueType;
 
 public class LocalVariableValue extends BaseValueHandler implements VariableValueHandler {
     private static final long serialVersionUID = 320L;    
@@ -29,17 +28,24 @@ public class LocalVariableValue extends BaseValueHandler implements VariableValu
         return this.identifier;
     }
     
-    public ValueType getValueType() {
-        return null;
+    public int getValueType(ExecutionContext context) {
+        return context.getLocalVariable( this.index ).getValueType( context );
     }
     
     public Object getValue(ExecutionContext context) {
+        Object object = context.getLocalVariable( this.index ).getValue( context );
+        //if ( object instanceof )
+        return object;
+    }        
+    
+    public ValueHandler getRawValue(ExecutionContext context) {
+        // this is a hack as some parts of the system need the ValueHandler and not the Value
         return context.getLocalVariable( this.index );
     }
 
     public void setValue(ExecutionContext context,
                          Object object) {
-        context.setLocalVariable( this.index, object );        
+        context.setLocalVariable( this.index, (ValueHandler) object );        
     }        
     
     public String toString() {

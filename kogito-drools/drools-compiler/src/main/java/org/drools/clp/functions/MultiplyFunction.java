@@ -6,6 +6,7 @@ import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
+import org.drools.clp.ObjectValueHandler;
 import org.drools.clp.ValueHandler;
 
 public class MultiplyFunction extends BaseFunction  implements Function {
@@ -15,12 +16,12 @@ public class MultiplyFunction extends BaseFunction  implements Function {
         
     }
     
-    public Object execute(ValueHandler[] args, ExecutionContext context) {
+    public ValueHandler execute(ValueHandler[] args, ExecutionContext context) {
         BigDecimal bdval = new BigDecimal(0);        
         for ( int i = 0, length = args.length; i < length; i++ ) {
             bdval = bdval.multiply( args[i].getBigDecimalValue( context ) );
         }                
-        return bdval;        
+        return new ObjectValueHandler( bdval );        
     }
     
     

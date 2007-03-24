@@ -4,7 +4,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public interface ValueHandler {
-
+    public boolean isResolved();
+    
+    public int getValueType(ExecutionContext context);
+    
     public void setValue(ExecutionContext context,
                          Object object);
 

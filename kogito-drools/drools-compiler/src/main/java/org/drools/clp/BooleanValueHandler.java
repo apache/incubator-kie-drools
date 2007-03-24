@@ -3,15 +3,21 @@ package org.drools.clp;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class BooleanLiteralValue extends BaseValueHandler {
+import org.drools.base.SimpleValueType;
+
+public class BooleanValueHandler implements ValueHandler {
     private boolean booleanValue;
     
-    public BooleanLiteralValue(String booleanValue) {
+    public BooleanValueHandler(String booleanValue) {
         this.booleanValue = Boolean.valueOf( booleanValue ).booleanValue();
     } 
     
-    public BooleanLiteralValue(boolean booleanValue) {
+    public BooleanValueHandler(boolean booleanValue) {
         this.booleanValue = booleanValue;
+    }
+    
+    public int getValueType(ExecutionContext context) {
+        return SimpleValueType.BOOLEAN;
     }
 
     public void setValue(ExecutionContext context, Object value) {
@@ -72,8 +78,8 @@ public class BooleanLiteralValue extends BaseValueHandler {
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
-        if ( !(obj instanceof BooleanLiteralValue) ) return false;
-        final BooleanLiteralValue other = (BooleanLiteralValue) obj;
+        if ( !(obj instanceof BooleanValueHandler) ) return false;
+        final BooleanValueHandler other = (BooleanValueHandler) obj;
         if ( booleanValue != other.booleanValue ) return false;
         return true;
     }

@@ -3,15 +3,21 @@ package org.drools.clp;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DoubleLiteralValue extends BaseValueHandler {
-    private double doubleValue;
+import org.drools.base.SimpleValueType;
+
+public class LongValueHandler implements ValueHandler {
+    private long longValue;
     
-    public DoubleLiteralValue(String doubleValue) {
-        this.doubleValue = Double.valueOf( doubleValue ).doubleValue();
-    }
+    public LongValueHandler(String longValue) {
+        this.longValue = Long.valueOf( longValue ).longValue();
+    } 
     
-    public DoubleLiteralValue(double doubleValue) {
-        this.doubleValue = doubleValue;
+    public int getValueType(ExecutionContext context) {
+        return SimpleValueType.INTEGER;
+    }    
+    
+    public LongValueHandler(long longValue) {
+        this.longValue = longValue;
     }
 
     public void setValue(ExecutionContext context, Object value) {
@@ -19,66 +25,64 @@ public class DoubleLiteralValue extends BaseValueHandler {
     }
     
     public Object getValue(ExecutionContext context) {
-        return new Double( this.doubleValue );
+        return new Long( this.longValue );
     }
     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
-        return new BigDecimal( this.doubleValue );
+        return new BigDecimal( this.longValue );
     }
 
     public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException {
-        return BigInteger.valueOf( (long) this.doubleValue );
+        return BigInteger.valueOf( this.longValue );
     }
 
     public boolean getBooleanValue(ExecutionContext context) throws ClassCastException {
-        return ( this.doubleValue == 0 ) ? false : true;
+        return ( this.longValue == 0 ) ? false : true;
     }
 
     public double getDoubleValue(ExecutionContext context) throws NumberFormatException {
-        return this.doubleValue;
+        return this.longValue;
     }
 
     public float getFloatValue(ExecutionContext context) throws NumberFormatException {
-        return (float) this.doubleValue;
+        return this.longValue;
     }
 
     public int getIntValue(ExecutionContext context) throws NumberFormatException {
-        return (int) this.doubleValue;
+        return (int) this.longValue;
     }
 
     public long getLongValue(ExecutionContext context) throws NumberFormatException {
-        return (long) this.doubleValue;
+        return this.longValue;
     }
 
     public short getShortValue(ExecutionContext context) throws NumberFormatException {
-        return (short) this.doubleValue;
+        return (short) this.longValue;
     }
 
     public String getStringValue(ExecutionContext context) {
-        return Double.toString( this.doubleValue );
+        return Long.toString( this.longValue );
+    }
+    
+    public String toString() {
+        return "[LongLiteralValue value='" + this.longValue + "']";
     }
 
-    public String toString() {
-        return "[DoubleLiteralValue value='" + this.doubleValue + "']";
-    }    
-    
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        long temp;
-        temp = Double.doubleToLongBits( doubleValue );
-        result = PRIME * result + (int) (temp ^ (temp >>> 32));
+        result = PRIME * result + (int) (longValue ^ (longValue >>> 32));
         return result;
     }
 
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
-        if ( !(obj instanceof DoubleLiteralValue) ) return false;
-        final DoubleLiteralValue other = (DoubleLiteralValue) obj;
-        if ( Double.doubleToLongBits( doubleValue ) != Double.doubleToLongBits( other.doubleValue ) ) return false;
+        if ( ! ( obj instanceof LongValueHandler ) ) return false;
+        final LongValueHandler other = (LongValueHandler) obj;
+        if ( longValue != other.longValue ) return false;
         return true;
-    }
+    }      
     
     
 }

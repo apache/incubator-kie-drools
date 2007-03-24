@@ -20,21 +20,21 @@ import junit.framework.TestCase;
 
 public class AddFunctionTest extends TestCase {
     public void testAdd() {
-        ValueHandler val1 = new ObjectLiteralValue( new BigDecimal( 10 ) );
-        ValueHandler val2 = new ObjectLiteralValue( new BigDecimal( 10 ) );
+        ValueHandler val1 = new ObjectValueHandler( new BigDecimal( 10 ) );
+        ValueHandler val2 = new ObjectValueHandler( new BigDecimal( 10 ) );
 
         ValueHandler[] params = new ValueHandler[]{val1, val2};
         AddFunction add = new AddFunction();
 
         assertEquals( new BigDecimal( 20 ),
                       add.execute( params,
-                                   null ) );
+                                   null ).getValue( null ) );
     }
 
     public void testNestedAdd() {
-        ValueHandler val1 = new ObjectLiteralValue( new BigDecimal( 10 ) );
-        ValueHandler val2 = new ObjectLiteralValue( new BigDecimal( 10 ) );
-        ValueHandler val3 = new ObjectLiteralValue( new BigDecimal( 10 ) );
+        ValueHandler val1 = new ObjectValueHandler( new BigDecimal( 10 ) );
+        ValueHandler val2 = new ObjectValueHandler( new BigDecimal( 10 ) );
+        ValueHandler val3 = new ObjectValueHandler( new BigDecimal( 10 ) );
 
         FunctionCaller functionValue = new FunctionCaller( new AddFunction() );
         functionValue.addParameter( val1 );
@@ -46,7 +46,7 @@ public class AddFunctionTest extends TestCase {
 
         assertEquals( new BigDecimal( 30 ),
                       add.execute( params,
-                                   null ) );
+                                   null ).getValue( null ) );
     }
 
     public void testNestedAddWithVars() {
@@ -91,7 +91,7 @@ public class AddFunctionTest extends TestCase {
                                                          new BigDecimal( 10 ),
                                                          1 );
         context.setLocalVariable( 0,
-                                  new BigDecimal( 10 ) );
+                                  new ObjectValueHandler( new BigDecimal( 10 ) ) );
 
         FunctionCaller functionValue = new FunctionCaller( new AddFunction() );
         functionValue.addParameter( val1 );

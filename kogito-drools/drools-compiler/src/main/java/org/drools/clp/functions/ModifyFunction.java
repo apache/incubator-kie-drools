@@ -14,7 +14,7 @@ public class ModifyFunction  extends BaseFunction  implements Function {
     }
 
 
-    public Object execute(ValueHandler[] args, ExecutionContext context) {
+    public ValueHandler execute(ValueHandler[] args, ExecutionContext context) {
         Object object = args[0].getValue( context );        
             for ( int i = 1, length = args.length; i < length; i++ ) {
                 ValueHandler[] list = (ValueHandler[]) args[i].getValue( context );

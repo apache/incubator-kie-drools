@@ -2,7 +2,7 @@ package org.drools.clp;
 
 
 public interface Function { //extends ValueHandler {
-    public Object execute(ValueHandler[] args, ExecutionContext context);    
+    public ValueHandler execute(ValueHandler[] args, ExecutionContext context);    
     
     public String getName();    
     

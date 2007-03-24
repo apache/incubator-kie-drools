@@ -3,7 +3,6 @@ package org.drools.clp;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
@@ -23,8 +22,8 @@ public class CLPPreviousDeclarationVariable implements VariableValueHandler {
         return declaration.getExtractor().getExtractToClass();
     }
     
-    public ValueType getValueType() {
-        return this.declaration.getValueType();
+    public int getValueType(ExecutionContext context) {
+        return this.declaration.getValueType().getSimpleType(); 
     }
 
     public void setValue(ExecutionContext context,

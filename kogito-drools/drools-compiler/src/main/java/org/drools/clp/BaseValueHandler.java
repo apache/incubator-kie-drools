@@ -55,9 +55,9 @@ public abstract class BaseValueHandler implements ValueHandler {
         String name = getClass().getName();
         name = name.substring( name.lastIndexOf( "." ) + 1 );
         try {
-            return "[" + name + "value = '" + getValue(null) + "']";
+            return "[" + name + " value = '" + getValue(null) + "']";
         } catch (Exception e) {
-            return "[" + name + "value = N/A]";
+            return "[" + name + " value = N/A]";
         }
     }
     
