@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.base.ValueType;
+import org.drools.clp.valuehandlers.CLPGlobalVariable;
+import org.drools.clp.valuehandlers.CLPLocalDeclarationVariable;
+import org.drools.clp.valuehandlers.CLPPreviousDeclarationVariable;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 import org.mvel.integration.VariableResolver;

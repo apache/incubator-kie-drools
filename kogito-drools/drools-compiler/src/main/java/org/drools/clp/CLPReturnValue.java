@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.base.FieldFactory;
+import org.drools.clp.valuehandlers.FunctionCaller;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;

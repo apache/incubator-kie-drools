@@ -1,4 +1,8 @@
-package org.drools.clp;
+package org.drools.clp.ValueHandlers;
+
+import org.drools.clp.CLPFactory;
+import org.drools.clp.ExecutionContext;
+import org.drools.clp.VariableValueHandler;
 
 
 public class CLPGlobalVariable extends BaseValueHandler implements VariableValueHandler  {

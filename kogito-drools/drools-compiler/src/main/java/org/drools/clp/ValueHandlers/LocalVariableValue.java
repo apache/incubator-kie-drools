@@ -1,4 +1,8 @@
-package org.drools.clp;
+package org.drools.clp.ValueHandlers;
+
+import org.drools.clp.ExecutionContext;
+import org.drools.clp.ValueHandler;
+import org.drools.clp.VariableValueHandler;
 
 
 public class LocalVariableValue extends BaseValueHandler implements VariableValueHandler {

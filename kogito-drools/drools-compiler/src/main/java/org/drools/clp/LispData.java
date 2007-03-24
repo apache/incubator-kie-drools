@@ -1,5 +1,7 @@
 package org.drools.clp;
 
+import org.drools.clp.valuehandlers.ListValueHandler;
+
 public class LispData
     implements
     LispList {
