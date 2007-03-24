@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
-import org.mvel.integration.VariableResolver;
 
 public class CLPPreviousDeclarationVariable implements VariableValueHandler {
 
@@ -92,5 +91,11 @@ public class CLPPreviousDeclarationVariable implements VariableValueHandler {
         InternalFactHandle handle = context.getTuple().get( this.declaration );
         return (String) declaration.getValue( handle.getObject() );
     }
+    
+    public String toString() {
+        String name = getClass().getName();
+        name = name.substring( name.lastIndexOf( "." ) + 1 );
+        return "[" + name + " identifier = '" + getIdentifier()  + "']";
+    }    
         
 }

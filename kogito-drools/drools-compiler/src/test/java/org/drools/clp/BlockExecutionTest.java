@@ -28,7 +28,11 @@ public class BlockExecutionTest extends TestCase {
         FunctionCaller modifyCaller = new FunctionCaller( new ModifyFunction() );        
         build.createLocalVariable( "?p" );        
         modifyCaller.addParameter( build.getVariableValueHandler( "?p" ) );
-        modifyCaller.addParameter( new SlotNameValuePair("age", build.getVariableValueHandler( "?x" )) );
+        
+        ListValueHandler list = new ListValueHandler();
+        list.add( new ObjectLiteralValue( "age") );
+        list.add( build.getVariableValueHandler( "?x" ) );
+        modifyCaller.addParameter( list );
         
         ExecutionContext context = new ExecutionContext(null, null, 2);
         Person p = new Person("mark");

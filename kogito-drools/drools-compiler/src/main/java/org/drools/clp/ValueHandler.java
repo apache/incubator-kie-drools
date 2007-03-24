@@ -2,13 +2,8 @@ package org.drools.clp;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Map;
-
-import org.drools.base.ValueType;
 
 public interface ValueHandler {
-
-    //public ValueType getValueType();
 
     public void setValue(ExecutionContext context,
                          Object object);

@@ -16,9 +16,12 @@ public class ModifyFunctionTest extends TestCase {
        LocalVariableValue var = new LocalVariableValue("p", 0);
        var.setValue( context, p );
        
-       SlotNameValuePair pair = new SlotNameValuePair("name", new ObjectLiteralValue( "bob" ) );
+       ListValueHandler list = new ListValueHandler();
+       list.add( new ObjectLiteralValue( "name") );
+       list.add( new ObjectLiteralValue( "bob") );
        
-       function.execute( new ValueHandler[] { var, pair }, context );
+       
+       function.execute( new ValueHandler[] { var, list }, context );
        
        assertEquals( "bob", p.getName() );
     }

@@ -316,13 +316,7 @@ rhs returns[ExecutionEngine engine]
 	}
 	
 	:
-	  ( 
-//	  ( 
-//	  fc=modify_function[context]
-//	  |
-	  fc=function[context]
-//	  )
-	  { System.out.println( "addfunction" + fc.getName() ); context.addFunction( fc ); } )*//{ rule.setConsequence( engine ); }		
+		(fc=lisp_list[context, new LispForm(context, functionRegistry) ] { context.addFunction( (FunctionCaller) fc ); })*
 	;	
 	
 and_ce[ConditionalElementDescr in_ce]
@@ -388,8 +382,8 @@ eval_ce[ConditionalElementDescr in_ce]
 		    evalDescr = new EvalDescr();
 		    in_ce.addDescr( evalDescr );
 		}
-		fc=function[context] {					
-		    engine.addFunction( fc );		
+		fc=lisp_list[context, new LispForm(context, functionRegistry)] {					
+		    engine.addFunction( (FunctionCaller) fc );		
 			evalDescr.setContent( engine );			
 		}			 
 		RIGHT_PAREN					
@@ -481,8 +475,8 @@ predicate_constraint[String op, ColumnDescr column]
 		ExecutionBuildContext context = new ExecutionBuildContext( engine );    
     }
 	:	COLON
-		fc=function[context] {	
-		    engine.addFunction( fc );
+		fc=lisp_list[context, new LispForm(context, functionRegistry)] {	
+		    engine.addFunction( (FunctionCaller) fc );
 			column.addDescr( new PredicateDescr( engine ) );
 		}	
 		
@@ -495,8 +489,8 @@ return_value_restriction[String op, FieldConstraintDescr fc]
 		ExecutionBuildContext context = new ExecutionBuildContext( engine );
 	}
 	:	EQUALS 
-		func=function[context] {					
-   		    engine.addFunction( func );
+		func=lisp_list[context, new LispForm(context, functionRegistry)] {					
+   		    engine.addFunction( (FunctionCaller) func );
 			fc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
 		}		
 	;
@@ -518,77 +512,29 @@ literal_restriction returns [String text]
 	    }
 	;		
 
-function[ExecutionBuildContext context] returns[FunctionCaller fc]
-	@init {
-		Function f = null;        
-	}
-	:	LEFT_PAREN
-		name=NAME {
-			if ( name.getText().equals("bind") ) {
-		  		context.createLocalVariable( name.getText() );
-			}
-		  	f = functionRegistry.getFunction( name.getText() );		  
-			fc= new FunctionCaller( f );
-		}
-	    	
-		function_params[context, fc]+ 
+lisp_list[ExecutionBuildContext context, LispList list] returns[ValueHandler valueHandler]
+	:	LEFT_PAREN	
+		(		a=lisp_atom[context]					{ list.add( a ); }
+			|	a=lisp_list[context, list.createList()]	{ list.add( a ); }
+		)*										    	
 	    RIGHT_PAREN
-	    //{ context.addFunction( fc ); }
+	    { valueHandler = list.getValueHandler(); }
 	;
-
-
-//modify_function[ExecutionBuildContext context] returns[FunctionCaller fc]
-//	:
-//		LEFT_PAREN
-//			MODIFY {
-//				fc = new FunctionCaller( functionRegistry.getFunction( "modify" ) );
-//			}
-//			t=VAR		{ fc.addParameter( context.getVariableValueHandler( t.getText() ) ); }			
-//			slot_name_value_pair[context, fc]+
-//		RIGHT_PAREN		
-//	;	
 	
-function_params[ExecutionBuildContext context, FunctionCaller fc]
+lisp_atom[ExecutionBuildContext context] returns[ValueHandler value] 
 	@init {
-		ValueHandler value  =  null;		
+		value  =  null;		
 	}
 	:
 		(		t=VAR		{ value = context.getVariableValueHandler(t.getText() ); }
 			|	t=STRING    { value = new ObjectLiteralValue( getString( t ) ); }
-			| 	t=NAME    { value = new ObjectLiteralValue( t.getText() ); }			
-			|	t=FLOAT     { value = new DoubleLiteralValue( t.getText() ); }
-			|	t=INT       { value = new LongLiteralValue( t.getText() ); }			
-			|	t=BOOL      { value = new BooleanLiteralValue( t.getText() ); }						
-			|	t=NULL      { value = ObjectLiteralValue.NULL; }
-			|	nfc=function[context]	 { value = nfc; }	
+			| 	t=NAME		{ value = new ObjectLiteralValue( t.getText() ); }			
+			|	t=FLOAT		{ value = new DoubleLiteralValue( t.getText() ); }
+			|	t=INT 		{ value = new LongLiteralValue( t.getText() ); }			
+			|	t=BOOL		{ value = new BooleanLiteralValue( t.getText() ); }						
+			|	t=NULL		{ value = ObjectLiteralValue.NULL; }
 		)	
-		{ fc.addParameter( value ); }	
-		
-	;		
-	
-//slot_name_value_pair[ExecutionBuildContext context, FunctionCaller fc]
-//	@init {
-//		SlotNameValuePair nameValuePair = null;
-//		String name = null;
-//	}
-//	:
-//		LEFT_PAREN
-//		id=NAME {
-//			name = id.getText();
-//		}
-//		(		t=VAR       { nameValuePair = new SlotNameValuePair(name, context.getVariableValueHandler( t.getText() ) ); }
-//			| 	t=STRING    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( getString( t ) ) ); }
-//			| 	t=NAME    { nameValuePair = new SlotNameValuePair(name, new ObjectLiteralValue( t.getText() ) ); }			
-//			|	t=FLOAT     { nameValuePair = new SlotNameValuePair(name, new DoubleLiteralValue( t.getText() ) ); }
-//			|	t=INT       { nameValuePair = new SlotNameValuePair(name, new LongLiteralValue( t.getText() ) ); }			
-//			|	t=BOOL      { nameValuePair = new SlotNameValuePair(name, new BooleanLiteralValue( t.getText() ) ) ; }						
-//			|	t=NULL      { nameValuePair = new SlotNameValuePair(name, ObjectLiteralValue.NULL ); }
-//			|	nf=function[context]
-//			                { nameValuePair = new SlotNameValuePair(name, nf ); }
-//		)	
-//		{ fc.addParameter( nameValuePair ); }		
-//		RIGHT_PAREN
-//	;	
+	;
 	
 literal returns [String text]
 	@init {

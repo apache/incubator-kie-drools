@@ -5,14 +5,8 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Declaration;
 import org.drools.spi.Consequence;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.spi.Tuple;
 
 public class BlockExecutionEngine
     implements

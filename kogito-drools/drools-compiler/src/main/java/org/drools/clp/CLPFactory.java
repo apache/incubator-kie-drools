@@ -8,7 +8,6 @@ import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 import org.mvel.integration.VariableResolver;
-import org.mvel.integration.VariableResolverFactory;
 
 public class CLPFactory  {
     private Tuple         tuple;
