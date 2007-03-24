@@ -61,4 +61,8 @@ public class Deffunction implements Function {
     public String getName() {
         return this.name;
     }
+    
+    public LispList createList(int index) {
+        return new LispForm();
+    }    
 }

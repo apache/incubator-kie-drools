@@ -1,8 +1,5 @@
 package org.drools.clp;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.drools.base.ValueType;
 
 public class LocalVariableValue extends BaseValueHandler implements VariableValueHandler {
@@ -44,6 +41,12 @@ public class LocalVariableValue extends BaseValueHandler implements VariableValu
                          Object object) {
         context.setLocalVariable( this.index, object );        
     }        
+    
+    public String toString() {
+        String name = getClass().getName();
+        name = name.substring( name.lastIndexOf( "." ) + 1 );
+        return "[" + name + " identifier = '" + getIdentifier()  + "']";
+    }    
         
 }
 

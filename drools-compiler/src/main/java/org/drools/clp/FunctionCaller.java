@@ -25,10 +25,14 @@ public class FunctionCaller extends BaseValueHandler {
     
     public String getName() {
         return ( this.function == null ) ? null : this.function.getName();
+    }    
+    
+    public LispList createList(int index) {
+        return this.function.createList( index );
     }
     
     public void addParameter(ValueHandler valueHandler) {
-        if (parameters == null) {
+        if (this.parameters == null) {
             this.parameters = new ValueHandler[] { valueHandler};
         } else {
             ValueHandler[] temp =  new ValueHandler[ parameters.length + 1 ];
@@ -58,8 +62,14 @@ public class FunctionCaller extends BaseValueHandler {
               this.parameters[i] = ( ValueHandler ) variables.get( var.getIdentifier() );
           } else if ( this.parameters[i] instanceof FunctionCaller ) {
               ((FunctionCaller)parameters[i]).replaceTempTokens( variables );
+          } else if ( this.parameters[i] instanceof ListValueHandler ) {
+              ((ListValueHandler)parameters[i]).replaceTempTokens( variables );
           }
       }  
   }    
 
+  public String toString() {
+      return "[FunctionCaller " + this.function + "]";
+  }
+  
 }

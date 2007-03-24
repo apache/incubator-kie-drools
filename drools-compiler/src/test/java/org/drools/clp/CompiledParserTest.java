@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 public class CompiledParserTest extends TestCase {
    private CLPParser parser;
    
-    public void test1() throws Exception {
+    public void test1() throws Exception { 
         BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (+ 20 11) )(modify ?p (age ?x) )").rhs();
         ExecutionContext context = new ExecutionContext(null, null, 2);
         

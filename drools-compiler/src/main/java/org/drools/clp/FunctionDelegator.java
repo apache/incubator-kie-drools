@@ -25,5 +25,13 @@ public class FunctionDelegator implements Function {
     public String getName() {
         return this.function == null ? this.name : function.getName();
     }
+    
+    public LispList createList(int index) {
+        return this.function.createList( index );
+    }    
+    
+    public String toString() {
+        return "[FunctionDelegate " + this.function + "]";
+    }
 
 }

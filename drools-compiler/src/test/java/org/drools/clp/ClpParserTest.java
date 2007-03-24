@@ -38,7 +38,7 @@ public class ClpParserTest extends TestCase {
 
     public void testParseFunction() throws Exception {
         ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate() );
-        FunctionCaller fc = parse( "(< 1 2)" ).function( context );
+        FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm(context, new FunctionRegistry( BuiltinFunctions.getInstance() ) ) );
         
         assertEquals( "<", fc.getName() );        
         assertEquals( new LongLiteralValue( 1 ), fc.getParameters()[0] );

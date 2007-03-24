@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.base.ValueType;
-import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
-import org.mvel.integration.VariableResolver;
 
 public class CLPLocalDeclarationVariable implements VariableValueHandler {
     
@@ -82,4 +80,9 @@ public class CLPLocalDeclarationVariable implements VariableValueHandler {
         return (String) declaration.getValue( context.getObject() );
     }
     
+    public String toString() {
+        String name = getClass().getName();
+        name = name.substring( name.lastIndexOf( "." ) + 1 );
+        return "[" + name + " identifier = '" + getIdentifier()  + "']";
+    }    
 }

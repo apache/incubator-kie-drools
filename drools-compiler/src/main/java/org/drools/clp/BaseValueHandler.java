@@ -3,8 +3,6 @@ package org.drools.clp;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.base.ValueType;
-
 public abstract class BaseValueHandler implements ValueHandler {        
     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
@@ -53,5 +51,14 @@ public abstract class BaseValueHandler implements ValueHandler {
         return (String) getValue(context);
     }      
     
-
+    public String toString() {
+        String name = getClass().getName();
+        name = name.substring( name.lastIndexOf( "." ) + 1 );
+        try {
+            return "[" + name + "value = '" + getValue(null) + "']";
+        } catch (Exception e) {
+            return "[" + name + "value = N/A]";
+        }
+    }
+    
 }

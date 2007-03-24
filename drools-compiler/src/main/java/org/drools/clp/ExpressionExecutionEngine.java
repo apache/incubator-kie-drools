@@ -1,7 +1,5 @@
 package org.drools.clp;
 
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
 
 public class ExpressionExecutionEngine { //implements Consequence, ReturnValueExpression, PredicateExpression {
     //private Map variableMap = new HashMap();

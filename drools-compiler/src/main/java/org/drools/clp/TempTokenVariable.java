@@ -1,8 +1,5 @@
 package org.drools.clp;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.rule.Declaration;
-import org.mvel.integration.VariableResolver;
 
 public class TempTokenVariable extends BaseValueHandler implements VariableValueHandler {
 
