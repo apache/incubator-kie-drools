@@ -1,10 +1,14 @@
-package org.drools.clp;
+package org.drools.clp.ValueHandlers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 
 import org.drools.base.SimpleValueType;
+import org.drools.clp.ExecutionContext;
+import org.drools.clp.Function;
+import org.drools.clp.LispList;
+import org.drools.clp.ValueHandler;
 
 public class FunctionCaller
     implements

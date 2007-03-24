@@ -2,9 +2,9 @@ package org.drools.clp.functions;
 
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
-import org.drools.clp.FunctionCaller;
-import org.drools.clp.ListValueHandler;
 import org.drools.clp.ValueHandler;
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.ListValueHandler;
 
 public class CreateListFunction extends BaseFunction implements Function {
     private static final String name = "create$";

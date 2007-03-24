@@ -1,12 +1,12 @@
 package org.drools.clp.functions;
 
-import org.drools.clp.BooleanValueHandler;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
-import org.drools.clp.ObjectValueHandler;
 import org.drools.clp.ValueHandler;
+import org.drools.clp.valuehandlers.BooleanValueHandler;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 public class IfFunction extends BaseFunction  implements Function {
     private static final String name = "if";

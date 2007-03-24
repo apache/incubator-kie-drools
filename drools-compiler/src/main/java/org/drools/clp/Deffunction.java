@@ -1,5 +1,9 @@
 package org.drools.clp;
 
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
+
 public class Deffunction
     implements
     Function {

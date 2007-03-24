@@ -4,6 +4,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.TempTokenVariable;
+
 public class ExecutionBuildContext {
     private Map              vars       = new HashMap();
     private Map              properties = Collections.EMPTY_MAP;

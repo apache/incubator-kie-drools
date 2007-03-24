@@ -1,5 +1,7 @@
 package org.drools.clp;
 
+import org.drools.clp.valuehandlers.FunctionCaller;
+
 public class LispForm implements LispList {    
     private ExecutionBuildContext context;
     private FunctionCaller caller;

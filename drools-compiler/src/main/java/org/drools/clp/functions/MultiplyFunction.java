@@ -6,8 +6,8 @@ import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
-import org.drools.clp.ObjectValueHandler;
 import org.drools.clp.ValueHandler;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 public class MultiplyFunction extends BaseFunction  implements Function {
     private static final String name = "*";

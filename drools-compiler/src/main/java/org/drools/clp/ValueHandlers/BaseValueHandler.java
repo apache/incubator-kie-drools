@@ -1,7 +1,10 @@
-package org.drools.clp;
+package org.drools.clp.ValueHandlers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.clp.ExecutionContext;
+import org.drools.clp.ValueHandler;
 
 public abstract class BaseValueHandler implements ValueHandler {        
     
