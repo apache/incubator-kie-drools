@@ -3,6 +3,7 @@ package org.drools.clp.functions;
 import org.drools.clp.ExecutionBuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
+import org.drools.clp.FunctionCaller;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
 import org.drools.clp.TempTokenVariable;
@@ -27,8 +28,16 @@ public class BindFunction extends BaseFunction implements Function {
         return valueHandler;
     }
     
-    public Object execute(ValueHandler[] args, ExecutionContext context) {
-        args[0].setValue( context, args[1].getValue( context ) );        
+    public ValueHandler execute(ValueHandler[] args, ExecutionContext context) {
+        args[0].setValue( context,  args[1].getValue( context ));
+//        Object object = args[1].getValue( context );
+//        if ( object instanceof FunctionCaller  || object instanceof VariableValueHandler) {
+//            // this is if the paramter is a variable or a function, so we must resolve further
+//            args[0].setValue( context,  ( ( ValueHandler ) object).getValue( context ));
+//        } else {
+//            // thi sis if the parameter 
+//            args[0].setValue( context,  object);
+//        }
         return args[0];    
     }
     

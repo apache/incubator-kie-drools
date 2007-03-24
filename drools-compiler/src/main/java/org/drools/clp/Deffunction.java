@@ -55,7 +55,7 @@ public class Deffunction
     public void initCallback(ExecutionBuildContext context) {
     }
 
-    public Object execute(ValueHandler[] args,
+    public ValueHandler execute(ValueHandler[] args,
                           ExecutionContext context) {
         ExecutionContext newContext = initContext( args,
                                                    context );
@@ -65,7 +65,7 @@ public class Deffunction
         for ( int i = 0, length = this.functions.length; i < length; i++ ) {
             returnValue = this.functions[i].getValue( newContext );
         }
-        return returnValue;
+        return new ObjectValueHandler( returnValue );
     }
 
     private ExecutionContext initContext(ValueHandler[] args,
@@ -74,8 +74,10 @@ public class Deffunction
                                                             context.getTuple(),
                                                             args.length );
         for ( int i = 0, length = args.length; i < length; i++ ) {
+            // We know that each argument is a local variable, so we can cast and access the underlying value handler, 
+            // as we don't want the variable fully resolved at this stage, just mapped.
             newContext.setLocalVariable( i,
-                                         args[i].getValue( context ) );
+                                         ((LocalVariableValue) args[i]).getRawValue( context ) );
         }
         return newContext;
     }

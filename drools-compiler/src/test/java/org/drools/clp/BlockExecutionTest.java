@@ -22,8 +22,8 @@ public class BlockExecutionTest extends TestCase {
         ExecutionBuildContext build = new ExecutionBuildContext(engine, this.registry );                
         
         FunctionCaller addCaller = new FunctionCaller( new AddFunction() );
-        addCaller.addParameter( new ObjectLiteralValue( new BigDecimal( 20) ) );
-        addCaller.addParameter( new LongLiteralValue( "11" ) );
+        addCaller.addParameter( new ObjectValueHandler( new BigDecimal( 20) ) );
+        addCaller.addParameter( new LongValueHandler( "11" ) );
                 
         FunctionCaller bindCaller = new FunctionCaller( new BindFunction() );
         bindCaller.addParameter( build.createLocalVariable( "?x" ) );
@@ -37,13 +37,13 @@ public class BlockExecutionTest extends TestCase {
         modifyCaller.addParameter( build.getVariableValueHandler( "?p" ) );
         
         ListValueHandler list = new ListValueHandler();
-        list.add( new ObjectLiteralValue( "age") );
+        list.add( new ObjectValueHandler( "age") );
         list.add( build.getVariableValueHandler( "?x" ) );
         modifyCaller.addParameter( list );
         
         ExecutionContext context = new ExecutionContext(null, null, 2);
         Person p = new Person("mark");
-        context.setLocalVariable( 1, p );
+        context.setLocalVariable( 1, new ObjectValueHandler( p ) );
         
         engine.addFunction( modifyCaller );
         

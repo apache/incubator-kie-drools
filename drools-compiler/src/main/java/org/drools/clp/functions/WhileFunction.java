@@ -4,6 +4,7 @@ import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
+import org.drools.clp.ObjectValueHandler;
 import org.drools.clp.ValueHandler;
 
 public class WhileFunction extends BaseFunction implements Function {
@@ -13,7 +14,7 @@ public class WhileFunction extends BaseFunction implements Function {
         
     }
     
-    public Object execute(ValueHandler[] args, ExecutionContext context) {
+    public ValueHandler execute(ValueHandler[] args, ExecutionContext context) {
         Object result = null;
         
         ValueHandler doHandler = args[ args.length - 1 ];
@@ -22,7 +23,7 @@ public class WhileFunction extends BaseFunction implements Function {
             result = doHandler.getValue( context );
         }
 
-        return result;
+        return new ObjectValueHandler( result ); 
     }    
     
     

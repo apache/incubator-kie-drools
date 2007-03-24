@@ -1,14 +1,17 @@
 package org.drools.clp;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import org.drools.base.SimpleValueType;
 
-public class ObjectLiteralValue extends BaseValueHandler {
-    public static final ObjectLiteralValue NULL = new ObjectLiteralValue( "null" );    
+public class ObjectValueHandler extends BaseValueHandler {
+    public static final ObjectValueHandler NULL = new ObjectValueHandler( "null" );    
     
     private Object objectValue;
     
-    public ObjectLiteralValue(Object objectValue) {
+    public int getValueType(ExecutionContext context) {
+        return SimpleValueType.OBJECT;
+    }
+    
+    public ObjectValueHandler(Object objectValue) {
         this.objectValue = objectValue;
     }
 
@@ -19,7 +22,7 @@ public class ObjectLiteralValue extends BaseValueHandler {
     public Object getValue(ExecutionContext context) {
         return this.objectValue;
     }
-    
+    /*
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
         return (BigDecimal) getValue(context);
     }
@@ -54,6 +57,6 @@ public class ObjectLiteralValue extends BaseValueHandler {
 
     public String getStringValue(ExecutionContext context) {
         return (String) getValue(context);
-    }      
+    }      */
 
 }

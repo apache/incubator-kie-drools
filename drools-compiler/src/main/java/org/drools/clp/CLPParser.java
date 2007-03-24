@@ -1,19 +1,41 @@
 // $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-24 14:22:23
 
 	package org.drools.clp;
-	import java.util.List;
 	import java.util.ArrayList;
-	import java.util.Iterator;
-	import java.util.HashMap;	
-	import java.util.StringTokenizer;
-	import org.drools.lang.descr.*;
-	import org.drools.compiler.SwitchingCommonTokenStream;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
+
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedNotSetException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.MismatchedTreeNodeException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.DescrFactory;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 
 public class CLPParser extends Parser {
     public static final String[] tokenNames = new String[] {
@@ -1533,7 +1555,7 @@ public class CLPParser extends Parser {
                     {
                     t=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_lisp_atom1133); 
-                     value = new ObjectLiteralValue( getString( t ) ); 
+                     value = new ObjectValueHandler( getString( t ) ); 
 
                     }
                     break;
@@ -1542,7 +1564,7 @@ public class CLPParser extends Parser {
                     {
                     t=(Token)input.LT(1);
                     match(input,NAME,FOLLOW_NAME_in_lisp_atom1148); 
-                     value = new ObjectLiteralValue( t.getText() ); 
+                     value = new ObjectValueHandler( t.getText() ); 
 
                     }
                     break;
@@ -1551,7 +1573,7 @@ public class CLPParser extends Parser {
                     {
                     t=(Token)input.LT(1);
                     match(input,FLOAT,FOLLOW_FLOAT_in_lisp_atom1163); 
-                     value = new DoubleLiteralValue( t.getText() ); 
+                     value = new DoubleValueHandler( t.getText() ); 
 
                     }
                     break;
@@ -1560,7 +1582,7 @@ public class CLPParser extends Parser {
                     {
                     t=(Token)input.LT(1);
                     match(input,INT,FOLLOW_INT_in_lisp_atom1175); 
-                     value = new LongLiteralValue( t.getText() ); 
+                     value = new LongValueHandler( t.getText() ); 
 
                     }
                     break;
@@ -1569,7 +1591,7 @@ public class CLPParser extends Parser {
                     {
                     t=(Token)input.LT(1);
                     match(input,BOOL,FOLLOW_BOOL_in_lisp_atom1191); 
-                     value = new BooleanLiteralValue( t.getText() ); 
+                     value = new BooleanValueHandler( t.getText() ); 
 
                     }
                     break;
@@ -1578,7 +1600,7 @@ public class CLPParser extends Parser {
                     {
                     t=(Token)input.LT(1);
                     match(input,NULL,FOLLOW_NULL_in_lisp_atom1209); 
-                     value = ObjectLiteralValue.NULL; 
+                     value = ObjectValueHandler.NULL; 
 
                     }
                     break;

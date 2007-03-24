@@ -47,8 +47,8 @@ public class ClpParserTest extends TestCase {
         FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm(context) );
         
         assertEquals( "<", fc.getName() );        
-        assertEquals( new LongLiteralValue( 1 ), fc.getParameters()[0] );
-        assertEquals( new LongLiteralValue( 2 ), fc.getParameters()[1] );
+        assertEquals( new LongValueHandler( 1 ), fc.getParameters()[0] );
+        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );
     }
     
     public void testPatternsRule() throws Exception {
@@ -117,15 +117,15 @@ public class ClpParserTest extends TestCase {
         CLPReturnValue clprv = ( CLPReturnValue ) retDescr.getContent();
         FunctionCaller fc = clprv.getFunctions()[0];
         assertEquals( "+", fc.getName() );        
-        assertEquals( new LongLiteralValue( 2 ), fc.getParameters()[0] );
-        assertEquals( new LongLiteralValue( 3 ), fc.getParameters()[1] );       
+        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[0] );
+        assertEquals( new LongValueHandler( 3 ), fc.getParameters()[1] );       
 
         PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );        
         CLPPredicate clpp = ( CLPPredicate ) predicateDescr.getContent();
         fc = clpp.getFunctions()[0];
         assertEquals( "<", fc.getName() );        
-        assertEquals( new LongLiteralValue( 1 ), fc.getParameters()[0] );
-        assertEquals( new LongLiteralValue( 2 ), fc.getParameters()[1] );        
+        assertEquals( new LongValueHandler( 1 ), fc.getParameters()[0] );
+        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );        
 
         // Parse the second column
         col = (ColumnDescr) lhsList.get( 1 );
@@ -315,8 +315,8 @@ public class ClpParserTest extends TestCase {
         CLPEval clpe = ( CLPEval ) evalDescr.getContent();
         FunctionCaller f = clpe.getFunctions()[0];
         assertEquals( "<", f.getName() );        
-        assertEquals( new DoubleLiteralValue( 9.0 ), f.getParameters()[0] );
-        assertEquals( new DoubleLiteralValue( 1.3 ), f.getParameters()[1] );          
+        assertEquals( new DoubleValueHandler( 9.0 ), f.getParameters()[0] );
+        assertEquals( new DoubleValueHandler( 1.3 ), f.getParameters()[1] );          
     }
 
     public void testRuleHeader() throws Exception {

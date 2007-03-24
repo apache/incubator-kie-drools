@@ -4,8 +4,18 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 
+import org.drools.base.SimpleValueType;
+
 public class ListValueHandler implements ValueHandler {
     private ValueHandler[] list;
+    
+    public ListValueHandler() {
+        
+    }
+    
+    public int getValueType(ExecutionContext context) {
+        return SimpleValueType.LIST;
+    }    
     
     public void add(ValueHandler valueHandler) {
         if (this.list == null) {
@@ -78,7 +88,15 @@ public class ListValueHandler implements ValueHandler {
                 ((ListValueHandler)list[i]).replaceTempTokens( variables );
             }
         }  
-    }      
+    }    
+    
+    public int size() {
+        return (this.list == null) ? 0 : this.list.length;
+    }
+    
+    public boolean isEmpty() {
+        return (this.list == null) ? true : this.list.length > 0; 
+    }
     
     public String toString() {
         StringBuffer b = new StringBuffer();

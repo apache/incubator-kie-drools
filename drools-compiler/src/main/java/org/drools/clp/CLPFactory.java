@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
+import org.drools.base.ValueType;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 import org.mvel.integration.VariableResolver;
 
-public class CLPFactory  {
+public class CLPFactory {
     private Tuple         tuple;
     private Object        object;
     private Map           localDeclarations;
@@ -25,8 +26,8 @@ public class CLPFactory  {
     }
 
     public CLPFactory(Map previousDeclarations,
-                             Map localDeclarations,
-                             Map globals) {
+                      Map localDeclarations,
+                      Map globals) {
 
     }
 
@@ -41,7 +42,6 @@ public class CLPFactory  {
     public void setGlobalsMap(Map globals) {
         this.globals = globals;
     }
-
 
     public Object getObject() {
         return this.object;
@@ -68,9 +68,9 @@ public class CLPFactory  {
         throw new UnsupportedOperationException( "Variables cannot be created here" );
     }
 
-//    public ValueHandler getVariableResolver(String name) {
-//        return (ValueHandler) this.resolvers.get( name );
-//    }
+    //    public ValueHandler getVariableResolver(String name) {
+    //        return (ValueHandler) this.resolvers.get( name );
+    //    }
 
     public ValueHandler getVariableResolver(String name) {
         //return this.declarations.containsKey( name ) || this.globals.containsKey( name );
@@ -84,14 +84,16 @@ public class CLPFactory  {
             return null;
         }
 
-        if (  this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
+        if ( this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
             resolver = new CLPPreviousDeclarationVariable( (Declaration) this.previousDeclarations.get( name ) );
         } else if ( this.localDeclarations != null && this.localDeclarations.containsKey( name ) ) {
-            resolver = new CLPLocalDeclarationVariable( (Declaration) this.localDeclarations.get( name )  );
+            resolver = new CLPLocalDeclarationVariable( (Declaration) this.localDeclarations.get( name ) );
         } else {
+            Class clazz = (Class) this.globals.get( name );
             resolver = new CLPGlobalVariable( name,
-                                                     (Class) this.globals.get( name ),
-                                                     this );
+                                              clazz,
+                                              ValueType.determineValueType( clazz ).getSimpleType(),
+                                              this );
         }
 
         if ( resolver != null ) {
@@ -103,9 +105,9 @@ public class CLPFactory  {
         }
     }
 
-//    public boolean isTarget(String name) {
-//        return this.resolvers.containsKey( name );
-//    }
+    //    public boolean isTarget(String name) {
+    //        return this.resolvers.containsKey( name );
+    //    }
 
     //    public ValueHandler createExternalVariable(String identifier) {        
     //        registerExternalVariable( identifier );

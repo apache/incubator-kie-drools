@@ -25,12 +25,12 @@ public class DeffunctionTest extends TestCase {
                 
         ExecutionContext context = new ExecutionContext(null, null, 2);
         ValueHandler q = new LocalVariableValue("q", 0);
-        context.setLocalVariable( 0, new Integer( 10 ) );
+        q.setValue( context, new LongValueHandler( 10 ) );
         
         ValueHandler w = new LocalVariableValue("w", 1);
-        context.setLocalVariable( 1, new Integer( 7 ) );      
+        w.setValue( context,  new LongValueHandler( 7 ) );
         
-        assertEquals( new BigDecimal( 17 ), function.execute( new ValueHandler[] { q, w }, context ) );
+        assertEquals( new BigDecimal( 17 ), function.execute( new ValueHandler[] { q, w }, context ).getValue( context ) );
     }
     
     

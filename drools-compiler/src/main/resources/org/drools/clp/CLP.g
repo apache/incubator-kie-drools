@@ -527,7 +527,7 @@ lisp_atom[ExecutionBuildContext context] returns[ValueHandler value]
 	}
 	:
 		(		t=VAR		{ value = context.getVariableValueHandler(t.getText() ); }
-			|	t=STRING    { value = new ObjectLiteralValue( getString( t ) ); }
+			|	t=STRING	{ value = new ObjectLiteralValue( getString( t ) ); }
 			| 	t=NAME		{ value = new ObjectLiteralValue( t.getText() ); }			
 			|	t=FLOAT		{ value = new DoubleLiteralValue( t.getText() ); }
 			|	t=INT 		{ value = new LongLiteralValue( t.getText() ); }			
