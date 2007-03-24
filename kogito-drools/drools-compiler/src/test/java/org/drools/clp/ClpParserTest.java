@@ -31,14 +31,20 @@ public class ClpParserTest extends TestCase {
 
     private CLPParser parser;
     
+    FunctionRegistry registry;
+    
+    public void setUp() {
+        this.registry = new FunctionRegistry( BuiltinFunctions.getInstance() );
+    }
+    
     protected void tearDown() throws Exception {
         super.tearDown();
         this.parser = null;
     }
 
-    public void testParseFunction() throws Exception {
-        ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate() );
-        FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm(context, new FunctionRegistry( BuiltinFunctions.getInstance() ) ) );
+    public void testParseFunction() throws Exception {        
+        ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate(), this.registry );
+        FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm(context) );
         
         assertEquals( "<", fc.getName() );        
         assertEquals( new LongLiteralValue( 1 ), fc.getParameters()[0] );

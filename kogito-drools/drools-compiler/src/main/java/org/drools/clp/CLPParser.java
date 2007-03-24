@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-24 03:23:58
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-03-24 14:22:23
 
 	package org.drools.clp;
 	import java.util.List;
@@ -595,7 +595,7 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start rhs
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:312:1: rhs returns [ExecutionEngine engine] : (fc= lisp_list[context, new LispForm(context, functionRegistry) ] )* ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:312:1: rhs returns [ExecutionEngine engine] : (fc= lisp_list[context, new LispForm(context) ] )* ;
     public ExecutionEngine rhs() throws RecognitionException {
         ExecutionEngine engine = null;
 
@@ -604,13 +604,13 @@ public class CLPParser extends Parser {
 
         
         	        engine = new BlockExecutionEngine();
-        			ExecutionBuildContext context = new ExecutionBuildContext( engine );  	
+        			ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );  	
         	
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:3: ( (fc= lisp_list[context, new LispForm(context, functionRegistry) ] )* )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:3: (fc= lisp_list[context, new LispForm(context, functionRegistry) ] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:3: ( (fc= lisp_list[context, new LispForm(context) ] )* )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:3: (fc= lisp_list[context, new LispForm(context) ] )*
             {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:3: (fc= lisp_list[context, new LispForm(context, functionRegistry) ] )*
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:3: (fc= lisp_list[context, new LispForm(context) ] )*
             loop5:
             do {
                 int alt5=2;
@@ -622,10 +622,10 @@ public class CLPParser extends Parser {
 
                 switch (alt5) {
             	case 1 :
-            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:4: fc= lisp_list[context, new LispForm(context, functionRegistry) ]
+            	    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:319:4: fc= lisp_list[context, new LispForm(context) ]
             	    {
             	    pushFollow(FOLLOW_lisp_list_in_rhs331);
-            	    fc=lisp_list(context,  new LispForm(context,  functionRegistry) );
+            	    fc=lisp_list(context,  new LispForm(context) );
             	    _fsp--;
 
             	     context.addFunction( (FunctionCaller) fc ); 
@@ -854,7 +854,7 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start eval_ce
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:374:1: eval_ce[ConditionalElementDescr in_ce] : LEFT_PAREN TEST fc= lisp_list[context, new LispForm(context, functionRegistry)] RIGHT_PAREN ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:374:1: eval_ce[ConditionalElementDescr in_ce] : LEFT_PAREN TEST fc= lisp_list[context, new LispForm(context)] RIGHT_PAREN ;
     public void eval_ce(ConditionalElementDescr in_ce) throws RecognitionException {
         ValueHandler fc = null;
 
@@ -862,11 +862,11 @@ public class CLPParser extends Parser {
         
                 EvalDescr evalDescr= null;    
            		ExecutionEngine engine = new CLPEval();     
-        		ExecutionBuildContext context = new ExecutionBuildContext( engine );   		         
+        		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );   		         
             
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:380:4: ( LEFT_PAREN TEST fc= lisp_list[context, new LispForm(context, functionRegistry)] RIGHT_PAREN )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:380:4: LEFT_PAREN TEST fc= lisp_list[context, new LispForm(context, functionRegistry)] RIGHT_PAREN
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:380:4: ( LEFT_PAREN TEST fc= lisp_list[context, new LispForm(context)] RIGHT_PAREN )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:380:4: LEFT_PAREN TEST fc= lisp_list[context, new LispForm(context)] RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_eval_ce550); 
             match(input,TEST,FOLLOW_TEST_in_eval_ce555); 
@@ -875,7 +875,7 @@ public class CLPParser extends Parser {
             		    in_ce.addDescr( evalDescr );
             		
             pushFollow(FOLLOW_lisp_list_in_eval_ce563);
-            fc=lisp_list(context,  new LispForm(context,  functionRegistry));
+            fc=lisp_list(context,  new LispForm(context));
             _fsp--;
 
             					
@@ -1260,22 +1260,22 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start predicate_constraint
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:472:1: predicate_constraint[String op, ColumnDescr column] : COLON fc= lisp_list[context, new LispForm(context, functionRegistry)] ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:472:1: predicate_constraint[String op, ColumnDescr column] : COLON fc= lisp_list[context, new LispForm(context)] ;
     public void predicate_constraint(String op, ColumnDescr column) throws RecognitionException {
         ValueHandler fc = null;
 
 
         
            		ExecutionEngine engine = new CLPPredicate();
-        		ExecutionBuildContext context = new ExecutionBuildContext( engine );    
+        		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
             
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:477:4: ( COLON fc= lisp_list[context, new LispForm(context, functionRegistry)] )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:477:4: COLON fc= lisp_list[context, new LispForm(context, functionRegistry)]
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:477:4: ( COLON fc= lisp_list[context, new LispForm(context)] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:477:4: COLON fc= lisp_list[context, new LispForm(context)]
             {
             match(input,COLON,FOLLOW_COLON_in_predicate_constraint916); 
             pushFollow(FOLLOW_lisp_list_in_predicate_constraint922);
-            fc=lisp_list(context,  new LispForm(context,  functionRegistry));
+            fc=lisp_list(context,  new LispForm(context));
             _fsp--;
 
             	
@@ -1298,22 +1298,22 @@ public class CLPParser extends Parser {
 
 
     // $ANTLR start return_value_restriction
-    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:486:1: return_value_restriction[String op, FieldConstraintDescr fc] : EQUALS func= lisp_list[context, new LispForm(context, functionRegistry)] ;
+    // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:486:1: return_value_restriction[String op, FieldConstraintDescr fc] : EQUALS func= lisp_list[context, new LispForm(context)] ;
     public void return_value_restriction(String op, FieldConstraintDescr fc) throws RecognitionException {
         ValueHandler func = null;
 
 
         
         		ExecutionEngine engine = new CLPReturnValue();
-        		ExecutionBuildContext context = new ExecutionBuildContext( engine );
+        		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );
         	
         try {
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:491:4: ( EQUALS func= lisp_list[context, new LispForm(context, functionRegistry)] )
-            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:491:4: EQUALS func= lisp_list[context, new LispForm(context, functionRegistry)]
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:491:4: ( EQUALS func= lisp_list[context, new LispForm(context)] )
+            // C:\\dev\\jbossrules\\trunk\\drools-compiler\\src\\main\\resources\\org\\drools\\clp\\CLP.g:491:4: EQUALS func= lisp_list[context, new LispForm(context)]
             {
             match(input,EQUALS,FOLLOW_EQUALS_in_return_value_restriction948); 
             pushFollow(FOLLOW_lisp_list_in_return_value_restriction955);
-            func=lisp_list(context,  new LispForm(context,  functionRegistry));
+            func=lisp_list(context,  new LispForm(context));
             _fsp--;
 
             					

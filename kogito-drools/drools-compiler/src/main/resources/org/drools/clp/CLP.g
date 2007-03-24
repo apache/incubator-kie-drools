@@ -312,11 +312,11 @@ ce[ConditionalElementDescr in_ce]
 rhs returns[ExecutionEngine engine]
 	@init {
 	        engine = new BlockExecutionEngine();
-			ExecutionBuildContext context = new ExecutionBuildContext( engine );  	
+			ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );  	
 	}
 	
 	:
-		(fc=lisp_list[context, new LispForm(context, functionRegistry) ] { context.addFunction( (FunctionCaller) fc ); })*
+		(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })*
 	;	
 	
 and_ce[ConditionalElementDescr in_ce]
@@ -375,14 +375,14 @@ eval_ce[ConditionalElementDescr in_ce]
     @init {
         EvalDescr evalDescr= null;    
    		ExecutionEngine engine = new CLPEval();     
-		ExecutionBuildContext context = new ExecutionBuildContext( engine );   		         
+		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );   		         
     }
 	:	LEFT_PAREN	
 		TEST {
 		    evalDescr = new EvalDescr();
 		    in_ce.addDescr( evalDescr );
 		}
-		fc=lisp_list[context, new LispForm(context, functionRegistry)] {					
+		fc=lisp_list[context, new LispForm(context)] {					
 		    engine.addFunction( (FunctionCaller) fc );		
 			evalDescr.setContent( engine );			
 		}			 
@@ -472,10 +472,10 @@ restriction[FieldConstraintDescr fc, ColumnDescr column]
 predicate_constraint[String op, ColumnDescr column]	
     @init {
    		ExecutionEngine engine = new CLPPredicate();
-		ExecutionBuildContext context = new ExecutionBuildContext( engine );    
+		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
     }
 	:	COLON
-		fc=lisp_list[context, new LispForm(context, functionRegistry)] {	
+		fc=lisp_list[context, new LispForm(context)] {	
 		    engine.addFunction( (FunctionCaller) fc );
 			column.addDescr( new PredicateDescr( engine ) );
 		}	
@@ -486,10 +486,10 @@ predicate_constraint[String op, ColumnDescr column]
 return_value_restriction[String op, FieldConstraintDescr fc]
 	@init {
 		ExecutionEngine engine = new CLPReturnValue();
-		ExecutionBuildContext context = new ExecutionBuildContext( engine );
+		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );
 	}
 	:	EQUALS 
-		func=lisp_list[context, new LispForm(context, functionRegistry)] {					
+		func=lisp_list[context, new LispForm(context)] {					
    		    engine.addFunction( (FunctionCaller) func );
 			fc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
 		}		

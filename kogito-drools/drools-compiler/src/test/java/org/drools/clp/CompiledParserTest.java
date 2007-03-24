@@ -3,6 +3,7 @@ package org.drools.clp;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,15 +20,13 @@ public class CompiledParserTest extends TestCase {
    private CLPParser parser;
    
     public void test1() throws Exception { 
-        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (+ 20 11) )(modify ?p (age ?x) )").rhs();
+        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (+ 20 11) ) (modify ?p (age ?x) )").rhs();
         ExecutionContext context = new ExecutionContext(null, null, 2);
         
         Person p = new Person("mark");        
         Map vars = new HashMap();
-        
-        // CONAN, is this correct?
-        vars.put( "?x", new LocalVariableValue( "?x", 0 ) );
-        
+                
+        //vars.put( "?x", new LocalVariableValue( "?x", 0 ) );        
         vars.put( "?p", new ObjectLiteralValue( p ) );
         engine.replaceTempTokens( vars );
         
@@ -35,6 +34,45 @@ public class CompiledParserTest extends TestCase {
         
         assertEquals( 31, p.getAge() );
     }
+    
+    public void testIf() throws Exception {
+        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(if (< ?x ?y ) then (modify ?p (age 15) ) else (modify ?p (age 5)))").rhs();
+        ExecutionContext context = new ExecutionContext(null, null, 2);
+        
+        Person p = new Person("mark");        
+        Map vars = new HashMap();
+        
+        vars.put( "?x", new LongLiteralValue( 10 ) );
+        vars.put( "?y", new LocalVariableValue( "?y", 0 ) );     
+        vars.put( "?p", new ObjectLiteralValue( p ) );
+        engine.replaceTempTokens( vars );
+        
+        context.setLocalVariable( 0, new Long( 20 ) );
+        
+        engine.execute( context );        
+        assertEquals( 15, p.getAge() );
+        
+        context.setLocalVariable( 0, new Long( 7 ) );
+        engine.execute( context );
+        assertEquals( 5, p.getAge() );
+    }
+    
+    public void testWhile() throws Exception {
+        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(while (< ?x ?y) do (bind ?x (+ ?x 1) ) )").rhs();
+        ExecutionContext context = new ExecutionContext(null, null, 2);
+        
+        Map vars = new HashMap();
+        
+        vars.put( "?x", new LocalVariableValue( "?x", 0 ) );  
+        vars.put( "?y", new LocalVariableValue( "?y", 1 ) );     
+        engine.replaceTempTokens( vars );
+        
+        context.setLocalVariable( 0, new Long( 0 ) );
+        context.setLocalVariable( 1, new Long( 10 ) );
+        
+        engine.execute( context );        
+        assertEquals( new BigDecimal(10), context.getLocalVariable( 0 ) );
+    }    
     
     private CLPParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
@@ -55,8 +93,6 @@ public class CompiledParserTest extends TestCase {
     }
 
     private CLPParser parseResource(final String name) throws Exception {
-
-        //        System.err.println( getClass().getResource( name ) );
         Reader reader = getReader( name );
 
         final StringBuffer text = new StringBuffer();

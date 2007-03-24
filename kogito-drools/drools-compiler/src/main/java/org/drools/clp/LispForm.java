@@ -1,13 +1,11 @@
 package org.drools.clp;
 
 public class LispForm implements LispList {    
-    private FunctionRegistry registry;
     private ExecutionBuildContext context;
     private FunctionCaller caller;
 
-    public LispForm(ExecutionBuildContext context, FunctionRegistry registry) {
+    public LispForm(ExecutionBuildContext context) {
         this.context = context;
-        this.registry = registry;
     }
     
     public LispForm() {
@@ -20,28 +18,38 @@ public class LispForm implements LispList {
     public void add(ValueHandler valueHandler) {
         // we know this is a string literal, so can use null for the context
         if ( this.caller == null ) {
-            this.caller = new FunctionCaller( this.registry.getFunction( valueHandler.getStringValue( null ) ) );
+            this.caller = new FunctionCaller( this.context.getFunctionRegistry().getFunction( valueHandler.getStringValue( null ) ) );
+            this.caller.getFunction().initCallback( context );
         } else {
+            int length;
+            if ( this.caller == null || this.caller.getParameters() == null ) {
+                length = 0;
+            } else {
+                length = ( this.caller == null ) ? 0 : this.caller.getParameters().length;
+            }
+            valueHandler = this.caller.getFunction().addParameterCallback( length, valueHandler, context );
             this.caller.addParameter( valueHandler );
+            
         }
     }
 
     public LispList createList() {
-        LispList list = this.caller.createList( this.caller.getParameters().length );
+        int length;
+        if ( this.caller == null || this.caller.getParameters() == null ) {
+            length = 0;
+        } else {
+            length = ( this.caller == null ) ? 0 : this.caller.getParameters().length;
+        }
+        
+        LispList list = this.caller.createList( length );
         
         list.setContext( this.context );
-        list.setRegistry( this.registry );
         
         return list; 
     }
 
     public void setContext(ExecutionBuildContext context) {
         this.context = context;
-    }
-
-
-    public void setRegistry(FunctionRegistry registry) {
-        this.registry = registry;
     }
         
 }

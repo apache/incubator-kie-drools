@@ -5,7 +5,6 @@ public class LispData
     LispList {
     
     private ListValueHandler list;
-    private FunctionRegistry registry;
     private ExecutionBuildContext context;
     
     public LispData() {
@@ -20,7 +19,6 @@ public class LispData
         LispList list = new LispForm( );
         
         list.setContext( this.context );
-        list.setRegistry( this.registry );
         
         return list;
     }
@@ -32,11 +30,6 @@ public class LispData
     public void setContext(ExecutionBuildContext context) {
         this.context = context;
     }
-
-
-    public void setRegistry(FunctionRegistry registry) {
-        this.registry = registry;
-    }    
 
     public ValueHandler[] toArray() {
         return this.list.getList();
