@@ -2,6 +2,9 @@ package org.drools.clp;
 
 import org.drools.Person;
 import org.drools.clp.functions.ModifyFunction;
+import org.drools.clp.valuehandlers.ListValueHandler;
+import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 import junit.framework.TestCase;
 

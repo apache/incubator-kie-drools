@@ -12,6 +12,10 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.Person;
+import org.drools.clp.valuehandlers.ListValueHandler;
+import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.LongValueHandler;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
 import org.drools.compiler.SwitchingCommonTokenStream;
 
 import junit.framework.TestCase;
@@ -38,7 +42,7 @@ public class CompiledParserTest extends TestCase {
         ExecutionContext context = new ExecutionContext(null, null, 1);
         engine.execute( context );
         
-        ListValueHandler list = ( ListValueHandler ) context.getLocalVariable( 0 ).getValue( context );
+        ListValueHandler list = ( ListValueHandler ) context.getLocalVariable( 0 );
         
         assertEquals( 3, list.size() );
         
@@ -48,24 +52,32 @@ public class CompiledParserTest extends TestCase {
     }
     
     public void testNestedCreate$() throws Exception {
-        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (create$ 1 2 3) ) (bind ?y (create$ 1 ?x (create$ a b ?x c) 3) )").rhs();
+        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x (create$ 1 2 (+ 1 2) ) ) (bind ?y (create$ (+ 1 0) ?x (create$ a b ?x (+ 1 1) ) 3) )").rhs();
         ExecutionContext context = new ExecutionContext(null, null, 2);
         engine.execute( context );
         
         // check ?x
-        ListValueHandler list = ( ListValueHandler ) context.getLocalVariable( 0 ).getValue( context );;
+        ListValueHandler list = ( ListValueHandler ) context.getLocalVariable( 0 );
         assertEquals( 3, list.size() );        
         assertEquals( 1, list.getList()[0].getIntValue( context ) );
         assertEquals( 2, list.getList()[1].getIntValue( context ) );
-        assertEquals( 3, list.getList()[2].getIntValue( context ) );
+        assertEquals( new BigDecimal( 3 ), list.getList()[2].getBigDecimalValue( context ) );
         
         // check ?y
-        list = ( ListValueHandler ) context.getLocalVariable( 1 ).getValue( context );;        
+        list = ( ListValueHandler ) context.getLocalVariable( 1 );        
         assertEquals( 11, list.size() );
         
-//        assertEquals( 1, list.getList()[0].getIntValue( context ) );
-//        assertEquals( 2, list.getList()[1].getIntValue( context ) );
-//        assertEquals( 3, list.getList()[2].getIntValue( context ) );
+        assertEquals( new BigDecimal( 1 ), list.getList()[0].getBigDecimalValue( context ) );        
+        assertEquals( 1, list.getList()[1].getIntValue( context ) );
+        assertEquals( 2, list.getList()[2].getIntValue( context ) );
+        assertEquals( new BigDecimal( 3 ), list.getList()[3].getBigDecimalValue( context ) );
+        assertEquals( "a", list.getList()[4].getStringValue( context ) );
+        assertEquals( "b", list.getList()[5].getStringValue( context ) );
+        assertEquals( 1, list.getList()[6].getIntValue( context ) );
+        assertEquals( 2, list.getList()[7].getIntValue( context ) );
+        assertEquals( new BigDecimal( 3 ), list.getList()[8].getBigDecimalValue( context ) );
+        assertEquals( new BigDecimal( 2 ), list.getList()[9].getBigDecimalValue( context ) );   
+        assertEquals( 3, list.getList()[10].getIntValue( context ) );
     }    
     
     public void testIf() throws Exception {
@@ -104,7 +116,7 @@ public class CompiledParserTest extends TestCase {
         context.setLocalVariable( 1, new LongValueHandler( 10 ) );
         
         engine.execute( context );        
-        assertEquals( new BigDecimal(10), context.getLocalVariable( 0 ).getValue( context ) );
+        assertEquals( new BigDecimal(10), context.getLocalVariable( 0 ).getObject( context ) );
     }    
     
     private CLPParser parse(final String text) throws Exception {

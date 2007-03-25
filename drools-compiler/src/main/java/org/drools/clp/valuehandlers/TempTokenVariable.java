@@ -1,7 +1,8 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import org.drools.base.SimpleValueType;
 import org.drools.clp.ExecutionContext;
+import org.drools.clp.ValueHandler;
 import org.drools.clp.VariableValueHandler;
 
 
@@ -12,6 +13,10 @@ public class TempTokenVariable extends BaseValueHandler implements VariableValue
     public TempTokenVariable(String identifier) {
         this.identifier = identifier;
     }
+    
+    public ValueHandler getValue(ExecutionContext context) {
+        return null;
+    }    
 
     public String getIdentifier() {
         return this.identifier;
@@ -21,7 +26,7 @@ public class TempTokenVariable extends BaseValueHandler implements VariableValue
         return SimpleValueType.UNKNOWN;
     }    
 
-    public Object getValue(ExecutionContext context) {
+    public Object getObject(ExecutionContext context) {
         throw new UnsupportedOperationException( "TempTokenVariable Variable identifer='" + getIdentifier() + " cannot be read" );
     }
 

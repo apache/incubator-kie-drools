@@ -1,4 +1,4 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.ValueHandler;
@@ -22,7 +22,7 @@ public class LocalVariableValue extends BaseValueHandler implements VariableValu
         this.identifier = identifier;
         this.index = index;
     }
-    
+        
     /**
      * Retrieve the variable's identifier.
      * 
@@ -36,15 +36,17 @@ public class LocalVariableValue extends BaseValueHandler implements VariableValu
         return context.getLocalVariable( this.index ).getValueType( context );
     }
     
-    public Object getValue(ExecutionContext context) {
-        Object object = context.getLocalVariable( this.index ).getValue( context );
-        //if ( object instanceof )
-        return object;
+    public Object getObject(ExecutionContext context) {        
+        return getValue(context).getObject( context );
     }        
     
-    public ValueHandler getRawValue(ExecutionContext context) {
-        // this is a hack as some parts of the system need the ValueHandler and not the Value
-        return context.getLocalVariable( this.index );
+    public ValueHandler getValue(ExecutionContext context) {
+        ValueHandler valueHandler = context.getLocalVariable( this.index );
+        ValueHandler nested; 
+        while ( (nested = valueHandler.getValue( context ) ) != null ) {
+            valueHandler = nested;
+        }
+        return valueHandler;
     }
 
     public void setValue(ExecutionContext context,

@@ -60,16 +60,17 @@ public class Deffunction
     }
 
     public ValueHandler execute(ValueHandler[] args,
-                          ExecutionContext context) {
+                                ExecutionContext context) {
         ExecutionContext newContext = initContext( args,
                                                    context );
 
-        Object returnValue = null;
+        ValueHandler returnValue = null;
 
         for ( int i = 0, length = this.functions.length; i < length; i++ ) {
-            returnValue = this.functions[i].getValue( newContext );
+            // We know a function always returns a ValueHandler
+            returnValue = (ValueHandler) this.functions[i].getValue( newContext );
         }
-        return new ObjectValueHandler( returnValue );
+        return returnValue;
     }
 
     private ExecutionContext initContext(ValueHandler[] args,
@@ -81,7 +82,7 @@ public class Deffunction
             // We know that each argument is a local variable, so we can cast and access the underlying value handler, 
             // as we don't want the variable fully resolved at this stage, just mapped.
             newContext.setLocalVariable( i,
-                                         ((LocalVariableValue) args[i]).getRawValue( context ) );
+                                         ((LocalVariableValue) args[i]).getValue( context ) );
         }
         return newContext;
     }

@@ -2,6 +2,8 @@ grammar CLP;
 
 @parser::header {
 	package org.drools.clp;
+	
+	import org.drools.clp.valuehandlers.*;
 	import java.util.List;
 	import java.util.ArrayList;
 	import java.util.Iterator;
@@ -527,12 +529,12 @@ lisp_atom[ExecutionBuildContext context] returns[ValueHandler value]
 	}
 	:
 		(		t=VAR		{ value = context.getVariableValueHandler(t.getText() ); }
-			|	t=STRING	{ value = new ObjectLiteralValue( getString( t ) ); }
-			| 	t=NAME		{ value = new ObjectLiteralValue( t.getText() ); }			
-			|	t=FLOAT		{ value = new DoubleLiteralValue( t.getText() ); }
-			|	t=INT 		{ value = new LongLiteralValue( t.getText() ); }			
-			|	t=BOOL		{ value = new BooleanLiteralValue( t.getText() ); }						
-			|	t=NULL		{ value = ObjectLiteralValue.NULL; }
+			|	t=STRING	{ value = new ObjectValueHandler( getString( t ) ); }
+			| 	t=NAME		{ value = new ObjectValueHandler( t.getText() ); }			
+			|	t=FLOAT		{ value = new DoubleValueHandler( t.getText() ); }
+			|	t=INT 		{ value = new LongValueHandler( t.getText() ); }			
+			|	t=BOOL		{ value = new BooleanValueHandler( t.getText() ); }						
+			|	t=NULL		{ value = ObjectValueHandler.NULL; }
 		)	
 	;
 	

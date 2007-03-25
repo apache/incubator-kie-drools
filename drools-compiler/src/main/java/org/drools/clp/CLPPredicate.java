@@ -18,30 +18,30 @@ public class CLPPredicate
     PredicateExpression,
     ExecutionEngine {
     private FunctionCaller function;
-    private int      index;
-    
-    public CLPPredicate() {        
+    private int            index;
+
+    public CLPPredicate() {
     }
-    
+
     public CLPPredicate(FunctionCaller function) {
         this.function = function;
     }
 
     public void addFunction(FunctionCaller function) {
-        setFunction( function );        
+        setFunction( function );
     }
-    
+
     public void setFunction(FunctionCaller function) {
         this.function = function;
     }
-    
+
     public FunctionCaller[] getFunctions() {
-        return new FunctionCaller[] { this.function };
-    }    
-    
+        return new FunctionCaller[]{this.function};
+    }
+
     public int getNextIndex() {
-        return  this.index++;
-    }    
+        return this.index++;
+    }
 
     public boolean evaluate(Object object,
                             Tuple tuple,
@@ -51,11 +51,11 @@ public class CLPPredicate
         ExecutionContext context = new ExecutionContext( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) tuple,
                                                          object,
-                                                         this.index-1 );
+                                                         this.index - 1 );
         return this.function.getBooleanValue( context );
     }
-    
+
     public void replaceTempTokens(Map variables) {
         this.function.replaceTempTokens( variables );
-    }    
+    }
 }

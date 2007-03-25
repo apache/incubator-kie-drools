@@ -23,10 +23,10 @@ public class ExecutionBuildContext {
     public FunctionRegistry getFunctionRegistry() {
         return this.registry;
     }
-    
+
     public void addFunction(FunctionCaller function) {
         this.engine.addFunction( function );
-    }    
+    }
 
     public Object setProperty(Object key,
                               Object value) {

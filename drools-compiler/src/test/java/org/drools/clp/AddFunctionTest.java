@@ -8,6 +8,12 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.clp.functions.AddFunction;
+import org.drools.clp.valuehandlers.CLPLocalDeclarationVariable;
+import org.drools.clp.valuehandlers.CLPPreviousDeclarationVariable;
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
+import org.drools.clp.valuehandlers.TempTokenVariable;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
@@ -28,7 +34,7 @@ public class AddFunctionTest extends TestCase {
 
         assertEquals( new BigDecimal( 20 ),
                       add.execute( params,
-                                   null ).getValue( null ) );
+                                   null ).getObject( null ) );
     }
 
     public void testNestedAdd() {
@@ -46,7 +52,7 @@ public class AddFunctionTest extends TestCase {
 
         assertEquals( new BigDecimal( 30 ),
                       add.execute( params,
-                                   null ).getValue( null ) );
+                                   null ).getObject( null ) );
     }
 
     public void testNestedAddWithVars() {
@@ -63,13 +69,13 @@ public class AddFunctionTest extends TestCase {
                                      objectType );
         ColumnExtractor extractor = new ColumnExtractor( objectType );
 
-        VariableValueHandler pd = new CLPPreviousDeclarationVariable( new Declaration( "pd",
-                                                                                       extractor,
-                                                                                       column0 ) );
-
-        VariableValueHandler ld = new CLPLocalDeclarationVariable( new Declaration( "ld",
-                                                                                    extractor,
-                                                                                    column1 ) );
+//        VariableValueHandler pd = new CLPPreviousDeclarationVariable( new Declaration( "pd",
+//                                                                                       extractor,
+//                                                                                       column0 ) );
+//
+//        VariableValueHandler ld = new CLPLocalDeclarationVariable( new Declaration( "ld",
+//                                                                                    extractor,
+//                                                                                    column1 ) );
 
         Map variables = new HashMap();
         variables.put( "pd",
@@ -106,7 +112,7 @@ public class AddFunctionTest extends TestCase {
         f.replaceTempTokens( variables );
 
         assertEquals( new BigDecimal( 30 ),
-                      f.getValue( context ) ); 
+                      f.getBigDecimalValue( context ) ); 
 
     }
 }
