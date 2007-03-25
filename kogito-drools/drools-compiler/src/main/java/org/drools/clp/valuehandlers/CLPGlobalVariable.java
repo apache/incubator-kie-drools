@@ -1,7 +1,8 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import org.drools.clp.CLPFactory;
 import org.drools.clp.ExecutionContext;
+import org.drools.clp.ValueHandler;
 import org.drools.clp.VariableValueHandler;
 
 
@@ -19,7 +20,11 @@ public class CLPGlobalVariable extends BaseValueHandler implements VariableValue
         this.identifier = identifier;
         this.factory =  factory;
         this.knownType = knownType;
-    }
+    }    
+    
+    public ValueHandler getValue(ExecutionContext context) {
+        return null;
+    }    
     
     public String getIdentifier() {
         return this.identifier;
@@ -33,7 +38,7 @@ public class CLPGlobalVariable extends BaseValueHandler implements VariableValue
         return this.knownType;
     }
 
-    public Object getValue(ExecutionContext context) {
+    public Object getObject(ExecutionContext context) {
         return this.factory.getValue( this.identifier );
     }
 

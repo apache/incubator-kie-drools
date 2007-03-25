@@ -1,9 +1,10 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.clp.ExecutionContext;
+import org.drools.clp.ValueHandler;
 import org.drools.clp.VariableValueHandler;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
@@ -15,6 +16,10 @@ public class CLPPreviousDeclarationVariable implements VariableValueHandler {
     public CLPPreviousDeclarationVariable(Declaration declaration) {
         this.declaration = declaration;
     }
+    
+    public ValueHandler getValue(ExecutionContext context) {
+        return null;
+    }    
 
     public String getIdentifier() {
         return this.declaration.getIdentifier();
@@ -33,7 +38,7 @@ public class CLPPreviousDeclarationVariable implements VariableValueHandler {
         throw new UnsupportedOperationException( "External Variable identifer='" + getIdentifier() + "' type='" + getKnownType() + "' is final, it cannot be set" );
     }
     
-    public Object getValue(ExecutionContext context) {
+    public Object getObject(ExecutionContext context) {
         InternalFactHandle handle = context.getTuple().get( this.declaration );
         return declaration.getValue( handle.getObject() );
     }

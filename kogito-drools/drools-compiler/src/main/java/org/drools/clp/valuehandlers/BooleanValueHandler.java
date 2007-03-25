@@ -1,4 +1,4 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -8,7 +8,7 @@ import org.drools.clp.ExecutionContext;
 import org.drools.clp.ValueHandler;
 
 public class BooleanValueHandler implements ValueHandler {
-    private boolean booleanValue;
+    private boolean booleanValue;    
     
     public BooleanValueHandler(String booleanValue) {
         this.booleanValue = Boolean.valueOf( booleanValue ).booleanValue();
@@ -16,7 +16,11 @@ public class BooleanValueHandler implements ValueHandler {
     
     public BooleanValueHandler(boolean booleanValue) {
         this.booleanValue = booleanValue;
-    }
+    } 
+
+    public ValueHandler getValue(ExecutionContext context) {
+        return null;
+    }    
     
     public int getValueType(ExecutionContext context) {
         return SimpleValueType.BOOLEAN;
@@ -26,7 +30,7 @@ public class BooleanValueHandler implements ValueHandler {
         throw new RuntimeException( "LiteralValues cannot be set");
     }
     
-    public Object getValue(ExecutionContext context) {
+    public Object getObject(ExecutionContext context) {
         return new Boolean( this.booleanValue );
     }
     

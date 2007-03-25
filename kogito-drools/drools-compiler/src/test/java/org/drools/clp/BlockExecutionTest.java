@@ -8,6 +8,10 @@ import org.drools.Person;
 import org.drools.clp.functions.AddFunction;
 import org.drools.clp.functions.BindFunction;
 import org.drools.clp.functions.ModifyFunction;
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.ListValueHandler;
+import org.drools.clp.valuehandlers.LongValueHandler;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 public class BlockExecutionTest extends TestCase {
     

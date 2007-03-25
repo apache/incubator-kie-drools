@@ -1,4 +1,4 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -16,7 +16,11 @@ public class DoubleValueHandler implements ValueHandler {
     
     public DoubleValueHandler(double doubleValue) {
         this.doubleValue = doubleValue;
-    }
+    }   
+    
+    public ValueHandler getValue(ExecutionContext context) {
+        return null;
+    }    
     
     public int getValueType(ExecutionContext context) {
         return SimpleValueType.DECIMAL;
@@ -26,7 +30,7 @@ public class DoubleValueHandler implements ValueHandler {
         throw new RuntimeException( "LiteralValues cannot be set");
     }
     
-    public Object getValue(ExecutionContext context) {
+    public Object getObject(ExecutionContext context) {
         return new Double( this.doubleValue );
     }
     

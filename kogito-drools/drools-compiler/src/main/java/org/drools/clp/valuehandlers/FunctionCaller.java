@@ -1,4 +1,4 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,6 +23,11 @@ public class FunctionCaller
 
     public FunctionCaller(Function function) {
         this.function = function;
+    }
+
+    public ValueHandler getValue(ExecutionContext context) {
+        return this.function.execute( this.parameters,
+                                      context );
     }
 
     public int getValueType(ExecutionContext context) {
@@ -64,21 +69,9 @@ public class FunctionCaller
         return this.parameters;
     }
 
-    private ValueHandler resolveFunction(FunctionCaller caller,
-                                         ExecutionContext context) {
-        ValueHandler result = caller.getFunction().execute( caller.getParameters(),
-                                                            context );
-        if ( result instanceof FunctionCaller ) {
-            result = resolveFunction( (FunctionCaller) result,
-                                      context );
-        }
-        return result;
+    public Object getObject(ExecutionContext context) {
+        return getValue( context ).getObject( context );
     }
-    
-    public Object getValue(ExecutionContext context) {
-        return resolveFunction( this,
-                                context ).getValue( context );
-    }    
 
     public void setValue(ExecutionContext context,
                          Object object) {
@@ -99,39 +92,39 @@ public class FunctionCaller
     }
 
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
-        return resolveFunction( this, context ).getBigDecimalValue( context );
+        return getValue( context ).getBigDecimalValue( context );
     }
 
     public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException {
-        return resolveFunction( this, context ).getBigIntegerValue( context );
+        return getValue( context ).getBigIntegerValue( context );
     }
 
     public boolean getBooleanValue(ExecutionContext context) throws ClassCastException {
-        return resolveFunction( this, context ).getBooleanValue( context );
+        return getValue( context ).getBooleanValue( context );
     }
 
     public double getDoubleValue(ExecutionContext context) throws NumberFormatException {
-        return resolveFunction( this, context ).getDoubleValue( context );
+        return getValue( context ).getDoubleValue( context );
     }
 
     public float getFloatValue(ExecutionContext context) throws NumberFormatException {
-        return resolveFunction( this, context ).getFloatValue( context );
+        return getValue( context ).getFloatValue( context );
     }
 
     public int getIntValue(ExecutionContext context) throws NumberFormatException {
-        return resolveFunction( this, context ).getIntValue( context );
+        return getValue( context ).getIntValue( context );
     }
 
     public long getLongValue(ExecutionContext context) throws NumberFormatException {
-        return resolveFunction( this, context ).getLongValue( context );
+        return getValue( context ).getLongValue( context );
     }
 
     public short getShortValue(ExecutionContext context) throws NumberFormatException {
-        return resolveFunction( this, context ).getShortValue( context );
+        return getValue( context ).getShortValue( context );
     }
 
     public String getStringValue(ExecutionContext context) {
-        return resolveFunction( this, context ).getStringValue( context );
+        return getValue( context ).getStringValue( context );
     }
 
     public String toString() {

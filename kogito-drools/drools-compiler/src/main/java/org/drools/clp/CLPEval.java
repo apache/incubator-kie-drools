@@ -18,12 +18,12 @@ public class CLPEval
     EvalExpression,
     ExecutionEngine {
     private FunctionCaller function;
-    private int      index;
-    
+    private int            index;
+
     public CLPEval() {
-        
+
     }
-    
+
     public CLPEval(FunctionCaller function) {
         this.function = function;
     }
@@ -33,28 +33,28 @@ public class CLPEval
     }
 
     public void addFunction(FunctionCaller function) {
-        setFunction( function );        
+        setFunction( function );
     }
-    
+
     public FunctionCaller[] getFunctions() {
-        return new FunctionCaller[] { this.function };
-    }    
-    
+        return new FunctionCaller[]{this.function};
+    }
+
     public int getNextIndex() {
-        return  this.index++;
-    }    
-    
+        return this.index++;
+    }
+
     public boolean evaluate(Tuple tuple,
                             Declaration[] requiredDeclarations,
                             WorkingMemory workingMemory) throws Exception {
         ExecutionContext context = new ExecutionContext( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) tuple,
-                                                         this.index-1 );
+                                                         this.index - 1 );
         return this.function.getBooleanValue( context );
     }
-    
+
     public void replaceTempTokens(Map variables) {
         this.function.replaceTempTokens( variables );
-    }        
+    }
 
 }

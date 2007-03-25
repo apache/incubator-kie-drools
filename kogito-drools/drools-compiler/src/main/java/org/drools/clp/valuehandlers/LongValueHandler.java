@@ -1,4 +1,4 @@
-package org.drools.clp.ValueHandlers;
+package org.drools.clp.valuehandlers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -20,13 +20,17 @@ public class LongValueHandler implements ValueHandler {
     
     public LongValueHandler(long longValue) {
         this.longValue = longValue;
-    }
+    }   
+    
+    public ValueHandler getValue(ExecutionContext context) {
+        return null;
+    }      
 
     public void setValue(ExecutionContext context, Object value) {
         throw new RuntimeException( "LiteralValues cannot be set");
     }
     
-    public Object getValue(ExecutionContext context) {
+    public Object getObject(ExecutionContext context) {
         return new Long( this.longValue );
     }
     

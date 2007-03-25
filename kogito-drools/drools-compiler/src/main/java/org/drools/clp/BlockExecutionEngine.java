@@ -17,27 +17,31 @@ public class BlockExecutionEngine
 
     private FunctionCaller[] functions;
 
-    private int        index;               
+    private int              index;
 
     public void addFunction(FunctionCaller function) {
-        if (this.functions == null) {
-            this.functions = new FunctionCaller[] { function };
+        if ( this.functions == null ) {
+            this.functions = new FunctionCaller[]{function};
         } else {
-            FunctionCaller[] temp =  new FunctionCaller[ functions.length + 1 ];
-            System.arraycopy( this.functions, 0, temp, 0, this.functions.length );
-            temp[ temp.length - 1] = function;
-            this.functions = temp;             
-        }                     
-    } 
-    
+            FunctionCaller[] temp = new FunctionCaller[functions.length + 1];
+            System.arraycopy( this.functions,
+                              0,
+                              temp,
+                              0,
+                              this.functions.length );
+            temp[temp.length - 1] = function;
+            this.functions = temp;
+        }
+    }
+
     public FunctionCaller[] getFunctions() {
         return this.functions;
-    }    
+    }
 
     public int getNextIndex() {
-        return  this.index++;
-    }    
-    
+        return this.index++;
+    }
+
     public void execute(InternalWorkingMemory workingMemory,
                         ReteTuple tuple,
                         Object object) {
@@ -58,7 +62,7 @@ public class BlockExecutionEngine
         if ( this.functions == null ) {
             return;
         }
-        
+
         for ( int i = 0, length = functions.length; i < length; i++ ) {
             this.functions[i].getValue( context );
         }
@@ -68,7 +72,7 @@ public class BlockExecutionEngine
                          WorkingMemory workingMemory) throws Exception {
         ExecutionContext context = new ExecutionContext( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) knowledgeHelper.getTuple(),
-                                                         this.index -1 );
+                                                         this.index - 1 );
         execute( context );
     }
 

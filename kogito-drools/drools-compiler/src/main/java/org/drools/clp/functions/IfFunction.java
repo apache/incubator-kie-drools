@@ -6,35 +6,36 @@ import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.BooleanValueHandler;
-import org.drools.clp.valuehandlers.ObjectValueHandler;
 
-public class IfFunction extends BaseFunction  implements Function {
+public class IfFunction extends BaseFunction
+    implements
+    Function {
     private static final String name = "if";
 
     public IfFunction() {
-        
+
     }
-    
-    public ValueHandler execute(ValueHandler[] args, ExecutionContext context) {
+
+    public ValueHandler execute(ValueHandler[] args,
+                                ExecutionContext context) {
         boolean result = args[0].getBooleanValue( context );
         if ( result ) {
-            return new ObjectValueHandler( args[2].getValue( context ) );
+            return args[2].getValue( context );
         } else if ( args[3] != null && args[4] != null ) {
-            return new ObjectValueHandler( args[4].getValue( context ) );
-        }   else {
+            return args[4].getValue( context );
+        } else {
             return new BooleanValueHandler( result );
         }
-    }    
-    
-    
+    }
+
     public String getName() {
         return name;
-    }    
-    
+    }
+
     public LispList createList(int index) {
         return new LispForm();
     }
-    
+
     public String toString() {
         return "[Function '" + getName() + "']";
     }

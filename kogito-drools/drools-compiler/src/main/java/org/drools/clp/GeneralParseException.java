@@ -24,7 +24,7 @@ public class GeneralParseException extends RecognitionException {
      * 
      */
     private static final long serialVersionUID = -1743929851876940150L;
-    private String message;
+    private String            message;
 
     public GeneralParseException(final String message,
                                  final int line) {

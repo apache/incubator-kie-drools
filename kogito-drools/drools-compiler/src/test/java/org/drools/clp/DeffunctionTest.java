@@ -3,6 +3,9 @@ package org.drools.clp;
 import java.math.BigDecimal;
 
 import org.drools.clp.functions.AddFunction;
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.LongValueHandler;
 
 import junit.framework.TestCase;
 
@@ -30,7 +33,7 @@ public class DeffunctionTest extends TestCase {
         ValueHandler w = new LocalVariableValue("w", 1);
         w.setValue( context,  new LongValueHandler( 7 ) );
         
-        assertEquals( new BigDecimal( 17 ), function.execute( new ValueHandler[] { q, w }, context ).getValue( context ) );
+        assertEquals( new BigDecimal( 17 ), function.execute( new ValueHandler[] { q, w }, context ).getBigDecimalValue( context ) );
     }
     
     

@@ -17,7 +17,7 @@ public class FunctionDelegator
     public void setFunction(Function function) {
         this.function = function;
     }
-    
+
     public Function getFunction() {
         return this.function;
     }
@@ -35,7 +35,7 @@ public class FunctionDelegator
     }
 
     public ValueHandler execute(ValueHandler[] args,
-                          ExecutionContext context) {
+                                ExecutionContext context) {
         return function.execute( args,
                                  context );
     }

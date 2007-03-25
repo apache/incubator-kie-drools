@@ -20,12 +20,12 @@ public class CLPReturnValue
     ReturnValueExpression,
     ExecutionEngine {
     private FunctionCaller function;
-    private int index;
-    
+    private int            index;
+
     public CLPReturnValue() {
-        
+
     }
-    
+
     public CLPReturnValue(FunctionCaller function) {
         this.function = function;
     }
@@ -33,19 +33,19 @@ public class CLPReturnValue
     public void setFunction(FunctionCaller function) {
         this.function = function;
     }
-    
+
     public void addFunction(FunctionCaller function) {
-        setFunction( function );        
-    }  
-    
+        setFunction( function );
+    }
+
     public FunctionCaller[] getFunctions() {
-        return new FunctionCaller[] { this.function };
+        return new FunctionCaller[]{this.function};
     }
 
     public int getNextIndex() {
-        return  this.index++;
+        return this.index++;
     }
-    
+
     public FieldValue evaluate(Object object,
                                Tuple tuple,
                                Declaration[] previousDeclarations,
@@ -54,11 +54,11 @@ public class CLPReturnValue
         ExecutionContext context = new ExecutionContext( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) tuple,
                                                          object,
-                                                         this.index-1 );
+                                                         this.index - 1 );
         return FieldFactory.getFieldValue( this.function.getBooleanValue( context ) );
     }
-    
+
     public void replaceTempTokens(Map variables) {
         this.function.replaceTempTokens( variables );
-    }    
+    }
 }
