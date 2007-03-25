@@ -36,6 +36,9 @@ public class FunctionDelegator
 
     public ValueHandler execute(ValueHandler[] args,
                                 ExecutionContext context) {
+        if ( this.function == null ) {
+            throw new RuntimeException( "Unable to find and bine Function '" + this.name + "'" );
+        }
         return function.execute( args,
                                  context );
     }
