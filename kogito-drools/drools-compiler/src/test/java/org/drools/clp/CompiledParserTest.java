@@ -116,8 +116,22 @@ public class CompiledParserTest extends TestCase {
         context.setLocalVariable( 1, new LongValueHandler( 10 ) );
         
         engine.execute( context );        
-        assertEquals( new BigDecimal(10), context.getLocalVariable( 0 ).getObject( context ) );
-    }    
+        assertEquals( new BigDecimal(10), context.getLocalVariable( 0 ).getBigDecimalValue( context ) );
+    }   
+    
+    public void testForeach() throws Exception {
+        BlockExecutionEngine engine = ( BlockExecutionEngine ) parse("(bind ?x 0) (foreach ?e (create$ 1 2 3) (bind ?x (+ ?x ?e) ) )").rhs();
+        ExecutionContext context = new ExecutionContext(null, null, 2);
+        
+        Map vars = new HashMap();
+        
+        vars.put( "?x", new LocalVariableValue( "?x", 0 ) );  
+        engine.replaceTempTokens( vars );
+        
+        context.setLocalVariable( 0, new LongValueHandler( 0 ) );        
+        engine.execute( context );        
+        assertEquals( new BigDecimal(6), context.getLocalVariable( 0 ).getBigDecimalValue( context ) );
+    }     
     
     private CLPParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );

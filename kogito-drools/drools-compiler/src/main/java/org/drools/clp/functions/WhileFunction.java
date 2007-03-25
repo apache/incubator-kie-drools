@@ -17,10 +17,13 @@ public class WhileFunction extends BaseFunction
                                 ExecutionContext context) {
         ValueHandler result = null;
 
-        ValueHandler doHandler = args[args.length - 1];
-
-        while ( args[0].getBooleanValue( context ) ) {
-            result = doHandler.getValue( context );
+        ValueHandler doLoop = args[0];
+        
+        while ( doLoop.getBooleanValue( context ) ) {
+            for (int i = 2, length = args.length; i < length; i++ ) {
+                // iterate for each action                
+                result = args[i].getValue( context );
+            }
         }
 
         return result;
