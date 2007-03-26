@@ -31,12 +31,4 @@ public class IfFunction extends BaseFunction
     public String getName() {
         return name;
     }
-
-    public LispList createList(int index) {
-        return new LispForm();
-    }
-
-    public String toString() {
-        return "[Function '" + getName() + "']";
-    }
 }

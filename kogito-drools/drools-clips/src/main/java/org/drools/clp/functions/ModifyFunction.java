@@ -26,23 +26,7 @@ public class ModifyFunction extends BaseFunction
                                   list[1].getObject( context ) );
         }
         return null;
-    }
-
-    //    public ValueHandler execute(ValueHandler[] args, ExecutionContext context) {
-    //        Object object = resolveToObject( args[0], context ).getValue( context );        
-    //            for ( int i = 1, length = args.length; i < length; i++ ) {
-    //                ValueHandler[] list = (ValueHandler[]) args[i].getValue( context );
-    //                
-    //                ValueHandler list1 = list[1];
-    //                
-    //                if ( !list1.isResolved() ) {
-    //                    list1 = ( ValueHandler) list1.getValue( context );
-    //                }
-    //                
-    //                PropertyAccessor.set(object, resolveToObject( list[0], context ).getStringValue( context ), resolveToObject( list[1], context ).getValue( context ) );
-    //            }                
-    //        return null;
-    //    }    
+    }   
 
     public LispList createList(int index) {
         return new LispData();
