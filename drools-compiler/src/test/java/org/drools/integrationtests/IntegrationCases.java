@@ -80,6 +80,10 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.event.ObjectAssertedEvent;
+import org.drools.event.ObjectModifiedEvent;
+import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.integrationtests.helloworld.Message;
@@ -181,27 +185,27 @@ public abstract class IntegrationCases extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-        Cheese nullCheese = new Cheese(null, 2);
+        Cheese nullCheese = new Cheese( null,
+                                        2 );
         workingMemory.assertObject( nullCheese );
 
-        Person notNullPerson = new Person("shoes butt back");
-        notNullPerson.setBigDecimal( new BigDecimal("42.42") );
-        
+        Person notNullPerson = new Person( "shoes butt back" );
+        notNullPerson.setBigDecimal( new BigDecimal( "42.42" ) );
+
         workingMemory.assertObject( notNullPerson );
-        
-        Person nullPerson = new Person("whee");
+
+        Person nullPerson = new Person( "whee" );
         nullPerson.setBigDecimal( null );
-        
+
         workingMemory.assertObject( nullPerson );
-        
-        
+
         workingMemory.fireAllRules();
-        System.out.println(list.get( 0 ));
-        assertEquals( 3, list.size() );
-        
-        
+        System.out.println( list.get( 0 ) );
+        assertEquals( 3,
+                      list.size() );
+
     }
-    
+
     public void testEmptyColumn() throws Exception {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
@@ -969,7 +973,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( stilton,
                       list3.get( 0 ) );
     }
- 
+
     public void testFromWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
@@ -1694,9 +1698,9 @@ public abstract class IntegrationCases extends TestCase {
 
         final XmlDumper xmlDumper = new XmlDumper();
         final String xmlResult = xmlDumper.dump( pkg );
-        
+
         //System.out.println( xmlResult );
-        
+
         builder = new PackageBuilder();
         builder.addPackageFromXml( new StringReader( xmlResult ) );
 
@@ -3847,12 +3851,15 @@ public abstract class IntegrationCases extends TestCase {
     public void testDynamicRules() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        Cheese a = new Cheese( "stilton", 10);
-        Cheese b = new Cheese( "stilton", 15);
-        Cheese c = new Cheese( "stilton", 20);
-        workingMemory.assertObject(a);
-        workingMemory.assertObject(b);
-        workingMemory.assertObject(c);
+        Cheese a = new Cheese( "stilton",
+                               10 );
+        Cheese b = new Cheese( "stilton",
+                               15 );
+        Cheese c = new Cheese( "stilton",
+                               20 );
+        workingMemory.assertObject( a );
+        workingMemory.assertObject( b );
+        workingMemory.assertObject( c );
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules.drl" ) ) );
@@ -3867,10 +3874,14 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         // Assert some simple facts
-        FactA a = new FactA("hello", new Integer(1), new Float(3.14));
-        FactB b = new FactB("hello", new Integer(2), new Float(6.28));
-        workingMemory.assertObject(a);
-        workingMemory.assertObject(b);
+        FactA a = new FactA( "hello",
+                             new Integer( 1 ),
+                             new Float( 3.14 ) );
+        FactB b = new FactB( "hello",
+                             new Integer( 2 ),
+                             new Float( 6.28 ) );
+        workingMemory.assertObject( a );
+        workingMemory.assertObject( b );
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules2.drl" ) ) );
@@ -3889,7 +3900,7 @@ public abstract class IntegrationCases extends TestCase {
             ruleBase.addPackage( pkg );
         } catch ( RuntimeException e ) {
             e.printStackTrace();
-            fail("No exeception should be raised.");
+            fail( "No exeception should be raised." );
         }
 
     }
@@ -3907,8 +3918,8 @@ public abstract class IntegrationCases extends TestCase {
                                  result );
 
         final Primitives p1 = new Primitives();
-        p1.setPrimitiveArrayAttribute( new int[] { 1, 2, 3 } );
-        p1.setArrayAttribute( new String[] { "a","b" } );
+        p1.setPrimitiveArrayAttribute( new int[]{1, 2, 3} );
+        p1.setArrayAttribute( new String[]{"a", "b"} );
 
         workingMemory.assertObject( p1 );
 
@@ -3916,11 +3927,11 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 3,
                       result.size() );
         assertEquals( 3,
-                      ((Integer)result.get( 0 )).intValue());
+                      ((Integer) result.get( 0 )).intValue() );
         assertEquals( 2,
-                      ((Integer)result.get( 1 )).intValue());
+                      ((Integer) result.get( 1 )).intValue() );
         assertEquals( 3,
-                      ((Integer)result.get( 2 )).intValue());
+                      ((Integer) result.get( 2 )).intValue() );
 
     }
 
@@ -3937,8 +3948,9 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.setGlobal( "results",
                                      result );
 
-            final Person person = new Person("bob");
-            final Cheese cheese = new Cheese("brie", 10);
+            final Person person = new Person( "bob" );
+            final Cheese cheese = new Cheese( "brie",
+                                              10 );
 
             workingMemory.assertObject( person );
             workingMemory.assertObject( cheese );
@@ -3949,7 +3961,7 @@ public abstract class IntegrationCases extends TestCase {
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Should not raise any exception");
+            fail( "Should not raise any exception" );
         }
     }
 
@@ -3968,7 +3980,7 @@ public abstract class IntegrationCases extends TestCase {
 
         // asserting the sensor object
         final Sensor sensor = new Sensor( 150,
-                                        100 );
+                                          100 );
         final FactHandle sensorHandle = workingMemory.assertObject( sensor );
 
         workingMemory.fireAllRules();
@@ -3981,7 +3993,8 @@ public abstract class IntegrationCases extends TestCase {
 
         // modifying sensor
         sensor.setTemperature( 125 );
-        workingMemory.modifyObject( sensorHandle, sensor );
+        workingMemory.modifyObject( sensorHandle,
+                                    sensor );
         workingMemory.fireAllRules();
 
         // alarm must continue to sound
@@ -3990,10 +4003,10 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 2,
                       workingMemory.getObjects().size() );
 
-
         // modifying sensor
         sensor.setTemperature( 80 );
-        workingMemory.modifyObject( sensorHandle, sensor );
+        workingMemory.modifyObject( sensorHandle,
+                                    sensor );
         workingMemory.fireAllRules();
 
         // no alarms anymore
@@ -4003,35 +4016,43 @@ public abstract class IntegrationCases extends TestCase {
                       workingMemory.getObjects().size() );
 
     }
-    
+
     public void testRuleFlow() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         final Package pkg = builder.getPackage();
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.addProcessFromFile(new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
+        processBuilder.addProcessFromFile( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase.addProcess( processBuilder.getProcesses()[0]);
-        
+        ruleBase.addProcess( processBuilder.getProcesses()[0] );
+
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
 
         workingMemory.fireAllRules();
-        assertEquals(0, list.size());
-        
-        IProcessInstance processInstance = workingMemory.startProcess("0");
-        assertEquals(IProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals( 0,
+                      list.size() );
+
+        IProcessInstance processInstance = workingMemory.startProcess( "0" );
+        assertEquals( IProcessInstance.STATE_ACTIVE,
+                      processInstance.getState() );
         workingMemory.fireAllRules();
-        assertEquals(4, list.size());
-        assertEquals("Rule1", list.get(0));
-        assertEquals("Rule3", list.get(1));
-        assertEquals("Rule2", list.get(2));
-        assertEquals("Rule4", list.get(3));
-        assertEquals(IProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals( 4,
+                      list.size() );
+        assertEquals( "Rule1",
+                      list.get( 0 ) );
+        assertEquals( "Rule3",
+                      list.get( 1 ) );
+        assertEquals( "Rule2",
+                      list.get( 2 ) );
+        assertEquals( "Rule4",
+                      list.get( 3 ) );
+        assertEquals( IProcessInstance.STATE_COMPLETED,
+                      processInstance.getState() );
     }
 
     public void testRuleFlowGroup() throws Exception {
@@ -4041,20 +4062,22 @@ public abstract class IntegrationCases extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        
+
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
 
-        workingMemory.assertObject("Test");
+        workingMemory.assertObject( "Test" );
         workingMemory.fireAllRules();
-        assertEquals(0, list.size());
+        assertEquals( 0,
+                      list.size() );
 
-        workingMemory.getAgenda().activateRuleFlowGroup("Group1");
+        workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
         workingMemory.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertEquals( 1,
+                      list.size() );
     }
 
     public void testDuplicateVariableBinding() throws Exception {
@@ -4070,8 +4093,10 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.setGlobal( "results",
                                      result );
 
-            final Cheese stilton = new Cheese("stilton", 20);
-            final Cheese brie    = new Cheese("brie", 10);
+            final Cheese stilton = new Cheese( "stilton",
+                                               20 );
+            final Cheese brie = new Cheese( "brie",
+                                            10 );
 
             workingMemory.assertObject( stilton );
             workingMemory.assertObject( brie );
@@ -4079,24 +4104,31 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.fireAllRules();
             assertEquals( 5,
                           result.size() );
-            assertEquals( stilton.getPrice(), ((Integer)result.get( stilton.getType() )).intValue());
-            assertEquals( brie.getPrice(), ((Integer)result.get( brie.getType() )).intValue());
+            assertEquals( stilton.getPrice(),
+                          ((Integer) result.get( stilton.getType() )).intValue() );
+            assertEquals( brie.getPrice(),
+                          ((Integer) result.get( brie.getType() )).intValue() );
 
-            assertEquals( stilton.getPrice(), ((Integer)result.get( stilton )).intValue());
-            assertEquals( brie.getPrice(), ((Integer)result.get( brie )).intValue());
+            assertEquals( stilton.getPrice(),
+                          ((Integer) result.get( stilton )).intValue() );
+            assertEquals( brie.getPrice(),
+                          ((Integer) result.get( brie )).intValue() );
 
-            assertEquals( stilton.getPrice(), ((Integer)result.get( "test3"+stilton.getType() )).intValue());
-            
-            workingMemory.assertObject( new Person("bob", brie.getType()) );
+            assertEquals( stilton.getPrice(),
+                          ((Integer) result.get( "test3" + stilton.getType() )).intValue() );
+
+            workingMemory.assertObject( new Person( "bob",
+                                                    brie.getType() ) );
             workingMemory.fireAllRules();
-            
+
             assertEquals( 6,
                           result.size() );
-            assertEquals( brie.getPrice(), ((Integer)result.get( "test3"+brie.getType() )).intValue());
+            assertEquals( brie.getPrice(),
+                          ((Integer) result.get( "test3" + brie.getType() )).intValue() );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Should not raise any exception");
+            fail( "Should not raise any exception" );
         }
     }
 
@@ -4105,16 +4137,16 @@ public abstract class IntegrationCases extends TestCase {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
             final Package pkg = builder.getPackage();
-            
+
             assertFalse( pkg.isValid() );
-            assertEquals( 6, pkg.getErrorSummary().split( "\n" ).length);
-            
+            assertEquals( 6,
+                          pkg.getErrorSummary().split( "\n" ).length );
+
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Should not raise any exception");
+            fail( "Should not raise any exception" );
         }
     }
-
 
     public void testShadowProxyInHirarchies() throws Exception {
         try {
@@ -4126,13 +4158,13 @@ public abstract class IntegrationCases extends TestCase {
             ruleBase.addPackage( pkg );
             final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-            workingMemory.assertObject( new Child("gp") );
+            workingMemory.assertObject( new Child( "gp" ) );
 
             workingMemory.fireAllRules();
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Should not raise any exception");
+            fail( "Should not raise any exception" );
         }
     }
 
@@ -4145,15 +4177,20 @@ public abstract class IntegrationCases extends TestCase {
             final RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
             final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-            
+
             List results = new ArrayList();
-            workingMemory.setGlobal( "results", results );
+            workingMemory.setGlobal( "results",
+                                     results );
 
             Order order = new Order( 10 );
-            OrderItem item1 = new OrderItem( order, 1 );
-            OrderItem item2 = new OrderItem( order, 2 );
-            OrderItem anotherItem1 = new OrderItem( null, 3 );
-            OrderItem anotherItem2 = new OrderItem( null, 4 );
+            OrderItem item1 = new OrderItem( order,
+                                             1 );
+            OrderItem item2 = new OrderItem( order,
+                                             2 );
+            OrderItem anotherItem1 = new OrderItem( null,
+                                                    3 );
+            OrderItem anotherItem2 = new OrderItem( null,
+                                                    4 );
             workingMemory.assertObject( order );
             workingMemory.assertObject( item1 );
             workingMemory.assertObject( item2 );
@@ -4161,14 +4198,15 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.assertObject( anotherItem2 );
 
             workingMemory.fireAllRules();
-            
-            assertEquals( 2, results.size() );
+
+            assertEquals( 2,
+                          results.size() );
             assertTrue( results.contains( item1 ) );
             assertTrue( results.contains( item2 ) );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Should not raise any exception");
+            fail( "Should not raise any exception" );
         }
     }
 
@@ -4189,12 +4227,12 @@ public abstract class IntegrationCases extends TestCase {
         RandomNumber rn = new RandomNumber();
         rn.setValue( 10 );
         workingMemory.assertObject( rn );
-        
+
         Guess guess = new Guess();
-        guess.setValue( new Integer(5) );
-        
+        guess.setValue( new Integer( 5 ) );
+
         FactHandle handle = workingMemory.assertObject( guess );
-        
+
         workingMemory.fireAllRules();
 
         // HIGHER
@@ -4202,9 +4240,10 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
         assertEquals( "HIGHER",
                       list.get( 0 ) );
-        
-        guess.setValue( new Integer(15) );
-        workingMemory.modifyObject( handle, guess );
+
+        guess.setValue( new Integer( 15 ) );
+        workingMemory.modifyObject( handle,
+                                    guess );
 
         workingMemory.fireAllRules();
 
@@ -4213,9 +4252,10 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
         assertEquals( "LOWER",
                       list.get( 1 ) );
-        
-        guess.setValue( new Integer(10) );
-        workingMemory.modifyObject( handle, guess );
+
+        guess.setValue( new Integer( 10 ) );
+        workingMemory.modifyObject( handle,
+                                    guess );
 
         workingMemory.fireAllRules();
 
@@ -4224,8 +4264,37 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
         assertEquals( "CORRECT",
                       list.get( 2 ) );
+
+    }
+
+    public void testSkipModify() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_skipModify.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        Cheese cheese = new Cheese( "brie",
+                                    10 );
+        FactHandle handle = workingMemory.assertObject( cheese );
+
+        Person bob = new Person( "bob",
+                                 "stilton" );
+        workingMemory.assertObject( bob );
+
+        cheese.setType( "stilton" );
+        workingMemory.modifyObject( handle, cheese );
+        workingMemory.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
         
 
     }
-    
+
 }

@@ -21,6 +21,8 @@ import java.io.Serializable;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.Declaration;
+import org.drools.spi.Constraint;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -49,8 +51,6 @@ public abstract class ObjectSource extends BaseNode
     protected ObjectSource         objectSource;
 
     private int alphaNodeHashingThreshold;    
-    
-    protected boolean skipOnModify = false;
     
     // ------------------------------------------------------------
     // Constructors
@@ -105,8 +105,6 @@ public abstract class ObjectSource extends BaseNode
         } else {
             ((CompositeObjectSinkAdapter) this.sink).addObjectSink( objectSink );
         }
-        
-        this.skipOnModify = canSkipOnModify();
     }
 
     /**
@@ -129,8 +127,6 @@ public abstract class ObjectSource extends BaseNode
                 this.sink = new SingleObjectSinkAdapter( sinkAdapter.getSinks()[0] );
             }
         }   
-        
-        this.skipOnModify = canSkipOnModify();
     }
 
     public abstract void updateSink(ObjectSink sink,
@@ -141,17 +137,4 @@ public abstract class ObjectSource extends BaseNode
         return this.sink;
     }
     
-    private boolean canSkipOnModify() {
-        // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
-        ObjectSink[] sinks = this.sink.getSinks();
-        boolean hasConstraints = false;
-        for ( int i = 0; i < sinks.length; i++ ) {
-            if ( sinks[i] instanceof AlphaNode ||( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) ) {
-                hasConstraints = true;
-            }
-        }
-
-        // Can only skip if we have no constraints
-        return !hasConstraints;     
-    }
 }
