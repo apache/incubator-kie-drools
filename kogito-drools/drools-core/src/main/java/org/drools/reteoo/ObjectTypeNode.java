@@ -26,6 +26,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.Declaration;
+import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
@@ -73,6 +75,8 @@ public class ObjectTypeNode extends ObjectSource
     /** The parent Rete node */
     private final Rete        rete;   
 
+    protected boolean skipOnModify = false;
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -299,4 +303,64 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType.equals( other.objectType );
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected void addObjectSink(final ObjectSink objectSink) {
+        super.addObjectSink( objectSink );
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected void removeObjectSink(final ObjectSink objectSink) {
+        super.removeObjectSink( objectSink );
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
+    }
+
+
+    /**
+     * Checks if a modify action on this object type may
+     * be skipped because no constraint is applied to it
+     *  
+     * @param sinks
+     * @return
+     */
+    private boolean canSkipOnModify( Sink[] sinks ) {
+        // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
+        boolean hasConstraints = false;
+        for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
+            if ( sinks[i] instanceof AlphaNode ) {
+                hasConstraints = this.usesDeclaration( ((AlphaNode) sinks[i]).getConstraint() );
+            } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
+                hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
+            } 
+            if( !hasConstraints && sinks[i] instanceof ObjectSource ) {
+                hasConstraints = this.canSkipOnModify( ((ObjectSource)sinks[i]).getSinkPropagator().getSinks() );
+            } else if ( sinks[i] instanceof TupleSource ) {
+                hasConstraints = this.canSkipOnModify( ((TupleSource)sinks[i]).getSinkPropagator().getSinks() );
+            }
+        }
+
+        // Can only skip if we have no constraints
+        return !hasConstraints;     
+    }
+    
+    private boolean usesDeclaration( Constraint[] constraints ) {
+        boolean usesDecl = false;
+        for( int i = 0; !usesDecl && i < constraints.length; i++ ) {
+            usesDecl = this.usesDeclaration( constraints[i] );
+        }
+        return usesDecl;
+    }
+
+    private boolean usesDeclaration( Constraint constraint ) {
+        boolean usesDecl = false;
+        Declaration[] declarations = constraint.getRequiredDeclarations();
+        for( int j = 0; !usesDecl && j < declarations.length; j++ ) {
+            usesDecl = ( declarations[j].getColumn().getObjectType() == this.objectType );
+        }
+        return usesDecl;
+    }
 }

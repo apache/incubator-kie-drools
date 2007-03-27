@@ -1,0 +1,25 @@
+package org.drools;
+
+global java.util.List results;
+
+rule testSkipModify
+   when 
+       Cheese( $type : type )
+       Person( )
+       Person( likes == $type )
+       Person( $likes : likes, ( $likes.equals( $type ) ) )
+       eval( $likes.equals( $type ) )
+   then
+       results.add( "FIRED" );
+end
+
+rule testSkipModify2
+   when 
+       Cheese( )
+       Person( )
+       Person( likes == "stilton" )
+       Person( $likes : likes, ( $likes.equals( "stilton" ) ) )
+       eval( $likes.equals( "stilton" ) )
+   then
+       results.add( "FIRED" );
+end
