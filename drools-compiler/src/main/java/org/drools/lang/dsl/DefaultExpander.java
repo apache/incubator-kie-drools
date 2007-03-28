@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.DroolsError;
 import org.drools.lang.Expander;
 import org.drools.lang.ExpanderException;
 
@@ -297,7 +298,7 @@ public class DefaultExpander
         return buf.toString();
     }
 
-    private void addError( Exception error ) {
+    private void addError( DroolsError error ) {
         if( this.errors == Collections.EMPTY_LIST ) {
             this.errors = new LinkedList();
         }

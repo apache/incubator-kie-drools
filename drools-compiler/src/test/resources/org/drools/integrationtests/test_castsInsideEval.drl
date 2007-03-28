@@ -1,0 +1,14 @@
+package org.drools;
+
+global java.lang.Integer value;
+
+function boolean isEqual( Integer v1, Integer v2 ) {
+    return v1.equals( v2 );
+}
+
+rule "test casts"
+when
+    eval( isEqual((Integer) value, (Integer)value ) )
+then
+    // rule fired
+end

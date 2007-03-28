@@ -4314,4 +4314,30 @@ public abstract class IntegrationCases extends TestCase {
                       results.size() );
     }
 
+    public void testCastingInsideEvals() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_castsInsideEval.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        workingMemory.setGlobal( "value", new Integer( 20 ) );
+
+        workingMemory.fireAllRules();
+    }
+
+    public void testEmptyDSL() throws Exception {
+        final String DSL = "# This is an empty dsl file.";
+        final PackageBuilder builder = new PackageBuilder();
+        Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "literal_rule.drl" ) );
+        Reader dslReader = new StringReader( DSL );
+        
+        builder.addPackageFromDrl( drlReader, dslReader );
+        final Package pkg = builder.getPackage();
+        
+        assertFalse( pkg.isValid() );
+    }
+
 }
