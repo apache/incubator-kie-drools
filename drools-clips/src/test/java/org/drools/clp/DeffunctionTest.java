@@ -2,7 +2,7 @@ package org.drools.clp;
 
 import java.math.BigDecimal;
 
-import org.drools.clp.functions.AddFunction;
+import org.drools.clp.functions.PlusFunction;
 import org.drools.clp.valuehandlers.FunctionCaller;
 import org.drools.clp.valuehandlers.LocalVariableValue;
 import org.drools.clp.valuehandlers.LongValueHandler;
@@ -19,7 +19,7 @@ public class DeffunctionTest extends TestCase {
         ValueHandler b = new LocalVariableValue("b", 1);
         function.addParameter( b );
         
-        Function add = new AddFunction();
+        Function add = new PlusFunction();
         FunctionCaller caller = new FunctionCaller(add);
         caller.addParameter( a );
         caller.addParameter( b );
