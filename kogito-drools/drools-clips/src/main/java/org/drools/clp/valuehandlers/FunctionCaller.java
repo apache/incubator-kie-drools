@@ -79,6 +79,9 @@ public class FunctionCaller
     }
 
     public void replaceTempTokens(Map variables) {
+        if ( this.parameters == null ) {
+            return;
+        }
         for ( int i = 0, length = this.parameters.length; i < length; i++ ) {
             if ( this.parameters[i] instanceof TempTokenVariable ) {
                 TempTokenVariable var = (TempTokenVariable) this.parameters[i];
@@ -129,6 +132,10 @@ public class FunctionCaller
 
     public String toString() {
         return "[FunctionCaller " + this.function + "]";
+    }
+    
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        return this == other;
     }
 
 }

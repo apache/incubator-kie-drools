@@ -92,5 +92,9 @@ public class DoubleValueHandler implements ValueHandler {
         return true;
     }
     
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        return getDoubleValue( context ) == other.getDoubleValue( context );        
+    }     
+    
     
 }

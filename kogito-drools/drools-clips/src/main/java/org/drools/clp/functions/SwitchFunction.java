@@ -1,11 +1,15 @@
 package org.drools.clp.functions;
 
+import org.drools.clp.ExecutionBuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
+import org.drools.clp.valuehandlers.BaseValueHandler;
 import org.drools.clp.valuehandlers.BooleanValueHandler;
+import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.TempTokenVariable;
 
 public class SwitchFunction extends BaseFunction
     implements
@@ -15,34 +19,38 @@ public class SwitchFunction extends BaseFunction
     public SwitchFunction() {
 
     }
+    
+    public ValueHandler addParameterCallback(int index,
+                                             ValueHandler valueHandler,
+                                             ExecutionBuildContext context) {
+        if ( index == 0 ) {
+            if ( !(valueHandler instanceof LocalVariableValue ) ) {
+                // this should already be bound as a local variable
+                throw new RuntimeException( "The variable must already have been declared to use it in a switch statement" );
+            } else {
+                context.setProperty( "switch-variable", valueHandler );
+            }
+        }
+
+        return valueHandler;
+    }     
 
     public ValueHandler execute(ValueHandler[] args,
-                                ExecutionContext context) {
-        ValueHandler value = args[0].getValue( context );
-        
+                                ExecutionContext context) {        
         ValueHandler result = null;
         
-        //ValueHandler
+        // binds the variable for the case function to use
+        args[0].getValue( context );
         
-        for (int j = 2, length = args.length; j < length; j++ ) {
-            
-            
-            // iterate for each action
-            //result = args[j].getValue( context );
-            
+        // now its bound we can execute each case statement in turn
+        for (int i = 1, length = args.length; i < length; i++ ) {
+            result = args[i].getValue( context );   
+            if ( result == BaseValueHandler.BREAK ) {
+                break;
+            }
         }   
         
         return result;
-        
-        /*
-        if ( result ) {
-            return args[2].getValue( context );
-        } else if ( args[3] != null && args[4] != null ) {
-            return args[4].getValue( context );
-        } else {
-            return new BooleanValueHandler( result );
-        }
-        */
     }
 
     public String getName() {

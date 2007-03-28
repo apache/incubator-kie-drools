@@ -39,6 +39,9 @@ public class BuiltinFunctions {
 
         try {
             while ( (line = reader.readLine()) != null ) {
+                if ( line.startsWith( "#" ) || line.equals( "" )) {
+                    continue;
+                }
                 Class clazz = getClass().getClassLoader().loadClass( line );
                 Function function = (Function) clazz.newInstance();
                 this.functions.put( function.getName(),

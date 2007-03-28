@@ -7,6 +7,8 @@ import org.drools.clp.ExecutionContext;
 import org.drools.clp.ValueHandler;
 
 public abstract class BaseValueHandler implements ValueHandler {        
+    public static final ObjectValueHandler NULL = new ObjectValueHandler( "null" );    
+    public static final ObjectValueHandler BREAK = new ObjectValueHandler( "break" );    
     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
         Object object = getObject( context );        
@@ -51,7 +53,7 @@ public abstract class BaseValueHandler implements ValueHandler {
     }
 
     public String getStringValue(ExecutionContext context) {
-        return (String) getObject(context);
+        return getObject(context).toString();
     }      
     
     public String toString() {
@@ -63,5 +65,12 @@ public abstract class BaseValueHandler implements ValueHandler {
             return "[" + name + " value = N/A]";
         }
     }
+    
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        Object o1 = getObject(context);
+        Object o2 = other.getObject( context );
+        return o1.equals(o2);
+    }
+    
     
 }

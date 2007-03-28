@@ -20,7 +20,7 @@ import org.drools.compiler.SwitchingCommonTokenStream;
 
 import junit.framework.TestCase;
 
-public class CompiledParserTest extends TestCase {
+public class CompiledFunctionsTest extends TestCase {
     private CLPParser parser;
 
     public void testBindAndModify() throws Exception {
@@ -171,20 +171,47 @@ public class CompiledParserTest extends TestCase {
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
-
-        Map vars = new HashMap();
-
-        vars.put( "?x",
-                  new LocalVariableValue( "?x",
-                                          0 ) );
-        engine.replaceTempTokens( vars );
-
-        context.setLocalVariable( 0,
-                                  new LongValueHandler( 0 ) );
         engine.execute( context );
         assertEquals( new BigDecimal( 6 ),
                       context.getLocalVariable( 0 ).getBigDecimalValue( context ) );
     }
+    
+    public void testSwitch() throws Exception {
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?cheese ?var) (switch ?cheese (case stilton then (bind ?x ?cheese ) (printout t xxx (eq 1 1) (create$ x y) zzz) (break) ) (case cheddar then (bind ?x ?cheese ) (break) ) (default (bind ?x \"default\" ) ) )" ).rhs();
+        ExecutionContext context = new ExecutionContext( null,
+                                                         null,
+                                                         3 );
+
+        Map vars = new HashMap();
+
+        vars.put( "?var",
+                  new LocalVariableValue( "?var",
+                                          2 ) );        
+        engine.replaceTempTokens( vars );
+
+        // try it with stilton
+        context.setLocalVariable( 2,
+                                  new ObjectValueHandler( "stilton" ) );
+        engine.execute( context );        
+        assertEquals( "stilton" ,
+                      context.getLocalVariable( 1 ).getObject( context ) );
+
+        // try it with cheddar        
+        context.setLocalVariable( 2,
+                                  new ObjectValueHandler( "cheddar" ) );
+        engine.execute( context );        
+        assertEquals( "cheddar" ,
+                      context.getLocalVariable( 1 ).getObject( context ) );        
+        
+        // try it with a brie, which has no matching case        
+        context.setLocalVariable( 2,
+                                  new ObjectValueHandler( "brie" ) );
+        engine.execute( context );        
+        assertEquals( "default" ,
+                      context.getLocalVariable( 1 ).getObject( context ) );          
+        
+        
+    }    
 
     private CLPParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );

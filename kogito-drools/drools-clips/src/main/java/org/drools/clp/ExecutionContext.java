@@ -1,5 +1,10 @@
 package org.drools.clp;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 
@@ -8,6 +13,7 @@ public class ExecutionContext {
     private ReteTuple             tuple;
     private Object                object;
     private ValueHandler[]        localVariables;
+    private Map                   printoutRouters;             
 
     public ExecutionContext(InternalWorkingMemory workingMemory,
                             ReteTuple tuple,
@@ -26,6 +32,16 @@ public class ExecutionContext {
         this.tuple = tuple;
         this.object = object;
         this.localVariables = new ValueHandler[localVariableSize];
+        this.printoutRouters = new HashMap();
+        this.printoutRouters.put( "t", System.out );
+    }
+    
+    public void setPrintoutRouters(Map printoutRouters) {
+        this.printoutRouters = printoutRouters;
+    }
+    
+    public PrintStream getPrintoutRouters(String identifier) {
+        return ( PrintStream ) this.printoutRouters.get( identifier );
     }
 
     public ReteTuple getTuple() {
