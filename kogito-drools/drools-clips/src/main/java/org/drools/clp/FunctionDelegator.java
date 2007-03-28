@@ -1,5 +1,7 @@
 package org.drools.clp;
 
+import org.drools.clp.valuehandlers.FunctionCaller;
+
 public class FunctionDelegator
     implements
     Function {
@@ -23,11 +25,18 @@ public class FunctionDelegator
     }
 
     public ValueHandler addParameterCallback(int index,
+                                             FunctionCaller caller,
                                              ValueHandler valueHandler,
                                              ExecutionBuildContext context) {
-        return this.function.addParameterCallback( 0,
-                                                   valueHandler,
-                                                   context );
+        if ( this.function == null ) {
+            caller.addParameter( valueHandler );
+        } else {
+            valueHandler = this.function.addParameterCallback( 0,
+                                                               caller,
+                                                               valueHandler,
+                                                               context );
+        }
+        return valueHandler;
     }
 
     public void initCallback(ExecutionBuildContext context) {

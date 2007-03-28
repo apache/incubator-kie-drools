@@ -1,15 +1,11 @@
 package org.drools.clp.functions;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.drools.base.SimpleValueType;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
-import org.drools.clp.FunctionDelegator;
 import org.drools.clp.ValueHandler;
-import org.drools.clp.valuehandlers.BaseValueHandler;
-import org.drools.clp.valuehandlers.BooleanValueHandler;
 import org.drools.clp.valuehandlers.ListValueHandler;
 
 public class PrintoutFunction extends BaseFunction
@@ -33,7 +29,7 @@ public class PrintoutFunction extends BaseFunction
                     route.print( list[j].getStringValue( context ) );
                 }
             } else {
-                System.out.print( args[i].getStringValue( context ) );
+                route.print( args[i].getStringValue( context ) );
             }
         }
         
