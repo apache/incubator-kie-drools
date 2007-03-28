@@ -1,7 +1,9 @@
 package org.drools.clp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -23,6 +25,25 @@ import junit.framework.TestCase;
 public class CompiledFunctionsTest extends TestCase {
     private CLPParser parser;
 
+    public void testPrintout() throws Exception {        
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(printout d xx (eq 1 1) ?c (create$ (+ 1 1) x y) zzz)" ).rhs();
+        ExecutionContext context = new ExecutionContext( null,
+                                                         null,
+                                                         1 );
+
+        Map vars = new HashMap();
+        vars.put( "?c",
+                  new ObjectValueHandler( "brie" ) );
+        engine.replaceTempTokens( vars );
+
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();                
+        context.addPrintoutRouter( "d", new PrintStream(bais) );
+        
+        engine.execute( context );
+        
+        assertEquals( "xxtruebrie2xyzzz", new String( bais.toByteArray() ) );
+    }
+    
     public void testBindAndModify() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (+ 20 11) ) (modify ?p (age ?x) )" ).rhs();
         ExecutionContext context = new ExecutionContext( null,
@@ -109,7 +130,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
 
     public void testIf() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(if (< ?x ?y ) then (modify ?p (age 15) ) else (modify ?p (age 5)))" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(if (< ?x ?y ) then (modify ?p (age 15) ) (printout d 15) else (modify ?p (age 5)) (printout d 5) )" ).rhs();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -127,21 +148,27 @@ public class CompiledFunctionsTest extends TestCase {
         engine.replaceTempTokens( vars );
 
         context.setLocalVariable( 0,
-                                  new LongValueHandler( 20 ) );
-
+                                  new LongValueHandler( 20 ) );        
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();                
+        context.addPrintoutRouter( "d", new PrintStream(bais) );        
         engine.execute( context );
         assertEquals( 15,
                       p.getAge() );
-
+        assertEquals( "15", new String( bais.toByteArray() ) );
+        
+        
         context.setLocalVariable( 0,
                                   new LongValueHandler( 7 ) );
+        bais = new ByteArrayOutputStream();                
+        context.addPrintoutRouter( "d", new PrintStream(bais) );          
         engine.execute( context );
         assertEquals( 5,
                       p.getAge() );
+        assertEquals( "5", new String( bais.toByteArray() ) );
     }
 
-    public void testWhile() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(while (< ?x ?y) do (bind ?x (+ ?x 1) ) )" ).rhs();
+    public void testWhile() throws Exception {               
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(while (< ?x ?y) do (bind ?x (+ ?x 1)) (printout d ?x \" \") )" ).rhs();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -160,24 +187,35 @@ public class CompiledFunctionsTest extends TestCase {
                                   new LongValueHandler( 0 ) );
         context.setLocalVariable( 1,
                                   new LongValueHandler( 10 ) );
+        
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();              
+        context.addPrintoutRouter( "d", new PrintStream(bais) );                                
 
         engine.execute( context );
         assertEquals( new BigDecimal( 10 ),
                       context.getLocalVariable( 0 ).getBigDecimalValue( context ) );
+        
+        assertEquals( "1 2 3 4 5 6 7 8 9 10 ", new String( bais.toByteArray() ) );        
     }
 
     public void testForeach() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x 0) (foreach ?e (create$ 1 2 3) (bind ?x (+ ?x ?e) ) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x 0) (foreach ?e (create$ 1 2 3) (bind ?x (+ ?x ?e) ) (printout d ?x \" \") )" ).rhs();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
+        
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();              
+        context.addPrintoutRouter( "d", new PrintStream(bais) );         
+        
         engine.execute( context );
         assertEquals( new BigDecimal( 6 ),
                       context.getLocalVariable( 0 ).getBigDecimalValue( context ) );
+        
+        assertEquals( "1 3 6 ", new String( bais.toByteArray() ) );          
     }
     
     public void testSwitch() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?cheese ?var) (switch ?cheese (case stilton then (bind ?x ?cheese ) (printout t xxx (eq 1 1) (create$ x y) zzz) (break) ) (case cheddar then (bind ?x ?cheese ) (break) ) (default (bind ?x \"default\" ) ) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?cheese ?var) (switch ?cheese (case stilton then (bind ?x ?cheese ) (break) ) (case cheddar then (bind ?x ?cheese ) (break) ) (default (bind ?x \"default\" ) ) )" ).rhs();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          3 );

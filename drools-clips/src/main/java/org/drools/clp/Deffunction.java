@@ -51,8 +51,10 @@ public class Deffunction
     }
 
     public ValueHandler addParameterCallback(int index,
+                                             FunctionCaller caller,
                                              ValueHandler valueHandler,
                                              ExecutionBuildContext context) {
+        caller.addParameter( valueHandler );
         return valueHandler;
     }
 

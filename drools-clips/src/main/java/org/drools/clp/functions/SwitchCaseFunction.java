@@ -21,15 +21,19 @@ public class SwitchCaseFunction extends BaseFunction
     }
 
     public ValueHandler addParameterCallback(int index,
+                                             FunctionCaller caller,
                                              ValueHandler valueHandler,
                                              ExecutionBuildContext context) {
         if ( index == 0 ) {
             // swap the element for an equality check        
-            FunctionCaller caller  = new FunctionCaller( context.getFunctionRegistry().getFunction( "eq" ) );
-            caller.addParameter( (ValueHandler) context.getProperty( "switch-variable"  ) );
-            caller.addParameter( valueHandler );
-            valueHandler = caller;
+            FunctionCaller switchCaller  = new FunctionCaller( context.getFunctionRegistry().getFunction( "eq" ) );
+            switchCaller.addParameter( (ValueHandler) context.getProperty( "switch-variable"  ) );
+            switchCaller.addParameter( valueHandler );
+            valueHandler = switchCaller;
         }
+        
+        caller.addParameter( valueHandler );
+        
         return valueHandler;
     }      
     

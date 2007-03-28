@@ -40,6 +40,10 @@ public class ExecutionContext {
         this.printoutRouters = printoutRouters;
     }
     
+    public void addPrintoutRouter(String identifier, PrintStream stream) {
+        this.printoutRouters.put( identifier, stream );
+    }
+    
     public PrintStream getPrintoutRouters(String identifier) {
         return ( PrintStream ) this.printoutRouters.get( identifier );
     }

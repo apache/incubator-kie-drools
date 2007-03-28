@@ -40,11 +40,12 @@ public class LispForm
                 } else {
                     length = (this.caller == null) ? 0 : this.caller.getParameters().length;
                 }
-                valueHandler = delegator.getFunction().addParameterCallback( length,
-                                                                             valueHandler,
-                                                                             context );
+                delegator.getFunction().addParameterCallback( length,
+                                                              this.caller,
+                                                              valueHandler,
+                                                              context );
             }
-            this.caller.addParameter( valueHandler );
+            //this.caller.addParameter( valueHandler );
 
         }
     }

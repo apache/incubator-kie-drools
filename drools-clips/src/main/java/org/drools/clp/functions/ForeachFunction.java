@@ -5,6 +5,7 @@ import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.BaseValueHandler;
+import org.drools.clp.valuehandlers.FunctionCaller;
 import org.drools.clp.valuehandlers.ListValueHandler;
 import org.drools.clp.valuehandlers.TempTokenVariable;
 
@@ -18,6 +19,7 @@ public class ForeachFunction extends BaseFunction
     }
     
     public ValueHandler addParameterCallback(int index,
+                                             FunctionCaller caller,
                                              ValueHandler valueHandler,
                                              ExecutionBuildContext context) {
         // The first index in the 'foreach' function is the variable
@@ -26,6 +28,8 @@ public class ForeachFunction extends BaseFunction
             TempTokenVariable temp = (TempTokenVariable) valueHandler;
             valueHandler = context.createLocalVariable( temp.getIdentifier() );
         }
+        
+        caller.addParameter( valueHandler );
 
         return valueHandler;
     }    

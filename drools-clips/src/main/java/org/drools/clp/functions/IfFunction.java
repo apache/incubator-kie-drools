@@ -1,11 +1,17 @@
 package org.drools.clp.functions;
 
+import org.drools.clp.ExecutionBuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.BooleanValueHandler;
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.ListValueHandler;
+import org.drools.clp.valuehandlers.LongValueHandler;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
+import org.drools.clp.valuehandlers.TempTokenVariable;
 
 public class IfFunction extends BaseFunction
     implements
@@ -15,17 +21,55 @@ public class IfFunction extends BaseFunction
     public IfFunction() {
 
     }
+    
+    public ValueHandler addParameterCallback(int index,
+                                             FunctionCaller caller,
+                                             ValueHandler valueHandler,
+                                             ExecutionBuildContext context) {
+        // We need to determine and store the 'else' location so that we don't have to "seach" for it at runtime
+        // we rewrite the conditional function into a list, the first element stores the original
+        
+        if ( index == 0 ) {
+            // we are at the conditional element, rewrite it so it can hold the 'else' position
+            ListValueHandler list = new ListValueHandler();
+            list.add( valueHandler );
+            valueHandler = list;
+        } else if ( valueHandler instanceof ObjectValueHandler ) {
+            String token = valueHandler.getStringValue( null );
+            if ( token.equals( "else" ) ) {
+                ((ListValueHandler) caller.getParameters()[0]).add( new LongValueHandler( index + 1 ) );
+            }
+        }
+        
+        caller.addParameter( valueHandler );
+
+        return valueHandler;
+    }    
 
     public ValueHandler execute(ValueHandler[] args,
                                 ExecutionContext context) {
-        boolean result = args[0].getBooleanValue( context );
-        if ( result ) {
-            return args[2].getValue( context );
-        } else if ( args[3] != null && args[4] != null ) {
-            return args[4].getValue( context );
-        } else {
-            return new BooleanValueHandler( result );
+        ValueHandler[] list = ((ListValueHandler)args[0]).getList();
+        
+         ValueHandler result = null;      
+        
+        int elseIndex = args.length;
+        if ( list.length == 2 ) {
+            elseIndex = list[1].getIntValue( context );
         }
+        
+        if ( list[0].getBooleanValue( context ) ) {
+            for ( int i = 0; i < elseIndex; i++ ) {
+                result = args[i].getValue( context );
+            }
+        } else if ( elseIndex != args.length) {
+            for ( int i = elseIndex; i < args.length; i++ ) {
+                result = args[i].getValue( context );
+            }            
+        } else {
+            result = new BooleanValueHandler( false );
+        }
+        
+        return result;
     }
 
     public String getName() {

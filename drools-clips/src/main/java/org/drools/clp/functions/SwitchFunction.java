@@ -8,6 +8,7 @@ import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.BaseValueHandler;
 import org.drools.clp.valuehandlers.BooleanValueHandler;
+import org.drools.clp.valuehandlers.FunctionCaller;
 import org.drools.clp.valuehandlers.LocalVariableValue;
 import org.drools.clp.valuehandlers.TempTokenVariable;
 
@@ -21,6 +22,7 @@ public class SwitchFunction extends BaseFunction
     }
     
     public ValueHandler addParameterCallback(int index,
+                                             FunctionCaller caller,
                                              ValueHandler valueHandler,
                                              ExecutionBuildContext context) {
         if ( index == 0 ) {
@@ -31,6 +33,8 @@ public class SwitchFunction extends BaseFunction
                 context.setProperty( "switch-variable", valueHandler );
             }
         }
+        
+        caller.addParameter( valueHandler );
 
         return valueHandler;
     }     

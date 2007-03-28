@@ -6,6 +6,7 @@ import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
+import org.drools.clp.valuehandlers.FunctionCaller;
 
 public abstract class BaseFunction
     implements
@@ -16,8 +17,10 @@ public abstract class BaseFunction
     }
 
     public ValueHandler addParameterCallback(int index,
+                                             FunctionCaller caller,
                                              ValueHandler valueHandler,
                                              ExecutionBuildContext context) {
+        caller.addParameter( valueHandler );
         return valueHandler;
     }
 
