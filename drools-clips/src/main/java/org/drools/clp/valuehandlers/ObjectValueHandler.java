@@ -4,9 +4,7 @@ import org.drools.base.SimpleValueType;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.ValueHandler;
 
-public class ObjectValueHandler extends BaseValueHandler {
-    public static final ObjectValueHandler NULL = new ObjectValueHandler( "null" );    
-    
+public class ObjectValueHandler extends BaseValueHandler {    
     private Object objectValue;       
     
     public ObjectValueHandler(Object objectValue) {
@@ -27,6 +25,6 @@ public class ObjectValueHandler extends BaseValueHandler {
     
     public Object getObject(ExecutionContext context) {
         return this.objectValue;
-    }
-
+    }    
+    
 }

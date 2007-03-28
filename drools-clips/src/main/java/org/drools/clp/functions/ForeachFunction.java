@@ -4,6 +4,7 @@ import org.drools.clp.ExecutionBuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.ValueHandler;
+import org.drools.clp.valuehandlers.BaseValueHandler;
 import org.drools.clp.valuehandlers.ListValueHandler;
 import org.drools.clp.valuehandlers.TempTokenVariable;
 
@@ -50,6 +51,13 @@ public class ForeachFunction extends BaseFunction
             for (int j = 2, length2 = args.length; j < length2; j++ ) {
                 // iterate for each action
                 result = args[j].getValue( context );
+                if ( result == BaseValueHandler.BREAK ) {
+                    break;
+                }
+            }
+            if ( result == BaseValueHandler.BREAK ) {
+                // need to do this twice as its a nested loop here, a single loop in the lisp
+                break;
             }            
         }
 

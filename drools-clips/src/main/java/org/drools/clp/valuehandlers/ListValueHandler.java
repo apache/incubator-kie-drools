@@ -151,4 +151,13 @@ public class ListValueHandler
 
         return b.toString();
     }
+    
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        for ( int i = 0, length = this.list.length; i < length; i++ ) {
+            if ( !getValue( context ).equals( other.getValue( context ), context) ) {
+                return false;
+            }
+        }         
+        return true;
+    }     
 }

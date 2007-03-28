@@ -30,7 +30,7 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 
-public class ClpParserTest extends TestCase {
+public class LhsClpParserTest extends TestCase {
 
     private CLPParser parser;
     

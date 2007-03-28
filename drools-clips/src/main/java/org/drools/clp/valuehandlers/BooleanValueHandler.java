@@ -90,5 +90,7 @@ public class BooleanValueHandler implements ValueHandler {
         return true;
     }
     
-    
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        return getBooleanValue( context ) == other.getBooleanValue( context );
+    }
 }

@@ -91,5 +91,10 @@ public class CLPLocalDeclarationVariable implements VariableValueHandler {
         String name = getClass().getName();
         name = name.substring( name.lastIndexOf( "." ) + 1 );
         return "[" + name + " identifier = '" + getIdentifier()  + "']";
+    }  
+    
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        // FIXME
+        return false;
     }    
 }

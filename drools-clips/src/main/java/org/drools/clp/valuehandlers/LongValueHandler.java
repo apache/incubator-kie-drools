@@ -90,5 +90,8 @@ public class LongValueHandler implements ValueHandler {
         return true;
     }      
     
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        return getLongValue( context ) == other.getLongValue( context );        
+    } 
     
 }

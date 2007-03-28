@@ -64,4 +64,6 @@ public interface ValueHandler {
      */     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException;
 
+    
+    public boolean equals(ValueHandler other, ExecutionContext context);
 }

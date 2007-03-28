@@ -103,5 +103,10 @@ public class CLPPreviousDeclarationVariable implements VariableValueHandler {
         name = name.substring( name.lastIndexOf( "." ) + 1 );
         return "[" + name + " identifier = '" + getIdentifier()  + "']";
     }    
+    
+    public boolean equals(ValueHandler other, ExecutionContext context) {
+        // FIXME
+        return false;
+    }        
         
 }
