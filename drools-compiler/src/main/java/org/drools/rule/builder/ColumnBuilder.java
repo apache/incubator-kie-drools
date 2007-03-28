@@ -19,9 +19,7 @@ package org.drools.rule.builder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.antlr.stringtemplate.StringTemplate;
 import org.apache.commons.jci.utils.ClassUtils;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -56,8 +54,6 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.java.BuildUtils;
-import org.drools.rule.builder.dialect.java.JavaPredicateBuilder;
-import org.drools.rule.builder.dialect.java.JavaReturnValueBuilder;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
@@ -365,10 +361,14 @@ public class ColumnBuilder {
                        final BuildUtils utils,
                        final Column column,
                        final PredicateDescr predicateDescr) {
+
+        // this will return an array with 3 lists
+        // where first list is from rule local variables
+        // second list is from global variables
+        // and third is for unbound variables
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
                                                                  predicateDescr,
                                                                  predicateDescr.getContent() );
-
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -379,6 +379,13 @@ public class ColumnBuilder {
                 tupleDeclarations.add( decl );
             }
         }
+        final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
+        this.createImplicitBindings( context,
+                                     utils,
+                                     column,
+                                     usedIdentifiers[NOT_BOUND_INDEX],
+                                     factDeclarations );
+
         Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
         Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
 
@@ -396,6 +403,41 @@ public class ColumnBuilder {
                        predicateConstraint,
                        predicateDescr );
 
+    }
+
+    /**
+     * @param context
+     * @param utils
+     * @param column
+     * @param usedIdentifiers
+     * @param NOT_BOUND_INDEX
+     * @param factDeclarations
+     */
+    private void createImplicitBindings(final BuildContext context,
+                                        final BuildUtils utils,
+                                        final Column column,
+                                        final List unboundIdentifiers,
+                                        final List factDeclarations) {
+        // the following will create the implicit bindings
+        for ( int i = 0, size = unboundIdentifiers.size(); i < size; i++ ) {
+            String identifier = (String) unboundIdentifiers.get( i );
+            FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
+                                                                       identifier );
+
+            final FieldExtractor extractor = getFieldExtractor( context,
+                                                                utils,
+                                                                implicitBinding,
+                                                                column.getObjectType(),
+                                                                implicitBinding.getFieldName() );
+            if ( extractor == null ) {
+                continue;
+            }
+
+            final Declaration declaration = new Declaration( identifier,
+                                                             extractor,
+                                                             column );
+            factDeclarations.add( declaration );
+        }
     }
 
     private Restriction buildRestriction(final BuildContext context,
@@ -536,6 +578,13 @@ public class ColumnBuilder {
                 tupleDeclarations.add( declaration );
             }
         }
+
+        final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
+        this.createImplicitBindings( context,
+                                     utils,
+                                     column,
+                                     usedIdentifiers[NOT_BOUND_INDEX],
+                                     factDeclarations );
 
         final Evaluator evaluator = getEvaluator( context,
                                                   returnValueRestrictionDescr,

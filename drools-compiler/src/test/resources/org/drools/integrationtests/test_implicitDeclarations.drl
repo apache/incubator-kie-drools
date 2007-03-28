@@ -1,0 +1,15 @@
+package org.drools;
+
+global java.util.List results;
+
+global java.lang.Double factor;
+
+rule "test implicit declarations"
+	when
+ 	    // implicit binding
+		Cheese( type == "stilton", ( price < 20*factor ) ) 
+		// late declaration
+		Cheese( price < ( price * factor ), ( price < price * factor ), price : price  ) 
+	then
+		results.add( "Rule Fired" );
+end

@@ -17,6 +17,7 @@ package org.drools.rule.builder.dialect.java;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -103,8 +104,9 @@ public class JavaExprAnalyzer {
      */
     private List[] analyze(final List identifiers,
                            final Set[] availableIdentifiers) throws RecognitionException {
-        final List[] used = new List[availableIdentifiers.length];
-        for ( int i = 0, length = used.length; i < length; i++ ) {
+        Set notBound = new HashSet( identifiers );
+        final List[] used = new List[availableIdentifiers.length+1];
+        for ( int i = 0, length = used.length; i < length-1; i++ ) {
             used[i] = new ArrayList();
         }
 
@@ -114,9 +116,11 @@ public class JavaExprAnalyzer {
                 final String eachDecl = (String) it.next();
                 if ( identifiers.contains( eachDecl ) ) {
                     used[i].add( eachDecl );
+                    notBound.remove( eachDecl );
                 }
             }
         }
+        used[used.length-1] = new ArrayList( notBound );
 
         return used;
         //--------------------------------------------------------        
