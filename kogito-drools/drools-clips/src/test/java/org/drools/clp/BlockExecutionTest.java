@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import junit.framework.TestCase;
 
 import org.drools.Person;
-import org.drools.clp.functions.AddFunction;
+import org.drools.clp.functions.PlusFunction;
 import org.drools.clp.functions.BindFunction;
 import org.drools.clp.functions.ModifyFunction;
 import org.drools.clp.valuehandlers.FunctionCaller;
@@ -25,7 +25,7 @@ public class BlockExecutionTest extends TestCase {
         BlockExecutionEngine engine = new BlockExecutionEngine();        
         ExecutionBuildContext build = new ExecutionBuildContext(engine, this.registry );                
         
-        FunctionCaller addCaller = new FunctionCaller( new AddFunction() );
+        FunctionCaller addCaller = new FunctionCaller( new PlusFunction() );
         addCaller.addParameter( new ObjectValueHandler( new BigDecimal( 20) ) );
         addCaller.addParameter( new LongValueHandler( "11" ) );
                 

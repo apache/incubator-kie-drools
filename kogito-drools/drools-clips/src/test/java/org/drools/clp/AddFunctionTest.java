@@ -7,7 +7,7 @@ import java.util.Map;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
-import org.drools.clp.functions.AddFunction;
+import org.drools.clp.functions.PlusFunction;
 import org.drools.clp.valuehandlers.CLPLocalDeclarationVariable;
 import org.drools.clp.valuehandlers.CLPPreviousDeclarationVariable;
 import org.drools.clp.valuehandlers.FunctionCaller;
@@ -30,7 +30,7 @@ public class AddFunctionTest extends TestCase {
         ValueHandler val2 = new ObjectValueHandler( new BigDecimal( 10 ) );
 
         ValueHandler[] params = new ValueHandler[]{val1, val2};
-        AddFunction add = new AddFunction();
+        PlusFunction add = new PlusFunction();
 
         assertEquals( new BigDecimal( 20 ),
                       add.execute( params,
@@ -42,13 +42,13 @@ public class AddFunctionTest extends TestCase {
         ValueHandler val2 = new ObjectValueHandler( new BigDecimal( 10 ) );
         ValueHandler val3 = new ObjectValueHandler( new BigDecimal( 10 ) );
 
-        FunctionCaller functionValue = new FunctionCaller( new AddFunction() );
+        FunctionCaller functionValue = new FunctionCaller( new PlusFunction() );
         functionValue.addParameter( val1 );
         functionValue.addParameter( val2 );
 
         ValueHandler[] params = new ValueHandler[]{val3, functionValue};
 
-        AddFunction add = new AddFunction();
+        PlusFunction add = new PlusFunction();
 
         assertEquals( new BigDecimal( 30 ),
                       add.execute( params,
@@ -99,11 +99,11 @@ public class AddFunctionTest extends TestCase {
         context.setLocalVariable( 0,
                                   new ObjectValueHandler( new BigDecimal( 10 ) ) );
 
-        FunctionCaller functionValue = new FunctionCaller( new AddFunction() );
+        FunctionCaller functionValue = new FunctionCaller( new PlusFunction() );
         functionValue.addParameter( val1 );
         functionValue.addParameter( val2 );
 
-        AddFunction add = new AddFunction();
+        PlusFunction add = new PlusFunction();
 
         FunctionCaller f = new FunctionCaller( add );
         f.addParameter( val3 );

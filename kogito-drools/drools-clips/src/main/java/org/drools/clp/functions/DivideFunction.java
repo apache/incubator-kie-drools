@@ -7,23 +7,23 @@ import org.drools.clp.Function;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.ObjectValueHandler;
 
-public class MultiplyFunction extends BaseFunction
+public class DivideFunction extends BaseFunction
     implements
     Function {
-    private static final String name = "*";
+    private static final String name = "/";
 
-    public MultiplyFunction() {
+    public DivideFunction() {
 
     }
 
     public ValueHandler execute(ValueHandler[] args,
-                                ExecutionContext context) {        
+                                ExecutionContext context) {
         BigDecimal bdval = args[0].getBigDecimalValue( context );
         for ( int i = 1, length = args.length; i < length; i++ ) {
-            bdval = bdval.multiply( args[i].getBigDecimalValue( context ) );
+            bdval = bdval.divide( args[i].getBigDecimalValue( context ), BigDecimal.ROUND_DOWN );
         }
 
-        return new ObjectValueHandler( bdval );        
+        return new ObjectValueHandler( bdval );   
     }
 
     public String getName() {

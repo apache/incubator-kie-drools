@@ -246,10 +246,22 @@ public class CompiledFunctionsTest extends TestCase {
                                   new ObjectValueHandler( "brie" ) );
         engine.execute( context );        
         assertEquals( "default" ,
-                      context.getLocalVariable( 1 ).getObject( context ) );          
-        
-        
+                      context.getLocalVariable( 1 ).getObject( context ) );                          
     }    
+    
+    public void testProgn() throws Exception {
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?n 2) (while (progn (bind ?n (* ?n ?n)) (< ?n 1000)) do (printout d ?n) )" ).rhs();
+        ExecutionContext context = new ExecutionContext( null,
+                                                         null,
+                                                         2 );
+        
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();              
+        context.addPrintoutRouter( "d", new PrintStream(bais) );                                
+
+        engine.execute( context );
+        
+        assertEquals( "416256", new String( bais.toByteArray() ) );          
+    }
 
     private CLPParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
