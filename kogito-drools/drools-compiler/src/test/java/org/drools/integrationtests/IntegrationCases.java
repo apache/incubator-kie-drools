@@ -105,7 +105,7 @@ public abstract class IntegrationCases extends TestCase {
     /** Implementation specific subclasses must provide this. */
     protected abstract RuleBase getRuleBase(RuleBaseConfiguration config) throws Exception;
 
-    public void xxxtestGlobals() throws Exception {
+    public void testGlobals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule_test.drl" ) ) );
@@ -132,12 +132,12 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestFieldBiningsAndEvalSharing() throws Exception {
+    public void testFieldBiningsAndEvalSharing() throws Exception {
         String drl = "test_FieldBindingsAndEvalSharing.drl";
         evalSharingTest( drl );
     }
 
-    public void xxxtestFieldBiningsAndPredicateSharing() throws Exception {
+    public void testFieldBiningsAndPredicateSharing() throws Exception {
         String drl = "test_FieldBindingsAndPredicateSharing.drl";
         evalSharingTest( drl );
     }
@@ -167,7 +167,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestNullHandling() throws Exception {
+    public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHandling.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -202,7 +202,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestEmptyColumn() throws Exception {
+    public void testEmptyColumn() throws Exception {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyColumn.drl" ) ) );
@@ -248,7 +248,7 @@ public abstract class IntegrationCases extends TestCase {
         return ruleBase;
     }
 
-    public void xxxtestExplicitAnd() throws Exception {
+    public void testExplicitAnd() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
@@ -270,7 +270,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestHelloWorld() throws Exception {
+    public void testHelloWorld() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
@@ -296,7 +296,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestDateEffective() throws Exception {
+    public void testDateEffective() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EffectiveDate.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -315,7 +315,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestLiteral() throws Exception {
+    public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -338,7 +338,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestLiteralWithBoolean() throws Exception {
+    public void testLiteralWithBoolean() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_with_boolean.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -362,7 +362,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestFactTemplate() throws Exception {
+    public void testFactTemplate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactTemplate.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -396,7 +396,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestPropertyChangeSupport() throws Exception {
+    public void testPropertyChangeSupport() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -432,7 +432,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestBigDecimal() throws Exception {
+    public void testBigDecimal() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_comparable.drl" ) ) );
@@ -464,7 +464,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestCell() throws Exception {
+    public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
 
@@ -482,7 +482,7 @@ public abstract class IntegrationCases extends TestCase {
                       cell.getValue() );
     }
 
-    public void xxxtestOr() throws Exception {
+    public void testOr() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -523,7 +523,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestQuery() throws Exception {
+    public void testQuery() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -540,7 +540,7 @@ public abstract class IntegrationCases extends TestCase {
                       results.size() );
     }
 
-    public void xxxtestEval() throws Exception {
+    public void testEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -565,7 +565,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestJaninoEval() throws Exception {
+    public void testJaninoEval() throws Exception {
         PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         config.setCompiler( PackageBuilderConfiguration.JANINO );
         final PackageBuilder builder = new PackageBuilder( config );
@@ -592,7 +592,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestEvalMore() throws Exception {
+    public void testEvalMore() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test_more.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -613,7 +613,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestReturnValue() throws Exception {
+    public void testReturnValue() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -646,7 +646,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void xxxtestPredicate() throws Exception {
+    public void testPredicate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -679,7 +679,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void xxxtestNot() throws Exception {
+    public void testNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -715,7 +715,7 @@ public abstract class IntegrationCases extends TestCase {
         Assert.assertTrue( list.contains( new Integer( 8 ) ) );
     }
 
-    public void xxxtestNotWithBindings() throws Exception {
+    public void testNotWithBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_with_bindings_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -756,7 +756,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestNullBehaviour() throws Exception {
+    public void testNullBehaviour() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_behaviour.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -778,7 +778,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestNullConstraint() throws Exception {
+    public void testNullConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_constraint.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -805,7 +805,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestExists() throws Exception {
+    public void testExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "exists_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -843,7 +843,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestExists2() throws Exception {
+    public void testExists2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_exists.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -886,7 +886,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestImportFunctions() throws Exception {
+    public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -915,7 +915,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 3 ) );
     }
 
-    public void xxxtestBasicFrom() throws Exception {
+    public void testBasicFrom() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -970,7 +970,7 @@ public abstract class IntegrationCases extends TestCase {
                       list3.get( 0 ) );
     }
 
-    public void xxxtestFromWithParams() throws Exception {
+    public void testFromWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1038,7 +1038,7 @@ public abstract class IntegrationCases extends TestCase {
                     list.get( 5 ) );
     }
 
-    public void xxxtestWithInvalidRule() throws Exception {
+    public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1065,7 +1065,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestErrorLineNumbers() throws Exception {
+    public void testErrorLineNumbers() throws Exception {
         // this test aims to test semantic errors
         // parser errors are another test case
         final PackageBuilder builder = new PackageBuilder();
@@ -1111,7 +1111,7 @@ public abstract class IntegrationCases extends TestCase {
         assertFalse( first.getMessage().equals( "" ) );
     }
 
-    public void xxxtestFunction() throws Exception {
+    public void testFunction() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionInConsequence.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1134,7 +1134,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestDynamicFunction() throws Exception {
+    public void testDynamicFunction() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1201,7 +1201,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestAssertRetract() throws Exception {
+    public void testAssertRetract() throws Exception {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
@@ -1231,7 +1231,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestWithExpanderDSL() throws Exception {
+    public void testWithExpanderDSL() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl.drl" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
@@ -1271,7 +1271,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestWithExpanderMore() throws Exception {
+    public void testWithExpanderMore() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl_more.drl" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
@@ -1325,7 +1325,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestPredicateAsFirstColumn() throws Exception {
+    public void testPredicateAsFirstColumn() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_column.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1351,7 +1351,7 @@ public abstract class IntegrationCases extends TestCase {
                              provolone.getPrice() );
     }
 
-    public void xxxtestSalience() throws Exception {
+    public void testSalience() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "salience_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1382,7 +1382,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestNoLoop() throws Exception {
+    public void testNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1407,7 +1407,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestConsequenceException() throws Exception {
+    public void testConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1429,7 +1429,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestFunctionException() throws Exception {
+    public void testFunctionException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1451,7 +1451,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestEvalException() throws Exception {
+    public void testEvalException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1473,7 +1473,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestPredicateException() throws Exception {
+    public void testPredicateException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PredicateException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1495,7 +1495,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestReturnValueException() throws Exception {
+    public void testReturnValueException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1516,7 +1516,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestMultiRestrictionFieldConstraint() throws Exception {
+    public void testMultiRestrictionFieldConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultiRestrictionFieldConstraint.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1590,7 +1590,7 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list4.contains( chili1 ) );
     }
 
-    public void xxxtestAgendaGroups() throws Exception {
+    public void testAgendaGroups() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AgendaGroups.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1636,7 +1636,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 7 ) );
     }
 
-    public void xxxtestDumpers() throws Exception {
+    public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
 
@@ -1722,7 +1722,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 2 ) );
     }
 
-    public void xxxtestActivationGroups() throws Exception {
+    public void testActivationGroups() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ActivationGroups.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1775,7 +1775,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestDuration() throws Exception {
+    public void testDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1807,7 +1807,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestDurationWithNoLoop() throws Exception {
+    public void testDurationWithNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration_with_NoLoop.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1838,7 +1838,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestFireRuleAfterDuration() throws Exception {
+    public void testFireRuleAfterDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FireRuleAfterDuration.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1872,7 +1872,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestContainsCheese() throws Exception {
+    public void testContainsCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ContainsCheese.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1902,7 +1902,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestStaticFieldReference() throws Exception {
+    public void testStaticFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1928,7 +1928,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestDynamicRuleAdditions() throws Exception {
+    public void testDynamicRuleAdditions() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) );
 
         PackageBuilder builder = new PackageBuilder();
@@ -2024,7 +2024,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestDynamicRuleRemovals() throws Exception {
+    public void testDynamicRuleRemovals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -2126,7 +2126,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
+    public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -2191,7 +2191,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestDuplicateRuleNames() throws Exception {
+    public void testDuplicateRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName1.drl" ) ) );
 
@@ -2207,7 +2207,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestNullValuesIndexing() throws Exception {
+    public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
@@ -2239,7 +2239,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestSerializable() throws Exception {
+    public void testSerializable() throws Exception {
 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
 
@@ -2307,7 +2307,7 @@ public abstract class IntegrationCases extends TestCase {
                       workingMemory.getObjects().get( 1 ) );
     }
 
-    public void xxxtestLogicalAssertions() throws Exception {
+    public void testLogicalAssertions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2347,7 +2347,7 @@ public abstract class IntegrationCases extends TestCase {
                       workingMemory.getObjects().size() );
     }
 
-    public void xxxtestLogicalAssertionsBacking() throws Exception {
+    public void testLogicalAssertionsBacking() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsBacking.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2398,7 +2398,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestLogicalAssertionsSelfreferencing() throws Exception {
+    public void testLogicalAssertionsSelfreferencing() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsSelfreferencing.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2441,7 +2441,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestLogicalAssertionsLoop() throws Exception {
+    public void testLogicalAssertionsLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsLoop.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2469,7 +2469,7 @@ public abstract class IntegrationCases extends TestCase {
                       l.size() );
     }
 
-    public void xxxtestLogicalAssertionsNoLoop() throws Exception {
+    public void testLogicalAssertionsNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNoLoop.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2570,7 +2570,7 @@ public abstract class IntegrationCases extends TestCase {
                       events.size() );
     }
 
-    public void xxxtestLogicalAssertionsNot() throws Exception {
+    public void testLogicalAssertionsNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNot.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2627,7 +2627,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestLogicalAssertionsNotPingPong() throws Exception {
+    public void testLogicalAssertionsNotPingPong() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNotPingPong.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2660,7 +2660,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestLogicalAssertionsDynamicRule() throws Exception {
+    public void testLogicalAssertionsDynamicRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsDynamicRule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2788,7 +2788,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestLogicalAssertionsModifyEqual() throws Exception {
+    public void testLogicalAssertionsModifyEqual() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsModifyEqual.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2830,7 +2830,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestLogicalAssertionsWithExists() throws Exception {
+    public void testLogicalAssertionsWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2916,7 +2916,7 @@ public abstract class IntegrationCases extends TestCase {
                       cheeseList.size() );
     }
 
-    public void xxxtestEmptyRule() throws Exception {
+    public void testEmptyRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyRule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2935,7 +2935,7 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list.contains( "fired2" ) );
     }
 
-    public void xxxtestjustEval() throws Exception {
+    public void testjustEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoColumns.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2954,7 +2954,7 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list.contains( "fired3" ) );
     }
 
-    public void xxxtestOrWithBinding() throws Exception {
+    public void testOrWithBinding() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrWithBindings.drl" ) ) );
@@ -3005,7 +3005,7 @@ public abstract class IntegrationCases extends TestCase {
         return bytes;
     }
 
-    public void xxxtestJoinNodeModifyObject() throws Exception {
+    public void testJoinNodeModifyObject() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyObject.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
@@ -3043,7 +3043,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestRemovePackage() {
+    public void testRemovePackage() {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
@@ -3076,7 +3076,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestQuery2() {
+    public void testQuery2() {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
@@ -3110,7 +3110,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestTwoQuerries() throws Exception {
+    public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
 
@@ -3144,7 +3144,7 @@ public abstract class IntegrationCases extends TestCase {
                       results.size() );
     }
 
-    public void xxxtestExistsWithBinding() throws Exception {
+    public void testExistsWithBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3170,7 +3170,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestInsurancePricingExample() throws Exception {
+    public void testInsurancePricingExample() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "insurance_pricing_example.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
         final WorkingMemory wm = ruleBase.newWorkingMemory();
@@ -3188,7 +3188,7 @@ public abstract class IntegrationCases extends TestCase {
                       policy.getBasePrice() );
     }
 
-    public void xxxtestLLR() throws Exception {
+    public void testLLR() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
@@ -3286,7 +3286,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestAccumulate() throws Exception {
+    public void testAccumulate() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
@@ -3321,7 +3321,7 @@ public abstract class IntegrationCases extends TestCase {
                              results.get( 3 ) );
     }
 
-    public void xxxtestAccumulateModify() throws Exception {
+    public void testAccumulateModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -3389,7 +3389,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestCollect() throws Exception {
+    public void testCollect() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
@@ -3428,7 +3428,7 @@ public abstract class IntegrationCases extends TestCase {
                              results.get( 0 ).getClass().getName() );
     }
 
-    public void xxxtestCollectModify() throws Exception {
+    public void testCollectModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -3498,7 +3498,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestAssertRetractNoloop() {
+    public void testAssertRetractNoloop() {
         try {
             // read in the source
             final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Assert_Retract_Noloop.drl" ) );
@@ -3515,7 +3515,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestDoubleQueryWithExists() throws Exception {
+    public void testDoubleQueryWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DoubleQueryWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3600,7 +3600,7 @@ public abstract class IntegrationCases extends TestCase {
                       queryResults.size() );
     }
 
-    public void xxxtestFunctionWithPrimitives() throws Exception {
+    public void testFunctionWithPrimitives() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionWithPrimitives.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3623,7 +3623,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestReturnValueAndGlobal() throws Exception {
+    public void testReturnValueAndGlobal() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueAndGlobal.drl" ) ) );
@@ -3662,7 +3662,7 @@ public abstract class IntegrationCases extends TestCase {
                       nonmatchlist.size() );
     }
 
-    public void xxxtestDeclaringAndUsingBindsInSamePattern() throws Exception {
+    public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
         final RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setRemoveIdentities( true );
 
@@ -3701,7 +3701,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestMissingImports() {
+    public void testMissingImports() {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_missing_import.drl" ) ) );
@@ -3719,7 +3719,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestNestedConditionalElements() throws Exception {
+    public void testNestedConditionalElements() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedConditionalElements.drl" ) ) );
@@ -3754,7 +3754,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestForall() throws Exception {
+    public void testForall() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Forall.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3788,7 +3788,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestDeclarationUsage() throws Exception {
+    public void testDeclarationUsage() throws Exception {
 
         try {
             final PackageBuilder builder = new PackageBuilder();
@@ -3807,7 +3807,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestUnbalancedTrees() throws Exception {
+    public void testUnbalancedTrees() throws Exception {
 
         try {
             final PackageBuilder builder = new PackageBuilder();
@@ -3844,7 +3844,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestDynamicRules() throws Exception {
+    public void testDynamicRules() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         Cheese a = new Cheese( "stilton",
@@ -3865,7 +3865,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
     }
 
-    public void xxxtestDynamicRules2() throws Exception {
+    public void testDynamicRules2() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -3887,7 +3887,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
     }
 
-    public void xxxtestImportConflict() throws Exception {
+    public void testImportConflict() throws Exception {
         try {
             final RuleBase ruleBase = getRuleBase();
             final PackageBuilder builder = new PackageBuilder();
@@ -3901,7 +3901,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestPrimitiveArray() throws Exception {
+    public void testPrimitiveArray() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3931,7 +3931,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestEmptyIdentifier() throws Exception {
+    public void testEmptyIdentifier() throws Exception {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_emptyIdentifier.drl" ) ) );
@@ -3961,7 +3961,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestLogicalAssertions3() throws Exception {
+    public void testLogicalAssertions3() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_logicalAssertions3.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -4013,7 +4013,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestRuleFlow() throws Exception {
+    public void testRuleFlow() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -4051,7 +4051,7 @@ public abstract class IntegrationCases extends TestCase {
                       processInstance.getState() );
     }
 
-    public void xxxtestRuleFlowGroup() throws Exception {
+    public void testRuleFlowGroup() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -4076,7 +4076,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestDuplicateVariableBinding() throws Exception {
+    public void testDuplicateVariableBinding() throws Exception {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
@@ -4128,7 +4128,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestDuplicateVariableBindingError() throws Exception {
+    public void testDuplicateVariableBindingError() throws Exception {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
@@ -4144,7 +4144,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestShadowProxyInHirarchies() throws Exception {
+    public void testShadowProxyInHirarchies() throws Exception {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyInHirarchies.drl" ) ) );
@@ -4164,7 +4164,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestSelfReference() throws Exception {
+    public void testSelfReference() throws Exception {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference.drl" ) ) );
@@ -4206,7 +4206,7 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
-    public void xxxtestNumberComparisons() throws Exception {
+    public void testNumberComparisons() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NumberComparisons.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -4263,7 +4263,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestSkipModify() throws Exception {
+    public void testSkipModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_skipModify.drl" ) ) );
         final Package pkg = builder.getPackage();

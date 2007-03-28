@@ -187,7 +187,8 @@ public class ColumnBuilder {
                                                             utils,
                                                             fieldConstraintDescr,
                                                             column.getObjectType(),
-                                                            fieldConstraintDescr.getFieldName() );
+                                                            fieldConstraintDescr.getFieldName(),
+                                                            true );
         if ( extractor == null ) {
             // @todo log error
             return;
@@ -348,7 +349,8 @@ public class ColumnBuilder {
                                                             utils,
                                                             fieldBindingDescr,
                                                             column.getObjectType(),
-                                                            fieldBindingDescr.getFieldName() );
+                                                            fieldBindingDescr.getFieldName(),
+                                                            true );
         if ( extractor == null ) {
             return;
         }
@@ -428,7 +430,8 @@ public class ColumnBuilder {
                                                                 utils,
                                                                 implicitBinding,
                                                                 column.getObjectType(),
-                                                                implicitBinding.getFieldName() );
+                                                                implicitBinding.getFieldName(),
+                                                                false );
             if ( extractor == null ) {
                 continue;
             }
@@ -618,7 +621,8 @@ public class ColumnBuilder {
                                              final BuildUtils utils,
                                              final BaseDescr descr,
                                              final ObjectType objectType,
-                                             final String fieldName) {
+                                             final String fieldName,
+                                             final boolean reportError ) {
         FieldExtractor extractor = null;
 
         if ( objectType.getValueType() == ValueType.FACTTEMPLATE_TYPE ) {
@@ -631,10 +635,12 @@ public class ColumnBuilder {
                 extractor = utils.getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
                                                                               fieldName );
             } catch ( final RuntimeDroolsException e ) {
-                context.getErrors().add( new RuleError( context.getRule(),
-                                                        descr,
-                                                        e,
-                                                        "Unable to create Field Extractor for '" + fieldName + "'" ) );
+                if( reportError ) {
+                    context.getErrors().add( new RuleError( context.getRule(),
+                                                            descr,
+                                                            e,
+                                                            "Unable to create Field Extractor for '" + fieldName + "'" ) );
+                }
             }
         }
 
