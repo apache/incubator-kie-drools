@@ -58,7 +58,7 @@ public class SuggestionCompletionLoader {
      * @param pkg
      * @return
      */
-    public SuggestionCompletionEngine getSuggestionEngine(String header, List<JarInputStream> jars, List<DSLMappingFile> dsls) {
+    public SuggestionCompletionEngine getSuggestionEngine(String header, List jars, List dsls) {
         errors = new ArrayList();
         builder.newCompletionEngine();
 
@@ -74,13 +74,13 @@ public class SuggestionCompletionLoader {
         return builder.getInstance();
     }
 
-    private void processPackageHeader(String header, List<JarInputStream> jars) {
+    private void processPackageHeader(String header, List jars) {
         // get fact types from imports
         PackageDescr pkgDescr;
         try {
             pkgDescr = parser.parse( header );
         } catch ( DroolsParserException e1 ) {
-            throw new IllegalStateException( "Serious error, unable to validate package.", e1 );
+            throw new IllegalStateException( "Serious error, unable to validate package." );
         }
    
         if (this.parser.hasErrors()) {
@@ -102,7 +102,7 @@ public class SuggestionCompletionLoader {
      * @param pkg
      * @param errors
      */
-    private void populateDSLSentences(List<DSLMappingFile> dsls) {
+    private void populateDSLSentences(List dsls) {
 //        AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
 //        while ( it.hasNext() ) {
 //            AssetItem item = (AssetItem) it.next();
@@ -128,7 +128,8 @@ public class SuggestionCompletionLoader {
 //            }
 //        }
 
-        for ( DSLMappingFile file : dsls ) {
+        for ( Iterator it = dsls.iterator(); it.hasNext(); ) {
+            DSLMappingFile file = (DSLMappingFile) it.next();        
             DSLMapping mapping = file.getMapping();
             for ( Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
                 DSLMappingEntry entry = (DSLMappingEntry) entries.next();
@@ -147,7 +148,7 @@ public class SuggestionCompletionLoader {
      * Populate the global stuff.
      */
     private void populateGlobalInfo(PackageDescr pkgDescr,
-                                    List<JarInputStream> jars) {
+                                    List jars) {
 
         // populating information for the globals
         for ( Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext(); ) {
@@ -176,7 +177,7 @@ public class SuggestionCompletionLoader {
     /**
      * Populate the fact type data.
      */
-    private void populateModelInfo(PackageDescr pkgDescr, List<JarInputStream> jars) {
+    private void populateModelInfo(PackageDescr pkgDescr, List jars) {
 
         // iterating over the import list
         ClassTypeResolver resolver = new ClassTypeResolver();
@@ -282,7 +283,7 @@ public class SuggestionCompletionLoader {
      * @param clazz
      * @return
      */
-    private Class loadClass(String classname, List<JarInputStream> jars) {
+    private Class loadClass(String classname, List jars) {
         Class clazz = null;
         try {
             // check if it is already in the classpath
@@ -296,7 +297,7 @@ public class SuggestionCompletionLoader {
                 addJars( jars );
                 clazz = loader.loadClass( classname );
             } catch ( IOException e ) {
-                throw new IllegalStateException( e );
+                throw new IllegalStateException( e.getMessage() );
             } catch ( ClassNotFoundException e ) {
                 errors.add( "Class not found: " + classname );
             }
@@ -307,8 +308,9 @@ public class SuggestionCompletionLoader {
     /**
      * This will add the given jars to the classloader.
      */
-    private void addJars(List<JarInputStream> jars) throws IOException {
-        for ( JarInputStream jis : jars ) {
+    private void addJars(List jars) throws IOException {
+        for ( Iterator it = jars.iterator(); it.hasNext(); ) {
+            JarInputStream jis = (JarInputStream) it.next();
             JarEntry entry = null;
             byte[] buf = new byte[1024];
             int len = 0;
