@@ -349,7 +349,7 @@ public class EvaluatorFactoryTest extends TestCase {
         Declaration declaration = new Declaration( "test",
                                                    extractor,
                                                    null );
-        if ( valueType.isIntegerNumber() ) {
+        if ( valueType.isIntegerNumber() || valueType.isChar() ) {
             LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                              declaration );
             if ( row[2] instanceof Character ) {
