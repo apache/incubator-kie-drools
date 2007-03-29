@@ -487,6 +487,11 @@ public class ColumnBuilder {
         }
 
         final Declaration declaration = (Declaration) context.getDeclarationResolver().getDeclaration( variableRestrictionDescr.getIdentifier() );
+        
+//        if ( declaration == null ) {
+//            build( context, th)
+//            // lazily create teh declaration
+//        }        
 
         if ( declaration == null ) {
             context.getErrors().add( new RuleError( context.getRule(),
