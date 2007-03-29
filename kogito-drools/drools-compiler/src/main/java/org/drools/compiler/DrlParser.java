@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.RecognitionException;
 import org.drools.lang.DRLLexer;
@@ -49,41 +50,23 @@ public class DrlParser {
         return parser.getPackageDescr();
 
     }
+    
+    public PackageDescr parse(final Reader reader) throws DroolsParserException {
+        final DRLParser parser = getParser( reader );
+        compile( parser );
+        return parser.getPackageDescr();
 
-    private void compile(final DRLParser parser) throws DroolsParserException {
-        try {
-            parser.compilation_unit();
+    }    
 
-            makeErrorList( parser );
-        } catch ( final RecognitionException e ) {
-            throw new DroolsParserException( e );
-        }
-    }
 
-    /** Convert the antlr exceptions to drools parser exceptions */
-    private void makeErrorList(final DRLParser parser) {
-        for ( final Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
-            final RecognitionException recogErr = (RecognitionException) iter.next();
-            final ParserError err = new ParserError( parser.createErrorMessage( recogErr ),
-                                               recogErr.line,
-                                               recogErr.charPositionInLine );
-            this.results.add( err );
-        }
-    }
-
-    /**
-     * @return An instance of a RuleParser should you need one (most folks will not).
-     */
-    private DRLParser getParser(final String text) {
-        return new DRLParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRStringStream( text ) ) ) );
-    }
-
-    /** Parse and build a rule package from a DRL source */
-    public PackageDescr parse(final Reader reader) throws IOException,
-                                            DroolsParserException {
-        final StringBuffer text = getDRLText( reader );
-        return parse( text.toString() );
-    }
+//    /** Parse and build a rule package from a DRL source */
+//    public PackageDescr parse(final Reader reader) throws IOException,
+//                                            DroolsParserException {
+//        DRLParser parser = 
+//        
+//        //final StringBuffer text = getDRLText( reader );
+//        //return parse( text.toString() );
+//    }
 
     /** 
      * Parse and build a rule package from a DRL source with a 
@@ -147,4 +130,40 @@ public class DrlParser {
     public List getErrors() {
         return this.results;
     }
+    
+    private void compile(final DRLParser parser) throws DroolsParserException {
+        try {
+            parser.compilation_unit();
+
+            makeErrorList( parser );
+        } catch ( final RecognitionException e ) {
+            throw new DroolsParserException( e );
+        }
+    }
+
+    /** Convert the antlr exceptions to drools parser exceptions */
+    private void makeErrorList(final DRLParser parser) {
+        for ( final Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
+            final RecognitionException recogErr = (RecognitionException) iter.next();
+            final ParserError err = new ParserError( parser.createErrorMessage( recogErr ),
+                                               recogErr.line,
+                                               recogErr.charPositionInLine );
+            this.results.add( err );
+        }
+    }
+
+    /**
+     * @return An instance of a RuleParser should you need one (most folks will not).
+     */
+    private DRLParser getParser(final String text) {
+        return new DRLParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRStringStream( text ) ) ) );
+    }
+
+    private DRLParser getParser(final Reader reader) {
+        try {
+            return new DRLParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
+        }catch (Exception e) {
+            throw new RuntimeException( "Unable to parser Reader", e);
+        }
+    }    
 }
