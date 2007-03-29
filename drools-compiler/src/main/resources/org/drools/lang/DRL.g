@@ -186,8 +186,8 @@ prolog
 	
 statement
 	:
-	(	import_statement 
-	|       function_import_statement 
+	(	function_import_statement 
+	|	import_statement 
 	|	global 
 	|	function 
 	|       t=template {this.packageDescr.addFactTemplate( t ); }
