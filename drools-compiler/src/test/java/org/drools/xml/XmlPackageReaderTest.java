@@ -177,10 +177,10 @@ public class XmlPackageReaderTest extends TestCase {
                       functionDescr.getText().trim() );
 
         final RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
-        assertEquals( "my rule",
+        assertEquals( "simple_rule",
                       ruleDescr.getName() );
 
-        assertEquals( 1,
+        assertEquals( 4,
                       ruleDescr.getAttributes().size() );
         final AttributeDescr attributeDescr = (AttributeDescr) ruleDescr.getAttributes().get( 0 );
         assertEquals( "salience",
@@ -189,16 +189,14 @@ public class XmlPackageReaderTest extends TestCase {
                       attributeDescr.getValue() );
 
         final AndDescr lhs = ruleDescr.getLhs();
-        assertEquals( 1,
+        assertEquals( 6,
                       lhs.getDescrs().size() );
         final ColumnDescr columnDescr = (ColumnDescr) lhs.getDescrs().get( 0 );
-        assertEquals( "Foo",
+        assertEquals( "Bar",
                       columnDescr.getObjectType() );
 
         final String consequence = (String) ruleDescr.getConsequence();
         assertNotNull( consequence );
-        assertEquals( "System.out.println( \"hello\" );",
-                      consequence.trim() );
 
     }
 
