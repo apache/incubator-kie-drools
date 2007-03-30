@@ -68,10 +68,10 @@ public class JavaAccumulateBuilder
         final String className = "accumulate" + context.getNextId();
         accumDescr.setClassMethodName( className );
 
-        final List[] usedIdentifiers1 = utils.getUsedIdentifiers( context,
+        final List[] usedIdentifiers1 = utils.getUsedCIdentifiers( context,
                                                                   accumDescr,
                                                                   accumDescr.getInitCode() );
-        final List[] usedIdentifiers2 = utils.getUsedIdentifiers( context,
+        final List[] usedIdentifiers2 = utils.getUsedCIdentifiers( context,
                                                                   accumDescr,
                                                                   accumDescr.getActionCode() );
         final List[] usedIdentifiers3 = utils.getUsedIdentifiers( context,

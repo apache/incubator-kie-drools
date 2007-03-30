@@ -3305,7 +3305,8 @@ public abstract class IntegrationCases extends TestCase {
         wm.assertObject( new Cheese( "provolone",
                                      150 ) );
         wm.assertObject( new Person( "Bob",
-                                     "stilton" ) );
+                                     "stilton", 
+                                     20 ) );
         wm.assertObject( new Person( "Mark",
                                      "provolone" ) );
 
@@ -3319,6 +3320,8 @@ public abstract class IntegrationCases extends TestCase {
                              results.get( 2 ) );
         Assert.assertEquals( new Integer( 10 ),
                              results.get( 3 ) );
+        Assert.assertEquals( new Integer( 210 ),
+                             results.get( 4 ) );
     }
 
     public void testAccumulateModify() throws Exception {

@@ -53,3 +53,15 @@ rule "Source column binds" salience 70
         //System.out.println($person.getName() +" will spend US$ "+ $totalAmount + " buying cheese");
         results.add($totalAmount);
 end
+
+rule "Accumulate with previous Bindings" salience 60
+    when
+        $person      : Person( name == "Bob", $likes : likes, $age : age )
+    	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price : price ),
+                                                  init( int total = $age * 10; ),
+   	                                              action( total += $price; ),
+                                                  result( new Integer( total ) ) );
+    then
+        results.add($totalAmount);
+end  
+
