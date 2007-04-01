@@ -66,6 +66,7 @@ import org.drools.Sensor;
 import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
+import org.drools.Cheesery.Maturity;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -1915,17 +1916,25 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        final Cheesery cheesery = new Cheesery();
-        cheesery.setStatus( Cheesery.SELLING_CHEESE );
-        workingMemory.assertObject( cheesery );
+        final Cheesery cheesery1 = new Cheesery();
+        cheesery1.setStatus( Cheesery.SELLING_CHEESE );
+        cheesery1.setMaturity( Maturity.OLD );
+        workingMemory.assertObject( cheesery1);
+        
+        final Cheesery cheesery2 = new Cheesery();
+        cheesery2.setStatus( Cheesery.MAKING_CHEESE);
+        cheesery2.setMaturity( Maturity.YOUNG );
+        workingMemory.assertObject( cheesery2 );        
 
         workingMemory.fireAllRules();
 
-        assertEquals( 1,
+        assertEquals( 2,
                       list.size() );
 
-        assertEquals( cheesery,
+        assertEquals( cheesery1,
                       list.get( 0 ) );
+        assertEquals( cheesery2,
+                      list.get( 1 ) );         
     }
 
     public void testDynamicRuleAdditions() throws Exception {
