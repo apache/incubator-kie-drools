@@ -527,7 +527,7 @@ public class ColumnBuilder {
             final String fieldName = literalRestrictionDescr.getText().substring( lastDot + 1 );
             try {
                 final Class staticClass = utils.getTypeResolver().resolveType( className );
-                field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ).toString(),
+                field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
                                                     extractor.getValueType() );
             } catch ( final ClassNotFoundException e ) {
                 context.getErrors().add( new RuleError( context.getRule(),

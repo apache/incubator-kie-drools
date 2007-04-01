@@ -34,6 +34,7 @@ public class Cheesery
 
     private int               status;
     private int               totalAmount;
+    private Maturity          maturity;
 
     public List getCheeses() {
         return this.cheeses;
@@ -43,13 +44,21 @@ public class Cheesery
         this.cheeses.add( cheese );
         this.totalAmount += cheese.getPrice();
     }
-    
+
     public void setStatus(final int status) {
         this.status = status;
     }
 
     public int getStatus() {
         return this.status;
+    }        
+
+    public Maturity getMaturity() {
+        return maturity;
+    }
+
+    public void setMaturity(Maturity maturity) {
+        this.maturity = maturity;
     }
 
     public int getTotalAmount() {
@@ -58,5 +67,20 @@ public class Cheesery
 
     public void setTotalAmount(int totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public static class Maturity {
+        public static final Maturity YOUNG = new Maturity( "young" );
+        public static final Maturity OLD   = new Maturity( "old" );
+
+        private String               age;
+
+        public Maturity(String age) {
+            this.age = age;
+        }
+
+        public String toString() {
+            return "[Maturity age='" + this.age + "']";
+        }
     }
 }

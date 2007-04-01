@@ -2,13 +2,23 @@ package org.drools.test
 
 import org.drools.Person
 import org.drools.Cheesery
+import org.drools.Cheesery.Maturity
 
 global java.util.List list
 
-rule "first"
+rule "status, int based enum"
+	salience 10
     when
-       	p : Cheesery(status == Cheesery.SELLING_CHEESE)
+       	p : Cheesery(status == Cheesery.SELLING_CHEESE, maturity == Maturity.OLD)
     then
     	list.add( p );
 
 end   
+
+rule "maturity, object based enum"
+    when
+       	p : Cheesery(status == Cheesery.MAKING_CHEESE, maturity == Maturity.YOUNG)
+    then
+    	list.add( p );
+
+end  
