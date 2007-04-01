@@ -1,6 +1,6 @@
 <projectDescription>
   <name>drools-jsr94</name>
-  <comment/>
+  <comment>A rule production system</comment>
   <projects>
     <project>drools-compiler</project>
     <project>drools-core</project>
@@ -8,6 +8,7 @@
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments/>
     </buildCommand>
   </buildSpec>
   <natures>
