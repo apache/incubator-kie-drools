@@ -370,12 +370,16 @@ public class JavaDialect
             default : {
                 final EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
                 Map map = eclipseSettings.getMap();
+                String lngLevel = this.configuration.getJavaLanguageLevel();
                 map.put( CompilerOptions.OPTION_TargetPlatform,
-                         this.configuration.getJavaLanguageLevel() );
+                         lngLevel );
 
-                // We now default this to 1.5, so we can use static imports.
+                if ( lngLevel == "1.4" ) {
+                    // 1.5 is the minimum for source langauge level, so we can use static imports.
+                    lngLevel = "1.5";
+                }
                 map.put( CompilerOptions.OPTION_Source,
-                         "1.5" );
+                         lngLevel );
                 this.compiler = new EclipseJavaCompiler( map );
                 break;
             }

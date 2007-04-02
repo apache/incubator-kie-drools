@@ -39,11 +39,11 @@ public class PackageBuilderConfiguration {
 
     public static final String[] LANGUAGE_LEVELS           = new String[]{"1.4", "1.5", "1.6"};
     public static final String   DEFAULT_LANGUAGE_LEVEL    = "1.4";
-    
+
     /** These will be only setup once. It tries to look for a system property */
     private static final int     CONFIGURED_COMPILER       = getDefaultCompiler();
     private static final String  CONFIGURED_LANGUAGE_LEVEL = getDefaultLanguageLevel();
-    
+
     private int                  compiler                  = PackageBuilderConfiguration.CONFIGURED_COMPILER;
 
     private ClassLoader          classLoader;
@@ -64,10 +64,8 @@ public class PackageBuilderConfiguration {
 
     public String getJavaLanguageLevel() {
         if ( languageLevel != null ) return languageLevel;
-        languageLevel = System.getProperty( "drools.compiler.lnglevel",
-                                            DEFAULT_LANGUAGE_LEVEL );
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  languageLevel ) < 0 ) throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
+        setJavaLanguageLevel( System.getProperty( "drools.compiler.lnglevel",
+                                                  DEFAULT_LANGUAGE_LEVEL ) );
         return languageLevel;
     }
 
@@ -76,10 +74,8 @@ public class PackageBuilderConfiguration {
      * @param level
      */
     public void setJavaLanguageLevel(String level) {
-        if ( level.equals( "1.4" ) ) {
-            // can't set to 1.4, as we need static imports
-            level = "1.5";
-        }
+        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
+                                  languageLevel ) < 0 ) throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
         languageLevel = level;
     }
 
@@ -145,13 +141,9 @@ public class PackageBuilderConfiguration {
             }
 
             return languageLevel;
-        } catch ( Exception e) {
-            e.printStackTrace();
-            return "1.4";
+        } catch ( Exception e ) {
+            System.err.println( "Drools config: unable to read the drools.compiler.lnglevel property. Using default." );
+            return DEFAULT_LANGUAGE_LEVEL;
         }
-//        } catch ( final SecurityException e ) {
-//            System.err.println( "Drools config: unable to read the drools.compiler.lnglevel property. Using default." );
-//            return "1.4";
-//        }
     }
 }
