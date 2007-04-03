@@ -27,14 +27,17 @@
 
     <author>
       <firstname>Michael</firstname>
-
       <surname>Frandsen</surname>
     </author>
     
     <author>
-      <firstname>Sam</firstname>
-      
+      <firstname>Sam</firstname>      
       <surname>Griffith Jr.</surname>
+    </author>
+
+    <author>
+      <firstname>Edson</firstname>      
+      <surname>Tirelli</surname>
     </author>
   </bookinfo>
 
