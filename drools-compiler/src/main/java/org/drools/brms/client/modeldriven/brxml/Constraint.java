@@ -12,6 +12,12 @@ public class Constraint
     
 
     /**
+     * This is used only when constraint is first created. 
+     * This means that there is no value yet for the constraint.
+     */
+    public static final int    TYPE_UNDEFINED = 0;
+    
+    /**
      * This may be string, or number, anything really. 
      */
     public static final int    TYPE_LITERAL   = 1;
@@ -66,6 +72,17 @@ public class Constraint
             }
             newList[connectives.length] = new ConnectiveConstraint();
             connectives = newList;
+        }
+    }
+
+    /**
+     * Returns true of there is a field binding.
+     */
+    public boolean isBound() {
+        if (fieldBinding != null && !"".equals( fieldBinding )) {
+            return true;
+        } else {
+            return false;
         }
     }
 
