@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.Constraint;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.IAction;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
@@ -66,6 +67,55 @@ public class RuleModelTest extends TestCase {
         String brl = xt.toXML( model );
         
         System.out.println(brl);
+    }
+    
+    public void testScopedVariables() {
+        
+        //setup the data...
+        
+        RuleModel model = new RuleModel();
+        model.lhs = new IPattern[3];
+        FactPattern x = new FactPattern("Car");
+        model.lhs[0] = x;
+        x.boundName = "x";
+        
+        FactPattern y = new FactPattern("Car");
+        model.lhs[1] = y;
+        y.boundName = "y";
+        Constraint[] cons = new Constraint[2];
+        y.constraints = cons;
+        cons[0] = new Constraint("age");
+        cons[1] = new Constraint("make");
+        cons[0].fieldBinding = "qbc";
+        
+        FactPattern other = new FactPattern("House");
+        model.lhs[2] = other;
+        other.boundName = "q";
+        Constraint[] cons2 = new Constraint[1];
+        cons2[0] = new Constraint();
+        other.constraints = cons2;
+        
+        
+        //check the results for correct scope
+        List vars = model.getBoundVariablesInScope(cons[0]);
+        assertEquals(1, vars.size());
+        assertEquals("x", vars.get( 0 ));
+        
+        vars = model.getBoundVariablesInScope(cons[1]);
+        assertEquals(2, vars.size());
+        assertEquals("x", vars.get( 0 ));
+        assertEquals("qbc", vars.get( 1 ));   
+        
+        vars = model.getBoundVariablesInScope(cons[0]);
+        assertEquals(1, vars.size());
+        assertEquals("x", vars.get( 0 ));
+        
+        
+        vars = model.getBoundVariablesInScope(cons2[0]);
+        assertEquals(3, vars.size());
+        assertEquals("x", vars.get( 0 ));        
+        assertEquals("qbc", vars.get( 1 ));
+        assertEquals("y", vars.get( 2 ));
     }
     
     public void testBindingList() {

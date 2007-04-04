@@ -56,6 +56,17 @@ public class FactPattern implements IPattern {
         this.constraints = newList;        
         
     }
+
+    /**
+     * Returns true if there is a variable bound to this fact.
+     */
+    public boolean isBound() {
+        if (this.boundName != null && !"".equals(boundName) ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     
     
