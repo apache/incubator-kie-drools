@@ -6,8 +6,8 @@ package org.drools.brms.client.modeldriven.brxml;
  * @author Michael Neale
  */
 public class ConnectiveConstraint
-    implements
-    PortableObject {
+    extends
+    IConstraint {
     
     public static final int UNDEFINED_CONNECTIVE = 0;
     public static final int OR_CONNECTIVE = 1;
@@ -20,9 +20,8 @@ public class ConnectiveConstraint
         this.operator = opr;
         this.value = val;
     }
+    
     public int connectiveType;
     public String operator;
-    public String value;
-    public int constraintType;
     
 }

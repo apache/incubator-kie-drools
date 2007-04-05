@@ -45,7 +45,7 @@ public class BRXMLToDescrConverterTest extends TestCase {
         Constraint constr = new Constraint( "type" );
         constr.operator = "==";
         constr.value = "stilton";
-        constr.type = Constraint.TYPE_LITERAL;
+        constr.constraintValueType = Constraint.TYPE_LITERAL;
         pat1.addConstraint( constr );
         model.addLhsItem( pat1 );
         
