@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.brxml.Constraint;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.IAction;
@@ -87,6 +88,9 @@ public class RuleModelTest extends TestCase {
         cons[0] = new Constraint("age");
         cons[1] = new Constraint("make");
         cons[0].fieldBinding = "qbc";
+        cons[0].connectives = new ConnectiveConstraint[1];
+        cons[0].connectives[0] = new ConnectiveConstraint("&", "x");
+        cons[0].connectives[0].constraintValueType = ConnectiveConstraint.TYPE_LITERAL;
         
         FactPattern other = new FactPattern("House");
         model.lhs[2] = other;
@@ -100,6 +104,11 @@ public class RuleModelTest extends TestCase {
         List vars = model.getBoundVariablesInScope(cons[0]);
         assertEquals(1, vars.size());
         assertEquals("x", vars.get( 0 ));
+        
+        
+        vars = model.getBoundVariablesInScope(cons[0].connectives[0]);
+        assertEquals(1, vars.size());
+        assertEquals("x", vars.get( 0 ));        
         
         vars = model.getBoundVariablesInScope(cons[1]);
         assertEquals(2, vars.size());

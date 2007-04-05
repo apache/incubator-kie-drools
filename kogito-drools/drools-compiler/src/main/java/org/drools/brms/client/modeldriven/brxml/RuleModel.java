@@ -173,7 +173,12 @@ public class RuleModel implements PortableObject {
 
     }
 
-    public List getBoundVariablesInScope(Constraint con) {
+    /**
+     * This uses a deceptively simple algorithm to determine 
+     * what bound variables are in scope for a given constraint (including connectives).
+     * Does not take into account globals.
+     */
+    public List getBoundVariablesInScope(IConstraint con) {
         List result = new ArrayList();
         for ( int i = 0; i < this.lhs.length; i++ ) {
             IPattern pat = lhs[i];
@@ -181,19 +186,23 @@ public class RuleModel implements PortableObject {
                 FactPattern fact = (FactPattern) pat;
 
                 if (fact.constraints != null) {
-                    //for ( int j = 0; j < fact.constraints.length; j++ ) {
                         Constraint[] cons = fact.constraints;
                         for ( int k = 0; k < cons.length; k++ ) {
                             Constraint c = cons[k];
                             if (c == con) {
                                 return result;
                             }                     
-
+                            if (c.connectives != null) {
+                                for ( int j = 0; j < c.connectives.length; j++ ) {
+                                    if (con == c.connectives[j]) {
+                                        return result;
+                                    }
+                                }
+                            }
                             if (c.isBound()) {
                                 result.add( c.fieldBinding );
                             }
                         }
-                    //}
                     if (fact.isBound() ) {
                         result.add(fact.boundName);
                     }                       

@@ -96,12 +96,12 @@ public class BRXMLToDescrConverter {
                                                                       constr.fieldBinding );
                 column.addDescr( fieldDescr );
             }
-            if ( constr.type == Constraint.TYPE_PREDICATE ) {
+            if ( constr.constraintValueType == Constraint.TYPE_PREDICATE ) {
                 PredicateDescr predicateDescr = new PredicateDescr( constr.value );
                 column.addDescr( predicateDescr );
             } else {
                 FieldConstraintDescr constrDescr = new FieldConstraintDescr( constr.fieldName );
-                constrDescr.addRestriction( this.getFieldRestriction( constr.type,
+                constrDescr.addRestriction( this.getFieldRestriction( constr.constraintValueType,
                                                                       constr.operator,
                                                                       constr.value ) );
 
@@ -121,7 +121,7 @@ public class BRXMLToDescrConverter {
                                 // TODO: handle error
                                 // unknown connective... error
                         }
-                        constrDescr.addRestriction( this.getFieldRestriction( conn.constraintType,
+                        constrDescr.addRestriction( this.getFieldRestriction( conn.constraintValueType,
                                                                               conn.operator,
                                                                               conn.value ) );
                     }
