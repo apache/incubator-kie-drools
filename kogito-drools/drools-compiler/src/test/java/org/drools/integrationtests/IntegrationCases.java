@@ -79,8 +79,15 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AgendaEventListener;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.event.DefaultWorkingMemoryEventListener;
+import org.drools.event.ObjectAssertedEvent;
+import org.drools.event.ObjectModifiedEvent;
+import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.integrationtests.helloworld.Message;
@@ -4301,6 +4308,90 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
         assertEquals( 2,
                       results.size() );
+    }
+    
+    public void testEventModel() throws Exception  {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EventModel.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory wm = ruleBase.newWorkingMemory();        
+        
+        final List agendaList = new ArrayList();
+        AgendaEventListener agendaEventListener = new AgendaEventListener() {
+
+            public void activationCancelled(ActivationCancelledEvent event,
+                                            WorkingMemory workingMemory) {
+                agendaList.add( event );
+                
+            }
+
+            public void activationCreated(ActivationCreatedEvent event,
+                                          WorkingMemory workingMemory) {
+                agendaList.add( event );
+            }
+
+            public void afterActivationFired(AfterActivationFiredEvent event,
+                                             WorkingMemory workingMemory) {
+                agendaList.add( event );
+            }
+
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                                          WorkingMemory workingMemory) {
+                agendaList.add( event );
+            }
+
+            public void agendaGroupPushed(AgendaGroupPushedEvent event,
+                                          WorkingMemory workingMemory) {
+                agendaList.add( event );
+            }
+
+            public void beforeActivationFired(BeforeActivationFiredEvent event,
+                                              WorkingMemory workingMemory) {
+                agendaList.add( event );
+            }
+           
+        };
+        
+        final List wmList = new ArrayList();
+        WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
+
+            public void objectAsserted(ObjectAssertedEvent event) {
+                wmList.add( event );                
+            }
+
+            public void objectModified(ObjectModifiedEvent event) {
+                wmList.add( event );
+            }
+
+            public void objectRetracted(ObjectRetractedEvent event) {
+                wmList.add( event );
+            }
+            
+        };
+        
+        wm.addEventListener( workingMemoryListener );
+        
+        Cheese stilton = new Cheese("stilton",15);
+        Cheese cheddar = new Cheese("cheddar",17);
+        
+        FactHandle stiltonHandle = wm.assertObject( stilton );
+        
+        ObjectAssertedEvent oae = (ObjectAssertedEvent) wmList.get( 0 );
+        assertSame(  stiltonHandle, oae.getFactHandle() );
+        
+        wm.modifyObject( stiltonHandle, stilton );
+        ObjectModifiedEvent ome = (ObjectModifiedEvent) wmList.get( 1 );
+        assertSame( stiltonHandle, ome.getFactHandle() );                
+        
+        wm.retractObject( stiltonHandle );
+        ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
+        assertSame( stiltonHandle, ore.getFactHandle() );
+        
+        
+        wm.assertObject( cheddar );        
     }
 
     public void testImplicitDeclarations() throws Exception {

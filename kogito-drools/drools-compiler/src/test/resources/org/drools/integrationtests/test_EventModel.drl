@@ -1,0 +1,19 @@
+package org.drools.test;
+ 
+import org.drools.Cheese;
+
+rule "simple rule 1"
+	agenda-group "agenda group 1"
+    when
+        cheese : Cheese( type == "stilton" )
+    then
+end 
+
+
+
+rule "simple rule 2"
+	agenda-group "agenda group 2"
+    when
+        cheese : Cheese( type == "cheddar" )
+    then
+end 
