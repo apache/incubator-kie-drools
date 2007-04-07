@@ -24,6 +24,8 @@ public class Person
     private boolean           alive;
 
     private String            status;
+    
+    private Cheese			  cheese;
 
     public Person() {
     	
@@ -210,4 +212,14 @@ public class Person
     public void setLikes(String likes) {
         this.likes = likes;
     }
+
+	public Cheese getCheese() {
+		return cheese;
+	}
+
+	public void setCheese(Cheese cheese) {
+		this.cheese = cheese;
+	}
+    
+    
 }
