@@ -90,12 +90,21 @@ public class DefaultKnowledgeHelper
                                          this.activation );
     }
 
-    public void modifyObject(final FactHandle handle,
+    public void modifyObject(FactHandle handle,
                              final Object newObject) throws FactException {
-        this.workingMemory.modifyObject( handle,
-                                         newObject,
-                                         this.rule,
-                                         this.activation );
+    	if ( handle == null ) {
+    		// no fact handle exists for this object, so it must be a bound field
+    		// check if that bound field is still a fact in the WM
+    		handle = this.workingMemory.getFactHandle( newObject );
+    	}
+    	
+    	if (  handle != null ) {
+    		// only modify if this fact exists in the wm
+	        this.workingMemory.modifyObject( handle,
+	                                         newObject,
+	                                         this.rule,
+	                                         this.activation );
+    	}
     }
 
     public void retractObject(final FactHandle handle) throws FactException {
