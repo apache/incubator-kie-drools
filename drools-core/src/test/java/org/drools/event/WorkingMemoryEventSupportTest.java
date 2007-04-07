@@ -17,6 +17,14 @@ package org.drools.event;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.Cheese;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 
 import junit.framework.TestCase;
 
@@ -28,5 +36,51 @@ public class WorkingMemoryEventSupportTest extends TestCase {
         assertTrue( Serializable.class.isAssignableFrom( WorkingMemoryEventSupport.class ) );
     }
 
-    // TODO: Need more tests but I'M tired! Need sleep.
+    public void testWorkingMemoryEventListener() {
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        WorkingMemory wm = rb.newWorkingMemory();
+
+        final List wmList = new ArrayList();
+        WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
+
+            public void objectAsserted(ObjectAssertedEvent event) {
+                wmList.add( event );
+            }
+
+            public void objectModified(ObjectModifiedEvent event) {
+                wmList.add( event );
+            }
+
+            public void objectRetracted(ObjectRetractedEvent event) {
+                wmList.add( event );
+            }
+
+        };
+
+        wm.addEventListener( workingMemoryListener );
+
+        Cheese stilton = new Cheese( "stilton",
+                                     15 );
+        Cheese cheddar = new Cheese( "cheddar",
+                                     17 );
+
+        FactHandle stiltonHandle = wm.assertObject( stilton );
+
+        ObjectAssertedEvent oae = (ObjectAssertedEvent) wmList.get( 0 );
+        assertSame( stiltonHandle,
+                    oae.getFactHandle() );
+
+        wm.modifyObject( stiltonHandle,
+                         stilton );
+        ObjectModifiedEvent ome = (ObjectModifiedEvent) wmList.get( 1 );
+        assertSame( stiltonHandle,
+                    ome.getFactHandle() );
+
+        wm.retractObject( stiltonHandle );
+        ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
+        assertSame( stiltonHandle,
+                    ore.getFactHandle() );
+
+        wm.assertObject( cheddar );
+    }
 }
