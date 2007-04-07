@@ -167,13 +167,12 @@ public class DefaultAgenda
         // Set the focus to the agendaGroup if it doesn't already have the focus
         if ( this.focusStack.getLast() != agendaGroup ) {
             this.focusStack.add( agendaGroup );
+            final EventSupport eventsupport = (EventSupport) this.workingMemory;
+            eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup );            
             return true;
-        }
-        
-        final EventSupport eventsupport = (EventSupport) this.workingMemory;
-        eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup );
-        
-        return false;
+        } else {         
+        	return false;
+    	}
     }
 
     /* (non-Javadoc)
