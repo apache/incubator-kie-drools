@@ -169,6 +169,10 @@ public class DefaultAgenda
             this.focusStack.add( agendaGroup );
             return true;
         }
+        
+        final EventSupport eventsupport = (EventSupport) this.workingMemory;
+        eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup );
+        
         return false;
     }
 
@@ -207,6 +211,8 @@ public class DefaultAgenda
             // No populated queus found so pop the focusStack and repeat            
             if ( empty && (this.focusStack.size() > 1) ) {
                 this.focusStack.removeLast();
+                final EventSupport eventsupport = (EventSupport) this.workingMemory;
+                eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup );                
             } else {
                 agendaGroup = (empty) ? null : agendaGroup;
                 break;

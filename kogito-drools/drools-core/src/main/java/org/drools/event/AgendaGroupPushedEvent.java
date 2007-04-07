@@ -16,20 +16,19 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 
-public class ActivationCancelledEvent extends ActivationEvent {
+public class AgendaGroupPushedEvent extends AgendaGroupEvent {
     /**
      * 
      */
     private static final long serialVersionUID = 320L;
 
-    public ActivationCancelledEvent(final Activation activation) {
-        super( activation );
+    public AgendaGroupPushedEvent(final AgendaGroup agendaGroup) {
+        super( agendaGroup );
     }
 
     public String toString() {
-        return "<==[ActivationCancelled(" + getActivation().getActivationNumber() + "): rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
-        //return "<==[ActivationCancelled: rule=" + getActivation().getRule().getName() + "]";
+        return ">==[AgendaGroupPushedEvent(" + getAgendaGroup().getName() + "]";
     }
 }

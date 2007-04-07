@@ -23,11 +23,21 @@ import org.drools.WorkingMemory;
 public interface AgendaEventListener
     extends
     EventListener {
-    void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory);
+    void activationCreated(ActivationCreatedEvent event,
+                           WorkingMemory workingMemory);
 
-    void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory);
+    void activationCancelled(ActivationCancelledEvent event,
+                             WorkingMemory workingMemory);
 
-    void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory);
+    void beforeActivationFired(BeforeActivationFiredEvent event,
+                               WorkingMemory workingMemory);
 
-    void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory);
+    void afterActivationFired(AfterActivationFiredEvent event,
+                              WorkingMemory workingMemory);
+    
+    void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                           WorkingMemory workingMemory);
+    
+    void agendaGroupPushed(AgendaGroupPushedEvent event,
+                           WorkingMemory workingMemory);    
 }

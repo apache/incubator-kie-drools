@@ -31,6 +31,8 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AgendaEventListener;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.ObjectAssertedEvent;
 import org.drools.event.ObjectModifiedEvent;
@@ -268,4 +270,14 @@ public abstract class WorkingMemoryLogger
         }
         return result.append( "]" ).toString();
     }
+    
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                                  WorkingMemory workingMemory) {
+        // we don't audit this yet     
+    }
+
+    public void agendaGroupPushed(AgendaGroupPushedEvent event,
+                                  WorkingMemory workingMemory) {
+        // we don't audit this yet        
+    }    
 }

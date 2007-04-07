@@ -25,19 +25,33 @@ public class DefaultAgendaEventListener
         // intentionally left blank
     }
 
-    public void activationCreated(final ActivationCreatedEvent event, WorkingMemory workingMemory) {
+    public void activationCreated(final ActivationCreatedEvent event,
+                                  WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void activationCancelled(final ActivationCancelledEvent event, WorkingMemory workingMemory) {
+    public void activationCancelled(final ActivationCancelledEvent event,
+                                    WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void beforeActivationFired(final BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
+    public void beforeActivationFired(final BeforeActivationFiredEvent event,
+                                      WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void afterActivationFired(final AfterActivationFiredEvent event, WorkingMemory workingMemory) {
+    public void afterActivationFired(final AfterActivationFiredEvent event,
+                                     WorkingMemory workingMemory) {
         // intentionally left blank
     }
+    
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                                  WorkingMemory workingMemory) {
+        // intentionally left blank
+    }
+
+    public void agendaGroupPushed(AgendaGroupPushedEvent event,
+                                  WorkingMemory workingMemory) {
+        // intentionally left blank
+    }    
 }

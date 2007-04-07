@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
@@ -63,7 +64,8 @@ public class AgendaEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireActivationCreated(final Activation activation, WorkingMemory workingMemory) {
+    public void fireActivationCreated(final Activation activation,
+                                      WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -71,11 +73,13 @@ public class AgendaEventSupport
         final ActivationCreatedEvent event = new ActivationCreatedEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).activationCreated( event, workingMemory );
+            ((AgendaEventListener) this.listeners.get( i )).activationCreated( event,
+                                                                               workingMemory );
         }
     }
 
-    public void fireActivationCancelled(final Activation activation, WorkingMemory workingMemory) {
+    public void fireActivationCancelled(final Activation activation,
+                                        WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -83,11 +87,13 @@ public class AgendaEventSupport
         final ActivationCancelledEvent event = new ActivationCancelledEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event, workingMemory );
+            ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event,
+                                                                                 workingMemory );
         }
     }
 
-    public void fireBeforeActivationFired(final Activation activation, WorkingMemory workingMemory) {
+    public void fireBeforeActivationFired(final Activation activation,
+                                          WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -95,7 +101,8 @@ public class AgendaEventSupport
         final BeforeActivationFiredEvent event = new BeforeActivationFiredEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event, workingMemory );
+            ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event,
+                                                                                   workingMemory );
         }
     }
 
@@ -107,7 +114,34 @@ public class AgendaEventSupport
         final AfterActivationFiredEvent event = new AfterActivationFiredEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event, workingMemory );
+            ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event,
+                                                                                  workingMemory );
         }
+    }
+    
+    public void fireAgendaGroupPopped(AgendaGroup agendaGroup) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final AgendaGroupPoppedEvent event = new AgendaGroupPoppedEvent(agendaGroup);
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((AgendaEventListener) this.listeners.get( i )).agendaGroupPopped( event,
+                                                                               workingMemory );
+        }        
+    }
+    
+    public void fireAgendaGroupPushed(AgendaGroup agendaGroup) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final AgendaGroupPushedEvent event = new AgendaGroupPushedEvent(agendaGroup);
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((AgendaEventListener) this.listeners.get( i )).agendaGroupPushed( event,
+                                                                               workingMemory );
+        }        
     }
 }
