@@ -182,7 +182,7 @@ public class <invokerClassName> implements org.drools.spi.Accumulator, org.drool
 }     
 >>
 
-consequenceInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, indexes, globals, globalTypes, text) ::= <<
+consequenceInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, indexes, notColumns, globals, globalTypes, text) ::= <<
 package <package>;
 
 public class <invokerClassName> implements org.drools.spi.Consequence
@@ -196,9 +196,11 @@ public class <invokerClassName> implements org.drools.spi.Consequence
         org.drools.rule.Rule rule = knowledgeHelper.getRule();
         org.drools.rule.Declaration[] declarations = rule.getDeclarations();                                                  
 
-        <declarations, indexes:{ declr, index| org.drools.common.InternalFactHandle <declr.identifier>__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[<index>].getIdentifier() ) );<\n>}>
-
-        <declarationTypes, declarations, indexes :{ type, declr, index| <type> <declr.identifier> = ( <type> )  declarations[<index>].<declr.extractor.nativeReadMethod.name>( <declr.identifier>__Handle__.getObject() );<\n>}>
+        <declarationTypes, declarations, indexes, notColumns :{ type, declr, index, notColumn | 
+          org.drools.common.InternalFactHandle <declr.identifier>__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[<index>].getIdentifier() ) );        
+          <type> <declr.identifier> = ( <type> )  declarations[<index>].<declr.extractor.nativeReadMethod.name>( <declr.identifier>__Handle__.getObject() );
+          <if(notColumn)><declr.identifier>__Handle__ = null;<endif>
+        }>
         
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         

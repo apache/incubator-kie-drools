@@ -174,6 +174,48 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
+    
+    public void testFactBindings() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        // add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        final List events = new ArrayList();
+        WorkingMemoryEventListener listener = new DefaultWorkingMemoryEventListener() {
+        	public void objectModified(ObjectModifiedEvent event) {
+        		events.add( event );
+        	}
+        };
+        
+        workingMemory.addEventListener( listener );
+
+//        final List list = new ArrayList();
+//        workingMemory.setGlobal( "list",
+//                                 list );  
+        Person bigCheese = new Person("big cheese");
+        Cheese cheddar = new Cheese( "cheddar", 15 );
+        bigCheese.setCheese( cheddar );
+        
+        FactHandle bigCheeseHandle = workingMemory.assertObject( bigCheese );
+        FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+        workingMemory.fireAllRules();
+        
+        ObjectModifiedEvent event = ( ObjectModifiedEvent ) events.get( 0 );
+        assertSame( cheddarHandle, event.getFactHandle() );
+        assertSame( cheddar, event.getOldObject() );
+        assertSame( cheddar, event.getObject() );
+        
+        event = ( ObjectModifiedEvent ) events.get( 1 );
+        assertSame( bigCheeseHandle, event.getFactHandle() );
+        assertSame( bigCheese, event.getOldObject() );
+        assertSame( bigCheese, event.getObject() );        
+    }
 
     public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

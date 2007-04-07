@@ -25,6 +25,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.BuildContext;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.spi.ColumnExtractor;
 
 /**
  * @author etirelli
@@ -58,6 +59,7 @@ public class JavaConsequenceBuilder
                                                                   (String) ruleDescr.getConsequence() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
             declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         }
@@ -90,9 +92,13 @@ public class JavaConsequenceBuilder
         // Must use the rule declarations, so we use the same order as used in the generated invoker
         final List list = Arrays.asList( context.getRule().getDeclarations() );
 
-        final int[] indexes = new int[declarations.length];
+        final int[] indexes = new int[declarations.length];       
+        
+        // have to user a String[] as boolean[] is broken in stringtemplate
+        final String[] notColumns = new String[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             indexes[i] = list.indexOf( declarations[i] );
+            notColumns[i] = (declarations[i].getExtractor() instanceof ColumnExtractor) ? null : "true";
             if ( indexes[i] == -1 ) {
                 // some defensive code, this should never happen
                 throw new RuntimeDroolsException( "Unable to find declaration in list while generating the consequence invoker" );
@@ -101,6 +107,8 @@ public class JavaConsequenceBuilder
 
         st.setAttribute( "indexes",
                          indexes );
+        
+        st.setAttribute( "notColumns", notColumns);
 
         st.setAttribute( "text",
                          ruleDescr.getConsequence() );
