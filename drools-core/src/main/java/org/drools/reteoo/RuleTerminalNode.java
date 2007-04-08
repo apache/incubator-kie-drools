@@ -141,8 +141,7 @@ public final class RuleTerminalNode extends BaseNode
             return;
         }
 
-        // if the current Rule is no-loop and the origin rule is the same then
-        // return
+        // if the current Rule is no-loop and the origin rule is the same then return
         if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
         }
@@ -262,6 +261,11 @@ public final class RuleTerminalNode extends BaseNode
                              final InternalWorkingMemory workingMemory) {
         final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
         final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
+        if ( tuple == null ) {
+        	// tuple should only be null if it was asserted and reached a no-loop causing it to exit early
+            // before being added to the node memory and an activation created and attached
+        	return;
+        }
         final Activation activation = tuple.getActivation();
         if ( activation.isActivated() ) {
             activation.remove();
