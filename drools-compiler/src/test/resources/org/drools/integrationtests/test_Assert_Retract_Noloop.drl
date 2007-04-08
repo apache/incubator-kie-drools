@@ -10,7 +10,7 @@ rule "test1"
     then
     	retract(cheese);
 		assert(cheese);
-end;
+end
 
 
 rule "test2"
@@ -20,6 +20,6 @@ rule "test2"
         cheese : Cheese();
     then
 		retract(cheese);
-end;
+end
 
 
