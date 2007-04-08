@@ -174,7 +174,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
-    
+
     public void testFactBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
@@ -185,36 +185,43 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
 
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         final List events = new ArrayList();
         WorkingMemoryEventListener listener = new DefaultWorkingMemoryEventListener() {
-        	public void objectModified(ObjectModifiedEvent event) {
-        		events.add( event );
-        	}
+            public void objectModified(ObjectModifiedEvent event) {
+                events.add( event );
+            }
         };
-        
+
         workingMemory.addEventListener( listener );
 
-//        final List list = new ArrayList();
-//        workingMemory.setGlobal( "list",
-//                                 list );  
-        Person bigCheese = new Person("big cheese");
-        Cheese cheddar = new Cheese( "cheddar", 15 );
+        // final List list = new ArrayList();
+        // workingMemory.setGlobal( "list",
+        // list );
+        Person bigCheese = new Person( "big cheese" );
+        Cheese cheddar = new Cheese( "cheddar",
+                                     15 );
         bigCheese.setCheese( cheddar );
-        
+
         FactHandle bigCheeseHandle = workingMemory.assertObject( bigCheese );
         FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
         workingMemory.fireAllRules();
-        
-        ObjectModifiedEvent event = ( ObjectModifiedEvent ) events.get( 0 );
-        assertSame( cheddarHandle, event.getFactHandle() );
-        assertSame( cheddar, event.getOldObject() );
-        assertSame( cheddar, event.getObject() );
-        
-        event = ( ObjectModifiedEvent ) events.get( 1 );
-        assertSame( bigCheeseHandle, event.getFactHandle() );
-        assertSame( bigCheese, event.getOldObject() );
-        assertSame( bigCheese, event.getObject() );        
+
+        ObjectModifiedEvent event = (ObjectModifiedEvent) events.get( 0 );
+        assertSame( cheddarHandle,
+                    event.getFactHandle() );
+        assertSame( cheddar,
+                    event.getOldObject() );
+        assertSame( cheddar,
+                    event.getObject() );
+
+        event = (ObjectModifiedEvent) events.get( 1 );
+        assertSame( bigCheeseHandle,
+                    event.getFactHandle() );
+        assertSame( bigCheese,
+                    event.getOldObject() );
+        assertSame( bigCheese,
+                    event.getObject() );
     }
 
     public void testNullHandling() throws Exception {
@@ -1745,7 +1752,7 @@ public abstract class IntegrationCases extends TestCase {
         final XmlDumper xmlDumper = new XmlDumper();
         final String xmlResult = xmlDumper.dump( pkg );
 
-        //System.out.println( xmlResult );
+        // System.out.println( xmlResult );
 
         builder = new PackageBuilder();
         builder.addPackageFromXml( new StringReader( xmlResult ) );
@@ -1968,12 +1975,12 @@ public abstract class IntegrationCases extends TestCase {
         final Cheesery cheesery1 = new Cheesery();
         cheesery1.setStatus( Cheesery.SELLING_CHEESE );
         cheesery1.setMaturity( Maturity.OLD );
-        workingMemory.assertObject( cheesery1);
-        
+        workingMemory.assertObject( cheesery1 );
+
         final Cheesery cheesery2 = new Cheesery();
-        cheesery2.setStatus( Cheesery.MAKING_CHEESE);
+        cheesery2.setStatus( Cheesery.MAKING_CHEESE );
         cheesery2.setMaturity( Maturity.YOUNG );
-        workingMemory.assertObject( cheesery2 );        
+        workingMemory.assertObject( cheesery2 );
 
         workingMemory.fireAllRules();
 
@@ -1983,7 +1990,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( cheesery1,
                       list.get( 0 ) );
         assertEquals( cheesery2,
-                      list.get( 1 ) );         
+                      list.get( 1 ) );
     }
 
     public void testDynamicRuleAdditions() throws Exception {
@@ -2753,7 +2760,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.assertObject( c3 );
         workingMemory.fireAllRules();
 
-        //  Check logical assertions where made for  c2 and c3
+        // Check logical assertions where made for c2 and c3
         list = workingMemory.getObjects( Person.class );
         assertEquals( 2,
                       list.size() );
@@ -2770,7 +2777,7 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.fireAllRules();
 
-        // check all now have just one logical assertion  each
+        // check all now have just one logical assertion each
         list = workingMemory.getObjects( Person.class );
         assertEquals( 3,
                       list.size() );
@@ -2778,7 +2785,7 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list.contains( new Person( c2.getType() ) ) );
         assertTrue( list.contains( new Person( c3.getType() ) ) );
 
-        // check the packages  are correctly populated
+        // check the packages are correctly populated
         assertEquals( "org.drools.test",
                       ruleBase.getPackages()[0].getName() );
         assertEquals( "org.drools.test2",
@@ -2797,7 +2804,7 @@ public abstract class IntegrationCases extends TestCase {
             // ruleBase.getPackages()[0].getRules()[0].getName() );
         }
 
-        //  Check the rule was correctly remove
+        // Check the rule was correctly remove
         assertEquals( 0,
                       ruleBase.getPackages()[0].getRules().length );
         assertEquals( 1,
@@ -3233,7 +3240,7 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = loadRuleBase( reader );
         final WorkingMemory wm = ruleBase.newWorkingMemory();
 
-        //now create some test data
+        // now create some test data
         Driver driver = new Driver();
         Policy policy = new Policy();
 
@@ -3363,7 +3370,7 @@ public abstract class IntegrationCases extends TestCase {
         wm.assertObject( new Cheese( "provolone",
                                      150 ) );
         wm.assertObject( new Person( "Bob",
-                                     "stilton", 
+                                     "stilton",
                                      20 ) );
         wm.assertObject( new Person( "Mark",
                                      "provolone" ) );
@@ -3556,24 +3563,30 @@ public abstract class IntegrationCases extends TestCase {
         // should not have fired as per constraint
         Assert.assertEquals( fireCount,
                              results.size() );
-
     }
 
-    public void testAssertRetractNoloop() {
-        try {
-            // read in the source
-            final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Assert_Retract_Noloop.drl" ) );
-            final RuleBase ruleBase = loadRuleBase( reader );
+    public void testAssertRetractNoloop() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Assert_Retract_Noloop.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
 
-            final WorkingMemory wm = ruleBase.newWorkingMemory();
-            wm.assertObject( new Cheese( "stilton",
-                                         15 ) );
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        wm.assertObject( new Cheese( "stilton",
+                                     15 ) );
 
-            wm.fireAllRules();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( "test should not throw exception" );
-        }
+        wm.fireAllRules();
+    }
+
+    public void testModifyNoLoop() throws Exception {
+        // JBRULES-780, throws a NullPointer or infinite loop if there is an issue
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ModifyNoloop.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        wm.assertObject( new Cheese( "stilton",
+                                     15 ) );
+
+        wm.fireAllRules();
     }
 
     public void testDoubleQueryWithExists() throws Exception {
@@ -4332,7 +4345,7 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
@@ -4346,28 +4359,29 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.assertObject( bob );
 
         cheese.setType( "stilton" );
-        workingMemory.modifyObject( handle, cheese );
+        workingMemory.modifyObject( handle,
+                                    cheese );
         workingMemory.fireAllRules();
         assertEquals( 2,
                       results.size() );
     }
-    
-    public void testEventModel() throws Exception  {
+
+    public void testEventModel() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EventModel.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory wm = ruleBase.newWorkingMemory();        
-        
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+
         final List agendaList = new ArrayList();
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
             public void activationCancelled(ActivationCancelledEvent event,
                                             WorkingMemory workingMemory) {
                 agendaList.add( event );
-                
+
             }
 
             public void activationCreated(ActivationCreatedEvent event,
@@ -4394,14 +4408,14 @@ public abstract class IntegrationCases extends TestCase {
                                               WorkingMemory workingMemory) {
                 agendaList.add( event );
             }
-           
+
         };
-        
+
         final List wmList = new ArrayList();
         WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
 
             public void objectAsserted(ObjectAssertedEvent event) {
-                wmList.add( event );                
+                wmList.add( event );
             }
 
             public void objectModified(ObjectModifiedEvent event) {
@@ -4411,29 +4425,34 @@ public abstract class IntegrationCases extends TestCase {
             public void objectRetracted(ObjectRetractedEvent event) {
                 wmList.add( event );
             }
-            
+
         };
-        
+
         wm.addEventListener( workingMemoryListener );
-        
-        Cheese stilton = new Cheese("stilton",15);
-        Cheese cheddar = new Cheese("cheddar",17);
-        
+
+        Cheese stilton = new Cheese( "stilton",
+                                     15 );
+        Cheese cheddar = new Cheese( "cheddar",
+                                     17 );
+
         FactHandle stiltonHandle = wm.assertObject( stilton );
-        
+
         ObjectAssertedEvent oae = (ObjectAssertedEvent) wmList.get( 0 );
-        assertSame(  stiltonHandle, oae.getFactHandle() );
-        
-        wm.modifyObject( stiltonHandle, stilton );
+        assertSame( stiltonHandle,
+                    oae.getFactHandle() );
+
+        wm.modifyObject( stiltonHandle,
+                         stilton );
         ObjectModifiedEvent ome = (ObjectModifiedEvent) wmList.get( 1 );
-        assertSame( stiltonHandle, ome.getFactHandle() );                
-        
+        assertSame( stiltonHandle,
+                    ome.getFactHandle() );
+
         wm.retractObject( stiltonHandle );
         ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
-        assertSame( stiltonHandle, ore.getFactHandle() );
-        
-        
-        wm.assertObject( cheddar );        
+        assertSame( stiltonHandle,
+                    ore.getFactHandle() );
+
+        wm.assertObject( cheddar );
     }
 
     public void testImplicitDeclarations() throws Exception {
@@ -4444,11 +4463,12 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
-        workingMemory.setGlobal( "factor", new Double( 1.2 ) );
+        workingMemory.setGlobal( "factor",
+                                 new Double( 1.2 ) );
 
         Cheese cheese = new Cheese( "stilton",
                                     10 );
@@ -4467,8 +4487,9 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
-        workingMemory.setGlobal( "value", new Integer( 20 ) );
+
+        workingMemory.setGlobal( "value",
+                                 new Integer( 20 ) );
 
         workingMemory.fireAllRules();
     }
@@ -4478,10 +4499,11 @@ public abstract class IntegrationCases extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "literal_rule.drl" ) );
         Reader dslReader = new StringReader( DSL );
-        
-        builder.addPackageFromDrl( drlReader, dslReader );
+
+        builder.addPackageFromDrl( drlReader,
+                                   dslReader );
         final Package pkg = builder.getPackage();
-        
+
         assertFalse( pkg.isValid() );
     }
 
