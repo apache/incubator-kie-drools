@@ -199,7 +199,7 @@ public class <invokerClassName> implements org.drools.spi.Consequence
         <declarationTypes, declarations, indexes, notColumns :{ type, declr, index, notColumn | 
           org.drools.common.InternalFactHandle <declr.identifier>__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[<index>].getIdentifier() ) );        
           <type> <declr.identifier> = ( <type> )  declarations[<index>].<declr.extractor.nativeReadMethod.name>( <declr.identifier>__Handle__.getObject() );
-          <if(notColumn)><declr.identifier>__Handle__ = null;<endif>
+          <if(notColumn)><declr.identifier>__Handle__ =  (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( <declr.identifier> );<endif>
         }>
         
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    

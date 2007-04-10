@@ -113,7 +113,8 @@ public class JavaConsequenceBuilder
         st.setAttribute( "text",
                          ruleDescr.getConsequence() );
 
-        final String invokerClassName = context.getPkg().getName() + "." + ruleDescr.getClassName() + utils.ucFirst( className ) + "Invoker";
+        final String invokerClassName = context.getPkg().getName() + "." + ruleDescr.getClassName() + utils.ucFirst( className ) + "Invoker";        
+        
         context.getInvokers().put( invokerClassName,
                                    st.toString() );
         context.getInvokerLookups().put( invokerClassName,

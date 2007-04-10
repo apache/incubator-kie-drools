@@ -195,9 +195,6 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.addEventListener( listener );
 
-        // final List list = new ArrayList();
-        // workingMemory.setGlobal( "list",
-        // list );
         Person bigCheese = new Person( "big cheese" );
         Cheese cheddar = new Cheese( "cheddar",
                                      15 );
