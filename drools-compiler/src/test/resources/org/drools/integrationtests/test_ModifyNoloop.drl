@@ -6,7 +6,7 @@ rule "test1"
 	salience 10
 	no-loop true
 	when
-        cheese : Cheese( price == 15 );
+        cheese : Cheese( price == 15 )
     then
     	modify(cheese);
 end
@@ -16,7 +16,7 @@ rule "test2"
 	salience 0
 	no-loop true
 	when
-        cheese : Cheese( price == 15 );
+        cheese : Cheese( price == 15 )
     then
     	cheese.setPrice( 14 );
 		modify(cheese);
