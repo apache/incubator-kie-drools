@@ -46,6 +46,8 @@ public class ShadowProxyFactory {
 
     public static final String DELEGATE_FIELD_NAME = "delegate";
 
+    public static final String HASHCACHE_FIELD_NAME = "__hashCache";
+
     public static Class getProxy(final Class clazz) {
         try {
             if(( clazz.getModifiers() & Modifier.FINAL ) != 0 ) {
@@ -174,6 +176,11 @@ public class ShadowProxyFactory {
                      className,
                      clazz,
                      fieldTypes );
+        
+        
+        buildField( ShadowProxyFactory.HASHCACHE_FIELD_NAME,
+                	Type.getDescriptor( int.class ),
+                	cw );
 
         buildHashCode( cw,
                        className,
@@ -455,6 +462,14 @@ public class ShadowProxyFactory {
                            className,
                            fieldName,
                            Type.getDescriptor( fieldType ) );
+        
+        //    this.__hashCache = 0;
+        mv.visitVarInsn(Opcodes.ALOAD, 0);
+        mv.visitInsn(Opcodes.ICONST_0);
+        mv.visitFieldInsn(Opcodes.PUTFIELD, 
+        		          className, 
+        		          ShadowProxyFactory.HASHCACHE_FIELD_NAME, 
+        		          Type.getDescriptor( int.class ));
 
         // }
         // return __field;
@@ -579,6 +594,15 @@ public class ShadowProxyFactory {
                                fieldFlag,
                                Type.BOOLEAN_TYPE.getDescriptor() );
         }
+
+        //    this.__hashCache = 0;
+        mv.visitVarInsn(Opcodes.ALOAD, 0);
+        mv.visitInsn(Opcodes.ICONST_0);
+        mv.visitFieldInsn(Opcodes.PUTFIELD, 
+        		          className, 
+        		          ShadowProxyFactory.HASHCACHE_FIELD_NAME, 
+        		          Type.getDescriptor( int.class ));
+        
         final Label l4 = new Label();
         mv.visitLabel( l4 );
         mv.visitInsn( Opcodes.RETURN );
@@ -935,6 +959,9 @@ public class ShadowProxyFactory {
      *  Sample of generated code for all primitive + object types
      *  
      *  public int hashCode() {
+     *       if( ___hashCache != 0 ) {
+     *           return __hashCache;
+     *       }
      *       final int PRIME = 31;
      *       int result = 1;
      *       result = PRIME * result + (booleanAttr ? 1231 : 1237);
@@ -970,6 +997,27 @@ public class ShadowProxyFactory {
                                  null );
             mv.visitCode();
 
+            // if( __hashCache != 0 ) {
+            Label ls = new Label();
+            mv.visitLabel(ls);
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            mv.visitFieldInsn(Opcodes.GETFIELD, 
+            		          className, 
+            		          ShadowProxyFactory.HASHCACHE_FIELD_NAME, 
+            		          Type.getDescriptor( int.class ));
+            Label afterIfCachedLabel = new Label();
+            mv.visitJumpInsn(Opcodes.IFEQ, afterIfCachedLabel);
+            //     return __hashCache;
+            // }
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            mv.visitFieldInsn(Opcodes.GETFIELD, 
+  		          className, 
+  		          ShadowProxyFactory.HASHCACHE_FIELD_NAME, 
+  		          Type.getDescriptor( int.class ));
+            mv.visitInsn(Opcodes.IRETURN);
+            mv.visitLabel(afterIfCachedLabel);
+            
+            
             // final int PRIME = 31;
             Label l0 = new Label();
             mv.visitLabel( l0 );
@@ -1190,6 +1238,16 @@ public class ShadowProxyFactory {
                 }
                 mv.visitLabel( goNext );
             }
+            
+            // __hashCache = result;
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            mv.visitVarInsn(Opcodes.ILOAD, 2);
+            mv.visitFieldInsn(Opcodes.PUTFIELD, 
+                              className, 
+                              ShadowProxyFactory.HASHCACHE_FIELD_NAME, 
+                              Type.getDescriptor( int.class ));
+            
+            // return result;
             mv.visitVarInsn( Opcodes.ILOAD,
                              2 );
             mv.visitInsn( Opcodes.IRETURN );
