@@ -67,6 +67,9 @@ import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryActions;
+import org.drools.common.PropagationContextImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -97,8 +100,10 @@ import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.common.instance.IProcessInstance;
+import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.PropagationContext;
 import org.drools.xml.XmlDumper;
 
 /**
@@ -3585,6 +3590,58 @@ public abstract class IntegrationCases extends TestCase {
 
         wm.fireAllRules();
     }
+    
+    public void testModifyActivationCreationNoLoop() throws Exception {
+        // JBRULES-787, no-loop blocks all dependant tuples for modify 
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ModifyActivationCreationNoLoop.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final InternalWorkingMemoryActions wm = ( InternalWorkingMemoryActions ) ruleBase.newWorkingMemory();        
+        final List created = new ArrayList();
+        final List cancelled = new ArrayList();        
+        AgendaEventListener l = new DefaultAgendaEventListener() {
+            public void activationCreated(ActivationCreatedEvent event,
+                                          WorkingMemory workingMemory) {
+                created.add(  event  );
+            }            
+            
+          public void activationCancelled(ActivationCancelledEvent event,
+                                            WorkingMemory workingMemory) {
+              cancelled.add(  event  );
+            }
+          
+        };
+        
+        wm.addEventListener( l );        
+        
+        Cheese stilton = new Cheese( "stilton",
+                                     15 );
+        FactHandle stiltonHandle = wm.assertObject( stilton );
+        
+        Person p1 = new Person( "p1");
+        p1.setCheese( stilton );
+        wm.assertObject( p1 );
+
+        Person p2 = new Person( "p2");
+        p2.setCheese( stilton );
+        wm.assertObject( p2 );
+        
+        Person p3 = new Person( "p3");
+        p3.setCheese( stilton );
+        wm.assertObject( p3 );                
+
+        assertEquals( 3, created.size() );
+        assertEquals( 0, cancelled.size() );        
+
+        Activation item = ((ActivationCreatedEvent) created.get( 2 )).getActivation();
+        
+        // simulate a modify inside a consequence
+        wm.modifyObject( stiltonHandle, stilton, item.getRule(), item );
+        
+        // the two of the three tuples should re-activate
+        assertEquals( 5, created.size() );
+        assertEquals( 3, cancelled.size() );
+    }    
 
     public void testDoubleQueryWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
