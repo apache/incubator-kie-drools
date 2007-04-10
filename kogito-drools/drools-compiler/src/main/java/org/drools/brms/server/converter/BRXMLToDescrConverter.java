@@ -108,19 +108,16 @@ public class BRXMLToDescrConverter {
                 if ( constr.connectives != null ) {
                     for ( int j = 0; j < constr.connectives.length; j++ ) {
                         ConnectiveConstraint conn = constr.connectives[j];
-                        switch ( conn.connectiveType ) {
-                            case ConnectiveConstraint.AND_CONNECTIVE :
+                        if (conn.isANDConnective()) {
                                 RestrictionConnectiveDescr andDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
                                 constrDescr.addRestriction( andDescr );
-                                break;
-                            case ConnectiveConstraint.OR_CONNECTIVE :
+                        } else if (conn.isORConnective()){
                                 RestrictionConnectiveDescr orDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.OR );
                                 constrDescr.addRestriction( orDescr );
-                                break;
-                            default :
-                                // TODO: handle error
-                                // unknown connective... error
+                        } else {
+                            throw new IllegalStateException("Unknown connective type/operator: [" + conn.operator + "]");
                         }
+                        
                         constrDescr.addRestriction( this.getFieldRestriction( conn.constraintValueType,
                                                                               conn.operator,
                                                                               conn.value ) );

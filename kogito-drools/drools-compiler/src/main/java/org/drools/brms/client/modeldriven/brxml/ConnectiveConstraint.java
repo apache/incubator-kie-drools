@@ -8,10 +8,6 @@ package org.drools.brms.client.modeldriven.brxml;
 public class ConnectiveConstraint
     extends
     IConstraint {
-    
-    public static final int UNDEFINED_CONNECTIVE = 0;
-    public static final int OR_CONNECTIVE = 1;
-    public static final int AND_CONNECTIVE = 2;
 
     public ConnectiveConstraint() {}
     
@@ -20,8 +16,14 @@ public class ConnectiveConstraint
         this.operator = opr;
         this.value = val;
     }
-    
-    public int connectiveType;
     public String operator;
+    
+    public boolean isORConnective() {
+        return this.operator.startsWith( "|" );
+    }
+    
+    public boolean isANDConnective() {
+        return this.operator.startsWith( "&" );
+    }
     
 }
