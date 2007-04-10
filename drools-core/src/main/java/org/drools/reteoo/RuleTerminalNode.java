@@ -139,10 +139,10 @@ public final class RuleTerminalNode extends BaseNode
         //check if the rule is effective
         if ( !this.rule.isEffective() ) {
             return;
-        }
-
-        // if the current Rule is no-loop and the origin rule is the same then return
-        if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
+        }        
+        
+        // if the current Rule is no-loop and the origin rule is the same and its the same set of facts (tuple) then return
+        if ( context.getType() == PropagationContext.MODIFICATION && this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getActivationOrigin().getTuple().equals( tuple ) ) {
             return;
         }
 
