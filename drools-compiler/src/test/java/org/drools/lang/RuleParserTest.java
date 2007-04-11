@@ -2006,7 +2006,7 @@ public class RuleParserTest extends TestCase {
                                       ( String ) rule.getConsequence() );
 
         final List attrs = rule.getAttributes();
-        assertEquals( 5,
+        assertEquals( 6,
                       attrs.size() );
 
         AttributeDescr at = (AttributeDescr) attrs.get( 0 );
@@ -2039,6 +2039,12 @@ public class RuleParserTest extends TestCase {
         assertEquals( "my_activation_group",
                       at.getValue() );
 
+        at = (AttributeDescr) attrs.get( 5 );
+        assertEquals( "lock-on-active",
+                      at.getName() );
+        assertEquals( "true",
+                      at.getValue() );        
+        
         assertFalse( this.parser.hasErrors() );
     }
 
@@ -2050,7 +2056,7 @@ public class RuleParserTest extends TestCase {
                                       ( String ) rule.getConsequence() );
 
         final List attrs = rule.getAttributes();
-        assertEquals( 5,
+        assertEquals( 6,
                       attrs.size() );
 
         AttributeDescr at = (AttributeDescr) attrs.get( 0 );
@@ -2072,12 +2078,18 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
 
         at = (AttributeDescr) attrs.get( 3 );
+        assertEquals( "lock-on-active",
+                      at.getName() );
+        assertEquals( "true",
+                      at.getValue() );        
+        
+        at = (AttributeDescr) attrs.get( 4 );
         assertEquals( "duration",
                       at.getName() );
         assertEquals( "42",
                       at.getValue() );
 
-        at = (AttributeDescr) attrs.get( 4 );
+        at = (AttributeDescr) attrs.get( 5 );
         assertEquals( "activation-group",
                       at.getName() );
         assertEquals( "my_activation_group",

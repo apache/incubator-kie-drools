@@ -236,6 +236,12 @@ public class RuleBuilder {
                 rule.setActivationGroup( attributeDescr.getValue() );
             } else if ( name.equals( "ruleflow-group" ) ) {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "lock-on-active" ) ) {
+                if ( attributeDescr.getValue() == null ) {
+                    rule.setLockOnActivate(true );
+                } else {
+                    rule.setLockOnActivate( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                }
             } else if ( name.equals( "duration" ) ) {
                 rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
                 rule.setAgendaGroup( "" );

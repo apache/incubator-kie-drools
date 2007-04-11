@@ -70,6 +70,7 @@ import org.drools.Cheesery.Maturity;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.RuleFlowGroupImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -1695,6 +1696,48 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 7 ) );
     }
 
+    public void testLockOnActive() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActive.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+              
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+        
+        // AgendaGroup "group1" is not active, so should receive activation
+        final Cheese brie12 = new Cheese( "brie",
+                                        12 );
+        workingMemory.assertObject( brie12 );        
+        AgendaGroup group1 = workingMemory.getAgenda().getAgendaGroup( "group1" );  
+        assertEquals( 1, group1.size() );          
+        
+        workingMemory.setFocus( "group1" );        
+        // AgendaqGroup "group1" is now active, so should not receive activations
+        final Cheese brie10 = new Cheese( "brie",
+                                        10 );
+        workingMemory.assertObject( brie10 );                
+        assertEquals( 1, group1.size() );    
+        
+        final Cheese cheddar20 = new Cheese( "cheddar",
+                                          20 );
+        workingMemory.assertObject( cheddar20 ); 
+        AgendaGroup group2 = workingMemory.getAgenda().getAgendaGroup( "group1" );
+        assertEquals( 1, group2.size() );        
+        
+        RuleFlowGroupImpl rfg = ( RuleFlowGroupImpl )workingMemory.getAgenda().getRuleFlowGroup( "ruleflow2" );
+        rfg.setActive( true );
+        final Cheese cheddar17 = new Cheese( "cheddar",
+                                             17 );        
+        workingMemory.assertObject( cheddar17 );         
+        assertEquals( 1, group2.size() );
+        
+    }    
+    
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
