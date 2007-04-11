@@ -148,7 +148,7 @@ public final class RuleTerminalNode extends BaseNode
             }
         } else if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
-        }
+        }        
 
         //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
         final ReteTuple cloned = new ReteTuple( tuple );

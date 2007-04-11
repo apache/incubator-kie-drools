@@ -60,7 +60,7 @@ public class Rule
     /** Salience value. */
     private int               salience;
 
-    private boolean           dirty             = false;
+    private boolean           dirty;
     private Map               declarations;
     private Declaration[]     declarationArray;
 
@@ -86,15 +86,17 @@ public class Rule
     private String            activationGroup;
     
     private String		      ruleFlowGroup;
+    
+    private boolean           lockOnActivate;
 
     /** indicates that the rule is semantically correct. */
-    private boolean           semanticallyValid = true;
+    private boolean           semanticallyValid;
     
-    private Calendar          dateEffective = null;
+    private Calendar          dateEffective;
     
-    private Calendar          dateExpires = null;
+    private Calendar          dateExpires;
 
-    private boolean           enabled  = true;
+    private boolean           enabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -114,6 +116,8 @@ public class Rule
         this.pkg = pkg;
         this.agendaGroup = agendaGroup;
         this.lhsRoot = GroupElementFactory.newAndInstance();
+        this.semanticallyValid = true;
+        this.enabled  = true;
     }
 
     /**
@@ -313,6 +317,16 @@ public class Rule
             this.dirty = false;
         }
         return (Declaration) this.declarations.get( identifier );
+    }
+    
+    
+
+    public boolean isLockOnActivate() {
+        return lockOnActivate;
+    }
+
+    public void setLockOnActivate(boolean lockOnActive) {
+        this.lockOnActivate = lockOnActive;
     }
 
     /**
