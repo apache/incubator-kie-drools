@@ -142,7 +142,11 @@ public final class RuleTerminalNode extends BaseNode
         }        
         
         // if the current Rule is no-loop and the origin rule is the same and its the same set of facts (tuple) then return
-        if ( context.getType() == PropagationContext.MODIFICATION && this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getActivationOrigin().getTuple().equals( tuple ) ) {
+        if ( context.getType() == PropagationContext.MODIFICATION ) {
+            if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getActivationOrigin().getTuple().equals( tuple ) ) {
+                return;
+            }
+        } else if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
         }
 
