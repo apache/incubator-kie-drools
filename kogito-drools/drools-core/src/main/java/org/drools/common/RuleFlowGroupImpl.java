@@ -114,10 +114,15 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance implements I
     }
 
     public void addActivation(final Activation activation) {
+        if ( this.active && activation.getRule().isLockOnActivate() ) {
+            return;
+        }
+        
         final RuleFlowGroupNode node = new RuleFlowGroupNode(activation, this);
         activation.setRuleFlowGroupNode(node);
     	list.add( node );
-        if (active) {
+        
+        if ( active ) {
         	((AgendaGroupImpl) activation.getAgendaGroup()).add(activation);
         }
     }

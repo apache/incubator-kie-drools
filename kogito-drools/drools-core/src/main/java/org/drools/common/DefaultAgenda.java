@@ -166,7 +166,9 @@ public class DefaultAgenda
     public boolean setFocus(final AgendaGroup agendaGroup) {
         // Set the focus to the agendaGroup if it doesn't already have the focus
         if ( this.focusStack.getLast() != agendaGroup ) {
+            ((AgendaGroupImpl)this.focusStack.getLast()).setActive( false );            
             this.focusStack.add( agendaGroup );
+            ((AgendaGroupImpl)agendaGroup).setActive( true );
             final EventSupport eventsupport = (EventSupport) this.workingMemory;
             eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup );            
             return true;
@@ -209,7 +211,8 @@ public class DefaultAgenda
 
             // No populated queus found so pop the focusStack and repeat            
             if ( empty && (this.focusStack.size() > 1) ) {
-                this.focusStack.removeLast();
+                agendaGroup.setActive( false );
+                this.focusStack.removeLast();                
                 final EventSupport eventsupport = (EventSupport) this.workingMemory;
                 eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup );                
             } else {
@@ -218,6 +221,9 @@ public class DefaultAgenda
             }
         }
 
+        if ( agendaGroup != null ) {
+            agendaGroup.setActive( true );            
+        }
         return agendaGroup;
     }
 

@@ -21,5 +21,7 @@ public interface InternalRuleFlowGroup extends RuleFlowGroup {
      * its activations are not added to the agenda. 
      */
     void setActive(boolean active);
+    
+    boolean isActive();
 
 }
