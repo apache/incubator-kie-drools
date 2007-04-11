@@ -448,10 +448,11 @@ rule_attribute returns [AttributeDescr d]
 		|	a=duration  { d = a; }			
 		|	a=activation_group { d = a; }	
 		|	a=auto_focus { d = a; }	
-		|       a=date_effective {d = a; }
+		|	a=date_effective {d = a; }
 		|	a=date_expires {d = a; }
-		|       a=enabled {d=a;}
-		|       a=ruleflow_group { d = a; }
+		|	a=enabled {d=a;}
+		|	a=ruleflow_group { d = a; }
+		|	a=lock_on_active{ d = a; }
 		
 	;
 	
@@ -631,6 +632,35 @@ duration returns [AttributeDescr d]
 		}
 	;		
 	
+	
+	
+lock_on_active returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+		(
+			loc=LOCK_ON_ACTIVE   
+			{
+				d = new AttributeDescr( "lock-on-active", "true" );
+				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+			}
+		) 
+		|
+		(
+			loc=LOCK_ON_ACTIVE t=BOOL   
+			{
+				d = new AttributeDescr( "lock-on-active", t.getText() );
+				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
+			}
+		
+		)
+		
+	;		
 
 normal_lhs_block[AndDescr descr]
 	:
@@ -1530,6 +1560,9 @@ RULEFLOW_GROUP
 	
 DURATION 
 	:	'duration';
+	
+LOCK_ON_ACTIVE
+	:	'lock-on-active';	
 	
 FROM	:	'from';
 

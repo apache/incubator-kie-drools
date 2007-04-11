@@ -8,6 +8,7 @@ rule simple_rule
 		no-loop 
 		duration 42
 		activation-group "my_activation_group"
+		lock-on-active true
 	when
 		Foo()
 	then
