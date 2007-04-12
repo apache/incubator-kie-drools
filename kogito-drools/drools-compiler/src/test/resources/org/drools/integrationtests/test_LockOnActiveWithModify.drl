@@ -1,0 +1,27 @@
+package org.drools.test;
+
+import org.drools.Person;
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "test lock with modify"
+	agenda-group "group1"
+	lock-on-active true
+    when
+    	$cheese : Cheese( price < 30 )
+    	$person : Person( cheese == $cheese )
+    then
+		list.add( $person );
+end  
+
+rule "test group2 ruleflow2"
+	agenda-group "group2"
+	ruleflow-group "ruleflow2"
+	lock-on-active true
+    when
+    	$cheese : Cheese( price < 30 )
+    	$person : Person( cheese == $cheese )
+    then
+		list.add( $person );
+end  
