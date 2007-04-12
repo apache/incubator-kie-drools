@@ -17,8 +17,11 @@ package org.drools.spi;
  */
 
 import java.io.Serializable;
+import java.util.HashMap;
 
+import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Rule;
+import org.drools.util.TupleHashTable;
 
 public interface PropagationContext
     extends
@@ -41,5 +44,11 @@ public interface PropagationContext
     public int getActiveActivations();
     
     public int getDormantActivations();    
+    
+    public void addRetractedTuple(Rule rule, ReteTuple tuple);
+    
+    public ReteTuple removeRetractedTuple(Rule rule, ReteTuple tuple);
+    
+    public void clearRetractedTuples();    
 
 }

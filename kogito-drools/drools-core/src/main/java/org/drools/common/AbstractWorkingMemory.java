@@ -987,6 +987,8 @@ public abstract class AbstractWorkingMemory
                                                                factHandle,
                                                                originalObject,
                                                                object );
+            
+            propagationContext.clearRetractedTuples();
 
             if ( !this.factQueue.isEmpty() ) {
                 propagateQueuedActions();
@@ -1142,6 +1144,13 @@ public abstract class AbstractWorkingMemory
                            this.updateEqualsMap,
                            this.ruleOrigin,
                            this.activationOrigin );
+        }
+    }
+    
+    public class RuleFlowDeactivateEvent {
+        
+        public void propagate() {
+            
         }
     }
     

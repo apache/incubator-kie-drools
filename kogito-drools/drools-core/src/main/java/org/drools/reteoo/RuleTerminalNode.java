@@ -231,9 +231,13 @@ public final class RuleTerminalNode extends BaseNode
             if ( this.rule.getRuleFlowGroup() == null ) {
                 // No RuleFlowNode so add  it directly to  the Agenda
 
-                // Makes sure the Lifo is added to the AgendaGroup priority queue
-                // If the AgendaGroup is already in the priority queue it just
-                // returns.
+                // do not add the activation if the rule is "lock-on-active" and the AgendaGroup is active
+                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract                
+                if ( context.getType() == PropagationContext.MODIFICATION &&  this.rule.isLockOnActivate() && agendaGroup.isActivate() && context.removeRetractedTuple( this.rule, tuple ) == null ) {
+                    // This rule is locked and active, do not allow new tuples to activate 
+                    return;
+                }
+                
                 agendaGroup.add( item );
             } else {
                 //There is  a RuleFlowNode so add it there, instead  of the Agenda
@@ -242,7 +246,16 @@ public final class RuleTerminalNode extends BaseNode
                 if ( memory.getRuleFlowGroup() == null ) {
                     memory.setRuleFlowGroup( workingMemory.getAgenda().getRuleFlowGroup( this.rule.getRuleFlowGroup() ) );
                 }
+
+                // do not add the activation if the rule is "lock-on-active" and the RuleFlowGroup is active
+                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract 
+                if ( context.getType() == PropagationContext.MODIFICATION &&  this.rule.isLockOnActivate() &&  memory.getRuleFlowGroup().isActive() && context.removeRetractedTuple( this.rule, tuple ) == null ) {
+                    // This rule is locked and active, do not allow new tuples to activate 
+                    return;
+                }                
+                
                 ((InternalRuleFlowGroup) memory.getRuleFlowGroup()).addActivation( item );
+                
             }  
 
             tuple.setActivation( item );
@@ -269,9 +282,14 @@ public final class RuleTerminalNode extends BaseNode
         	// tuple should only be null if it was asserted and reached a no-loop causing it to exit early
             // before being added to the node memory and an activation created and attached
         	return;
-        }
+        }        
+        
         final Activation activation = tuple.getActivation();
         if ( activation.isActivated() ) {
+            if ( this.rule.isLockOnActivate() && context.getType() == PropagationContext.MODIFICATION ) {
+                context.addRetractedTuple( this.rule, tuple );
+            }
+            
             activation.remove();
 
             if ( activation.getActivationGroupNode() != null ) {
