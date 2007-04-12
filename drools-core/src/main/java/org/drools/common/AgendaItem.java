@@ -195,7 +195,10 @@ public class AgendaItem
     }
 
     public void dequeue() {
-        this.queue.dequeue( this.index );
+        if ( this.queue != null ) {
+            // will only be null if the AgendaGroup is locked when the activation add was attempted
+            this.queue.dequeue( this.index );
+        }
         this.activated = false;
     }
 

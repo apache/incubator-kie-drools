@@ -16,9 +16,16 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
+import org.drools.util.ObjectHashMap;
+import org.drools.util.TupleHashTable;
 
 public class PropagationContextImpl
     implements
@@ -30,11 +37,13 @@ public class PropagationContextImpl
     private final Activation activation;
 
     private final long       propagationNumber;
-    
-    public final int                         activeActivations;
-    
-    public final int                         dormantActivations;
-    
+
+    public final int         activeActivations;
+
+    public final int         dormantActivations;
+
+    public ObjectHashMap     retracted;
+
     public PropagationContextImpl(final long number,
                                   final int type,
                                   final Rule rule,
@@ -44,8 +53,8 @@ public class PropagationContextImpl
         this.activation = activation;
         this.propagationNumber = number;
         this.activeActivations = 0;
-        this.dormantActivations = 0;        
-    }    
+        this.dormantActivations = 0;
+    }
 
     public PropagationContextImpl(final long number,
                                   final int type,
@@ -91,14 +100,38 @@ public class PropagationContextImpl
     public int getType() {
         return this.type;
     }
-    
+
     public int getActiveActivations() {
         return this.activeActivations;
     }
-    
+
     public int getDormantActivations() {
         return this.dormantActivations;
-    }    
-    
+    }
 
+    public void addRetractedTuple(Rule rule, ReteTuple tuple) {
+        if ( this.retracted == null ) {
+            this.retracted = new ObjectHashMap();
+        }
+        
+        TupleHashTable tuples = (TupleHashTable) this.retracted.get( rule );
+        if ( tuples == null ) {
+            tuples = new TupleHashTable();
+            this.retracted.put( rule, tuples );
+        }
+        tuples.add( tuple );        
+    }
+    
+    public ReteTuple removeRetractedTuple(Rule rule, ReteTuple tuple) {
+        if ( this.retracted == null  ) {
+            return null;
+        }
+        
+        TupleHashTable tuples = (TupleHashTable) this.retracted.get( rule );
+        return tuples.remove( tuple ); 
+    }
+    
+    public void clearRetractedTuples() {
+        this.retracted = null;
+    }
 }

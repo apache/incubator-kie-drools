@@ -77,9 +77,6 @@ public class AgendaGroupImpl
     }
 
     public void add(final Activation activation) {
-        if ( this.active && activation.getRule().isLockOnActivate() ) {
-            return;
-        }
         this.queue.enqueue( (Queueable) activation );
     }
 
