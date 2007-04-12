@@ -67,6 +67,7 @@ import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.PropagationContextImpl;
@@ -1734,9 +1735,60 @@ public abstract class IntegrationCases extends TestCase {
         final Cheese cheddar17 = new Cheese( "cheddar",
                                              17 );        
         workingMemory.assertObject( cheddar17 );         
-        assertEquals( 1, group2.size() );
-        
+        assertEquals( 1, group2.size() );        
     }    
+    
+    public void testLockOnActiveWithModify() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithModify.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+              
+        final List list = new ArrayList();
+        wm.setGlobal( "list",
+                                 list );        
+        
+        Cheese brie = new Cheese("brie", 13);
+        
+        Person bob = new Person( "bob" );
+        bob.setCheese( brie );
+
+        Person mic = new Person( "mic" );
+        mic.setCheese( brie );
+        
+        Person mark = new Person( "mark" );
+        mark.setCheese( brie );     
+        
+        FactHandle brieHandle = wm.assertObject( brie );
+        wm.assertObject( bob );
+        wm.assertObject( mic );
+        wm.assertObject( mark );
+        
+        DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
+        AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
+        agenda.setFocus( group1 );
+        assertEquals( 3, group1.size() );          
+        agenda.fireNextItem( null );        
+        assertEquals( 2, group1.size() );        
+        wm.modifyObject( brieHandle, brie );
+        assertEquals( 2, group1.size() );
+        
+        
+//        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
+//        agenda.setFocus( group2 );
+//        
+//        RuleFlowGroupImpl rfg = ( RuleFlowGroupImpl )wm.getAgenda().getRuleFlowGroup( "ruleflow2" );                
+//        assertEquals( 3, rfg.size() );          
+//        
+//        agenda.activateRuleFlowGroup( "ruleflow2" );
+//        agenda.fireNextItem( null );        
+//        assertEquals( 2, rfg.size() );                
+//        wm.modifyObject( brieHandle, brie );
+//        assertEquals( 2, group2.size() );        
+    }
     
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
