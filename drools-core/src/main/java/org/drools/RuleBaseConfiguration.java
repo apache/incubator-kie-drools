@@ -98,7 +98,7 @@ public class RuleBaseConfiguration
         setIndexRightBetaMemory( Boolean.valueOf( System.getProperty( "drools.indexRightBetaMemory",
                                                                       "true" ) ).booleanValue() );
 
-        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( System.getProperty( "drools.iassertBehaviour",
+        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( System.getProperty( "drools.assertBehaviour",
                                                                                           "IDENTITY" ) ) );
         setLogicalOverride( LogicalOverride.determineLogicalOverride( System.getProperty( "drools.logicalOverride",
                                                                                           "DISCARD" ) ) );
