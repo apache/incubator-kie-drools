@@ -183,8 +183,8 @@ public class SynchronizedWorkingMemory
         this.workingMemory.setGlobal( name,
                                       value );
     }
-    
-    public synchronized IProcessInstance startProcess(String processId) {
-    	return this.workingMemory.startProcess(processId);
+
+    public synchronized IProcessInstance startProcess(final String processId) {
+        return this.workingMemory.startProcess( processId );
     }
 }

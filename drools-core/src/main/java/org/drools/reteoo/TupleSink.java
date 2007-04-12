@@ -32,7 +32,8 @@ import org.drools.spi.PropagationContext;
  */
 interface TupleSink
     extends
-    Serializable, Sink {
+    Serializable,
+    Sink {
 
     /**
      * Assert a new <code>ReteTuple</code>.

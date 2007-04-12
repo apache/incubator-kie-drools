@@ -94,7 +94,7 @@ public class IntClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetValue() {
         try {
             Assert.assertEquals( IntClassFieldExtractorTest.VALUE,
-                                 ((Number)this.extractor.getValue( this.bean )).intValue() );
+                                 ((Number) this.extractor.getValue( this.bean )).intValue() );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

@@ -63,7 +63,7 @@ public class ObjectLogEvent extends LogEvent {
     public String getObjectToString() {
         return this.objectToString;
     }
-    
+
     public String toString() {
         String msg = null;
         switch ( this.getType() ) {
@@ -73,12 +73,12 @@ public class ObjectLogEvent extends LogEvent {
             case OBJECT_MODIFIED :
                 msg = "OBJECT MODIFIED";
                 break;
-                
+
             case OBJECT_RETRACTED :
                 msg = "OBJECT RETRACTED";
-                break;                
+                break;
         }
-        return msg + " value:" + this.objectToString + " factId: " + factId;
-           
-    }    
+        return msg + " value:" + this.objectToString + " factId: " + this.factId;
+
+    }
 }

@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -35,14 +36,16 @@ import org.drools.util.LinkedList.LinkedListIterator;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  *
  */
-public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance implements InternalRuleFlowGroup {
+public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
+    implements
+    InternalRuleFlowGroup {
 
     private static final long serialVersionUID = 320L;
 
     private final String      name;
-    private boolean active = false;
+    private boolean           active           = false;
     private final LinkedList  list;
-    private boolean autoDeactivate = true;
+    private boolean           autoDeactivate   = true;
 
     /**
      * Construct a <code>RuleFlowGroupImpl</code> with the given name.
@@ -58,53 +61,53 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance implements I
     public String getName() {
         return this.name;
     }
-    
-    public void setActive(boolean active) {
-    	if (this.active == active) {
-    		return;
-    	}
-    	this.active = active;
-    	if (active) {
-    		triggerActivations();
-    	} else {
-            LinkedListIterator it = this.list.iterator();
-            for (RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next()) {
-                Activation activation = node.getActivation();
+
+    public void setActive(final boolean active) {
+        if ( this.active == active ) {
+            return;
+        }
+        this.active = active;
+        if ( active ) {
+            triggerActivations();
+        } else {
+            final LinkedListIterator it = this.list.iterator();
+            for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
+                final Activation activation = node.getActivation();
                 activation.remove();
                 if ( activation.getActivationGroupNode() != null ) {
-                	activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+                    activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
                 }
             }
-    	}
+        }
     }
-    
+
     public boolean isActive() {
-    	return active;
+        return this.active;
     }
-    
+
     public boolean isAutoDeactivate() {
-    	return autoDeactivate;
+        return this.autoDeactivate;
     }
-    
-    public void setAutoDeactivate(boolean autoDeactivate) {
-    	this.autoDeactivate = autoDeactivate;
-    	if (autoDeactivate && active && list.isEmpty()) {
-    		active = false;
-    	}
+
+    public void setAutoDeactivate(final boolean autoDeactivate) {
+        this.autoDeactivate = autoDeactivate;
+        if ( autoDeactivate && this.active && this.list.isEmpty() ) {
+            this.active = false;
+        }
     }
 
     private void triggerActivations() {
         // iterate all activations adding them to their AgendaGroups
-        LinkedListIterator it = this.list.iterator();
-        for (RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next()) {
-            Activation activation = node.getActivation();
-            ((AgendaGroupImpl) activation.getAgendaGroup()).add(activation);
+        final LinkedListIterator it = this.list.iterator();
+        for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
+            final Activation activation = node.getActivation();
+            ((AgendaGroupImpl) activation.getAgendaGroup()).add( activation );
         }
     }
 
     public void clear() {
-        LinkedListIterator it = this.list.iterator();
-        for (RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next()) {
+        final LinkedListIterator it = this.list.iterator();
+        for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
             node.getActivation().remove();
         }
     }
@@ -113,29 +116,30 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance implements I
         return this.list.size();
     }
 
-    public void addActivation(final Activation activation) {        
-        final RuleFlowGroupNode node = new RuleFlowGroupNode(activation, this);
-        activation.setRuleFlowGroupNode(node);
-    	list.add( node );
-        
-        if ( active ) {
-        	((AgendaGroupImpl) activation.getAgendaGroup()).add(activation);
+    public void addActivation(final Activation activation) {
+        final RuleFlowGroupNode node = new RuleFlowGroupNode( activation,
+                                                              this );
+        activation.setRuleFlowGroupNode( node );
+        this.list.add( node );
+
+        if ( this.active ) {
+            ((AgendaGroupImpl) activation.getAgendaGroup()).add( activation );
         }
     }
 
     public void removeActivation(final Activation activation) {
         final RuleFlowGroupNode node = activation.getRuleFlowGroupNode();
-        list.remove(node);
-        activation.setActivationGroupNode(null);
-        if (autoDeactivate) {
-        	if (list.isEmpty()) {
-        		this.active = false;
-        		// only trigger next node if this RuleFlowGroup was
-        		// triggered from inside a process instance
-        		if (getProcessInstance() != null) {
-        			triggerCompleted();
-        		}
-        	}
+        this.list.remove( node );
+        activation.setActivationGroupNode( null );
+        if ( this.autoDeactivate ) {
+            if ( this.list.isEmpty() ) {
+                this.active = false;
+                // only trigger next node if this RuleFlowGroup was
+                // triggered from inside a process instance
+                if ( getProcessInstance() != null ) {
+                    triggerCompleted();
+                }
+            }
         }
     }
 
@@ -167,7 +171,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance implements I
         return this.name.hashCode();
     }
 
-	public void trigger(IRuleFlowNodeInstance parent) {
-		setActive(true);
-	}
+    public void trigger(final IRuleFlowNodeInstance parent) {
+        setActive( true );
+    }
 }

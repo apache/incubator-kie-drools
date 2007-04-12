@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.datatype.impl.type;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,22 +23,24 @@ import org.drools.ruleflow.common.datatype.IDataType;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public final class UndefinedDataType implements IDataType {
-    
-    private static final long serialVersionUID = 3690196546763699768L;
+public final class UndefinedDataType
+    implements
+    IDataType {
+
+    private static final long        serialVersionUID = 3690196546763699768L;
     private static UndefinedDataType instance;
-    
+
     public static UndefinedDataType getInstance() {
-        if (instance == null) {
+        if ( instance == null ) {
             instance = new UndefinedDataType();
         }
         return instance;
     }
 
-    public boolean verifyDataType(Object value) {
-    	if (value == null) {
-    		return true;
-    	}
-		return false;
+    public boolean verifyDataType(final Object value) {
+        if ( value == null ) {
+            return true;
+        }
+        return false;
     }
 }

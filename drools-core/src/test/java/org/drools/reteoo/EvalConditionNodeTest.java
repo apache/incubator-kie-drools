@@ -22,7 +22,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
 import org.drools.util.TupleHashTable;
 
 public class EvalConditionNodeTest extends DroolsTestCase {

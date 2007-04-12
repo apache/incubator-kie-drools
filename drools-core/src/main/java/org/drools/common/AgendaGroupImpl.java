@@ -44,8 +44,8 @@ public class AgendaGroupImpl
 
     /** Items in the agenda. */
     private final BinaryHeapQueue queue;
-    
-    private boolean active;
+
+    private boolean               active;
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
@@ -82,13 +82,13 @@ public class AgendaGroupImpl
 
     public Activation getNext() {
         return (Activation) this.queue.dequeue();
-    }        
-
-    public boolean isActivate() {
-        return active;
     }
 
-    public void setActive(boolean activate) {
+    public boolean isActivate() {
+        return this.active;
+    }
+
+    public void setActive(final boolean activate) {
         this.active = activate;
     }
 

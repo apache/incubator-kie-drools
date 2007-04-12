@@ -147,7 +147,7 @@ public class EqualityKey
             return false;
         }
 
-        if ( object instanceof EqualityKey) {
+        if ( object instanceof EqualityKey ) {
             return this == object;
         }
 

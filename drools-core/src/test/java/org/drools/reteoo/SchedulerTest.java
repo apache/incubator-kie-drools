@@ -44,9 +44,9 @@ public class SchedulerTest extends DroolsTestCase {
 
         final Rule rule = new Rule( "test-rule" );
         final RuleTerminalNode node = new RuleTerminalNode( 1,
-                                                    new MockTupleSource( 2 ),
-                                                    rule,
-                                                    rule.getLhs());
+                                                            new MockTupleSource( 2 ),
+                                                            rule,
+                                                            rule.getLhs() );
         final List data = new ArrayList();
 
         // add consequence
@@ -107,9 +107,9 @@ public class SchedulerTest extends DroolsTestCase {
 
         final Rule rule = new Rule( "test-rule" );
         final RuleTerminalNode node = new RuleTerminalNode( 1,
-                                                    new MockTupleSource( 2 ),
-                                                    rule,
-                                                    rule.getLhs());
+                                                            new MockTupleSource( 2 ),
+                                                            rule,
+                                                            rule.getLhs() );
         final List data = new ArrayList();
 
         /* 1/10th of a second */
@@ -186,9 +186,9 @@ public class SchedulerTest extends DroolsTestCase {
         final List data = new ArrayList();
 
         final RuleTerminalNode node = new RuleTerminalNode( 1,
-                                                    new MockTupleSource( 2 ),
-                                                    rule,
-                                                    rule.getLhs());
+                                                            new MockTupleSource( 2 ),
+                                                            rule,
+                                                            rule.getLhs() );
 
         /* 1/10th of a second */
         final Duration duration = new Duration() {

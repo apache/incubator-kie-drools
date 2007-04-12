@@ -36,36 +36,36 @@ public class ForallBuilder
     /**
      * @inheritDoc
      */
-    public void build(BuildContext context,
-                      BuildUtils utils,
-                      RuleConditionElement rce) {
-        Forall forall = (Forall) rce;
-        
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleConditionElement rce) {
+        final Forall forall = (Forall) rce;
+
         // forall can be translated into
         // not( baseColumn and not( <remaining_columns>+ ) ) 
         // so we just do that:
-        
-        GroupElement and = GroupElementFactory.newAndInstance();
+
+        final GroupElement and = GroupElementFactory.newAndInstance();
         and.addChild( forall.getBaseColumn() );
-        
-        GroupElement not2 = GroupElementFactory.newNotInstance();
-        if( forall.getRemainingColumns().size() == 1 ) {
+
+        final GroupElement not2 = GroupElementFactory.newNotInstance();
+        if ( forall.getRemainingColumns().size() == 1 ) {
             not2.addChild( (Column) forall.getRemainingColumns().get( 0 ) );
             and.addChild( not2 );
-        } else if( forall.getRemainingColumns().size() > 1 ) {
-            GroupElement and2 = GroupElementFactory.newAndInstance();
-            for( Iterator it = forall.getRemainingColumns().iterator(); it.hasNext(); ) {
+        } else if ( forall.getRemainingColumns().size() > 1 ) {
+            final GroupElement and2 = GroupElementFactory.newAndInstance();
+            for ( final Iterator it = forall.getRemainingColumns().iterator(); it.hasNext(); ) {
                 and2.addChild( (Column) it.next() );
             }
             not2.addChild( and2 );
             and.addChild( not2 );
         }
 
-        GroupElement not = GroupElementFactory.newNotInstance();
+        final GroupElement not = GroupElementFactory.newNotInstance();
         not.addChild( and );
 
         // get builder for the CEs
-        ReteooComponentBuilder builder = utils.getBuilderFor( not );
+        final ReteooComponentBuilder builder = utils.getBuilderFor( not );
 
         // builds the CEs
         builder.build( context,
@@ -73,12 +73,11 @@ public class ForallBuilder
                        not );
     }
 
-
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation(BuildUtils utils,
-                                          RuleConditionElement rce) {
+    public boolean requiresLeftActivation(final BuildUtils utils,
+                                          final RuleConditionElement rce) {
         return true;
     }
 

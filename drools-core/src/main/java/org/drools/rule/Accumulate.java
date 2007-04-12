@@ -121,7 +121,7 @@ public class Accumulate extends ConditionalElement {
     /**
      * @inheritDoc
      */
-    public Declaration resolveDeclaration(String identifier) {
+    public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.sourceColumn.getInnerDeclarations().get( identifier );
     }
 

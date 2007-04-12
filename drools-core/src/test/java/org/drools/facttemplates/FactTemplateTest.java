@@ -8,15 +8,15 @@ public class FactTemplateTest extends TestCase {
     public void testFieldsAndGetters() {
         final Package pkg = new Package( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                          0,
-                                                          String.class );
+                                                                0,
+                                                                String.class );
         final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                           1,
-                                                           Integer.class );
+                                                                 1,
+                                                                 Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese = new FactTemplateImpl( pkg,
-                                                    "Cheese",
-                                                    fields );
+                                                          "Cheese",
+                                                          fields );
 
         assertEquals( "org.store",
                       cheese.getPackage().getName() );
@@ -50,24 +50,24 @@ public class FactTemplateTest extends TestCase {
 
         // Create cheese1 with name and price fields
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                          0,
-                                                          String.class );
+                                                                0,
+                                                                String.class );
         final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                           1,
-                                                           Integer.class );
+                                                                 1,
+                                                                 Integer.class );
         final FieldTemplate[] fields1 = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese1 = new FactTemplateImpl( pkg,
-                                                     "Cheese",
-                                                     fields1 );
+                                                           "Cheese",
+                                                           fields1 );
 
         // Create cheese2 with type and price fields
         final FieldTemplate cheeseType = new FieldTemplateImpl( "type",
-                                                          0,
-                                                          String.class );
+                                                                0,
+                                                                String.class );
         final FieldTemplate[] fields2 = new FieldTemplate[]{cheeseType, cheesePrice};
         final FactTemplate cheese2 = new FactTemplateImpl( pkg,
-                                                     "Cheese",
-                                                     fields2 );
+                                                           "Cheese",
+                                                           fields2 );
 
         assertNotSame( cheese1,
                        cheese2 );
@@ -78,15 +78,15 @@ public class FactTemplateTest extends TestCase {
 
         // create cheese3 with name and price fields, using new instances
         final FieldTemplate cheeseName2 = new FieldTemplateImpl( "name",
-                                                           0,
-                                                           String.class );
+                                                                 0,
+                                                                 String.class );
         final FieldTemplate cheesePrice2 = new FieldTemplateImpl( "price",
-                                                            1,
-                                                            Integer.class );
+                                                                  1,
+                                                                  Integer.class );
         final FieldTemplate[] fields3 = new FieldTemplate[]{cheeseName2, cheesePrice2};
         final FactTemplate cheese3 = new FactTemplateImpl( pkg,
-                                                     "Cheese",
-                                                     fields3 );
+                                                           "Cheese",
+                                                           fields3 );
 
         assertNotSame( cheese1,
                        cheese3 );
@@ -101,15 +101,15 @@ public class FactTemplateTest extends TestCase {
     public void testFacts() {
         final Package pkg = new Package( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                          0,
-                                                          String.class );
+                                                                0,
+                                                                String.class );
         final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                           1,
-                                                           Integer.class );
+                                                                 1,
+                                                                 Integer.class );
         final FieldTemplate[] fields1 = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese1 = new FactTemplateImpl( pkg,
-                                                     "Cheese",
-                                                     fields1 );
+                                                           "Cheese",
+                                                           fields1 );
 
         final Fact stilton1 = cheese1.createFact( 10 );
         stilton1.setFieldValue( "name",

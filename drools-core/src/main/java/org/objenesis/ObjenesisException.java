@@ -9,34 +9,34 @@ package org.objenesis;
  */
 public class ObjenesisException extends RuntimeException {
 
-   private static final boolean jdk14 = (Double.parseDouble(System
-      .getProperty("java.specification.version")) > 1.3);
+    private static final boolean jdk14 = (Double.parseDouble( System.getProperty( "java.specification.version" ) ) > 1.3);
 
-   /**
-    * @param msg Error message
-    */
-   public ObjenesisException(String msg) {
-      super(msg);
-   }
+    /**
+     * @param msg Error message
+     */
+    public ObjenesisException(final String msg) {
+        super( msg );
+    }
 
-   /**
-    * @param cause Wrapped exception. The message will be the one of the cause.
-    */
-   public ObjenesisException(Throwable cause) {
-      super(cause == null ? null : cause.toString());
-      if(jdk14) {
-         initCause(cause);
-      }
-   }
+    /**
+     * @param cause Wrapped exception. The message will be the one of the cause.
+     */
+    public ObjenesisException(final Throwable cause) {
+        super( cause == null ? null : cause.toString() );
+        if ( jdk14 ) {
+            initCause( cause );
+        }
+    }
 
-   /**
-    * @param msg Error message
-    * @param cause Wrapped exception
-    */
-   public ObjenesisException(String msg, Throwable cause) {
-      super(msg);
-      if(jdk14) {
-         initCause(cause);
-      }
-   }
+    /**
+     * @param msg Error message
+     * @param cause Wrapped exception
+     */
+    public ObjenesisException(final String msg,
+                              final Throwable cause) {
+        super( msg );
+        if ( jdk14 ) {
+            initCause( cause );
+        }
+    }
 }

@@ -213,7 +213,7 @@ public class EvaluatorFactoryTest extends TestCase {
      */
     private void runEvaluatorTest(final Object[][] data,
                                   final ValueType valueType) {
-        Extractor extractor = new MockExtractor();
+        final Extractor extractor = new MockExtractor();
         for ( int i = 0; i < data.length; i++ ) {
             final Object[] row = data[i];
             final Evaluator evaluator = valueType.getEvaluator( Operator.determineOperator( (String) row[1] ) );
@@ -247,10 +247,10 @@ public class EvaluatorFactoryTest extends TestCase {
      * @param evaluator
      */
     private void checkEvaluatorMethodWithFieldValue(final ValueType valueType,
-                                                    Extractor extractor,
+                                                    final Extractor extractor,
                                                     final Object[] row,
                                                     final Evaluator evaluator) {
-        FieldValue value = FieldFactory.getFieldValue( row[2],
+        final FieldValue value = FieldFactory.getFieldValue( row[2],
                                                        valueType );
         final boolean result = evaluator.evaluate( extractor,
                                                    row[0],
@@ -273,10 +273,10 @@ public class EvaluatorFactoryTest extends TestCase {
      * @param evaluator
      */
     private void checkEvaluatorMethodCachedRight(final ValueType valueType,
-                                                 Extractor extractor,
+                                                 final Extractor extractor,
                                                  final Object[] row,
                                                  final Evaluator evaluator) {
-        VariableContextEntry context = this.getContextEntry( (FieldExtractor) extractor,
+        final VariableContextEntry context = this.getContextEntry( (FieldExtractor) extractor,
                                                              valueType,
                                                              row );
         final boolean result = evaluator.evaluateCachedRight( context,
@@ -299,10 +299,10 @@ public class EvaluatorFactoryTest extends TestCase {
      * @param evaluator
      */
     private void checkEvaluatorMethodCachedLeft(final ValueType valueType,
-                                                Extractor extractor,
+                                                final Extractor extractor,
                                                 final Object[] row,
                                                 final Evaluator evaluator) {
-        VariableContextEntry context = this.getContextEntry( (FieldExtractor) extractor,
+        final VariableContextEntry context = this.getContextEntry( (FieldExtractor) extractor,
                                                              valueType,
                                                              row );
         final boolean result = evaluator.evaluateCachedLeft( context,
@@ -325,7 +325,7 @@ public class EvaluatorFactoryTest extends TestCase {
      * @param evaluator
      */
     private void checkEvaluatorMethodWith2Extractors(final ValueType valueType,
-                                                     Extractor extractor,
+                                                     final Extractor extractor,
                                                      final Object[] row,
                                                      final Evaluator evaluator) {
         final boolean result = evaluator.evaluate( extractor,
@@ -343,14 +343,14 @@ public class EvaluatorFactoryTest extends TestCase {
         }
     }
 
-    private VariableContextEntry getContextEntry(FieldExtractor extractor,
-                                                 ValueType valueType,
-                                                 Object[] row) {
-        Declaration declaration = new Declaration( "test",
+    private VariableContextEntry getContextEntry(final FieldExtractor extractor,
+                                                 final ValueType valueType,
+                                                 final Object[] row) {
+        final Declaration declaration = new Declaration( "test",
                                                    extractor,
                                                    null );
         if ( valueType.isIntegerNumber() || valueType.isChar() ) {
-            LongVariableContextEntry context = new LongVariableContextEntry( extractor,
+            final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                              declaration );
             if ( row[2] instanceof Character ) {
                 context.left = ((Character) row[2]).charValue();
@@ -361,19 +361,19 @@ public class EvaluatorFactoryTest extends TestCase {
             }
             return context;
         } else if ( valueType.isBoolean() ) {
-            BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
+            final BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
                                                                                    declaration );
             context.left = ((Boolean) row[2]).booleanValue();
             context.right = ((Boolean) row[0]).booleanValue();
             return context;
         } else if ( valueType.isFloatNumber() ) {
-            DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
+            final DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
                                                                                  declaration );
             context.left = ((Number) row[2]).doubleValue();
             context.right = ((Number) row[0]).doubleValue();
             return context;
         } else {
-            ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
+            final ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
                                                                                  declaration );
             context.left = row[2];
             context.right = row[0];
@@ -387,19 +387,19 @@ public class EvaluatorFactoryTest extends TestCase {
 
         private static final long serialVersionUID = 2759666130893301563L;
 
-        public boolean getBooleanValue(Object object) {
+        public boolean getBooleanValue(final Object object) {
             return ((Boolean) object).booleanValue();
         }
 
-        public byte getByteValue(Object object) {
+        public byte getByteValue(final Object object) {
             return ((Number) object).byteValue();
         }
 
-        public char getCharValue(Object object) {
+        public char getCharValue(final Object object) {
             return ((Character) object).charValue();
         }
 
-        public double getDoubleValue(Object object) {
+        public double getDoubleValue(final Object object) {
             return ((Number) object).doubleValue();
         }
 
@@ -407,19 +407,19 @@ public class EvaluatorFactoryTest extends TestCase {
             return null;
         }
 
-        public float getFloatValue(Object object) {
+        public float getFloatValue(final Object object) {
             return ((Number) object).floatValue();
         }
 
-        public int getHashCode(Object object) {
+        public int getHashCode(final Object object) {
             return 0;
         }
 
-        public int getIntValue(Object object) {
+        public int getIntValue(final Object object) {
             return ((Number) object).intValue();
         }
 
-        public long getLongValue(Object object) {
+        public long getLongValue(final Object object) {
             return ((Number) object).longValue();
         }
 
@@ -427,11 +427,11 @@ public class EvaluatorFactoryTest extends TestCase {
             return null;
         }
 
-        public short getShortValue(Object object) {
+        public short getShortValue(final Object object) {
             return ((Number) object).shortValue();
         }
 
-        public Object getValue(Object object) {
+        public Object getValue(final Object object) {
             return object;
         }
 

@@ -116,7 +116,7 @@ public class AccumulateNode extends BetaNode {
         memory.getTupleMemory().add( leftTuple );
 
         final List matchingObjects = new ArrayList();
-        
+
         final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory,
                                           leftTuple );
@@ -141,20 +141,21 @@ public class AccumulateNode extends BetaNode {
             }
         }
         if ( isAllowed ) {
-            this.resultBinder.updateFromTuple( workingMemory, leftTuple );
+            this.resultBinder.updateFromTuple( workingMemory,
+                                               leftTuple );
             if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
                 final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
                 memory.getCreatedHandles().put( leftTuple,
                                                 handle,
                                                 false );
 
-                sink.propagateAssertTuple( leftTuple,
+                this.sink.propagateAssertTuple( leftTuple,
                                            handle,
                                            context,
                                            workingMemory );
             }
         }
-        
+
     }
 
     /**
@@ -244,24 +245,23 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    public void updateSink(TupleSink sink,
-                           PropagationContext context,
-                           InternalWorkingMemory workingMemory) {
+    public void updateSink(final TupleSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         final Iterator it = memory.getCreatedHandles().iterator();
 
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-            sink.assertTuple( new ReteTuple( (ReteTuple)entry.getKey(),
-                                             (InternalFactHandle) entry.getValue()),
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            sink.assertTuple( new ReteTuple( (ReteTuple) entry.getKey(),
+                                             (InternalFactHandle) entry.getValue() ),
                               context,
                               workingMemory );
         }
     }
-    
+
     public String toString() {
         return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
     }
-
 
 }

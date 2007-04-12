@@ -31,21 +31,24 @@ import java.util.Map;
 public class Forall extends ConditionalElement {
 
     private static final long serialVersionUID = -5993305516857875971L;
-    
+
     // forall base column
-    private Column baseColumn;
+    private Column            baseColumn;
     // foral remaining columns
-    private List remainingColumns;
-    
+    private List              remainingColumns;
+
     public Forall() {
-        this(null, new ArrayList(1));
-    }
-    
-    public Forall(Column baseColumn) {
-        this( baseColumn, new ArrayList(1) );
+        this( null,
+              new ArrayList( 1 ) );
     }
 
-    public Forall(Column baseColumn, List remainingColumns) {
+    public Forall(final Column baseColumn) {
+        this( baseColumn,
+              new ArrayList( 1 ) );
+    }
+
+    public Forall(final Column baseColumn,
+                  final List remainingColumns) {
         this.baseColumn = baseColumn;
         this.remainingColumns = remainingColumns;
     }
@@ -54,7 +57,8 @@ public class Forall extends ConditionalElement {
      * @see org.drools.rule.ConditionalElement#clone()
      */
     public Object clone() {
-        return new Forall(this.baseColumn, new ArrayList(this.remainingColumns));
+        return new Forall( this.baseColumn,
+                           new ArrayList( this.remainingColumns ) );
     }
 
     /**
@@ -62,9 +66,9 @@ public class Forall extends ConditionalElement {
      * since it negates the remaining columns
      */
     public Map getInnerDeclarations() {
-        Map inner = new HashMap(this.baseColumn.getOuterDeclarations());
-        for( Iterator it = this.remainingColumns.iterator(); it.hasNext(); ) {
-            inner.putAll( ((Column)it.next()).getOuterDeclarations() );
+        final Map inner = new HashMap( this.baseColumn.getOuterDeclarations() );
+        for ( final Iterator it = this.remainingColumns.iterator(); it.hasNext(); ) {
+            inner.putAll( ((Column) it.next()).getOuterDeclarations() );
         }
         return inner;
     }
@@ -79,7 +83,7 @@ public class Forall extends ConditionalElement {
     /**
      * Forall can only resolve declarations from its base column
      */
-    public Declaration resolveDeclaration(String identifier) {
+    public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.getInnerDeclarations().get( identifier );
     }
 
@@ -87,13 +91,13 @@ public class Forall extends ConditionalElement {
      * @return the baseColumn
      */
     public Column getBaseColumn() {
-        return baseColumn;
+        return this.baseColumn;
     }
 
     /**
      * @param baseColumn the baseColumn to set
      */
-    public void setBaseColumn(Column baseColumn) {
+    public void setBaseColumn(final Column baseColumn) {
         this.baseColumn = baseColumn;
     }
 
@@ -101,21 +105,21 @@ public class Forall extends ConditionalElement {
      * @return the remainingColumns
      */
     public List getRemainingColumns() {
-        return remainingColumns;
+        return this.remainingColumns;
     }
 
     /**
      * @param remainingColumns the remainingColumns to set
      */
-    public void setRemainingColumns(List remainingColumns) {
+    public void setRemainingColumns(final List remainingColumns) {
         this.remainingColumns = remainingColumns;
     }
-    
+
     /**
      * Adds one more column to the list of remaining columns
      * @param column
      */
-    public void addRemainingColumn( Column column ) {
+    public void addRemainingColumn(final Column column) {
         this.remainingColumns.add( column );
     }
 

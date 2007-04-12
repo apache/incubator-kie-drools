@@ -54,7 +54,7 @@ public class FromNode extends TupleSource
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         memory.getTupleMemory().add( leftTuple );
-        LinkedList list = new LinkedList();
+        final LinkedList list = new LinkedList();
         this.betaConstraints.updateFromTuple( workingMemory,
                                               leftTuple );
 
@@ -102,13 +102,13 @@ public class FromNode extends TupleSource
                              final InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
+        final ReteTuple tuple = memory.getTupleMemory().remove( leftTuple );
 
-        LinkedList list = (LinkedList) memory.getCreatedHandles().remove( tuple );
+        final LinkedList list = (LinkedList) memory.getCreatedHandles().remove( tuple );
         // if tuple was propagated
         if ( list != null ) {
             for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                InternalFactHandle handle = (InternalFactHandle) entry.getObject();
+                final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
                 this.sink.propagateRetractTuple( leftTuple,
                                                  handle,
                                                  context,
@@ -154,20 +154,20 @@ public class FromNode extends TupleSource
                                  workingMemories );
     }
 
-    public void updateSink(TupleSink sink,
-                           PropagationContext context,
-                           InternalWorkingMemory workingMemory) {
+    public void updateSink(final TupleSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        Iterator tupleIter = memory.getTupleMemory().iterator();
+        final Iterator tupleIter = memory.getTupleMemory().iterator();
         for ( ReteTuple tuple = (ReteTuple) tupleIter.next(); tuple != null; tuple = (ReteTuple) tupleIter.next() ) {
-            LinkedList list = (LinkedList) memory.getCreatedHandles().remove( tuple );
+            final LinkedList list = (LinkedList) memory.getCreatedHandles().remove( tuple );
             if ( list == null ) {
                 continue;
             }
             for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                InternalFactHandle handle = (InternalFactHandle) entry.getObject();
+                final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
                 this.sink.propagateRetractTuple( tuple,
                                                  handle,
                                                  context,

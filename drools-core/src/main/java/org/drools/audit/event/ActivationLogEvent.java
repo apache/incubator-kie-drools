@@ -87,9 +87,9 @@ public class ActivationLogEvent extends LogEvent {
     public String getDeclarations() {
         return this.declarations;
     }
-    
+
     public String toString() {
-        
+
         String msg = null;
         switch ( this.getType() ) {
             case ACTIVATION_CANCELLED :
@@ -98,14 +98,14 @@ public class ActivationLogEvent extends LogEvent {
             case ACTIVATION_CREATED :
                 msg = "ACTIVATION CREATED";
                 break;
-                
+
             case AFTER_ACTIVATION_FIRE :
                 msg = "AFTER ACTIVATION FIRED";
-                break;                
+                break;
             case BEFORE_ACTIVATION_FIRE :
                 msg = "BEFORE ACTIVATION FIRED";
                 break;
         }
-        return msg + " rule:" + rule + " activationId:" + activationId + " declarations: " + declarations ;
-    }    
+        return msg + " rule:" + this.rule + " activationId:" + this.activationId + " declarations: " + this.declarations;
+    }
 }

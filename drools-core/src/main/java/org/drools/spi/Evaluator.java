@@ -46,7 +46,7 @@ public interface Evaluator
     public boolean evaluate(Extractor extractor,
                             Object object1,
                             FieldValue value);
-    
+
     public boolean evaluate(Extractor leftExtractor,
                             Object left,
                             Extractor rightExtractor,

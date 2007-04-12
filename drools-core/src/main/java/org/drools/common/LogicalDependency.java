@@ -50,8 +50,8 @@ public class LogicalDependency extends AbstractBaseLinkedListNode {
         if ( this == object ) {
             return true;
         }
-        
-        if ( object == null || !(object instanceof LogicalDependency ) ) {
+
+        if ( object == null || !(object instanceof LogicalDependency) ) {
             return false;
         }
 

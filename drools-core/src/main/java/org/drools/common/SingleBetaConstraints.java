@@ -18,7 +18,6 @@ package org.drools.common;
 
 import java.io.Serializable;
 
-import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
@@ -51,16 +50,16 @@ public class SingleBetaConstraints
     private ContextEntry                  context;
 
     private boolean                       indexed;
-    
+
     private RuleBaseConfiguration         conf;
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
-                                 RuleBaseConfiguration conf) {
+                                 final RuleBaseConfiguration conf) {
         this.conf = conf;
         if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
             this.indexed = false;
         } else {
-            int depth = conf.getCompositeKeyDepth();
+            final int depth = conf.getCompositeKeyDepth();
             // Determine  if this constraint is indexable
             this.indexed = depth >= 1 && isIndexable( constraint );
         }
@@ -128,16 +127,16 @@ public class SingleBetaConstraints
                                                      variableConstraint.getRequiredDeclarations()[0],
                                                      variableConstraint.getEvaluator() );
             TupleMemory tupleMemory;
-            if ( conf.isIndexLeftBetaMemory() ) {
+            if ( this.conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( new FieldIndex[]{index} );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new FactHandleIndexHashTable( new FieldIndex[]{index} );           
-            }  else {
+            if ( this.conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( new FieldIndex[]{index} );
+            } else {
                 factHandleMemory = new FactHashTable();
             }
             memory = new BetaMemory( tupleMemory,

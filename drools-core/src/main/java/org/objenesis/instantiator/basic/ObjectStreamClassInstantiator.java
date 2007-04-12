@@ -16,39 +16,40 @@ import org.objenesis.instantiator.ObjectInstantiator;
  * @see ObjectInstantiator
  * @see java.io.Serializable
  */
-public class ObjectStreamClassInstantiator implements ObjectInstantiator {
+public class ObjectStreamClassInstantiator
+    implements
+    ObjectInstantiator {
 
-   private static Method newInstanceMethod;
+    private static Method newInstanceMethod;
 
-   private static void initialize() {
-      if(newInstanceMethod == null) {
-         try {
-            newInstanceMethod = ObjectStreamClass.class.getDeclaredMethod("newInstance",
-               new Class[] {});
-            newInstanceMethod.setAccessible(true);
-         }
-         catch(Exception e) {
-            throw new ObjenesisException(e);
-         }         
-      }
-   }
+    private static void initialize() {
+        if ( newInstanceMethod == null ) {
+            try {
+                newInstanceMethod = ObjectStreamClass.class.getDeclaredMethod( "newInstance",
+                                                                               new Class[]{} );
+                newInstanceMethod.setAccessible( true );
+            } catch ( final Exception e ) {
+                throw new ObjenesisException( e );
+            }
+        }
+    }
 
-   private ObjectStreamClass objStreamClass;
+    private ObjectStreamClass objStreamClass;
 
-   public ObjectStreamClassInstantiator(Class type) {
-      initialize();
-      objStreamClass = ObjectStreamClass.lookup(type);
-   }
+    public ObjectStreamClassInstantiator(final Class type) {
+        initialize();
+        this.objStreamClass = ObjectStreamClass.lookup( type );
+    }
 
-   public Object newInstance() {
-	   
-      try {
-         return newInstanceMethod.invoke(objStreamClass, new Object[] {});
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-      
-   }
+    public Object newInstance() {
+
+        try {
+            return newInstanceMethod.invoke( this.objStreamClass,
+                                             new Object[]{} );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+
+    }
 
 }

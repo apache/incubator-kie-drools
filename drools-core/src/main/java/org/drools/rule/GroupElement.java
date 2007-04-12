@@ -42,7 +42,7 @@ public class GroupElement extends ConditionalElement {
         this( AND );
     }
 
-    public GroupElement(Type type) {
+    public GroupElement(final Type type) {
         this.type = type;
     }
 
@@ -66,10 +66,12 @@ public class GroupElement extends ConditionalElement {
      * @param index
      * @param rce
      */
-    public void addChild(int index, RuleConditionElement rce) {
-        this.children.add( index, rce );
+    public void addChild(final int index,
+                         final RuleConditionElement rce) {
+        this.children.add( index,
+                           rce );
     }
-    
+
     public List getChildren() {
         return this.children;
     }
@@ -91,7 +93,7 @@ public class GroupElement extends ConditionalElement {
     /**
      * @inheritDoc
      */
-    public Declaration resolveDeclaration(String identifier) {
+    public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.type.getInnerDeclarations( this.children ).get( identifier );
     }
 
@@ -104,12 +106,12 @@ public class GroupElement extends ConditionalElement {
      */
     public void pack() {
         // we must clone, since we want to iterate only over the original list
-        Object[] clone = this.children.toArray();
+        final Object[] clone = this.children.toArray();
         for ( int i = 0; i < clone.length; i++ ) {
             // if child is also a group element, there may be 
             // some possible clean up / optimizations to be done
             if ( clone[i] instanceof GroupElement ) {
-                GroupElement childGroup = (GroupElement) clone[i];
+                final GroupElement childGroup = (GroupElement) clone[i];
                 childGroup.pack( this );
             }
         }
@@ -117,9 +119,9 @@ public class GroupElement extends ConditionalElement {
         // if after packing, this is an AND or OR GE with a single
         // child GE, then clone child into current node eliminating child
         if ( (this.isAnd() || this.isOr()) && (this.children.size() == 1) ) {
-            Object child = this.getChildren().get( 0 );
+            final Object child = this.getChildren().get( 0 );
             if ( child instanceof GroupElement ) {
-                GroupElement group = (GroupElement) child;
+                final GroupElement group = (GroupElement) child;
                 this.type = group.getType();
                 this.children.clear();
                 this.children.addAll( group.getChildren() );
@@ -130,7 +132,7 @@ public class GroupElement extends ConditionalElement {
     /**
      * @param parent
      */
-    private void pack(GroupElement parent) {
+    private void pack(final GroupElement parent) {
         if ( this.children.size() == 0 ) {
             // if there is no child, just remove this node
             parent.children.remove( this );
@@ -148,13 +150,13 @@ public class GroupElement extends ConditionalElement {
                 int index = parent.getChildren().indexOf( this );
                 parent.getChildren().remove( this );
                 // for each child, pack it and add it to parent
-                for ( Iterator childIt = this.children.iterator(); childIt.hasNext(); ) {
-                    Object child = childIt.next();
+                for ( final Iterator childIt = this.children.iterator(); childIt.hasNext(); ) {
+                    final Object child = childIt.next();
                     // we must keep the order, so add in the same place were parent was before
                     parent.getChildren().add( index++,
                                               child );
                     if ( child instanceof GroupElement ) {
-                        int previousSize = parent.getChildren().size();
+                        final int previousSize = parent.getChildren().size();
                         ((GroupElement) child).pack( parent );
                         // in case the child also added elements to the parent, 
                         // we need to compensate
@@ -165,10 +167,10 @@ public class GroupElement extends ConditionalElement {
                 // if current node has a single child, then move it to parent and pack it
             } else if ( (!this.isExists()) && (this.children.size() == 1) ) {
                 // we must keep the order so, save index
-                int index = parent.getChildren().indexOf( this );
+                final int index = parent.getChildren().indexOf( this );
                 parent.getChildren().remove( this );
 
-                Object child = this.children.get( 0 );
+                final Object child = this.children.get( 0 );
                 parent.getChildren().add( index,
                                           child );
 
@@ -266,10 +268,10 @@ public class GroupElement extends ConditionalElement {
     }
 
     public Type getType() {
-        return type;
+        return this.type;
     }
 
-    public void setType(Type type) {
+    public void setType(final Type type) {
         this.type = type;
     }
 
@@ -342,17 +344,17 @@ public class GroupElement extends ConditionalElement {
         /**
          * @inheritDoc
          */
-        public Map getInnerDeclarations(List children) {
+        public Map getInnerDeclarations(final List children) {
             Map declarations = null;
 
             if ( children.isEmpty() ) {
                 declarations = Collections.EMPTY_MAP;
             } else if ( children.size() == 1 ) {
-                RuleConditionElement re = (RuleConditionElement) children.get( 0 );
+                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
                 declarations = re.getOuterDeclarations();
             } else {
                 declarations = new HashMap();
-                for ( Iterator it = children.iterator(); it.hasNext(); ) {
+                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
                     declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
                 }
             }
@@ -362,17 +364,17 @@ public class GroupElement extends ConditionalElement {
         /**
          * @inheritDoc
          */
-        public Map getOuterDeclarations(List children) {
+        public Map getOuterDeclarations(final List children) {
             Map declarations = null;
 
             if ( children.isEmpty() ) {
                 declarations = Collections.EMPTY_MAP;
             } else if ( children.size() == 1 ) {
-                RuleConditionElement re = (RuleConditionElement) children.get( 0 );
+                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
                 declarations = re.getOuterDeclarations();
             } else {
                 declarations = new HashMap();
-                for ( Iterator it = children.iterator(); it.hasNext(); ) {
+                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
                     declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
                 }
             }
@@ -406,7 +408,7 @@ public class GroupElement extends ConditionalElement {
             return false;
         }
 
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if ( !(obj instanceof AndType) ) {
                 return false;
             }
@@ -449,7 +451,7 @@ public class GroupElement extends ConditionalElement {
             return true;
         }
 
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if ( !(obj instanceof OrType) ) {
                 return false;
             }
@@ -494,11 +496,11 @@ public class GroupElement extends ConditionalElement {
         /**
          * @inheritDoc
          */
-        public Map getOuterDeclarations(List children) {
+        public Map getOuterDeclarations(final List children) {
             return Collections.EMPTY_MAP;
         }
 
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if ( !(obj instanceof NotType) ) {
                 return false;
             }
@@ -543,11 +545,11 @@ public class GroupElement extends ConditionalElement {
         /**
          * @inheritDoc
          */
-        public Map getOuterDeclarations(List children) {
+        public Map getOuterDeclarations(final List children) {
             return Collections.EMPTY_MAP;
         }
 
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if ( !(obj instanceof ExistsType) ) {
                 return false;
             }
@@ -562,6 +564,5 @@ public class GroupElement extends ConditionalElement {
             return "EXISTS";
         }
     }
-
 
 }

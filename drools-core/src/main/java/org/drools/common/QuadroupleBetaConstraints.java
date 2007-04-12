@@ -60,40 +60,40 @@ public class QuadroupleBetaConstraints
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
-    
+
     private RuleBaseConfiguration         conf;
 
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                      final RuleBaseConfiguration conf) {
-        this.conf = conf;        
-        if  (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) {
+        this.conf = conf;
+        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
             this.indexed0 = false;
             this.indexed1 = false;
             this.indexed2 = false;
-        } else { 
-            int depth = conf.getCompositeKeyDepth();    
+        } else {
+            final int depth = conf.getCompositeKeyDepth();
 
             // Determine  if this constraints are indexable                           
             final boolean i0 = isIndexable( constraints[0] );
             final boolean i1 = isIndexable( constraints[1] );
             final boolean i2 = isIndexable( constraints[2] );
             final boolean i3 = isIndexable( constraints[3] );
-    
-            if (  depth >= 1 && i0 ) {
+
+            if ( depth >= 1 && i0 ) {
                 this.indexed0 = true;
             }
-    
+
             if ( i1 ) {
                 if ( depth >= 1 && !this.indexed0 ) {
                     this.indexed0 = true;
                     swap( constraints,
                           1,
                           0 );
-                } else if (depth >= 2 ) {
+                } else if ( depth >= 2 ) {
                     this.indexed1 = true;
                 }
             }
-    
+
             if ( i2 ) {
                 if ( depth >= 1 && !this.indexed0 ) {
                     this.indexed0 = true;
@@ -109,19 +109,19 @@ public class QuadroupleBetaConstraints
                     this.indexed2 = true;
                 }
             }
-    
+
             if ( i3 ) {
-                if (  depth >= 1 && !this.indexed0 ) {
+                if ( depth >= 1 && !this.indexed0 ) {
                     this.indexed0 = true;
                     swap( constraints,
                           3,
                           0 );
-                } else if (  depth >= 2 && this.indexed0 && !this.indexed1 ) {
+                } else if ( depth >= 2 && this.indexed0 && !this.indexed1 ) {
                     this.indexed1 = true;
                     swap( constraints,
                           3,
                           1 );
-                } else if (  depth >= 3 && this.indexed0 && this.indexed1 && !this.indexed2 ) {
+                } else if ( depth >= 3 && this.indexed0 && this.indexed1 && !this.indexed2 ) {
                     this.indexed2 = true;
                     swap( constraints,
                           3,
@@ -131,7 +131,7 @@ public class QuadroupleBetaConstraints
                 }
             }
         }
-        
+
         this.constraint0 = constraints[0];
         this.context0 = this.constraint0.getContextEntry();
 
@@ -145,9 +145,9 @@ public class QuadroupleBetaConstraints
         this.context3 = this.constraint3.getContextEntry();
     }
 
-    private void swap(BetaNodeFieldConstraint[] constraints,
-                      int p1,
-                      int p2) {
+    private void swap(final BetaNodeFieldConstraint[] constraints,
+                      final int p1,
+                      final int p2) {
         final BetaNodeFieldConstraint temp = constraints[p2];
         constraints[p2] = constraints[p1];
         constraints[p1] = temp;
@@ -237,7 +237,7 @@ public class QuadroupleBetaConstraints
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                      variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator());
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
 
         }
@@ -246,7 +246,7 @@ public class QuadroupleBetaConstraints
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                      variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator());
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
         }
 
@@ -254,27 +254,27 @@ public class QuadroupleBetaConstraints
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                      variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator());
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
         }
 
         if ( !list.isEmpty() ) {
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             TupleMemory tupleMemory;
-            if ( conf.isIndexLeftBetaMemory() ) {
+            if ( this.conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new FactHandleIndexHashTable( indexes );           
-            }  else {
+            if ( this.conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( indexes );
+            } else {
                 factHandleMemory = new FactHashTable();
             }
             memory = new BetaMemory( tupleMemory,
-                                     factHandleMemory );    
+                                     factHandleMemory );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -313,25 +313,25 @@ public class QuadroupleBetaConstraints
             return true;
         }
 
-        if ( object == null || !(object instanceof QuadroupleBetaConstraints)) {
+        if ( object == null || !(object instanceof QuadroupleBetaConstraints) ) {
             return false;
         }
 
         final QuadroupleBetaConstraints other = (QuadroupleBetaConstraints) object;
 
-        if ( this.constraint0 != other.constraint0 && ! this.constraint0.equals( other.constraint0 ) ) {
+        if ( this.constraint0 != other.constraint0 && !this.constraint0.equals( other.constraint0 ) ) {
             return false;
         }
 
-        if ( this.constraint1 != other.constraint1 && ! this.constraint1.equals( other.constraint1 ) ) {
+        if ( this.constraint1 != other.constraint1 && !this.constraint1.equals( other.constraint1 ) ) {
             return false;
         }
 
-        if ( this.constraint2 != other.constraint2 && ! this.constraint2.equals( other.constraint2 ) ) {
+        if ( this.constraint2 != other.constraint2 && !this.constraint2.equals( other.constraint2 ) ) {
             return false;
         }
 
-        if ( this.constraint3 != other.constraint3 && ! this.constraint3.equals( other.constraint3 ) ) {
+        if ( this.constraint3 != other.constraint3 && !this.constraint3.equals( other.constraint3 ) ) {
             return false;
         }
 

@@ -56,9 +56,9 @@ public class IdentityAssertMapComparator
             return ((InternalFactHandle) o1).getObject() == ((InternalFactHandle) o2).getObject();
         }
 
-        InternalFactHandle handle = ((InternalFactHandle) o2);
-        
-        return o1 == ( ( handle.isShadowFact() ) ? ((ShadowProxy) handle.getObject() ).getShadowedObject() : handle.getObject() );
+        final InternalFactHandle handle = ((InternalFactHandle) o2);
+
+        return o1 == ((handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject());
     }
 
     public int compare(final Object o1,

@@ -52,10 +52,16 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      */
     public void testSingleOrAndOrTransformation() throws InvalidPatternException {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
-        final Column c = new Column( 2, type, "c");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
+        final Column c = new Column( 2,
+                                     type,
+                                     "c" );
 
         final GroupElement or = GroupElementFactory.newOrInstance();
         or.addChild( a );
@@ -122,13 +128,25 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      */
     public void testMultipleOrAndOrTransformation() throws InvalidPatternException {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
-        final Column c = new Column( 2, type, "c");
-        final Column d = new Column( 3, type, "d");
-        final Column e = new Column( 4, type, "e");
-        final Column f = new Column( 5, type, "f");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
+        final Column c = new Column( 2,
+                                     type,
+                                     "c" );
+        final Column d = new Column( 3,
+                                     type,
+                                     "d" );
+        final Column e = new Column( 4,
+                                     type,
+                                     "e" );
+        final Column f = new Column( 5,
+                                     type,
+                                     "f" );
 
         final GroupElement parent = GroupElementFactory.newAndInstance();
         final GroupElement or = GroupElementFactory.newOrInstance();
@@ -243,9 +261,13 @@ public class LogicTransformerTest extends DroolsTestCase {
      * 
      */
     public void testNotOrTransformation() throws InvalidPatternException {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
 
         final GroupElement parent = GroupElementFactory.newNotInstance();
         final GroupElement or = GroupElementFactory.newOrInstance();
@@ -261,8 +283,8 @@ public class LogicTransformerTest extends DroolsTestCase {
                       parent.getChildren().size() );
 
         // we must ensure order
-        GroupElement b1 = (GroupElement) parent.getChildren().get( 0 );
-        GroupElement b2 = (GroupElement) parent.getChildren().get( 1 );
+        final GroupElement b1 = (GroupElement) parent.getChildren().get( 0 );
+        final GroupElement b2 = (GroupElement) parent.getChildren().get( 1 );
         assertTrue( b1.isNot() );
         assertTrue( b2.isNot() );
 
@@ -299,9 +321,13 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      */
     public void testExistOrTransformation() throws InvalidPatternException {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
 
         final GroupElement parent = GroupElementFactory.newExistsInstance();
         final GroupElement or = GroupElementFactory.newOrInstance();
@@ -317,8 +343,8 @@ public class LogicTransformerTest extends DroolsTestCase {
                       parent.getChildren().size() );
 
         // we must ensure order
-        GroupElement b1 = (GroupElement) parent.getChildren().get( 0 );
-        GroupElement b2 = (GroupElement) parent.getChildren().get( 1 );
+        final GroupElement b1 = (GroupElement) parent.getChildren().get( 0 );
+        final GroupElement b2 = (GroupElement) parent.getChildren().get( 1 );
         assertTrue( b1.isExists() );
         assertTrue( b2.isExists() );
 
@@ -335,11 +361,19 @@ public class LogicTransformerTest extends DroolsTestCase {
     }
 
     public void testEliminateEmptyBranchesAndDuplications() throws InvalidRuleException {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
-        final Column c = new Column( 2, type, "c");
-        final Column d = new Column( 3, type, "d");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
+        final Column c = new Column( 2,
+                                     type,
+                                     "c" );
+        final Column d = new Column( 3,
+                                     type,
+                                     "d" );
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         and1.addChild( a );
@@ -354,7 +388,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         final GroupElement or = GroupElementFactory.newOrInstance();
         and1.addChild( or );
 
-        GroupElement[] result = LogicTransformer.getInstance().transform( and1 );
+        final GroupElement[] result = LogicTransformer.getInstance().transform( and1 );
 
         assertLength( 1,
                       result );
@@ -362,13 +396,13 @@ public class LogicTransformerTest extends DroolsTestCase {
                       result[0].getChildren() );
         // we must ensure order
         assertEquals( a,
-                        result[0].getChildren().get( 0 ) );
+                      result[0].getChildren().get( 0 ) );
         assertEquals( b,
-                        result[0].getChildren().get( 1 ) );
+                      result[0].getChildren().get( 1 ) );
         assertEquals( c,
-                        result[0].getChildren().get( 2 ) );
+                      result[0].getChildren().get( 2 ) );
         assertEquals( d,
-                        result[0].getChildren().get( 3 ) );
+                      result[0].getChildren().get( 3 ) );
 
     }
 
@@ -420,15 +454,31 @@ public class LogicTransformerTest extends DroolsTestCase {
     public void testProcessTree() throws IOException,
                                  ClassNotFoundException,
                                  InvalidPatternException {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
-        final Column c = new Column( 2, type, "c");
-        final Column d = new Column( 3, type, "d");
-        final Column e = new Column( 4, type, "e");
-        final Column g = new Column( 5, type, "g");
-        final Column h = new Column( 6, type, "h");
-        final Column i = new Column( 7, type, "i");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
+        final Column c = new Column( 2,
+                                     type,
+                                     "c" );
+        final Column d = new Column( 3,
+                                     type,
+                                     "d" );
+        final Column e = new Column( 4,
+                                     type,
+                                     "e" );
+        final Column g = new Column( 5,
+                                     type,
+                                     "g" );
+        final Column h = new Column( 6,
+                                     type,
+                                     "h" );
+        final Column i = new Column( 7,
+                                     type,
+                                     "i" );
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         final GroupElement and2 = GroupElementFactory.newAndInstance();
@@ -459,7 +509,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         root.addChild( and3 );
         root.addChild( not3 );
 
-        GroupElement[] result = LogicTransformer.getInstance().transform( root );
+        final GroupElement[] result = LogicTransformer.getInstance().transform( root );
 
         // ----------------------------------------------------------------------------------
         // Now construct the result tree so we can test root against what it
@@ -471,7 +521,8 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        writeTree(result, "correct_processTree1.dat");
+        writeTree( result,
+                   "correct_processTree1.dat" );
         final ObjectInputStream ois = new ObjectInputStream( this.getClass().getResourceAsStream( "/correct_processTree1.dat" ) );
 
         final GroupElement[] correctResultRoot = (GroupElement[]) ois.readObject();
@@ -484,15 +535,31 @@ public class LogicTransformerTest extends DroolsTestCase {
     }
 
     public void testCloneable() {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
-        final Column c = new Column( 2, type, "c");
-        final Column d = new Column( 3, type, "d");
-        final Column e = new Column( 4, type, "e");
-        final Column f = new Column( 5, type, "f");
-        final Column g = new Column( 6, type, "g");
-        final Column h = new Column( 7, type, "h");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
+        final Column c = new Column( 2,
+                                     type,
+                                     "c" );
+        final Column d = new Column( 3,
+                                     type,
+                                     "d" );
+        final Column e = new Column( 4,
+                                     type,
+                                     "e" );
+        final Column f = new Column( 5,
+                                     type,
+                                     "f" );
+        final Column g = new Column( 6,
+                                     type,
+                                     "g" );
+        final Column h = new Column( 7,
+                                     type,
+                                     "h" );
 
         // Test against a known false tree
         final GroupElement and = GroupElementFactory.newAndInstance();
@@ -572,15 +639,31 @@ public class LogicTransformerTest extends DroolsTestCase {
     public void testTransform() throws IOException,
                                ClassNotFoundException,
                                InvalidPatternException {
-        final ObjectType type = new ClassObjectType(String.class);
-        final Column a = new Column( 0, type, "a");
-        final Column b = new Column( 1, type, "b");
-        final Column c = new Column( 2, type, "c");
-        final Column d = new Column( 3, type, "d");
-        final Column e = new Column( 4, type, "e");
-        final Column f = new Column( 5, type, "f");
-        final Column g = new Column( 6, type, "g");
-        final Column h = new Column( 7, type, "h");
+        final ObjectType type = new ClassObjectType( String.class );
+        final Column a = new Column( 0,
+                                     type,
+                                     "a" );
+        final Column b = new Column( 1,
+                                     type,
+                                     "b" );
+        final Column c = new Column( 2,
+                                     type,
+                                     "c" );
+        final Column d = new Column( 3,
+                                     type,
+                                     "d" );
+        final Column e = new Column( 4,
+                                     type,
+                                     "e" );
+        final Column f = new Column( 5,
+                                     type,
+                                     "f" );
+        final Column g = new Column( 6,
+                                     type,
+                                     "g" );
+        final Column h = new Column( 7,
+                                     type,
+                                     "h" );
 
         final GroupElement and = GroupElementFactory.newAndInstance();
 
@@ -611,11 +694,12 @@ public class LogicTransformerTest extends DroolsTestCase {
         and2.addChild( or3 );
         and.addChild( and2 );
 
-        GroupElement[] ands = LogicTransformer.getInstance().transform( and );
+        final GroupElement[] ands = LogicTransformer.getInstance().transform( and );
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        writeTree(ands, "correct_transform1.dat");
+        writeTree( ands,
+                   "correct_transform1.dat" );
 
         // Now check the main tree
 

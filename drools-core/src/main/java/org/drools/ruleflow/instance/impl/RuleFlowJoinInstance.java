@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -29,59 +30,63 @@ import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowJoinInstance extends RuleFlowNodeInstance implements IRuleFlowNodeInstance {
+public class RuleFlowJoinInstance extends RuleFlowNodeInstance
+    implements
+    IRuleFlowNodeInstance {
 
-	private Map triggers = new HashMap();
-	
-	protected IJoin getJoinNode() {
-		return (IJoin) getNode();
-	}
-	
-	public void trigger(IRuleFlowNodeInstance from) {
-		IJoin join = getJoinNode();
-		switch (join.getType()) {
-		case IJoin.TYPE_XOR:
-			triggerCompleted();
-			break;
-		case IJoin.TYPE_AND:
-			INode node = getProcessInstance().getRuleFlowProcess().getNode(from.getNodeId());
-			Integer count = (Integer) triggers.get(node);
-			if (count == null) {
-				triggers.put(node, new Integer(1));
-			} else {
-				triggers.put(node, new Integer(count.intValue() + 1));
-			}
-			checkActivation();
-			break;
-		default:
-			throw new IllegalArgumentException("Illegal join type " + join.getType());
-		}
-	}
+    private final Map triggers = new HashMap();
 
-	private void checkActivation() {
-		// check whether all parent nodes have been triggered 
-        for (Iterator it = getJoinNode().getIncomingConnections().iterator(); it.hasNext(); ) {
-        	IConnection connection = (IConnection) it.next();
-            if (triggers.get(connection.getFrom()) == null) {
-            	return;
+    protected IJoin getJoinNode() {
+        return (IJoin) getNode();
+    }
+
+    public void trigger(final IRuleFlowNodeInstance from) {
+        final IJoin join = getJoinNode();
+        switch ( join.getType() ) {
+            case IJoin.TYPE_XOR :
+                triggerCompleted();
+                break;
+            case IJoin.TYPE_AND :
+                final INode node = getProcessInstance().getRuleFlowProcess().getNode( from.getNodeId() );
+                final Integer count = (Integer) this.triggers.get( node );
+                if ( count == null ) {
+                    this.triggers.put( node,
+                                       new Integer( 1 ) );
+                } else {
+                    this.triggers.put( node,
+                                       new Integer( count.intValue() + 1 ) );
+                }
+                checkActivation();
+                break;
+            default :
+                throw new IllegalArgumentException( "Illegal join type " + join.getType() );
+        }
+    }
+
+    private void checkActivation() {
+        // check whether all parent nodes have been triggered 
+        for ( final Iterator it = getJoinNode().getIncomingConnections().iterator(); it.hasNext(); ) {
+            final IConnection connection = (IConnection) it.next();
+            if ( this.triggers.get( connection.getFrom() ) == null ) {
+                return;
             }
         }
         // if true, decrease trigger count for all parents and trigger children
-        for (Iterator it = getJoinNode().getIncomingConnections().iterator(); it.hasNext(); ) {
-        	IConnection connection = (IConnection) it.next();
-            Integer count = (Integer) triggers.get(connection.getFrom());
-            if (count.intValue() == 1) {
-            	triggers.remove(connection.getFrom());
+        for ( final Iterator it = getJoinNode().getIncomingConnections().iterator(); it.hasNext(); ) {
+            final IConnection connection = (IConnection) it.next();
+            final Integer count = (Integer) this.triggers.get( connection.getFrom() );
+            if ( count.intValue() == 1 ) {
+                this.triggers.remove( connection.getFrom() );
             } else {
-            	triggers.put(connection.getFrom(), new Integer(count.intValue() - 1));
+                this.triggers.put( connection.getFrom(),
+                                   new Integer( count.intValue() - 1 ) );
             }
         }
         triggerCompleted();
-	}
-	
-	public void triggerCompleted() {
-		getProcessInstance().getNodeInstance(
-			getJoinNode().getTo().getTo()).trigger(this);
-	}
+    }
+
+    public void triggerCompleted() {
+        getProcessInstance().getNodeInstance( getJoinNode().getTo().getTo() ).trigger( this );
+    }
 
 }

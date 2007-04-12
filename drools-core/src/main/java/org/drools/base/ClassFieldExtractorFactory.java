@@ -101,9 +101,9 @@ public class ClassFieldExtractorFactory {
                                                                 bytes,
                                                                 PROTECTION_DOMAIN );
                 // instantiating target class
-                Integer index = (Integer) inspector.getFieldNames().get( fieldName );
-                ValueType valueType = ValueType.determineValueType( fieldType );
-                final Object[] params = { index, fieldType, valueType };
+                final Integer index = (Integer) inspector.getFieldNames().get( fieldName );
+                final ValueType valueType = ValueType.determineValueType( fieldType );
+                final Object[] params = {index, fieldType, valueType};
                 return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
             }
         } catch ( final Exception e ) {
@@ -124,9 +124,9 @@ public class ClassFieldExtractorFactory {
                           className,
                           cw );
 
-//        buildConstructor( superClass,
-//                          className,
-//                          cw );
+        //        buildConstructor( superClass,
+        //                          className,
+        //                          cw );
 
         build3ArgConstructor( superClass,
                               className,
@@ -164,67 +164,67 @@ public class ClassFieldExtractorFactory {
                         null );
     }
 
-//    /**
-//     * Creates a constructor for the field extractor receiving
-//     * the class instance and field name
-//     * 
-//     * @param originalClassName
-//     * @param className
-//     * @param cw
-//     */
-//    private static void buildConstructor(final Class superClazz,
-//                                         final String className,
-//                                         final ClassWriter cw) {
-//        MethodVisitor mv;
-//        {
-//            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-//                                 "<init>",
-//                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-//                                                           new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ),
-//                                 null,
-//                                 null );
-//            mv.visitCode();
-//            final Label l0 = new Label();
-//            mv.visitLabel( l0 );
-//            mv.visitVarInsn( Opcodes.ALOAD,
-//                             0 );
-//            mv.visitVarInsn( Opcodes.ALOAD,
-//                             1 );
-//            mv.visitVarInsn( Opcodes.ALOAD,
-//                             2 );
-//            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-//                                Type.getInternalName( superClazz ),
-//                                "<init>",
-//                                Type.getMethodDescriptor( Type.VOID_TYPE,
-//                                                          new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ) );
-//            final Label l1 = new Label();
-//            mv.visitLabel( l1 );
-//            mv.visitInsn( Opcodes.RETURN );
-//            final Label l2 = new Label();
-//            mv.visitLabel( l2 );
-//            mv.visitLocalVariable( "this",
-//                                   "L" + className + ";",
-//                                   null,
-//                                   l0,
-//                                   l2,
-//                                   0 );
-//            mv.visitLocalVariable( "clazz",
-//                                   Type.getDescriptor( Class.class ),
-//                                   null,
-//                                   l0,
-//                                   l2,
-//                                   1 );
-//            mv.visitLocalVariable( "fieldName",
-//                                   Type.getDescriptor( String.class ),
-//                                   null,
-//                                   l0,
-//                                   l2,
-//                                   2 );
-//            mv.visitMaxs( 0,
-//                          0 );
-//            mv.visitEnd();
-//        }
-//    }
+    //    /**
+    //     * Creates a constructor for the field extractor receiving
+    //     * the class instance and field name
+    //     * 
+    //     * @param originalClassName
+    //     * @param className
+    //     * @param cw
+    //     */
+    //    private static void buildConstructor(final Class superClazz,
+    //                                         final String className,
+    //                                         final ClassWriter cw) {
+    //        MethodVisitor mv;
+    //        {
+    //            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+    //                                 "<init>",
+    //                                 Type.getMethodDescriptor( Type.VOID_TYPE,
+    //                                                           new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ),
+    //                                 null,
+    //                                 null );
+    //            mv.visitCode();
+    //            final Label l0 = new Label();
+    //            mv.visitLabel( l0 );
+    //            mv.visitVarInsn( Opcodes.ALOAD,
+    //                             0 );
+    //            mv.visitVarInsn( Opcodes.ALOAD,
+    //                             1 );
+    //            mv.visitVarInsn( Opcodes.ALOAD,
+    //                             2 );
+    //            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+    //                                Type.getInternalName( superClazz ),
+    //                                "<init>",
+    //                                Type.getMethodDescriptor( Type.VOID_TYPE,
+    //                                                          new Type[]{Type.getType( Class.class ), Type.getType( String.class )} ) );
+    //            final Label l1 = new Label();
+    //            mv.visitLabel( l1 );
+    //            mv.visitInsn( Opcodes.RETURN );
+    //            final Label l2 = new Label();
+    //            mv.visitLabel( l2 );
+    //            mv.visitLocalVariable( "this",
+    //                                   "L" + className + ";",
+    //                                   null,
+    //                                   l0,
+    //                                   l2,
+    //                                   0 );
+    //            mv.visitLocalVariable( "clazz",
+    //                                   Type.getDescriptor( Class.class ),
+    //                                   null,
+    //                                   l0,
+    //                                   l2,
+    //                                   1 );
+    //            mv.visitLocalVariable( "fieldName",
+    //                                   Type.getDescriptor( String.class ),
+    //                                   null,
+    //                                   l0,
+    //                                   l2,
+    //                                   2 );
+    //            mv.visitMaxs( 0,
+    //                          0 );
+    //            mv.visitEnd();
+    //        }
+    //    }
 
     /**
      * Creates a constructor for the field extractor receiving
@@ -435,7 +435,7 @@ public class ClassFieldExtractorFactory {
 
         public Class defineClass(final String name,
                                  final byte[] bytes,
-                                 ProtectionDomain domain) {
+                                 final ProtectionDomain domain) {
             return defineClass( name,
                                 bytes,
                                 0,

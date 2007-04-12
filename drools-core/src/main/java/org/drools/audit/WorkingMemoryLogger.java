@@ -166,7 +166,8 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void activationCreated(final ActivationCreatedEvent event, WorkingMemory workingMemory) {
+    public void activationCreated(final ActivationCreatedEvent event,
+                                  final WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CREATED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -176,7 +177,8 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void activationCancelled(final ActivationCancelledEvent event, WorkingMemory workingMemory) {
+    public void activationCancelled(final ActivationCancelledEvent event,
+                                    final WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -186,7 +188,8 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void beforeActivationFired(final BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
+    public void beforeActivationFired(final BeforeActivationFiredEvent event,
+                                      final WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -196,7 +199,8 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void afterActivationFired(final AfterActivationFiredEvent event, WorkingMemory workingMemory) {
+    public void afterActivationFired(final AfterActivationFiredEvent event,
+                                     final WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -270,14 +274,14 @@ public abstract class WorkingMemoryLogger
         }
         return result.append( "]" ).toString();
     }
-    
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                                  WorkingMemory workingMemory) {
+
+    public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
+                                  final WorkingMemory workingMemory) {
         // we don't audit this yet     
     }
 
-    public void agendaGroupPushed(AgendaGroupPushedEvent event,
-                                  WorkingMemory workingMemory) {
+    public void agendaGroupPushed(final AgendaGroupPushedEvent event,
+                                  final WorkingMemory workingMemory) {
         // we don't audit this yet        
-    }    
+    }
 }

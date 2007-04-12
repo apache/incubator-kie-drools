@@ -69,7 +69,7 @@ public class Collect extends ConditionalElement {
                                               e );
         }
     }
-    
+
     public Map getInnerDeclarations() {
         return this.sourceColumn.getInnerDeclarations();
     }
@@ -81,7 +81,7 @@ public class Collect extends ConditionalElement {
     /**
      * @inheritDoc
      */
-    public Declaration resolveDeclaration(String identifier) {
+    public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.sourceColumn.getInnerDeclarations().get( identifier );
     }
 }

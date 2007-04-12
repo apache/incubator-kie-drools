@@ -41,13 +41,13 @@ public class FromBuilder
     /* (non-Javadoc)
      * @see org.drools.reteoo.builder.ReteooComponentBuilder#build(org.drools.reteoo.builder.BuildContext, org.drools.reteoo.builder.BuildUtils, org.drools.rule.RuleConditionElement)
      */
-    public void build(BuildContext context,
-                      BuildUtils utils,
-                      RuleConditionElement rce) {
-        From from = (From) rce;
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleConditionElement rce) {
+        final From from = (From) rce;
 
         final Column column = from.getColumn();
-        
+
         // setting and incrementing column offset as appropriate
         column.setOffset( context.getCurrentColumnOffset() );
         context.incrementCurrentColumnOffset();
@@ -89,8 +89,8 @@ public class FromBuilder
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation(BuildUtils utils,
-                                          RuleConditionElement rce) {
+    public boolean requiresLeftActivation(final BuildUtils utils,
+                                          final RuleConditionElement rce) {
         return true;
     }
 

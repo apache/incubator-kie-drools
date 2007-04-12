@@ -255,7 +255,7 @@ abstract public class AbstractRuleBase
         // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
-        AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
+        final AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
 
         try {
             // Iterate each workingMemory and lock it
@@ -279,9 +279,9 @@ abstract public class AbstractRuleBase
             for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
                 final String identifier = (String) it.next();
                 final Class type = (Class) newGlobals.get( identifier );
-                boolean f = this.globals.containsKey( identifier );
+                final boolean f = this.globals.containsKey( identifier );
                 if ( f ) {
-                    boolean y = !this.globals.get( identifier ).equals( type );
+                    final boolean y = !this.globals.get( identifier ).equals( type );
                     if ( f && y ) {
                         throw new PackageIntegrationException( pkg );
                     }
@@ -300,7 +300,7 @@ abstract public class AbstractRuleBase
         } finally {
             // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
             // of the new rule addition. Unlock after fireAllRules();
-            
+
             // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
             for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
                 wms[lastAquiredLock].fireAllRules();
@@ -372,7 +372,7 @@ abstract public class AbstractRuleBase
         // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
-        AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
+        final AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
 
         try {
             // Iterate each workingMemory and lock it
@@ -380,7 +380,7 @@ abstract public class AbstractRuleBase
             for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
                 wms[lastAquiredLock].getLock().lock();
             }
-            
+
             final Rule[] rules = pkg.getRules();
 
             for ( int i = 0; i < rules.length; ++i ) {
@@ -429,7 +429,7 @@ abstract public class AbstractRuleBase
         // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
-        AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
+        final AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
 
         try {
             // Iterate each workingMemory and lock it
@@ -437,7 +437,7 @@ abstract public class AbstractRuleBase
             for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
                 wms[lastAquiredLock].getLock().lock();
             }
-            
+
             removeRule( rule );
             pkg.removeRule( rule );
 
@@ -453,17 +453,18 @@ abstract public class AbstractRuleBase
     }
 
     protected abstract void removeRule(Rule rule);
-    
-    public void addProcess(IProcess process) {
-    	processes.put(process.getId(), process);
+
+    public void addProcess(final IProcess process) {
+        this.processes.put( process.getId(),
+                       process );
     }
 
-    public void removeProcess(String id) {
-    	processes.remove(id);
+    public void removeProcess(final String id) {
+        this.processes.remove( id );
     }
-    
-    public IProcess getProcess(String id) {
-    	return (IProcess) processes.get(id);
+
+    public IProcess getProcess(final String id) {
+        return (IProcess) this.processes.get( id );
     }
 
     protected void addWorkingMemory(final WorkingMemory workingMemory,

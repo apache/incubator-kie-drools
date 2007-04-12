@@ -110,14 +110,14 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         try {
             return this.getClass().getDeclaredMethod( "getValue",
                                                       new Class[]{Object.class} );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
     }
 
-    public int getHashCode(Object object) {
-        Object value = getValue( object );
+    public int getHashCode(final Object object) {
+        final Object value = getValue( object );
         return (value != null) ? value.hashCode() : 0;
     }
 

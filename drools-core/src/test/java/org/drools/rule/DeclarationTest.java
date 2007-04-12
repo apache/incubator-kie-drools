@@ -34,7 +34,7 @@ public class DeclarationTest extends TestCase {
                                                                   "type" );
 
         final Column column = new Column( 5,
-                                    new ClassObjectType( Cheese.class ) );
+                                          new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value from
@@ -51,7 +51,7 @@ public class DeclarationTest extends TestCase {
         assertSame( extractor,
                     declaration.getExtractor() );
 
-        assertEquals( 5, 
+        assertEquals( 5,
                       declaration.getColumn().getOffset() );
 
     }
@@ -61,7 +61,7 @@ public class DeclarationTest extends TestCase {
                                                                   "type" );
 
         final Column column = new Column( 5,
-                                    new ClassObjectType( Cheese.class ) );
+                                          new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration 
         // Declarations know the column they derive their value from 

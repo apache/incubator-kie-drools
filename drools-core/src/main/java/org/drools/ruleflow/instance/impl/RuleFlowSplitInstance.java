@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -27,30 +28,32 @@ import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowSplitInstance extends RuleFlowNodeInstance implements IRuleFlowNodeInstance {
+public class RuleFlowSplitInstance extends RuleFlowNodeInstance
+    implements
+    IRuleFlowNodeInstance {
 
-	protected ISplit getSplitNode() {
-		return (ISplit) getNode();
-	}
-	
-	public void trigger(IRuleFlowNodeInstance from) {
-		ISplit split = getSplitNode();
-		switch (split.getType()) {
-		case ISplit.TYPE_AND:
-			List outgoing = split.getOutgoingConnections();
-			for (Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
-				IConnection connection = (IConnection) iterator.next();
-				getProcessInstance().getNodeInstance(connection.getTo()).trigger(this);
-			}
-			break;
-		default:
-			throw new IllegalArgumentException("Illegal split type " + split.getType());
-		}
-	}
+    protected ISplit getSplitNode() {
+        return (ISplit) getNode();
+    }
 
-	public void triggerCompleted() {
-		// TODO Auto-generated method stub
-		
-	}
+    public void trigger(final IRuleFlowNodeInstance from) {
+        final ISplit split = getSplitNode();
+        switch ( split.getType() ) {
+            case ISplit.TYPE_AND :
+                final List outgoing = split.getOutgoingConnections();
+                for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
+                    final IConnection connection = (IConnection) iterator.next();
+                    getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
+                }
+                break;
+            default :
+                throw new IllegalArgumentException( "Illegal split type " + split.getType() );
+        }
+    }
+
+    public void triggerCompleted() {
+        // TODO Auto-generated method stub
+
+    }
 
 }

@@ -25,7 +25,7 @@ public class ShadowProxyFactoryTest extends TestCase {
             final String originalType = "stilton";
             final int originalPrice = 15;
             final Cheese cheese = new Cheese( originalType,
-                                        originalPrice );
+                                              originalPrice );
 
             // creating proxy
             final Class proxy = ShadowProxyFactory.getProxy( Cheese.class );
@@ -36,11 +36,13 @@ public class ShadowProxyFactoryTest extends TestCase {
                                  cheeseProxy.getType() );
             Assert.assertEquals( originalPrice,
                                  cheeseProxy.getPrice() );
-            Assert.assertSame( cheese, ((ShadowProxy)cheeseProxy).getShadowedObject() );
-            
+            Assert.assertSame( cheese,
+                               ((ShadowProxy) cheeseProxy).getShadowedObject() );
+
             // proxy must recongnize the original object on equals()/hashcode() calls
             //Assert.assertEquals( cheeseProxy.hashCode(), cheese.hashCode() );
-            Assert.assertEquals( cheeseProxy, cheese );
+            Assert.assertEquals( cheeseProxy,
+                                 cheese );
 
             // changing original values
             final String actualType = "rotten stilton";
@@ -86,7 +88,7 @@ public class ShadowProxyFactoryTest extends TestCase {
             final String originalType = "stilton";
             final int originalPrice = 15;
             final Cheese cheese = new Cheese( originalType,
-                                        originalPrice );
+                                              originalPrice );
 
             // creating proxy
             final Class proxy = ShadowProxyFactory.getProxy( CheeseInterface.class );
@@ -97,7 +99,8 @@ public class ShadowProxyFactoryTest extends TestCase {
                                  cheeseProxy.getType() );
             Assert.assertEquals( originalPrice,
                                  cheeseProxy.getPrice() );
-            Assert.assertSame( cheese, ((ShadowProxy)cheeseProxy).getShadowedObject() );
+            Assert.assertSame( cheese,
+                               ((ShadowProxy) cheeseProxy).getShadowedObject() );
 
             // changing original values
             final String actualType = "rotten stilton";
@@ -149,7 +152,8 @@ public class ShadowProxyFactoryTest extends TestCase {
             // proxy is proxying the values
             Assert.assertEquals( list,
                                  listProxy );
-            Assert.assertSame( list, ((ShadowProxy)listProxy).getShadowedObject() );
+            Assert.assertSame( list,
+                               ((ShadowProxy) listProxy).getShadowedObject() );
 
         } catch ( final Exception e ) {
             fail( "Error: " + e.getMessage() );
@@ -162,93 +166,103 @@ public class ShadowProxyFactoryTest extends TestCase {
             final String originalType = "stilton";
             final int originalPrice = 15;
             final Cheese cheese = new Cheese( originalType,
-                                        originalPrice );
+                                              originalPrice );
 
             // creating proxy
             final Class proxy = ShadowProxyFactory.getProxy( Cheese.class );
             final Cheese cheeseProxy1 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
             final Cheese cheeseProxy2 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
 
-            int cheesehash = cheeseHashCode( cheese );
-            Assert.assertEquals( cheeseProxy1, cheeseProxy2 );
-            Assert.assertEquals( cheeseProxy2, cheeseProxy1 );
-            Assert.assertEquals( cheesehash, cheeseProxy1.hashCode() );
-            
+            final int cheesehash = cheeseHashCode( cheese );
+            Assert.assertEquals( cheeseProxy1,
+                                 cheeseProxy2 );
+            Assert.assertEquals( cheeseProxy2,
+                                 cheeseProxy1 );
+            Assert.assertEquals( cheesehash,
+                                 cheeseProxy1.hashCode() );
+
             // changing original values
             final String actualType = "rotten stilton";
             final int actualPrice = 1;
             cheese.setType( actualType );
             cheese.setPrice( actualPrice );
 
-            Assert.assertEquals( cheesehash, cheeseProxy1.hashCode() );
-            
+            Assert.assertEquals( cheesehash,
+                                 cheeseProxy1.hashCode() );
+
             // updating proxy1
             ((ShadowProxy) cheeseProxy1).updateProxy();
-            
-            Assert.assertEquals( cheeseHashCode( cheese ), cheeseProxy1.hashCode() );
+
+            Assert.assertEquals( cheeseHashCode( cheese ),
+                                 cheeseProxy1.hashCode() );
 
             // now they are different
             Assert.assertFalse( cheeseProxy1.equals( cheeseProxy2 ) );
             Assert.assertFalse( cheeseProxy2.equals( cheeseProxy1 ) );
-            
+
             // updating proxy2
             ((ShadowProxy) cheeseProxy2).updateProxy();
 
             // now they are equal again
-            Assert.assertEquals( cheeseProxy1, cheeseProxy2 );
-            Assert.assertEquals( cheeseProxy2, cheeseProxy1 );
-            
+            Assert.assertEquals( cheeseProxy1,
+                                 cheeseProxy2 );
+            Assert.assertEquals( cheeseProxy2,
+                                 cheeseProxy1 );
+
         } catch ( final Exception e ) {
             fail( "Error: " + e.getMessage() );
         }
     }
 
-// TODO: find a new way to test hashcode
-//    public void testEqualsHashCodeForClass2() {
-//        try {
-//            // creating original object
-//            final TestBean bean = new TestBean();
-//
-//            // creating proxy
-//            final Class proxy = ShadowProxyFactory.getProxy( TestBean.class );
-//            final TestBean beanProxy1 = (TestBean) proxy.getConstructor( new Class[]{TestBean.class} ).newInstance( new Object[]{bean} );
-//            final TestBean beanProxy2 = (TestBean) proxy.getConstructor( new Class[]{TestBean.class} ).newInstance( new Object[]{bean} );
-//
-//            Assert.assertEquals( beanProxy1, beanProxy2 );
-//            Assert.assertEquals( beanProxy2, beanProxy1 );
-//            Assert.assertEquals( -130900686 , beanProxy1.hashCode() );
-//            
-//        } catch ( final Exception e ) {
-//            fail( "Error: " + e.getMessage() );
-//        }
-//    }
+    // TODO: find a new way to test hashcode
+    //    public void testEqualsHashCodeForClass2() {
+    //        try {
+    //            // creating original object
+    //            final TestBean bean = new TestBean();
+    //
+    //            // creating proxy
+    //            final Class proxy = ShadowProxyFactory.getProxy( TestBean.class );
+    //            final TestBean beanProxy1 = (TestBean) proxy.getConstructor( new Class[]{TestBean.class} ).newInstance( new Object[]{bean} );
+    //            final TestBean beanProxy2 = (TestBean) proxy.getConstructor( new Class[]{TestBean.class} ).newInstance( new Object[]{bean} );
+    //
+    //            Assert.assertEquals( beanProxy1, beanProxy2 );
+    //            Assert.assertEquals( beanProxy2, beanProxy1 );
+    //            Assert.assertEquals( -130900686 , beanProxy1.hashCode() );
+    //            
+    //        } catch ( final Exception e ) {
+    //            fail( "Error: " + e.getMessage() );
+    //        }
+    //    }
 
-    private int cheeseHashCode(Cheese cheese) {
+    private int cheeseHashCode(final Cheese cheese) {
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + ((cheese.getType() == null) ? 0 : cheese.getType().hashCode());
         result = PRIME * result + cheese.getPrice();
         return result;
     }
-    
+
     public void testClassWithStaticMethod() {
         try {
             // creating original object
             final String originalType = "stilton";
             final int originalPrice = 15;
             final Cheese cheese = new Cheese( originalType,
-                                        originalPrice );
+                                              originalPrice );
 
             // creating proxy
             final Class proxy = ShadowProxyFactory.getProxy( Cheese.class );
             final Cheese cheeseProxy1 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
             final Cheese cheeseProxy2 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
 
-            int cheesehash = cheeseHashCode( cheese );
-            Assert.assertEquals( cheeseProxy1, cheeseProxy2 );
-            Assert.assertEquals( cheeseProxy2, cheeseProxy1 );
-            Assert.assertEquals( cheesehash, cheeseProxy1.hashCode() );
-            
+            final int cheesehash = cheeseHashCode( cheese );
+            Assert.assertEquals( cheeseProxy1,
+                                 cheeseProxy2 );
+            Assert.assertEquals( cheeseProxy2,
+                                 cheeseProxy1 );
+            Assert.assertEquals( cheesehash,
+                                 cheeseProxy1.hashCode() );
+
         } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Error: " + e.getMessage() );

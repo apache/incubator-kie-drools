@@ -7,12 +7,12 @@ import org.drools.spi.PropagationContext;
 public class EmptyTupleSinkAdapter
     implements
     TupleSinkPropagator {
-	
-	private static final EmptyTupleSinkAdapter instance = new EmptyTupleSinkAdapter();
-	
-	public static final  EmptyTupleSinkAdapter getInstance() {
-		return instance;
-	}
+
+    private static final EmptyTupleSinkAdapter instance = new EmptyTupleSinkAdapter();
+
+    public static final EmptyTupleSinkAdapter getInstance() {
+        return instance;
+    }
 
     private EmptyTupleSinkAdapter() {
     }

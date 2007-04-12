@@ -55,16 +55,16 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
 
         final long elapsedDequeue = System.currentTimeMillis() - startDequeue;
 
-//        System.out.println( "elapsedEnqueue = " + elapsedEnqueue );
-//        System.out.println( "elapsedDequeue = " + elapsedDequeue );
+        //        System.out.println( "elapsedEnqueue = " + elapsedEnqueue );
+        //        System.out.println( "elapsedDequeue = " + elapsedDequeue );
     }
 
     public void testBasic() {
         final Random random = new Random();
         final List items = new LinkedList();
 
-        final BinaryHeapQueue queue = new BinaryHeapQueue(NaturalComparator.INSTANCE,
-                                                          100000 );
+        final BinaryHeapQueue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
+                                                           100000 );
 
         for ( int i = 0; i < 100000; ++i ) {
             items.add( new LongQueueable( random.nextLong() ) );
@@ -90,7 +90,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
 
         final long elapsedDequeue = System.currentTimeMillis() - startDequeue;
 
-//        System.out.println( "elapsedEnqueue = " + elapsedEnqueue );
-//        System.out.println( "elapsedDequeue = " + elapsedDequeue );
+        //        System.out.println( "elapsedEnqueue = " + elapsedEnqueue );
+        //        System.out.println( "elapsedDequeue = " + elapsedDequeue );
     }
 }

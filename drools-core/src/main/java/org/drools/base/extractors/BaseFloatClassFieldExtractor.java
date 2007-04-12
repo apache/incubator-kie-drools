@@ -24,8 +24,8 @@ public abstract class BaseFloatClassFieldExtractor extends BaseClassFieldExtract
      * @param valueType
      */
     protected BaseFloatClassFieldExtractor(final int index,
-                                             final Class fieldType,
-                                             final ValueType valueType) {
+                                           final Class fieldType,
+                                           final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
@@ -68,14 +68,16 @@ public abstract class BaseFloatClassFieldExtractor extends BaseClassFieldExtract
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getFloatValue", new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            return this.getClass().getDeclaredMethod( "getFloatValue",
+                                                      new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
-    
-    public int getHashCode(Object object) {
+
+    public int getHashCode(final Object object) {
         return Float.floatToIntBits( getFloatValue( object ) );
     }
-    
+
 }

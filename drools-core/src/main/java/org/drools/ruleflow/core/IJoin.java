@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -24,41 +25,42 @@ package org.drools.ruleflow.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IJoin extends INode {
-		
+public interface IJoin
+    extends
+    INode {
+
     int TYPE_UNDEFINED = 0;
     /**
      * The outgoing connection of a join of this type is triggered
      * when all its incoming connections have been triggered.
-     */ 
-    int TYPE_AND = 1;
+     */
+    int TYPE_AND       = 1;
     /**
      * The outgoing connection of a join of this type is triggered
      * when one of its incoming connections has been triggered.
-     */ 
-    int TYPE_XOR = 2;
-    
+     */
+    int TYPE_XOR       = 2;
+
     /**
      * Sets the type of the join.
      * 
      * @param type	The type of the join
      * @throws IllegalArgumentException if type is null
      */
-    void setType(int type);	
-    
+    void setType(int type);
+
     /**
      * Returns the type of the join.
      * 
      * @return the type of the join.
-     */    
+     */
     int getType();
-        
+
     /**
      * Convenience method for returning the outgoing connection of the join
      * 
      * @return the outgoing connection of the join
      */
     IConnection getTo();
-        
-    
+
 }

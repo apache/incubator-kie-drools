@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,24 +24,24 @@ package org.drools.ruleflow.core;
  */
 public interface IConstraint {
 
-	/**
-	 * Typically this method returns the constraint
-	 * @return the constraint
-	 */
-	String getConstraint();
-	
-	/**
-	 * Method for setting the constraint
-	 * @param constraint 	the constraint
-	 */
+    /**
+     * Typically this method returns the constraint
+     * @return the constraint
+     */
+    String getConstraint();
+
+    /**
+     * Method for setting the constraint
+     * @param constraint 	the constraint
+     */
     void setConstraint(String constraint);
-    
+
     /**
      * Returns the name of the constraint
      * @return the name of the constraint
      */
     String getName();
-    
+
     /**
      * Sets the name of the constraint
      * @param name	the name of the constraint
@@ -53,12 +54,12 @@ public interface IConstraint {
      * @return the priority of the constraint
      */
     int getPriority();
-    
+
     /**
      * Method for setting the priority of the constraint
      * 
      * @param priority	the priority of the constraint
      */
     void setPriority(int priority);
-    
+
 }

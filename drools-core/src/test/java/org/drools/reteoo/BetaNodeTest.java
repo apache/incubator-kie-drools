@@ -42,21 +42,35 @@ public class BetaNodeTest extends TestCase {
      * Test method for {@link org.drools.reteoo.BetaNode#equals(java.lang.Object)}.
      */
     public void testEqualsObject() {
-        TupleSource ts = new MockTupleSource(1);
-        ObjectSource os = new MockObjectSource(2);
-        
-        BetaNode j1 = new JoinNode(1, ts, os);
-        BetaNode j2 = new JoinNode(2, ts, os);
-        BetaNode n1 = new NotNode(3, ts, os);
-        BetaNode n2 = new NotNode(4, ts, os);
-        
-        assertEquals( j1, j1);
-        assertEquals( j2, j2);
-        assertEquals( j1, j2);
-        assertEquals( n1, n1);
-        assertEquals( n2, n2);
-        assertEquals( n1, n2);
-        
+        final TupleSource ts = new MockTupleSource( 1 );
+        final ObjectSource os = new MockObjectSource( 2 );
+
+        final BetaNode j1 = new JoinNode( 1,
+                                    ts,
+                                    os );
+        final BetaNode j2 = new JoinNode( 2,
+                                    ts,
+                                    os );
+        final BetaNode n1 = new NotNode( 3,
+                                   ts,
+                                   os );
+        final BetaNode n2 = new NotNode( 4,
+                                   ts,
+                                   os );
+
+        assertEquals( j1,
+                      j1 );
+        assertEquals( j2,
+                      j2 );
+        assertEquals( j1,
+                      j2 );
+        assertEquals( n1,
+                      n1 );
+        assertEquals( n2,
+                      n2 );
+        assertEquals( n1,
+                      n2 );
+
         assertFalse( j1.equals( n1 ) );
         assertFalse( j1.equals( n2 ) );
         assertFalse( n1.equals( j1 ) );

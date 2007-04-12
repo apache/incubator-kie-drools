@@ -49,33 +49,33 @@ public class MockConstraint
     public ContextEntry getContextEntry() {
         return new ContextEntry() {
             private static final long serialVersionUID = -6597931500771088767L;
-            private ContextEntry next;
+            private ContextEntry      next;
 
             public ContextEntry getNext() {
-                return next;
+                return this.next;
             }
 
-            public void setNext(ContextEntry entry) {
+            public void setNext(final ContextEntry entry) {
                 this.next = entry;
             }
 
-            public void updateFromFactHandle(InternalWorkingMemory workingMemory,
-                                             InternalFactHandle handle) {
+            public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                             final InternalFactHandle handle) {
             }
 
-            public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                        ReteTuple tuple) {
+            public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                        final ReteTuple tuple) {
             }
         };
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
         return this.isAllowed;
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
         return this.isAllowed;
     }
 

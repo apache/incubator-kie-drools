@@ -91,49 +91,45 @@ public class ReturnValueConstraint
         return this.restriction.getContextEntry();
     }
 
-    public boolean isAllowed(Object object,
-                             InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(final Object object,
+                             final InternalWorkingMemory workingMemory) {
         try {
             return this.restriction.isAllowed( this.fieldExtractor,
                                                object,
                                                null,
                                                workingMemory );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction +
-                                              " : "+e.getMessage(),
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction + " : " + e.getMessage(),
                                               e );
         }
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
         try {
-            ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
+            final ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
             return this.restriction.isAllowed( this.fieldExtractor,
                                                object,
                                                ctx.getTuple(),
                                                ctx.getWorkingMemory() );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction +
-                                              " : "+e.getMessage(),
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction + " : " + e.getMessage(),
                                               e );
         }
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
         try {
-            ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
+            final ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
             return this.restriction.isAllowed( this.fieldExtractor,
                                                ctx.getObject(),
                                                tuple,
                                                ctx.getWorkingMemory() );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction +
-                                              " : "+e.getMessage(),
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction + " : " + e.getMessage(),
                                               e );
         }
     }
-
 
 }

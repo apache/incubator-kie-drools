@@ -27,7 +27,7 @@ public class FactTemplateFieldExtractor
     public Object getValue(final Object object) {
         return ((Fact) object).getFieldValue( this.fieldIndex );
     }
-    
+
     public int getIndex() {
         return this.fieldIndex;
     }
@@ -67,16 +67,18 @@ public class FactTemplateFieldExtractor
     public short getShortValue(final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).shortValue();
     }
-    
+
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue", new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            return this.getClass().getDeclaredMethod( "getValue",
+                                                      new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
-    
-    public int getHashCode(Object object) {
+
+    public int getHashCode(final Object object) {
         return getValue( object ).hashCode();
     }
 }

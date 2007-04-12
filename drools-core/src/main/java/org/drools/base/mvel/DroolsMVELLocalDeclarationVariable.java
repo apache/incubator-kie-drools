@@ -6,34 +6,34 @@ import org.mvel.integration.VariableResolver;
 public class DroolsMVELLocalDeclarationVariable
     implements
     VariableResolver {
-    
-    private Declaration declaration;
+
+    private Declaration       declaration;
     private DroolsMVELFactory factory;
-       
-    public DroolsMVELLocalDeclarationVariable(Declaration declaration,
-    		DroolsMVELFactory factory ) {
+
+    public DroolsMVELLocalDeclarationVariable(final Declaration declaration,
+                                              final DroolsMVELFactory factory) {
         this.declaration = declaration;
-        this.factory =  factory;
-    }        
-    
+        this.factory = factory;
+    }
+
     public String getName() {
         return this.declaration.getIdentifier();
     }
 
     public Class getKnownType() {
-        return declaration.getExtractor().getExtractToClass();
+        return this.declaration.getExtractor().getExtractToClass();
     }
 
     public Object getValue() {
-        return declaration.getValue( this.factory.getObject() );
+        return this.declaration.getValue( this.factory.getObject() );
     }
 
-    public void setValue(Object value) {
-        throw new UnsupportedOperationException( "External Variable identifer='" + getName() + "' type='" + getKnownType()+ "' is final, it cannot be set" );
+    public void setValue(final Object value) {
+        throw new UnsupportedOperationException( "External Variable identifer='" + getName() + "' type='" + getKnownType() + "' is final, it cannot be set" );
     }
-    
-    public int getFlags()  {
-    	return 0;
-    }    
+
+    public int getFlags() {
+        return 0;
+    }
 
 }

@@ -94,7 +94,7 @@ public class LiteralRestriction
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + this.evaluator.hashCode();
-        result = PRIME * result + ( ( this.field.getValue() != null ) ? this.field.getValue().hashCode() : 0 );
+        result = PRIME * result + ((this.field.getValue() != null) ? this.field.getValue().hashCode() : 0);
         return result;
     }
 
@@ -111,7 +111,7 @@ public class LiteralRestriction
     }
 
     public ContextEntry getContextEntry() {
-        return contextEntry;
+        return this.contextEntry;
     }
 
     private static class LiteralContextEntry
@@ -121,7 +121,7 @@ public class LiteralRestriction
         public Object         object;
         public ContextEntry   next;
 
-        public LiteralContextEntry(FieldExtractor extractor) {
+        public LiteralContextEntry(final FieldExtractor extractor) {
             this.extractor = extractor;
         }
 
@@ -137,17 +137,17 @@ public class LiteralRestriction
             return this.next;
         }
 
-        public void setNext(ContextEntry entry) {
+        public void setNext(final ContextEntry entry) {
             this.next = entry;
         }
 
-        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
-                                         InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
             this.object = handle.getObject();
         }
 
-        public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                    ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
             // nothing to do
         }
 

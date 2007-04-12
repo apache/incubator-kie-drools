@@ -41,8 +41,8 @@ abstract public class BaseClassFieldExtractor
      * @param valueType
      */
     protected BaseClassFieldExtractor(final int index,
-                                   final Class fieldType,
-                                   final ValueType valueType) {
+                                      final Class fieldType,
+                                      final ValueType valueType) {
         this.index = index;
         this.fieldType = fieldType;
         this.valueType = valueType;

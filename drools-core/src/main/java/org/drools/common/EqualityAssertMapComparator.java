@@ -28,7 +28,6 @@ public class EqualityAssertMapComparator
      */
     private static final long serialVersionUID = 320L;
 
-
     public EqualityAssertMapComparator() {
     }
 
@@ -57,10 +56,10 @@ public class EqualityAssertMapComparator
             return o1 == o2;
         }
 
-        InternalFactHandle handle = ((InternalFactHandle) o2);
-        
-        o2 = ( handle.isShadowFact() ) ? ((ShadowProxy) handle.getObject() ).getShadowedObject() : handle.getObject();
-        
+        final InternalFactHandle handle = ((InternalFactHandle) o2);
+
+        o2 = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+
         return o1 == o2 || o1.equals( o2 );
     }
 

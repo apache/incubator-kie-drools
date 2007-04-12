@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.datatype.impl.type;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,17 +23,19 @@ import org.drools.ruleflow.common.datatype.IDataType;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class StringDataType implements IDataType {
+public class StringDataType
+    implements
+    IDataType {
 
     private static final long serialVersionUID = 3258416135924758834L;
 
-    public boolean verifyDataType(Object value) {
-    	if (value instanceof String) {
-    		return true;
-    	} else if (value == null) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    public boolean verifyDataType(final Object value) {
+        if ( value instanceof String ) {
+            return true;
+        } else if ( value == null ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,35 +26,33 @@ import org.drools.ruleflow.core.IStartNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class StartNode extends Node implements IStartNode {
+public class StartNode extends Node
+    implements
+    IStartNode {
 
     private static final long serialVersionUID = 3257564005806782517L;
-    
+
     public IConnection getTo() {
-    	List list = getOutgoingConnections();
-    	if (list.size() > 0) {
-    		return (IConnection) list.get(0);
-    	}
-		return null;
+        final List list = getOutgoingConnections();
+        if ( list.size() > 0 ) {
+            return (IConnection) list.get( 0 );
+        }
+        return null;
     }
-    
-    protected void validateAddOutgoingConnection(IConnection connection) {
-    	super.validateAddOutgoingConnection(connection);
-    	if (getOutgoingConnections().size() > 0) {    		
-            throw new IllegalArgumentException(
-        		"A start node cannot have more than one outgoing connection");
+
+    protected void validateAddOutgoingConnection(final IConnection connection) {
+        super.validateAddOutgoingConnection( connection );
+        if ( getOutgoingConnections().size() > 0 ) {
+            throw new IllegalArgumentException( "A start node cannot have more than one outgoing connection" );
         }
     }
 
-
-    protected void validateAddIncomingConnection(IConnection connection) {
-        throw new UnsupportedOperationException(
-    		"A start node does not have an incoming connection");
+    protected void validateAddIncomingConnection(final IConnection connection) {
+        throw new UnsupportedOperationException( "A start node does not have an incoming connection" );
     }
 
-    protected void validateRemoveIncomingConnection(IConnection connection) {
-        throw new UnsupportedOperationException(
-    		"A start node does not have an incoming connection");
+    protected void validateRemoveIncomingConnection(final IConnection connection) {
+        throw new UnsupportedOperationException( "A start node does not have an incoming connection" );
     }
 
 }

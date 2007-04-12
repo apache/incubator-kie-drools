@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,44 +24,46 @@ import org.drools.ruleflow.common.instance.IProcessInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class ProcessInstance implements IProcessInstance {
+public abstract class ProcessInstance
+    implements
+    IProcessInstance {
 
-    private long id;
+    private long     id;
     private IProcess process;
-    private int state = STATE_PENDING;
-    
-    public void setId(long id) {
+    private int      state = STATE_PENDING;
+
+    public void setId(final long id) {
         this.id = id;
     }
-    
+
     public long getId() {
-        return id;
+        return this.id;
     }
-    
-    public void setProcess(IProcess process) {
+
+    public void setProcess(final IProcess process) {
         this.process = process;
     }
-    
+
     public IProcess getProcess() {
-        return process;
+        return this.process;
     }
-    
-    public void setState(int state) {
+
+    public void setState(final int state) {
         this.state = state;
     }
-    
+
     public int getState() {
-        return state;
+        return this.state;
     }
-    
+
     public String toString() {
-    	StringBuffer b = new StringBuffer("ProcessInstance ");
-    	b.append(getId());
-    	b.append(" [processId=");
-    	b.append(process.getId());
-    	b.append(",state=");
-    	b.append(state);
-    	b.append("]");
-    	return b.toString();
+        final StringBuffer b = new StringBuffer( "ProcessInstance " );
+        b.append( getId() );
+        b.append( " [processId=" );
+        b.append( this.process.getId() );
+        b.append( ",state=" );
+        b.append( this.state );
+        b.append( "]" );
+        return b.toString();
     }
 }

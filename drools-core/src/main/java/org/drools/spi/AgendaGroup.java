@@ -56,7 +56,7 @@ public interface AgendaGroup
      *      int value for the total number of activations
      */
     public int size();
-    
+
     public boolean isActivate();
 
 }

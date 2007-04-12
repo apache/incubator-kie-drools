@@ -12,20 +12,20 @@ import org.objenesis.instantiator.SerializationInstantiatorHelper;
  * @see org.objenesis.instantiator.ObjectInstantiator
  */
 public class GCJSerializationInstantiator extends GCJInstantiatorBase {
-   private Class superType;
+    private Class superType;
 
-   public GCJSerializationInstantiator(Class type) {
-      super(type);
-      this.superType = SerializationInstantiatorHelper.getNonSerializableSuperClass(type);
-   }
+    public GCJSerializationInstantiator(final Class type) {
+        super( type );
+        this.superType = SerializationInstantiatorHelper.getNonSerializableSuperClass( type );
+    }
 
-   public Object newInstance() {
-      try {
-         return newObjectMethod.invoke(dummyStream, new Object[] {type, superType});
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return newObjectMethod.invoke( dummyStream,
+                                           new Object[]{this.type, this.superType} );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 
 }

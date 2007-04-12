@@ -88,10 +88,10 @@ public class ByteFactory
             return ((LongVariableContextEntry) context).left == context.extractor.getByteValue( right );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getByteValue( object1 ) == extractor2.getByteValue( object2 );
         }
 
@@ -129,10 +129,10 @@ public class ByteFactory
             return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( right );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getByteValue( object1 ) != extractor2.getByteValue( object2 );
         }
 
@@ -161,7 +161,7 @@ public class ByteFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return ((LongVariableContextEntry) context).right <  context.declaration.getExtractor().getByteValue( left );
+            return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getByteValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
@@ -169,10 +169,10 @@ public class ByteFactory
             return context.extractor.getByteValue( right ) < ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getByteValue( object1 ) < extractor2.getByteValue( object2 );
         }
 
@@ -209,10 +209,10 @@ public class ByteFactory
             return context.extractor.getByteValue( right ) <= ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getByteValue( object1 ) <= extractor2.getByteValue( object2 );
         }
 
@@ -249,10 +249,10 @@ public class ByteFactory
             return context.extractor.getByteValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getByteValue( object1 ) > extractor2.getByteValue( object2 );
         }
 
@@ -289,10 +289,10 @@ public class ByteFactory
             return context.extractor.getByteValue( right ) >= ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getByteValue( object1 ) >= extractor2.getByteValue( object2 );
         }
 

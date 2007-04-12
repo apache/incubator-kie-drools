@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.datatype;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -21,7 +22,7 @@ package org.drools.ruleflow.common.datatype;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface IDataTypeFactory {
-    
+
     IDataType createDataType();
 
 }

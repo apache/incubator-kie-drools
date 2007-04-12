@@ -160,7 +160,7 @@ public class ReteTuple
         }
 
         // A ReteTuple is  only the same if it has the same hashCode, factId and parent
-        if (( other == null ) || ( this.hashCode != other.hashCode )) {
+        if ( (other == null) || (this.hashCode != other.hashCode) ) {
             return false;
         }
 
@@ -181,9 +181,9 @@ public class ReteTuple
     }
 
     public int size() {
-        return this.index+1;
+        return this.index + 1;
     }
-    
+
     /**
      * Returns the ReteTuple that contains the "elements"
      * first elements in this tuple.
@@ -199,11 +199,11 @@ public class ReteTuple
      * @return a ReteTuple containing the "elements" first elements
      * of this tuple or null if "elements" is greater than size; 
      */
-    public ReteTuple getSubTuple( int elements ) {
+    public ReteTuple getSubTuple(final int elements) {
         ReteTuple entry = this;
-        if( elements < this.size() ) {
-            int lastindex = elements-1;
-            
+        if ( elements < this.size() ) {
+            final int lastindex = elements - 1;
+
             while ( entry.index != lastindex ) {
                 entry = entry.parent;
             }

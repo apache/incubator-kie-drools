@@ -70,7 +70,7 @@ public class ScheduledAgendaItem extends TimerTask
 
     private boolean                  activated;
 
-    private ActivationGroupNode      activationGroupNode;       
+    private ActivationGroupNode      activationGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -89,7 +89,7 @@ public class ScheduledAgendaItem extends TimerTask
                                final InternalAgenda agenda,
                                final PropagationContext context,
                                final Rule rule,
-                               final GroupElement subrule ) {
+                               final GroupElement subrule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
@@ -186,19 +186,19 @@ public class ScheduledAgendaItem extends TimerTask
     public void setActivationGroupNode(final ActivationGroupNode activationGroupNode) {
         this.activationGroupNode = activationGroupNode;
     }
-    
+
     public RuleFlowGroupNode getRuleFlowGroupNode() {
         return null;
     }
 
-    public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
+    public void setRuleFlowGroupNode(final RuleFlowGroupNode ruleFlowGroupNode) {
         throw new UnsupportedOperationException( "Scheduled activations cannot be in a Rule Flow Group" );
-    }    
+    }
 
     public AgendaGroup getAgendaGroup() {
         return null;
     }
-    
+
     /*
      * (non-Javadoc)
      * 

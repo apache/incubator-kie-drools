@@ -88,13 +88,13 @@ public class BuildContext {
      * @return the currentColumnOffset
      */
     public int getCurrentColumnOffset() {
-        return currentColumnOffset;
+        return this.currentColumnOffset;
     }
 
     /**
      * @param currentColumnOffset the currentColumnOffset to set
      */
-    public void setCurrentColumnOffset(int currentColumnIndex) {
+    public void setCurrentColumnOffset(final int currentColumnIndex) {
         this.currentColumnOffset = currentColumnIndex;
     }
 
@@ -102,13 +102,13 @@ public class BuildContext {
      * @return the objectSource
      */
     public ObjectSource getObjectSource() {
-        return objectSource;
+        return this.objectSource;
     }
 
     /**
      * @param objectSource the objectSource to set
      */
-    public void setObjectSource(ObjectSource objectSource) {
+    public void setObjectSource(final ObjectSource objectSource) {
         this.objectSource = objectSource;
     }
 
@@ -116,13 +116,13 @@ public class BuildContext {
      * @return the objectType
      */
     public Map getObjectType() {
-        return objectType;
+        return this.objectType;
     }
 
     /**
      * @param objectType the objectType to set
      */
-    public void setObjectType(Map objectType) {
+    public void setObjectType(final Map objectType) {
         this.objectType = objectType;
     }
 
@@ -130,13 +130,13 @@ public class BuildContext {
      * @return the tupleSource
      */
     public TupleSource getTupleSource() {
-        return tupleSource;
+        return this.tupleSource;
     }
 
     /**
      * @param tupleSource the tupleSource to set
      */
-    public void setTupleSource(TupleSource tupleSource) {
+    public void setTupleSource(final TupleSource tupleSource) {
         this.tupleSource = tupleSource;
     }
 
@@ -155,7 +155,7 @@ public class BuildContext {
      * @param candidate
      * @return
      */
-    public BaseNode getNodeFromCache(BaseNode candidate) {
+    public BaseNode getNodeFromCache(final BaseNode candidate) {
         return (BaseNode) this.attachedNodes.get( candidate );
     }
 
@@ -163,7 +163,7 @@ public class BuildContext {
      * Adds given node to node cache
      * @param candidate
      */
-    public void addNodeToCache(BaseNode node) {
+    public void addNodeToCache(final BaseNode node) {
         this.attachedNodes.put( node,
                                 node );
     }
@@ -205,7 +205,7 @@ public class BuildContext {
      * Adds the rce to the build stack
      * @param rce
      */
-    public void push(RuleConditionElement rce) {
+    public void push(final RuleConditionElement rce) {
         this.buildstack.addLast( rce );
     }
 
@@ -237,13 +237,13 @@ public class BuildContext {
      * @return the betaconstraints
      */
     public BetaConstraints getBetaconstraints() {
-        return betaconstraints;
+        return this.betaconstraints;
     }
 
     /**
      * @param betaconstraints the betaconstraints to set
      */
-    public void setBetaconstraints(BetaConstraints betaconstraints) {
+    public void setBetaconstraints(final BetaConstraints betaconstraints) {
         this.betaconstraints = betaconstraints;
     }
 

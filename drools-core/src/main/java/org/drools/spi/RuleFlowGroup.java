@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -18,19 +19,19 @@ package org.drools.spi;
 import java.util.Iterator;
 
 public interface RuleFlowGroup {
-	
+
     String getName();
-    
+
     public Iterator iterator();
 
     boolean isEmpty();
-    
+
     int size();
-    
+
     boolean isActive();
 
     boolean isAutoDeactivate();
-    
+
     /**
      * Sets the auto-deactivate status of this RuleFlowGroup.
      * If this is set to true, an active RuleFlowGroup automatically

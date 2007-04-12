@@ -3,12 +3,14 @@ package org.drools.common;
 import org.drools.spi.Activation;
 import org.drools.spi.RuleFlowGroup;
 
-public interface InternalRuleFlowGroup extends RuleFlowGroup {
+public interface InternalRuleFlowGroup
+    extends
+    RuleFlowGroup {
 
     void addActivation(Activation activation);
 
     void removeActivation(Activation activation);
-    
+
     /**
      * Activates or deactivates this <code>RuleFlowGroup</code>.
      * When activating, all activations of this <code>RuleFlowGroup</code> are added
@@ -21,7 +23,7 @@ public interface InternalRuleFlowGroup extends RuleFlowGroup {
      * its activations are not added to the agenda. 
      */
     void setActive(boolean active);
-    
+
     boolean isActive();
 
 }

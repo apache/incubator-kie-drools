@@ -24,7 +24,7 @@ package org.drools.util;
 public class LinkedListEntry extends AbstractBaseLinkedListNode {
 
     private static final long serialVersionUID = 4631711292464775664L;
-    private Object object;
+    private Object            object;
 
     public LinkedListEntry(final Object object) {
         this.object = object;

@@ -7,7 +7,9 @@ import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.reteoo.TupleMemory;
 
-public class TupleHashTable extends AbstractHashTable implements TupleMemory {
+public class TupleHashTable extends AbstractHashTable
+    implements
+    TupleMemory {
     public TupleHashTable() {
         this( 16,
               0.75f );
@@ -18,15 +20,15 @@ public class TupleHashTable extends AbstractHashTable implements TupleMemory {
         super( capacity,
                loadFactor );
     }
-    
+
     public Iterator iterator(final InternalFactHandle handle) {
         return iterator();
-    }    
+    }
 
     public void add(final ReteTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         tuple.setNext( this.table[index] );
         this.table[index] = tuple;
@@ -39,7 +41,7 @@ public class TupleHashTable extends AbstractHashTable implements TupleMemory {
     public ReteTuple get(final ReteTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         ReteTuple current = (ReteTuple) this.table[index];
         while ( current != null ) {
@@ -54,7 +56,7 @@ public class TupleHashTable extends AbstractHashTable implements TupleMemory {
     public ReteTuple remove(final ReteTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         ReteTuple previous = (ReteTuple) this.table[index];
         ReteTuple current = previous;
@@ -79,7 +81,7 @@ public class TupleHashTable extends AbstractHashTable implements TupleMemory {
     public Entry getBucket(final Object object) {
         final int hashCode = object.hashCode();
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         return this.table[index];
     }
@@ -87,7 +89,7 @@ public class TupleHashTable extends AbstractHashTable implements TupleMemory {
     public boolean contains(final ReteTuple tuple) {
         return (get( tuple ) != null);
     }
-    
+
     public boolean isIndexed() {
         return false;
     }

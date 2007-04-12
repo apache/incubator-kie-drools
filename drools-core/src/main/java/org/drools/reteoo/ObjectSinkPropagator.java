@@ -6,7 +6,9 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
-public interface ObjectSinkPropagator extends Serializable {
+public interface ObjectSinkPropagator
+    extends
+    Serializable {
     public void propagateAssertObject(InternalFactHandle handle,
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory);

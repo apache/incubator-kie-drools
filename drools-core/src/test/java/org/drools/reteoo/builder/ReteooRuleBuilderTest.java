@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
-import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
@@ -49,8 +48,8 @@ public class ReteooRuleBuilderTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        builder = new ReteooRuleBuilder();
-        rulebase = new ReteooRuleBase( "default" );
+        this.builder = new ReteooRuleBuilder();
+        this.rulebase = new ReteooRuleBase( "default" );
     }
 
     /* (non-Javadoc)
@@ -64,39 +63,41 @@ public class ReteooRuleBuilderTest extends TestCase {
      * Test method for {@link org.drools.reteoo.builder.ReteooRuleBuilder#addRule(org.drools.rule.Rule, org.drools.reteoo.ReteooRuleBase, java.util.Map, int)}.
      */
     public void testAddRuleWithColumns() {
-        Rule rule = new Rule( "only columns" );
-        Column c1 = new Column( 0,
+        final Rule rule = new Rule( "only columns" );
+        final Column c1 = new Column( 0,
                                 new ClassObjectType( String.class ) );
-        Column c2 = new Column( 1,
+        final Column c2 = new Column( 1,
                                 new ClassObjectType( String.class ) );
-        Column c3 = new Column( 2,
+        final Column c3 = new Column( 2,
                                 new ClassObjectType( String.class ) );
 
-        GroupElement lhsroot = GroupElementFactory.newAndInstance();
+        final GroupElement lhsroot = GroupElementFactory.newAndInstance();
         lhsroot.addChild( c1 );
         lhsroot.addChild( c2 );
         lhsroot.addChild( c3 );
 
         rule.setLhs( lhsroot );
-        
-        Consequence consequence = new Consequence() {
+
+        final Consequence consequence = new Consequence() {
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) throws Exception {
-                System.out.println("Consequence!");
+                System.out.println( "Consequence!" );
             }
-            
+
         };
-        
+
         rule.setConsequence( consequence );
 
-        List terminals = this.builder.addRule( rule,
+        final List terminals = this.builder.addRule( rule,
                                                this.rulebase,
                                                new HashMap(),
-                                               new ReteooBuilder.IdGenerator(1) );
-        
-        Assert.assertEquals( "Rule must have a single terminal node", 1, terminals.size() );
-        
-        RuleTerminalNode terminal = (RuleTerminalNode) terminals.get( 0 );
+                                               new ReteooBuilder.IdGenerator( 1 ) );
+
+        Assert.assertEquals( "Rule must have a single terminal node",
+                             1,
+                             terminals.size() );
+
+        final RuleTerminalNode terminal = (RuleTerminalNode) terminals.get( 0 );
 
     }
 

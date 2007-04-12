@@ -153,7 +153,8 @@ public class FromNodeTest extends TestCase {
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
         configuration.setIndexRightBetaMemory( false );
         configuration.setIndexLeftBetaMemory( false );
-        final BetaConstraints betaConstraints = new SingleBetaConstraints( variableConstraint, configuration );
+        final BetaConstraints betaConstraints = new SingleBetaConstraints( variableConstraint,
+                                                                           configuration );
 
         final List list = new ArrayList();
         final Cheese cheese1 = new Cheese( "cheddar",
@@ -244,7 +245,7 @@ public class FromNodeTest extends TestCase {
                                                                     ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
                                                                     field );
 
-        List list = new ArrayList();
+        final List list = new ArrayList();
         final Cheese cheese1 = new Cheese( "stilton",
                                            5 );
         final Cheese cheese2 = new Cheese( "stilton",
@@ -281,10 +282,12 @@ public class FromNodeTest extends TestCase {
         assertEquals( 2,
                       ((LinkedList) memory.getCreatedHandles().get( tuple )).size() );
 
-        InternalFactHandle handle1 = (InternalFactHandle) ((LinkedListEntry)((LinkedList) memory.getCreatedHandles().get( tuple )).getFirst()).getObject();
-        InternalFactHandle handle2 = (InternalFactHandle) ((LinkedListEntry)((LinkedList) memory.getCreatedHandles().get( tuple )).getLast()).getObject();
-        assertEquals( handle1.getObject(), cheese1 );
-        assertEquals( handle2.getObject(), cheese2 );
+        final InternalFactHandle handle1 = (InternalFactHandle) ((LinkedListEntry) ((LinkedList) memory.getCreatedHandles().get( tuple )).getFirst()).getObject();
+        final InternalFactHandle handle2 = (InternalFactHandle) ((LinkedListEntry) ((LinkedList) memory.getCreatedHandles().get( tuple )).getLast()).getObject();
+        assertEquals( handle1.getObject(),
+                      cheese1 );
+        assertEquals( handle2.getObject(),
+                      cheese2 );
 
         from.retractTuple( tuple,
                            context,
@@ -293,7 +296,6 @@ public class FromNodeTest extends TestCase {
                       memory.getTupleMemory().size() );
         assertNull( memory.getFactHandleMemory() );
     }
-
 
     public static class MockDataProvider
         implements

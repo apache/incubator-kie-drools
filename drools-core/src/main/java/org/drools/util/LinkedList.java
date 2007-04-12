@@ -45,15 +45,15 @@ import java.util.NoSuchElementException;
 public class LinkedList
     implements
     Serializable {
-    private static final long serialVersionUID = 320;
+    private static final long  serialVersionUID = 320;
 
-    private LinkedListNode    firstNode;
-    private LinkedListNode    lastNode;
+    private LinkedListNode     firstNode;
+    private LinkedListNode     lastNode;
 
-    private int               size;
+    private int                size;
 
     private LinkedListIterator iterator;
-    
+
     /**
      * Construct an empty <code>LinkedList</code>
      */
@@ -94,11 +94,11 @@ public class LinkedList
         } else if ( this.lastNode == node ) {
             removeLast();
         } else {
-           node.getPrevious().setNext( node.getNext() );
-           ((LinkedListNode)node.getNext()).setPrevious( node.getPrevious() );
-           this.size--;
-           node.setPrevious( null );
-           node.setNext( null );
+            node.getPrevious().setNext( node.getNext() );
+            (node.getNext()).setPrevious( node.getPrevious() );
+            this.size--;
+            node.setPrevious( null );
+            node.setNext( null );
         }
     }
 
@@ -132,7 +132,7 @@ public class LinkedList
             return null;
         }
         final LinkedListNode node = this.firstNode;
-        this.firstNode = (LinkedListNode) node.getNext();
+        this.firstNode = node.getNext();
         node.setNext( null );
         if ( this.firstNode != null ) {
             this.firstNode.setPrevious( null );
@@ -157,11 +157,11 @@ public class LinkedList
             newNode.setNext( node );
             this.firstNode = newNode;
         } else if ( existingNode == this.lastNode ) {
-        	existingNode.setNext(newNode);
-        	newNode.setPrevious( existingNode );
-        	this.lastNode = newNode;
+            existingNode.setNext( newNode );
+            newNode.setPrevious( existingNode );
+            this.lastNode = newNode;
         } else {
-            ((LinkedListNode)existingNode.getNext()).setPrevious( newNode );
+            (existingNode.getNext()).setPrevious( newNode );
             newNode.setNext( existingNode.getNext() );
             existingNode.setNext( newNode );
             newNode.setPrevious( existingNode );
@@ -219,7 +219,7 @@ public class LinkedList
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        for ( LinkedListNode node = this.firstNode; node != null; node = (LinkedListNode)node.getNext() ) {
+        for ( LinkedListNode node = this.firstNode; node != null; node = node.getNext() ) {
             result = PRIME * result + node.hashCode();
         }
         return result;
@@ -240,7 +240,7 @@ public class LinkedList
             return false;
         }
 
-        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode != null && otherNode != null; thisNode = (LinkedListNode)thisNode.getNext(), otherNode = (LinkedListNode)otherNode.getNext() ) {
+        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode != null && otherNode != null; thisNode = thisNode.getNext(), otherNode = otherNode.getNext() ) {
             if ( !thisNode.equals( otherNode ) ) {
                 return false;
             }
@@ -252,76 +252,83 @@ public class LinkedList
         this.iterator.reset( this );
         return this.iterator;
     }
-    
+
     public java.util.Iterator javaUtilIterator() {
         return new JavaUtilIterator( this );
     }
-    
+
     /**
      * Returns a list iterator
      * @return
      */
-    public class LinkedListIterator implements Serializable {
-        private LinkedList list;
+    public class LinkedListIterator
+        implements
+        Serializable {
+        private LinkedList     list;
         private LinkedListNode current;
-        
-        public  void  reset( LinkedList list) {
+
+        public void reset(final LinkedList list) {
             this.list = list;
             this.current = this.list.firstNode;
         }
-        
+
         public LinkedListNode next() {
-            if( this.current == null ){
+            if ( this.current == null ) {
                 return null;
             }
-            LinkedListNode node  = this.current;
-            current = current.getNext();
+            final LinkedListNode node = this.current;
+            this.current = this.current.getNext();
             return node;
         }
     }
-    
-    public static class JavaUtilIterator implements java.util.Iterator, Serializable {
-        private LinkedList list;
-         private LinkedListNode currentNode;
-         private LinkedListNode nextNode;
-         private boolean immutable;
 
-         public JavaUtilIterator(LinkedList list) {
-             this(list, true);
-         }
+    public static class JavaUtilIterator
+        implements
+        java.util.Iterator,
+        Serializable {
+        private LinkedList     list;
+        private LinkedListNode currentNode;
+        private LinkedListNode nextNode;
+        private boolean        immutable;
 
-         public JavaUtilIterator(LinkedList list, boolean immutable) {
-             this.list = list;
-             this.nextNode = this.list.getFirst();
-             this.immutable = immutable;
-         }
+        public JavaUtilIterator(final LinkedList list) {
+            this( list,
+                  true );
+        }
 
-         public boolean hasNext() {
-             return (this.nextNode != null);
-         }
+        public JavaUtilIterator(final LinkedList list,
+                                final boolean immutable) {
+            this.list = list;
+            this.nextNode = this.list.getFirst();
+            this.immutable = immutable;
+        }
 
-         public Object next() {
-             this.currentNode = this.nextNode;
-             if ( this.currentNode != null ) {
-                 this.nextNode = this.currentNode.getNext();
-             } else {
-                 throw new NoSuchElementException( "No more elements to return" );
-             }
-             return this.currentNode;
-         }
+        public boolean hasNext() {
+            return (this.nextNode != null);
+        }
 
-         public void remove() {
-             if ( this.immutable ) {
-                 throw new UnsupportedOperationException( "This  Iterator is immutable, you cannot call remove()" );
-             } 
+        public Object next() {
+            this.currentNode = this.nextNode;
+            if ( this.currentNode != null ) {
+                this.nextNode = this.currentNode.getNext();
+            } else {
+                throw new NoSuchElementException( "No more elements to return" );
+            }
+            return this.currentNode;
+        }
 
-             if ( this.currentNode != null ) {
-                 this.list.remove( this.currentNode );
-                 this.currentNode = null;
-             } else {
-                 throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
-             }
-         }  
-   }    
+        public void remove() {
+            if ( this.immutable ) {
+                throw new UnsupportedOperationException( "This  Iterator is immutable, you cannot call remove()" );
+            }
+
+            if ( this.currentNode != null ) {
+                this.list.remove( this.currentNode );
+                this.currentNode = null;
+            } else {
+                throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
+            }
+        }
+    }
 
 }

@@ -26,7 +26,8 @@ import org.drools.spi.RuleComponent;
  */
 public interface RuleConditionElement
     extends
-    RuleComponent, Cloneable {
+    RuleComponent,
+    Cloneable {
 
     /**
      * Returns a Map of declarations that are
@@ -43,7 +44,7 @@ public interface RuleConditionElement
      * @return
      */
     public Map getOuterDeclarations();
-    
+
     /**
      * Resolves the given identifier in the current scope and
      * returns the Declaration object for the declaration.
@@ -52,13 +53,12 @@ public interface RuleConditionElement
      * @param identifier
      * @return
      */
-    public Declaration resolveDeclaration( String identifier );
-    
+    public Declaration resolveDeclaration(String identifier);
+
     /**
      * Returns a clone from itself
      * @return
      */
     public Object clone();
-    
 
 }

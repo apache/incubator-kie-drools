@@ -69,26 +69,30 @@ public class Column
         this.index = index;
         this.offset = offset;
         this.objectType = objectType;
-        if ( identifier != null && ( ! identifier.equals( "" ) ) ) {
+        if ( identifier != null && (!identifier.equals( "" )) ) {
             this.declaration = new Declaration( identifier,
                                                 new ColumnExtractor( objectType ),
                                                 this );
-            this.declarations = new HashMap(2); // default to avoid immediate resize
-            this.declarations.put( this.declaration.getIdentifier(), this.declaration );
+            this.declarations = new HashMap( 2 ); // default to avoid immediate resize
+            this.declarations.put( this.declaration.getIdentifier(),
+                                   this.declaration );
         } else {
             this.declaration = null;
         }
     }
-    
-    public Object clone() {
-        String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;  
-        Column clone = new Column( this.index, this.objectType, identifier );
 
-        for( Iterator it = this.constraints.iterator(); it.hasNext(); ) {
-            Object constr = it.next();
-            if( constr instanceof Declaration ) {
-                Declaration decl = (Declaration) constr;
-                clone.addDeclaration( decl.getIdentifier(), decl.getExtractor() );
+    public Object clone() {
+        final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
+        final Column clone = new Column( this.index,
+                                   this.objectType,
+                                   identifier );
+
+        for ( final Iterator it = this.constraints.iterator(); it.hasNext(); ) {
+            final Object constr = it.next();
+            if ( constr instanceof Declaration ) {
+                final Declaration decl = (Declaration) constr;
+                clone.addDeclaration( decl.getIdentifier(),
+                                      decl.getExtractor() );
             } else {
                 clone.addConstraint( (Constraint) constr );
             }
@@ -120,10 +124,11 @@ public class Column
                                                          extractor,
                                                          this );
         this.constraints.add( declaration );
-        if( this.declarations == null ) {
-            this.declarations = new HashMap(2); // default to avoid immediate resize
+        if ( this.declarations == null ) {
+            this.declarations = new HashMap( 2 ); // default to avoid immediate resize
         }
-        this.declarations.put( declaration.getIdentifier(), declaration );
+        this.declarations.put( declaration.getIdentifier(),
+                               declaration );
         return declaration;
 
     }
@@ -149,25 +154,26 @@ public class Column
     public int getOffset() {
         return this.offset;
     }
-    
+
     public void setOffset(final int offset) {
         this.offset = offset;
     }
 
     public Map getInnerDeclarations() {
-        return ( this.declarations != null ) ? this.declarations : Collections.EMPTY_MAP;
+        return (this.declarations != null) ? this.declarations : Collections.EMPTY_MAP;
     }
 
     public Map getOuterDeclarations() {
-        return ( this.declarations != null ) ? this.declarations : Collections.EMPTY_MAP;
+        return (this.declarations != null) ? this.declarations : Collections.EMPTY_MAP;
     }
-    
-    public Declaration resolveDeclaration( String identifier ) {
-        return ( this.declarations != null ) ? (Declaration) this.declarations.get( identifier ) : null;
+
+    public Declaration resolveDeclaration(final String identifier) {
+        return (this.declarations != null) ? (Declaration) this.declarations.get( identifier ) : null;
     }
 
     public String toString() {
-        return "Column type='" + ((this.objectType == null) ? "null" : this.objectType.toString()) + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + ((this.declaration == null) ? "" : this.declaration.toString()) + "'";
+        return "Column type='" + ((this.objectType == null) ? "null" : this.objectType.toString()) + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + ((this.declaration == null) ? "" : this.declaration.toString())
+               + "'";
     }
 
     public int hashCode() {

@@ -60,13 +60,14 @@ public class JoinNodeTest extends DroolsTestCase {
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
         this.sink = new MockTupleSink();
-        
-        RuleBaseConfiguration configuration = new RuleBaseConfiguration();
+
+        final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
         this.node = new JoinNode( 15,
                                   this.tupleSource,
                                   this.objectSource,
-                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint}, configuration ) );
+                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
+                                                              configuration ) );
 
         this.node.addTupleSink( this.sink );
 

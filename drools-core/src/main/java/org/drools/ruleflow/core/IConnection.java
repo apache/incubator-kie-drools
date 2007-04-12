@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -21,31 +22,31 @@ package org.drools.ruleflow.core;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface IConnection {
-    
-	/**
-	 * The connection type
-	 */
-	int TYPE_NORMAL = 1;
-	int TYPE_ABORT = 2;
-	
-	/**
-	 * Returns the from node of the connection.
-	 * @return the from node of the connection.
-	 */
-    INode getFrom();    
+
+    /**
+     * The connection type
+     */
+    int TYPE_NORMAL = 1;
+    int TYPE_ABORT  = 2;
+
+    /**
+     * Returns the from node of the connection.
+     * @return the from node of the connection.
+     */
+    INode getFrom();
 
     /**
      * Returns the to node of the connection
      * @return the to node of the connection
      */
-    INode getTo();    
+    INode getTo();
 
     /**
      * Returns the connection type
      * @return the connection type
      */
     int getType();
-    
+
     /**
      * Destroys the connection. This method also removes the
      * connection on the <code>to</code> and <code>from</code> nodes.
@@ -53,5 +54,5 @@ public interface IConnection {
      * an <code>IllegalStateException</code>.
      */
     void terminate();
-        
+
 }

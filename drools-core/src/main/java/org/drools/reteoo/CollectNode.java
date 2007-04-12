@@ -146,14 +146,15 @@ public class CollectNode extends BetaNode
             }
         }
         if ( isAllowed ) {
-            this.resultsBinder.updateFromTuple( workingMemory, leftTuple );
+            this.resultsBinder.updateFromTuple( workingMemory,
+                                                leftTuple );
             if ( this.resultsBinder.isAllowedCachedLeft( result ) ) {
                 final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
                 memory.getCreatedHandles().put( leftTuple,
                                                 handle,
                                                 false );
 
-                sink.propagateAssertTuple( leftTuple,
+                this.sink.propagateAssertTuple( leftTuple,
                                            handle,
                                            context,
                                            workingMemory );
@@ -246,16 +247,16 @@ public class CollectNode extends BetaNode
         }
     }
 
-    public void updateSink(TupleSink sink,
-                           PropagationContext context,
-                           InternalWorkingMemory workingMemory) {
+    public void updateSink(final TupleSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         final Iterator it = memory.getCreatedHandles().iterator();
 
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-            sink.assertTuple( new ReteTuple( (ReteTuple)entry.getKey(),
-                                             (InternalFactHandle) entry.getValue()),
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            sink.assertTuple( new ReteTuple( (ReteTuple) entry.getKey(),
+                                             (InternalFactHandle) entry.getValue() ),
                               context,
                               workingMemory );
         }

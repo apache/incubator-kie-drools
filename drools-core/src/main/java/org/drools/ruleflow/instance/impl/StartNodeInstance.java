@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,15 +26,15 @@ import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
  */
 public class StartNodeInstance extends RuleFlowNodeInstance {
 
-	public void trigger(IRuleFlowNodeInstance from) {
-		triggerCompleted();
-	}
-	
-	public IStartNode getStartNode() {
-		return (IStartNode) getNode();
-	}
+    public void trigger(final IRuleFlowNodeInstance from) {
+        triggerCompleted();
+    }
 
-	public void triggerCompleted() {
-		getProcessInstance().getNodeInstance(getStartNode().getTo().getTo()).trigger(this);
-	}
+    public IStartNode getStartNode() {
+        return (IStartNode) getNode();
+    }
+
+    public void triggerCompleted() {
+        getProcessInstance().getNodeInstance( getStartNode().getTo().getTo() ).trigger( this );
+    }
 }

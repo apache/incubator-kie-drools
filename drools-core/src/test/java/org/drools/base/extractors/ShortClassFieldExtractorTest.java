@@ -94,7 +94,7 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetValue() {
         try {
             Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
-                                 ((Number)this.extractor.getValue( this.bean )).shortValue() );
+                                 ((Number) this.extractor.getValue( this.bean )).shortValue() );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

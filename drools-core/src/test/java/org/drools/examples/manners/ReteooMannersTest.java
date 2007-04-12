@@ -23,10 +23,8 @@ import java.util.List;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.reteoo.MemoryVisitor;
 
 public class ReteooMannersTest extends BaseMannersTest {
 
@@ -87,8 +85,8 @@ public class ReteooMannersTest extends BaseMannersTest {
         //            Thread.sleep( 2000 );
         //        }           
 
-//        final MemoryVisitor visitor = new MemoryVisitor( (InternalWorkingMemory) workingMemory );
-//        visitor.visit( ruleBase );
+        //        final MemoryVisitor visitor = new MemoryVisitor( (InternalWorkingMemory) workingMemory );
+        //        visitor.visit( ruleBase );
 
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
         //        

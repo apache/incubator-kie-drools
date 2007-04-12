@@ -55,29 +55,32 @@ public class DoubleBetaConstraints
 
     private boolean                       indexed0;
     private boolean                       indexed1;
-    
+
     private RuleBaseConfiguration         conf;
-    
-    public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration conf) {
-        this.conf = conf;        
-        if  (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) {
+
+    public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                 final RuleBaseConfiguration conf) {
+        this.conf = conf;
+        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
             this.indexed0 = false;
             this.indexed1 = false;
         } else {
-            int depth = conf.getCompositeKeyDepth();    
+            final int depth = conf.getCompositeKeyDepth();
 
             // Determine  if this constraints are indexable           
             final boolean i0 = isIndexable( constraints[0] );
             final boolean i1 = isIndexable( constraints[1] );
-            
+
             if ( depth >= 1 && i0 ) {
                 this.indexed0 = true;
             }
-            
+
             if ( i1 ) {
-                if (  depth >= 1 && !i0 ) {
+                if ( depth >= 1 && !i0 ) {
                     this.indexed0 = true;
-                    swap( constraints, 1, 0 );
+                    swap( constraints,
+                          1,
+                          0 );
                 } else if ( depth >= 2 ) {
                     this.indexed1 = true;
                 }
@@ -90,13 +93,14 @@ public class DoubleBetaConstraints
         this.constraint1 = constraints[1];
         this.context1 = this.constraint1.getContextEntry();
     }
-    
-    private void swap(BetaNodeFieldConstraint[] constraints, int p1, int p2) {
+
+    private void swap(final BetaNodeFieldConstraint[] constraints,
+                      final int p1,
+                      final int p2) {
         final BetaNodeFieldConstraint temp = constraints[p2];
         constraints[p2] = constraints[p1];
-        constraints[p1] = temp;    	
+        constraints[p1] = temp;
     }
-    
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint instanceof VariableConstraint ) {
@@ -110,17 +114,23 @@ public class DoubleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
-        this.context0.updateFromTuple( workingMemory, tuple );
-        this.context1.updateFromTuple( workingMemory, tuple );
+    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                final ReteTuple tuple) {
+        this.context0.updateFromTuple( workingMemory,
+                                       tuple );
+        this.context1.updateFromTuple( workingMemory,
+                                       tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
-        this.context0.updateFromFactHandle( workingMemory, handle );
-        this.context1.updateFromFactHandle( workingMemory, handle );
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                     final InternalFactHandle handle) {
+        this.context0.updateFromFactHandle( workingMemory,
+                                            handle );
+        this.context1.updateFromFactHandle( workingMemory,
+                                            handle );
     }
 
     /* (non-Javadoc)
@@ -138,7 +148,7 @@ public class DoubleBetaConstraints
     public boolean isAllowedCachedRight(final ReteTuple tuple) {
         return this.constraint0.isAllowedCachedRight( tuple,
                                                       this.context0 ) && this.constraint1.isAllowedCachedRight( tuple,
-                                                                                                           this.context1 );
+                                                                                                                this.context1 );
     }
 
     public boolean isIndexed() {
@@ -156,8 +166,8 @@ public class DoubleBetaConstraints
         if ( this.indexed0 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0],
-                                               variableConstraint.getEvaluator());
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
 
         }
@@ -165,8 +175,8 @@ public class DoubleBetaConstraints
         if ( this.indexed1 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                               variableConstraint.getRequiredDeclarations()[0],
-                                               variableConstraint.getEvaluator());
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
         }
 
@@ -174,20 +184,20 @@ public class DoubleBetaConstraints
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
 
             TupleMemory tupleMemory;
-            if ( conf.isIndexLeftBetaMemory() ) {
+            if ( this.conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new FactHandleIndexHashTable( indexes );           
-            }  else {
+            if ( this.conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( indexes );
+            } else {
                 factHandleMemory = new FactHashTable();
             }
             memory = new BetaMemory( tupleMemory,
-                                     factHandleMemory );            
+                                     factHandleMemory );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -224,17 +234,17 @@ public class DoubleBetaConstraints
             return true;
         }
 
-        if ( object == null || !( object instanceof DoubleBetaConstraints) ) {
+        if ( object == null || !(object instanceof DoubleBetaConstraints) ) {
             return false;
         }
 
         final DoubleBetaConstraints other = (DoubleBetaConstraints) object;
 
-        if ( this.constraint0 != other.constraint0 && ! this.constraint0.equals( other.constraint0 ) ) {
+        if ( this.constraint0 != other.constraint0 && !this.constraint0.equals( other.constraint0 ) ) {
             return false;
         }
 
-        if ( this.constraint1 != other.constraint1 && ! this.constraint1.equals( other.constraint1 ) ) {
+        if ( this.constraint1 != other.constraint1 && !this.constraint1.equals( other.constraint1 ) ) {
             return false;
         }
 

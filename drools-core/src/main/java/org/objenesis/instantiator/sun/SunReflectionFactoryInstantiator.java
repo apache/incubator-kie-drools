@@ -15,32 +15,32 @@ import sun.reflect.ReflectionFactory;
  * 
  * @see ObjectInstantiator
  */
-public class SunReflectionFactoryInstantiator implements ObjectInstantiator {
+public class SunReflectionFactoryInstantiator
+    implements
+    ObjectInstantiator {
 
-   private final Constructor mungedConstructor;
+    private final Constructor mungedConstructor;
 
-   public SunReflectionFactoryInstantiator(Class type) {
+    public SunReflectionFactoryInstantiator(final Class type) {
 
-      ReflectionFactory reflectionFactory = ReflectionFactory.getReflectionFactory();
-      Constructor javaLangObjectConstructor;
+        final ReflectionFactory reflectionFactory = ReflectionFactory.getReflectionFactory();
+        Constructor javaLangObjectConstructor;
 
-      try {
-         javaLangObjectConstructor = Object.class.getConstructor((Class[]) null);
-      }
-      catch(NoSuchMethodException e) {
-         throw new Error("Cannot find constructor for java.lang.Object!");
-      }
-      mungedConstructor = reflectionFactory.newConstructorForSerialization(type,
-         javaLangObjectConstructor);
-      mungedConstructor.setAccessible(true);
-   }
+        try {
+            javaLangObjectConstructor = Object.class.getConstructor( (Class[]) null );
+        } catch ( final NoSuchMethodException e ) {
+            throw new Error( "Cannot find constructor for java.lang.Object!" );
+        }
+        this.mungedConstructor = reflectionFactory.newConstructorForSerialization( type,
+                                                                              javaLangObjectConstructor );
+        this.mungedConstructor.setAccessible( true );
+    }
 
-   public Object newInstance() {
-      try {
-         return mungedConstructor.newInstance((Object[]) null);
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return this.mungedConstructor.newInstance( (Object[]) null );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 }

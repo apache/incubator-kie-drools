@@ -46,9 +46,9 @@ public interface Extractor
     public ValueType getValueType();
 
     public Class getExtractToClass();
-    
+
     public Method getNativeReadMethod();
-    
+
     public int getHashCode(Object object);
 
 }

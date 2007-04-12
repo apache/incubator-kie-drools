@@ -56,8 +56,8 @@ public class RuleBaseConfiguration
     private static final long serialVersionUID = 320L;
 
     private boolean           immutable;
-    
-    private boolean           maintainTms;    
+
+    private boolean           maintainTms;
     private boolean           removeIdentities;
     private boolean           shareAlphaNodes;
     private boolean           shareBetaNodes;
@@ -73,14 +73,14 @@ public class RuleBaseConfiguration
         this.immutable = false;
 
         setMaintainTms( Boolean.valueOf( System.getProperty( "drools.maintainTms",
-                             "true" ) ).booleanValue() );
-        
+                                                             "true" ) ).booleanValue() );
+
         setRemoveIdentities( Boolean.valueOf( System.getProperty( "drools.removeIdentities",
                                                                   "false" ) ).booleanValue() );
-        
+
         setAlphaMemory( Boolean.valueOf( System.getProperty( "drools.alphaMemory",
                                                              "false" ) ).booleanValue() );
-        
+
         setShareAlphaNodes( Boolean.valueOf( System.getProperty( "drools.shareAlphaNodes",
                                                                  "true" ) ).booleanValue() );
 
@@ -120,82 +120,81 @@ public class RuleBaseConfiguration
     public boolean isImmutable() {
         return this.immutable;
     }
-    
+
     private void checkCanChange() {
         if ( this.immutable ) {
             throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
         }
     }
-        
-    
+
     public boolean getMaintainTms() {
         return this.maintainTms;
     }
-    
-    public void setMaintainTms(boolean maintainTms) {
+
+    public void setMaintainTms(final boolean maintainTms) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.maintainTms = maintainTms;
     }
-            
+
     public boolean isRemoveIdentities() {
-        return removeIdentities;
+        return this.removeIdentities;
     }
 
-    public void setRemoveIdentities(boolean removeIdentities) {
+    public void setRemoveIdentities(final boolean removeIdentities) {
         checkCanChange(); // throws an exception if a change isn't possible;
-        this.removeIdentities = removeIdentities;        
+        this.removeIdentities = removeIdentities;
     }
 
     public boolean isAlphaMemory() {
-        return alphaMemory;
+        return this.alphaMemory;
     }
 
-    public void setAlphaMemory(boolean alphaMemory) {
+    public void setAlphaMemory(final boolean alphaMemory) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.alphaMemory = alphaMemory;
     }
 
     public boolean isShareAlphaNodes() {
-        return shareAlphaNodes;
+        return this.shareAlphaNodes;
     }
 
-    public void setShareAlphaNodes(boolean shareAlphaNodes) {
+    public void setShareAlphaNodes(final boolean shareAlphaNodes) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.shareAlphaNodes = shareAlphaNodes;
     }
 
     public boolean isShareBetaNodes() {
-        return shareBetaNodes;
+        return this.shareBetaNodes;
     }
 
-    public void setShareBetaNodes(boolean shareBetaNodes) {
+    public void setShareBetaNodes(final boolean shareBetaNodes) {
         checkCanChange(); // throws an exception if a change isn't possible;
-        this.shareBetaNodes = shareBetaNodes;        
+        this.shareBetaNodes = shareBetaNodes;
     }
 
     public int getAlphaNodeHashingThreshold() {
-        return alphaNodeHashingThreshold;
+        return this.alphaNodeHashingThreshold;
     }
 
-    public void setAlphaNodeHashingThreshold(int alphaNodeHashingThreshold) {
+    public void setAlphaNodeHashingThreshold(final int alphaNodeHashingThreshold) {
         checkCanChange(); // throws an exception if a change isn't possible;        
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
     public AssertBehaviour getAssertBehaviour() {
-        return assertBehaviour;
+        return this.assertBehaviour;
     }
 
-    public void setAssertBehaviour(AssertBehaviour assertBehaviour) {
+    public void setAssertBehaviour(final AssertBehaviour assertBehaviour) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.assertBehaviour = assertBehaviour;
     }
 
     public int getCompositeKeyDepth() {
-        return compositeKeyDepth;
+        return this.compositeKeyDepth;
     }
 
-    public void setCompositeKeyDepth(int compositeKeyDepth) {
+    public void setCompositeKeyDepth(final int compositeKeyDepth) {
         if ( !this.immutable ) {
             if ( compositeKeyDepth > 3 ) {
                 throw new UnsupportedOperationException( "compositeKeyDepth cannot be greater than 3" );
@@ -207,28 +206,28 @@ public class RuleBaseConfiguration
     }
 
     public boolean isIndexLeftBetaMemory() {
-        return indexLeftBetaMemory;
+        return this.indexLeftBetaMemory;
     }
 
-    public void setIndexLeftBetaMemory(boolean indexLeftBetaMemory) {
+    public void setIndexLeftBetaMemory(final boolean indexLeftBetaMemory) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.indexLeftBetaMemory = indexLeftBetaMemory;
     }
 
     public boolean isIndexRightBetaMemory() {
-        return indexRightBetaMemory;
+        return this.indexRightBetaMemory;
     }
 
-    public void setIndexRightBetaMemory(boolean indexRightBetaMemory) {        
+    public void setIndexRightBetaMemory(final boolean indexRightBetaMemory) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.indexRightBetaMemory = indexRightBetaMemory;
     }
 
     public LogicalOverride getLogicalOverride() {
-        return logicalOverride;
+        return this.logicalOverride;
     }
 
-    public void setLogicalOverride(LogicalOverride logicalOverride) {
+    public void setLogicalOverride(final LogicalOverride logicalOverride) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.logicalOverride = logicalOverride;
     }
@@ -243,11 +242,11 @@ public class RuleBaseConfiguration
 
         private int                         value;
 
-        private AssertBehaviour(int value) {
+        private AssertBehaviour(final int value) {
             this.value = value;
         }
 
-        public static AssertBehaviour determineAssertBehaviour(String value) {
+        public static AssertBehaviour determineAssertBehaviour(final String value) {
             if ( value.equals( "IDENTITY" ) ) {
                 return IDENTITY;
             } else if ( value.equals( "EQUALITY" ) ) {
@@ -279,11 +278,11 @@ public class RuleBaseConfiguration
 
         private int                         value;
 
-        private LogicalOverride(int value) {
+        private LogicalOverride(final int value) {
             this.value = value;
         }
 
-        public static LogicalOverride determineLogicalOverride(String value) {
+        public static LogicalOverride determineLogicalOverride(final String value) {
             if ( value.equals( "PRESERVE" ) ) {
                 return PRESERVE;
             } else if ( value.equals( "DISCARD" ) ) {

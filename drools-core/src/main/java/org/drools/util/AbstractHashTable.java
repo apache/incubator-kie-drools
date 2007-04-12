@@ -38,7 +38,7 @@ public abstract class AbstractHashTable
         this.table = new Entry[capacity];
         this.comparator = EqualityEquals.getInstance();
     }
-    
+
     public Iterator iterator() {
         if ( this.iterator == null ) {
             this.iterator = new HashTableIterator( this );
@@ -368,16 +368,16 @@ public abstract class AbstractHashTable
         public boolean equals(final Object object) {
             return (object == this) || (this.handle == ((FactEntry) object).handle);
         }
-        
+
         public String toString() {
-            return "FactEntry( handle="+this.handle+" hashcode="+this.hashCode+" next="+this.next+" )";
+            return "FactEntry( handle=" + this.handle + " hashcode=" + this.hashCode + " next=" + this.next + " )";
         }
     }
 
     public static class FieldIndex {
-        FieldExtractor extractor;
-        Declaration    declaration;
-        public Evaluator      evaluator;
+        FieldExtractor   extractor;
+        Declaration      declaration;
+        public Evaluator evaluator;
 
         public FieldIndex(final FieldExtractor extractor,
                           final Declaration declaration,
@@ -524,8 +524,8 @@ public abstract class AbstractHashTable
 
         public boolean equal(final Object right,
                              final ReteTuple tuple) {
-            Object left1 = tuple.get( this.index0.declaration ).getObject();
-            Object left2 = tuple.get( this.index1.declaration ).getObject();
+            final Object left1 = tuple.get( this.index0.declaration ).getObject();
+            final Object left2 = tuple.get( this.index1.declaration ).getObject();
 
             return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
                                                    left1,
@@ -538,11 +538,11 @@ public abstract class AbstractHashTable
 
         public boolean equal(final ReteTuple tuple1,
                              final ReteTuple tuple2) {
-            Object object11 = tuple1.get( this.index0.declaration ).getObject();
-            Object object12 = tuple2.get( this.index0.declaration ).getObject();
+            final Object object11 = tuple1.get( this.index0.declaration ).getObject();
+            final Object object12 = tuple2.get( this.index0.declaration ).getObject();
 
-            Object object21 = tuple1.get( this.index1.declaration ).getObject();
-            Object object22 = tuple2.get( this.index1.declaration ).getObject();
+            final Object object21 = tuple1.get( this.index1.declaration ).getObject();
+            final Object object22 = tuple2.get( this.index1.declaration ).getObject();
 
             return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
                                                    object11,
@@ -614,9 +614,9 @@ public abstract class AbstractHashTable
 
         public boolean equal(final Object right,
                              final ReteTuple tuple) {
-            Object left1 = tuple.get( this.index0.declaration ).getObject();
-            Object left2 = tuple.get( this.index1.declaration ).getObject();
-            Object left3 = tuple.get( this.index2.declaration ).getObject();
+            final Object left1 = tuple.get( this.index0.declaration ).getObject();
+            final Object left2 = tuple.get( this.index1.declaration ).getObject();
+            final Object left3 = tuple.get( this.index2.declaration ).getObject();
 
             return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
                                                    left1,
@@ -627,17 +627,17 @@ public abstract class AbstractHashTable
                                                                                               right ) && this.index2.evaluator.evaluate( this.index2.declaration.getExtractor(),
                                                                                                                                          left3,
                                                                                                                                          this.index2.extractor,
-                                                                                                                                         right  );
+                                                                                                                                         right );
         }
 
         public boolean equal(final ReteTuple tuple1,
                              final ReteTuple tuple2) {
-            Object object11 = tuple1.get( this.index0.declaration ).getObject();
-            Object object12 = tuple2.get( this.index0.declaration ).getObject();
-            Object object21 = tuple1.get( this.index1.declaration ).getObject();
-            Object object22 = tuple2.get( this.index1.declaration ).getObject();
-            Object object31 = tuple1.get( this.index2.declaration ).getObject();
-            Object object32 = tuple2.get( this.index2.declaration ).getObject();
+            final Object object11 = tuple1.get( this.index0.declaration ).getObject();
+            final Object object12 = tuple2.get( this.index0.declaration ).getObject();
+            final Object object21 = tuple1.get( this.index1.declaration ).getObject();
+            final Object object22 = tuple2.get( this.index1.declaration ).getObject();
+            final Object object31 = tuple1.get( this.index2.declaration ).getObject();
+            final Object object32 = tuple2.get( this.index2.declaration ).getObject();
 
             return this.index0.evaluator.evaluate( this.index0.declaration.getExtractor(),
                                                    object11,

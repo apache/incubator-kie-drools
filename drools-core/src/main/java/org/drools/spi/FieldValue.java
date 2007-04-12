@@ -39,13 +39,13 @@ public interface FieldValue
     public double getDoubleValue();
 
     public boolean getBooleanValue();
-    
+
     public boolean isBooleanField();
-    
+
     public boolean isIntegerNumberField();
-    
+
     public boolean isFloatNumberField();
-    
+
     public boolean isObjectField();
 
 }

@@ -85,17 +85,17 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         List list = null;
 
         if ( node == null ) {
-            org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
-            for( int i = 0; i < pkgs.length; i++ ) {
-                Rule rule = pkgs[i].getRule( query );
-                if( ( rule != null ) && ( rule instanceof Query ) ) {
+            final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
+            for ( int i = 0; i < pkgs.length; i++ ) {
+                final Rule rule = pkgs[i].getRule( query );
+                if ( (rule != null) && (rule instanceof Query) ) {
                     queryObj = (Query) rule;
                     break;
                 }
             }
             retractObject( handle );
-            if( queryObj == null ) {
-                throw new IllegalArgumentException("Query '"+query+"' does not exist");
+            if ( queryObj == null ) {
+                throw new IllegalArgumentException( "Query '" + query + "' does not exist" );
             }
             list = Collections.EMPTY_LIST;
         } else {
@@ -151,9 +151,9 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         public void propagate() {
 
             final PropagationContext context = new PropagationContextImpl( ReteooWorkingMemory.this.propagationIdCounter++,
-                                                                     PropagationContext.ASSERTION,
-                                                                     this.ruleOrigin,
-                                                                     this.activationOrigin );
+                                                                           PropagationContext.ASSERTION,
+                                                                           this.ruleOrigin,
+                                                                           this.activationOrigin );
             ReteooWorkingMemory.this.ruleBase.assertObject( this.factHandle,
                                                             this.factHandle.getObject(),
                                                             context,

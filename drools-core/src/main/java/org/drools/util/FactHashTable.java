@@ -6,7 +6,6 @@ package org.drools.util;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FactHashTable extends AbstractHashTable
     implements
@@ -37,7 +36,7 @@ public class FactHashTable extends AbstractHashTable
                        final boolean checkExists) {
         final int hashCode = this.comparator.hashCodeOf( handle );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         // scan the linked entries to see if it exists
         if ( checkExists ) {
@@ -52,7 +51,7 @@ public class FactHashTable extends AbstractHashTable
 
         // We aren't checking the key exists, or it didn't find the key
         final FactEntry entry = new FactEntry( handle,
-                                         hashCode );
+                                               hashCode );
         entry.next = this.table[index];
         this.table[index] = entry;
 
@@ -65,7 +64,7 @@ public class FactHashTable extends AbstractHashTable
     public boolean contains(final InternalFactHandle handle) {
         final int hashCode = this.comparator.hashCodeOf( handle );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         FactEntry current = (FactEntry) this.table[index];
         while ( current != null ) {
@@ -80,7 +79,7 @@ public class FactHashTable extends AbstractHashTable
     public boolean remove(final InternalFactHandle handle) {
         final int hashCode = this.comparator.hashCodeOf( handle );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         FactEntry previous = (FactEntry) this.table[index];
         FactEntry current = previous;
@@ -105,11 +104,11 @@ public class FactHashTable extends AbstractHashTable
     public Entry getBucket(final Object object) {
         final int hashCode = this.comparator.hashCodeOf( object );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         return this.table[index];
     }
-    
+
     public boolean isIndexed() {
         return false;
     }

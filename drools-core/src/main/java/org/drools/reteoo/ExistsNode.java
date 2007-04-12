@@ -217,7 +217,7 @@ public class ExistsNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Must use the tuple in memory as it has the tuple matches count
-        final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
+        final ReteTuple tuple = memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
             return;
         }

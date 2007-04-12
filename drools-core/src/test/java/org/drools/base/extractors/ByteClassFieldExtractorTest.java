@@ -91,7 +91,7 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     public void testGetValue() {
         try {
-            Assert.assertEquals( 1 ,
+            Assert.assertEquals( 1,
                                  ((Number) this.extractor.getValue( this.bean )).byteValue() );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );

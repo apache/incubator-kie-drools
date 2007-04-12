@@ -10,20 +10,30 @@ import java.io.ObjectStreamClass;
 import java.util.HashMap;
 
 public class ObjectInputStreamWithLoader extends ObjectInputStream {
-    private final ClassLoader classLoader;
-    
+    private final ClassLoader    classLoader;
+
     /** table mapping primitive type names to corresponding class objects */
-    private static final HashMap primClasses = new HashMap(8, 1.0F);
+    private static final HashMap primClasses = new HashMap( 8,
+                                                            1.0F );
     static {
-    primClasses.put("boolean", boolean.class);
-    primClasses.put("byte", byte.class);
-    primClasses.put("char", char.class);
-    primClasses.put("short", short.class);
-    primClasses.put("int", int.class);
-    primClasses.put("long", long.class);
-    primClasses.put("float", float.class);
-    primClasses.put("double", double.class);
-    primClasses.put("void", void.class);
+        primClasses.put( "boolean",
+                         boolean.class );
+        primClasses.put( "byte",
+                         byte.class );
+        primClasses.put( "char",
+                         char.class );
+        primClasses.put( "short",
+                         short.class );
+        primClasses.put( "int",
+                         int.class );
+        primClasses.put( "long",
+                         long.class );
+        primClasses.put( "float",
+                         float.class );
+        primClasses.put( "double",
+                         double.class );
+        primClasses.put( "void",
+                         void.class );
     }
 
     public ObjectInputStreamWithLoader(final InputStream in,
@@ -40,10 +50,10 @@ public class ObjectInputStreamWithLoader extends ObjectInputStream {
         } else {
             final String name = desc.getName();
             Class clazz = (Class) primClasses.get( name );
-            if( clazz == null ) {
-                try{
+            if ( clazz == null ) {
+                try {
                     clazz = this.classLoader.loadClass( name );
-                } catch (ClassNotFoundException cnf) {
+                } catch ( final ClassNotFoundException cnf ) {
                     clazz = super.resolveClass( desc );
                 }
             }

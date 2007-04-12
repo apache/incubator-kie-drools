@@ -27,30 +27,32 @@ import org.drools.RuntimeDroolsException;
  */
 public class ShadowProxyHelper {
 
-    public static void copyState(ShadowProxy from,
-                                 ShadowProxy to) {
-        Field[] fields = from.getClass().getDeclaredFields();
+    public static void copyState(final ShadowProxy from,
+                                 final ShadowProxy to) {
+        final Field[] fields = from.getClass().getDeclaredFields();
         for ( int i = 0; i < fields.length; i++ ) {
             if ( fields[i].getName().endsWith( ShadowProxyFactory.FIELD_SET_FLAG ) ) {
                 fields[i].setAccessible( true );
                 try {
                     if ( fields[i].getBoolean( from ) ) {
-                        String fieldName = fields[i].getName().substring( 0,
+                        final String fieldName = fields[i].getName().substring( 0,
                                                                           fields[i].getName().length() - ShadowProxyFactory.FIELD_SET_FLAG.length() );
-                        Field flag = to.getClass().getDeclaredField( fields[i].getName() );
-                        Field fieldFrom = from.getClass().getDeclaredField( fieldName );
-                        Field fieldTo = to.getClass().getDeclaredField( fieldName );
+                        final Field flag = to.getClass().getDeclaredField( fields[i].getName() );
+                        final Field fieldFrom = from.getClass().getDeclaredField( fieldName );
+                        final Field fieldTo = to.getClass().getDeclaredField( fieldName );
                         flag.setAccessible( true );
                         fieldFrom.setAccessible( true );
                         fieldTo.setAccessible( true );
-                        
+
                         // we know it is set
-                        flag.setBoolean( to, true );
+                        flag.setBoolean( to,
+                                         true );
                         // copy the value from "from" shadow proxy
-                        fieldTo.set( to, fieldFrom.get( from ) );
+                        fieldTo.set( to,
+                                     fieldFrom.get( from ) );
                     }
-                } catch ( Exception e ) {
-                    throw new RuntimeDroolsException("Unable to copy state from one shadow proxy to another");
+                } catch ( final Exception e ) {
+                    throw new RuntimeDroolsException( "Unable to copy state from one shadow proxy to another" );
                 }
 
             }

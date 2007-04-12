@@ -4,15 +4,15 @@ import org.drools.WorkingMemory;
 import org.drools.base.JavaFactRegistryEntry;
 
 public interface JavaFact {
-        public JavaFactRegistryEntry[] listWorkingMemories();
+    public JavaFactRegistryEntry[] listWorkingMemories();
 
-        public boolean register(final WorkingMemory workingMemory);
+    public boolean register(final WorkingMemory workingMemory);
 
-        public void unregisterAll();
+    public void unregisterAll();
 
-        public boolean unregister(final WorkingMemory workingMemory);
+    public boolean unregister(final WorkingMemory workingMemory);
 
-        public boolean isRegistered(final WorkingMemory workingMemory);
+    public boolean isRegistered(final WorkingMemory workingMemory);
 
-        public int[] getChanges();            
+    public int[] getChanges();
 }

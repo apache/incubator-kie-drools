@@ -11,7 +11,6 @@ import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ReflectiveVisitor;
-import org.drools.util.TupleHashTable;
 import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
@@ -176,20 +175,20 @@ public class MemoryVisitor extends ReflectiveVisitor {
         checkTupleMemory( memory.getTupleMemory() );
     }
 
-//    private void checkObjectHashMap(final ObjectHashMap map) {
-//        final Entry[] entries = map.getTable();
-//        int count = 0;
-//        for ( int i = 0, length = entries.length; i < length; i++ ) {
-//            if ( entries[i] != null ) {
-//                count++;
-//            }
-//        }
-//
-//        System.out.println( "ObjectHashMap: " + indent() + map.size() + ":" + count );
-//        if ( map.size() != count ) {
-//            System.out.println( indent() + "error" );
-//        }
-//    }
+    //    private void checkObjectHashMap(final ObjectHashMap map) {
+    //        final Entry[] entries = map.getTable();
+    //        int count = 0;
+    //        for ( int i = 0, length = entries.length; i < length; i++ ) {
+    //            if ( entries[i] != null ) {
+    //                count++;
+    //            }
+    //        }
+    //
+    //        System.out.println( "ObjectHashMap: " + indent() + map.size() + ":" + count );
+    //        if ( map.size() != count ) {
+    //            System.out.println( indent() + "error" );
+    //        }
+    //    }
 
     private void checkObjectHashTable(final FactHandleMemory memory) {
         if ( memory instanceof FactHashTable ) {

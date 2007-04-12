@@ -65,7 +65,7 @@ public class RightInputAdapterNode extends ObjectSource
     /**
      * Creates and return the node memory
      */
-    public Object createMemory(RuleBaseConfiguration config) {
+    public Object createMemory(final RuleBaseConfiguration config) {
         return new ObjectHashMap();
     }
 
@@ -84,7 +84,7 @@ public class RightInputAdapterNode extends ObjectSource
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
-        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
 
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple );
@@ -106,7 +106,7 @@ public class RightInputAdapterNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
-        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
 
         // retrieve handle from memory
         final InternalFactHandle handle = (InternalFactHandle) memory.remove( tuple );

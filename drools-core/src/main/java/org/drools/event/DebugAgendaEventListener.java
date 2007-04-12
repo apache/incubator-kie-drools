@@ -26,32 +26,32 @@ public class DebugAgendaEventListener
     }
 
     public void activationCreated(final ActivationCreatedEvent event,
-                                  WorkingMemory workingMemory) {
+                                  final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
     public void activationCancelled(final ActivationCancelledEvent event,
-                                    WorkingMemory workingMemory) {
+                                    final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
     public void beforeActivationFired(final BeforeActivationFiredEvent event,
-                                      WorkingMemory workingMemory) {
+                                      final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
     public void afterActivationFired(final AfterActivationFiredEvent event,
-                                     WorkingMemory workingMemory) {
+                                     final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                                  WorkingMemory workingMemory) {
+    public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
+                                  final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void agendaGroupPushed(AgendaGroupPushedEvent event,
-                                  WorkingMemory workingMemory) {
+    public void agendaGroupPushed(final AgendaGroupPushedEvent event,
+                                  final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 

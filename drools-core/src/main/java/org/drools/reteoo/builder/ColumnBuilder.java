@@ -46,15 +46,15 @@ public class ColumnBuilder
     /**
      * @inheritDoc
      */
-    public void build(BuildContext context,
-                      BuildUtils utils,
-                      RuleConditionElement rce) {
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleConditionElement rce) {
 
-        Column column = (Column) rce;
+        final Column column = (Column) rce;
 
         context.setBetaconstraints( this.attachColumn( context,
                                                        utils,
-                                                       (Column) column ) );
+                                                       column ) );
 
     }
 
@@ -64,7 +64,7 @@ public class ColumnBuilder
 
         // Set column offset to the appropriate value
         column.setOffset( context.getCurrentColumnOffset() );
-        
+
         context.incrementCurrentColumnOffset();
 
         // Attach alpha nodes
@@ -107,7 +107,7 @@ public class ColumnBuilder
             }
 
             final Constraint constraint = (Constraint) object;
-            Declaration[] declarations = constraint.getRequiredDeclarations();
+            final Declaration[] declarations = constraint.getRequiredDeclarations();
 
             boolean isAlphaConstraint = true;
             for ( int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
@@ -148,13 +148,13 @@ public class ColumnBuilder
                 final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
                     columns = (List) entry.getValue();
-                    for( Iterator columnsIt = columns.iterator(); columnsIt.hasNext(); ) {
+                    for ( final Iterator columnsIt = columns.iterator(); columnsIt.hasNext(); ) {
                         betaConstraints.add( new InstanceNotEqualsConstraint( (Column) columnsIt.next() ) );
                     }
                 }
             }
             columns = (List) context.getObjectType().get( column.getObjectType() );
-            if( columns == null ) {
+            if ( columns == null ) {
                 columns = new ArrayList();
             }
             columns.add( column );
@@ -168,7 +168,8 @@ public class ColumnBuilder
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation( BuildUtils utils, RuleConditionElement rce ) {
+    public boolean requiresLeftActivation(final BuildUtils utils,
+                                          final RuleConditionElement rce) {
         return false;
     }
 }

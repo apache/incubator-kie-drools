@@ -10,17 +10,17 @@ import org.objenesis.ObjenesisException;
  * @see org.objenesis.instantiator.ObjectInstantiator
  */
 public class Sun13Instantiator extends Sun13InstantiatorBase {
-   public Sun13Instantiator(Class type) {
-      super(type);
-   }
+    public Sun13Instantiator(final Class type) {
+        super( type );
+    }
 
-   public Object newInstance() {
-      try {
-         return allocateNewObjectMethod.invoke(null, new Object[] {type, Object.class});
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return allocateNewObjectMethod.invoke( null,
+                                                   new Object[]{this.type, Object.class} );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 
 }

@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,12 +26,12 @@ import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
  */
 public class EndNodeInstance extends RuleFlowNodeInstance {
 
-	public void trigger(IRuleFlowNodeInstance from) {
-		getProcessInstance().setState(IProcessInstance.STATE_COMPLETED);
-	}
+    public void trigger(final IRuleFlowNodeInstance from) {
+        getProcessInstance().setState( IProcessInstance.STATE_COMPLETED );
+    }
 
-	public void triggerCompleted() {
-		// this should never occur
-		throw new IllegalArgumentException("End nodes cannot be completed.");
-	}
+    public void triggerCompleted() {
+        // this should never occur
+        throw new IllegalArgumentException( "End nodes cannot be completed." );
+    }
 }

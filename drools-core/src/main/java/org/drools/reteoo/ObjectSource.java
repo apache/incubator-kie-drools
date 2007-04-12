@@ -21,8 +21,6 @@ import java.io.Serializable;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.Declaration;
-import org.drools.spi.Constraint;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -50,8 +48,8 @@ public abstract class ObjectSource extends BaseNode
 
     protected ObjectSource         objectSource;
 
-    private int alphaNodeHashingThreshold;    
-    
+    private int                    alphaNodeHashingThreshold;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -64,7 +62,7 @@ public abstract class ObjectSource extends BaseNode
     ObjectSource(final int id) {
         this( id,
               null,
-              3 );        
+              3 );
     }
 
     /**
@@ -74,7 +72,7 @@ public abstract class ObjectSource extends BaseNode
      */
     ObjectSource(final int id,
                  final ObjectSource objectSource,
-                 int alphaNodeHashingThreshold) {
+                 final int alphaNodeHashingThreshold) {
         super( id );
         this.objectSource = objectSource;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
@@ -98,7 +96,7 @@ public abstract class ObjectSource extends BaseNode
         if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
         } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
-            final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter(alphaNodeHashingThreshold);
+            final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( this.alphaNodeHashingThreshold );
             sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
             sinkAdapter.addObjectSink( objectSink );
             this.sink = sinkAdapter;
@@ -114,19 +112,19 @@ public abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to remove
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
-        if (  this.sink == EmptyObjectSinkAdapter.getInstance() ){
-            throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );            
+        if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
+            throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
-        
+
         if ( this.sink instanceof SingleObjectSinkAdapter ) {
             this.sink = EmptyObjectSinkAdapter.getInstance();
-        } else { 
-            CompositeObjectSinkAdapter sinkAdapter = ( CompositeObjectSinkAdapter ) this.sink;
+        } else {
+            final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) this.sink;
             sinkAdapter.removeObjectSink( objectSink );
             if ( sinkAdapter.size() == 1 ) {
                 this.sink = new SingleObjectSinkAdapter( sinkAdapter.getSinks()[0] );
             }
-        }   
+        }
     }
 
     public abstract void updateSink(ObjectSink sink,
@@ -136,5 +134,5 @@ public abstract class ObjectSource extends BaseNode
     public ObjectSinkPropagator getSinkPropagator() {
         return this.sink;
     }
-    
+
 }

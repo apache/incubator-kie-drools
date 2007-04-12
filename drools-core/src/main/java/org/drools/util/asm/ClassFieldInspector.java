@@ -73,7 +73,7 @@ public class ClassFieldInspector {
                                       includeFinalMethods );
         } else {
             processClassWithoutByteCode( clazz,
-                                         includeFinalMethods  );
+                                         includeFinalMethods );
         }
     }
 
@@ -117,22 +117,20 @@ public class ClassFieldInspector {
         }
     }
 
-    private void processClassWithoutByteCode(Class clazz,
+    private void processClassWithoutByteCode(final Class clazz,
                                              final boolean includeFinalMethods) {
-        Method[] methods = clazz.getMethods();
+        final Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
 
             //only want public methods that start with 'get' or 'is'
             //and have no args, and return a value
             final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
-            if ( (( methods[i].getModifiers() & mask ) == Modifier.PUBLIC ) &&
-                 ( methods[i].getParameterTypes().length == 0) && 
-                 ( !methods[i].getName().equals( "<init>" )) && 
-                 //( !methods[i].getName().equals( "<clinit>" )) && 
+            if ( ((methods[i].getModifiers() & mask) == Modifier.PUBLIC) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "<init>" )) &&
+            //( !methods[i].getName().equals( "<clinit>" )) && 
                  (methods[i].getReturnType() != void.class) ) {
-                    final int fieldIndex = this.methods.size();
-                    addToMapping( methods[i],
-                                  fieldIndex );
+                final int fieldIndex = this.methods.size();
+                addToMapping( methods[i],
+                              fieldIndex );
             }
         }
     }
@@ -220,11 +218,11 @@ public class ClassFieldInspector {
                             final int index,
                             final String fieldName) {
         this.fieldNames.put( fieldName,
-                                       new Integer( index ) );
+                             new Integer( index ) );
         this.fieldTypes.put( fieldName,
-                                       method.getReturnType() );
+                             method.getReturnType() );
         this.methodNames.put( fieldName,
-                                        method );
+                              method );
         this.methods.add( method );
     }
 
@@ -263,9 +261,8 @@ public class ClassFieldInspector {
             //and have no args, and return a value
             final int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
             if ( (access & mask) == Opcodes.ACC_PUBLIC ) {
-                if ( desc.startsWith( "()" ) && 
-                     ( ! name.equals( "<init>" ) ) /*&&
-                     ( ! name.equals( "<clinit>" ) ) */) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
+                if ( desc.startsWith( "()" ) && (!name.equals( "<init>" )) /*&&
+                 ( ! name.equals( "<clinit>" ) ) */) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
                         final Method method = this.clazz.getMethod( name,
                                                                     (Class[]) null );

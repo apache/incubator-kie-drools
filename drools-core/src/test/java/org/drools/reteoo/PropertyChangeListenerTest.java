@@ -19,7 +19,7 @@ public class PropertyChangeListenerTest extends TestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( State.class ),
                                                                   rete,
-                                                                  3);
+                                                                  3 );
 
         objectTypeNode.attach();
 

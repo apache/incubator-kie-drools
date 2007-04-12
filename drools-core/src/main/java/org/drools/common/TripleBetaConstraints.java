@@ -58,27 +58,28 @@ public class TripleBetaConstraints
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
-    
+
     private RuleBaseConfiguration         conf;
 
-    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration conf) {
-        this.conf = conf;        
-        if  (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) {
+    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                 final RuleBaseConfiguration conf) {
+        this.conf = conf;
+        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
             this.indexed0 = false;
             this.indexed1 = false;
             this.indexed2 = false;
-        } else {        
-            int depth = conf.getCompositeKeyDepth();    
+        } else {
+            final int depth = conf.getCompositeKeyDepth();
 
             // Determine  if this constraints are indexable               
             final boolean i0 = isIndexable( constraints[0] );
             final boolean i1 = isIndexable( constraints[1] );
             final boolean i2 = isIndexable( constraints[2] );
-    
+
             if ( depth >= 1 && i0 ) {
                 this.indexed0 = true;
             }
-    
+
             if ( i1 ) {
                 if ( depth >= 1 && !this.indexed0 ) {
                     this.indexed0 = true;
@@ -89,7 +90,7 @@ public class TripleBetaConstraints
                     this.indexed1 = true;
                 }
             }
-    
+
             if ( i2 ) {
                 if ( depth >= 1 && !this.indexed0 ) {
                     this.indexed0 = true;
@@ -101,7 +102,7 @@ public class TripleBetaConstraints
                     swap( constraints,
                           2,
                           1 );
-                } else  if ( depth >= 3 ) {
+                } else if ( depth >= 3 ) {
                     this.indexed2 = true;
                 }
             }
@@ -116,9 +117,9 @@ public class TripleBetaConstraints
         this.context2 = this.constraint2.getContextEntry();
     }
 
-    private void swap(BetaNodeFieldConstraint[] constraints,
-                      int p1,
-                      int p2) {
+    private void swap(final BetaNodeFieldConstraint[] constraints,
+                      final int p1,
+                      final int p2) {
         final BetaNodeFieldConstraint temp = constraints[p2];
         constraints[p2] = constraints[p1];
         constraints[p1] = temp;
@@ -201,7 +202,7 @@ public class TripleBetaConstraints
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                      variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator());
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
 
         }
@@ -210,7 +211,7 @@ public class TripleBetaConstraints
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                      variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator());
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
         }
 
@@ -218,27 +219,27 @@ public class TripleBetaConstraints
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                      variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator());
+                                                     variableConstraint.getEvaluator() );
             list.add( index );
         }
 
         if ( !list.isEmpty() ) {
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             TupleMemory tupleMemory;
-            if ( conf.isIndexLeftBetaMemory() ) {
+            if ( this.conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new FactHandleIndexHashTable( indexes );           
-            }  else {
+            if ( this.conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( indexes );
+            } else {
                 factHandleMemory = new FactHashTable();
             }
             memory = new BetaMemory( tupleMemory,
-                                     factHandleMemory );                
+                                     factHandleMemory );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -282,15 +283,15 @@ public class TripleBetaConstraints
 
         final TripleBetaConstraints other = (TripleBetaConstraints) object;
 
-        if ( this.constraint0 != other.constraint0 && ! this.constraint0.equals( other.constraint0 ) ) {
+        if ( this.constraint0 != other.constraint0 && !this.constraint0.equals( other.constraint0 ) ) {
             return false;
         }
 
-        if ( this.constraint1 != other.constraint1 && ! this.constraint1.equals( other.constraint1 ) ) {
+        if ( this.constraint1 != other.constraint1 && !this.constraint1.equals( other.constraint1 ) ) {
             return false;
         }
 
-        if ( this.constraint2 != other.constraint2 && ! this.constraint2.equals( other.constraint2 ) ) {
+        if ( this.constraint2 != other.constraint2 && !this.constraint2.equals( other.constraint2 ) ) {
             return false;
         }
 

@@ -28,15 +28,15 @@ public class SelfReferenceClassFieldExtractor extends BaseObjectClassFieldExtrac
 
     private static final long serialVersionUID = 3258380877818552472L;
 
-    public SelfReferenceClassFieldExtractor(Class clazz,
-                                            String fieldName) {
+    public SelfReferenceClassFieldExtractor(final Class clazz,
+                                            final String fieldName) {
         super( -1, // index
                clazz, // fieldType
                ValueType.determineValueType( clazz ) ); // value type
     }
 
-    public Object getValue(Object object) {
-        return ( object instanceof ShadowProxy ) ? ((ShadowProxy)object).getShadowedObject() : object;
+    public Object getValue(final Object object) {
+        return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
     }
 
 }

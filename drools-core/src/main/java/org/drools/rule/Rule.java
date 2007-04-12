@@ -45,7 +45,7 @@ public class Rule
     /**
      * 
      */
-    private static final long serialVersionUID  = 320;
+    private static final long serialVersionUID = 320;
 
     /**   */
     // ------------------------------------------------------------
@@ -84,16 +84,16 @@ public class Rule
     private boolean           autoFocus;
 
     private String            activationGroup;
-    
-    private String		      ruleFlowGroup;
-    
+
+    private String            ruleFlowGroup;
+
     private boolean           lockOnActive;
 
     /** indicates that the rule is semantically correct. */
     private boolean           semanticallyValid;
-    
+
     private Calendar          dateEffective;
-    
+
     private Calendar          dateExpires;
 
     private boolean           enabled;
@@ -117,7 +117,7 @@ public class Rule
         this.agendaGroup = agendaGroup;
         this.lhsRoot = GroupElementFactory.newAndInstance();
         this.semanticallyValid = true;
-        this.enabled  = true;
+        this.enabled = true;
     }
 
     /**
@@ -129,11 +129,15 @@ public class Rule
      */
     public Rule(final String name,
                 final String agendaGroup) {
-        this( name, null, agendaGroup );
+        this( name,
+              null,
+              agendaGroup );
     }
 
     public Rule(final String name) {
-        this( name, null, AgendaGroup.MAIN );
+        this( name,
+              null,
+              AgendaGroup.MAIN );
     }
 
     /**
@@ -254,23 +258,25 @@ public class Rule
      * This uses the dateEffective, dateExpires and enabled flag to decide this.
      */
     public boolean isEffective() {
-        if (!enabled) return false;
-        if (this.dateEffective == null && this.dateExpires == null) {
+        if ( !this.enabled ) {
+            return false;
+        }
+        if ( this.dateEffective == null && this.dateExpires == null ) {
             return true;
         } else {
-            Calendar now = Calendar.getInstance();
-            if (this.dateEffective != null && this.dateExpires != null) {
+            final Calendar now = Calendar.getInstance();
+            if ( this.dateEffective != null && this.dateExpires != null ) {
                 return (now.after( this.dateEffective ) && now.before( this.dateExpires ));
-            } else if (this.dateEffective != null) {
+            } else if ( this.dateEffective != null ) {
                 return (now.after( this.dateEffective ));
             } else {
                 return (now.before( this.dateExpires ));
             }
-            
+
         }
-        
+
     }
-    
+
     public void setNoLoop(final boolean noLoop) {
         this.noLoop = noLoop;
     }
@@ -290,18 +296,16 @@ public class Rule
     public void setActivationGroup(final String activationGroup) {
         this.activationGroup = activationGroup;
     }
-    
-    
 
     public String getRuleFlowGroup() {
-		return ruleFlowGroup;
-	}
+        return this.ruleFlowGroup;
+    }
 
-	public void setRuleFlowGroup(String ruleFlowGroup) {
-		this.ruleFlowGroup = ruleFlowGroup;
-	}
+    public void setRuleFlowGroup(final String ruleFlowGroup) {
+        this.ruleFlowGroup = ruleFlowGroup;
+    }
 
-	/**
+    /**
      * Retrieve a parameter <code>Declaration</code> by identifier.
      * 
      * @param identifier
@@ -311,21 +315,19 @@ public class Rule
      *         the <code>identifier</code>.
      */
     public Declaration getDeclaration(final String identifier) {
-        if ( dirty || (this.declarations == null) ) {
+        if ( this.dirty || (this.declarations == null) ) {
             this.declarations = this.lhsRoot.getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
         return (Declaration) this.declarations.get( identifier );
     }
-    
-    
 
     public boolean isLockOnActive() {
-        return lockOnActive;
+        return this.lockOnActive;
     }
 
-    public void setLockOnActive(boolean lockOnActive) {
+    public void setLockOnActive(final boolean lockOnActive) {
         this.lockOnActive = lockOnActive;
     }
 
@@ -337,7 +339,7 @@ public class Rule
      *         <i>root fact objects</i>.
      */
     public Declaration[] getDeclarations() {
-        if ( dirty || (this.declarationArray == null) ) {
+        if ( this.dirty || (this.declarationArray == null) ) {
             this.declarations = this.lhsRoot.getOuterDeclarations();
             this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
@@ -368,7 +370,7 @@ public class Rule
         return this.lhsRoot;
     }
 
-    public void setLhs( GroupElement lhsRoot ) {
+    public void setLhs(final GroupElement lhsRoot) {
         this.dirty = true;
         this.lhsRoot = lhsRoot;
     }
@@ -486,22 +488,22 @@ public class Rule
      * Sets the date from which this rule takes effect (can include time to the millisecond).
      * @param effectiveDate
      */
-    public void setDateEffective(Calendar effectiveDate) {
-        this.dateEffective = effectiveDate;        
+    public void setDateEffective(final Calendar effectiveDate) {
+        this.dateEffective = effectiveDate;
     }
 
     /**
      * Sets the date after which the rule will no longer apply (can include time to the millisecond).
      * @param expiresDate
      */
-    public void setDateExpires(Calendar expiresDate) {
-        this.dateExpires = expiresDate;        
+    public void setDateExpires(final Calendar expiresDate) {
+        this.dateExpires = expiresDate;
     }
 
     /**
      * A rule is enabled by default. This can explicitly disable it in which case it will never activate.
      */
-    public void setEnabled(boolean b) {
-        this.enabled = b;        
+    public void setEnabled(final boolean b) {
+        this.enabled = b;
     }
 }

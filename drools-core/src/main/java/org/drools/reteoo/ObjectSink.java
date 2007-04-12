@@ -30,7 +30,9 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public interface ObjectSink extends Sink {
+public interface ObjectSink
+    extends
+    Sink {
 
     /**
      * Assert a new <code>FactHandleImpl</code>.

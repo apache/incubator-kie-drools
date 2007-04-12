@@ -11,9 +11,9 @@ public class From extends ConditionalElement
 
     private static final long serialVersionUID = -2640290731776949513L;
 
-    private Column       column;
+    private Column            column;
 
-    private DataProvider dataProvider;
+    private DataProvider      dataProvider;
 
     public From(final Column column,
                 final DataProvider dataProvider) {
@@ -41,12 +41,12 @@ public class From extends ConditionalElement
     public Map getOuterDeclarations() {
         return this.column.getOuterDeclarations();
     }
-    
+
     /**
      * @inheritDoc
      */
-    public Declaration resolveDeclaration(String identifier) {
+    public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.column.getInnerDeclarations().get( identifier );
     }
-    
+
 }

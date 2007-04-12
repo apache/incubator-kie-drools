@@ -41,15 +41,15 @@ public class AccumulateBuilder
     /**
      * @inheritDoc
      */
-    public void build(BuildContext context,
-                      BuildUtils utils,
-                      RuleConditionElement rce) {
-        Accumulate accumulate = (Accumulate) rce;
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleConditionElement rce) {
+        final Accumulate accumulate = (Accumulate) rce;
 
         final Column sourceColumn = accumulate.getSourceColumn();
 
         // get builder for the column
-        ReteooComponentBuilder builder = utils.getBuilderFor( sourceColumn );
+        final ReteooComponentBuilder builder = utils.getBuilderFor( sourceColumn );
 
         // builds the source column
         builder.build( context,
@@ -100,8 +100,8 @@ public class AccumulateBuilder
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation(BuildUtils utils,
-                                          RuleConditionElement rce) {
+    public boolean requiresLeftActivation(final BuildUtils utils,
+                                          final RuleConditionElement rce) {
         return true;
     }
 

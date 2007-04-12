@@ -44,7 +44,7 @@ import org.drools.spi.BetaNodeFieldConstraint;
  */
 public class BuildUtils {
 
-    private Map componentBuilders = new HashMap();
+    private final Map componentBuilders = new HashMap();
 
     /**
      * Adds the given builder for the given target to the builders map
@@ -52,8 +52,8 @@ public class BuildUtils {
      * @param target
      * @param builder
      */
-    public void addBuilder(Class target,
-                           ReteooComponentBuilder builder) {
+    public void addBuilder(final Class target,
+                           final ReteooComponentBuilder builder) {
         this.componentBuilders.put( target,
                                     builder );
     }
@@ -64,7 +64,7 @@ public class BuildUtils {
      * @param target
      * @return returns null if not found
      */
-    public ReteooComponentBuilder getBuilderFor(RuleConditionElement target) {
+    public ReteooComponentBuilder getBuilderFor(final RuleConditionElement target) {
         return (ReteooComponentBuilder) this.componentBuilders.get( target.getClass() );
     }
 
@@ -83,7 +83,7 @@ public class BuildUtils {
     public BaseNode attachNode(final BuildContext context,
                                final BaseNode candidate) {
         // checks if node is in the cache
-        BaseNode node = (BaseNode) context.getNodeFromCache( candidate );
+        BaseNode node = context.getNodeFromCache( candidate );
 
         // if node sharing is enabled and node was found in the cache
         if ( (node != null) && isSharingEnabledForNode( context,
@@ -124,8 +124,8 @@ public class BuildUtils {
      * @param node
      * @return
      */
-    private boolean isSharingEnabledForNode(BuildContext context,
-                                            BaseNode node) {
+    private boolean isSharingEnabledForNode(final BuildContext context,
+                                            final BaseNode node) {
         if ( node instanceof TupleSource ) {
             return context.getRuleBase().getConfiguration().isShareBetaNodes();
         } else if ( node instanceof ObjectSource ) {
@@ -182,10 +182,10 @@ public class BuildUtils {
                                          final Declaration[] declarations) throws InvalidPatternException {
         final List list = new ArrayList();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            for ( ListIterator it = context.stackIterator(); it.hasPrevious(); ) {
-                RuleConditionElement rce = (RuleConditionElement) it.previous();
-                Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
-                if ( decl == null || decl.getColumn().getOffset() > declarations[i].getColumn().getOffset()) {
+            for ( final ListIterator it = context.stackIterator(); it.hasPrevious(); ) {
+                final RuleConditionElement rce = (RuleConditionElement) it.previous();
+                final Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
+                if ( decl == null || decl.getColumn().getOffset() > declarations[i].getColumn().getOffset() ) {
                     list.add( declarations[i].getIdentifier() );
                 }
             }

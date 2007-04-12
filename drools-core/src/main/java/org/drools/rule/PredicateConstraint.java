@@ -68,16 +68,24 @@ public class PredicateConstraint
         } else {
             this.previousDeclarations = previousDeclarations;
         }
-        
+
         if ( localDeclarations == null ) {
             this.localDeclarations = PredicateConstraint.EMPTY_DECLARATIONS;
         } else {
             this.localDeclarations = localDeclarations;
         }
-        
-        this.requiredDeclarations = new Declaration[ this.previousDeclarations.length + this.localDeclarations.length ];
-        System.arraycopy( this.previousDeclarations, 0, this.requiredDeclarations, 0, this.previousDeclarations.length );
-        System.arraycopy( this.localDeclarations, 0, this.requiredDeclarations, this.previousDeclarations.length, this.localDeclarations.length );
+
+        this.requiredDeclarations = new Declaration[this.previousDeclarations.length + this.localDeclarations.length];
+        System.arraycopy( this.previousDeclarations,
+                          0,
+                          this.requiredDeclarations,
+                          0,
+                          this.previousDeclarations.length );
+        System.arraycopy( this.localDeclarations,
+                          0,
+                          this.requiredDeclarations,
+                          this.previousDeclarations.length,
+                          this.localDeclarations.length );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -101,7 +109,7 @@ public class PredicateConstraint
     }
 
     public String toString() {
-        return "[PredicateConstraint previousDeclarations=" + this.previousDeclarations + " localDeclarations=" + this.localDeclarations+ "]";
+        return "[PredicateConstraint previousDeclarations=" + this.previousDeclarations + " localDeclarations=" + this.localDeclarations + "]";
     }
 
     public int hashCode() {
@@ -154,46 +162,46 @@ public class PredicateConstraint
         return new PredicateContextEntry();
     }
 
-    public boolean isAllowed(Object object,
-                             InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(final Object object,
+                             final InternalWorkingMemory workingMemory) {
         try {
             return this.expression.evaluate( object,
                                              null,
-                                             previousDeclarations,
-                                             localDeclarations,
+                                             this.previousDeclarations,
+                                             this.localDeclarations,
                                              workingMemory );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
         }
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
         try {
-            PredicateContextEntry ctx = (PredicateContextEntry) context;
+            final PredicateContextEntry ctx = (PredicateContextEntry) context;
             return this.expression.evaluate( object,
                                              ctx.leftTuple,
-                                             previousDeclarations,
-                                             localDeclarations,
+                                             this.previousDeclarations,
+                                             this.localDeclarations,
                                              ctx.workingMemory );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
         }
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
         try {
-            PredicateContextEntry ctx = (PredicateContextEntry) context;
+            final PredicateContextEntry ctx = (PredicateContextEntry) context;
             return this.expression.evaluate( ctx.rightObject,
                                              tuple,
-                                             previousDeclarations,
-                                             localDeclarations,
+                                             this.previousDeclarations,
+                                             this.localDeclarations,
                                              ctx.workingMemory );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
         }
@@ -203,8 +211,8 @@ public class PredicateConstraint
         implements
         ContextEntry {
 
-        private static final long serialVersionUID = 4217315252579887635L;
-        
+        private static final long    serialVersionUID = 4217315252579887635L;
+
         public ReteTuple             leftTuple;
         public Object                rightObject;
         public InternalWorkingMemory workingMemory;
@@ -222,14 +230,14 @@ public class PredicateConstraint
             this.entry = entry;
         }
 
-        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
-                                         InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
             this.workingMemory = workingMemory;
             this.rightObject = handle.getObject();
         }
 
-        public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                    ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
             this.workingMemory = workingMemory;
             this.leftTuple = tuple;
         }

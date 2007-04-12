@@ -32,7 +32,6 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -61,13 +60,14 @@ public class NotNodeTest extends DroolsTestCase {
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
-        RuleBaseConfiguration configuration = new RuleBaseConfiguration();
-        
+        final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
+
         // string1Declaration is bound to column 3 
         this.node = new NotNode( 15,
                                  new MockTupleSource( 5 ),
                                  new MockObjectSource( 8 ),
-                                 new DefaultBetaConstraints( new BetaNodeFieldConstraint[] { this.constraint }, configuration ) );
+                                 new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
+                                                             configuration ) );
 
         this.sink = new MockTupleSink();
         this.node.addTupleSink( this.sink );
@@ -297,15 +297,16 @@ public class NotNodeTest extends DroolsTestCase {
             Assert.fail( "No exception should be raised in this procedure, but got: " + e.toString() );
         }
     }
-    
 
     public void testGetConstraints_ReturnsNullEvenWithEmptyBinder() {
-        BetaConstraints nullConstraints = EmptyBetaConstraints.getInstance();
-        NotNode notNode = new NotNode( 1,
-                                                this.tupleSource,
-                                                this.objectSource, nullConstraints);        
-        BetaNodeFieldConstraint[] constraints = notNode.getConstraints();
-        assertEquals( 0, constraints.length );        
+        final BetaConstraints nullConstraints = EmptyBetaConstraints.getInstance();
+        final NotNode notNode = new NotNode( 1,
+                                       this.tupleSource,
+                                       this.objectSource,
+                                       nullConstraints );
+        final BetaNodeFieldConstraint[] constraints = notNode.getConstraints();
+        assertEquals( 0,
+                      constraints.length );
     }
 
 }

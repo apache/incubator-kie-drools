@@ -41,16 +41,16 @@ public class CollectBuilder
     /**
      * @inheritDoc
      */
-    public void build(BuildContext context,
-                      BuildUtils utils,
-                      RuleConditionElement rce) {
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleConditionElement rce) {
 
-        Collect collect = (Collect) rce;
+        final Collect collect = (Collect) rce;
 
         final Column sourceColumn = collect.getSourceColumn();
 
         // get builder for the column
-        ReteooComponentBuilder builder = utils.getBuilderFor( sourceColumn );
+        final ReteooComponentBuilder builder = utils.getBuilderFor( sourceColumn );
 
         // builds the source column
         builder.build( context,
@@ -101,8 +101,8 @@ public class CollectBuilder
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation(BuildUtils utils,
-                                          RuleConditionElement rce) {
+    public boolean requiresLeftActivation(final BuildUtils utils,
+                                          final RuleConditionElement rce) {
         return true;
     }
 
