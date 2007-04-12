@@ -27,7 +27,7 @@ public class AndDescr extends BaseDescr
      * 
      */
     private static final long serialVersionUID = 8225023304408452585L;
-    private List descrs       = Collections.EMPTY_LIST;
+    private List              descrs           = Collections.EMPTY_LIST;
 
     public AndDescr() {
     }

@@ -8,13 +8,13 @@ public class DefaultDSLMappingEntryTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        String inputKey = "String is \"{value}\"";
-        String inputValue = "SomeFact(value==\"{value}\")";
+        final String inputKey = "String is \"{value}\"";
+        final String inputValue = "SomeFact(value==\"{value}\")";
 
-        entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
-                                                                           null,
-                                                                           inputKey,
-                                                                           inputValue );
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
     }
 
     protected void tearDown() throws Exception {
@@ -22,16 +22,16 @@ public class DefaultDSLMappingEntryTest extends TestCase {
     }
 
     public void testPatternCalculation() {
-        String inputKey = "The Customer name is {name} and surname is {surname} and it has US$ 50,00 on his {pocket}";
-        String inputValue = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
+        final String inputKey = "The Customer name is {name} and surname is {surname} and it has US$ 50,00 on his {pocket}";
+        final String inputValue = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
 
-        String expectedKeyP = "The\\s*Customer\\s*name\\s*is\\s*(.*?)\\s*and\\s*surname\\s*is\\s*(.*?)\\s*and\\s*it\\s*has\\s*US\\$\\s*50,00\\s*on\\s*his\\s*(.*?)$";
-        String expectedValP = "Customer( name == \"$1\", surname == \"$2\", money > \\$money )";
+        final String expectedKeyP = "The\\s*Customer\\s*name\\s*is\\s*(.*?)\\s*and\\s*surname\\s*is\\s*(.*?)\\s*and\\s*it\\s*has\\s*US\\$\\s*50,00\\s*on\\s*his\\s*(.*?)$";
+        final String expectedValP = "Customer( name == \"$1\", surname == \"$2\", money > \\$money )";
 
-        DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
-                                                                   null,
-                                                                   inputKey,
-                                                                   inputValue );
+        final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                                            null,
+                                                            inputKey,
+                                                            inputValue );
 
         assertEquals( inputKey,
                       entry.getMappingKey() );
@@ -45,16 +45,16 @@ public class DefaultDSLMappingEntryTest extends TestCase {
     }
 
     public void testPatternCalculation2() {
-        String inputKey = "-name is {name}";
-        String inputValue = "name == \"{name}\"";
+        final String inputKey = "-name is {name}";
+        final String inputValue = "name == \"{name}\"";
 
-        String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
-        String expectedValP = "name == \"$1\"";
+        final String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
+        final String expectedValP = "name == \"$1\"";
 
-        DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
-                                                                   null,
-                                                                   inputKey,
-                                                                   inputValue );
+        final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                                            null,
+                                                            inputKey,
+                                                            inputValue );
 
         assertEquals( inputKey,
                       entry.getMappingKey() );
@@ -68,16 +68,16 @@ public class DefaultDSLMappingEntryTest extends TestCase {
     }
 
     public void testPatternCalculation3() {
-        String inputKey = "- name is {name}";
-        String inputValue = "name == \"{name}\"";
+        final String inputKey = "- name is {name}";
+        final String inputValue = "name == \"{name}\"";
 
-        String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
-        String expectedValP = "name == \"$1\"";
+        final String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
+        final String expectedValP = "name == \"$1\"";
 
-        DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
-                                                                   null,
-                                                                   inputKey,
-                                                                   inputValue );
+        final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                                            null,
+                                                            inputKey,
+                                                            inputValue );
 
         assertEquals( inputKey,
                       entry.getMappingKey() );
@@ -90,45 +90,45 @@ public class DefaultDSLMappingEntryTest extends TestCase {
     }
 
     public void testExpandNoSpaces() {
-        String result = entry.getKeyPattern().matcher( "String is \"blah\"" ).replaceAll( entry.getValuePattern() ); 
+        final String result = this.entry.getKeyPattern().matcher( "String is \"blah\"" ).replaceAll( this.entry.getValuePattern() );
 
         assertEquals( "SomeFact(value==\"blah\")",
                       result );
     }
 
     public void testExpandWithLeadingSpace() {
-        String result = entry.getKeyPattern().matcher( "String is \" blah\"" ).replaceAll( entry.getValuePattern() ); 
+        final String result = this.entry.getKeyPattern().matcher( "String is \" blah\"" ).replaceAll( this.entry.getValuePattern() );
 
         assertEquals( "SomeFact(value==\" blah\")",
                       result );
     }
 
     public void testExpandWithMultipleLeadingSpaces() {
-        String result = entry.getKeyPattern().matcher( "String is \"   blah\"" ).replaceAll( entry.getValuePattern() ); 
+        final String result = this.entry.getKeyPattern().matcher( "String is \"   blah\"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"   blah\")",
                       result );
     }
 
     public void testExpandWithTrailingSpace() {
-        String result = entry.getKeyPattern().matcher( "String is \"blah \"" ).replaceAll( entry.getValuePattern() ); 
+        final String result = this.entry.getKeyPattern().matcher( "String is \"blah \"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"blah \")",
                       result );
     }
 
     public void testExpandWithMultipleTrailingSpaces() {
-        String result = entry.getKeyPattern().matcher( "String is \"blah  \"" ).replaceAll( entry.getValuePattern() ); 
+        final String result = this.entry.getKeyPattern().matcher( "String is \"blah  \"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"blah  \")",
                       result );
     }
 
     public void testExpandWithInternalSpace() {
-        String result = entry.getKeyPattern().matcher( "String is \"bl ah\"" ).replaceAll( entry.getValuePattern() ); 
+        final String result = this.entry.getKeyPattern().matcher( "String is \"bl ah\"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"bl ah\")",
                       result );
     }
 
     public void testExpandWithMultipleSpaces() {
-        String result = entry.getKeyPattern().matcher( "String is \"  bl  ah  \"" ).replaceAll( entry.getValuePattern() ); 
+        final String result = this.entry.getKeyPattern().matcher( "String is \"  bl  ah  \"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"  bl  ah  \")",
                       result );
     }

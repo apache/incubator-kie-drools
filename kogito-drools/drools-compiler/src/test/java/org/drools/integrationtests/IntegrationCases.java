@@ -68,9 +68,7 @@ import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.common.DefaultAgenda;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
-import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -105,7 +103,6 @@ import org.drools.ruleflow.common.instance.IProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
-import org.drools.spi.PropagationContext;
 import org.drools.xml.XmlDumper;
 
 /**
@@ -148,16 +145,16 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testFieldBiningsAndEvalSharing() throws Exception {
-        String drl = "test_FieldBindingsAndEvalSharing.drl";
+        final String drl = "test_FieldBindingsAndEvalSharing.drl";
         evalSharingTest( drl );
     }
 
     public void testFieldBiningsAndPredicateSharing() throws Exception {
-        String drl = "test_FieldBindingsAndPredicateSharing.drl";
+        final String drl = "test_FieldBindingsAndPredicateSharing.drl";
         evalSharingTest( drl );
     }
 
-    private void evalSharingTest(String drl) throws DroolsParserException,
+    private void evalSharingTest(final String drl) throws DroolsParserException,
                                             IOException,
                                             Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -166,13 +163,13 @@ public abstract class IntegrationCases extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
 
-        List list = new ArrayList();
+        final List list = new ArrayList();
         wm.setGlobal( "list",
                       list );
 
-        TestParam tp1 = new TestParam();
+        final TestParam tp1 = new TestParam();
         tp1.setValue2( "boo" );
         wm.assertObject( tp1 );
 
@@ -194,7 +191,7 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final List events = new ArrayList();
-        WorkingMemoryEventListener listener = new DefaultWorkingMemoryEventListener() {
+        final WorkingMemoryEventListener listener = new DefaultWorkingMemoryEventListener() {
             public void objectModified(ObjectModifiedEvent event) {
                 events.add( event );
             }
@@ -202,13 +199,13 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.addEventListener( listener );
 
-        Person bigCheese = new Person( "big cheese" );
-        Cheese cheddar = new Cheese( "cheddar",
+        final Person bigCheese = new Person( "big cheese" );
+        final Cheese cheddar = new Cheese( "cheddar",
                                      15 );
         bigCheese.setCheese( cheddar );
 
-        FactHandle bigCheeseHandle = workingMemory.assertObject( bigCheese );
-        FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+        final FactHandle bigCheeseHandle = workingMemory.assertObject( bigCheese );
+        final FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
         workingMemory.fireAllRules();
 
         ObjectModifiedEvent event = (ObjectModifiedEvent) events.get( 0 );
@@ -242,16 +239,16 @@ public abstract class IntegrationCases extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-        Cheese nullCheese = new Cheese( null,
+        final Cheese nullCheese = new Cheese( null,
                                         2 );
         workingMemory.assertObject( nullCheese );
 
-        Person notNullPerson = new Person( "shoes butt back" );
+        final Person notNullPerson = new Person( "shoes butt back" );
         notNullPerson.setBigDecimal( new BigDecimal( "42.42" ) );
 
         workingMemory.assertObject( notNullPerson );
 
-        Person nullPerson = new Person( "whee" );
+        final Person nullPerson = new Person( "whee" );
         nullPerson.setBigDecimal( null );
 
         workingMemory.assertObject( nullPerson );
@@ -314,7 +311,7 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        List list = new ArrayList();
+        final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
         workingMemory.assertObject( new Message( "hola" ) );
@@ -436,8 +433,8 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        FactTemplate cheese = pkg.getFactTemplate( "Cheese" );
-        Fact stilton = cheese.createFact( 0 );
+        final FactTemplate cheese = pkg.getFactTemplate( "Cheese" );
+        final Fact stilton = cheese.createFact( 0 );
         stilton.setFieldValue( "name",
                                "stilton" );
         stilton.setFieldValue( "price",
@@ -449,7 +446,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
         assertEquals( stilton,
                       list.get( 0 ) );
-        Fact fact = (Fact) list.get( 0 );
+        final Fact fact = (Fact) list.get( 0 );
         assertSame( stilton,
                     fact );
         assertEquals( new Integer( 200 ),
@@ -627,7 +624,7 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testJaninoEval() throws Exception {
-        PackageBuilderConfiguration config = new PackageBuilderConfiguration();
+        final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         config.setCompiler( PackageBuilderConfiguration.JANINO );
         final PackageBuilder builder = new PackageBuilder( config );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
@@ -666,7 +663,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person foo = new Person( "foo" );
+        final Person foo = new Person( "foo" );
         workingMemory.assertObject( foo );
         workingMemory.fireAllRules();
 
@@ -955,10 +952,10 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        Cheese cheese = new Cheese( "stilton",
+        final Cheese cheese = new Cheese( "stilton",
                                     15 );
         workingMemory.assertObject( cheese );
-        List list = new ArrayList();
+        final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
         workingMemory.fireAllRules();
@@ -984,21 +981,21 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        List list1 = new ArrayList();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final List list1 = new ArrayList();
         workingMemory.setGlobal( "list1",
                                  list1 );
-        List list2 = new ArrayList();
+        final List list2 = new ArrayList();
         workingMemory.setGlobal( "list2",
                                  list2 );
-        List list3 = new ArrayList();
+        final List list3 = new ArrayList();
         workingMemory.setGlobal( "list3",
                                  list3 );
 
-        Cheesery cheesery = new Cheesery();
-        Cheese stilton = new Cheese( "stilton",
+        final Cheesery cheesery = new Cheesery();
+        final Cheese stilton = new Cheese( "stilton",
                                      12 );
-        Cheese cheddar = new Cheese( "cheddar",
+        final Cheese cheddar = new Cheese( "cheddar",
                                      15 );
         cheesery.addCheese( stilton );
         cheesery.addCheese( cheddar );
@@ -1039,9 +1036,9 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        List list = new ArrayList();
-        Object globalObject = new Object();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final List list = new ArrayList();
+        final Object globalObject = new Object();
         workingMemory.setGlobal( "list",
                                  list );
         workingMemory.setGlobal( "testObject",
@@ -1049,7 +1046,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "globalObject",
                                  globalObject );
 
-        Person bob = new Person( "bob" );
+        final Person bob = new Person( "bob" );
         workingMemory.assertObject( bob );
 
         workingMemory.fireAllRules();
@@ -1057,23 +1054,23 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 6,
                       list.size() );
 
-        List array = (List) list.get( 0 );
+        final List array = (List) list.get( 0 );
         assertEquals( 3,
                       array.size() );
-        Person p = (Person) array.get( 0 );
+        final Person p = (Person) array.get( 0 );
         assertSame( p,
                     bob );
 
         assertEquals( new Integer( 42 ),
                       array.get( 1 ) );
 
-        List nested = (List) array.get( 2 );
+        final List nested = (List) array.get( 2 );
         assertEquals( "x",
                       nested.get( 0 ) );
         assertEquals( "y",
                       nested.get( 1 ) );
 
-        Map map = (Map) list.get( 1 );
+        final Map map = (Map) list.get( 1 );
         assertEquals( 2,
                       map.keySet().size() );
 
@@ -1082,7 +1079,7 @@ public abstract class IntegrationCases extends TestCase {
                     map.get( bob ) );
 
         assertTrue( map.keySet().contains( "key1" ) );
-        Map nestedMap = (Map) map.get( "key1" );
+        final Map nestedMap = (Map) map.get( "key1" );
         assertEquals( 1,
                       nestedMap.keySet().size() );
         assertTrue( nestedMap.keySet().contains( "key2" ) );
@@ -1138,7 +1135,7 @@ public abstract class IntegrationCases extends TestCase {
         assertNotNull( ruleErr.getDescr() );
         assertTrue( ruleErr.getLine() != -1 );
 
-        DroolsError errs[] = builder.getErrors();
+        final DroolsError errs[] = builder.getErrors();
 
         assertEquals( 3,
                       builder.getErrors().length );
@@ -1599,26 +1596,26 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list4",
                                  list4 );
 
-        Person youngChili1 = new Person( "young chili1" );
+        final Person youngChili1 = new Person( "young chili1" );
         youngChili1.setAge( 12 );
         youngChili1.setHair( "blue" );
-        Person youngChili2 = new Person( "young chili2" );
+        final Person youngChili2 = new Person( "young chili2" );
         youngChili2.setAge( 25 );
         youngChili2.setHair( "purple" );
 
-        Person chili1 = new Person( "chili1" );
+        final Person chili1 = new Person( "chili1" );
         chili1.setAge( 35 );
         chili1.setHair( "red" );
 
-        Person chili2 = new Person( "chili2" );
+        final Person chili2 = new Person( "chili2" );
         chili2.setAge( 38 );
         chili2.setHair( "indigigo" );
 
-        Person oldChili1 = new Person( "old chili2" );
+        final Person oldChili1 = new Person( "old chili2" );
         oldChili1.setAge( 45 );
         oldChili1.setHair( "green" );
 
-        Person oldChili2 = new Person( "old chili2" );
+        final Person oldChili2 = new Person( "old chili2" );
         oldChili2.setAge( 48 );
         oldChili2.setHair( "blue" );
 
@@ -1705,39 +1702,43 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-              
+
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-        
+
         // AgendaGroup "group1" is not active, so should receive activation
         final Cheese brie12 = new Cheese( "brie",
-                                        12 );
-        workingMemory.assertObject( brie12 );        
-        AgendaGroup group1 = workingMemory.getAgenda().getAgendaGroup( "group1" );  
-        assertEquals( 1, group1.size() );          
-        
-        workingMemory.setFocus( "group1" );        
+                                          12 );
+        workingMemory.assertObject( brie12 );
+        final AgendaGroup group1 = workingMemory.getAgenda().getAgendaGroup( "group1" );
+        assertEquals( 1,
+                      group1.size() );
+
+        workingMemory.setFocus( "group1" );
         // AgendaqGroup "group1" is now active, so should not receive activations
         final Cheese brie10 = new Cheese( "brie",
-                                        10 );
-        workingMemory.assertObject( brie10 );                
-        assertEquals( 1, group1.size() );    
-        
+                                          10 );
+        workingMemory.assertObject( brie10 );
+        assertEquals( 1,
+                      group1.size() );
+
         final Cheese cheddar20 = new Cheese( "cheddar",
-                                          20 );
-        workingMemory.assertObject( cheddar20 ); 
-        AgendaGroup group2 = workingMemory.getAgenda().getAgendaGroup( "group1" );
-        assertEquals( 1, group2.size() );        
-        
-        RuleFlowGroupImpl rfg = ( RuleFlowGroupImpl )workingMemory.getAgenda().getRuleFlowGroup( "ruleflow2" );
+                                             20 );
+        workingMemory.assertObject( cheddar20 );
+        final AgendaGroup group2 = workingMemory.getAgenda().getAgendaGroup( "group1" );
+        assertEquals( 1,
+                      group2.size() );
+
+        final RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) workingMemory.getAgenda().getRuleFlowGroup( "ruleflow2" );
         rfg.setActive( true );
         final Cheese cheddar17 = new Cheese( "cheddar",
-                                             17 );        
-        workingMemory.assertObject( cheddar17 );         
-        assertEquals( 1, group2.size() );        
-    }    
-    
+                                             17 );
+        workingMemory.assertObject( cheddar17 );
+        assertEquals( 1,
+                      group2.size() );
+    }
+
     public void testLockOnActiveWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithModify.drl" ) ) );
@@ -1746,50 +1747,54 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-              
+
         final List list = new ArrayList();
         wm.setGlobal( "list",
-                                 list );        
-        
-        Cheese brie = new Cheese("brie", 13);
-        
-        Person bob = new Person( "bob" );
+                      list );
+
+        final Cheese brie = new Cheese( "brie",
+                                  13 );
+
+        final Person bob = new Person( "bob" );
         bob.setCheese( brie );
 
-        Person mic = new Person( "mic" );
+        final Person mic = new Person( "mic" );
         mic.setCheese( brie );
-        
-        Person mark = new Person( "mark" );
-        mark.setCheese( brie );     
-        
-        FactHandle brieHandle = wm.assertObject( brie );
+
+        final Person mark = new Person( "mark" );
+        mark.setCheese( brie );
+
+        final FactHandle brieHandle = wm.assertObject( brie );
         wm.assertObject( bob );
         wm.assertObject( mic );
         wm.assertObject( mark );
-        
-        DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
-        AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
+
+        final DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
+        final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
         agenda.setFocus( group1 );
-        assertEquals( 3, group1.size() );          
-        agenda.fireNextItem( null );        
-        assertEquals( 2, group1.size() );        
-        wm.modifyObject( brieHandle, brie );
-        assertEquals( 2, group1.size() );
-        
-        
-//        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
-//        agenda.setFocus( group2 );
-//        
-//        RuleFlowGroupImpl rfg = ( RuleFlowGroupImpl )wm.getAgenda().getRuleFlowGroup( "ruleflow2" );                
-//        assertEquals( 3, rfg.size() );          
-//        
-//        agenda.activateRuleFlowGroup( "ruleflow2" );
-//        agenda.fireNextItem( null );        
-//        assertEquals( 2, rfg.size() );                
-//        wm.modifyObject( brieHandle, brie );
-//        assertEquals( 2, group2.size() );        
+        assertEquals( 3,
+                      group1.size() );
+        agenda.fireNextItem( null );
+        assertEquals( 2,
+                      group1.size() );
+        wm.modifyObject( brieHandle,
+                         brie );
+        assertEquals( 2,
+                      group1.size() );
+
+        //        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
+        //        agenda.setFocus( group2 );
+        //        
+        //        RuleFlowGroupImpl rfg = ( RuleFlowGroupImpl )wm.getAgenda().getRuleFlowGroup( "ruleflow2" );                
+        //        assertEquals( 3, rfg.size() );          
+        //        
+        //        agenda.activateRuleFlowGroup( "ruleflow2" );
+        //        agenda.fireNextItem( null );        
+        //        assertEquals( 2, rfg.size() );                
+        //        wm.modifyObject( brieHandle, brie );
+        //        assertEquals( 2, group2.size() );        
     }
-    
+
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
@@ -2206,7 +2211,7 @@ public abstract class IntegrationCases extends TestCase {
             // leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
         }
         ruleBase.addPackage( pkg );
-        PackageBuilder builder2 = new PackageBuilder();
+        final PackageBuilder builder2 = new PackageBuilder();
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
         ruleBase.addPackage( builder2.getPackage() );
 
@@ -2436,7 +2441,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  new ArrayList() );
 
-        Person bob = new Person( "bob" );
+        final Person bob = new Person( "bob" );
         workingMemory.assertObject( bob );
 
         final byte[] wm = serializeOut( workingMemory );
@@ -2453,7 +2458,7 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.fireAllRules();
 
-        List list = (List) workingMemory.getGlobal( "list" );
+        final List list = (List) workingMemory.getGlobal( "list" );
 
         assertEquals( 3,
                       list.size() );
@@ -2668,7 +2673,7 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        AgendaEventListener listener = new DefaultAgendaEventListener() {
+        final AgendaEventListener listener = new DefaultAgendaEventListener() {
             public void activationCreated(ActivationCreatedEvent event,
                                           WorkingMemory workingMemory) {
                 super.activationCreated( event,
@@ -2960,7 +2965,7 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List l;
-        Person p = new Person( "person" );
+        final Person p = new Person( "person" );
         p.setAge( 2 );
         final FactHandle h = workingMemory.assertObject( p );
         assertEquals( 1,
@@ -3001,21 +3006,21 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        Person p1 = new Person( "p1",
+        final Person p1 = new Person( "p1",
                                 "stilton",
                                 20 );
         p1.setStatus( "europe" );
-        FactHandle c1FactHandle = workingMemory.assertObject( p1 );
-        Person p2 = new Person( "p2",
+        final FactHandle c1FactHandle = workingMemory.assertObject( p1 );
+        final Person p2 = new Person( "p2",
                                 "stilton",
                                 30 );
         p2.setStatus( "europe" );
-        FactHandle c2FactHandle = workingMemory.assertObject( p2 );
-        Person p3 = new Person( "p3",
+        final FactHandle c2FactHandle = workingMemory.assertObject( p2 );
+        final Person p3 = new Person( "p3",
                                 "stilton",
                                 40 );
         p3.setStatus( "europe" );
-        FactHandle c3FactHandle = workingMemory.assertObject( p3 );
+        final FactHandle c3FactHandle = workingMemory.assertObject( p3 );
         workingMemory.fireAllRules();
 
         // all 3 in europe, so, 2 cheese
@@ -3130,7 +3135,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        Person hola = new Person( "hola" );
+        final Person hola = new Person( "hola" );
         workingMemory.assertObject( hola );
 
         workingMemory.fireAllRules();
@@ -3188,7 +3193,7 @@ public abstract class IntegrationCases extends TestCase {
 
         final int MAX = 5;
         for ( int i = 1; i <= MAX; i++ ) {
-            IndexedNumber n = new IndexedNumber( i,
+            final IndexedNumber n = new IndexedNumber( i,
                                                  MAX - i + 1 );
             workingMemory.assertObject( n );
         }
@@ -3198,7 +3203,7 @@ public abstract class IntegrationCases extends TestCase {
                            errors.isEmpty() );
 
         for ( int i = 1; i <= MAX; i++ ) {
-            IndexedNumber n = (IndexedNumber) orderedFacts.get( i - 1 );
+            final IndexedNumber n = (IndexedNumber) orderedFacts.get( i - 1 );
             Assert.assertEquals( "Fact is out of order",
                                  i,
                                  n.getIndex() );
@@ -3211,7 +3216,7 @@ public abstract class IntegrationCases extends TestCase {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
 
             final RuleBase ruleBase = getRuleBase();
-            String packageName = builder.getPackage().getName();
+            final String packageName = builder.getPackage().getName();
             ruleBase.addPackage( builder.getPackage() );
 
             final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -3220,7 +3225,7 @@ public abstract class IntegrationCases extends TestCase {
                                                           "genericvalue" ) );
             workingMemory.fireAllRules();
 
-            RuleBase ruleBaseWM = workingMemory.getRuleBase();
+            final RuleBase ruleBaseWM = workingMemory.getRuleBase();
             ruleBaseWM.removePackage( packageName );
             final PackageBuilder builder1 = new PackageBuilder();
             builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
@@ -3232,7 +3237,7 @@ public abstract class IntegrationCases extends TestCase {
 
             ruleBaseWM.removePackage( packageName );
             ruleBaseWM.addPackage( builder1.getPackage() );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             Assert.fail( "Removing packages should not throw any exception: " + e.getMessage() );
         }
@@ -3249,15 +3254,15 @@ public abstract class IntegrationCases extends TestCase {
             final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
             workingMemory.fireAllRules();
 
-            QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
+            final QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
 
             if ( results == null || !results.iterator().hasNext() ) {
                 Assert.fail( "The stated query should return a result" );
             } else {
                 int counter = 0;
-                for ( Iterator it = results.iterator(); it.hasNext(); ) {
-                    QueryResult result = (QueryResult) it.next();;
-                    AssertedObject assertedObject = (AssertedObject) result.get( "assertedobj" );
+                for ( final Iterator it = results.iterator(); it.hasNext(); ) {
+                    final QueryResult result = (QueryResult) it.next();;
+                    final AssertedObject assertedObject = (AssertedObject) result.get( "assertedobj" );
                     Assert.assertNotNull( "Query result is not expected to be null",
                                           assertedObject );
                     counter++;
@@ -3267,7 +3272,7 @@ public abstract class IntegrationCases extends TestCase {
                                      counter );
             }
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             Assert.fail( "Retrieving query results should not throw any exception: " + e.getMessage() );
         }
     }
@@ -3319,9 +3324,9 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        Cheese c = new Cheese( "stilton",
+        final Cheese c = new Cheese( "stilton",
                                10 );
-        Person p = new Person( "Mark",
+        final Person p = new Person( "Mark",
                                "stilton" );
         workingMemory.assertObject( c );
         workingMemory.assertObject( p );
@@ -3338,8 +3343,8 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory wm = ruleBase.newWorkingMemory();
 
         // now create some test data
-        Driver driver = new Driver();
-        Policy policy = new Policy();
+        final Driver driver = new Driver();
+        final Policy policy = new Policy();
 
         wm.assertObject( driver );
         wm.assertObject( policy );
@@ -3442,7 +3447,7 @@ public abstract class IntegrationCases extends TestCase {
             wm.assertObject( tgt );
 
             wm.fireAllRules();
-        } catch ( RuntimeException e ) {
+        } catch ( final RuntimeException e ) {
             Assert.fail( "Test is not supposed to throw any exception" );
         }
 
@@ -3455,7 +3460,7 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-        List results = new ArrayList();
+        final List results = new ArrayList();
 
         wm.setGlobal( "results",
                       results );
@@ -3492,26 +3497,26 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-        List results = new ArrayList();
+        final List results = new ArrayList();
 
         wm.setGlobal( "results",
                       results );
 
-        Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
                                                    10 ), new Cheese( "stilton",
                                                                      2 ), new Cheese( "stilton",
                                                                                       5 ), new Cheese( "brie",
                                                                                                        15 ), new Cheese( "brie",
                                                                                                                          16 ), new Cheese( "provolone",
                                                                                                                                            8 )};
-        Person bob = new Person( "Bob",
+        final Person bob = new Person( "Bob",
                                  "stilton" );
 
-        FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.assertObject( cheese[i] );
         }
-        FactHandle bobHandle = wm.assertObject( bob );
+        final FactHandle bobHandle = wm.assertObject( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -3520,7 +3525,7 @@ public abstract class IntegrationCases extends TestCase {
                              results.size() );
 
         // ---------------- 2nd scenario
-        int index = 1;
+        final int index = 1;
         cheese[index].setPrice( 9 );
         wm.modifyObject( cheeseHandles[index],
                          cheese[index] );
@@ -3561,7 +3566,7 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-        List results = new ArrayList();
+        final List results = new ArrayList();
 
         wm.setGlobal( "results",
                       results );
@@ -3599,26 +3604,26 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newWorkingMemory();
-        List results = new ArrayList();
+        final List results = new ArrayList();
 
         wm.setGlobal( "results",
                       results );
 
-        Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
                                                    10 ), new Cheese( "stilton",
                                                                      2 ), new Cheese( "stilton",
                                                                                       5 ), new Cheese( "brie",
                                                                                                        15 ), new Cheese( "brie",
                                                                                                                          16 ), new Cheese( "provolone",
                                                                                                                                            8 )};
-        Person bob = new Person( "Bob",
+        final Person bob = new Person( "Bob",
                                  "stilton" );
 
-        FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.assertObject( cheese[i] );
         }
-        FactHandle bobHandle = wm.assertObject( bob );
+        final FactHandle bobHandle = wm.assertObject( bob );
 
         // ---------------- 1st scenario
         int fireCount = 0;
@@ -3631,7 +3636,7 @@ public abstract class IntegrationCases extends TestCase {
                              results.get( fireCount - 1 ).getClass().getName() );
 
         // ---------------- 2nd scenario
-        int index = 1;
+        final int index = 1;
         cheese[index].setPrice( 9 );
         wm.modifyObject( cheeseHandles[index],
                          cheese[index] );
@@ -3685,58 +3690,65 @@ public abstract class IntegrationCases extends TestCase {
 
         wm.fireAllRules();
     }
-    
+
     public void testModifyActivationCreationNoLoop() throws Exception {
         // JBRULES-787, no-loop blocks all dependant tuples for modify 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ModifyActivationCreationNoLoop.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final InternalWorkingMemoryActions wm = ( InternalWorkingMemoryActions ) ruleBase.newWorkingMemory();        
+        final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase.newWorkingMemory();
         final List created = new ArrayList();
-        final List cancelled = new ArrayList();        
-        AgendaEventListener l = new DefaultAgendaEventListener() {
+        final List cancelled = new ArrayList();
+        final AgendaEventListener l = new DefaultAgendaEventListener() {
             public void activationCreated(ActivationCreatedEvent event,
                                           WorkingMemory workingMemory) {
-                created.add(  event  );
-            }            
-            
-          public void activationCancelled(ActivationCancelledEvent event,
-                                            WorkingMemory workingMemory) {
-              cancelled.add(  event  );
+                created.add( event );
             }
-          
+
+            public void activationCancelled(ActivationCancelledEvent event,
+                                            WorkingMemory workingMemory) {
+                cancelled.add( event );
+            }
+
         };
-        
-        wm.addEventListener( l );        
-        
-        Cheese stilton = new Cheese( "stilton",
+
+        wm.addEventListener( l );
+
+        final Cheese stilton = new Cheese( "stilton",
                                      15 );
-        FactHandle stiltonHandle = wm.assertObject( stilton );
-        
-        Person p1 = new Person( "p1");
+        final FactHandle stiltonHandle = wm.assertObject( stilton );
+
+        final Person p1 = new Person( "p1" );
         p1.setCheese( stilton );
         wm.assertObject( p1 );
 
-        Person p2 = new Person( "p2");
+        final Person p2 = new Person( "p2" );
         p2.setCheese( stilton );
         wm.assertObject( p2 );
-        
-        Person p3 = new Person( "p3");
+
+        final Person p3 = new Person( "p3" );
         p3.setCheese( stilton );
-        wm.assertObject( p3 );                
+        wm.assertObject( p3 );
 
-        assertEquals( 3, created.size() );
-        assertEquals( 0, cancelled.size() );        
+        assertEquals( 3,
+                      created.size() );
+        assertEquals( 0,
+                      cancelled.size() );
 
-        Activation item = ((ActivationCreatedEvent) created.get( 2 )).getActivation();
-        
+        final Activation item = ((ActivationCreatedEvent) created.get( 2 )).getActivation();
+
         // simulate a modify inside a consequence
-        wm.modifyObject( stiltonHandle, stilton, item.getRule(), item );
-        
+        wm.modifyObject( stiltonHandle,
+                         stilton,
+                         item.getRule(),
+                         item );
+
         // the two of the three tuples should re-activate
-        assertEquals( 5, created.size() );
-        assertEquals( 3, cancelled.size() );
-    }    
+        assertEquals( 5,
+                      created.size() );
+        assertEquals( 3,
+                      cancelled.size() );
+    }
 
     public void testDoubleQueryWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -3747,21 +3759,21 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        Person p1 = new Person( "p1",
+        final Person p1 = new Person( "p1",
                                 "stilton",
                                 20 );
         p1.setStatus( "europe" );
-        FactHandle c1FactHandle = workingMemory.assertObject( p1 );
-        Person p2 = new Person( "p2",
+        final FactHandle c1FactHandle = workingMemory.assertObject( p1 );
+        final Person p2 = new Person( "p2",
                                 "stilton",
                                 30 );
         p2.setStatus( "europe" );
-        FactHandle c2FactHandle = workingMemory.assertObject( p2 );
-        Person p3 = new Person( "p3",
+        final FactHandle c2FactHandle = workingMemory.assertObject( p2 );
+        final Person p3 = new Person( "p3",
                                 "stilton",
                                 40 );
         p3.setStatus( "europe" );
-        FactHandle c3FactHandle = workingMemory.assertObject( p3 );
+        final FactHandle c3FactHandle = workingMemory.assertObject( p3 );
         workingMemory.fireAllRules();
 
         QueryResults queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -3898,26 +3910,26 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         try {
-            List sensors = new ArrayList();
+            final List sensors = new ArrayList();
 
             workingMemory.setGlobal( "sensors",
                                      sensors );
 
-            Sensor sensor1 = new Sensor( 100,
+            final Sensor sensor1 = new Sensor( 100,
                                          150 );
             workingMemory.assertObject( sensor1 );
             workingMemory.fireAllRules();
             assertEquals( 0,
                           sensors.size() );
 
-            Sensor sensor2 = new Sensor( 200,
+            final Sensor sensor2 = new Sensor( 200,
                                          150 );
             workingMemory.assertObject( sensor2 );
             workingMemory.fireAllRules();
             assertEquals( 3,
                           sensors.size() );
 
-        } catch ( RuntimeException e ) {
+        } catch ( final RuntimeException e ) {
             e.printStackTrace();
             fail( "Should not throw any exception" );
         }
@@ -3934,9 +3946,9 @@ public abstract class IntegrationCases extends TestCase {
             ruleBase.addPackage( pkg );
 
             Assert.fail( "Should have thrown an InvalidRulePackage" );
-        } catch ( InvalidRulePackage e ) {
+        } catch ( final InvalidRulePackage e ) {
             // everything fine
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             Assert.fail( "Should have thrown an InvalidRulePackage Exception instead of " + e.getMessage() );
         }
@@ -3956,10 +3968,10 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        State state = new State( "SP" );
+        final State state = new State( "SP" );
         workingMemory.assertObject( state );
 
-        Person bob = new Person( "Bob" );
+        final Person bob = new Person( "Bob" );
         bob.setStatus( state.getState() );
         bob.setLikes( "stilton" );
         workingMemory.assertObject( bob );
@@ -3990,10 +4002,10 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        State state = new State( "SP" );
+        final State state = new State( "SP" );
         workingMemory.assertObject( state );
 
-        Person bob = new Person( "Bob" );
+        final Person bob = new Person( "Bob" );
         bob.setStatus( state.getState() );
         bob.setLikes( "stilton" );
         workingMemory.assertObject( bob );
@@ -4022,9 +4034,9 @@ public abstract class IntegrationCases extends TestCase {
             ruleBase.addPackage( pkg );
 
             fail( "Should have trown an exception" );
-        } catch ( InvalidRulePackage e ) {
+        } catch ( final InvalidRulePackage e ) {
             // success ... correct exception thrown
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Wrong exception raised: " + e.getMessage() );
         }
@@ -4040,7 +4052,7 @@ public abstract class IntegrationCases extends TestCase {
             final RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
 
-            WorkingMemory wm = ruleBase.newWorkingMemory();
+            final WorkingMemory wm = ruleBase.newWorkingMemory();
 
             wm.assertObject( new Cheese( "a",
                                          10 ) );
@@ -4050,7 +4062,7 @@ public abstract class IntegrationCases extends TestCase {
                                          10 ) );
             wm.assertObject( new Cheese( "d",
                                          10 ) );
-            Cheese e = new Cheese( "e",
+            final Cheese e = new Cheese( "e",
                                    10 );
             wm.assertObject( e );
 
@@ -4061,7 +4073,7 @@ public abstract class IntegrationCases extends TestCase {
                                  e.getPrice() );
             // success
 
-        } catch ( RuntimeException e ) {
+        } catch ( final RuntimeException e ) {
             e.printStackTrace();
             fail( "Should not throw any exception" );
         }
@@ -4070,11 +4082,11 @@ public abstract class IntegrationCases extends TestCase {
     public void testDynamicRules() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        Cheese a = new Cheese( "stilton",
+        final Cheese a = new Cheese( "stilton",
                                10 );
-        Cheese b = new Cheese( "stilton",
+        final Cheese b = new Cheese( "stilton",
                                15 );
-        Cheese c = new Cheese( "stilton",
+        final Cheese c = new Cheese( "stilton",
                                20 );
         workingMemory.assertObject( a );
         workingMemory.assertObject( b );
@@ -4093,10 +4105,10 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         // Assert some simple facts
-        FactA a = new FactA( "hello",
+        final FactA a = new FactA( "hello",
                              new Integer( 1 ),
                              new Float( 3.14 ) );
-        FactB b = new FactB( "hello",
+        final FactB b = new FactB( "hello",
                              new Integer( 2 ),
                              new Float( 6.28 ) );
         workingMemory.assertObject( a );
@@ -4117,7 +4129,7 @@ public abstract class IntegrationCases extends TestCase {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportConflict.drl" ) ) );
             final Package pkg = builder.getPackage();
             ruleBase.addPackage( pkg );
-        } catch ( RuntimeException e ) {
+        } catch ( final RuntimeException e ) {
             e.printStackTrace();
             fail( "No exeception should be raised." );
         }
@@ -4178,7 +4190,7 @@ public abstract class IntegrationCases extends TestCase {
             assertEquals( 4,
                           result.size() );
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception" );
         }
@@ -4240,7 +4252,7 @@ public abstract class IntegrationCases extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         final Package pkg = builder.getPackage();
-        ProcessBuilder processBuilder = new ProcessBuilder();
+        final ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.addProcessFromFile( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
 
         final RuleBase ruleBase = getRuleBase();
@@ -4256,7 +4268,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 0,
                       list.size() );
 
-        IProcessInstance processInstance = workingMemory.startProcess( "0" );
+        final IProcessInstance processInstance = workingMemory.startProcess( "0" );
         assertEquals( IProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         workingMemory.fireAllRules();
@@ -4345,7 +4357,7 @@ public abstract class IntegrationCases extends TestCase {
             assertEquals( brie.getPrice(),
                           ((Integer) result.get( "test3" + brie.getType() )).intValue() );
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception" );
         }
@@ -4361,7 +4373,7 @@ public abstract class IntegrationCases extends TestCase {
             assertEquals( 6,
                           pkg.getErrorSummary().split( "\n" ).length );
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception" );
         }
@@ -4381,7 +4393,7 @@ public abstract class IntegrationCases extends TestCase {
 
             workingMemory.fireAllRules();
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception" );
         }
@@ -4397,18 +4409,18 @@ public abstract class IntegrationCases extends TestCase {
             ruleBase.addPackage( pkg );
             final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-            List results = new ArrayList();
+            final List results = new ArrayList();
             workingMemory.setGlobal( "results",
                                      results );
 
-            Order order = new Order( 10 );
-            OrderItem item1 = new OrderItem( order,
+            final Order order = new Order( 10 );
+            final OrderItem item1 = new OrderItem( order,
                                              1 );
-            OrderItem item2 = new OrderItem( order,
+            final OrderItem item2 = new OrderItem( order,
                                              2 );
-            OrderItem anotherItem1 = new OrderItem( null,
+            final OrderItem anotherItem1 = new OrderItem( null,
                                                     3 );
-            OrderItem anotherItem2 = new OrderItem( null,
+            final OrderItem anotherItem2 = new OrderItem( null,
                                                     4 );
             workingMemory.assertObject( order );
             workingMemory.assertObject( item1 );
@@ -4423,7 +4435,7 @@ public abstract class IntegrationCases extends TestCase {
             assertTrue( results.contains( item1 ) );
             assertTrue( results.contains( item2 ) );
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception" );
         }
@@ -4443,14 +4455,14 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         // asserting the sensor object
-        RandomNumber rn = new RandomNumber();
+        final RandomNumber rn = new RandomNumber();
         rn.setValue( 10 );
         workingMemory.assertObject( rn );
 
-        Guess guess = new Guess();
+        final Guess guess = new Guess();
         guess.setValue( new Integer( 5 ) );
 
-        FactHandle handle = workingMemory.assertObject( guess );
+        final FactHandle handle = workingMemory.assertObject( guess );
 
         workingMemory.fireAllRules();
 
@@ -4499,11 +4511,11 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "results",
                                  results );
 
-        Cheese cheese = new Cheese( "brie",
+        final Cheese cheese = new Cheese( "brie",
                                     10 );
-        FactHandle handle = workingMemory.assertObject( cheese );
+        final FactHandle handle = workingMemory.assertObject( cheese );
 
-        Person bob = new Person( "bob",
+        final Person bob = new Person( "bob",
                                  "stilton" );
         workingMemory.assertObject( bob );
 
@@ -4525,7 +4537,7 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory wm = ruleBase.newWorkingMemory();
 
         final List agendaList = new ArrayList();
-        AgendaEventListener agendaEventListener = new AgendaEventListener() {
+        final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
             public void activationCancelled(ActivationCancelledEvent event,
                                             WorkingMemory workingMemory) {
@@ -4561,7 +4573,7 @@ public abstract class IntegrationCases extends TestCase {
         };
 
         final List wmList = new ArrayList();
-        WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
+        final WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
 
             public void objectAsserted(ObjectAssertedEvent event) {
                 wmList.add( event );
@@ -4579,25 +4591,25 @@ public abstract class IntegrationCases extends TestCase {
 
         wm.addEventListener( workingMemoryListener );
 
-        Cheese stilton = new Cheese( "stilton",
+        final Cheese stilton = new Cheese( "stilton",
                                      15 );
-        Cheese cheddar = new Cheese( "cheddar",
+        final Cheese cheddar = new Cheese( "cheddar",
                                      17 );
 
-        FactHandle stiltonHandle = wm.assertObject( stilton );
+        final FactHandle stiltonHandle = wm.assertObject( stilton );
 
-        ObjectAssertedEvent oae = (ObjectAssertedEvent) wmList.get( 0 );
+        final ObjectAssertedEvent oae = (ObjectAssertedEvent) wmList.get( 0 );
         assertSame( stiltonHandle,
                     oae.getFactHandle() );
 
         wm.modifyObject( stiltonHandle,
                          stilton );
-        ObjectModifiedEvent ome = (ObjectModifiedEvent) wmList.get( 1 );
+        final ObjectModifiedEvent ome = (ObjectModifiedEvent) wmList.get( 1 );
         assertSame( stiltonHandle,
                     ome.getFactHandle() );
 
         wm.retractObject( stiltonHandle );
-        ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
+        final ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
         assertSame( stiltonHandle,
                     ore.getFactHandle() );
 
@@ -4619,7 +4631,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "factor",
                                  new Double( 1.2 ) );
 
-        Cheese cheese = new Cheese( "stilton",
+        final Cheese cheese = new Cheese( "stilton",
                                     10 );
         workingMemory.assertObject( cheese );
 
@@ -4646,8 +4658,8 @@ public abstract class IntegrationCases extends TestCase {
     public void testEmptyDSL() throws Exception {
         final String DSL = "# This is an empty dsl file.";
         final PackageBuilder builder = new PackageBuilder();
-        Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "literal_rule.drl" ) );
-        Reader dslReader = new StringReader( DSL );
+        final Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "literal_rule.drl" ) );
+        final Reader dslReader = new StringReader( DSL );
 
         builder.addPackageFromDrl( drlReader,
                                    dslReader );

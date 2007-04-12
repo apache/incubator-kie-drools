@@ -1,35 +1,44 @@
 package org.drools;
 
 public class FactC {
-    String f1;
+    String  f1;
     Integer f2;
-    Float f3;
-    
-    public FactC(String a, Integer b, Float c) {
-        f1 = a;
-        f2 = b;
-        f3 = c;
+    Float   f3;
+
+    public FactC(final String a,
+                 final Integer b,
+                 final Float c) {
+        this.f1 = a;
+        this.f2 = b;
+        this.f3 = c;
     }
+
     public FactC() {
 
     }
+
     public String getF1() {
-        return f1;
+        return this.f1;
     }
-    public void setF1(String s) {
-        f1 = s;
+
+    public void setF1(final String s) {
+        this.f1 = s;
     }
+
     public Integer getF2() {
-        return f2;
+        return this.f2;
     }
-    public void setF2(Integer i) {
-        f2 = i;
+
+    public void setF2(final Integer i) {
+        this.f2 = i;
     }
+
     public Float getF3() {
-        return f3;
+        return this.f3;
     }
-    public void setF3(Float f) {
-        f3 = f;
+
+    public void setF3(final Float f) {
+        this.f3 = f;
     }
 
 }

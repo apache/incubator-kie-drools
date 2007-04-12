@@ -25,12 +25,14 @@ public class ReteTest extends IntegrationCases {
 
     protected RuleBase getRuleBase() throws Exception {
 
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO, null );
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
+                                            null );
     }
 
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config ) throws Exception {
+    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
 
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO, config );
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
+                                            config );
     }
 
 }

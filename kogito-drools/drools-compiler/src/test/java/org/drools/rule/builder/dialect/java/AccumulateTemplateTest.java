@@ -14,7 +14,6 @@ import org.drools.Person;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
-import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.ColumnExtractor;
 
 public class AccumulateTemplateTest extends TestCase {
@@ -28,23 +27,22 @@ public class AccumulateTemplateTest extends TestCase {
     }
 
     public void testMethodGeneration() {
-        StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( AccumulateTemplateTest.class.getResourceAsStream( "javaRule.stg" ) ),
+        final StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( AccumulateTemplateTest.class.getResourceAsStream( "javaRule.stg" ) ),
                                                                  AngleBracketTemplateLexer.class );
-        StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateMethod" );
+        final StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateMethod" );
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
                                                                               null,
-                                                                              null ), 
-                                                             new Declaration( "age",
-                                                                              null,
-                                                                              null )};
+                                                                              null ), new Declaration( "age",
+                                                                                                       null,
+                                                                                                       null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
-                                                                              new ColumnExtractor(new ClassObjectType(Cheese.class)),
-                                                                              null ), 
-                                                      new Declaration( "price",
-                                                                              new ClassFieldExtractor(Cheese.class, "price"),
-                                                                              null )};
+                                                                       new ColumnExtractor( new ClassObjectType( Cheese.class ) ),
+                                                                       null ), new Declaration( "price",
+                                                                                                new ClassFieldExtractor( Cheese.class,
+                                                                                                                         "price" ),
+                                                                                                null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
 
@@ -75,15 +73,17 @@ public class AccumulateTemplateTest extends TestCase {
     }
 
     public void testInvokerGeneration() {
-        StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( AccumulateTemplateTest.class.getResourceAsStream( "javaInvokers.stg" ) ),
+        final StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( AccumulateTemplateTest.class.getResourceAsStream( "javaInvokers.stg" ) ),
                                                                  AngleBracketTemplateLexer.class );
-        StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateInvoker" );
+        final StringTemplate accMethod = ruleGroup.getInstanceOf( "accumulateInvoker" );
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              new ClassFieldExtractor(Person.class, "name"),
+                                                                              new ClassFieldExtractor( Person.class,
+                                                                                                       "name" ),
                                                                               null ), new Declaration( "age",
-                                                                                                       new ClassFieldExtractor(Person.class, "age"),
+                                                                                                       new ClassFieldExtractor( Person.class,
+                                                                                                                                "age" ),
                                                                                                        null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -105,7 +105,7 @@ public class AccumulateTemplateTest extends TestCase {
         accMethod.setAttribute( "methodName",
                                 "accumulateTestMethod" );
         accMethod.setAttribute( "hashCode",
-                                new Integer(13) );
+                                new Integer( 13 ) );
 
         System.out.println( accMethod.toString() );
     }

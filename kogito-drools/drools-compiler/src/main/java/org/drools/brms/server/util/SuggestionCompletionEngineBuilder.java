@@ -31,13 +31,13 @@ import org.drools.brms.client.modeldriven.brxml.DSLSentence;
  */
 public class SuggestionCompletionEngineBuilder {
 
-    private SuggestionCompletionEngine instance      = new SuggestionCompletionEngine();
-    private List                       factTypes     = new ArrayList();
-    private Map                        fieldsForType = new HashMap();
-    private Map                        fieldTypes    = new HashMap();
-    private Map                        globalTypes   = new HashMap();
-    private List                       actionDSLSentences  = new ArrayList();
-    private List                       conditionDSLSentences  = new ArrayList();
+    private SuggestionCompletionEngine instance              = new SuggestionCompletionEngine();
+    private List                       factTypes             = new ArrayList();
+    private Map                        fieldsForType         = new HashMap();
+    private Map                        fieldTypes            = new HashMap();
+    private Map                        globalTypes           = new HashMap();
+    private List                       actionDSLSentences    = new ArrayList();
+    private List                       conditionDSLSentences = new ArrayList();
 
     public SuggestionCompletionEngineBuilder() {
     }
@@ -60,7 +60,7 @@ public class SuggestionCompletionEngineBuilder {
      * 
      * @param factType
      */
-    public void addFactType(String factType) {
+    public void addFactType(final String factType) {
         this.factTypes.add( factType );
     }
 
@@ -70,8 +70,8 @@ public class SuggestionCompletionEngineBuilder {
      * @param type
      * @param fields
      */
-    public void addFieldsForType(String type,
-                                 String[] fields) {
+    public void addFieldsForType(final String type,
+                                 final String[] fields) {
         this.fieldsForType.put( type,
                                 fields );
     }
@@ -79,18 +79,18 @@ public class SuggestionCompletionEngineBuilder {
     /**
      * @return true if this has the type already registered (field information).
      */
-    public boolean hasFieldsForType(String type) {
+    public boolean hasFieldsForType(final String type) {
         return this.fieldsForType.containsKey( type );
     }
-    
+
     /**
      * Adds a type declaration for a field
      * 
      * @param field
      * @param type
      */
-    public void addFieldType(String field,
-                             String type) {
+    public void addFieldType(final String field,
+                             final String type) {
         this.fieldTypes.put( field,
                              type );
     }
@@ -101,8 +101,8 @@ public class SuggestionCompletionEngineBuilder {
      * @param global
      * @param type
      */
-    public void addGlobalType(String global,
-                              String type) {
+    public void addGlobalType(final String global,
+                              final String type) {
         this.globalTypes.put( global,
                               type );
     }
@@ -110,21 +110,20 @@ public class SuggestionCompletionEngineBuilder {
     /**
      * Add a DSL sentence for an action.
      */
-    public void addDSLActionSentence(String sentence) {
-        DSLSentence sen = new DSLSentence();
+    public void addDSLActionSentence(final String sentence) {
+        final DSLSentence sen = new DSLSentence();
         sen.sentence = sentence;
         this.actionDSLSentences.add( sen );
     }
-    
+
     /**
      * Add a DSL sentence for a condition.
      */
-    public void addDSLConditionSentence(String sentence) {
-        DSLSentence sen = new DSLSentence();
+    public void addDSLConditionSentence(final String sentence) {
+        final DSLSentence sen = new DSLSentence();
         sen.sentence = sentence;
         this.conditionDSLSentences.add( sen );
     }
-    
 
     /**
      * Returns a SuggestionCompletionEngine instance populated with 

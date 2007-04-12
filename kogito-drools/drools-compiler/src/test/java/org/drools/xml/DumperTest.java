@@ -61,7 +61,7 @@ public class DumperTest extends TestCase {
         final DrlDumper dumper = new DrlDumper();
         final String result = dumper.dump( pkgOriginal );
         assertNotNull( result );
-        
+
         parser = new DrlParser();
         final PackageDescr pkgDumped = parser.parse( new StringReader( result ) );
 
@@ -86,8 +86,8 @@ public class DumperTest extends TestCase {
                       ruleDumped.getConsequence() );
 
         // Now double check the contents are the same
-        BufferedReader reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
-        StringBuffer buffer = new StringBuffer();
+        final BufferedReader reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
+        final StringBuffer buffer = new StringBuffer();
         String s = null;
         while ( (s = reader.readLine()) != null ) {
             buffer.append( s );

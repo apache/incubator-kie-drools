@@ -84,9 +84,9 @@ public class XmlDumper extends ReflectiveVisitor
         this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
-                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >"  + XmlDumper.eol + processDescrList( descr.getDescrs() )  + XmlDumper.eol + "</column>" + XmlDumper.eol;
+                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</column>" + XmlDumper.eol;
             } else {
-                this.template = "<column object-type=\"" + descr.getObjectType() + "\" >"  + XmlDumper.eol + processDescrList( descr.getDescrs() )  + XmlDumper.eol + "</column>" + XmlDumper.eol;
+                this.template = "<column object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</column>" + XmlDumper.eol;
             }
         } else {
             if ( descr.getIdentifier() != null ) {
@@ -100,7 +100,7 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
         if ( !descr.getRestrictions().isEmpty() ) {
-            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> "  + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol +"</field-constraint>";            
+            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> " + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol + "</field-constraint>";
         }
     }
 
@@ -128,8 +128,8 @@ public class XmlDumper extends ReflectiveVisitor
         final String parameterTemplate = processParameters( functionDescr.getParameterNames(),
                                                             functionDescr.getParameterTypes() );
 
-        this.template = "<function return-type=\"" + functionDescr.getReturnType() + "\" name=\"" + functionDescr.getName() + "\">" + XmlDumper.eol + parameterTemplate + "<body>" + XmlDumper.eol + replaceIllegalChars( functionDescr.getText() ) + XmlDumper.eol + "</body>"
-                        + XmlDumper.eol + "</function>" + XmlDumper.eol;
+        this.template = "<function return-type=\"" + functionDescr.getReturnType() + "\" name=\"" + functionDescr.getName() + "\">" + XmlDumper.eol + parameterTemplate + "<body>" + XmlDumper.eol + replaceIllegalChars( functionDescr.getText() )
+                        + XmlDumper.eol + "</body>" + XmlDumper.eol + "</function>" + XmlDumper.eol;
     }
 
     public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
@@ -210,7 +210,7 @@ public class XmlDumper extends ReflectiveVisitor
         return ruleList + XmlDumper.eol;
     }
 
-    private String processFieldConstraint(List list) {
+    private String processFieldConstraint(final List list) {
         String descrString = "";
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object temp = it.next();
@@ -301,34 +301,42 @@ public class XmlDumper extends ReflectiveVisitor
     private void appendXmlDump(final String temp) {
         this.xmlDump.append( temp );
     }
-    
+
     /**
      * Replace illegal xml characters with their escaped equivalent
-      * <P>The escaped characters are :
-      * <ul>
-      * <li> <
-      * <li> >
-      * <li> &
-      * </ul>
-      * </p>
+     * <P>The escaped characters are :
+     * <ul>
+     * <li> <
+     * <li> >
+     * <li> &
+     * </ul>
+     * </p>
      * @author <a href="mailto:prietor@gmail.com">Author Javier Prieto</a>
      */
-    private String replaceIllegalChars(String code) {
-        StringBuffer sb = new StringBuffer();
-        if( code != null ) {
-            int n = code.length();
-            for (int i = 0; i < n; i++) {
-               char c = code.charAt(i);
-               switch (c) {
-                  case '<': sb.append("&lt;"); break;
-                  case '>': sb.append("&gt;"); break;
-                  case '&': sb.append("&amp;"); break;                   
-                  default:  sb.append(c); break;
-               }
+    private String replaceIllegalChars(final String code) {
+        final StringBuffer sb = new StringBuffer();
+        if ( code != null ) {
+            final int n = code.length();
+            for ( int i = 0; i < n; i++ ) {
+                final char c = code.charAt( i );
+                switch ( c ) {
+                    case '<' :
+                        sb.append( "&lt;" );
+                        break;
+                    case '>' :
+                        sb.append( "&gt;" );
+                        break;
+                    case '&' :
+                        sb.append( "&amp;" );
+                        break;
+                    default :
+                        sb.append( c );
+                        break;
+                }
             }
         } else {
             sb.append( "null" );
         }
         return sb.toString();
-    }    
+    }
 }

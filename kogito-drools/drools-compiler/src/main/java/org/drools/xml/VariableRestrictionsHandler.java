@@ -24,9 +24,6 @@ import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -62,7 +59,7 @@ class VariableRestrictionsHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
 
         final String evaluator = attrs.getValue( "evaluator" );
         if ( evaluator == null || evaluator.trim().equals( "" ) ) {

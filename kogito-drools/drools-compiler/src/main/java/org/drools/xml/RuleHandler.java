@@ -58,7 +58,7 @@ class RuleHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
 
         final String ruleName = attrs.getValue( "name" );
 

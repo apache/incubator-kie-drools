@@ -21,24 +21,25 @@ public class FieldBindingDescr extends BaseDescr {
      * 
      */
     private static final long serialVersionUID = 1996404511986883239L;
-    private String fieldName;
-    private String identifier;
+    private String            fieldName;
+    private String            identifier;
 
     public FieldBindingDescr() {
-        this(null, null);
+        this( null,
+              null );
     }
-    
+
     public FieldBindingDescr(final String fieldName,
                              final String identifier) {
         this.fieldName = fieldName;
         this.identifier = identifier;
     }
-    
-    public void setFieldName(String fieldName) {
+
+    public void setFieldName(final String fieldName) {
         this.fieldName = fieldName;
     }
-    
-    public void setIdentifier(String identifier) {
+
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 

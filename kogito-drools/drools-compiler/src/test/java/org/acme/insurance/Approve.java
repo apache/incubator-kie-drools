@@ -6,19 +6,19 @@ package org.acme.insurance;
  *
  */
 public class Approve {
-	
-	private String reason;
 
-	public Approve(String reason) {
-		this.reason = reason;
-	}
+    private String reason;
 
-	public String getReason() {
-		return reason;
-	}
+    public Approve(final String reason) {
+        this.reason = reason;
+    }
 
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
+    public String getReason() {
+        return this.reason;
+    }
+
+    public void setReason(final String reason) {
+        this.reason = reason;
+    }
 
 }

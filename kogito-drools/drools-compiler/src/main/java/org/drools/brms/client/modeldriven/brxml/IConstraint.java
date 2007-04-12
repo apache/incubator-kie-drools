@@ -8,40 +8,40 @@ package org.drools.brms.client.modeldriven.brxml;
 public class IConstraint
     implements
     PortableObject {
-    
+
     /**
      * This is used only when constraint is first created. 
      * This means that there is no value yet for the constraint.
      */
-    public static final int    TYPE_UNDEFINED = 0;
-    
+    public static final int TYPE_UNDEFINED = 0;
+
     /**
      * This may be string, or number, anything really. 
      */
-    public static final int    TYPE_LITERAL   = 1;
-    
+    public static final int TYPE_LITERAL   = 1;
+
     /**
      * This is when it is set to a valid previously bound variable.
      */
-    public static final int    TYPE_VARIABLE  = 2;
-    
+    public static final int TYPE_VARIABLE  = 2;
+
     /**
      * This is for a "formula" that calculates a value.
      */
-    public static final int    TYPE_RET_VALUE = 3;
-    
+    public static final int TYPE_RET_VALUE = 3;
+
     /**
      * This is not used yet. ENUMs are not suitable for business rules
      * until we can get data driven non code enums.
      */
-    public static final int    TYPE_ENUM      = 4;
-    
+    public static final int TYPE_ENUM      = 4;
+
     /**
      * The fieldName and fieldBinding is not used in the case of a predicate. 
      */
-    public static final int    TYPE_PREDICATE = 5;
+    public static final int TYPE_PREDICATE = 5;
 
-    public String value;
-    public int constraintValueType;    
+    public String           value;
+    public int              constraintValueType;
 
 }

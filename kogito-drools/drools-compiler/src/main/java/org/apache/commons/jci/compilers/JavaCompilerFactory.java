@@ -21,15 +21,13 @@ import java.util.Map;
 
 import org.apache.commons.jci.utils.ClassUtils;
 
-
-
 public final class JavaCompilerFactory {
 
     /**
      * @deprecated
      */
-	private static final JavaCompilerFactory INSTANCE = new JavaCompilerFactory();
-    
+    private static final JavaCompilerFactory INSTANCE = new JavaCompilerFactory();
+
     /**
      * @deprecated
      */
@@ -38,7 +36,7 @@ public final class JavaCompilerFactory {
     }
 
     private final Map classCache = new HashMap();
-    
+
     /**
      * Tries to guess the class name by convention. So for compilers
      * following the naming convention
@@ -55,35 +53,36 @@ public final class JavaCompilerFactory {
      * TODO use META-INF discovery mechanism
      */
     public JavaCompiler createCompiler(final String pHint) {
-        
+
         final String className;
-        if (pHint.indexOf('.') < 0) {
-            className = "org.apache.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
+        if ( pHint.indexOf( '.' ) < 0 ) {
+            className = "org.apache.commons.jci.compilers." + ClassUtils.toJavaCasing( pHint ) + "JavaCompiler";
         } else {
             className = pHint;
         }
-        
-        Class clazz = (Class) classCache.get(className);
-        
-        if (clazz == null) {
+
+        Class clazz = (Class) this.classCache.get( className );
+
+        if ( clazz == null ) {
             try {
-                clazz = Class.forName(className);
-                classCache.put(className, clazz);
-            } catch (ClassNotFoundException e) {
+                clazz = Class.forName( className );
+                this.classCache.put( className,
+                                clazz );
+            } catch ( final ClassNotFoundException e ) {
                 clazz = null;
             }
         }
 
-        if (clazz == null) {
+        if ( clazz == null ) {
             return null;
         }
-        
+
         try {
             return (JavaCompiler) clazz.newInstance();
-        } catch (Throwable t) {
+        } catch ( final Throwable t ) {
             t.printStackTrace();
             return null;
         }
     }
-    
+
 }

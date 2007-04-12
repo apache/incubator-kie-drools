@@ -40,7 +40,7 @@ public class Cheesery
         return this.cheeses;
     }
 
-    public void addCheese(Cheese cheese) {
+    public void addCheese(final Cheese cheese) {
         this.cheeses.add( cheese );
         this.totalAmount += cheese.getPrice();
     }
@@ -51,21 +51,21 @@ public class Cheesery
 
     public int getStatus() {
         return this.status;
-    }        
-
-    public Maturity getMaturity() {
-        return maturity;
     }
 
-    public void setMaturity(Maturity maturity) {
+    public Maturity getMaturity() {
+        return this.maturity;
+    }
+
+    public void setMaturity(final Maturity maturity) {
         this.maturity = maturity;
     }
 
     public int getTotalAmount() {
-        return totalAmount;
+        return this.totalAmount;
     }
 
-    public void setTotalAmount(int totalAmount) {
+    public void setTotalAmount(final int totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -75,7 +75,7 @@ public class Cheesery
 
         private String               age;
 
-        public Maturity(String age) {
+        public Maturity(final String age) {
             this.age = age;
         }
 

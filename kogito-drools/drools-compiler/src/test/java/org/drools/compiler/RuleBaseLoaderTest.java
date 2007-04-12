@@ -20,19 +20,19 @@ public class RuleBaseLoaderTest extends TestCase {
         final InputStream in = IntegrationCases.class.getResourceAsStream( "rule_with_expander_dsl.drl" );
         final InputStream inDSL = IntegrationCases.class.getResourceAsStream( "test_expander.dsl" );
         final RuleBase rb = RuleBaseLoader.getInstance().loadFromReader( new InputStreamReader( in ),
-                                                                   new InputStreamReader( inDSL ) );
+                                                                         new InputStreamReader( inDSL ) );
         assertNotNull( rb );
     }
 
     // todo: fix for LEAPS
-//    public void testEngineType() throws Exception {
-//        final InputStream in = IntegrationCases.class.getResourceAsStream( "HelloWorld.drl" );
-//        final RuleBaseLoader loader = RuleBaseLoader.getInstance();
-//        loader.setDefaultEngineType( RuleBase.LEAPS );
-//        final RuleBase rb = loader.loadFromReader( new InputStreamReader( in ) );
-//        assertNotNull( rb );
-//        assertTrue( rb instanceof LeapsRuleBase );
-//
-//    }
+    //    public void testEngineType() throws Exception {
+    //        final InputStream in = IntegrationCases.class.getResourceAsStream( "HelloWorld.drl" );
+    //        final RuleBaseLoader loader = RuleBaseLoader.getInstance();
+    //        loader.setDefaultEngineType( RuleBase.LEAPS );
+    //        final RuleBase rb = loader.loadFromReader( new InputStreamReader( in ) );
+    //        assertNotNull( rb );
+    //        assertTrue( rb instanceof LeapsRuleBase );
+    //
+    //    }
 
 }

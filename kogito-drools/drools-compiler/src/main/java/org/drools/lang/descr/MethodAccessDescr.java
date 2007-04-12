@@ -1,6 +1,5 @@
 package org.drools.lang.descr;
 
-
 /**
  * 
  * This represents a method call.
@@ -12,40 +11,38 @@ package org.drools.lang.descr;
 public class MethodAccessDescr extends DeclarativeInvokerDescr {
 
     private static final long serialVersionUID = -1855405201484757499L;
-    
-    private String methodName;
-	private String arguments;
-	
-    public MethodAccessDescr( String methodName ) {
+
+    private String            methodName;
+    private String            arguments;
+
+    public MethodAccessDescr(final String methodName) {
         this.methodName = methodName;
     }
 
-    public MethodAccessDescr( String methodName, String arguments ) {
+    public MethodAccessDescr(final String methodName,
+                             final String arguments) {
         this.methodName = methodName;
         this.arguments = arguments;
     }
 
-	public String getArguments() {
-		return arguments;
-	}
+    public String getArguments() {
+        return this.arguments;
+    }
 
-	public void setArguments(String arguments) {
-		this.arguments = arguments;
-	}
+    public void setArguments(final String arguments) {
+        this.arguments = arguments;
+    }
 
-	public String getMethodName() {
-		return methodName;
-	}
+    public String getMethodName() {
+        return this.methodName;
+    }
 
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
-    
+    public void setMethodName(final String methodName) {
+        this.methodName = methodName;
+    }
+
     public String toString() {
         return this.methodName + this.arguments;
     }
 
-	
-	
-	
 }

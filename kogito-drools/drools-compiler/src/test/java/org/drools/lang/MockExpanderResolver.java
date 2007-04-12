@@ -29,7 +29,7 @@ public class MockExpanderResolver
     public Expander get(final String name,
                         final String config) {
         this.resolveCalls.put( name,
-                          config );
+                               config );
         return this.expander;
     }
 

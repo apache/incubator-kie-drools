@@ -1,8 +1,5 @@
 package org.drools.brms.server.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -12,7 +9,7 @@ public class SuggestionCompletionEngineBuilderTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        builder.newCompletionEngine();
+        this.builder.newCompletionEngine();
     }
 
     protected void tearDown() throws Exception {
@@ -20,17 +17,15 @@ public class SuggestionCompletionEngineBuilderTest extends TestCase {
     }
 
     public void testAddDSLSentence() {
-        String input = "{This} is a {pattern} considered pretty \\{{easy}\\} by most \\{people\\}. What do you {say}?";
-        builder.addDSLActionSentence(  input );
-        builder.addDSLConditionSentence( "foo bar" );
-        SuggestionCompletionEngine engine = builder.getInstance();
+        final String input = "{This} is a {pattern} considered pretty \\{{easy}\\} by most \\{people\\}. What do you {say}?";
+        this.builder.addDSLActionSentence( input );
+        this.builder.addDSLConditionSentence( "foo bar" );
+        final SuggestionCompletionEngine engine = this.builder.getInstance();
 
         assertEquals( 1,
                       engine.actionDSLSentences.length );
         assertEquals( 1,
                       engine.conditionDSLSentences.length );
-        
-
 
     }
 

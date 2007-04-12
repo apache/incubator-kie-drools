@@ -33,8 +33,6 @@ import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.drools.spi.DataProvider;
-import org.mvel.CompiledExpression;
-import org.mvel.ExpressionParser;
 import org.mvel.MVEL;
 
 /**
@@ -44,7 +42,8 @@ import org.mvel.MVEL;
  */
 public class MVELFromBuilder
     implements
-    ConditionalElementBuilder, FromBuilder {
+    ConditionalElementBuilder,
+    FromBuilder {
 
     /* (non-Javadoc)
      * @see org.drools.dialect.mvel.FromBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
@@ -53,7 +52,7 @@ public class MVELFromBuilder
                                     final BuildUtils utils,
                                     final ColumnBuilder columnBuilder,
                                     final BaseDescr descr) {
-        FromDescr fromDescr = (FromDescr) descr;
+        final FromDescr fromDescr = (FromDescr) descr;
 
         final Column column = columnBuilder.build( context,
                                                    utils,
@@ -63,17 +62,17 @@ public class MVELFromBuilder
             return null;
         }
 
-        AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
+        final AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
         DataProvider dataProvider = null;
         try {
-//            JFDIParser parser = createParser( utils,
-//                                              accessor.toString() );
-            DroolsMVELFactory factory = new DroolsMVELFactory( );
+            //            JFDIParser parser = createParser( utils,
+            //                                              accessor.toString() );
+            final DroolsMVELFactory factory = new DroolsMVELFactory();
             factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
             factory.setGlobalsMap( context.getPkg().getGlobals() );
-            
+
             //parser.setValueHandlerFactory( factory );
-            Serializable compiled = MVEL.compileExpression( accessor.toString() );
+            final Serializable compiled = MVEL.compileExpression( accessor.toString() );
 
             dataProvider = new MVELDataProvider( compiled,
                                                  factory );

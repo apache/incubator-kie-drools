@@ -43,13 +43,8 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
-import org.drools.rule.builder.dialect.java.JavaAccumulateBuilder;
-import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;
-import org.drools.rule.builder.dialect.java.JavaEvalBuilder;
 import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
-import org.drools.rule.builder.dialect.java.JavaRuleClassBuilder;
-import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 
 /**
  * This builds the rule structure from an AST.
@@ -81,7 +76,7 @@ public class RuleBuilder {
     // Constructor
     public RuleBuilder(final TypeResolver typeResolver,
                        final ClassFieldExtractorCache cache,
-                       Dialect dialect) {
+                       final Dialect dialect) {
 
         this.dialect = dialect;
 
@@ -90,43 +85,43 @@ public class RuleBuilder {
         // if we want to
         this.builders = new HashMap();
 
-        builders.put( CollectDescr.class,
+        this.builders.put( CollectDescr.class,
                       new CollectBuilder() );
 
-        builders.put( ForallDescr.class,
+        this.builders.put( ForallDescr.class,
                       new ForallBuilder() );
-        GroupElementBuilder gebuilder = new GroupElementBuilder();
-        builders.put( AndDescr.class,
+        final GroupElementBuilder gebuilder = new GroupElementBuilder();
+        this.builders.put( AndDescr.class,
                       gebuilder );
-        builders.put( OrDescr.class,
+        this.builders.put( OrDescr.class,
                       gebuilder );
-        builders.put( NotDescr.class,
+        this.builders.put( NotDescr.class,
                       gebuilder );
-        builders.put( ExistsDescr.class,
+        this.builders.put( ExistsDescr.class,
                       gebuilder );
 
         // dialect specific        
         this.columnBuilder = new ColumnBuilder( this.dialect );
 
-        builders.put( FromDescr.class,
+        this.builders.put( FromDescr.class,
                       this.dialect.getFromBuilder() );
 
-        builders.put( AccumulateDescr.class,
+        this.builders.put( AccumulateDescr.class,
                       this.dialect.getAccumulateBuilder() );
 
-        builders.put( EvalDescr.class,
+        this.builders.put( EvalDescr.class,
                       this.dialect.getEvalBuilder() );
 
-        this.consequenceBuilder = (ConsequenceBuilder) this.dialect.getConsequenceBuilder();
+        this.consequenceBuilder = this.dialect.getConsequenceBuilder();
 
-        this.classBuilder = (RuleClassBuilder) this.dialect.getRuleClassBuilder();
+        this.classBuilder = this.dialect.getRuleClassBuilder();
 
         this.utils = new BuildUtils( new KnowledgeHelperFixer(),
                                      new DeclarationTypeFixer(),
                                      new JavaExprAnalyzer(),
                                      typeResolver,
                                      cache,
-                                     builders );
+                                     this.builders );
     }
 
     public Map getInvokers() {
@@ -178,9 +173,9 @@ public class RuleBuilder {
         setAttributes( this.context.getRule(),
                        ruleDescr.getAttributes() );
 
-        ConditionalElementBuilder builder = utils.getBuilder( ruleDescr.getLhs().getClass() );
+        final ConditionalElementBuilder builder = this.utils.getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
-            GroupElement ce = (GroupElement) builder.build( this.context,
+            final GroupElement ce = (GroupElement) builder.build( this.context,
                                                             this.utils,
                                                             this.columnBuilder,
                                                             ruleDescr.getLhs() );
@@ -238,7 +233,7 @@ public class RuleBuilder {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
             } else if ( name.equals( "lock-on-active" ) ) {
                 if ( attributeDescr.getValue() == null ) {
-                    rule.setLockOnActive(true );
+                    rule.setLockOnActive( true );
                 } else {
                     rule.setLockOnActive( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
                 }
@@ -252,11 +247,11 @@ public class RuleBuilder {
                     rule.setEnabled( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
                 }
             } else if ( name.equals( "date-effective" ) ) {
-                Calendar cal = Calendar.getInstance();
+                final Calendar cal = Calendar.getInstance();
                 cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
                 rule.setDateEffective( cal );
             } else if ( name.equals( "date-expires" ) ) {
-                Calendar cal = Calendar.getInstance();
+                final Calendar cal = Calendar.getInstance();
                 cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
                 rule.setDateExpires( cal );
 

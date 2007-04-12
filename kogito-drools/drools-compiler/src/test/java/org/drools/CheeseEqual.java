@@ -25,13 +25,13 @@ public class CheeseEqual
      * 
      */
     private static final long serialVersionUID = 10880087244353711L;
-    protected String type;
-    protected int    price;
+    protected String          type;
+    protected int             price;
 
-    public CheeseEqual(){
-        
+    public CheeseEqual() {
+
     }
-    
+
     public CheeseEqual(final String type,
                        final int price) {
         super();

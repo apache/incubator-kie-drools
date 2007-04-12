@@ -65,14 +65,14 @@ public class PackageDescr extends BaseDescr {
     public List getImports() {
         return this.imports;
     }
-    
+
     public void addFunctionImport(final FunctionImportDescr importFunction) {
-        if (this.functionImports == Collections.EMPTY_LIST) {
+        if ( this.functionImports == Collections.EMPTY_LIST ) {
             this.functionImports = new ArrayList();
         }
         this.functionImports.add( importFunction );
     }
-        
+
     public List getFunctionImports() {
         return this.functionImports;
     }
@@ -86,7 +86,7 @@ public class PackageDescr extends BaseDescr {
 
     public List getGlobals() {
         return this.globals;
-    }    
+    }
 
     public void addAttribute(final AttributeDescr attribute) {
         if ( this.attributes == Collections.EMPTY_LIST ) {
@@ -98,14 +98,14 @@ public class PackageDescr extends BaseDescr {
     public List getAttributes() {
         return this.attributes;
     }
-    
-    public void addFactTemplate(final FactTemplateDescr  factTemplate) {
+
+    public void addFactTemplate(final FactTemplateDescr factTemplate) {
         if ( this.factTemplates == Collections.EMPTY_LIST ) {
             this.factTemplates = new ArrayList( 1 );
         }
         this.factTemplates.add( factTemplate );
     }
-    
+
     public List getFactTemplates() {
         return this.factTemplates;
     }

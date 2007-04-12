@@ -4,9 +4,9 @@ public class Alarm {
     private String message;
 
     public Alarm() {
-        
+
     }
-    
+
     public Alarm(final String message) {
         this.message = message;
     }
@@ -53,13 +53,13 @@ public class Alarm {
      * @return the message
      */
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     /**
      * @param message the message to set
      */
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 

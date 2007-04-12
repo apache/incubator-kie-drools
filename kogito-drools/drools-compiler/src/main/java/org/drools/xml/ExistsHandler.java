@@ -65,7 +65,7 @@ class ExistsHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
         final ExistsDescr existsDescr = new ExistsDescr();
 
         return existsDescr;

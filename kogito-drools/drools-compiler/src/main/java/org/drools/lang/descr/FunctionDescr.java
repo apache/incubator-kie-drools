@@ -22,18 +22,18 @@ import java.util.List;
 
 public class FunctionDescr extends BaseDescr {
     private static final long serialVersionUID = 320;
-    
-    private final String name;
-    private final String returnType;
-    
-    private List         parameterTypes = Collections.EMPTY_LIST;
-    private List         parameterNames = Collections.EMPTY_LIST;
 
-    private String       text;
-    
-    private int      offset;
+    private final String      name;
+    private final String      returnType;
 
-    private String   className;
+    private List              parameterTypes   = Collections.EMPTY_LIST;
+    private List              parameterNames   = Collections.EMPTY_LIST;
+
+    private String            text;
+
+    private int               offset;
+
+    private String            className;
 
     public FunctionDescr(final String name,
                          final String returnType) {
@@ -90,10 +90,8 @@ public class FunctionDescr extends BaseDescr {
         return this.offset;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(final int offset) {
         this.offset = offset;
     }
-    
-    
-    
+
 }

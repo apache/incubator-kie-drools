@@ -21,10 +21,10 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Rule;
 
 public class RuleError extends DroolsError {
-    private Rule         rule;
-    private BaseDescr    descr;
-    private Object       object;
-    private String       message;
+    private Rule      rule;
+    private BaseDescr descr;
+    private Object    object;
+    private String    message;
 
     public RuleError(final Rule rule,
                      final BaseDescr descr,
@@ -72,14 +72,14 @@ public class RuleError extends DroolsError {
         }
         return summary;
     }
-    
+
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer();
         buf.append( this.message );
         buf.append( " : " );
         buf.append( this.rule );
         buf.append( "\n" );
-        if( this.object instanceof CompilationProblem[] ) {
+        if ( this.object instanceof CompilationProblem[] ) {
             final CompilationProblem[] problem = (CompilationProblem[]) this.object;
             for ( int i = 0; i < problem.length; i++ ) {
                 buf.append( "\t" );

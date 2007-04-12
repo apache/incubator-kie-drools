@@ -1,4 +1,5 @@
 package org.drools.compiler;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -31,33 +32,33 @@ import com.thoughtworks.xstream.XStream;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ProcessBuilder {
-	
-	private List processes = new ArrayList();
-	
-	public IProcess[] getProcesses() {
-		return (IProcess[]) processes.toArray(new IProcess[processes.size()]);
-	}
-	
-	public void addProcess(IProcess process) {
-		processes.add(process);
-	}
-	
-	public void addProcessFromFile(final Reader reader) throws Exception {
-        XStream stream = new XStream();
-        stream.setMode(XStream.ID_REFERENCES);
-        
-        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader newLoader = this.getClass().getClassLoader();
+
+    private final List processes = new ArrayList();
+
+    public IProcess[] getProcesses() {
+        return (IProcess[]) this.processes.toArray( new IProcess[this.processes.size()] );
+    }
+
+    public void addProcess(final IProcess process) {
+        this.processes.add( process );
+    }
+
+    public void addProcessFromFile(final Reader reader) throws Exception {
+        final XStream stream = new XStream();
+        stream.setMode( XStream.ID_REFERENCES );
+
+        final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(newLoader);
-            IRuleFlowProcess process = (IRuleFlowProcess) stream.fromXML(reader);
-            addProcess(process);
-        } catch (Exception t) {
+            Thread.currentThread().setContextClassLoader( newLoader );
+            final IRuleFlowProcess process = (IRuleFlowProcess) stream.fromXML( reader );
+            addProcess( process );
+        } catch ( final Exception t ) {
             t.printStackTrace();
             throw t;
         } finally {
-            Thread.currentThread().setContextClassLoader(oldLoader);
+            Thread.currentThread().setContextClassLoader( oldLoader );
         }
         reader.close();
-	}
+    }
 }

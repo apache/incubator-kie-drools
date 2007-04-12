@@ -50,23 +50,22 @@ public class DrlParser {
         return parser.getPackageDescr();
 
     }
-    
+
     public PackageDescr parse(final Reader reader) throws DroolsParserException {
         final DRLParser parser = getParser( reader );
         compile( parser );
         return parser.getPackageDescr();
 
-    }    
+    }
 
-
-//    /** Parse and build a rule package from a DRL source */
-//    public PackageDescr parse(final Reader reader) throws IOException,
-//                                            DroolsParserException {
-//        DRLParser parser = 
-//        
-//        //final StringBuffer text = getDRLText( reader );
-//        //return parse( text.toString() );
-//    }
+    //    /** Parse and build a rule package from a DRL source */
+    //    public PackageDescr parse(final Reader reader) throws IOException,
+    //                                            DroolsParserException {
+    //        DRLParser parser = 
+    //        
+    //        //final StringBuffer text = getDRLText( reader );
+    //        //return parse( text.toString() );
+    //    }
 
     /** 
      * Parse and build a rule package from a DRL source with a 
@@ -74,7 +73,7 @@ public class DrlParser {
      */
     public PackageDescr parse(final Reader drl,
                               final Reader dsl) throws DroolsParserException,
-                                         IOException {
+                                               IOException {
         final StringBuffer text = getDRLText( drl );
         return parse( text.toString(),
                       dsl );
@@ -92,12 +91,14 @@ public class DrlParser {
         DefaultExpanderResolver resolver;
         try {
             resolver = new DefaultExpanderResolver( dsl );
-        } catch ( IOException e ) {
-            throw new DroolsParserException( "Error parsing the DSL.", e);
+        } catch ( final IOException e ) {
+            throw new DroolsParserException( "Error parsing the DSL.",
+                                             e );
         }
-        Expander expander = resolver.get( "*", null );
-        String expanded = expander.expand( source );
-        if( expander.hasErrors() ) {
+        final Expander expander = resolver.get( "*",
+                                          null );
+        final String expanded = expander.expand( source );
+        if ( expander.hasErrors() ) {
             this.results.addAll( expander.getErrors() );
         }
         return this.parse( expanded );
@@ -130,7 +131,7 @@ public class DrlParser {
     public List getErrors() {
         return this.results;
     }
-    
+
     private void compile(final DRLParser parser) throws DroolsParserException {
         try {
             parser.compilation_unit();
@@ -146,8 +147,8 @@ public class DrlParser {
         for ( final Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
             final RecognitionException recogErr = (RecognitionException) iter.next();
             final ParserError err = new ParserError( parser.createErrorMessage( recogErr ),
-                                               recogErr.line,
-                                               recogErr.charPositionInLine );
+                                                     recogErr.line,
+                                                     recogErr.charPositionInLine );
             this.results.add( err );
         }
     }
@@ -162,8 +163,9 @@ public class DrlParser {
     private DRLParser getParser(final Reader reader) {
         try {
             return new DRLParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
-        }catch (Exception e) {
-            throw new RuntimeException( "Unable to parser Reader", e);
+        } catch ( final Exception e ) {
+            throw new RuntimeException( "Unable to parser Reader",
+                                        e );
         }
-    }    
+    }
 }

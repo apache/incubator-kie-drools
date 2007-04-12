@@ -37,7 +37,6 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.spi.FunctionResolver;
 
 /**
  * @author etirelli
@@ -71,13 +70,13 @@ public class RuleBuilderTest extends TestCase {
             Assert.assertFalse( parser.getErrors().toString(),
                                 parser.hasErrors() );
 
-            Package pkg = new Package( "org.drools" );
+            final Package pkg = new Package( "org.drools" );
 
-            RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
+            final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
             final String ruleClassName = "RuleClassName.java";
             ruleDescr.setClassName( ruleClassName );
 
-            TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
+            final TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
                                                                this.getClass().getClassLoader() );
             // make an automatic import for the current package
             typeResolver.addImport( pkgDescr.getName() + ".*" );
@@ -85,7 +84,8 @@ public class RuleBuilderTest extends TestCase {
 
             final RuleBuilder builder = new RuleBuilder( typeResolver,
                                                          new ClassFieldExtractorCache(),
-                                                         new JavaDialect(null, new PackageBuilderConfiguration() ) );
+                                                         new JavaDialect( null,
+                                                                          new PackageBuilderConfiguration() ) );
 
             builder.build( pkg,
                            ruleDescr );
@@ -94,69 +94,86 @@ public class RuleBuilderTest extends TestCase {
                                builder.getErrors().isEmpty() );
 
             final Rule rule = builder.getRule();
-            
-            assertEquals( "There should be 2 rule level declarations", 2, rule.getDeclarations().length );
-            
+
+            assertEquals( "There should be 2 rule level declarations",
+                          2,
+                          rule.getDeclarations().length );
+
             // second GE should be a not
-            GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );
+            final GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );
             assertTrue( not.isNot() );
             // not has no outer declarations
             assertTrue( not.getOuterDeclarations().isEmpty() );
-            assertEquals( 1, not.getInnerDeclarations().size() );
+            assertEquals( 1,
+                          not.getInnerDeclarations().size() );
             assertTrue( not.getInnerDeclarations().keySet().contains( "$state" ) );
-            
+
             // second not
-            GroupElement not2 = (GroupElement) ((GroupElement) not.getChildren().get( 0 )).getChildren().get( 1 );
+            final GroupElement not2 = (GroupElement) ((GroupElement) not.getChildren().get( 0 )).getChildren().get( 1 );
             assertTrue( not2.isNot() );
             // not has no outer declarations
             assertTrue( not2.getOuterDeclarations().isEmpty() );
-            assertEquals( 1, not2.getInnerDeclarations().size() );
+            assertEquals( 1,
+                          not2.getInnerDeclarations().size() );
             assertTrue( not2.getInnerDeclarations().keySet().contains( "$likes" ) );
-            
-        } catch ( Exception e ) {
+
+        } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "This test is not supposed to throw any exception: " + e.getMessage() );
         }
 
     }
-    
+
     public void testBuildAttributes() throws Exception {
-        RuleBuilder builder = new RuleBuilder(null,  null, new JavaDialect(null, new PackageBuilderConfiguration()) );
-        Rule rule = new Rule("myrule");
+        final RuleBuilder builder = new RuleBuilder( null,
+                                               null,
+                                               new JavaDialect( null,
+                                                                new PackageBuilderConfiguration() ) );
+        Rule rule = new Rule( "myrule" );
         List attributes = new ArrayList();
-        
-        attributes.add( new AttributeDescr("no-loop", "true") );
-        attributes.add( new AttributeDescr("enabled", "false") );
-        attributes.add( new AttributeDescr("ruleflow-group", "mygroup") );
-        builder.setAttributes( rule, attributes );
-        
-        assertTrue(rule.getNoLoop());
-        assertFalse(rule.isEffective());
-        assertEquals("mygroup", rule.getRuleFlowGroup() );
-        
+
+        attributes.add( new AttributeDescr( "no-loop",
+                                            "true" ) );
+        attributes.add( new AttributeDescr( "enabled",
+                                            "false" ) );
+        attributes.add( new AttributeDescr( "ruleflow-group",
+                                            "mygroup" ) );
+        builder.setAttributes( rule,
+                               attributes );
+
+        assertTrue( rule.getNoLoop() );
+        assertFalse( rule.isEffective() );
+        assertEquals( "mygroup",
+                      rule.getRuleFlowGroup() );
+
         attributes = new ArrayList();
-        attributes.add(new AttributeDescr("date-effective", "10-Jul-1974"));
-        attributes.add(new AttributeDescr("date-expires", "10-Jul-2040") );
-        
-        rule = new Rule("myrule");
-        
-        builder.setAttributes( rule, attributes );
-        
-        Field eff = rule.getClass().getDeclaredField( "dateEffective" );
-        eff.setAccessible( true );       
-        Calendar effectiveDate = (Calendar) eff.get( rule );
-        assertNotNull(effectiveDate);
-        
-        assertEquals(1974, effectiveDate.get( Calendar.YEAR ));
-        
-        Field exp = rule.getClass().getDeclaredField( "dateExpires" );
+        attributes.add( new AttributeDescr( "date-effective",
+                                            "10-Jul-1974" ) );
+        attributes.add( new AttributeDescr( "date-expires",
+                                            "10-Jul-2040" ) );
+
+        rule = new Rule( "myrule" );
+
+        builder.setAttributes( rule,
+                               attributes );
+
+        final Field eff = rule.getClass().getDeclaredField( "dateEffective" );
+        eff.setAccessible( true );
+        final Calendar effectiveDate = (Calendar) eff.get( rule );
+        assertNotNull( effectiveDate );
+
+        assertEquals( 1974,
+                      effectiveDate.get( Calendar.YEAR ) );
+
+        final Field exp = rule.getClass().getDeclaredField( "dateExpires" );
         exp.setAccessible( true );
-        Calendar expiryDate = (Calendar) exp.get( rule );
-        
-        assertEquals(2040, expiryDate.get(Calendar.YEAR));
-        
-        assertNotNull(expiryDate);
-        
+        final Calendar expiryDate = (Calendar) exp.get( rule );
+
+        assertEquals( 2040,
+                      expiryDate.get( Calendar.YEAR ) );
+
+        assertNotNull( expiryDate );
+
     }
 
 }

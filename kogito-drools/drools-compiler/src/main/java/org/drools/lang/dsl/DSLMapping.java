@@ -32,24 +32,24 @@ public interface DSLMapping {
      * @return
      */
     public String getIdentifier();
-    
+
     /**
      * Sets the identifier for this mapping
      * @param identifier
      */
-    public void setIdentifier( String identifier );
-    
+    public void setIdentifier(String identifier);
+
     /**
      * Returns a String description of this mapping
      * @return
      */
     public String getDescription();
-    
+
     /**
      * Sets the description for this mapping
      * @param description
      */
-    public void setDescription( String description );
+    public void setDescription(String description);
 
     /**
      * Returns the list of entries in this mapping

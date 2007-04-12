@@ -91,7 +91,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testCompilationUnit() throws Exception {
-        String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
+        final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
         parse( source ).compilation_unit();
         assertEquals( "foo",
                       this.parser.getPackageDescr().getName() );
@@ -147,18 +147,18 @@ public class RuleParserTest extends TestCase {
     public void testPartialAST() throws Exception {
         parseResource( "column_partial.drl" );
 
-        parser.compilation_unit();
+        this.parser.compilation_unit();
 
-        assertTrue( parser.hasErrors() );
+        assertTrue( this.parser.hasErrors() );
 
-        PackageDescr pkg = parser.getPackageDescr();
+        final PackageDescr pkg = this.parser.getPackageDescr();
         assertEquals( 1,
                       pkg.getRules().size() );
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
-        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
 
         assertNotNull( col );
         assertEquals( "Bar",
@@ -203,7 +203,7 @@ public class RuleParserTest extends TestCase {
 
         fact1 = null;
 
-        FactTemplateDescr fact2 = (FactTemplateDescr) pkg.getFactTemplates().get( 1 );
+        final FactTemplateDescr fact2 = (FactTemplateDescr) pkg.getFactTemplates().get( 1 );
         assertEquals( "Wine",
                       fact2.getName() );
         assertEquals( 3,
@@ -231,13 +231,13 @@ public class RuleParserTest extends TestCase {
 
         parser.compilation_unit();
         final PackageDescr pkg = parser.getPackageDescr();
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( 1,
                       pkg.getRules().size() );
 
         assertFalse( parser.hasErrors() );
         assertEqualsIgnoreWhitespace( "if (speed > speedLimit ? true : false;) pullEmOver();",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
     }
 
     public void FIX_ME_testLatinChars() throws Exception {
@@ -261,10 +261,10 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testFunctionWithArrays() throws Exception {
-        DRLParser parser = parseResource( "function_arrays.drl" );
+        final DRLParser parser = parseResource( "function_arrays.drl" );
 
         parser.compilation_unit();
-        PackageDescr pkg = parser.getPackageDescr();
+        final PackageDescr pkg = parser.getPackageDescr();
 
         if ( parser.hasErrors() ) {
             System.err.println( parser.getErrorMessages() );
@@ -278,7 +278,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         assertEqualsIgnoreWhitespace( "yourFunction(new String[3] {\"a\",\"b\",\"c\"});",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
         final FunctionDescr func = (FunctionDescr) pkg.getFunctions().get( 0 );
 
         assertEquals( "String[]",
@@ -298,7 +298,7 @@ public class RuleParserTest extends TestCase {
                       rule.getName() );
         assertNotNull( rule.getLhs() );
         assertEquals( "",
-                      (( String ) rule.getConsequence()).trim() );
+                      ((String) rule.getConsequence()).trim() );
         assertFalse( this.parser.hasErrors() );
     }
 
@@ -311,7 +311,7 @@ public class RuleParserTest extends TestCase {
                       rule.getName() );
         assertNotNull( rule.getLhs() );
         assertEquals( "",
-                      (( String ) rule.getConsequence()).trim() );
+                      ((String) rule.getConsequence()).trim() );
         assertFalse( this.parser.hasErrors() );
     }
 
@@ -376,11 +376,11 @@ public class RuleParserTest extends TestCase {
                                 + "Object o = new String(\"Hello\");" + "String s = (String) o;";
 
         assertEqualsIgnoreWhitespace( expected,
-                                      ( String ) rule.getConsequence() );
-        assertTrue( (( String ) rule.getConsequence()).indexOf( "++" ) > 0 );
-        assertTrue( (( String ) rule.getConsequence()).indexOf( "--" ) > 0 );
-        assertTrue( (( String ) rule.getConsequence()).indexOf( "+=" ) > 0 );
-        assertTrue( (( String ) rule.getConsequence()).indexOf( "==" ) > 0 );
+                                      (String) rule.getConsequence() );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "++" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "--" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "+=" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "==" ) > 0 );
 
         //System.out.println(( String ) rule.getConsequence());
         //note, need to assert that "i++" is preserved as is, no extra spaces.
@@ -389,12 +389,12 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testRuleParseLhs() throws Exception {
-        String text = "Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") \n";
-        AndDescr descrs = new AndDescr();
-        CharStream charStream = new ANTLRStringStream( text );
-        DRLLexer lexer = new DRLLexer( charStream );
-        TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
-        DRLParser parser = new DRLParser( tokenStream );
+        final String text = "Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") \n";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( descrs.getLine() );
         parser.normal_lhs_block( descrs );
         if ( parser.hasErrors() ) {
@@ -415,7 +415,7 @@ public class RuleParserTest extends TestCase {
                       rule.getName() );
         assertNotNull( rule.getLhs() );
         assertEqualsIgnoreWhitespace( "cons();",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         final AndDescr lhs = rule.getLhs();
         assertEquals( 3,
@@ -527,11 +527,11 @@ public class RuleParserTest extends TestCase {
     public void testSimpleMethodCallWithFrom() throws Exception {
 
         final RuleDescr rule = parseResource( "test_SimpleMethodCallWithFrom.drl" ).rule();
-        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        AccessorDescr method = (AccessorDescr) from.getDataSource();
+        final FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccessorDescr method = (AccessorDescr) from.getDataSource();
 
-        assertFalse( parser.getErrorMessages().toString(),
-                     parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
 
         assertEquals( "something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )",
                       method.toString() );
@@ -540,11 +540,11 @@ public class RuleParserTest extends TestCase {
     public void testSimpleFunctionCallWithFrom() throws Exception {
 
         final RuleDescr rule = parseResource( "test_SimpleFunctionCallWithFrom.drl" ).rule();
-        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        AccessorDescr func = (AccessorDescr) from.getDataSource();
+        final FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccessorDescr func = (AccessorDescr) from.getDataSource();
 
-        assertFalse( parser.getErrorMessages().toString(),
-                     parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
 
         assertEquals( "doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )",
                       func.toString() );
@@ -553,11 +553,11 @@ public class RuleParserTest extends TestCase {
     public void testSimpleAccessorWithFrom() throws Exception {
 
         final RuleDescr rule = parseResource( "test_SimpleAccessorWithFrom.drl" ).rule();
-        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        AccessorDescr accessor = (AccessorDescr) from.getDataSource();
+        final FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
 
-        assertFalse( parser.getErrorMessages().toString(),
-                     parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
 
         assertNull( ((FieldAccessDescr) accessor.getInvokers().get( 0 )).getArgument() );
 
@@ -568,11 +568,11 @@ public class RuleParserTest extends TestCase {
     public void testSimpleAccessorAndArgWithFrom() throws Exception {
 
         final RuleDescr rule = parseResource( "test_SimpleAccessorArgWithFrom.drl" ).rule();
-        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        AccessorDescr accessor = (AccessorDescr) from.getDataSource();
+        final FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
 
-        assertFalse( parser.getErrorMessages().toString(),
-                     parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
 
         assertNotNull( ((FieldAccessDescr) accessor.getInvokers().get( 0 )).getArgument() );
 
@@ -582,11 +582,11 @@ public class RuleParserTest extends TestCase {
 
     public void testComplexChainedAcessor() throws Exception {
         final RuleDescr rule = parseResource( "test_ComplexChainedCallWithFrom.drl" ).rule();
-        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
-        AccessorDescr accessor = (AccessorDescr) from.getDataSource();
+        final FromDescr from = (FromDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
 
-        assertFalse( parser.getErrorMessages().toString(),
-                     parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
 
         assertEquals( "doIt1( foo,bar,42,\"hello\",{ a => \"b\"}, [a, \"b\", 42] ).doIt2(bar, [a, \"b\", 42]).field[\"key\"]",
                       accessor.toString() );
@@ -775,7 +775,7 @@ public class RuleParserTest extends TestCase {
                       third.getObjectType() );
 
         assertEqualsIgnoreWhitespace( "if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( this.parser.hasErrors() );
     }
@@ -788,7 +788,7 @@ public class RuleParserTest extends TestCase {
         assertNotNull( rule );
 
         assertEqualsIgnoreWhitespace( "consequence();",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
         assertEquals( "simple_rule",
                       rule.getName() );
         assertEquals( 2,
@@ -916,8 +916,8 @@ public class RuleParserTest extends TestCase {
     public void FIXME_testLineNumberIncludingCommentsInRHS() throws Exception {
         parseResource( "test_CommentLineNumbersInConsequence.drl" ).compilation_unit();
 
-        assertFalse( parser.hasErrors() );
-        String rhs = (String)  ((RuleDescr) parser.getPackageDescr().getRules().get( 0 )).getConsequence();
+        assertFalse( this.parser.hasErrors() );
+        final String rhs = (String) ((RuleDescr) this.parser.getPackageDescr().getRules().get( 0 )).getConsequence();
         //System.out.println(rhs);
         assertEquals( "\n first\n\n\n\n\n\n\n second",
                       rhs );
@@ -1002,7 +1002,7 @@ public class RuleParserTest extends TestCase {
                       third.getObjectType() );
 
         assertEqualsIgnoreWhitespace( "if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( this.parser.hasErrors() );
     }
@@ -1027,7 +1027,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       col.getDescrs().size() );
 
-        FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        final FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
         final LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "==",
@@ -1045,7 +1045,7 @@ public class RuleParserTest extends TestCase {
         parser.compilation_unit();
         assertFalse( parser.hasErrors() );
 
-        PackageDescr pkg = parser.getPackageDescr();
+        final PackageDescr pkg = parser.getPackageDescr();
         assertEquals( 2,
                       pkg.getFunctionImports().size() );
 
@@ -1244,16 +1244,16 @@ public class RuleParserTest extends TestCase {
 
     public void testExpanderErrorsAfterExpansion() throws Exception {
 
-        String name = "expander_post_errors.drl";
-        Expander expander = new DefaultExpander();
-        String expanded = expander.expand( this.getReader( name ) );
+        final String name = "expander_post_errors.drl";
+        final Expander expander = new DefaultExpander();
+        final String expanded = expander.expand( this.getReader( name ) );
 
         final DRLParser parser = parse( name,
                                         expanded );
         parser.compilation_unit();
         assertTrue( parser.hasErrors() );
 
-        RecognitionException err = (RecognitionException) parser.getErrors().get( 0 );
+        final RecognitionException err = (RecognitionException) parser.getErrors().get( 0 );
         assertEquals( 1,
                       parser.getErrors().size() );
 
@@ -1276,7 +1276,7 @@ public class RuleParserTest extends TestCase {
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( 2,
                       or.getDescrs().size() );
-        assertNotNull( ( String ) rule.getConsequence() );
+        assertNotNull( (String) rule.getConsequence() );
 
     }
 
@@ -1285,7 +1285,8 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.drl" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
-        assertFalse( parser.getErrors().toString(), parser.hasErrors() );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( 2,
@@ -1306,7 +1307,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Bar",
                       col.getObjectType() );
 
-        assertNotNull( ( String ) rule.getConsequence() );
+        assertNotNull( (String) rule.getConsequence() );
 
     }
 
@@ -1316,13 +1317,14 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.drl" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
-        assertFalse( parser.getErrors().toString(), parser.hasErrors() );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
 
-        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Person",
                       col.getObjectType() );
 
@@ -1333,59 +1335,59 @@ public class RuleParserTest extends TestCase {
         assertEquals( "location",
                       ((FieldConstraintDescr) col.getDescrs().get( 1 )).getFieldName() );
 
-        assertNotNull( ( String ) rule.getConsequence() );
+        assertNotNull( (String) rule.getConsequence() );
 
     }
 
-//    public void testExpanderUnExpandableErrorLines() throws Exception {
-//
-//        //stubb expander
-//        final ExpanderResolver res = new ExpanderResolver() {
-//            public Expander get(String name,
-//                                String config) {
-//                return new Expander() {
-//                    public String expand(String scope,
-//                                         String pattern) {
-//                        if ( pattern.startsWith( "Good" ) ) {
-//                            return pattern;
-//                        } else {
-//                            throw new IllegalArgumentException( "whoops" );
-//                        }
-//
-//                    }
-//                };
-//            }
-//        };
-//
-//        final DRLParser parser = parseResource( "expander_line_errors.drl" );
-//        parser.setExpanderResolver( res );
-//        parser.compilation_unit();
-//        assertTrue( parser.hasErrors() );
-//
-//        final List messages = parser.getErrorMessages();
-//        assertEquals( messages.size(),
-//                      parser.getErrors().size() );
-//
-//        assertEquals( 4,
-//                      parser.getErrors().size() );
-//        assertEquals( ExpanderException.class,
-//                      parser.getErrors().get( 0 ).getClass() );
-//        assertEquals( 8,
-//                      ((RecognitionException) parser.getErrors().get( 0 )).line );
-//        assertEquals( 10,
-//                      ((RecognitionException) parser.getErrors().get( 1 )).line );
-//        assertEquals( 12,
-//                      ((RecognitionException) parser.getErrors().get( 2 )).line );
-//        assertEquals( 13,
-//                      ((RecognitionException) parser.getErrors().get( 3 )).line );
-//
-//        final PackageDescr pack = parser.getPackageDescr();
-//        assertNotNull( pack );
-//
-//        final ExpanderException ex = (ExpanderException) parser.getErrors().get( 0 );
-//        assertTrue( ex.getMessage().indexOf( "whoops" ) > -1 );
-//
-//    }
+    //    public void testExpanderUnExpandableErrorLines() throws Exception {
+    //
+    //        //stubb expander
+    //        final ExpanderResolver res = new ExpanderResolver() {
+    //            public Expander get(String name,
+    //                                String config) {
+    //                return new Expander() {
+    //                    public String expand(String scope,
+    //                                         String pattern) {
+    //                        if ( pattern.startsWith( "Good" ) ) {
+    //                            return pattern;
+    //                        } else {
+    //                            throw new IllegalArgumentException( "whoops" );
+    //                        }
+    //
+    //                    }
+    //                };
+    //            }
+    //        };
+    //
+    //        final DRLParser parser = parseResource( "expander_line_errors.drl" );
+    //        parser.setExpanderResolver( res );
+    //        parser.compilation_unit();
+    //        assertTrue( parser.hasErrors() );
+    //
+    //        final List messages = parser.getErrorMessages();
+    //        assertEquals( messages.size(),
+    //                      parser.getErrors().size() );
+    //
+    //        assertEquals( 4,
+    //                      parser.getErrors().size() );
+    //        assertEquals( ExpanderException.class,
+    //                      parser.getErrors().get( 0 ).getClass() );
+    //        assertEquals( 8,
+    //                      ((RecognitionException) parser.getErrors().get( 0 )).line );
+    //        assertEquals( 10,
+    //                      ((RecognitionException) parser.getErrors().get( 1 )).line );
+    //        assertEquals( 12,
+    //                      ((RecognitionException) parser.getErrors().get( 2 )).line );
+    //        assertEquals( 13,
+    //                      ((RecognitionException) parser.getErrors().get( 3 )).line );
+    //
+    //        final PackageDescr pack = parser.getPackageDescr();
+    //        assertNotNull( pack );
+    //
+    //        final ExpanderException ex = (ExpanderException) parser.getErrors().get( 0 );
+    //        assertTrue( ex.getMessage().indexOf( "whoops" ) > -1 );
+    //
+    //    }
 
     public void testBasicBinding() throws Exception {
         final DRLParser parser = parseResource( "basic_binding.drl" );
@@ -1483,23 +1485,23 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
 
-        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( 2,
                       or.getDescrs().size() );
 
-        ColumnDescr first = (ColumnDescr) or.getDescrs().get( 0 );
+        final ColumnDescr first = (ColumnDescr) or.getDescrs().get( 0 );
         assertEquals( "Person",
                       first.getObjectType() );
 
-        AndDescr and = (AndDescr) or.getDescrs().get( 1 );
+        final AndDescr and = (AndDescr) or.getDescrs().get( 1 );
         assertEquals( 2,
                       and.getDescrs().size() );
 
-        ColumnDescr left = (ColumnDescr) and.getDescrs().get( 0 );
+        final ColumnDescr left = (ColumnDescr) and.getDescrs().get( 0 );
         assertEquals( "Person",
                       left.getObjectType() );
 
-        ColumnDescr right = (ColumnDescr) and.getDescrs().get( 1 );
+        final ColumnDescr right = (ColumnDescr) and.getDescrs().get( 1 );
         assertEquals( "Cheese",
                       right.getObjectType() );
     }
@@ -1597,7 +1599,7 @@ public class RuleParserTest extends TestCase {
                       literal.getText() );
 
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" );",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( parser.hasErrors() );
     }
@@ -1637,7 +1639,7 @@ public class RuleParserTest extends TestCase {
                       cheeseDescr.getIdentifier() );
 
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( parser.hasErrors() );
     }
@@ -1678,7 +1680,7 @@ public class RuleParserTest extends TestCase {
                       secondFact.getIdentifier() );
 
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( parser.hasErrors() );
     }
@@ -1716,7 +1718,7 @@ public class RuleParserTest extends TestCase {
                       secondFact.getIdentifier() );
 
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( parser.hasErrors() );
     }
@@ -1810,7 +1812,7 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "abc(\"foo\")",
                                       (String) eval.getContent() );
         assertEqualsIgnoreWhitespace( "Kapow",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( parser.hasErrors() );
     }
@@ -1831,8 +1833,8 @@ public class RuleParserTest extends TestCase {
                       col.getDescrs().size() );
         assertEquals( "Foo",
                       col.getObjectType() );
-        FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
-        ReturnValueRestrictionDescr retval = (ReturnValueRestrictionDescr) fld.getRestrictions().get( 0 );
+        final FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        final ReturnValueRestrictionDescr retval = (ReturnValueRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "a + b",
                       retval.getContent() );
@@ -1892,7 +1894,7 @@ public class RuleParserTest extends TestCase {
         final NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
         column = (ColumnDescr) not.getDescrs().get( 0 );
 
-        FieldConstraintDescr fld = (FieldConstraintDescr) column.getDescrs().get( 0 );
+        final FieldConstraintDescr fld = (FieldConstraintDescr) column.getDescrs().get( 0 );
         final VariableRestrictionDescr boundVariable = (VariableRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "type",
@@ -1922,12 +1924,12 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       pack.getGlobals().size() );
 
-        GlobalDescr foo = (GlobalDescr) pack.getGlobals().get( 0 );
+        final GlobalDescr foo = (GlobalDescr) pack.getGlobals().get( 0 );
         assertEquals( "java.lang.String",
                       foo.getType() );
         assertEquals( "foo",
                       foo.getIdentifier() );
-        GlobalDescr bar = (GlobalDescr) pack.getGlobals().get( 1 );
+        final GlobalDescr bar = (GlobalDescr) pack.getGlobals().get( 1 );
         assertEquals( "java.lang.Integer",
                       bar.getType() );
         assertEquals( "bar",
@@ -2003,7 +2005,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "simple_rule",
                       rule.getName() );
         assertEqualsIgnoreWhitespace( "bar();",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         final List attrs = rule.getAttributes();
         assertEquals( 6,
@@ -2043,8 +2045,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "lock-on-active",
                       at.getName() );
         assertEquals( "true",
-                      at.getValue() );        
-        
+                      at.getValue() );
+
         assertFalse( this.parser.hasErrors() );
     }
 
@@ -2053,7 +2055,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "simple_rule",
                       rule.getName() );
         assertEqualsIgnoreWhitespace( "bar();",
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         final List attrs = rule.getAttributes();
         assertEquals( 6,
@@ -2081,8 +2083,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "lock-on-active",
                       at.getName() );
         assertEquals( "true",
-                      at.getValue() );        
-        
+                      at.getValue() );
+
         at = (AttributeDescr) attrs.get( 4 );
         assertEquals( "duration",
                       at.getName() );
@@ -2109,7 +2111,7 @@ public class RuleParserTest extends TestCase {
                       col.getObjectType() );
         assertEquals( 1,
                       col.getDescrs().size() );
-        FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        final FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
         final LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "bar",
@@ -2208,8 +2210,8 @@ public class RuleParserTest extends TestCase {
     public void testEvalWithNewline() throws Exception {
         parseResource( "eval_with_newline.drl" ).compilation_unit();
 
-        if ( parser.hasErrors() ) {
-            System.err.println( parser.getErrorMessages() );
+        if ( this.parser.hasErrors() ) {
+            System.err.println( this.parser.getErrorMessages() );
         }
         assertFalse( this.parser.hasErrors() );
     }
@@ -2225,8 +2227,8 @@ public class RuleParserTest extends TestCase {
 
     public void testEndPosition() throws Exception {
         parseResource( "test_EndPosition.drl" ).compilation_unit();
-        RuleDescr rule = (RuleDescr) parser.getPackageDescr().getRules().get( 0 );
-        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final RuleDescr rule = (RuleDescr) this.parser.getPackageDescr().getRules().get( 0 );
+        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( 6,
                       col.getLine() );
 
@@ -2334,18 +2336,18 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testPredicate() throws Exception {
-        ColumnDescr column = new ColumnDescr();
+        final ColumnDescr column = new ColumnDescr();
         parse( "$var : attr -> ( $var.equals(\"xyz\") )" ).constraints( column );
 
         assertFalse( this.parser.getErrorMessages().toString(),
                      this.parser.hasErrors() );
 
-        List constraints = column.getDescrs();
+        final List constraints = column.getDescrs();
         assertEquals( 2,
                       constraints.size() );
 
-        FieldBindingDescr field = (FieldBindingDescr) constraints.get( 0 );
-        PredicateDescr predicate = (PredicateDescr) constraints.get( 1 );
+        final FieldBindingDescr field = (FieldBindingDescr) constraints.get( 0 );
+        final PredicateDescr predicate = (PredicateDescr) constraints.get( 1 );
         assertEquals( "$var",
                       field.getIdentifier() );
         assertEquals( "attr",
@@ -2355,17 +2357,17 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testPredicate2() throws Exception {
-        ColumnDescr column = new ColumnDescr();
+        final ColumnDescr column = new ColumnDescr();
         parse( "( $var.equals(\"xyz\") )" ).constraints( column );
 
         assertFalse( this.parser.getErrorMessages().toString(),
                      this.parser.hasErrors() );
 
-        List constraints = column.getDescrs();
+        final List constraints = column.getDescrs();
         assertEquals( 1,
                       constraints.size() );
 
-        PredicateDescr predicate = (PredicateDescr) constraints.get( 0 );
+        final PredicateDescr predicate = (PredicateDescr) constraints.get( 0 );
         assertEquals( " $var.equals(\"xyz\") ",
                       predicate.getContent() );
     }
@@ -2381,7 +2383,7 @@ public class RuleParserTest extends TestCase {
         final String expected = "String s = \"\\\"\\n\\t\\\\\";";
 
         assertEqualsIgnoreWhitespace( expected,
-                                      ( String ) rule.getConsequence() );
+                                      (String) rule.getConsequence() );
 
         assertFalse( this.parser.getErrorMessages().toString(),
                      this.parser.hasErrors() );
@@ -2395,20 +2397,20 @@ public class RuleParserTest extends TestCase {
 
         assertNotNull( rule );
 
-        AndDescr root = rule.getLhs();
-        NotDescr not1 = (NotDescr) root.getDescrs().get( 0 );
-        AndDescr and1 = (AndDescr) not1.getDescrs().get( 0 );
+        final AndDescr root = rule.getLhs();
+        final NotDescr not1 = (NotDescr) root.getDescrs().get( 0 );
+        final AndDescr and1 = (AndDescr) not1.getDescrs().get( 0 );
 
-        ColumnDescr state = (ColumnDescr) and1.getDescrs().get( 0 );
-        NotDescr not2 = (NotDescr) and1.getDescrs().get( 1 );
-        AndDescr and2 = (AndDescr) not2.getDescrs().get( 0 );
-        ColumnDescr person = (ColumnDescr) and2.getDescrs().get( 0 );
-        ColumnDescr cheese = (ColumnDescr) and2.getDescrs().get( 1 );
+        final ColumnDescr state = (ColumnDescr) and1.getDescrs().get( 0 );
+        final NotDescr not2 = (NotDescr) and1.getDescrs().get( 1 );
+        final AndDescr and2 = (AndDescr) not2.getDescrs().get( 0 );
+        final ColumnDescr person = (ColumnDescr) and2.getDescrs().get( 0 );
+        final ColumnDescr cheese = (ColumnDescr) and2.getDescrs().get( 1 );
 
-        ColumnDescr person2 = (ColumnDescr) root.getDescrs().get( 1 );
-        OrDescr or = (OrDescr) root.getDescrs().get( 2 );
-        ColumnDescr cheese2 = (ColumnDescr) or.getDescrs().get( 0 );
-        ColumnDescr cheese3 = (ColumnDescr) or.getDescrs().get( 1 );
+        final ColumnDescr person2 = (ColumnDescr) root.getDescrs().get( 1 );
+        final OrDescr or = (OrDescr) root.getDescrs().get( 2 );
+        final ColumnDescr cheese2 = (ColumnDescr) or.getDescrs().get( 0 );
+        final ColumnDescr cheese3 = (ColumnDescr) or.getDescrs().get( 1 );
 
         assertEquals( state.getObjectType(),
                       "State" );
@@ -2448,7 +2450,7 @@ public class RuleParserTest extends TestCase {
         final List remaining = forall.getRemainingColumns();
         assertEquals( 1,
                       remaining.size() );
-        ColumnDescr cheese = (ColumnDescr) remaining.get( 0 );
+        final ColumnDescr cheese = (ColumnDescr) remaining.get( 0 );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
     }
@@ -2474,7 +2476,7 @@ public class RuleParserTest extends TestCase {
     private DRLParser parseResource(final String name) throws Exception {
 
         //        System.err.println( getClass().getResource( name ) );
-        Reader reader = getReader( name );
+        final Reader reader = getReader( name );
 
         final StringBuffer text = new StringBuffer();
 
@@ -2521,9 +2523,9 @@ public class RuleParserTest extends TestCase {
     }
 
     private void prettyPrintErrors() {
-        List msgs = this.parser.getErrorMessages();
-        for ( Iterator iter = msgs.iterator(); iter.hasNext(); ) {
-            String err = (String) iter.next();
+        final List msgs = this.parser.getErrorMessages();
+        for ( final Iterator iter = msgs.iterator(); iter.hasNext(); ) {
+            final String err = (String) iter.next();
             System.out.println( err );
 
         }

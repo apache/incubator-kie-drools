@@ -57,7 +57,7 @@ class FieldBindingHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
 
         final String identifier = attrs.getValue( "identifier" );
         if ( identifier == null || identifier.trim().equals( "" ) ) {
@@ -72,7 +72,7 @@ class FieldBindingHandler extends BaseAbstractHandler
         }
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName,
-                                                                     identifier );
+                                                                           identifier );
 
         return fieldBindingDescr;
     }

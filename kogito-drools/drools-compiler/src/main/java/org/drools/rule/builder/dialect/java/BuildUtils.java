@@ -32,7 +32,6 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.BuildContext;
 import org.drools.rule.builder.ConditionalElementBuilder;
-import org.drools.rule.builder.RuleBuilder;
 
 /**
  * A holder class for utility functions
@@ -49,7 +48,7 @@ public class BuildUtils {
                                                                                    AngleBracketTemplateLexer.class );
 
     private final KnowledgeHelperFixer     knowledgeHelperFixer;
-  
+
     private final DeclarationTypeFixer     typeFixer;
 
     private final JavaExprAnalyzer         analyzer;
@@ -57,7 +56,7 @@ public class BuildUtils {
     private final TypeResolver             typeResolver;
 
     private final ClassFieldExtractorCache classFieldExtractorCache;
-    
+
     private final Map                      builders;
 
     public BuildUtils(final KnowledgeHelperFixer knowledgeHelperFixer,
@@ -65,7 +64,7 @@ public class BuildUtils {
                       final JavaExprAnalyzer analyzer,
                       final TypeResolver typeResolver,
                       final ClassFieldExtractorCache classFieldExtractorCache,
-                      final Map builders ) {
+                      final Map builders) {
         this.knowledgeHelperFixer = knowledgeHelperFixer;
         this.typeFixer = typeFixer;
         this.analyzer = analyzer;
@@ -123,7 +122,7 @@ public class BuildUtils {
                                             final String[] globals) {
         final String[] declarationTypes = new String[declarations.length];
         for ( int i = 0, size = declarations.length; i < size; i++ ) {
-            declarationTypes[i] = this.typeFixer.fix( declarations[i] ); 
+            declarationTypes[i] = this.typeFixer.fix( declarations[i] );
         }
 
         final List globalTypes = new ArrayList( globals.length );
@@ -158,7 +157,7 @@ public class BuildUtils {
      * @return
      */
     public StringTemplateGroup getInvokerGroup() {
-        return invokerGroup;
+        return this.invokerGroup;
     }
 
     /**
@@ -166,7 +165,7 @@ public class BuildUtils {
      * @return
      */
     public StringTemplateGroup getRuleGroup() {
-        return ruleGroup;
+        return this.ruleGroup;
     }
 
     /**
@@ -174,7 +173,7 @@ public class BuildUtils {
      * @return
      */
     public KnowledgeHelperFixer getKnowledgeHelperFixer() {
-        return knowledgeHelperFixer;
+        return this.knowledgeHelperFixer;
     }
 
     /**
@@ -190,7 +189,7 @@ public class BuildUtils {
      * @return
      */
     public ClassFieldExtractorCache getClassFieldExtractorCache() {
-        return classFieldExtractorCache;
+        return this.classFieldExtractorCache;
     }
 
     /**
@@ -198,7 +197,7 @@ public class BuildUtils {
      * @return
      */
     public Map getBuilders() {
-        return builders;
+        return this.builders;
     }
 
     /**
@@ -206,15 +205,15 @@ public class BuildUtils {
      * @param descr
      * @return
      */
-    public ConditionalElementBuilder getBuilder(Class descr) {
-        return (ConditionalElementBuilder) builders.get( descr );
+    public ConditionalElementBuilder getBuilder(final Class descr) {
+        return (ConditionalElementBuilder) this.builders.get( descr );
     }
 
     /**
      * @return the typeFixer
      */
     public DeclarationTypeFixer getTypeFixer() {
-        return typeFixer;
+        return this.typeFixer;
     }
 
 }

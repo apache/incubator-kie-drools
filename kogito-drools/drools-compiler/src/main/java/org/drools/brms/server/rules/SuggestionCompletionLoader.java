@@ -43,13 +43,13 @@ import org.drools.util.asm.ClassFieldInspector;
  */
 public class SuggestionCompletionLoader {
 
-    private SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
-    private DrlParser                         parser  = new DrlParser();
+    private final SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
+    private final DrlParser                         parser  = new DrlParser();
     private final ByteArrayClassLoader        loader;
-    protected List errors;
+    protected List                            errors;
 
     public SuggestionCompletionLoader() {
-        loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
+        this.loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
     }
 
     /**
@@ -58,43 +58,46 @@ public class SuggestionCompletionLoader {
      * @param pkg
      * @return
      */
-    public SuggestionCompletionEngine getSuggestionEngine(String header, List jars, List dsls) {
-        errors = new ArrayList();
-        builder.newCompletionEngine();
+    public SuggestionCompletionEngine getSuggestionEngine(final String header,
+                                                          final List jars,
+                                                          final List dsls) {
+        this.errors = new ArrayList();
+        this.builder.newCompletionEngine();
 
-        
-
-        if (!header.trim().equals( "" )) {
-            processPackageHeader( header, jars );
+        if ( !header.trim().equals( "" ) ) {
+            processPackageHeader( header,
+                                  jars );
         }
 
         // populating DSL sentences
         this.populateDSLSentences( dsls );
-        
-        return builder.getInstance();
+
+        return this.builder.getInstance();
     }
 
-    private void processPackageHeader(String header, List jars) {
+    private void processPackageHeader(final String header,
+                                      final List jars) {
         // get fact types from imports
         PackageDescr pkgDescr;
         try {
-            pkgDescr = parser.parse( header );
-        } catch ( DroolsParserException e1 ) {
+            pkgDescr = this.parser.parse( header );
+        } catch ( final DroolsParserException e1 ) {
             throw new IllegalStateException( "Serious error, unable to validate package." );
         }
-   
-        if (this.parser.hasErrors()) {
-            for ( Iterator iter = this.parser.getErrors().iterator(); iter.hasNext(); ) {
-                ParserError element = (ParserError) iter.next();
-                errors.add( element.getMessage() );
-            }            
+
+        if ( this.parser.hasErrors() ) {
+            for ( final Iterator iter = this.parser.getErrors().iterator(); iter.hasNext(); ) {
+                final ParserError element = (ParserError) iter.next();
+                this.errors.add( element.getMessage() );
+            }
         }
         // populating information for the model itself
-        this.populateModelInfo( pkgDescr, jars );
-   
+        this.populateModelInfo( pkgDescr,
+                                jars );
+
         // populating globals
-        this.populateGlobalInfo( pkgDescr, jars );
-   
+        this.populateGlobalInfo( pkgDescr,
+                                 jars );
 
     }
 
@@ -102,62 +105,61 @@ public class SuggestionCompletionLoader {
      * @param pkg
      * @param errors
      */
-    private void populateDSLSentences(List dsls) {
-//        AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
-//        while ( it.hasNext() ) {
-//            AssetItem item = (AssetItem) it.next();
-//            String dslData = item.getContent();
-//            DSLMappingFile file = new DSLMappingFile();
-//            try {
-//                if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
-//                    DSLMapping mapping = file.getMapping();
-//                    for ( Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
-//                        DSLMappingEntry entry = (DSLMappingEntry) entries.next();
-//                        if (entry.getSection() == DSLMappingEntry.CONDITION) {
-//                            builder.addDSLConditionSentence( entry.getMappingKey() );
-//                        } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
-//                            builder.addDSLActionSentence( entry.getMappingKey() );
-//                        }
-//                        
-//                    }
-//                } else {
-//                    errors.add( file.getErrors().toString() );
-//                }
-//            } catch ( IOException e ) {
-//                errors.add( "Error while loading DSL language configuration : " + item.getBinaryContentAttachmentFileName() + " error message: " + e.getMessage() );
-//            }
-//        }
+    private void populateDSLSentences(final List dsls) {
+        //        AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
+        //        while ( it.hasNext() ) {
+        //            AssetItem item = (AssetItem) it.next();
+        //            String dslData = item.getContent();
+        //            DSLMappingFile file = new DSLMappingFile();
+        //            try {
+        //                if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
+        //                    DSLMapping mapping = file.getMapping();
+        //                    for ( Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
+        //                        DSLMappingEntry entry = (DSLMappingEntry) entries.next();
+        //                        if (entry.getSection() == DSLMappingEntry.CONDITION) {
+        //                            builder.addDSLConditionSentence( entry.getMappingKey() );
+        //                        } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
+        //                            builder.addDSLActionSentence( entry.getMappingKey() );
+        //                        }
+        //                        
+        //                    }
+        //                } else {
+        //                    errors.add( file.getErrors().toString() );
+        //                }
+        //            } catch ( IOException e ) {
+        //                errors.add( "Error while loading DSL language configuration : " + item.getBinaryContentAttachmentFileName() + " error message: " + e.getMessage() );
+        //            }
+        //        }
 
-        for ( Iterator it = dsls.iterator(); it.hasNext(); ) {
-            DSLMappingFile file = (DSLMappingFile) it.next();        
-            DSLMapping mapping = file.getMapping();
-            for ( Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
-                DSLMappingEntry entry = (DSLMappingEntry) entries.next();
-                if (entry.getSection() == DSLMappingEntry.CONDITION) {
-                    builder.addDSLConditionSentence( entry.getMappingKey() );
-                } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
-                    builder.addDSLActionSentence( entry.getMappingKey() );
+        for ( final Iterator it = dsls.iterator(); it.hasNext(); ) {
+            final DSLMappingFile file = (DSLMappingFile) it.next();
+            final DSLMapping mapping = file.getMapping();
+            for ( final Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
+                final DSLMappingEntry entry = (DSLMappingEntry) entries.next();
+                if ( entry.getSection() == DSLMappingEntry.CONDITION ) {
+                    this.builder.addDSLConditionSentence( entry.getMappingKey() );
+                } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {
+                    this.builder.addDSLActionSentence( entry.getMappingKey() );
                 }
             }
         }
-     
-        
+
     }
 
     /**
      * Populate the global stuff.
      */
-    private void populateGlobalInfo(PackageDescr pkgDescr,
-                                    List jars) {
+    private void populateGlobalInfo(final PackageDescr pkgDescr,
+                                    final List jars) {
 
         // populating information for the globals
-        for ( Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext(); ) {
-            GlobalDescr global = (GlobalDescr) it.next();
+        for ( final Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext(); ) {
+            final GlobalDescr global = (GlobalDescr) it.next();
             try {
-                String shortTypeName = global.getType();
+                final String shortTypeName = global.getType();
                 if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
-                    Class clazz = loadClass( 
-                                             global.getType(), jars );
+                    final Class clazz = loadClass( global.getType(),
+                                             jars );
                     loadClassFields( clazz,
                                      shortTypeName );
 
@@ -165,10 +167,10 @@ public class SuggestionCompletionLoader {
                                                 shortTypeName );
                 }
 
-                builder.addGlobalType( global.getIdentifier(),
+                this.builder.addGlobalType( global.getIdentifier(),
                                        shortTypeName );
-            } catch ( IOException e ) {
-                errors.add( "Error while inspecting class for global: " + global.getType() + " error message: " + e.getMessage());
+            } catch ( final IOException e ) {
+                this.errors.add( "Error while inspecting class for global: " + global.getType() + " error message: " + e.getMessage() );
             }
 
         }
@@ -177,24 +179,26 @@ public class SuggestionCompletionLoader {
     /**
      * Populate the fact type data.
      */
-    private void populateModelInfo(PackageDescr pkgDescr, List jars) {
+    private void populateModelInfo(final PackageDescr pkgDescr,
+                                   final List jars) {
 
         // iterating over the import list
-        ClassTypeResolver resolver = new ClassTypeResolver();
-        for ( Iterator it = pkgDescr.getImports().iterator(); it.hasNext(); ) {
-            ImportDescr imp = (ImportDescr) it.next();
-            String classname = imp.getTarget();
+        final ClassTypeResolver resolver = new ClassTypeResolver();
+        for ( final Iterator it = pkgDescr.getImports().iterator(); it.hasNext(); ) {
+            final ImportDescr imp = (ImportDescr) it.next();
+            final String classname = imp.getTarget();
             resolver.addImport( classname );
 
-            Class clazz = loadClass(  classname, jars );
+            final Class clazz = loadClass( classname,
+                                     jars );
             if ( clazz != null ) {
                 try {
-                    String shortTypeName = getShortNameOfClass( clazz.getName() );
+                    final String shortTypeName = getShortNameOfClass( clazz.getName() );
                     loadClassFields( clazz,
                                      shortTypeName );
-                    builder.addFactType( shortTypeName );
-                } catch ( IOException e ) {
-                    errors.add( "Error while inspecting the class: " + classname + ". The error was: " + e.getMessage() );
+                    this.builder.addFactType( shortTypeName );
+                } catch ( final IOException e ) {
+                    this.errors.add( "Error while inspecting the class: " + classname + ". The error was: " + e.getMessage() );
                 }
             }
         }
@@ -209,54 +213,56 @@ public class SuggestionCompletionLoader {
      * 
      * @param pkgDescr
      */
-    private void populateFactTemplateTypes(PackageDescr pkgDescr,
-                                           ClassTypeResolver resolver) {
-        for ( Iterator it = pkgDescr.getFactTemplates().iterator(); it.hasNext(); ) {
-            FactTemplateDescr templ = (FactTemplateDescr) it.next();
-            String factType = templ.getName();
-            builder.addFactType( factType );
+    private void populateFactTemplateTypes(final PackageDescr pkgDescr,
+                                           final ClassTypeResolver resolver) {
+        for ( final Iterator it = pkgDescr.getFactTemplates().iterator(); it.hasNext(); ) {
+            final FactTemplateDescr templ = (FactTemplateDescr) it.next();
+            final String factType = templ.getName();
+            this.builder.addFactType( factType );
 
-            String[] fields = new String[templ.getFields().size()];
-            builder.addFieldsForType( factType,
+            final String[] fields = new String[templ.getFields().size()];
+            this.builder.addFieldsForType( factType,
                                       fields );
 
             int index = 0;
-            for ( Iterator fieldsIt = templ.getFields().iterator(); fieldsIt.hasNext(); ) {
-                FieldTemplateDescr fieldDescr = (FieldTemplateDescr) fieldsIt.next();
+            for ( final Iterator fieldsIt = templ.getFields().iterator(); fieldsIt.hasNext(); ) {
+                final FieldTemplateDescr fieldDescr = (FieldTemplateDescr) fieldsIt.next();
                 fields[index++] = fieldDescr.getName();
-                String fieldType = fieldDescr.getClassType();
+                final String fieldType = fieldDescr.getClassType();
 
                 Class fieldTypeClass = null;
                 try {
                     fieldTypeClass = resolver.resolveType( fieldType );
-                } catch ( ClassNotFoundException e ) {
-                    errors.add( "Fact template field type not found: " + fieldType );
+                } catch ( final ClassNotFoundException e ) {
+                    this.errors.add( "Fact template field type not found: " + fieldType );
                 }
-                builder.addFieldType( factType + "." + fieldDescr.getName(),
+                this.builder.addFieldType( factType + "." + fieldDescr.getName(),
                                       getFieldType( fieldTypeClass ) );
             }
         }
     }
 
-    private void loadClassFields(Class clazz,
-                                 String shortTypeName) throws IOException {
-        if (clazz == null) return;
-        ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+    private void loadClassFields(final Class clazz,
+                                 final String shortTypeName) throws IOException {
+        if ( clazz == null ) {
+            return;
+        }
+        final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
         String[] fields = (String[]) inspector.getFieldNames().keySet().toArray( new String[inspector.getFieldNames().size()] );
 
         fields = removeIrrelevantFields( fields );
 
-        builder.addFieldsForType( shortTypeName,
+        this.builder.addFieldsForType( shortTypeName,
                                   fields );
         for ( int i = 0; i < fields.length; i++ ) {
-            Class type = (Class) inspector.getFieldTypes().get( fields[i] );
-            String fieldType = getFieldType( type );
-            builder.addFieldType( shortTypeName + "." + fields[i],
+            final Class type = (Class) inspector.getFieldTypes().get( fields[i] );
+            final String fieldType = getFieldType( type );
+            this.builder.addFieldType( shortTypeName + "." + fields[i],
                                   fieldType );
         }
     }
 
-    String getShortNameOfClass(String clazz) {
+    String getShortNameOfClass(final String clazz) {
         return clazz.substring( clazz.lastIndexOf( '.' ) + 1 );
     }
 
@@ -264,10 +270,10 @@ public class SuggestionCompletionLoader {
      * This will remove the unneeded "fields" that come from java.lang.Object
      * these are really not needed for the modeller.
      */
-    String[] removeIrrelevantFields(String[] fields) {
-        List result = new ArrayList();
+    String[] removeIrrelevantFields(final String[] fields) {
+        final List result = new ArrayList();
         for ( int i = 0; i < fields.length; i++ ) {
-            String field = fields[i];
+            final String field = fields[i];
             if ( field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" ) ) {
                 //ignore
             } else {
@@ -283,48 +289,51 @@ public class SuggestionCompletionLoader {
      * @param clazz
      * @return
      */
-    private Class loadClass(String classname, List jars) {
+    private Class loadClass(final String classname,
+                            final List jars) {
         Class clazz = null;
         try {
             // check if it is already in the classpath
-            clazz = loader.loadClass( classname );
+            clazz = this.loader.loadClass( classname );
 
-        } catch ( ClassNotFoundException e1 ) {
+        } catch ( final ClassNotFoundException e1 ) {
 
             // not found in the classpath, so check if it
             // is in a package model
             try {
                 addJars( jars );
-                clazz = loader.loadClass( classname );
-            } catch ( IOException e ) {
+                clazz = this.loader.loadClass( classname );
+            } catch ( final IOException e ) {
                 throw new IllegalStateException( e.getMessage() );
-            } catch ( ClassNotFoundException e ) {
-                errors.add( "Class not found: " + classname );
+            } catch ( final ClassNotFoundException e ) {
+                this.errors.add( "Class not found: " + classname );
             }
         }
         return clazz;
     }
-    
+
     /**
      * This will add the given jars to the classloader.
      */
-    private void addJars(List jars) throws IOException {
-        for ( Iterator it = jars.iterator(); it.hasNext(); ) {
-            JarInputStream jis = (JarInputStream) it.next();
+    private void addJars(final List jars) throws IOException {
+        for ( final Iterator it = jars.iterator(); it.hasNext(); ) {
+            final JarInputStream jis = (JarInputStream) it.next();
             JarEntry entry = null;
-            byte[] buf = new byte[1024];
+            final byte[] buf = new byte[1024];
             int len = 0;
             while ( (entry = jis.getNextJarEntry()) != null ) {
                 if ( !entry.isDirectory() ) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    final ByteArrayOutputStream out = new ByteArrayOutputStream();
                     while ( (len = jis.read( buf )) >= 0 ) {
-                        out.write( buf, 0, len );
+                        out.write( buf,
+                                   0,
+                                   len );
                     }
-                    loader.addResource( entry.getName(),
+                    this.loader.addResource( entry.getName(),
                                         out.toByteArray() );
                 }
-            }        
-            
+            }
+
         }
     }
 
@@ -334,7 +343,7 @@ public class SuggestionCompletionLoader {
      * @param i
      * @return
      */
-    private String getFieldType(Class type) {
+    private String getFieldType(final Class type) {
         String fieldType = null; // if null, will use standard operators
         if ( type != null ) {
             if ( type.isPrimitive() && (type != boolean.class) ) {
@@ -347,18 +356,18 @@ public class SuggestionCompletionLoader {
                 fieldType = SuggestionCompletionEngine.TYPE_COLLECTION;
             } else if ( Comparable.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_COMPARABLE;
-            } 
+            }
         }
         return fieldType;
     }
-    
+
     /**
      * @return true if there were errors when processing the package.
      */
     public boolean hasErrors() {
         return (this.errors.size() > 0);
     }
-    
+
     /**
      * Returns a list of String errors.
      */

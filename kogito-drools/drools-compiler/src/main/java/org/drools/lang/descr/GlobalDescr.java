@@ -24,15 +24,17 @@ package org.drools.lang.descr;
 public class GlobalDescr extends BaseDescr {
 
     private static final long serialVersionUID = -7950086393744529044L;
-    
-    private String identifier;
-    private String type;
-    
+
+    private String            identifier;
+    private String            type;
+
     public GlobalDescr() {
-        this( null, null );
+        this( null,
+              null );
     }
-    
-    public GlobalDescr( String identifier, String type ) {
+
+    public GlobalDescr(final String identifier,
+                       final String type) {
         this.identifier = identifier;
         this.type = type;
     }
@@ -41,13 +43,13 @@ public class GlobalDescr extends BaseDescr {
      * @return the identifier
      */
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     /**
      * @param identifier the identifier to set
      */
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -55,13 +57,13 @@ public class GlobalDescr extends BaseDescr {
      * @return the type
      */
     public String getType() {
-        return type;
+        return this.type;
     }
 
     /**
      * @param type the type to set
      */
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 

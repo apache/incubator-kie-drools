@@ -58,15 +58,15 @@ public class JavaFunctionBuilder
         st.setAttribute( "parameterNames",
                          functionDescr.getParameterNames() );
 
-        Map params = new HashMap();
-        List names = functionDescr.getParameterNames();
-        List types = functionDescr.getParameterTypes();
+        final Map params = new HashMap();
+        final List names = functionDescr.getParameterNames();
+        final List types = functionDescr.getParameterTypes();
         try {
             for ( int i = 0, size = names.size(); i < size; i++ ) {
                 params.put( names.get( i ),
                             typeResolver.resolveType( (String) types.get( i ) ) );
             }
-        } catch ( ClassNotFoundException e ) {
+        } catch ( final ClassNotFoundException e ) {
             // todo : must be a better way so we don't have to try/catch each resolveType call
             throw new RuntimeDroolsException( e );
         }
@@ -74,11 +74,11 @@ public class JavaFunctionBuilder
         st.setAttribute( "text",
                          functionDescr.getText() );
 
-        String text = st.toString();
+        final String text = st.toString();
 
-        BufferedReader reader = new BufferedReader( new StringReader( text ) );
+        final BufferedReader reader = new BufferedReader( new StringReader( text ) );
         String line = null;
-        String lineStartsWith = "    public static " + functionDescr.getReturnType() + " " + functionDescr.getName();
+        final String lineStartsWith = "    public static " + functionDescr.getReturnType() + " " + functionDescr.getName();
         int offset = 0;
         try {
             while ( (line = reader.readLine()) != null ) {
@@ -88,13 +88,13 @@ public class JavaFunctionBuilder
                 }
             }
             functionDescr.setOffset( offset );
-        } catch ( IOException e ) {
+        } catch ( final IOException e ) {
             // won't ever happen, it's just reading over a string.
             throw new RuntimeDroolsException( "Error determining start offset with function" );
         }
 
-        String name = pkg.getName() + "." + ucFirst( functionDescr.getName() );
-        LineMappings mapping = new LineMappings( name );
+        final String name = pkg.getName() + "." + ucFirst( functionDescr.getName() );
+        final LineMappings mapping = new LineMappings( name );
         mapping.setStartLine( functionDescr.getLine() );
         mapping.setOffset( functionDescr.getOffset() );
         lineMappings.put( name,

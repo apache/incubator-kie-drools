@@ -63,20 +63,24 @@ public class PackageBuilderConfiguration {
     }
 
     public String getJavaLanguageLevel() {
-        if ( languageLevel != null ) return languageLevel;
+        if ( this.languageLevel != null ) {
+            return this.languageLevel;
+        }
         setJavaLanguageLevel( System.getProperty( "drools.compiler.lnglevel",
                                                   DEFAULT_LANGUAGE_LEVEL ) );
-        return languageLevel;
+        return this.languageLevel;
     }
 
     /**
      * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
      * @param level
      */
-    public void setJavaLanguageLevel(String level) {
+    public void setJavaLanguageLevel(final String level) {
         if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  languageLevel ) < 0 ) throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
-        languageLevel = level;
+                                  this.languageLevel ) < 0 ) {
+            throw new RuntimeDroolsException( "value '" + this.languageLevel + "' is not a valid language level" );
+        }
+        this.languageLevel = level;
     }
 
     /** 
@@ -132,7 +136,7 @@ public class PackageBuilderConfiguration {
 
     static String getDefaultLanguageLevel() {
         try {
-            String languageLevel = System.getProperty( "drools.compiler.languagelevel",
+            final String languageLevel = System.getProperty( "drools.compiler.languagelevel",
                                                        DEFAULT_LANGUAGE_LEVEL );
 
             if ( Arrays.binarySearch( LANGUAGE_LEVELS,
@@ -141,7 +145,7 @@ public class PackageBuilderConfiguration {
             }
 
             return languageLevel;
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             System.err.println( "Drools config: unable to read the drools.compiler.lnglevel property. Using default." );
             return DEFAULT_LANGUAGE_LEVEL;
         }

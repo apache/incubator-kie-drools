@@ -18,14 +18,13 @@ package org.drools.compiler;
 
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.rule.Rule;
 import org.drools.rule.Package;
 
 public class FieldTemplateError extends DroolsError {
-    private Package      pkg;
+    private Package   pkg;
     private BaseDescr descr;
-    private Object       object;
-    private String       message;
+    private Object    object;
+    private String    message;
 
     public FieldTemplateError(final Package pkg,
                               final BaseDescr descr,

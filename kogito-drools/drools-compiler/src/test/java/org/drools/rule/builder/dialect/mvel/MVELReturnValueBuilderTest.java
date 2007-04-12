@@ -10,32 +10,25 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
-import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
-import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.rule.builder.BuildContext;
 import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
 import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
-import org.drools.rule.builder.dialect.java.JavaPredicateBuilder;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
-import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.FieldExtractor;
 
@@ -45,28 +38,28 @@ public class MVELReturnValueBuilderTest extends TestCase {
     }
 
     public void testSimpleExpression() {
-        Package pkg = new Package( "pkg1" );
-        RuleDescr ruleDescr = new RuleDescr( "rule 1" );
+        final Package pkg = new Package( "pkg1" );
+        final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
-        InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                          ruleDescr );
-        InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
+        final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "price" );
-        Column columnA = new Column( 0,
+        final Column columnA = new Column( 0,
                                      new ClassObjectType( int.class ) );
 
-        Column columnB = new Column( 1,
+        final Column columnB = new Column( 1,
                                      new ClassObjectType( int.class ) );
 
-        Declaration a = new Declaration( "a",
+        final Declaration a = new Declaration( "a",
                                          extractor,
                                          columnA );
-        Declaration b = new Declaration( "b",
+        final Declaration b = new Declaration( "b",
                                          extractor,
                                          columnB );
 
-        Map map = new HashMap();
+        final Map map = new HashMap();
         map.put( "a",
                  a );
         map.put( "b",
@@ -74,24 +67,24 @@ public class MVELReturnValueBuilderTest extends TestCase {
         declarationResolver.setDeclarations( map );
         context.setDeclarationResolver( declarationResolver );
 
-        ReturnValueRestrictionDescr returnValueDescr = new ReturnValueRestrictionDescr("=");
+        final ReturnValueRestrictionDescr returnValueDescr = new ReturnValueRestrictionDescr( "=" );
         returnValueDescr.setContent( "a + b" );
 
-        MVELReturnValueBuilder builder = new MVELReturnValueBuilder();
+        final MVELReturnValueBuilder builder = new MVELReturnValueBuilder();
 
-        List[] usedIdentifiers = new ArrayList[2];
-        List list = new ArrayList();
+        final List[] usedIdentifiers = new ArrayList[2];
+        final List list = new ArrayList();
         usedIdentifiers[1] = list;
 
-        Declaration[] previousDeclarations = new Declaration[]{a, b};
-        Declaration[] localDeclarations = new Declaration[]{};
-        
-        final ReturnValueRestriction returnValue = new ReturnValueRestriction(extractor,
-                                                                              previousDeclarations,
-                                                                              localDeclarations,
-                                                                              ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+        final Declaration[] previousDeclarations = new Declaration[]{a, b};
+        final Declaration[] localDeclarations = new Declaration[]{};
 
-        BuildUtils utils = new BuildUtils( new KnowledgeHelperFixer(),
+        final ReturnValueRestriction returnValue = new ReturnValueRestriction( extractor,
+                                                                               previousDeclarations,
+                                                                               localDeclarations,
+                                                                               ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+
+        final BuildUtils utils = new BuildUtils( new KnowledgeHelperFixer(),
                                            new DeclarationTypeFixer(),
                                            new JavaExprAnalyzer(),
                                            null,
@@ -106,29 +99,36 @@ public class MVELReturnValueBuilderTest extends TestCase {
                        returnValue,
                        returnValueDescr );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newWorkingMemory();
 
-        Cheese stilton = new Cheese( "stilton",
+        final Cheese stilton = new Cheese( "stilton",
                                      10 );
 
-        Cheese cheddar = new Cheese( "cheddar",
+        final Cheese cheddar = new Cheese( "cheddar",
                                      10 );
-        InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
         ReteTuple tuple = new ReteTuple( f0 );
-        
-        InternalFactHandle f1 = (InternalFactHandle) wm.assertObject( stilton );
-        tuple = new ReteTuple( tuple, f1 );        
 
-        PredicateContextEntry predicateContext = new PredicateContextEntry();
+        final InternalFactHandle f1 = (InternalFactHandle) wm.assertObject( stilton );
+        tuple = new ReteTuple( tuple,
+                               f1 );
+
+        final PredicateContextEntry predicateContext = new PredicateContextEntry();
         predicateContext.leftTuple = tuple;
 
-        Cheese brie = new Cheese( "brie",
-                                     20 );
-        assertTrue( returnValue.isAllowed( extractor, brie, tuple, wm ) );
-        
+        final Cheese brie = new Cheese( "brie",
+                                  20 );
+        assertTrue( returnValue.isAllowed( extractor,
+                                           brie,
+                                           tuple,
+                                           wm ) );
+
         brie.setPrice( 18 );
-        assertFalse( returnValue.isAllowed( extractor, brie, tuple, wm ) );
+        assertFalse( returnValue.isAllowed( extractor,
+                                            brie,
+                                            tuple,
+                                            wm ) );
     }
 
     public static class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
@@ -138,7 +138,7 @@ public class MVELReturnValueBuilderTest extends TestCase {
             super( null );
         }
 
-        public void setDeclarations(Map map) {
+        public void setDeclarations(final Map map) {
             this.declarations = map;
         }
 
@@ -150,13 +150,13 @@ public class MVELReturnValueBuilderTest extends TestCase {
     public static class InstrumentedBuildContent extends BuildContext {
         private DeclarationScopeResolver declarationScopeResolver;
 
-        public InstrumentedBuildContent(Package pkg,
-                                        RuleDescr ruleDescr) {
+        public InstrumentedBuildContent(final Package pkg,
+                                        final RuleDescr ruleDescr) {
             super( pkg,
                    ruleDescr );
         }
 
-        public void setDeclarationResolver(DeclarationScopeResolver declarationScopeResolver) {
+        public void setDeclarationResolver(final DeclarationScopeResolver declarationScopeResolver) {
             this.declarationScopeResolver = declarationScopeResolver;
         }
 

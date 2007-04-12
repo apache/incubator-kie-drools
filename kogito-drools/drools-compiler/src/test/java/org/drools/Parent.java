@@ -21,13 +21,12 @@ package org.drools;
  *
  */
 public class Parent extends GrandParent {
-    
+
     public Parent() {
     }
-    
-    public Parent( String name ) {
+
+    public Parent(final String name) {
         super( name );
     }
-    
 
 }

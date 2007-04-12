@@ -16,7 +16,6 @@
 
 package org.drools;
 
-
 /**
  * @author etirelli
  *
@@ -24,12 +23,12 @@ package org.drools;
 public class Order {
 
     private int number;
-    
+
     public Order() {
         this( 0 );
     }
-    
-    public Order( int number ) {
+
+    public Order(final int number) {
         this.number = number;
     }
 
@@ -37,13 +36,13 @@ public class Order {
      * @return the number
      */
     public int getNumber() {
-        return number;
+        return this.number;
     }
 
     /**
      * @param number the number to set
      */
-    public void setNumber(int number) {
+    public void setNumber(final int number) {
         this.number = number;
     }
 
@@ -53,19 +52,27 @@ public class Order {
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + number;
+        result = PRIME * result + this.number;
         return result;
     }
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+    public boolean equals(final Object obj) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final Order other = (Order) obj;
-        if ( number != other.number ) return false;
+        if ( this.number != other.number ) {
+            return false;
+        }
         return true;
     }
 

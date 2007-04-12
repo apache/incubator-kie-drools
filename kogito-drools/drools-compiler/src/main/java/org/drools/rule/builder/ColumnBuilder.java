@@ -69,7 +69,7 @@ public class ColumnBuilder {
 
     private Dialect dialect;
 
-    public ColumnBuilder(Dialect dialect) {
+    public ColumnBuilder(final Dialect dialect) {
         this.dialect = dialect;
     }
 
@@ -102,15 +102,15 @@ public class ColumnBuilder {
             objectType = new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                Class userProvidedClass = utils.getTypeResolver().resolveType( columnDescr.getObjectType() );
-                String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( userProvidedClass );
+                final Class userProvidedClass = utils.getTypeResolver().resolveType( columnDescr.getObjectType() );
+                final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( userProvidedClass );
                 Class shadowClass = null;
                 try {
                     // if already loaded
                     shadowClass = context.getPkg().getPackageCompilationData().getClassLoader().loadClass( shadowProxyName );
-                } catch ( ClassNotFoundException cnfe ) {
+                } catch ( final ClassNotFoundException cnfe ) {
                     // otherwise, create and load
-                    byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( userProvidedClass );
+                    final byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( userProvidedClass );
                     if ( proxyBytes != null ) {
                         context.getPkg().getPackageCompilationData().write( ClassUtils.convertClassToResourcePath( shadowProxyName ),
                                                                             proxyBytes );
@@ -374,7 +374,7 @@ public class ColumnBuilder {
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            Declaration decl = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            final Declaration decl = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
             if ( decl.getColumn() == column ) {
                 factDeclarations.add( decl );
             } else {
@@ -388,14 +388,14 @@ public class ColumnBuilder {
                                      usedIdentifiers[NOT_BOUND_INDEX],
                                      factDeclarations );
 
-        Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-        Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
+        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
 
         final PredicateConstraint predicateConstraint = new PredicateConstraint( previousDeclarations,
                                                                                  localDeclarations );
         column.addConstraint( predicateConstraint );
 
-        PredicateBuilder builder = (PredicateBuilder) dialect.getPredicateBuilder();
+        final PredicateBuilder builder = this.dialect.getPredicateBuilder();
 
         builder.build( context,
                        utils,
@@ -422,8 +422,8 @@ public class ColumnBuilder {
                                         final List factDeclarations) {
         // the following will create the implicit bindings
         for ( int i = 0, size = unboundIdentifiers.size(); i < size; i++ ) {
-            String identifier = (String) unboundIdentifiers.get( i );
-            FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
+            final String identifier = (String) unboundIdentifiers.get( i );
+            final FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
                                                                        identifier );
 
             final FieldExtractor extractor = getFieldExtractor( context,
@@ -486,12 +486,12 @@ public class ColumnBuilder {
             return null;
         }
 
-        final Declaration declaration = (Declaration) context.getDeclarationResolver().getDeclaration( variableRestrictionDescr.getIdentifier() );
-        
-//        if ( declaration == null ) {
-//            build( context, th)
-//            // lazily create teh declaration
-//        }        
+        final Declaration declaration = context.getDeclarationResolver().getDeclaration( variableRestrictionDescr.getIdentifier() );
+
+        //        if ( declaration == null ) {
+        //            build( context, th)
+        //            // lazily create teh declaration
+        //        }        
 
         if ( declaration == null ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -579,7 +579,7 @@ public class ColumnBuilder {
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            Declaration declaration = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            final Declaration declaration = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
             if ( declaration.getColumn() == column ) {
                 factDeclarations.add( declaration );
             } else {
@@ -602,14 +602,14 @@ public class ColumnBuilder {
             return null;
         }
 
-        Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-        Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
+        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
         final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( extractor,
                                                                                           previousDeclarations,
                                                                                           localDeclarations,
                                                                                           evaluator );
 
-        ReturnValueBuilder builder = (ReturnValueBuilder) this.dialect.getReturnValueBuilder();
+        final ReturnValueBuilder builder = this.dialect.getReturnValueBuilder();
 
         builder.build( context,
                        utils,
@@ -627,7 +627,7 @@ public class ColumnBuilder {
                                              final BaseDescr descr,
                                              final ObjectType objectType,
                                              final String fieldName,
-                                             final boolean reportError ) {
+                                             final boolean reportError) {
         FieldExtractor extractor = null;
 
         if ( objectType.getValueType() == ValueType.FACTTEMPLATE_TYPE ) {
@@ -640,7 +640,7 @@ public class ColumnBuilder {
                 extractor = utils.getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
                                                                               fieldName );
             } catch ( final RuntimeDroolsException e ) {
-                if( reportError ) {
+                if ( reportError ) {
                     context.getErrors().add( new RuleError( context.getRule(),
                                                             descr,
                                                             e,

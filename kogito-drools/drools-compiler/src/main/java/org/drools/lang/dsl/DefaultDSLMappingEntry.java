@@ -33,15 +33,15 @@ public class DefaultDSLMappingEntry
     implements
     DSLMappingEntry {
 
-    private Section              section;
-    private MetaData             metadata;
-    private String               key;
-    private String               value;
+    private Section      section;
+    private MetaData     metadata;
+    private String       key;
+    private String       value;
 
-    private Map                  variables = Collections.EMPTY_MAP;
+    private Map          variables = Collections.EMPTY_MAP;
 
-    private Pattern              keyPattern;
-    private String               valuePattern;
+    private Pattern      keyPattern;
+    private String       valuePattern;
 
     // following pattern is used to extract all variables names and positions from a mapping.
     // Example: for the following String:
@@ -52,7 +52,7 @@ public class DefaultDSLMappingEntry
     // This, pattern, easy, say
     //
     static final Pattern varFinder = Pattern.compile( "(^|[^\\\\])\\{([(\\\\\\{)|[^\\{]]*?)\\}",
-                                                              Pattern.MULTILINE | Pattern.DOTALL );
+                                                      Pattern.MULTILINE | Pattern.DOTALL );
 
     public DefaultDSLMappingEntry() {
         this( DSLMappingEntry.ANY,
@@ -61,10 +61,10 @@ public class DefaultDSLMappingEntry
               null );
     }
 
-    public DefaultDSLMappingEntry(Section section,
-                                  MetaData metadata,
-                                  String key,
-                                  String value) {
+    public DefaultDSLMappingEntry(final Section section,
+                                  final MetaData metadata,
+                                  final String key,
+                                  final String value) {
         this.section = section;
         this.metadata = metadata;
         this.setMappingKey( key );
@@ -102,14 +102,14 @@ public class DefaultDSLMappingEntry
     /**
      * @param key the key to set
      */
-    public void setMappingKey(String key) {
+    public void setMappingKey(final String key) {
         this.key = key;
 
-        if( key != null ) {
+        if ( key != null ) {
             // retrieving variables list and creating key pattern 
-            Matcher m = varFinder.matcher( key.replaceAll( "\\$",
+            final Matcher m = varFinder.matcher( key.replaceAll( "\\$",
                                                            "\\\\\\$" ) );
-            StringBuffer buf = new StringBuffer();
+            final StringBuffer buf = new StringBuffer();
             int counter = 1;
             while ( m.find() ) {
                 if ( this.variables == Collections.EMPTY_MAP ) {
@@ -145,26 +145,26 @@ public class DefaultDSLMappingEntry
     /**
      * @param section the section to set
      */
-    public void setSection(Section section) {
+    public void setSection(final Section section) {
         this.section = section;
     }
 
     /**
      * @param value the value to set
      */
-    public void setMappingValue(String value) {
+    public void setMappingValue(final String value) {
         this.valuePattern = value;
         this.value = value;
         if ( value != null ) {
             this.valuePattern = this.valuePattern.replaceAll( "\\\\n",
                                                               "\n" ).replaceAll( "\\$",
                                                                                  "\\\\\\$" );
-            for ( Iterator it = this.variables.entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) it.next();
-                String var = (String) entry.getKey();
-                int pos = ((Integer) entry.getValue()).intValue();
+            for ( final Iterator it = this.variables.entrySet().iterator(); it.hasNext(); ) {
+                final Map.Entry entry = (Map.Entry) it.next();
+                final String var = (String) entry.getKey();
+                final int pos = ((Integer) entry.getValue()).intValue();
 
-                this.valuePattern = valuePattern.replaceAll( "\\{" + var + "\\}",
+                this.valuePattern = this.valuePattern.replaceAll( "\\{" + var + "\\}",
                                                              "\\$" + pos );
             }
         }
@@ -173,7 +173,7 @@ public class DefaultDSLMappingEntry
     /**
      * @param metadata the metadata to set
      */
-    public void setMetaData(MetaData metadata) {
+    public void setMetaData(final MetaData metadata) {
         this.metadata = metadata;
     }
 
@@ -181,21 +181,21 @@ public class DefaultDSLMappingEntry
      * @return the keyPattern
      */
     public Pattern getKeyPattern() {
-        return keyPattern;
+        return this.keyPattern;
     }
 
     /**
      * @return the valuePattern
      */
     public String getValuePattern() {
-        return valuePattern;
+        return this.valuePattern;
     }
 
     /**
      * @return the variables
      */
     public Map getVariables() {
-        return variables;
+        return this.variables;
     }
 
     public String toPatternString() {
@@ -212,33 +212,55 @@ public class DefaultDSLMappingEntry
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ((key == null) ? 0 : key.hashCode());
-        result = PRIME * result + ((metadata == null) ? 0 : metadata.hashCode());
-        result = PRIME * result + ((section == null) ? 0 : section.hashCode());
-        result = PRIME * result + ((value == null) ? 0 : value.hashCode());
+        result = PRIME * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = PRIME * result + ((this.metadata == null) ? 0 : this.metadata.hashCode());
+        result = PRIME * result + ((this.section == null) ? 0 : this.section.hashCode());
+        result = PRIME * result + ((this.value == null) ? 0 : this.value.hashCode());
         return result;
     }
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+    public boolean equals(final Object obj) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final DefaultDSLMappingEntry other = (DefaultDSLMappingEntry) obj;
-        if ( key == null ) {
-            if ( other.key != null ) return false;
-        } else if ( !key.equals( other.key ) ) return false;
-        if ( metadata == null ) {
-            if ( other.metadata != null ) return false;
-        } else if ( !metadata.equals( other.metadata ) ) return false;
-        if ( section == null ) {
-            if ( other.section != null ) return false;
-        } else if ( !section.equals( other.section ) ) return false;
-        if ( value == null ) {
-            if ( other.value != null ) return false;
-        } else if ( !value.equals( other.value ) ) return false;
+        if ( this.key == null ) {
+            if ( other.key != null ) {
+                return false;
+            }
+        } else if ( !this.key.equals( other.key ) ) {
+            return false;
+        }
+        if ( this.metadata == null ) {
+            if ( other.metadata != null ) {
+                return false;
+            }
+        } else if ( !this.metadata.equals( other.metadata ) ) {
+            return false;
+        }
+        if ( this.section == null ) {
+            if ( other.section != null ) {
+                return false;
+            }
+        } else if ( !this.section.equals( other.section ) ) {
+            return false;
+        }
+        if ( this.value == null ) {
+            if ( other.value != null ) {
+                return false;
+            }
+        } else if ( !this.value.equals( other.value ) ) {
+            return false;
+        }
         return true;
     }
 

@@ -26,28 +26,40 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  */
 public class BRLPersistence {
 
-    private XStream        xt;
+    private XStream                     xt;
     private static final BRLPersistence INSTANCE = new BRLPersistence();
 
     private BRLPersistence() {
-        xt = new XStream(new DomDriver());
+        this.xt = new XStream( new DomDriver() );
 
-        xt.alias( "rule", RuleModel.class );
-        xt.alias( "fact", FactPattern.class );
-        xt.alias( "retract", ActionRetractFact.class );
-        xt.alias( "assert", ActionAssertFact.class );
-        xt.alias( "modify", ActionModifyField.class );
-        xt.alias( "setField", ActionSetField.class );
-        xt.alias( "dslSentence", DSLSentence.class );
-        xt.alias( "compositePattern", CompositeFactPattern.class );
-        xt.alias( "attribute", RuleAttribute.class );
+        this.xt.alias( "rule",
+                  RuleModel.class );
+        this.xt.alias( "fact",
+                  FactPattern.class );
+        this.xt.alias( "retract",
+                  ActionRetractFact.class );
+        this.xt.alias( "assert",
+                  ActionAssertFact.class );
+        this.xt.alias( "modify",
+                  ActionModifyField.class );
+        this.xt.alias( "setField",
+                  ActionSetField.class );
+        this.xt.alias( "dslSentence",
+                  DSLSentence.class );
+        this.xt.alias( "compositePattern",
+                  CompositeFactPattern.class );
+        this.xt.alias( "attribute",
+                  RuleAttribute.class );
 
-        xt.alias( "fieldValue", ActionFieldValue.class );
-        xt.alias( "connectiveConstraint", ConnectiveConstraint.class );
-        xt.alias( "constraint", Constraint.class );
+        this.xt.alias( "fieldValue",
+                  ActionFieldValue.class );
+        this.xt.alias( "connectiveConstraint",
+                  ConnectiveConstraint.class );
+        this.xt.alias( "constraint",
+                  Constraint.class );
 
-        xt.alias( "assertLogical", ActionAssertLogicalFact.class );
-
+        this.xt.alias( "assertLogical",
+                  ActionAssertLogicalFact.class );
 
     }
 
@@ -55,14 +67,18 @@ public class BRLPersistence {
         return INSTANCE;
     }
 
-    public String toXML(RuleModel model) {
-        return xt.toXML( model );
+    public String toXML(final RuleModel model) {
+        return this.xt.toXML( model );
     }
 
-    public RuleModel toModel(String xml) {
-        if (xml == null) return new RuleModel();    
-        if (xml.trim().equals( "" )) return new RuleModel();
-        return (RuleModel) xt.fromXML( xml );
+    public RuleModel toModel(final String xml) {
+        if ( xml == null ) {
+            return new RuleModel();
+        }
+        if ( xml.trim().equals( "" ) ) {
+            return new RuleModel();
+        }
+        return (RuleModel) this.xt.fromXML( xml );
     }
 
 }

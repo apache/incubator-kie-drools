@@ -16,7 +16,6 @@
  */
 package org.apache.commons.jci.problems;
 
-
 /**
  * A CompilationProblemHandler gets access to a problem
  * as soon as the problem is available while the
@@ -32,5 +31,5 @@ package org.apache.commons.jci.problems;
  * @author tcurdt
  */
 public interface CompilationProblemHandler {
-    boolean handle( final CompilationProblem pProblem );
+    boolean handle(final CompilationProblem pProblem);
 }

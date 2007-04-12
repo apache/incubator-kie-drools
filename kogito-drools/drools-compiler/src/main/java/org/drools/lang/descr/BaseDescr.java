@@ -26,21 +26,21 @@ public class BaseDescr
     Serializable {
 
     private static final long serialVersionUID = 320;
-    private int               startCharacter = -1;
-    private int               endCharacter = -1;
-    private int               line = -1;
-    private int               column = -1;
-    private int               endLine = -1;
-    private int               endColumn = -1;
+    private int               startCharacter   = -1;
+    private int               endCharacter     = -1;
+    private int               line             = -1;
+    private int               column           = -1;
+    private int               endLine          = -1;
+    private int               endColumn        = -1;
 
-    public void setLocation(int line,
-                            int column) {
+    public void setLocation(final int line,
+                            final int column) {
         this.line = line;
         this.column = column;
     }
 
-    public void setEndLocation(int line,
-                               int column) {
+    public void setEndLocation(final int line,
+                               final int column) {
         this.endLine = line;
         this.endColumn = column;
     }
@@ -65,13 +65,13 @@ public class BaseDescr
      * @return the endCharacter
      */
     public int getEndCharacter() {
-        return endCharacter;
+        return this.endCharacter;
     }
 
     /**
      * @param endCharacter the endCharacter to set
      */
-    public void setEndCharacter(int endCharacter) {
+    public void setEndCharacter(final int endCharacter) {
         this.endCharacter = endCharacter;
     }
 
@@ -79,13 +79,13 @@ public class BaseDescr
      * @return the startCharacter
      */
     public int getStartCharacter() {
-        return startCharacter;
+        return this.startCharacter;
     }
 
     /**
      * @param startCharacter the startCharacter to set
      */
-    public void setStartCharacter(int startCharacter) {
+    public void setStartCharacter(final int startCharacter) {
         this.startCharacter = startCharacter;
     }
 }

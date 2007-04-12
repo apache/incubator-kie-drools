@@ -19,28 +19,30 @@ package org.apache.commons.jci.compilers;
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.eclipse.jdt.core.compiler.IProblem;
 
-public class EclipseCompilationProblem implements CompilationProblem {
+public class EclipseCompilationProblem
+    implements
+    CompilationProblem {
 
     private final IProblem problem;
 
     public EclipseCompilationProblem(final IProblem pProblem) {
-        problem = pProblem;
+        this.problem = pProblem;
     }
 
     public boolean isError() {
-        return problem.isError();
+        return this.problem.isError();
     }
 
     public String getFileName() {
-        return new String(problem.getOriginatingFileName());
+        return new String( this.problem.getOriginatingFileName() );
     }
 
     public int getStartLine() {
-        return problem.getSourceLineNumber();
+        return this.problem.getSourceLineNumber();
     }
 
     public int getStartColumn() {
-        return problem.getSourceStart();
+        return this.problem.getSourceStart();
     }
 
     public int getEndLine() {
@@ -48,26 +50,26 @@ public class EclipseCompilationProblem implements CompilationProblem {
     }
 
     public int getEndColumn() {
-        return problem.getSourceEnd();
+        return this.problem.getSourceEnd();
     }
 
     public String getMessage() {
-        return problem.getMessage();
+        return this.problem.getMessage();
     }
 
     public String toString() {
         final StringBuffer sb = new StringBuffer();
-        sb.append(getFileName()).append(" (");
-        sb.append(getStartLine());
-        sb.append(":");
-        sb.append(getStartColumn());
-        sb.append(") : ");
-        sb.append(getMessage());
+        sb.append( getFileName() ).append( " (" );
+        sb.append( getStartLine() );
+        sb.append( ":" );
+        sb.append( getStartColumn() );
+        sb.append( ") : " );
+        sb.append( getMessage() );
         return sb.toString();
     }
 
     public int getId() {
-        return problem.getID();
+        return this.problem.getID();
     }
 
 }

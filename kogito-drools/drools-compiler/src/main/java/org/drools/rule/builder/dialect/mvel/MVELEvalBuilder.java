@@ -17,9 +17,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
-import java.util.List;
-
-import org.antlr.stringtemplate.StringTemplate;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
 import org.drools.lang.descr.BaseDescr;
@@ -31,7 +28,6 @@ import org.drools.rule.builder.BuildContext;
 import org.drools.rule.builder.ColumnBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.dialect.java.BuildUtils;
-import org.drools.spi.DeclarationScopeResolver;
 import org.mvel.MVEL;
 
 /**
@@ -57,27 +53,28 @@ public class MVELEvalBuilder
                                     final ColumnBuilder columnBuilder,
                                     final BaseDescr descr) {
         // it must be an EvalDescr
-        EvalDescr evalDescr = (EvalDescr) descr;
+        final EvalDescr evalDescr = (EvalDescr) descr;
 
         final Declaration[] declarations = new Declaration[0];
-//        final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
-//                                                                 evalDescr,
-//                                                                 evalDescr.getText() );
-//
-//        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
-//        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-//            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
-//        }
+        //        final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
+        //                                                                 evalDescr,
+        //                                                                 evalDescr.getText() );
+        //
+        //        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        //        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+        //            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+        //        }
 
-        DroolsMVELFactory factory = new DroolsMVELFactory( );
+        final DroolsMVELFactory factory = new DroolsMVELFactory();
         factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
-        factory.setGlobalsMap( context.getPkg().getGlobals() );        
-        
-        Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent() );       
+        factory.setGlobalsMap( context.getPkg().getGlobals() );
+
+        final Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent() );
         final EvalCondition eval = new EvalCondition( declarations );
-        eval.setEvalExpression( new MVELEvalExpression(expr,factory) );
-        
+        eval.setEvalExpression( new MVELEvalExpression( expr,
+                                                        factory ) );
+
         return eval;
     }
-    
+
 }

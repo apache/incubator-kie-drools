@@ -34,7 +34,6 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.builder.EvalBuilder;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -59,14 +58,14 @@ public class JavaDialect
     implements
     Dialect {
 
-    private JavaAccumulateBuilder accumulate = new JavaAccumulateBuilder();
-    private JavaConsequenceBuilder consequence = new JavaConsequenceBuilder();
-    private JavaEvalBuilder eval = new JavaEvalBuilder();
-    private JavaPredicateBuilder predicate = new JavaPredicateBuilder();
-    private JavaReturnValueBuilder returnValue = new JavaReturnValueBuilder();
-    private JavaRuleClassBuilder rule = new JavaRuleClassBuilder();
-    private MVELFromBuilder from = new MVELFromBuilder();
-    
+    private final JavaAccumulateBuilder       accumulate  = new JavaAccumulateBuilder();
+    private final JavaConsequenceBuilder      consequence = new JavaConsequenceBuilder();
+    private final JavaEvalBuilder             eval        = new JavaEvalBuilder();
+    private final JavaPredicateBuilder        predicate   = new JavaPredicateBuilder();
+    private final JavaReturnValueBuilder      returnValue = new JavaReturnValueBuilder();
+    private final JavaRuleClassBuilder        rule        = new JavaRuleClassBuilder();
+    private final MVELFromBuilder             from        = new MVELFromBuilder();
+
     private Package                     pkg;
     private JavaCompiler                compiler;
     private List                        generatedClassList;
@@ -80,21 +79,21 @@ public class JavaDialect
     private Map                         errorHandlers;
 
     private List                        results;
-    
+
     // a map of registered builders
-    private Map                builders;
+    private Map                         builders;
 
     // the builder for columns
-    private ColumnBuilder      columnBuilder;
+    private ColumnBuilder               columnBuilder;
 
     // the builder for the consequence
-    private ConsequenceBuilder consequenceBuilder;
+    private ConsequenceBuilder          consequenceBuilder;
 
     // the builder for the rule class
-    private RuleClassBuilder   classBuilder;
+    private RuleClassBuilder            classBuilder;
 
     public JavaDialect(final Package pkg,
-                          PackageBuilderConfiguration configuration) {
+                       final PackageBuilderConfiguration configuration) {
         this.pkg = pkg;
         this.configuration = configuration;
         loadCompiler();
@@ -102,49 +101,49 @@ public class JavaDialect
         if ( pkg != null ) {
             init( pkg );
         }
-        
+
         initBuilder();
-    }  
-    
+    }
+
     public void initBuilder() {
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
         this.builders = new HashMap();
 
-        builders.put( CollectDescr.class,
+        this.builders.put( CollectDescr.class,
                       new CollectBuilder() );
 
-        builders.put( ForallDescr.class,
+        this.builders.put( ForallDescr.class,
                       new ForallBuilder() );
-        GroupElementBuilder gebuilder = new GroupElementBuilder();
-        builders.put( AndDescr.class,
+        final GroupElementBuilder gebuilder = new GroupElementBuilder();
+        this.builders.put( AndDescr.class,
                       gebuilder );
-        builders.put( OrDescr.class,
+        this.builders.put( OrDescr.class,
                       gebuilder );
-        builders.put( NotDescr.class,
+        this.builders.put( NotDescr.class,
                       gebuilder );
-        builders.put( ExistsDescr.class,
+        this.builders.put( ExistsDescr.class,
                       gebuilder );
 
         // dialect specific        
         this.columnBuilder = new ColumnBuilder( this );
 
-        builders.put( FromDescr.class,
+        this.builders.put( FromDescr.class,
                       getFromBuilder() );
 
-        builders.put( AccumulateDescr.class,
+        this.builders.put( AccumulateDescr.class,
                       getAccumulateBuilder() );
 
-        builders.put( EvalDescr.class,
+        this.builders.put( EvalDescr.class,
                       getEvalBuilder() );
 
-        this.consequenceBuilder = (ConsequenceBuilder) getConsequenceBuilder();
+        this.consequenceBuilder = getConsequenceBuilder();
 
-        this.classBuilder = (RuleClassBuilder) getRuleClassBuilder();        
+        this.classBuilder = getRuleClassBuilder();
     }
-    
-    public void init(Package pkg) {
+
+    public void init(final Package pkg) {
         this.pkg = pkg;
         this.errorHandlers = new HashMap();
 
@@ -162,17 +161,15 @@ public class JavaDialect
 
         this.results = new ArrayList();
     }
-    
-    public void init(RuleDescr ruleDescr) {
+
+    public void init(final RuleDescr ruleDescr) {
         final String ruleClassName = getUniqueLegalName( this.pkg.getName(),
                                                          ruleDescr.getName(),
                                                          "java",
                                                          this.src );
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
-    }    
-    
-    
-    
+    }
+
     public AccumulateBuilder getAccumulateBuilder() {
         return this.accumulate;
     }
@@ -196,10 +193,10 @@ public class JavaDialect
     public RuleClassBuilder getRuleClassBuilder() {
         return this.rule;
     }
-    
+
     public FromBuilder getFromBuilder() {
         return this.from;
-    }    
+    }
 
     /**
      * This actually triggers the compiling of all the resources.
@@ -293,8 +290,8 @@ public class JavaDialect
         }
 
         // setup the line mappins for this rule
-        String name = pkg.getName() + "." + ucFirst( ruleDescr.getClassName() );
-        LineMappings mapping = new LineMappings( name );
+        final String name = this.pkg.getName() + "." + ucFirst( ruleDescr.getClassName() );
+        final LineMappings mapping = new LineMappings( name );
         mapping.setStartLine( ruleDescr.getConsequenceLine() );
         mapping.setOffset( ruleDescr.getConsequenceOffset() );
         this.lineMappings.put( name,
@@ -302,9 +299,9 @@ public class JavaDialect
     }
 
     public void addFunction(final FunctionDescr functionDescr,
-                            TypeResolver typeResolver) {
+                            final TypeResolver typeResolver) {
 
-        String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+        final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
         this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
 
@@ -316,12 +313,12 @@ public class JavaDialect
                              builder.build( this.pkg,
                                             functionDescr,
                                             typeResolver,
-                                            lineMappings ),
+                                            this.lineMappings ),
                              this.src,
                              new FunctionErrorHandler( functionDescr,
                                                        "Function Compilation error" ) );
 
-        LineMappings mapping = new LineMappings( functionClassName );
+        final LineMappings mapping = new LineMappings( functionClassName );
         mapping.setStartLine( functionDescr.getLine() );
         mapping.setOffset( functionDescr.getOffset() );
         this.lineMappings.put( functionClassName,
@@ -353,7 +350,7 @@ public class JavaDialect
         addClassName( fileName );
     }
 
-    public void addClassName(String className) {
+    public void addClassName(final String className) {
         this.generatedClassList.add( className );
     }
 
@@ -369,7 +366,7 @@ public class JavaDialect
             case PackageBuilderConfiguration.ECLIPSE :
             default : {
                 final EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
-                Map map = eclipseSettings.getMap();
+                final Map map = eclipseSettings.getMap();
                 String lngLevel = this.configuration.getJavaLanguageLevel();
                 map.put( CompilerOptions.OPTION_TargetPlatform,
                          lngLevel );
@@ -428,6 +425,5 @@ public class JavaDialect
     private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
-    
 
 }

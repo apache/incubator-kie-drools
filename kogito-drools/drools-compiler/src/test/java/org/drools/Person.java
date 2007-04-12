@@ -12,7 +12,7 @@ public class Person
      * 
      */
     private static final long serialVersionUID = 2640286967578736742L;
-    private String      name;
+    private String            name;
     private String            likes;
     private int               age;
     private BigDecimal        bigDecimal;
@@ -24,13 +24,13 @@ public class Person
     private boolean           alive;
 
     private String            status;
-    
-    private Cheese			  cheese;
+
+    private Cheese            cheese;
 
     public Person() {
-    	
+
     }
-    
+
     public Person(final String name) {
         this( name,
               "",
@@ -80,10 +80,10 @@ public class Person
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.PersonInterface#getAge()
      */
@@ -91,7 +91,7 @@ public class Person
         return this.age;
     }
 
-    public void setAge(int age) {
+    public void setAge(final int age) {
         this.age = age;
     }
 
@@ -127,7 +127,7 @@ public class Person
         return this.hair;
     }
 
-    public void setHair(String hair) {
+    public void setHair(final String hair) {
         this.hair = hair;
     }
 
@@ -209,17 +209,16 @@ public class Person
         this.bigInteger = bigInteger;
     }
 
-    public void setLikes(String likes) {
+    public void setLikes(final String likes) {
         this.likes = likes;
     }
 
-	public Cheese getCheese() {
-		return cheese;
-	}
+    public Cheese getCheese() {
+        return this.cheese;
+    }
 
-	public void setCheese(Cheese cheese) {
-		this.cheese = cheese;
-	}
-    
-    
+    public void setCheese(final Cheese cheese) {
+        this.cheese = cheese;
+    }
+
 }

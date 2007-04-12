@@ -14,35 +14,35 @@ public abstract class ActionFieldList
 
     public ActionFieldValue[] fieldValues = new ActionFieldValue[0];
 
-    public void removeField(int idx) {
+    public void removeField(final int idx) {
         //Unfortunately, this is kinda duplicate code with other methods, 
         //but with typed arrays, and GWT, its not really possible to do anything "better" 
         //at this point in time. 
-        ActionFieldValue[] newList = new ActionFieldValue[fieldValues.length - 1];
+        final ActionFieldValue[] newList = new ActionFieldValue[this.fieldValues.length - 1];
         int newIdx = 0;
-        for ( int i = 0; i < fieldValues.length; i++ ) {
-            
-            if (i != idx) {
-                newList[newIdx] = fieldValues[i];
+        for ( int i = 0; i < this.fieldValues.length; i++ ) {
+
+            if ( i != idx ) {
+                newList[newIdx] = this.fieldValues[i];
                 newIdx++;
             }
-            
+
         }
-        this.fieldValues = newList;        
+        this.fieldValues = newList;
     }
-    
-    public void addFieldValue(ActionFieldValue val) {
-        if (fieldValues == null) {
-            fieldValues = new ActionFieldValue[1];            
-            fieldValues[0] = val;            
+
+    public void addFieldValue(final ActionFieldValue val) {
+        if ( this.fieldValues == null ) {
+            this.fieldValues = new ActionFieldValue[1];
+            this.fieldValues[0] = val;
         } else {
-            ActionFieldValue[] newList = new ActionFieldValue[fieldValues.length + 1];
-            for ( int i = 0; i < fieldValues.length; i++ ) {            
-                newList[i] = fieldValues[i];
+            final ActionFieldValue[] newList = new ActionFieldValue[this.fieldValues.length + 1];
+            for ( int i = 0; i < this.fieldValues.length; i++ ) {
+                newList[i] = this.fieldValues[i];
             }
-            newList[fieldValues.length] = val;
-            fieldValues = newList;
-        }        
-    }    
-    
+            newList[this.fieldValues.length] = val;
+            this.fieldValues = newList;
+        }
+    }
+
 }

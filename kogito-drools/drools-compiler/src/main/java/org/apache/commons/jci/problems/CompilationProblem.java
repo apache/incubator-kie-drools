@@ -18,16 +18,18 @@ package org.apache.commons.jci.problems;
 
 public interface CompilationProblem {
 
-  boolean isError();
+    boolean isError();
 
-  String getFileName();
+    String getFileName();
 
-  int getStartLine();
-  int getStartColumn();
+    int getStartLine();
 
-  int getEndLine();
-  int getEndColumn();
+    int getStartColumn();
 
-  String getMessage();
+    int getEndLine();
+
+    int getEndColumn();
+
+    String getMessage();
 
 }

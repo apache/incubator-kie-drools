@@ -81,8 +81,8 @@ public class ReteooBuilderTest extends TestCase {
             final ObjectSource source1 = (ObjectSource) object1;
             final ObjectSource source2 = (ObjectSource) object2;
 
-            ObjectSink[] list1 = source1.sink.getSinks();
-            ObjectSink[] list2 = source2.sink.getSinks();
+            final ObjectSink[] list1 = source1.sink.getSinks();
+            final ObjectSink[] list2 = source2.sink.getSinks();
 
             assertEquals( object1.getClass() + " nodes have different number of sinks",
                           list1.length,
@@ -96,8 +96,8 @@ public class ReteooBuilderTest extends TestCase {
             final TupleSource source1 = (TupleSource) object1;
             final TupleSource source2 = (TupleSource) object2;
 
-            TupleSink[] list1 = source1.sink.getSinks();
-            TupleSink[] list2 = source2.sink.getSinks();
+            final TupleSink[] list1 = source1.sink.getSinks();
+            final TupleSink[] list2 = source2.sink.getSinks();
 
             assertEquals( object1.getClass() + " nodes have different number of sinks",
                           list1.length,

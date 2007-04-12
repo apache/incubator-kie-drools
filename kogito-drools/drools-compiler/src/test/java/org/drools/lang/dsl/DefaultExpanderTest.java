@@ -10,13 +10,13 @@ public class DefaultExpanderTest extends TestCase {
     private DefaultExpander expander = null;
 
     protected void setUp() throws Exception {
-        String filename = "test_metainfo.dsl";
-        Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
-        file = new DSLMappingFile();
-        file.parseAndLoad( reader );
+        final String filename = "test_metainfo.dsl";
+        final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
+        this.file = new DSLMappingFile();
+        this.file.parseAndLoad( reader );
         reader.close();
 
-        expander = new DefaultExpander();
+        this.expander = new DefaultExpander();
 
         super.setUp();
     }
@@ -26,13 +26,13 @@ public class DefaultExpanderTest extends TestCase {
     }
 
     public void testAddDSLMapping() {
-        expander.addDSLMapping( file.getMapping() );
+        this.expander.addDSLMapping( this.file.getMapping() );
         // should not raise any exception
     }
 
     public void testRegexp() throws Exception {
-        expander.addDSLMapping( file.getMapping() );
-        Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.drl" ) );
-        String result = expander.expand( rules );
+        this.expander.addDSLMapping( this.file.getMapping() );
+        final Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.drl" ) );
+        final String result = this.expander.expand( rules );
     }
 }

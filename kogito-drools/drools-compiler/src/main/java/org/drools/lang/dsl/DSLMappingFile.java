@@ -48,7 +48,7 @@ public class DSLMappingFile {
     private List                 errors;
 
     public DSLMappingFile() {
-        this.mapping = new DefaultDSLMapping( );
+        this.mapping = new DefaultDSLMapping();
         this.errors = Collections.EMPTY_LIST;
     }
 
@@ -64,7 +64,7 @@ public class DSLMappingFile {
      * Sets the 
      * @param mapping
      */
-    public void setMapping( DSLMapping mapping ) {
+    public void setMapping(final DSLMapping mapping) {
         this.mapping = mapping;
     }
 
@@ -83,20 +83,20 @@ public class DSLMappingFile {
      * @return true in case no error was found parsing the file. false 
      *         otherwise. Use getErrors() to check for the actual errors.
      */
-    public boolean parseAndLoad( Reader dsl ) throws IOException {
+    public boolean parseAndLoad(final Reader dsl) throws IOException {
         String line = null;
         int linecounter = 0;
-        BufferedReader dslFileReader = new BufferedReader( dsl );
+        final BufferedReader dslFileReader = new BufferedReader( dsl );
         this.mapping = new DefaultDSLMapping();
         this.errors = new LinkedList();
         while ( (line = dslFileReader.readLine()) != null ) {
             linecounter++;
-            Matcher mat = pattern.matcher( line );
+            final Matcher mat = pattern.matcher( line );
             if ( mat.matches() ) {
-                String sectionStr = mat.group( 2 );
-                String metadataStr = mat.group( 4 );
-                String key = mat.group( 5 );
-                String value = mat.group( 6 );
+                final String sectionStr = mat.group( 2 );
+                final String metadataStr = mat.group( 4 );
+                final String key = mat.group( 5 );
+                final String value = mat.group( 6 );
 
                 DSLMappingEntry.Section section = DSLMappingEntry.ANY;
                 if ( KEYWORD.equals( sectionStr ) ) {
@@ -107,17 +107,17 @@ public class DSLMappingFile {
                     section = DSLMappingEntry.CONSEQUENCE;
                 }
 
-                DSLMappingEntry.MetaData metadata = new DefaultDSLEntryMetaData( metadataStr );
+                final DSLMappingEntry.MetaData metadata = new DefaultDSLEntryMetaData( metadataStr );
 
-                DSLMappingEntry entry = new DefaultDSLMappingEntry( section,
+                final DSLMappingEntry entry = new DefaultDSLMappingEntry( section,
                                                                     metadata,
                                                                     key,
                                                                     value );
 
                 this.mapping.addEntry( entry );
             } else if ( !line.trim().startsWith( "#" ) ) { // it is not a comment 
-                String error = "Error parsing mapping entry: " + line;
-                DSLMappingParseException exception = new DSLMappingParseException( error,
+                final String error = "Error parsing mapping entry: " + line;
+                final DSLMappingParseException exception = new DSLMappingParseException( error,
                                                                                    linecounter );
                 this.errors.add( exception );
             }
@@ -130,13 +130,13 @@ public class DSLMappingFile {
      * @param out
      * @throws IOException
      */
-    public void saveMapping( Writer out ) throws IOException {
-        for ( Iterator it = mapping.getEntries().iterator(); it.hasNext(); ) {
+    public void saveMapping(final Writer out) throws IOException {
+        for ( final Iterator it = this.mapping.getEntries().iterator(); it.hasNext(); ) {
             out.write( it.next().toString() );
             out.write( "\n" );
         }
     }
-    
+
     /**
      * Saves the given mapping into a DSL mapping file
      * 
@@ -144,20 +144,21 @@ public class DSLMappingFile {
      * @param mapping
      * @throws IOException
      */
-    public static void saveMapping( Writer out, DSLMapping mapping ) throws IOException {
-        for ( Iterator it = mapping.getEntries().iterator(); it.hasNext(); ) {
+    public static void saveMapping(final Writer out,
+                                   final DSLMapping mapping) throws IOException {
+        for ( final Iterator it = mapping.getEntries().iterator(); it.hasNext(); ) {
             out.write( it.next().toString() );
             out.write( "\n" );
         }
     }
-    
+
     /**
      * Method to return the current mapping as a String object
      * @return
      */
     public String dumpFile() {
-        StringBuffer buf = new StringBuffer();
-        for ( Iterator it = this.mapping.getEntries().iterator(); it.hasNext(); ) {
+        final StringBuffer buf = new StringBuffer();
+        for ( final Iterator it = this.mapping.getEntries().iterator(); it.hasNext(); ) {
             buf.append( it.next() );
             buf.append( "\n" );
         }

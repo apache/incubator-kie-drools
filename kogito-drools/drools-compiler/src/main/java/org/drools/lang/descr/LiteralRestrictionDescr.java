@@ -56,7 +56,7 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
     public String getText() {
         return this.text;
     }
-    
+
     public String toString() {
         return this.evaluator + " " + this.text;
     }

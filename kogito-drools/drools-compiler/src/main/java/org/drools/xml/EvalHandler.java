@@ -65,7 +65,7 @@ class EvalHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
 
         final EvalDescr evalDescr = new EvalDescr();
 

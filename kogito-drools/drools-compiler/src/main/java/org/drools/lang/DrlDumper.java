@@ -71,22 +71,22 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitAttributeDescr(final AttributeDescr attributeDescr) {
         this.template = new String();
-        String name = attributeDescr.getName();
+        final String name = attributeDescr.getName();
         String value = null;
         if ( name.equals( "agenda-group" ) || name.equals( "activation-group" ) || name.equals( "ruleflow-group" ) ) {
             // These attributes may need quotes around them, if they have spaces, so add anyway
-            value =  "\"" + attributeDescr.getValue() + "\"";
+            value = "\"" + attributeDescr.getValue() + "\"";
         } else {
             value = attributeDescr.getValue();
         }
         this.template = "\t " + name + " " + value + DrlDumper.eol;
     }
-    
+
     public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
         if ( !descr.getRestrictions().isEmpty() ) {
             this.template = descr.getFieldName() + " " + processFieldConstraint( descr.getRestrictions() );
-        } 
-    }    
+        }
+    }
 
     public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
         this.template = new String();
@@ -144,7 +144,7 @@ public class DrlDumper extends ReflectiveVisitor
     public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
         this.template = new String();
         String text = descr.getText();
-        if( text == null ) {
+        if ( text == null ) {
             text = "null";
         } else {
             try {
@@ -155,7 +155,7 @@ public class DrlDumper extends ReflectiveVisitor
         }
         this.template = descr.getEvaluator() + " " + text;
     }
-    
+
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
         if ( descr.getConnective() == RestrictionConnectiveDescr.OR ) {
             this.template = " | ";
@@ -274,32 +274,31 @@ public class DrlDumper extends ReflectiveVisitor
 
             final Object temp = iterator.next();
             visit( temp );
-                        
+
             if ( previous == null ) {
                 descrString += this.template;
-            } else if ( previous instanceof FieldBindingDescr && !(temp instanceof FieldBindingDescr) && !(temp instanceof PredicateDescr)) {
-                FieldConstraintDescr tempDescr = (FieldConstraintDescr) temp;
-                FieldBindingDescr previousDescr = (FieldBindingDescr) previous;
+            } else if ( previous instanceof FieldBindingDescr && !(temp instanceof FieldBindingDescr) && !(temp instanceof PredicateDescr) ) {
+                final FieldConstraintDescr tempDescr = (FieldConstraintDescr) temp;
+                final FieldBindingDescr previousDescr = (FieldBindingDescr) previous;
                 if ( tempDescr.getFieldName().equals( previousDescr.getFieldName() ) ) {
                     // as its a binding followed by a field constraint we need to remove 
                     // the extra field name                    
                     descrString += this.template.substring( tempDescr.getFieldName().length() + 1 );
                 } else {
-                  descrString +=  " , " + this.template;               
+                    descrString += " , " + this.template;
                 }
             } else {
-                descrString +=  " , " + this.template;                
+                descrString += " , " + this.template;
             }
 
             previous = temp;
-            
-            
+
         }
         return descrString.substring( 0,
                                       descrString.length() );
     }
 
-    private String processFieldConstraint(List list)  {
+    private String processFieldConstraint(final List list) {
         String descrString = "";
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object temp = it.next();
@@ -307,8 +306,8 @@ public class DrlDumper extends ReflectiveVisitor
             descrString += this.template;
         }
         return descrString;
-    }    
-    
+    }
+
     private String processDescrList(final List descr) {
         String descrString = "";
         for ( final Iterator it = descr.iterator(); it.hasNext(); ) {

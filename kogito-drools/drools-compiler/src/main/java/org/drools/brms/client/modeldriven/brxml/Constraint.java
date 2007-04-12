@@ -1,26 +1,20 @@
 package org.drools.brms.client.modeldriven.brxml;
 
-
-
 /**
  * This represents a contraint on a fact.
  * Can also include optional "connective constraints" that extend the options for matches.
  * @author Michael Neale
  *
  */
-public class Constraint
-    extends
-    IConstraint  {
-
+public class Constraint extends IConstraint {
 
     public String                 fieldBinding;
     public String                 fieldName;
     public String                 operator;
 
-
     public ConnectiveConstraint[] connectives;
 
-    public Constraint(String field) {
+    public Constraint(final String field) {
         this.fieldName = field;
     }
 
@@ -32,15 +26,15 @@ public class Constraint
      *
      */
     public void addNewConnective() {
-        if ( connectives == null ) {
-            connectives = new ConnectiveConstraint[]{new ConnectiveConstraint()};
+        if ( this.connectives == null ) {
+            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint()};
         } else {
-            ConnectiveConstraint[] newList = new ConnectiveConstraint[connectives.length + 1];
-            for ( int i = 0; i < connectives.length; i++ ) {
-                newList[i] = connectives[i];
+            final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length + 1];
+            for ( int i = 0; i < this.connectives.length; i++ ) {
+                newList[i] = this.connectives[i];
             }
-            newList[connectives.length] = new ConnectiveConstraint();
-            connectives = newList;
+            newList[this.connectives.length] = new ConnectiveConstraint();
+            this.connectives = newList;
         }
     }
 
@@ -48,12 +42,11 @@ public class Constraint
      * Returns true of there is a field binding.
      */
     public boolean isBound() {
-        if (fieldBinding != null && !"".equals( fieldBinding )) {
+        if ( this.fieldBinding != null && !"".equals( this.fieldBinding ) ) {
             return true;
         } else {
             return false;
         }
     }
-
 
 }

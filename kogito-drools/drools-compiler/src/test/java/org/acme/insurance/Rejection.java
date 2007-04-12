@@ -6,18 +6,18 @@ package org.acme.insurance;
  */
 public class Rejection {
 
-	private String reason;
+    private String reason;
 
-	public Rejection(String reason) {
-		this.reason = reason;
-	}
+    public Rejection(final String reason) {
+        this.reason = reason;
+    }
 
-	public String getReason() {
-		return reason;
-	}
+    public String getReason() {
+        return this.reason;
+    }
 
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
-	
+    public void setReason(final String reason) {
+        this.reason = reason;
+    }
+
 }

@@ -78,7 +78,7 @@ public class KnowledgeHelperFixer {
             }
 
             final String replacement = escapeDollarSigns( replacer,
-                                                    obj );
+                                                          obj );
             return pre + matcher.replaceAll( replacement ) + post;
 
         } else {
@@ -93,9 +93,9 @@ public class KnowledgeHelperFixer {
     private String escapeDollarSigns(final Replacer replacer,
                                      final String obj) {
         return KnowledgeHelperFixer.replace( replacer.getReplacement( obj ),
-                             "$",
-                             "\\$",
-                             256 );
+                                             "$",
+                                             "\\$",
+                                             256 );
     }
 
     static interface Replacer {

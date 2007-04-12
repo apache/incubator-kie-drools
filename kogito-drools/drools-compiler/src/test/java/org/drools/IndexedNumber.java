@@ -26,13 +26,13 @@ package org.drools;
  */
 
 public class IndexedNumber {
-    
-    private int number = 0;
-    
-    private int index = 0;
-    
+
+    private int     number = 0;
+
+    private int     index  = 0;
+
     private boolean printed;
-    
+
     public IndexedNumber() {
     }
 
@@ -40,53 +40,53 @@ public class IndexedNumber {
      * @param pNb
      * @param pIndex
      */
-    public IndexedNumber(int pNb, int pIndex) {
-        number = pNb;
-        index = pIndex;
+    public IndexedNumber(final int pNb,
+                         final int pIndex) {
+        this.number = pNb;
+        this.index = pIndex;
     }
 
     /**
      * @return le/la/les index.
      */
     public int getIndex() {
-        return index;
+        return this.index;
     }
 
     /**
      * @param pIndex le/la/les index à sauvegarder.
      */
-    public void setIndex(int pIndex) {
-        index = pIndex;
+    public void setIndex(final int pIndex) {
+        this.index = pIndex;
     }
 
     /**
      * @return le/la/les nb.
      */
     public int getNumber() {
-        return number;
+        return this.number;
     }
 
     /**
      * @param pNb le/la/les nb à sauvegarder.
      */
-    public void setNumber(int pNb) {
-        number = pNb;
+    public void setNumber(final int pNb) {
+        this.number = pNb;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String toString() {
-        return "IndexedNumber[ " + number + ", " + index + " ]";
+        return "IndexedNumber[ " + this.number + ", " + this.index + " ]";
     }
 
     public boolean isPrinted() {
-        return printed;
+        return this.printed;
     }
 
-    public void setPrinted(boolean printed) {
+    public void setPrinted(final boolean printed) {
         this.printed = printed;
     }
-    
 
 }

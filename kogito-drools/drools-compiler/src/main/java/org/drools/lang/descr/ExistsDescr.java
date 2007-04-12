@@ -27,7 +27,7 @@ public class ExistsDescr extends BaseDescr
      * 
      */
     private static final long serialVersionUID = -1617901384156245788L;
-    private final List descrs = new ArrayList( 1 );
+    private final List        descrs           = new ArrayList( 1 );
 
     public ExistsDescr() {
     }

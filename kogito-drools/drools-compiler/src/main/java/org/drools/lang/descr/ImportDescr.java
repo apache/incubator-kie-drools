@@ -23,20 +23,20 @@ package org.drools.lang.descr;
 public class ImportDescr extends BaseDescr {
 
     private static final long serialVersionUID = -5578158193651898438L;
-    private String target;
-    
+    private String            target;
+
     public ImportDescr() {
     }
-    
-    public ImportDescr(String clazzName) {
+
+    public ImportDescr(final String clazzName) {
         this.target = clazzName;
     }
-    
+
     public String getTarget() {
         return this.target;
     }
-    
-    public void setTarget(String clazzName) {
+
+    public void setTarget(final String clazzName) {
         this.target = clazzName;
     }
 
@@ -46,7 +46,7 @@ public class ImportDescr extends BaseDescr {
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ((target == null) ? 0 : target.hashCode());
+        result = PRIME * result + ((this.target == null) ? 0 : this.target.hashCode());
         result = PRIME * result + this.getStartCharacter();
         return result;
     }
@@ -54,19 +54,29 @@ public class ImportDescr extends BaseDescr {
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+    public boolean equals(final Object obj) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final ImportDescr other = (ImportDescr) obj;
-        if ( target == null ) {
-            if ( other.target != null ) return false;
-        } else if ( !target.equals( other.target ) ) return false;
+        if ( this.target == null ) {
+            if ( other.target != null ) {
+                return false;
+            }
+        } else if ( !this.target.equals( other.target ) ) {
+            return false;
+        }
         return this.getStartCharacter() == other.getStartCharacter();
     }
-    
+
     public String toString() {
-        return "import "+this.target;
+        return "import " + this.target;
     }
 
 }

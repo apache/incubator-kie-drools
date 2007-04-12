@@ -21,9 +21,9 @@ public class Cell {
     int value = 0;
 
     public Cell() {
-    	
+
     }
-    
+
     public Cell(final int value) {
         this.value = value;
     }

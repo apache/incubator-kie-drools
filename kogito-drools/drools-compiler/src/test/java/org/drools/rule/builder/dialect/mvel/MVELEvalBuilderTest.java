@@ -26,50 +26,54 @@ import org.drools.spi.FieldExtractor;
 
 public class MVELEvalBuilderTest extends TestCase {
 
-    public void setUp() {     
+    public void setUp() {
     }
 
     public void testSimpleExpression() {
-        Package pkg = new Package( "pkg1" );
-        RuleDescr ruleDescr = new RuleDescr( "rule 1" );
+        final Package pkg = new Package( "pkg1" );
+        final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
-        InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                          ruleDescr );
-        InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
+        final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "price" );
-        Column column = new Column( 0,
+        final Column column = new Column( 0,
                                     new ClassObjectType( int.class ) );
-        Declaration declaration = new Declaration( "a",
+        final Declaration declaration = new Declaration( "a",
                                                    extractor,
                                                    column );
-        Map map = new HashMap();
+        final Map map = new HashMap();
         map.put( "a",
                  declaration );
         declarationResolver.setDeclarations( map );
         context.setDeclarationResolver( declarationResolver );
 
-        EvalDescr evalDescr = new EvalDescr();
+        final EvalDescr evalDescr = new EvalDescr();
         evalDescr.setContent( "a == 10" );
 
-        MVELEvalBuilder builder = new MVELEvalBuilder();
-        EvalCondition eval = ( EvalCondition ) builder.build( context,
-                                                    null,
-                                                    null,
-                                                    evalDescr );
-        
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        WorkingMemory wm = ruleBase.newWorkingMemory();
-        
-        Cheese cheddar = new Cheese("cheddar", 10);
-        InternalFactHandle f0 = ( InternalFactHandle ) wm.assertObject( cheddar );
-        ReteTuple tuple = new ReteTuple( f0 );      
-        
-        assertTrue( eval.isAllowed( tuple, wm ) );
-        
+        final MVELEvalBuilder builder = new MVELEvalBuilder();
+        final EvalCondition eval = (EvalCondition) builder.build( context,
+                                                            null,
+                                                            null,
+                                                            evalDescr );
+
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                     10 );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        final ReteTuple tuple = new ReteTuple( f0 );
+
+        assertTrue( eval.isAllowed( tuple,
+                                    wm ) );
+
         cheddar.setPrice( 9 );
-        wm.modifyObject( f0, cheddar );
-        assertFalse( eval.isAllowed( tuple, wm ) );
+        wm.modifyObject( f0,
+                         cheddar );
+        assertFalse( eval.isAllowed( tuple,
+                                     wm ) );
     }
 
     public static class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
@@ -79,7 +83,7 @@ public class MVELEvalBuilderTest extends TestCase {
             super( null );
         }
 
-        public void setDeclarations(Map map) {
+        public void setDeclarations(final Map map) {
             this.declarations = map;
         }
 
@@ -91,13 +95,13 @@ public class MVELEvalBuilderTest extends TestCase {
     public static class InstrumentedBuildContent extends BuildContext {
         private DeclarationScopeResolver declarationScopeResolver;
 
-        public InstrumentedBuildContent(Package pkg,
-                                        RuleDescr ruleDescr) {
+        public InstrumentedBuildContent(final Package pkg,
+                                        final RuleDescr ruleDescr) {
             super( pkg,
                    ruleDescr );
         }
 
-        public void setDeclarationResolver(DeclarationScopeResolver declarationScopeResolver) {
+        public void setDeclarationResolver(final DeclarationScopeResolver declarationScopeResolver) {
             this.declarationScopeResolver = declarationScopeResolver;
         }
 

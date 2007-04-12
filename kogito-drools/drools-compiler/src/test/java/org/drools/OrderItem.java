@@ -21,66 +21,84 @@ package org.drools;
  *
  */
 public class OrderItem {
-    private int seq;
+    private int   seq;
     private Order order;
-    
+
     public OrderItem() {
-        this( null, 0 );
+        this( null,
+              0 );
     }
-    
-    public OrderItem( Order order, int seq ) {
+
+    public OrderItem(final Order order,
+                     final int seq) {
         this.order = order;
         this.seq = seq;
     }
+
     /**
      * @return the order
      */
     public Order getOrder() {
-        return order;
+        return this.order;
     }
+
     /**
      * @param order the order to set
      */
-    public void setOrder(Order order) {
+    public void setOrder(final Order order) {
         this.order = order;
     }
+
     /**
      * @return the seq
      */
     public int getSeq() {
-        return seq;
+        return this.seq;
     }
+
     /**
      * @param seq the seq to set
      */
-    public void setSeq(int seq) {
+    public void setSeq(final int seq) {
         this.seq = seq;
     }
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ((order == null) ? 0 : order.hashCode());
-        result = PRIME * result + seq;
+        result = PRIME * result + ((this.order == null) ? 0 : this.order.hashCode());
+        result = PRIME * result + this.seq;
         return result;
     }
+
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+    public boolean equals(final Object obj) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final OrderItem other = (OrderItem) obj;
-        if ( order == null ) {
-            if ( other.order != null ) return false;
-        } else if ( !order.equals( other.order ) ) return false;
-        if ( seq != other.seq ) return false;
+        if ( this.order == null ) {
+            if ( other.order != null ) {
+                return false;
+            }
+        } else if ( !this.order.equals( other.order ) ) {
+            return false;
+        }
+        if ( this.seq != other.seq ) {
+            return false;
+        }
         return true;
     }
-    
-    
 
 }
