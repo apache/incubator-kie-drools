@@ -22,11 +22,11 @@ package org.drools;
  */
 public class Process {
     private String name;
-    
+
     public Process() {
     }
-    
-    public Process( String name ) {
+
+    public Process(final String name) {
         this.name = name;
     }
 
@@ -34,16 +34,14 @@ public class Process {
      * @return the name
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
-    
-    
 
 }

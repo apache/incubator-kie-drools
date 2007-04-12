@@ -20,21 +20,20 @@ import org.apache.commons.jci.problems.CompilationProblemHandler;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.ResourceStore;
 
-
 /**
  * @author tcurdt
  */
 public interface JavaCompiler {
 
-	/**
-	 * Set the the handler that gets the notification of an error
-	 * or warning as soon as this information is available from
-	 * the compiler.
-	 * Note: Some compilers might not support this feature.
-	 * 
-	 * @param pHandler
-	 */
-    void setCompilationProblemHandler( final CompilationProblemHandler pHandler );
+    /**
+     * Set the the handler that gets the notification of an error
+     * or warning as soon as this information is available from
+     * the compiler.
+     * Note: Some compilers might not support this feature.
+     * 
+     * @param pHandler
+     */
+    void setCompilationProblemHandler(final CompilationProblemHandler pHandler);
 
     /**
      * Compiles the java resources "some/path/to/MyJava.java"
@@ -53,11 +52,16 @@ public interface JavaCompiler {
      * @param pStore
      * @return always a CompilationResult
      */
-    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore );
+    CompilationResult compile(final String[] pResourcePaths,
+                              final ResourceReader pReader,
+                              final ResourceStore pStore);
 
     /**
      * As the usual compiler but you can provide the classloader
      * and therefor the classpath you are compiling with.
      */
-    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader classLoader );
+    CompilationResult compile(final String[] pResourcePaths,
+                              final ResourceReader pReader,
+                              final ResourceStore pStore,
+                              final ClassLoader classLoader);
 }

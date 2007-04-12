@@ -16,7 +16,6 @@
 
 package org.drools.lang.dsl;
 
-
 /**
  * @author etirelli
  *
@@ -24,25 +23,25 @@ package org.drools.lang.dsl;
 public class DSLMappingParseException extends Exception {
     private static final long serialVersionUID = 3451471362012187687L;
 
-    public String message;
-    public int   line;
+    public String             message;
+    public int                line;
 
-    public DSLMappingParseException(String message,
-                                    int line) {
+    public DSLMappingParseException(final String message,
+                                    final int line) {
         this.message = message;
         this.line = line;
     }
-    
+
     public String getMessage() {
         return this.message;
     }
-    
+
     public int getLine() {
         return this.line;
     }
-    
+
     public String toString() {
-        return "[ line "+line+" ]" + this.message;
+        return "[ line " + this.line + " ]" + this.message;
     }
 
 }

@@ -4,19 +4,18 @@ public class AssertedObject {
     private String value;
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
-    public AssertedObject(String value) {
+    public AssertedObject(final String value) {
         this.value = value;
     }
-    
+
     public AssertedObject() {
     }
-    
-    
-} 
+
+}

@@ -16,7 +16,6 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
 public class Restriction extends BaseDescr {
- 
+
 }

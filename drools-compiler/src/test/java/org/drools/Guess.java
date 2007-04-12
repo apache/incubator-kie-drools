@@ -1,18 +1,15 @@
 package org.drools;
 
-public class Guess
-{
+public class Guess {
 
-   private Integer value;
+    private Integer value;
 
-   public void setValue(Integer guess)
-   {
-      this.value = guess;
-   }
-   
-   public Integer getValue()
-   {
-      return value;
-   }
+    public void setValue(final Integer guess) {
+        this.value = guess;
+    }
+
+    public Integer getValue() {
+        return this.value;
+    }
 
 }

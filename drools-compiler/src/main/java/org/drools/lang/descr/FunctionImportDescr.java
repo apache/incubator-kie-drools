@@ -22,14 +22,14 @@ package org.drools.lang.descr;
  * @author etirelli
  */
 public class FunctionImportDescr extends ImportDescr {
-    
+
     private static final long serialVersionUID = 3549259347577832528L;
 
     public FunctionImportDescr() {
     }
-    
+
     public String toString() {
-        return "import function "+this.getTarget();
+        return "import function " + this.getTarget();
     }
 
 }

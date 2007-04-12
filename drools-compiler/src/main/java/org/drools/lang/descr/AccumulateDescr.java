@@ -22,8 +22,9 @@ import java.util.List;
 /**
  * A descr class for accumulate node
  */
-public class AccumulateDescr extends BaseDescr 
-    implements ConditionalElementDescr {
+public class AccumulateDescr extends BaseDescr
+    implements
+    ConditionalElementDescr {
 
     private static final long serialVersionUID = 2831283873824863255L;
 
@@ -40,70 +41,70 @@ public class AccumulateDescr extends BaseDescr
     }
 
     public int getLine() {
-        return sourceColumn.getLine();
+        return this.sourceColumn.getLine();
     }
 
-    public void setSourceColumn(ColumnDescr sourceColumn) {
+    public void setSourceColumn(final ColumnDescr sourceColumn) {
         this.sourceColumn = sourceColumn;
     }
 
     public ColumnDescr getSourceColumn() {
-        return sourceColumn;
+        return this.sourceColumn;
     }
 
     public String getClassMethodName() {
-        return classMethodName;
+        return this.classMethodName;
     }
 
-    public void setClassMethodName(String classMethodName) {
+    public void setClassMethodName(final String classMethodName) {
         this.classMethodName = classMethodName;
     }
 
     public String[] getDeclarations() {
-        return declarations;
+        return this.declarations;
     }
 
-    public void setDeclarations(String[] declarations) {
+    public void setDeclarations(final String[] declarations) {
         this.declarations = declarations;
     }
 
     public String getActionCode() {
-        return actionCode;
+        return this.actionCode;
     }
 
-    public void setActionCode(String actionCode) {
+    public void setActionCode(final String actionCode) {
         this.actionCode = actionCode;
     }
 
     public String getInitCode() {
-        return initCode;
+        return this.initCode;
     }
 
-    public void setInitCode(String initCode) {
+    public void setInitCode(final String initCode) {
         this.initCode = initCode;
     }
 
     public String getResultCode() {
-        return resultCode;
+        return this.resultCode;
     }
 
-    public void setResultCode(String resultCode) {
+    public void setResultCode(final String resultCode) {
         this.resultCode = resultCode;
     }
-    
-    public void setResultColumn(ColumnDescr resultColumn) {
+
+    public void setResultColumn(final ColumnDescr resultColumn) {
         this.resultColumn = resultColumn;
     }
-    
+
     public ColumnDescr getResultColumn() {
         return this.resultColumn;
     }
 
     public String toString() {
-        return "[Accumulate: id=" + resultColumn.getIdentifier() + "; objectType=" + resultColumn.getObjectType() + "]";
+        return "[Accumulate: id=" + this.resultColumn.getIdentifier() + "; objectType=" + this.resultColumn.getObjectType() + "]";
     }
 
-    public void addDescr(BaseDescr patternDescr) {
+    public void addDescr(final BaseDescr patternDescr) {
         // Nothing to do
     }
 

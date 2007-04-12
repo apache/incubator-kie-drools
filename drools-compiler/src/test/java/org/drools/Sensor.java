@@ -5,9 +5,9 @@ public class Sensor {
     private int pressure;
 
     public Sensor() {
-        
+
     }
-    
+
     public Sensor(final int temp,
                   final int press) {
         this.temperature = temp;

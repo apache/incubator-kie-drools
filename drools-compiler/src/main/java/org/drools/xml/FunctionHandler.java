@@ -56,7 +56,7 @@ class FunctionHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
         return null;
     }
 
@@ -77,7 +77,7 @@ class FunctionHandler extends BaseAbstractHandler
         }
 
         final FunctionDescr functionDescr = new FunctionDescr( name,
-                                                         returnType );
+                                                               returnType );
 
         final Configuration[] parameters = config.getChildren( "parameter" );
 

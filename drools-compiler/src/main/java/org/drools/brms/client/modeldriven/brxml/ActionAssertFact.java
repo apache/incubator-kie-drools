@@ -5,9 +5,7 @@ package org.drools.brms.client.modeldriven.brxml;
  * @author Michael Neale
  *
  */
-public class ActionAssertFact
-    extends
-    ActionFieldList {
+public class ActionAssertFact extends ActionFieldList {
 
     /**
      * This is used mainly for display purposes. 
@@ -15,14 +13,14 @@ public class ActionAssertFact
     public String getType() {
         return "assert";
     }
-    
+
     public String factType;
-    
-    public ActionAssertFact(String type) {
+
+    public ActionAssertFact(final String type) {
         this.factType = type;
     }
-    
-    public ActionAssertFact() {}
-    
+
+    public ActionAssertFact() {
+    }
 
 }

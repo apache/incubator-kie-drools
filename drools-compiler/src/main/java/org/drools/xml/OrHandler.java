@@ -64,7 +64,7 @@ class OrHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
         final OrDescr orDescr = new OrDescr();
 
         return orDescr;

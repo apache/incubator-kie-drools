@@ -52,7 +52,7 @@ class PackageHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
 
         final String ruleSetName = attrs.getValue( "name" );
 
@@ -99,7 +99,8 @@ class PackageHandler extends BaseAbstractHandler
                 throw new SAXParseException( "<global> must have specify a type",
                                              this.xmlPackageReader.getLocator() );
             }
-            GlobalDescr global = new GlobalDescr(identifier, type);
+            final GlobalDescr global = new GlobalDescr( identifier,
+                                                  type );
             packageDescr.addGlobal( global );
         }
 

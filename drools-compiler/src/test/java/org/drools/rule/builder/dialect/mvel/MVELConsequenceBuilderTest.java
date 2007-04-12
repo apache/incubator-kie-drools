@@ -9,24 +9,18 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
-import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
-import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
-import org.drools.rule.Rule;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
 import org.drools.spi.ColumnExtractor;
 import org.drools.spi.DeclarationScopeResolver;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.ObjectType;
 
 public class MVELConsequenceBuilderTest extends TestCase {
@@ -35,49 +29,56 @@ public class MVELConsequenceBuilderTest extends TestCase {
     }
 
     public void testSimpleExpression() throws Exception {
-        Package pkg = new Package( "pkg1" );
-        RuleDescr ruleDescr = new RuleDescr( "rule 1" );
+        final Package pkg = new Package( "pkg1" );
+        final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setConsequence( "cheese.setPrice( 5 );" );
 
-        InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                          ruleDescr );
-        
-        InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        
-        ObjectType cheeseObjeectType = new ClassObjectType( Cheese.class );
-        
-        Column column = new Column( 0,
+
+        final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
+
+        final ObjectType cheeseObjeectType = new ClassObjectType( Cheese.class );
+
+        final Column column = new Column( 0,
                                     cheeseObjeectType );
-        
-        ColumnExtractor extractor = new ColumnExtractor( cheeseObjeectType );
-        
-        Declaration declaration = new Declaration( "cheese",
+
+        final ColumnExtractor extractor = new ColumnExtractor( cheeseObjeectType );
+
+        final Declaration declaration = new Declaration( "cheese",
                                                    extractor,
                                                    column );
-        Map map = new HashMap();
+        final Map map = new HashMap();
         map.put( "cheese",
                  declaration );
         declarationResolver.setDeclarations( map );
         context.setDeclarationResolver( declarationResolver );
 
-        MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
+        final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         builder.build( context,
                        null,
                        ruleDescr );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        WorkingMemory wm = ruleBase.newWorkingMemory();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final WorkingMemory wm = ruleBase.newWorkingMemory();
 
-        Cheese cheddar = new Cheese( "cheddar",
+        final Cheese cheddar = new Cheese( "cheddar",
                                      10 );
-        InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
-        ReteTuple tuple = new ReteTuple( f0 );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        final ReteTuple tuple = new ReteTuple( f0 );
 
-        AgendaItem item = new AgendaItem(0, tuple, null, context.getRule(), null);
-        DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper(item, wm);
-        context.getRule().getConsequence().evaluate( kbHelper, wm );
-        
-        assertEquals( 5, cheddar.getPrice() );
+        final AgendaItem item = new AgendaItem( 0,
+                                          tuple,
+                                          null,
+                                          context.getRule(),
+                                          null );
+        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( item,
+                                                                      wm );
+        context.getRule().getConsequence().evaluate( kbHelper,
+                                                     wm );
+
+        assertEquals( 5,
+                      cheddar.getPrice() );
     }
 
     public static class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
@@ -87,7 +88,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
             super( null );
         }
 
-        public void setDeclarations(Map map) {
+        public void setDeclarations(final Map map) {
             this.declarations = map;
         }
 
@@ -99,13 +100,13 @@ public class MVELConsequenceBuilderTest extends TestCase {
     public static class InstrumentedBuildContent extends BuildContext {
         private DeclarationScopeResolver declarationScopeResolver;
 
-        public InstrumentedBuildContent(Package pkg,
-                                        RuleDescr ruleDescr) {
+        public InstrumentedBuildContent(final Package pkg,
+                                        final RuleDescr ruleDescr) {
             super( pkg,
                    ruleDescr );
         }
 
-        public void setDeclarationResolver(DeclarationScopeResolver declarationScopeResolver) {
+        public void setDeclarationResolver(final DeclarationScopeResolver declarationScopeResolver) {
             this.declarationScopeResolver = declarationScopeResolver;
         }
 

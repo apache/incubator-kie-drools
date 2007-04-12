@@ -37,47 +37,44 @@ import org.drools.spi.DeclarationScopeResolver;
 public class BuildContext {
 
     // current package
-    private Package            pkg;
+    private Package                  pkg;
 
     // current rule
-    private Rule               rule;
-    
+    private Rule                     rule;
+
     // a stack for the rule building used
     // for declarations resolution
-    private Stack              buildStack;
+    private Stack                    buildStack;
 
     // current Rule descriptor
-    private RuleDescr          ruleDescr;
+    private RuleDescr                ruleDescr;
 
     // available declarationResolver 
     private DeclarationScopeResolver declarationResolver;
 
     // a simple counter for columns
-    private int                columnId = -1;
-    
-    // errors found when building the current context
-    private List               errors;
+    private int                      columnId = -1;
 
-    
-    
+    // errors found when building the current context
+    private List                     errors;
+
     // the class name for the rule    
-    private String             ruleClass;
-    
+    private String                   ruleClass;
+
     // list of generated methods
-    private List               methods;
+    private List                     methods;
 
     // map<String invokerClassName, String invokerCode> of generated invokers
-    private Map                invokers;
+    private Map                      invokers;
 
     // map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
-    private Map                invokerLookups;
+    private Map                      invokerLookups;
 
     // map<String invokerClassName, BaseDescr descr> of descriptor lookups
-    private Map                descrLookups;
+    private Map                      descrLookups;
 
     // a simple counter for generated names
-    private int                counter;
-
+    private int                      counter;
 
     /**
      * Default constructor
@@ -92,7 +89,8 @@ public class BuildContext {
         this.descrLookups = new HashMap();
         this.errors = new ArrayList();
         this.buildStack = new Stack();
-        this.declarationResolver = new DeclarationScopeResolver( new Map[]{this.pkg.getGlobals()}, this.buildStack );
+        this.declarationResolver = new DeclarationScopeResolver( new Map[]{this.pkg.getGlobals()},
+                                                                 this.buildStack );
         this.ruleDescr = ruleDescr;
 
         if ( ruleDescr instanceof QueryDescr ) {
@@ -108,7 +106,7 @@ public class BuildContext {
      * @return
      */
     public List getErrors() {
-        return errors;
+        return this.errors;
     }
 
     /**
@@ -116,7 +114,7 @@ public class BuildContext {
      * @return
      */
     public Package getPkg() {
-        return pkg;
+        return this.pkg;
     }
 
     /**
@@ -124,7 +122,7 @@ public class BuildContext {
      * @return
      */
     public Rule getRule() {
-        return rule;
+        return this.rule;
     }
 
     /**
@@ -132,7 +130,7 @@ public class BuildContext {
      * @return
      */
     public RuleDescr getRuleDescr() {
-        return ruleDescr;
+        return this.ruleDescr;
     }
 
     /**
@@ -140,14 +138,14 @@ public class BuildContext {
      * @return
      */
     public DeclarationScopeResolver getDeclarationResolver() {
-        return declarationResolver;
+        return this.declarationResolver;
     }
 
     /**
      * Sets the available declarationResolver instance
      * @param declarationResolver
      */
-    public void setDeclarationResolver(DeclarationScopeResolver variables) {
+    public void setDeclarationResolver(final DeclarationScopeResolver variables) {
         this.declarationResolver = variables;
     }
 
@@ -156,10 +154,10 @@ public class BuildContext {
      * @return
      */
     public Map getDescrLookups() {
-        return descrLookups;
+        return this.descrLookups;
     }
 
-    public void setDescrLookups(Map descrLookups) {
+    public void setDescrLookups(final Map descrLookups) {
         this.descrLookups = descrLookups;
     }
 
@@ -168,10 +166,10 @@ public class BuildContext {
      * @return
      */
     public Map getInvokerLookups() {
-        return invokerLookups;
+        return this.invokerLookups;
     }
 
-    public void setInvokerLookups(Map invokerLookups) {
+    public void setInvokerLookups(final Map invokerLookups) {
         this.invokerLookups = invokerLookups;
     }
 
@@ -180,10 +178,10 @@ public class BuildContext {
      * @return
      */
     public Map getInvokers() {
-        return invokers;
+        return this.invokers;
     }
 
-    public void setInvokers(Map invokers) {
+    public void setInvokers(final Map invokers) {
         this.invokers = invokers;
     }
 
@@ -192,10 +190,10 @@ public class BuildContext {
      * @return
      */
     public List getMethods() {
-        return methods;
+        return this.methods;
     }
 
-    public void setMethods(List methods) {
+    public void setMethods(final List methods) {
         this.methods = methods;
     }
 
@@ -204,35 +202,35 @@ public class BuildContext {
      * @return
      */
     public int getCurrentId() {
-        return counter;
+        return this.counter;
     }
 
     public int getNextId() {
-        return counter++;
+        return this.counter++;
     }
 
     public int getColumnId() {
-        return columnId;
+        return this.columnId;
     }
 
     public int getNextColumnId() {
-        return ++columnId;
+        return ++this.columnId;
     }
 
-    public void setColumnId(int columnId) {
+    public void setColumnId(final int columnId) {
         this.columnId = columnId;
     }
 
     public String getRuleClass() {
-        return ruleClass;
+        return this.ruleClass;
     }
 
-    public void setRuleClass(String ruleClass) {
+    public void setRuleClass(final String ruleClass) {
         this.ruleClass = ruleClass;
     }
 
     public Stack getBuildStack() {
-        return buildStack;
+        return this.buildStack;
     }
 
 }

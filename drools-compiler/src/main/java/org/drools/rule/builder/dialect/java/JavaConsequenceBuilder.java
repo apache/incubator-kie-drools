@@ -61,7 +61,7 @@ public class JavaConsequenceBuilder
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
 
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         }
 
         utils.setStringTemplateAttributes( context,
@@ -92,8 +92,8 @@ public class JavaConsequenceBuilder
         // Must use the rule declarations, so we use the same order as used in the generated invoker
         final List list = Arrays.asList( context.getRule().getDeclarations() );
 
-        final int[] indexes = new int[declarations.length];       
-        
+        final int[] indexes = new int[declarations.length];
+
         // have to user a String[] as boolean[] is broken in stringtemplate
         final String[] notColumns = new String[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
@@ -107,14 +107,15 @@ public class JavaConsequenceBuilder
 
         st.setAttribute( "indexes",
                          indexes );
-        
-        st.setAttribute( "notColumns", notColumns);
+
+        st.setAttribute( "notColumns",
+                         notColumns );
 
         st.setAttribute( "text",
                          ruleDescr.getConsequence() );
 
-        final String invokerClassName = context.getPkg().getName() + "." + ruleDescr.getClassName() + utils.ucFirst( className ) + "Invoker";        
-        
+        final String invokerClassName = context.getPkg().getName() + "." + ruleDescr.getClassName() + utils.ucFirst( className ) + "Invoker";
+
         context.getInvokers().put( invokerClassName,
                                    st.toString() );
         context.getInvokerLookups().put( invokerClassName,

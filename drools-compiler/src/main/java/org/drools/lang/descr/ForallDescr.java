@@ -39,9 +39,9 @@ public class ForallDescr extends BaseDescr
     /* (non-Javadoc)
      * @see org.drools.lang.descr.ConditionalElementDescr#addDescr(org.drools.lang.descr.BaseDescr)
      */
-    public void addDescr(BaseDescr baseDescr) {
+    public void addDescr(final BaseDescr baseDescr) {
         // cast to make sure we are adding a column descriptor
-        this.columns.add( (ColumnDescr) baseDescr );
+        this.columns.add( baseDescr );
     }
 
     /* (non-Javadoc)

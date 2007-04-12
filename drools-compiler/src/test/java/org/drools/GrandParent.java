@@ -9,22 +9,22 @@ public class GrandParent {
 
     public GrandParent() {
     }
-    
-    public GrandParent( String name ) {
+
+    public GrandParent(final String name) {
         this.name = name;
     }
-    
+
     /**
      * @return the name
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 

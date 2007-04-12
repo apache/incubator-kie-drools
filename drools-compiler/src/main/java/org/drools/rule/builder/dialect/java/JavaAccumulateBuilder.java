@@ -38,7 +38,8 @@ import org.drools.rule.builder.ConditionalElementBuilder;
  */
 public class JavaAccumulateBuilder
     implements
-    ConditionalElementBuilder, AccumulateBuilder {
+    ConditionalElementBuilder,
+    AccumulateBuilder {
 
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
@@ -46,14 +47,14 @@ public class JavaAccumulateBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.AccumulateBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(BuildContext context,
-                                    BuildUtils utils,
-                                    ColumnBuilder columnBuilder,
-                                    BaseDescr descr) {
+    public ConditionalElement build(final BuildContext context,
+                                    final BuildUtils utils,
+                                    final ColumnBuilder columnBuilder,
+                                    final BaseDescr descr) {
 
-        AccumulateDescr accumDescr = (AccumulateDescr) descr;
+        final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
-        Column sourceColumn = columnBuilder.build( context,
+        final Column sourceColumn = columnBuilder.build( context,
                                                    utils,
                                                    accumDescr.getSourceColumn() );
 
@@ -61,7 +62,7 @@ public class JavaAccumulateBuilder
             return null;
         }
 
-        Column resultColumn = columnBuilder.build( context,
+        final Column resultColumn = columnBuilder.build( context,
                                                    utils,
                                                    accumDescr.getResultColumn() );
 
@@ -69,11 +70,11 @@ public class JavaAccumulateBuilder
         accumDescr.setClassMethodName( className );
 
         final List[] usedIdentifiers1 = utils.getUsedCIdentifiers( context,
-                                                                  accumDescr,
-                                                                  accumDescr.getInitCode() );
+                                                                   accumDescr,
+                                                                   accumDescr.getInitCode() );
         final List[] usedIdentifiers2 = utils.getUsedCIdentifiers( context,
-                                                                  accumDescr,
-                                                                  accumDescr.getActionCode() );
+                                                                   accumDescr,
+                                                                   accumDescr.getActionCode() );
         final List[] usedIdentifiers3 = utils.getUsedIdentifiers( context,
                                                                   accumDescr,
                                                                   accumDescr.getResultCode() );
@@ -88,7 +89,7 @@ public class JavaAccumulateBuilder
 
         final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
         for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
-            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
+            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
         }
         final Declaration[] sourceDeclArr = (Declaration[]) sourceColumn.getOuterDeclarations().values().toArray( new Declaration[0] );
 
@@ -148,7 +149,7 @@ public class JavaAccumulateBuilder
         st.setAttribute( "hashCode",
                          actionCode.hashCode() );
 
-        Accumulate accumulate = new Accumulate( sourceColumn,
+        final Accumulate accumulate = new Accumulate( sourceColumn,
                                                 resultColumn,
                                                 declarations,
                                                 sourceDeclArr );

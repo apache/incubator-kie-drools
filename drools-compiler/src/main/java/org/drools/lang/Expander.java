@@ -53,7 +53,7 @@ public interface Expander {
      * @param drl the source code to be pre-processed
      * @return source code after running pre-processors
      */
-    public String expand( Reader drl ) throws IOException;
+    public String expand(Reader drl) throws IOException;
 
     /**
      * Expands (process) the expression Just-In-Time for the parser.
@@ -64,20 +64,20 @@ public interface Expander {
      * @param source the source code to be expanded
      * @return source code after running pre-processors
      */
-    public String expand( String source );
+    public String expand(String source);
 
     /**
      * Add the new mapping to this expander.
      * @param mapping
      */
     public void addDSLMapping(DSLMapping mapping);
-    
+
     /**
      * Returns the list of errors from the last expansion made
      * @return
      */
     public List getErrors();
-    
+
     /**
      * Returns true in case the last expansion had any errors
      * @return

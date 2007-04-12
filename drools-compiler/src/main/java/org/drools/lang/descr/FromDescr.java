@@ -5,38 +5,40 @@ import java.util.List;
 
 public class FromDescr extends BaseDescr
     implements
-    ConditionalElementDescr { 
-	private ColumnDescr column;
-	private DeclarativeInvokerDescr dataSource;
-	
-	FromDescr() {
-		//protected so only factory can create
-	}
-	
-	public int getLine() {
-		return column.getLine();
-	}
-	public void setColumn(ColumnDescr column) {
-		this.column = column;
-	}
-	public DeclarativeInvokerDescr getDataSource() {
-		return dataSource;
-	}
-	public void setDataSource(DeclarativeInvokerDescr dataSource) {
-		this.dataSource = dataSource;
-	}
-	
-	public ColumnDescr getReturnedColumn() {
-		return column;
-	}
+    ConditionalElementDescr {
+    private ColumnDescr             column;
+    private DeclarativeInvokerDescr dataSource;
 
-    public void addDescr(BaseDescr baseDescr) {
+    FromDescr() {
+        //protected so only factory can create
+    }
+
+    public int getLine() {
+        return this.column.getLine();
+    }
+
+    public void setColumn(final ColumnDescr column) {
+        this.column = column;
+    }
+
+    public DeclarativeInvokerDescr getDataSource() {
+        return this.dataSource;
+    }
+
+    public void setDataSource(final DeclarativeInvokerDescr dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public ColumnDescr getReturnedColumn() {
+        return this.column;
+    }
+
+    public void addDescr(final BaseDescr baseDescr) {
         //
     }
 
     public List getDescrs() {
         return Collections.EMPTY_LIST;
     }
-	
-   
+
 }

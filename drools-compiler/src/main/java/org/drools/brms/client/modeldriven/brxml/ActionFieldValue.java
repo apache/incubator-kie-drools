@@ -1,6 +1,5 @@
 package org.drools.brms.client.modeldriven.brxml;
 
-
 /**
  * Holds field and value for "action" parts of the rule.
  * 
@@ -10,16 +9,18 @@ public class ActionFieldValue
     implements
     PortableObject {
 
-    public ActionFieldValue(String field, String value) {
+    public ActionFieldValue(final String field,
+                            final String value) {
         this.field = field;
         this.value = value;
     }
-    
-    public ActionFieldValue() {}
-    
+
+    public ActionFieldValue() {
+    }
+
     public String field;
     public String value;
-    
+
     /**
      * This will return true if the value is really a "formula" - in 
      * the sense of like an excel spreadsheet.
@@ -29,12 +30,14 @@ public class ActionFieldValue
      * 
      */
     public boolean isFormula() {
-        if (value == null) return false;
-        if (value.trim().startsWith( "=" )) {
+        if ( this.value == null ) {
+            return false;
+        }
+        if ( this.value.trim().startsWith( "=" ) ) {
             return true;
         } else {
             return false;
         }
     }
-    
+
 }

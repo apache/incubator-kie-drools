@@ -19,25 +19,14 @@ package org.drools.compiler;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.jci.compilers.CompilationResult;
-import org.apache.commons.jci.compilers.EclipseJavaCompiler;
-import org.apache.commons.jci.compilers.EclipseJavaCompilerSettings;
-import org.apache.commons.jci.compilers.JavaCompiler;
-import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.apache.commons.jci.problems.CompilationProblem;
-import org.apache.commons.jci.readers.MemoryResourceReader;
-import org.apache.commons.jci.readers.ResourceReader;
 import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.codehaus.jfdi.interpreter.TypeResolver;
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
@@ -52,18 +41,12 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.Dialect;
-import org.drools.rule.builder.FunctionBuilder;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
-import org.drools.rule.builder.dialect.java.PackageStore;
-import org.drools.spi.FunctionResolver;
 import org.drools.xml.XmlPackageReader;
-import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.xml.sax.SAXException;
 
 /**
@@ -119,7 +102,7 @@ public class PackageBuilder {
                           PackageBuilderConfiguration configuration) {
         if ( configuration == null ) {
             configuration = new PackageBuilderConfiguration();
-        }        
+        }
 
         this.configuration = configuration;
         this.results = new ArrayList();
@@ -130,7 +113,7 @@ public class PackageBuilder {
         this.dialects.addDialect( "java",
                                   new JavaDialect( pkg,
                                                    configuration ) );
-        
+
         this.dialect = this.dialects.getDialect( "java" );
     }
 
@@ -203,7 +186,7 @@ public class PackageBuilder {
             this.pkg = newPackage( packageDescr );
         }
 
-        builder = new RuleBuilder( getTypeResolver(),
+        this.builder = new RuleBuilder( getTypeResolver(),
                                    this.classFieldExtractorCache,
                                    this.dialect );
 
@@ -295,7 +278,7 @@ public class PackageBuilder {
 
     private void addFunction(final FunctionDescr functionDescr) {
         this.dialect.addFunction( functionDescr,
-                                 getTypeResolver() );
+                                  getTypeResolver() );
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
@@ -325,16 +308,16 @@ public class PackageBuilder {
     private void addRule(final RuleDescr ruleDescr) {
         this.dialect.init( ruleDescr );
 
-        builder.build( this.pkg,
+        this.builder.build( this.pkg,
                        ruleDescr );
 
-        this.results.addAll( builder.getErrors() );
+        this.results.addAll( this.builder.getErrors() );
 
-        final Rule rule = builder.getRule();
+        final Rule rule = this.builder.getRule();
 
-        this.dialect.addRuleSemantics( builder,
-                                      rule,
-                                      ruleDescr );
+        this.dialect.addRuleSemantics( this.builder,
+                                       rule,
+                                       ruleDescr );
 
         this.pkg.addRule( rule );
     }

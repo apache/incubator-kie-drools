@@ -24,17 +24,18 @@ public class ColumnDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 63959215220308107L;
-    private String objectType;
-    private String identifier;
-    private List   descrs = Collections.EMPTY_LIST;
-    private int    leftParentCharacter = -1;
-    private int    rightParentCharacter = -1;
+    private static final long serialVersionUID     = 63959215220308107L;
+    private String            objectType;
+    private String            identifier;
+    private List              descrs               = Collections.EMPTY_LIST;
+    private int               leftParentCharacter  = -1;
+    private int               rightParentCharacter = -1;
 
     public ColumnDescr() {
-        this(null, null);
+        this( null,
+              null );
     }
-    
+
     public ColumnDescr(final String objectType) {
         this( objectType,
               null );
@@ -58,9 +59,9 @@ public class ColumnDescr extends BaseDescr {
     }
 
     public void setObjectType(final String objectType) {
-        this.objectType = objectType;    
+        this.objectType = objectType;
     }
-    
+
     public String getObjectType() {
         return this.objectType;
     }
@@ -81,13 +82,13 @@ public class ColumnDescr extends BaseDescr {
      * @return the leftParentCharacter
      */
     public int getLeftParentCharacter() {
-        return leftParentCharacter;
+        return this.leftParentCharacter;
     }
 
     /**
      * @param leftParentCharacter the leftParentCharacter to set
      */
-    public void setLeftParentCharacter(int leftParentCharacter) {
+    public void setLeftParentCharacter(final int leftParentCharacter) {
         this.leftParentCharacter = leftParentCharacter;
     }
 
@@ -95,13 +96,13 @@ public class ColumnDescr extends BaseDescr {
      * @return the rightParentCharacter
      */
     public int getRightParentCharacter() {
-        return rightParentCharacter;
+        return this.rightParentCharacter;
     }
 
     /**
      * @param rightParentCharacter the rightParentCharacter to set
      */
-    public void setRightParentCharacter(int rightParentCharacter) {
+    public void setRightParentCharacter(final int rightParentCharacter) {
         this.rightParentCharacter = rightParentCharacter;
     }
 }

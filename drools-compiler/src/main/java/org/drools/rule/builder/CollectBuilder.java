@@ -34,25 +34,29 @@ public class CollectBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(BuildContext context,
-                                    BuildUtils utils,
-                                    ColumnBuilder columnBuilder,
-                                    BaseDescr descr) {
-        
-        CollectDescr collectDescr = (CollectDescr) descr;
-        
-        Column sourceColumn = columnBuilder.build( context, utils, collectDescr.getSourceColumn() );
+    public ConditionalElement build(final BuildContext context,
+                                    final BuildUtils utils,
+                                    final ColumnBuilder columnBuilder,
+                                    final BaseDescr descr) {
+
+        final CollectDescr collectDescr = (CollectDescr) descr;
+
+        final Column sourceColumn = columnBuilder.build( context,
+                                                   utils,
+                                                   collectDescr.getSourceColumn() );
 
         if ( sourceColumn == null ) {
             return null;
         }
 
-        Column resultColumn = columnBuilder.build( context, utils, collectDescr.getResultColumn() );
+        final Column resultColumn = columnBuilder.build( context,
+                                                   utils,
+                                                   collectDescr.getResultColumn() );
 
         final String className = "collect" + context.getNextId();
         collectDescr.setClassMethodName( className );
 
-        Collect collect = new Collect( sourceColumn,
+        final Collect collect = new Collect( sourceColumn,
                                        resultColumn );
         return collect;
     }

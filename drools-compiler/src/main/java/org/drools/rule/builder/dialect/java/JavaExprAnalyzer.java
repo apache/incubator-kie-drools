@@ -104,9 +104,9 @@ public class JavaExprAnalyzer {
      */
     private List[] analyze(final List identifiers,
                            final Set[] availableIdentifiers) throws RecognitionException {
-        Set notBound = new HashSet( identifiers );
-        final List[] used = new List[availableIdentifiers.length+1];
-        for ( int i = 0, length = used.length; i < length-1; i++ ) {
+        final Set notBound = new HashSet( identifiers );
+        final List[] used = new List[availableIdentifiers.length + 1];
+        for ( int i = 0, length = used.length; i < length - 1; i++ ) {
             used[i] = new ArrayList();
         }
 
@@ -120,7 +120,7 @@ public class JavaExprAnalyzer {
                 }
             }
         }
-        used[used.length-1] = new ArrayList( notBound );
+        used[used.length - 1] = new ArrayList( notBound );
 
         return used;
         //--------------------------------------------------------        

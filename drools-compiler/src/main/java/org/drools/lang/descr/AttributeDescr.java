@@ -21,8 +21,8 @@ public class AttributeDescr extends BaseDescr {
      * 
      */
     private static final long serialVersionUID = -2746045674173812015L;
-    private String name;
-    private String value;
+    private String            name;
+    private String            value;
 
     public AttributeDescr(final String name,
                           final String value) {

@@ -7,68 +7,64 @@ package org.drools.brms.client.modeldriven.brxml;
  * @author Michael Neale
  *
  */
-public class FactPattern implements IPattern {
+public class FactPattern
+    implements
+    IPattern {
 
     public Constraint[] constraints;
-    public String factType;
-    public String boundName;
-    
+    public String       factType;
+    public String       boundName;
+
     public FactPattern() {
         this.constraints = new Constraint[0];
     }
-    
-    public FactPattern(String factType) {
+
+    public FactPattern(final String factType) {
         this.factType = factType;
         this.constraints = new Constraint[0];
     }
-    
 
-    
-    
-    public void addConstraint(Constraint constraint) {
-        if (constraints == null) {
-            constraints = new Constraint[1];            
-            constraints[0] = constraint;            
+    public void addConstraint(final Constraint constraint) {
+        if ( this.constraints == null ) {
+            this.constraints = new Constraint[1];
+            this.constraints[0] = constraint;
         } else {
-            Constraint[] newList = new Constraint[constraints.length + 1];
-            for ( int i = 0; i < constraints.length; i++ ) {            
-                newList[i] = constraints[i];
+            final Constraint[] newList = new Constraint[this.constraints.length + 1];
+            for ( int i = 0; i < this.constraints.length; i++ ) {
+                newList[i] = this.constraints[i];
             }
-            newList[constraints.length] = constraint;
-            constraints = newList;
+            newList[this.constraints.length] = constraint;
+            this.constraints = newList;
         }
     }
 
-    public void removeConstraint(int idx) {
+    public void removeConstraint(final int idx) {
         //Unfortunately, this is kinda duplicate code with other methods, 
         //but with typed arrays, and GWT, its not really possible to do anything "better" 
         //at this point in time. 
-        Constraint[] newList = new Constraint[constraints.length - 1];
+        final Constraint[] newList = new Constraint[this.constraints.length - 1];
         int newIdx = 0;
-        for ( int i = 0; i < constraints.length; i++ ) {
-            
-            if (i != idx) {
-                newList[newIdx] = constraints[i];
+        for ( int i = 0; i < this.constraints.length; i++ ) {
+
+            if ( i != idx ) {
+                newList[newIdx] = this.constraints[i];
                 newIdx++;
             }
-            
+
         }
-        this.constraints = newList;        
-        
+        this.constraints = newList;
+
     }
 
     /**
      * Returns true if there is a variable bound to this fact.
      */
     public boolean isBound() {
-        if (this.boundName != null && !"".equals(boundName) ) {
+        if ( this.boundName != null && !"".equals( this.boundName ) ) {
             return true;
         } else {
             return false;
         }
     }
-    
-    
-    
-    
+
 }

@@ -20,21 +20,23 @@ public class DSLMappingFileTest extends TestCase {
 
     public void testParseFile() {
         try {
-            Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
-            file = new DSLMappingFile( );
+            final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( this.filename ) );
+            this.file = new DSLMappingFile();
 
-            boolean parsingResult = file.parseAndLoad( reader );
+            final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
-            
-            assertTrue( file.getErrors().toString(), parsingResult );
-            assertTrue( file.getErrors().isEmpty() );
-            
-            assertEquals( 31, file.getMapping().getEntries().size() );
-        } catch ( IOException e ) {
+
+            assertTrue( this.file.getErrors().toString(),
+                        parsingResult );
+            assertTrue( this.file.getErrors().isEmpty() );
+
+            assertEquals( 31,
+                          this.file.getMapping().getEntries().size() );
+        } catch ( final IOException e ) {
             e.printStackTrace();
-            fail( "Should not raise exception ");
+            fail( "Should not raise exception " );
         }
-        
+
     }
-    
+
 }

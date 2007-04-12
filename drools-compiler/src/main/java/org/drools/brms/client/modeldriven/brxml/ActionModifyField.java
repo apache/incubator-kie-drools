@@ -9,19 +9,19 @@ package org.drools.brms.client.modeldriven.brxml;
  */
 public class ActionModifyField extends ActionSetField {
 
-    public ActionModifyField(String itemText) {
-        super(itemText);        
+    public ActionModifyField(final String itemText) {
+        super( itemText );
     }
-    
+
     public ActionModifyField() {
         super();
     }
 
     /**
      * This is used mainly for display purposes. 
-     */    
+     */
     public String getType() {
         return "modify";
-    }    
-    
+    }
+
 }

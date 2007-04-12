@@ -71,8 +71,8 @@ public class XmlPackageReaderTest extends TestCase {
         final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
-        GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
+        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
                       x.getType() );
         assertEquals( "x",
@@ -102,8 +102,8 @@ public class XmlPackageReaderTest extends TestCase {
         final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
-        GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
+        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
                       x.getType() );
         assertEquals( "x",
@@ -149,8 +149,8 @@ public class XmlPackageReaderTest extends TestCase {
         final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
-        GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
+        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
                       x.getType() );
         assertEquals( "x",
@@ -219,8 +219,8 @@ public class XmlPackageReaderTest extends TestCase {
         final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
-        GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
+        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
                       x.getType() );
         assertEquals( "x",
@@ -266,8 +266,8 @@ public class XmlPackageReaderTest extends TestCase {
 
         final ColumnDescr column3 = (ColumnDescr) lhsDescr.getDescrs().get( 4 );
         //final LiteralDescr literalDescr = (LiteralDescr) column3.getDescrs().get( 0 );
-        FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) column3.getDescrs().get( 0 );
-        final LiteralRestrictionDescr literalDescr = (  LiteralRestrictionDescr ) fieldConstraintDescr.getRestrictions().get( 0 );
+        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) column3.getDescrs().get( 0 );
+        final LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 0 );
         assertEquals( "field1",
                       fieldConstraintDescr.getFieldName() );
         assertEquals( "==",
@@ -275,22 +275,21 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "value1",
                       literalDescr.getText() );
 
-        final ReturnValueRestrictionDescr returnValueDescr = (ReturnValueRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 1 );    
+        final ReturnValueRestrictionDescr returnValueDescr = (ReturnValueRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 1 );
         assertEquals( "==",
                       returnValueDescr.getEvaluator() );
         assertEquals( "1==1",
                       returnValueDescr.getContent() );
-        
-      final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 2 ); 
-      assertEquals( "==",
-                    variableDescr.getEvaluator() );
-      assertEquals( "var1",
-                    variableDescr.getIdentifier() );        
-        
+
+        final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 2 );
+        assertEquals( "==",
+                      variableDescr.getEvaluator() );
+        assertEquals( "var1",
+                      variableDescr.getIdentifier() );
+
         final PredicateDescr predicateDescr = (PredicateDescr) column3.getDescrs().get( 1 );
         assertEquals( "1==1",
-                      predicateDescr.getContent() );        
-
+                      predicateDescr.getContent() );
 
         final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) column3.getDescrs().get( 2 );
         assertEquals( "field1",
@@ -358,8 +357,8 @@ public class XmlPackageReaderTest extends TestCase {
         final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
-        GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
+        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
                       x.getType() );
         assertEquals( "x",
@@ -414,8 +413,8 @@ public class XmlPackageReaderTest extends TestCase {
         final List globals = packageDescr.getGlobals();
         assertEquals( 2,
                       globals.size() );
-        GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        GlobalDescr yada = (GlobalDescr) globals.get( 1 );
+        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
+        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
         assertEquals( "com.sample.X",
                       x.getType() );
         assertEquals( "x",

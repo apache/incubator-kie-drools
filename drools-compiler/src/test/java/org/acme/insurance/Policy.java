@@ -10,40 +10,45 @@ package org.acme.insurance;
  */
 public class Policy {
 
-	private String type = "COMPREHENSIVE";
-	private boolean approved = false;
-	private int discountPercent = 0;
-	private int basePrice;
-	
-	public boolean isApproved() {
-		return approved;
-	}
-	public void setApproved(boolean approved) {
-		this.approved = approved;
-	}
-	public int getDiscountPercent() {
-		return discountPercent;
-	}
-	public void setDiscountPercent(int discountPercent) {
-		this.discountPercent = discountPercent;
-	}
-	
-	public String getType() {
-		return type;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public void applyDiscount(int discount) {
-		discountPercent += discount;
-	}
-	public int getBasePrice() {
-		return basePrice;
-	}
-	public void setBasePrice(int basePrice) {
-		this.basePrice = basePrice;
-	}
-	
+    private String  type            = "COMPREHENSIVE";
+    private boolean approved        = false;
+    private int     discountPercent = 0;
+    private int     basePrice;
+
+    public boolean isApproved() {
+        return this.approved;
+    }
+
+    public void setApproved(final boolean approved) {
+        this.approved = approved;
+    }
+
+    public int getDiscountPercent() {
+        return this.discountPercent;
+    }
+
+    public void setDiscountPercent(final int discountPercent) {
+        this.discountPercent = discountPercent;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
+    }
+
+    public void applyDiscount(final int discount) {
+        this.discountPercent += discount;
+    }
+
+    public int getBasePrice() {
+        return this.basePrice;
+    }
+
+    public void setBasePrice(final int basePrice) {
+        this.basePrice = basePrice;
+    }
+
 }

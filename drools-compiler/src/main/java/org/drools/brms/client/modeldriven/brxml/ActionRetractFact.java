@@ -9,13 +9,14 @@ package org.drools.brms.client.modeldriven.brxml;
 public class ActionRetractFact
     implements
     IAction {
-    
-    public ActionRetractFact() {}
-    
-    public ActionRetractFact(String var) {
+
+    public ActionRetractFact() {
+    }
+
+    public ActionRetractFact(final String var) {
         this.variableName = var;
     }
-    
+
     public String variableName;
 
 }

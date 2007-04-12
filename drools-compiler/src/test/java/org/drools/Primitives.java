@@ -17,17 +17,17 @@ package org.drools;
  */
 
 public class Primitives {
-    private boolean booleanPrimitive;
+    private boolean  booleanPrimitive;
 
-    private char    charPrimitive;
+    private char     charPrimitive;
 
-    private byte    bytePrimitive;
-    private short   shortPrimitive;
-    private int     intPrimitive;
-    private long    longPrimitive;
+    private byte     bytePrimitive;
+    private short    shortPrimitive;
+    private int      intPrimitive;
+    private long     longPrimitive;
 
-    private float   floatPrimitive;
-    private float   doublePrimitive;
+    private float    floatPrimitive;
+    private float    doublePrimitive;
     private Object[] arrayAttribute;
     private int[]    primitiveArrayAttribute;
 
@@ -96,10 +96,10 @@ public class Primitives {
     }
 
     public Object[] getArrayAttribute() {
-        return arrayAttribute;
+        return this.arrayAttribute;
     }
 
-    public void setArrayAttribute(Object[] arrayAttribute) {
+    public void setArrayAttribute(final Object[] arrayAttribute) {
         this.arrayAttribute = arrayAttribute;
     }
 
@@ -107,13 +107,13 @@ public class Primitives {
      * @return the primitiveArrayAttribute
      */
     public int[] getPrimitiveArrayAttribute() {
-        return primitiveArrayAttribute;
+        return this.primitiveArrayAttribute;
     }
 
     /**
      * @param primitiveArrayAttribute the primitiveArrayAttribute to set
      */
-    public void setPrimitiveArrayAttribute(int[] primitiveArrayAttribute) {
+    public void setPrimitiveArrayAttribute(final int[] primitiveArrayAttribute) {
         this.primitiveArrayAttribute = primitiveArrayAttribute;
     }
 

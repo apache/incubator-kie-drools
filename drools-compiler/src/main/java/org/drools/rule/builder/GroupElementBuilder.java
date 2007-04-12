@@ -43,29 +43,29 @@ public class GroupElementBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(BuildContext context,
-                                    BuildUtils utils,
-                                    ColumnBuilder columnBuilder,
-                                    BaseDescr descr) {
-        ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
+    public ConditionalElement build(final BuildContext context,
+                                    final BuildUtils utils,
+                                    final ColumnBuilder columnBuilder,
+                                    final BaseDescr descr) {
+        final ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
 
         final GroupElement ge = this.newGroupElementFor( cedescr.getClass() );
         context.getBuildStack().push( ge );
 
         // iterate over child descriptors
-        for ( Iterator it = cedescr.getDescrs().iterator(); it.hasNext(); ) {
+        for ( final Iterator it = cedescr.getDescrs().iterator(); it.hasNext(); ) {
             // gets child to build
-            BaseDescr child = (BaseDescr) it.next();
+            final BaseDescr child = (BaseDescr) it.next();
 
             // gets corresponding builder
-            ConditionalElementBuilder cebuilder = utils.getBuilder( child.getClass() );
+            final ConditionalElementBuilder cebuilder = utils.getBuilder( child.getClass() );
 
             if ( cebuilder != null ) {
-                ConditionalElement ce = cebuilder.build( context,
+                final ConditionalElement ce = cebuilder.build( context,
                                                          utils,
                                                          columnBuilder,
-                                                         (BaseDescr) child );
-                if( ce != null ) {
+                                                         child );
+                if ( ce != null ) {
                     ge.addChild( ce );
                 }
             } else if ( child instanceof ColumnDescr ) {
@@ -74,22 +74,22 @@ public class GroupElementBuilder
                                                            (ColumnDescr) child );
                 // in case there is a problem with the column building,
                 // builder will return null. Ex: ClassNotFound for the column type
-                if( column != null ) {
+                if ( column != null ) {
                     ge.addChild( column );
                 }
 
             } else {
-                throw new RuntimeDroolsException("BUG: no builder found for descriptor class "+child.getClass() );
+                throw new RuntimeDroolsException( "BUG: no builder found for descriptor class " + child.getClass() );
             }
 
         }
 
         context.getBuildStack().pop();
-        
+
         return ge;
     }
 
-    private GroupElement newGroupElementFor(Class descr) {
+    private GroupElement newGroupElementFor(final Class descr) {
         if ( AndDescr.class.isAssignableFrom( descr ) ) {
             return GroupElementFactory.newAndInstance();
         } else if ( OrDescr.class.isAssignableFrom( descr ) ) {

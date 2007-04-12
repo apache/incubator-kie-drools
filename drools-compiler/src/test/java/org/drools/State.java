@@ -6,13 +6,13 @@ import java.beans.PropertyChangeSupport;
 public class State {
     private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
 
-    private String                state;
-    private boolean               flag;
+    private String                      state;
+    private boolean                     flag;
 
     public State() {
-    	
+
     }
-    
+
     public State(final String state) {
         this.state = state;
     }

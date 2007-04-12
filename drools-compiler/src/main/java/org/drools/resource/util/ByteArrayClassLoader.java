@@ -27,22 +27,24 @@ import java.util.Map;
  * @author etirelli
  */
 public class ByteArrayClassLoader extends ClassLoader {
-    
+
     private final Map resources = new HashMap();
 
     public ByteArrayClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
     }
-    
-    public void addResource( String name, byte[] bytecode ) {
-        this.resources.put( name, bytecode );
+
+    public void addResource(final String name,
+                            final byte[] bytecode) {
+        this.resources.put( name,
+                            bytecode );
     }
 
     public Class fastFindClass(final String name) {
         final Class clazz = findLoadedClass( name );
 
         if ( clazz == null ) {
-            final byte[] clazzBytes = (byte[]) this.resources.get( convertClassToResourcePath(name) );
+            final byte[] clazzBytes = (byte[]) this.resources.get( convertClassToResourcePath( name ) );
             if ( clazzBytes != null ) {
                 return defineClass( name,
                                     clazzBytes,
@@ -95,36 +97,35 @@ public class ByteArrayClassLoader extends ClassLoader {
             return new ByteArrayInputStream( bytes );
         } else {
             InputStream input = this.getParent().getResourceAsStream( name );
-            if( input == null ){
+            if ( input == null ) {
                 input = super.getResourceAsStream( name );
             }
             return input;
         }
     }
-    
-//    /**
-//     * org/my/Class.xxx -> org.my.Class
-//     */
-//    private static String convertResourceToClassName( final String pResourceName ) {
-//        return stripExtension(pResourceName).replace('/', '.');
-//    }
-//
+
+    //    /**
+    //     * org/my/Class.xxx -> org.my.Class
+    //     */
+    //    private static String convertResourceToClassName( final String pResourceName ) {
+    //        return stripExtension(pResourceName).replace('/', '.');
+    //    }
+    //
     /**
      * org.my.Class -> org/my/Class.class
      */
-    private static String convertClassToResourcePath( final String pName ) {
-        return pName.replace('.', '/') + ".class";
+    private static String convertClassToResourcePath(final String pName) {
+        return pName.replace( '.',
+                              '/' ) + ".class";
     }
 
-//    /**
-//     * org/my/Class.xxx -> org/my/Class
-//     */
-//    private static String stripExtension( final String pResourceName ) {
-//        final int i = pResourceName.lastIndexOf('.');
-//        final String withoutExtension = pResourceName.substring(0, i);
-//        return withoutExtension;
-//    }
-    
-    
+    //    /**
+    //     * org/my/Class.xxx -> org/my/Class
+    //     */
+    //    private static String stripExtension( final String pResourceName ) {
+    //        final int i = pResourceName.lastIndexOf('.');
+    //        final String withoutExtension = pResourceName.substring(0, i);
+    //        return withoutExtension;
+    //    }
 
 }

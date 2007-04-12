@@ -41,7 +41,7 @@ public class DefaultDSLMapping
         this( "" );
     }
 
-    public DefaultDSLMapping(String identifier) {
+    public DefaultDSLMapping(final String identifier) {
         this.identifier = identifier;
         this.entries = new LinkedList();
     }
@@ -50,35 +50,35 @@ public class DefaultDSLMapping
      * Add one entry to the list of the entries
      * @param entry
      */
-    public void addEntry( DSLMappingEntry entry ) {
+    public void addEntry(final DSLMappingEntry entry) {
         this.entries.add( entry );
     }
-    
+
     /**
      * Adds all entries in the given list to this DSL Mapping
      * @param entries
      */
-    public void addEntries( List entries ) {
+    public void addEntries(final List entries) {
         this.entries.addAll( entries );
     }
-    
+
     /**
      * Returns an unmodifiable list of entries
      */
     public List getEntries() {
         return Collections.unmodifiableList( this.entries );
     }
-    
+
     /**
      * Returns the list of mappings for the given section 
      * @param section
      * @return
      */
-    public List getEntries( Section section ) {
-        List list = new LinkedList();
-        for( Iterator it = this.entries.iterator(); it.hasNext(); ) {
-            DSLMappingEntry entry = (DSLMappingEntry) it.next();
-            if( entry.getSection().equals( section ) ) {
+    public List getEntries(final Section section) {
+        final List list = new LinkedList();
+        for ( final Iterator it = this.entries.iterator(); it.hasNext(); ) {
+            final DSLMappingEntry entry = (DSLMappingEntry) it.next();
+            if ( entry.getSection().equals( section ) ) {
                 list.add( entry );
             }
         }
@@ -95,7 +95,7 @@ public class DefaultDSLMapping
     /**
      * @inheritDoc
      */
-    public void removeEntry(DSLMappingEntry entry) {
+    public void removeEntry(final DSLMappingEntry entry) {
         this.entries.remove( entry );
     }
 
@@ -109,14 +109,14 @@ public class DefaultDSLMapping
     /**
      * @inheritDoc
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     /**
      * @inheritDoc
      */
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 

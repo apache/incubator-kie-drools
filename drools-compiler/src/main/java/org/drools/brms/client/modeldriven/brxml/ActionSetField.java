@@ -9,22 +9,20 @@ package org.drools.brms.client.modeldriven.brxml;
  */
 public class ActionSetField extends ActionFieldList {
 
-    
-    public ActionSetField(String var) {
+    public ActionSetField(final String var) {
         this.variable = var;
     }
-    
+
     /**
      * This is used mainly for display purposes. 
-     */    
+     */
     public String getType() {
         return "set";
     }
-    
-    public ActionSetField() {}
+
+    public ActionSetField() {
+    }
+
     public String variable;
 
-     
- 
-    
 }

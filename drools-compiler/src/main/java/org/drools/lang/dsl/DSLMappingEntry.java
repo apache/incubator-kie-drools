@@ -27,11 +27,11 @@ import java.util.regex.Pattern;
  */
 public interface DSLMappingEntry {
 
-    public static final Section KEYWORD     = new KeywordSection();
-    public static final Section CONDITION   = new ConditionSection();
-    public static final Section CONSEQUENCE = new ConsequenceSection();
-    public static final Section ANY         = new AnySection();
-    public static final MetaData EMPTY_METADATA = new DefaultDSLEntryMetaData("");
+    public static final Section  KEYWORD        = new KeywordSection();
+    public static final Section  CONDITION      = new ConditionSection();
+    public static final Section  CONSEQUENCE    = new ConsequenceSection();
+    public static final Section  ANY            = new AnySection();
+    public static final MetaData EMPTY_METADATA = new DefaultDSLEntryMetaData( "" );
 
     /**
      * Returns the section this mapping entry refers to
@@ -99,7 +99,7 @@ public interface DSLMappingEntry {
      * @param metadata the metadata to set
      */
     public void setMetaData(MetaData metadata);
-    
+
     /**
      * Returns a list of errors found in this mapping
      * @return
@@ -161,18 +161,28 @@ public interface DSLMappingEntry {
             return result;
         }
 
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+        public boolean equals(final Object obj) {
+            if ( this == obj ) {
+                return true;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            if ( getClass() != obj.getClass() ) {
+                return false;
+            }
             final KeywordSection other = (KeywordSection) obj;
             if ( symbol == null ) {
-                if ( other.getSymbol() != null ) return false;
-            } else if ( !symbol.equals( other.getSymbol() ) ) return false;
+                if ( other.getSymbol() != null ) {
+                    return false;
+                }
+            } else if ( !symbol.equals( other.getSymbol() ) ) {
+                return false;
+            }
             return true;
         }
 
-        public int compareTo(Object arg0) {
+        public int compareTo(final Object arg0) {
             return this.toString().compareTo( arg0.toString() );
         }
     }
@@ -185,7 +195,7 @@ public interface DSLMappingEntry {
     public static class ConditionSection
         implements
         Section {
-        private static String symbol = "[condition]";
+        private static final String symbol = "[condition]";
 
         private ConditionSection() {
         }
@@ -205,18 +215,28 @@ public interface DSLMappingEntry {
             return result;
         }
 
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+        public boolean equals(final Object obj) {
+            if ( this == obj ) {
+                return true;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            if ( getClass() != obj.getClass() ) {
+                return false;
+            }
             final KeywordSection other = (KeywordSection) obj;
             if ( symbol == null ) {
-                if ( other.getSymbol() != null ) return false;
-            } else if ( !symbol.equals( other.getSymbol() ) ) return false;
+                if ( other.getSymbol() != null ) {
+                    return false;
+                }
+            } else if ( !symbol.equals( other.getSymbol() ) ) {
+                return false;
+            }
             return true;
         }
 
-        public int compareTo(Object arg0) {
+        public int compareTo(final Object arg0) {
             return this.toString().compareTo( arg0.toString() );
         }
     }
@@ -230,7 +250,7 @@ public interface DSLMappingEntry {
     public static class ConsequenceSection
         implements
         Section {
-        private static String symbol = "[consequence]";
+        private static final String symbol = "[consequence]";
 
         private ConsequenceSection() {
         }
@@ -250,18 +270,28 @@ public interface DSLMappingEntry {
             return result;
         }
 
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+        public boolean equals(final Object obj) {
+            if ( this == obj ) {
+                return true;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            if ( getClass() != obj.getClass() ) {
+                return false;
+            }
             final KeywordSection other = (KeywordSection) obj;
             if ( symbol == null ) {
-                if ( other.getSymbol() != null ) return false;
-            } else if ( !symbol.equals( other.getSymbol() ) ) return false;
+                if ( other.getSymbol() != null ) {
+                    return false;
+                }
+            } else if ( !symbol.equals( other.getSymbol() ) ) {
+                return false;
+            }
             return true;
         }
 
-        public int compareTo(Object arg0) {
+        public int compareTo(final Object arg0) {
             return this.toString().compareTo( arg0.toString() );
         }
     }
@@ -275,7 +305,7 @@ public interface DSLMappingEntry {
     public static class AnySection
         implements
         Section {
-        private static String symbol = "*";
+        private static final String symbol = "*";
 
         private AnySection() {
         }
@@ -295,18 +325,28 @@ public interface DSLMappingEntry {
             return result;
         }
 
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+        public boolean equals(final Object obj) {
+            if ( this == obj ) {
+                return true;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            if ( getClass() != obj.getClass() ) {
+                return false;
+            }
             final KeywordSection other = (KeywordSection) obj;
             if ( symbol == null ) {
-                if ( other.getSymbol() != null ) return false;
-            } else if ( !symbol.equals( other.getSymbol() ) ) return false;
+                if ( other.getSymbol() != null ) {
+                    return false;
+                }
+            } else if ( !symbol.equals( other.getSymbol() ) ) {
+                return false;
+            }
             return true;
         }
 
-        public int compareTo(Object arg0) {
+        public int compareTo(final Object arg0) {
             return this.toString().compareTo( arg0.toString() );
         }
     }
@@ -317,7 +357,7 @@ public interface DSLMappingEntry {
 
         private String metadata;
 
-        public DefaultDSLEntryMetaData(String metadata) {
+        public DefaultDSLEntryMetaData(final String metadata) {
             this.metadata = metadata;
         }
 
@@ -329,7 +369,7 @@ public interface DSLMappingEntry {
             return (this.metadata == null) ? "" : this.metadata;
         }
 
-        public int compareTo(Object arg0) {
+        public int compareTo(final Object arg0) {
             return this.toString().compareTo( arg0.toString() );
         }
     }

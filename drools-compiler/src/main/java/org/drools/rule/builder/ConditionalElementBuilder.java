@@ -29,7 +29,7 @@ import org.drools.rule.builder.dialect.java.BuildUtils;
 public interface ConditionalElementBuilder {
 
     public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils, 
+                                    final BuildUtils utils,
                                     final ColumnBuilder columnBuilder,
                                     final BaseDescr descr);
 

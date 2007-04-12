@@ -56,14 +56,14 @@ public class DefaultExpanderResolver
      * This is the constructor most people should use.
      */
     public DefaultExpanderResolver(final Reader reader) throws IOException {
-        DSLMappingFile file = new DSLMappingFile();
-        if( file.parseAndLoad( reader ) ) {
+        final DSLMappingFile file = new DSLMappingFile();
+        if ( file.parseAndLoad( reader ) ) {
             final Expander expander = new DefaultExpander();
             expander.addDSLMapping( file.getMapping() );
             this.expanders.put( "*",
-                           expander );
+                                expander );
         } else {
-            throw new RuntimeDroolsException("Error parsing and loading DSL file."+file.getErrors());
+            throw new RuntimeDroolsException( "Error parsing and loading DSL file." + file.getErrors() );
         }
     }
 

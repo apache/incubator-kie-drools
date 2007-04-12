@@ -25,13 +25,13 @@ public class Cheese
      * 
      */
     private static final long serialVersionUID = -1187540653710115339L;
-    private String type;
-    private int    price;
+    private String            type;
+    private int               price;
 
     public Cheese() {
-    	
+
     }
-    
+
     public Cheese(final String type,
                   final int price) {
         super();
@@ -47,7 +47,7 @@ public class Cheese
         return this.type;
     }
 
-    public void setType( String type ) {
+    public void setType(final String type) {
         this.type = type;
     }
 

@@ -18,7 +18,7 @@ import org.drools.rule.Package;
 public class RuleBaseLoader {
 
     private static final RuleBaseLoader INSTANCE   = new RuleBaseLoader();
-    private static int            engineType = RuleBase.RETEOO;
+    private static int                  engineType = RuleBase.RETEOO;
 
     private RuleBaseLoader() {
     }
@@ -33,7 +33,7 @@ public class RuleBaseLoader {
      * Uses the current default engine type.
      */
     public RuleBase loadFromReader(final Reader drl) throws CheckedDroolsException,
-                                              IOException {
+                                                    IOException {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( drl );
         return makeRuleBase( builder );
@@ -45,7 +45,7 @@ public class RuleBaseLoader {
      */
     public RuleBase loadFromReader(final Reader drl,
                                    final Reader dsl) throws CheckedDroolsException,
-                                              IOException {
+                                                    IOException {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( drl,
                                    dsl );

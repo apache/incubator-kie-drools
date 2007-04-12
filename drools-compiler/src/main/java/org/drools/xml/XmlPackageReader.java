@@ -160,7 +160,7 @@ public class XmlPackageReader extends DefaultHandler {
         this.handlers.put( "literal-restriction",
                            new LiteralRestrictionHandler( this ) );
         this.handlers.put( "variable-restriction",
-                           new VariableRestrictionsHandler( this ) );        
+                           new VariableRestrictionsHandler( this ) );
         this.handlers.put( "predicate",
                            new PredicateHandler( this ) );
         this.handlers.put( "return-value-restriction",

@@ -30,7 +30,7 @@ public class CollectDescr extends BaseDescr
     ConditionalElementDescr {
 
     private static final long serialVersionUID = -78056848363435347L;
-    
+
     private ColumnDescr       sourceColumn;
     private ColumnDescr       resultColumn;
     private String            classMethodName;
@@ -40,38 +40,38 @@ public class CollectDescr extends BaseDescr
     }
 
     public int getLine() {
-        return sourceColumn.getLine();
+        return this.sourceColumn.getLine();
     }
 
-    public void setSourceColumn(ColumnDescr sourceColumn) {
+    public void setSourceColumn(final ColumnDescr sourceColumn) {
         this.sourceColumn = sourceColumn;
     }
 
     public ColumnDescr getSourceColumn() {
-        return sourceColumn;
+        return this.sourceColumn;
     }
 
     public String getClassMethodName() {
-        return classMethodName;
+        return this.classMethodName;
     }
 
-    public void setClassMethodName(String classMethodName) {
+    public void setClassMethodName(final String classMethodName) {
         this.classMethodName = classMethodName;
     }
 
-    public void setResultColumn(ColumnDescr resultColumn) {
+    public void setResultColumn(final ColumnDescr resultColumn) {
         this.resultColumn = resultColumn;
     }
-    
+
     public ColumnDescr getResultColumn() {
         return this.resultColumn;
     }
 
     public String toString() {
-        return "[Collect: id=" + resultColumn.getIdentifier() + "; objectType=" + resultColumn.getObjectType() + "]";
+        return "[Collect: id=" + this.resultColumn.getIdentifier() + "; objectType=" + this.resultColumn.getObjectType() + "]";
     }
 
-    public void addDescr(BaseDescr patternDescr) {
+    public void addDescr(final BaseDescr patternDescr) {
         // Nothing to do
     }
 

@@ -44,17 +44,17 @@ public class MockExpander
         return this.patterns.contains( pat );
     }
 
-    public void addDSLMapping(DSLMapping mapping) {
+    public void addDSLMapping(final DSLMapping mapping) {
         // TODO Auto-generated method stub
-        
+
     }
 
-    public String expand(Reader drl) throws IOException {
+    public String expand(final Reader drl) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public String expand(String source) {
+    public String expand(final String source) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -27,38 +27,37 @@ import java.util.List;
  */
 public class FieldConstraintDescr extends BaseDescr {
 
-	private static final long serialVersionUID = 320;
-    private String  fieldName;
-    private List    restrictions = Collections.EMPTY_LIST;
+    private static final long serialVersionUID = 320;
+    private String            fieldName;
+    private List              restrictions     = Collections.EMPTY_LIST;
 
     public FieldConstraintDescr(final String fieldName) {
-        this.fieldName = fieldName;        
+        this.fieldName = fieldName;
     }
 
     public String getFieldName() {
         return this.fieldName;
     }
-    
-    public void addRestriction(RestrictionDescr restriction) {
+
+    public void addRestriction(final RestrictionDescr restriction) {
         if ( this.restrictions == Collections.EMPTY_LIST ) {
             this.restrictions = new ArrayList();
         }
         this.restrictions.add( restriction );
     }
-    
+
     public List getRestrictions() {
         return this.restrictions;
     }
-    
-/*    public boolean isBound(String identifier) {
-        for ( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
-            Object object = it.next();
-            if ( object instanceof FieldBindingDescr ) {
-                FieldBindingDescr descr = 
-            }
-        }
-        return false;
-    }*/
 
-    
+    /*    public boolean isBound(String identifier) {
+     for ( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
+     Object object = it.next();
+     if ( object instanceof FieldBindingDescr ) {
+     FieldBindingDescr descr = 
+     }
+     }
+     return false;
+     }*/
+
 }

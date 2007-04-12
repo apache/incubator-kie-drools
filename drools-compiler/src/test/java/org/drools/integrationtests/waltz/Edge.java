@@ -40,9 +40,9 @@ public class Edge {
     final public static String MINUS = "-";
 
     public Edge() {
-        
+
     }
-    
+
     public Edge(final int p1,
                 final int p2,
                 final boolean joined,

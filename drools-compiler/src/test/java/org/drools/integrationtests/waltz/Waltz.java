@@ -49,8 +49,9 @@ public abstract class Waltz extends TestCase {
             //load up the rulebase
             final RuleBase ruleBase = readRule();
             final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-            
-            workingMemory.setGlobal( "sysout", System.out );
+
+            workingMemory.setGlobal( "sysout",
+                                     System.out );
 
             //            DebugWorkingMemoryEventListener wmListener = new DebugWorkingMemoryEventListener();
             //            DebugAgendaEventListener agendaListener = new DebugAgendaEventListener();
@@ -63,15 +64,15 @@ public abstract class Waltz extends TestCase {
 
             //final Stage stage = new Stage( Stage.START );
             //workingMemory.assertObject( stage );
-            
-            long start = System.currentTimeMillis();
-            
-            Stage stage = new Stage(Stage.DUPLICATE);
-            workingMemory.assertObject( stage );                
+
+            final long start = System.currentTimeMillis();
+
+            final Stage stage = new Stage( Stage.DUPLICATE );
+            workingMemory.assertObject( stage );
             workingMemory.fireAllRules();
-            
-            long end = System.currentTimeMillis();
-            System.out.println( end  - start );
+
+            final long end = System.currentTimeMillis();
+            System.out.println( end - start );
         } catch ( final Throwable t ) {
             t.printStackTrace();
             fail( t.getMessage() );

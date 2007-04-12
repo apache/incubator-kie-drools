@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -58,16 +57,16 @@ class FieldConstraintHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
+                                                  attrs );
 
         final String fieldName = attrs.getValue( "field-name" );
 
         if ( fieldName == null || fieldName.trim().equals( "" ) ) {
             throw new SAXParseException( "<field-constraint> requires a 'field-name' attribute",
                                          this.xmlPackageReader.getLocator() );
-        }               
+        }
 
-        FieldConstraintDescr fieldConstraint = new  FieldConstraintDescr( fieldName );
+        final FieldConstraintDescr fieldConstraint = new FieldConstraintDescr( fieldName );
 
         return fieldConstraint;
     }
@@ -83,7 +82,7 @@ class FieldConstraintHandler extends BaseAbstractHandler
         it.previous();
         final Object parent = it.previous();
 
-        final ColumnDescr columnDescr = ( ColumnDescr ) parent;
+        final ColumnDescr columnDescr = (ColumnDescr) parent;
         columnDescr.addDescr( fieldConstraintDescr );
 
         return null;

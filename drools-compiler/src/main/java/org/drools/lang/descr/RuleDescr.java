@@ -25,17 +25,17 @@ public class RuleDescr extends BaseDescr {
      * 
      */
     private static final long serialVersionUID = 320L;
-    private String   name;
-    private String   documentation;
+    private String            name;
+    private String            documentation;
 
-    private AndDescr lhs;
-    private Object   consequence;
-    private int      consequenceLine;
-    private int      consequenceColumn;
-    private int      offset;
-    private List     attributes = Collections.EMPTY_LIST;
+    private AndDescr          lhs;
+    private Object            consequence;
+    private int               consequenceLine;
+    private int               consequenceColumn;
+    private int               offset;
+    private List              attributes       = Collections.EMPTY_LIST;
 
-    private String   className;
+    private String            className;
 
     public RuleDescr(final String name) {
         this( name,

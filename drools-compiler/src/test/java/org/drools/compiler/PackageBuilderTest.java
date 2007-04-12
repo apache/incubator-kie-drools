@@ -25,13 +25,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.jci.compilers.EclipseJavaCompiler;
-import org.apache.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.apache.commons.jci.compilers.JaninoJavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.drools.Cheese;
@@ -105,11 +103,10 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                    "y" );
         column.addDescr( fieldBindingDescr );
 
-        
-        
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
-        FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
+        final FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      "x" ) );
 
@@ -140,7 +137,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
 
@@ -203,7 +201,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
         //check that packageDescr is serializable
@@ -297,7 +296,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        FactTemplateDescr cheese = new FactTemplateDescr( "Cheese" );
+        final FactTemplateDescr cheese = new FactTemplateDescr( "Cheese" );
         cheese.addFieldTemplate( new FieldTemplateDescr( "name",
                                                          "String" ) );
         cheese.addFieldTemplate( new FieldTemplateDescr( "price",
@@ -309,7 +308,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                     "stilton" );
         lhs.addDescr( column );
 
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
+        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
@@ -319,18 +318,18 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-//        assertFalse( Arrays.toString( builder.getErrors() ),
-//                     builder.hasErrors() );
+        //        assertFalse( Arrays.toString( builder.getErrors() ),
+        //                     builder.hasErrors() );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        Package pkg = builder.getPackage();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final Package pkg = builder.getPackage();
         try {
             ruleBase.addPackage( pkg );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
         }
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        Fact stilton = pkg.getFactTemplate( "Cheese" ).createFact( 1 );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final Fact stilton = pkg.getFactTemplate( "Cheese" ).createFact( 1 );
         stilton.setFieldValue( "name",
                                "stilton" );
         stilton.setFieldValue( "price",
@@ -354,7 +353,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                     "stilton" );
         lhs.addDescr( column );
 
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
@@ -389,9 +388,10 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                    "y" );
         column.addDescr( fieldBindingDescr );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
-        FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
+        final FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      "(( (Integer) map.get( new Integer( x )) ).intValue() * y)" ) );
 
@@ -401,8 +401,8 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-//        assertFalse( Arrays.toString( builder.getErrors() ),
-//                     builder.hasErrors() );
+        //        assertFalse( Arrays.toString( builder.getErrors() ),
+        //                     builder.hasErrors() );
     }
 
     public void testReturnValueMethodCompare() {
@@ -458,7 +458,8 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                                             "y" );
         column.addDescr( fieldBindingDescr2 );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
         final PredicateDescr predicate = new PredicateDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
         column.addDescr( predicate );
@@ -523,7 +524,8 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                    "y" );
         column.addDescr( fieldBindingDescr );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
         final EvalDescr evalDescr = new EvalDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
         lhs.addDescr( evalDescr );
@@ -797,7 +799,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
                                                          "stilton" );
 
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   null ) );
 
@@ -866,7 +868,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         assertLength( 1,
                       builder.getErrors() );
-        ParserError err = (ParserError) builder.getErrors()[0];
+        final ParserError err = (ParserError) builder.getErrors()[0];
         assertEquals( 42,
                       err.getRow() );
         assertEquals( 43,
@@ -890,7 +892,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "type",
                                                                            "$type" );
 
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
@@ -912,7 +914,7 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void FIXME_testCompilerConfiguration() throws Exception {
         // test default is eclipse jdt core
         PackageBuilder builder = new PackageBuilder();;
-        Field compilerField = builder.getClass().getDeclaredField( "compiler" );
+        final Field compilerField = builder.getClass().getDeclaredField( "compiler" );
         compilerField.setAccessible( true );
         JavaCompiler compiler = (JavaCompiler) compilerField.get( builder );
         assertSame( EclipseJavaCompiler.class,
@@ -935,7 +937,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                     compiler.getClass() );
 
         EclipseJavaCompiler eclipseCompiler = (EclipseJavaCompiler) compiler;
-        Field settingsField = eclipseCompiler.getClass().getDeclaredField( "settings" );
+        final Field settingsField = eclipseCompiler.getClass().getDeclaredField( "settings" );
         settingsField.setAccessible( true );
         Map map = (Map) settingsField.get( eclipseCompiler );
         assertEquals( "1.4",
@@ -980,9 +982,10 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                    "y" );
         column.addDescr( fieldBindingDescr );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
-        FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
+        final FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      expression ) );
 
@@ -1011,7 +1014,8 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                                             "y" );
         column.addDescr( fieldBindingDescr2 );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
         final PredicateDescr predicate = new PredicateDescr( expression );
         column.addDescr( predicate );
@@ -1027,7 +1031,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        packageDescr.addGlobal( new GlobalDescr("map", "java.util.Map") );
+        packageDescr.addGlobal( new GlobalDescr( "map",
+                                                 "java.util.Map" ) );
 
         final EvalDescr evalDescr = new EvalDescr( expression );
         lhs.addDescr( evalDescr );
@@ -1073,7 +1078,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
                                                          "stilton" );
 
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
@@ -1098,7 +1103,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         implements
         Activation {
         private Rule         rule;
-        private GroupElement subrule;
+        private final GroupElement subrule;
         private Tuple        tuple;
 
         public MockActivation(final Rule rule,
@@ -1106,6 +1111,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                               final Tuple tuple) {
             this.rule = rule;
             this.tuple = tuple;
+            this.subrule = subrule;
         }
 
         public Rule getRule() {
@@ -1165,9 +1171,9 @@ public class PackageBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
+        public void setRuleFlowGroupNode(final RuleFlowGroupNode ruleFlowGroupNode) {
             // TODO Auto-generated method stub
-            
+
         }
     }
 

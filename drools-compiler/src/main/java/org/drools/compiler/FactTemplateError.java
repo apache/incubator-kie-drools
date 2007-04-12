@@ -18,19 +18,18 @@ package org.drools.compiler;
 
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.rule.Rule;
 import org.drools.rule.Package;
 
 public class FactTemplateError extends DroolsError {
-    private Package pkg;
+    private Package   pkg;
     private BaseDescr descr;
-    private Object       object;
-    private String       message;
+    private Object    object;
+    private String    message;
 
     public FactTemplateError(final Package pkg,
-                     final BaseDescr descr,
-                     final Object object,
-                     final String message) {
+                             final BaseDescr descr,
+                             final Object object,
+                             final String message) {
         super();
         this.pkg = pkg;
         this.descr = descr;

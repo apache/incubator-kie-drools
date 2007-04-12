@@ -27,7 +27,7 @@ public class OrDescr extends BaseDescr
      * 
      */
     private static final long serialVersionUID = -6499901868693501867L;
-    private List descrs = Collections.EMPTY_LIST;
+    private List              descrs           = Collections.EMPTY_LIST;
 
     public OrDescr() {
     }

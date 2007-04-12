@@ -51,10 +51,10 @@ public class JavaEvalBuilder
                                     final ColumnBuilder columnBuilder,
                                     final BaseDescr descr) {
         // it must be an EvalDescr
-        EvalDescr evalDescr = (EvalDescr) descr;
+        final EvalDescr evalDescr = (EvalDescr) descr;
 
         final String className = "eval" + context.getNextId();
-        
+
         evalDescr.setClassMethodName( className );
 
         final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
@@ -63,7 +63,7 @@ public class JavaEvalBuilder
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         }
 
         final EvalCondition eval = new EvalCondition( declarations );
