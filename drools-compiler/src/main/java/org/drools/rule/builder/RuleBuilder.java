@@ -238,9 +238,9 @@ public class RuleBuilder {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
             } else if ( name.equals( "lock-on-active" ) ) {
                 if ( attributeDescr.getValue() == null ) {
-                    rule.setLockOnActivate(true );
+                    rule.setLockOnActive(true );
                 } else {
-                    rule.setLockOnActivate( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                    rule.setLockOnActive( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
                 }
             } else if ( name.equals( "duration" ) ) {
                 rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
