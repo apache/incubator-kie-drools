@@ -233,8 +233,12 @@ public final class RuleTerminalNode extends BaseNode
 
                 // do not add the activation if the rule is "lock-on-active" and the AgendaGroup is active
                 // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract                
-                if ( context.getType() == PropagationContext.MODIFICATION &&  this.rule.isLockOnActivate() && agendaGroup.isActivate() && context.removeRetractedTuple( this.rule, tuple ) == null ) {
-                    // This rule is locked and active, do not allow new tuples to activate 
+                if ( context.getType() == PropagationContext.MODIFICATION ) {
+                    if ( this.rule.isLockOnActive() && agendaGroup.isActivate() && context.removeRetractedTuple( this.rule, tuple ) == null ) {                
+                        // This rule is locked and active, do not allow new tuples to activate 
+                        return;
+                    }
+                } else if ( this.rule.isLockOnActive() && agendaGroup.isActivate() ) {
                     return;
                 }
                 
@@ -249,10 +253,14 @@ public final class RuleTerminalNode extends BaseNode
 
                 // do not add the activation if the rule is "lock-on-active" and the RuleFlowGroup is active
                 // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract 
-                if ( context.getType() == PropagationContext.MODIFICATION &&  this.rule.isLockOnActivate() &&  memory.getRuleFlowGroup().isActive() && context.removeRetractedTuple( this.rule, tuple ) == null ) {
-                    // This rule is locked and active, do not allow new tuples to activate 
+                if ( context.getType() == PropagationContext.MODIFICATION ) {
+                    if ( this.rule.isLockOnActive() &&  memory.getRuleFlowGroup().isActive() && context.removeRetractedTuple( this.rule, tuple ) == null ) {                
+                        // This rule is locked and active, do not allow new tuples to activate 
+                        return;
+                    }
+                }   else if ( this.rule.isLockOnActive() && memory.getRuleFlowGroup().isActive() ) {
                     return;
-                }                
+                }              
                 
                 ((InternalRuleFlowGroup) memory.getRuleFlowGroup()).addActivation( item );
                 
@@ -286,7 +294,7 @@ public final class RuleTerminalNode extends BaseNode
         
         final Activation activation = tuple.getActivation();
         if ( activation.isActivated() ) {
-            if ( this.rule.isLockOnActivate() && context.getType() == PropagationContext.MODIFICATION ) {
+            if ( this.rule.isLockOnActive() && context.getType() == PropagationContext.MODIFICATION ) {
                 context.addRetractedTuple( this.rule, tuple );
             }
             

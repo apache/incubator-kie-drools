@@ -87,7 +87,7 @@ public class Rule
     
     private String		      ruleFlowGroup;
     
-    private boolean           lockOnActivate;
+    private boolean           lockOnActive;
 
     /** indicates that the rule is semantically correct. */
     private boolean           semanticallyValid;
@@ -321,12 +321,12 @@ public class Rule
     
     
 
-    public boolean isLockOnActivate() {
-        return lockOnActivate;
+    public boolean isLockOnActive() {
+        return lockOnActive;
     }
 
-    public void setLockOnActivate(boolean lockOnActive) {
-        this.lockOnActivate = lockOnActive;
+    public void setLockOnActive(boolean lockOnActive) {
+        this.lockOnActive = lockOnActive;
     }
 
     /**
