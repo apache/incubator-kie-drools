@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -21,12 +22,14 @@ package org.drools.ruleflow.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IStartNode extends INode {
+public interface IStartNode
+    extends
+    INode {
 
-	/**
-	 * Convenience method for returning the outgoing <code>IConnection</code>.
-	 * @return the outgoing <code>IConnection</code>
-	 */
+    /**
+     * Convenience method for returning the outgoing <code>IConnection</code>.
+     * @return the outgoing <code>IConnection</code>
+     */
     IConnection getTo();
-    
+
 }

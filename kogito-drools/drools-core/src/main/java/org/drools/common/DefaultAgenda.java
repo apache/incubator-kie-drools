@@ -166,15 +166,15 @@ public class DefaultAgenda
     public boolean setFocus(final AgendaGroup agendaGroup) {
         // Set the focus to the agendaGroup if it doesn't already have the focus
         if ( this.focusStack.getLast() != agendaGroup ) {
-            ((AgendaGroupImpl)this.focusStack.getLast()).setActive( false );            
+            ((AgendaGroupImpl) this.focusStack.getLast()).setActive( false );
             this.focusStack.add( agendaGroup );
-            ((AgendaGroupImpl)agendaGroup).setActive( true );
+            ((AgendaGroupImpl) agendaGroup).setActive( true );
             final EventSupport eventsupport = (EventSupport) this.workingMemory;
-            eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup );            
+            eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup );
             return true;
-        } else {         
-        	return false;
-    	}
+        } else {
+            return false;
+        }
     }
 
     /* (non-Javadoc)
@@ -212,9 +212,9 @@ public class DefaultAgenda
             // No populated queus found so pop the focusStack and repeat            
             if ( empty && (this.focusStack.size() > 1) ) {
                 agendaGroup.setActive( false );
-                this.focusStack.removeLast();                
+                this.focusStack.removeLast();
                 final EventSupport eventsupport = (EventSupport) this.workingMemory;
-                eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup );                
+                eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup );
             } else {
                 agendaGroup = (empty) ? null : agendaGroup;
                 break;
@@ -222,7 +222,7 @@ public class DefaultAgenda
         }
 
         if ( agendaGroup != null ) {
-            agendaGroup.setActive( true );            
+            agendaGroup.setActive( true );
         }
         return agendaGroup;
     }
@@ -276,7 +276,7 @@ public class DefaultAgenda
     }
 
     public RuleFlowGroup getRuleFlowGroup(final String name) {
-    	RuleFlowGroup ruleFlowGroup = (RuleFlowGroup) this.ruleFlowGroups.get( name );
+        RuleFlowGroup ruleFlowGroup = (RuleFlowGroup) this.ruleFlowGroups.get( name );
         if ( ruleFlowGroup == null ) {
             ruleFlowGroup = new RuleFlowGroupImpl( name );
             this.ruleFlowGroups.put( name,
@@ -284,13 +284,13 @@ public class DefaultAgenda
         }
         return ruleFlowGroup;
     }
-    
-    public void activateRuleFlowGroup(String name) {
-    	((InternalRuleFlowGroup) getRuleFlowGroup(name)).setActive(true);
+
+    public void activateRuleFlowGroup(final String name) {
+        ((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( true );
     }
-    
-    public void deactivateRuleFlowGroup(String name) {
-    	((InternalRuleFlowGroup) getRuleFlowGroup(name)).setActive(false);
+
+    public void deactivateRuleFlowGroup(final String name) {
+        ((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( false );
     }
 
     /* (non-Javadoc)
@@ -334,7 +334,7 @@ public class DefaultAgenda
      */
     public Activation[] getScheduledActivations() {
         final List list = new ArrayList( this.scheduledActivations.size() );
-        for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = (LinkedListNode) node.getNext() ) {
+        for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
             list.add( node );
         }
         return (Activation[]) list.toArray( new Activation[list.size()] );
@@ -395,7 +395,8 @@ public class DefaultAgenda
                 ruleFlowGroup.removeActivation( item );
             }
 
-            eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory  );
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                          this.workingMemory );
         }
         ((AgendaGroupImpl) agendaGroup).clear();
     }
@@ -417,20 +418,21 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         for ( final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
-            ActivationGroupNode node = (ActivationGroupNode) it.next();
+            final ActivationGroupNode node = (ActivationGroupNode) it.next();
             final Activation activation = node.getActivation();
             activation.setActivationGroupNode( null );
 
             if ( activation.isActivated() ) {
                 activation.setActivated( false );
                 activation.remove();
-                
+
                 if ( activation.getRuleFlowGroupNode() != null ) {
                     final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
                     ruleFlowGroup.removeActivation( activation );
                 }
 
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation, this.workingMemory  );
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                              this.workingMemory );
             }
         }
         activationGroup.clear();
@@ -475,7 +477,7 @@ public class DefaultAgenda
         // We do this first as if a node modifies a fact that causes a recursion on an empty pattern
         // we need to make sure it re-activates
         increaseDormantActivations();
-        
+
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation,
@@ -505,30 +507,30 @@ public class DefaultAgenda
             ruleFlowGroup.removeActivation( activation );
         }
 
-        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );                        
+        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
     }
-    
+
     public void increaseActiveActivations() {
         this.activeActivations++;
     }
-    
+
     public void decreaseActiveActivations() {
-        this.activeActivations--;        
+        this.activeActivations--;
     }
-    
+
     public void increaseDormantActivations() {
         this.activeActivations--;
         this.dormantActivations++;
     }
-    
+
     public void decreaseDormantActivations() {
         this.dormantActivations--;
     }
-    
+
     public int getActiveActivations() {
         return this.activeActivations;
     }
-    
+
     public int getDormantActivations() {
         return this.dormantActivations;
     }

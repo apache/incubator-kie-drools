@@ -18,15 +18,15 @@ public class ColumnTest extends TestCase {
     public void testDeclarationsObjectType() throws Exception {
         final ObjectType type = new ClassObjectType( Cheese.class );
         final Column col = new Column( 0,
-                                 type,
-                                 "foo" );
+                                       type,
+                                       "foo" );
         final Declaration dec = col.getDeclaration();
         final Extractor ext = dec.getExtractor();
         assertEquals( Cheese.class,
                       ext.getExtractToClass() );
 
         final Cheese stilton = new Cheese( "stilton",
-                                     42 );
+                                           42 );
 
         assertEquals( stilton,
                       dec.getValue( stilton ) );
@@ -37,21 +37,21 @@ public class ColumnTest extends TestCase {
 
         final Package pkg = new Package( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                          0,
-                                                          String.class );
+                                                                0,
+                                                                String.class );
         final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                           1,
-                                                           Integer.class );
+                                                                 1,
+                                                                 Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese = new FactTemplateImpl( pkg,
-                                                    "Cheese",
-                                                    fields );
+                                                          "Cheese",
+                                                          fields );
 
         final ObjectType type = new FactTemplateObjectType( cheese );
 
         final Column col = new Column( 0,
-                                 type,
-                                 "foo" );
+                                       type,
+                                       "foo" );
         final Declaration dec = col.getDeclaration();
         final Extractor ext = dec.getExtractor();
         assertEquals( Fact.class,

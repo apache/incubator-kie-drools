@@ -30,7 +30,8 @@ public class RuleBaseFactoryTest extends TestCase {
         assertTrue( !"".equals( ((InternalRuleBase) rb).getId() ) );
         assertNotNull( ((InternalRuleBase) rb).getId() );
 
-        final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.RETEOO, null );
+        final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
+                                                          null );
 
         assertTrue( rb2 instanceof org.drools.reteoo.ReteooRuleBase );
         assertNotSame( rb2,

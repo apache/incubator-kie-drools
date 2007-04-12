@@ -39,7 +39,7 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
         assertEquals( 1,
                       ex.getIndex() );
         assertEquals( 42,
-                      ((Number)ex.getValue( new TestBean() )).intValue() );
+                      ((Number) ex.getValue( new TestBean() )).intValue() );
 
     }
 
@@ -71,7 +71,7 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
     public void testSelfReference() throws Exception {
         final FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( BeanInherit.class,
                                                                                      "this" );
-        TestBean bean = new TestBean();
+        final TestBean bean = new TestBean();
         assertEquals( bean,
                       ex.getValue( bean ) );
     }

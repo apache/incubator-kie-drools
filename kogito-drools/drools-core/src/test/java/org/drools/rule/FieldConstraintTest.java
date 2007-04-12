@@ -213,9 +213,11 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        PredicateContextEntry context = (PredicateContextEntry) constraint1.getContextEntry();
-        context.updateFromTuple( workingMemory, tuple );
-        assertTrue( constraint1.isAllowedCachedLeft( context, f1.getObject() ) );
+        final PredicateContextEntry context = (PredicateContextEntry) constraint1.getContextEntry();
+        context.updateFromTuple( workingMemory,
+                                 tuple );
+        assertTrue( constraint1.isAllowedCachedLeft( context,
+                                                     f1.getObject() ) );
     }
 
     /**
@@ -239,7 +241,7 @@ public class FieldConstraintTest extends TestCase {
                                                                        "price" );
 
         final Column column = new Column( 0,
-                                    new ClassObjectType( Cheese.class ) );
+                                          new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
@@ -253,27 +255,27 @@ public class FieldConstraintTest extends TestCase {
              */
             private static final long serialVersionUID = 5673999834006100045L;
 
-            public FieldValue evaluate(Object object, 
+            public FieldValue evaluate(Object object,
                                        Tuple tuple, // ?price
                                        Declaration[] previousDeclarations,
                                        Declaration[] localDeclarations,
-                                   WorkingMemory workingMemory) {
+                                       WorkingMemory workingMemory) {
                 int price = ((Number) previousDeclarations[0].getValue( workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) )).intValue();
                 return FieldFactory.getFieldValue( 2 * price );
 
             }
         };
-        
-        ReturnValueRestriction restriction1 = new ReturnValueRestriction( priceExtractor,
-                                                                         isDoubleThePrice,
-                                                                         new Declaration[]{priceDeclaration},
-                                                                         new Declaration[0],
-                                                                         ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+
+        final ReturnValueRestriction restriction1 = new ReturnValueRestriction( priceExtractor,
+                                                                          isDoubleThePrice,
+                                                                          new Declaration[]{priceDeclaration},
+                                                                          new Declaration[0],
+                                                                          ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
 
         final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
                                                                              restriction1 );
 
-        ReturnValueRestriction restriction2 = new ReturnValueRestriction( priceExtractor,
+        final ReturnValueRestriction restriction2 = new ReturnValueRestriction( priceExtractor,
                                                                           isDoubleThePrice,
                                                                           new Declaration[]{priceDeclaration},
                                                                           new Declaration[0],
@@ -294,20 +296,25 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.getContextEntry();
-        context1.updateFromTuple( workingMemory, tuple );
-        assertTrue( constraint1.isAllowedCachedLeft( context1, f1.getObject() ) );
+        final ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.getContextEntry();
+        context1.updateFromTuple( workingMemory,
+                                  tuple );
+        assertTrue( constraint1.isAllowedCachedLeft( context1,
+                                                     f1.getObject() ) );
 
-        ReturnValueContextEntry context2 = (ReturnValueContextEntry) constraint2.getContextEntry();
-        context2.updateFromTuple( workingMemory, tuple );
-        assertFalse( constraint2.isAllowedCachedLeft( context2, f1.getObject() ) );
+        final ReturnValueContextEntry context2 = (ReturnValueContextEntry) constraint2.getContextEntry();
+        context2.updateFromTuple( workingMemory,
+                                  tuple );
+        assertFalse( constraint2.isAllowedCachedLeft( context2,
+                                                      f1.getObject() ) );
 
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             11 );
 
         final InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
 
-        assertTrue( constraint2.isAllowedCachedLeft( context2, f2.getObject() ) );
+        assertTrue( constraint2.isAllowedCachedLeft( context2,
+                                                     f2.getObject() ) );
     }
 
 }

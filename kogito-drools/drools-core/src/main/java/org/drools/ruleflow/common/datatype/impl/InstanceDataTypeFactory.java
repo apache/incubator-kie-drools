@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.datatype.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,26 +24,30 @@ import org.drools.ruleflow.common.datatype.IDataTypeFactory;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class InstanceDataTypeFactory implements IDataTypeFactory {
-    
-    private Class dataTypeClass;
+public class InstanceDataTypeFactory
+    implements
+    IDataTypeFactory {
+
+    private Class     dataTypeClass;
     private IDataType instance;
-    
-    public InstanceDataTypeFactory(Class dataTypeClass) {
+
+    public InstanceDataTypeFactory(final Class dataTypeClass) {
         this.dataTypeClass = dataTypeClass;
     }
-    
+
     public IDataType createDataType() {
-        if (instance == null) {
+        if ( this.instance == null ) {
             try {
-                instance = (IDataType) dataTypeClass.newInstance();
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Could not create data type for class " + dataTypeClass, e);
-            } catch (InstantiationException e) {
-            	throw new RuntimeException("Could not create data type for class " + dataTypeClass, e);
+                this.instance = (IDataType) this.dataTypeClass.newInstance();
+            } catch ( final IllegalAccessException e ) {
+                throw new RuntimeException( "Could not create data type for class " + this.dataTypeClass,
+                                            e );
+            } catch ( final InstantiationException e ) {
+                throw new RuntimeException( "Could not create data type for class " + this.dataTypeClass,
+                                            e );
             }
         }
-        return instance;
+        return this.instance;
     }
 
 }

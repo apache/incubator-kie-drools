@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,46 +24,48 @@ import java.util.List;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface INode extends Serializable {
-    
-	/**
-	 * Returns the id of the node
-	 * 
-	 * @return the id of the node
-	 */
+public interface INode
+    extends
+    Serializable {
+
+    /**
+     * Returns the id of the node
+     * 
+     * @return the id of the node
+     */
     long getId();
-    
+
     /**
      * Method for setting the id of the node
      * 
      * @param id	the id of the node
      */
     void setId(long id);
-    
+
     /**
      * Returns the name of the node
      * 
      * @return the name of the node
      */
     String getName();
-    
+
     /**
      * Method for setting the name of the node
      * 
      * @param name 	the name of the node
      */
     void setName(String name);
-    
+
     /**
      * Returns the incoming connections
      * @return the incoming connections 
      */
     List getIncomingConnections();
-    
+
     /**
      * Returns the outgoing connections
      * @return the outgoing connections 
      */
     List getOutgoingConnections();
-        
+
 }

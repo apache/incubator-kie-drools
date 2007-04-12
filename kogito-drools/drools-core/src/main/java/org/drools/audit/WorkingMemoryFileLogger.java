@@ -24,9 +24,6 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.audit.event.LogEvent;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-
 import com.thoughtworks.xstream.XStream;
 
 /**

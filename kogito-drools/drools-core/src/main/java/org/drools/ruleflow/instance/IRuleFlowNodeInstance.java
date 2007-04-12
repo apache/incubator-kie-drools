@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -24,21 +25,21 @@ package org.drools.ruleflow.instance;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface IRuleFlowNodeInstance {
-	
-	void setId(long id);
 
-	long getId();
-	
-	void setNodeId(long nodeId);
+    void setId(long id);
 
-	long getNodeId();
+    long getId();
 
-	void setProcessInstance(IRuleFlowProcessInstance processInstance);
+    void setNodeId(long nodeId);
 
-	IRuleFlowProcessInstance getProcessInstance();
+    long getNodeId();
 
-	void trigger(IRuleFlowNodeInstance from);
-	
-	void triggerCompleted();
-	
+    void setProcessInstance(IRuleFlowProcessInstance processInstance);
+
+    IRuleFlowProcessInstance getProcessInstance();
+
+    void trigger(IRuleFlowNodeInstance from);
+
+    void triggerCompleted();
+
 }

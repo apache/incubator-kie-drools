@@ -65,8 +65,8 @@ public class AlphaNode extends ObjectSource
      * @param objectSource
      */
     public AlphaNode(final int id,
-              final AlphaNodeFieldConstraint constraint,
-              final ObjectSource objectSource) {
+                     final AlphaNodeFieldConstraint constraint,
+                     final ObjectSource objectSource) {
         this( id,
               constraint,
               objectSource,
@@ -87,11 +87,13 @@ public class AlphaNode extends ObjectSource
      * @param hasMemory true if node shall be configured with local memory. False otherwise.
      */
     public AlphaNode(final int id,
-              final AlphaNodeFieldConstraint constraint,
-              final ObjectSource objectSource,
-              final boolean hasMemory,
-              final int alphaNodeHashingThreshold) {
-        super( id, objectSource, alphaNodeHashingThreshold );
+                     final AlphaNodeFieldConstraint constraint,
+                     final ObjectSource objectSource,
+                     final boolean hasMemory,
+                     final int alphaNodeHashingThreshold) {
+        super( id,
+               objectSource,
+               alphaNodeHashingThreshold );
         this.constraint = constraint;
         setHasMemory( hasMemory );
     }
@@ -143,8 +145,8 @@ public class AlphaNode extends ObjectSource
                             false );
             }
             this.sink.propagateAssertObject( handle,
-                                        context,
-                                        workingMemory );
+                                             context,
+                                             workingMemory );
         }
     }
 

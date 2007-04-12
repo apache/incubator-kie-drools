@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -24,39 +25,42 @@ import org.drools.ruleflow.core.IConstraint;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class Constraint implements IConstraint, Serializable {
+public class Constraint
+    implements
+    IConstraint,
+    Serializable {
 
     private static final long serialVersionUID = 3257849861633422902L;
 
-    private String name;
-    private String constraint;
-    private int priority;
-    
+    private String            name;
+    private String            constraint;
+    private int               priority;
+
     public String getConstraint() {
-        return constraint;
+        return this.constraint;
     }
-    
-    public void setConstraint(String constraint) {
+
+    public void setConstraint(final String constraint) {
         this.constraint = constraint;
     }
-    
+
     public String getName() {
-        return name;
+        return this.name;
     }
-    
-    public void setName(String name) {
+
+    public void setName(final String name) {
         this.name = name;
     }
-    
+
     public String toString() {
-        return name;
+        return this.name;
     }
-    
+
     public int getPriority() {
-        return priority;
+        return this.priority;
     }
-    
-    public void setPriority(int priority) {
+
+    public void setPriority(final int priority) {
         this.priority = priority;
     }
 }

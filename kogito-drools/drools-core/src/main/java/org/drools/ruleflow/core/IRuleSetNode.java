@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -20,28 +21,30 @@ package org.drools.ruleflow.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IRuleSetNode extends INode {
-    
+public interface IRuleSetNode
+    extends
+    INode {
+
     /**
      * Returns the incoming connection of the RuleSetNode.
      * 
      * @return the incoming connection of the RuleSetNode.
      */
     IConnection getFrom();
-        
+
     /**
      * Returns the outgoing connection of the RuleSetNode.
      * 
      * @return the outgoing connection of the RuleSetNode.
      */
     IConnection getTo();
-    
+
     /**
      * Returns the ruleflow-group of the RuleSetNode.
      * 
      * @return the ruleflow-group of the RuleSetNode.
      */
-    String getRuleFlowGroup();    
+    String getRuleFlowGroup();
 
     /**
      * Sets the ruleflow-group of the RuleSetNode.
@@ -49,5 +52,5 @@ public interface IRuleSetNode extends INode {
      * @param ruleFlowGroup	The ruleflow-group of the RuleSetNode
      * @throws IllegalArgumentException if type is null
      */
-    void setRuleFlowGroup(String ruleFlowGroup);	
+    void setRuleFlowGroup(String ruleFlowGroup);
 }

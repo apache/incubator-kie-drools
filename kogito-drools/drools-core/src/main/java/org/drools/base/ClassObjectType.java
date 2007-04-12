@@ -104,9 +104,9 @@ public class ClassObjectType
      */
     private void setDelegateFieldObject() {
         try {
-            delegate = this.shadowClass.getDeclaredField( ShadowProxyFactory.DELEGATE_FIELD_NAME );
-            delegate.setAccessible( true );
-        } catch ( Exception e ) {
+            this.delegate = this.shadowClass.getDeclaredField( ShadowProxyFactory.DELEGATE_FIELD_NAME );
+            this.delegate.setAccessible( true );
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Error retriving delegate field for shadow proxy class: " + this.shadowClass.getName(),
                                               e );
         }
@@ -151,14 +151,14 @@ public class ClassObjectType
         ShadowProxy proxy = null;
         if ( isShadowEnabled() ) {
             try {
-                if ( delegate == null ) {
+                if ( this.delegate == null ) {
                     this.setDelegateFieldObject();
                 }
-                if ( instantiator == null ) {
+                if ( this.instantiator == null ) {
                     this.setInstantiator();
                 }
                 proxy = (ShadowProxy) this.instantiator.newInstance();
-                delegate.set( proxy,
+                this.delegate.set( proxy,
                               fact );
             } catch ( final Exception e ) {
                 throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,

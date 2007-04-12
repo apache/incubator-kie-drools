@@ -77,7 +77,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                    constraint,
                                                    source,
                                                    true,
-                                                   3); // has memory
+                                                   3 ); // has memory
 
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
@@ -158,7 +158,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                    constraint,
                                                    source,
                                                    false,
-                                                   3); // no memory
+                                                   3 ); // no memory
 
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
@@ -304,7 +304,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                    constraint,
                                                    source,
                                                    true,
-                                                   3); // has memory
+                                                   3 ); // has memory
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
@@ -465,7 +465,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                    constraint,
                                                    source,
                                                    true,
-                                                   3); // has memory
+                                                   3 ); // has memory
 
         alphaNode.attach();
 

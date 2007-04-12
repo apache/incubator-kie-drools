@@ -60,8 +60,8 @@ public class VariableConstraint
         return this.restriction.getEvaluator();
     }
 
-    public boolean isAllowed(Object object,
-                             InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(final Object object,
+                             final InternalWorkingMemory workingMemory) {
         return this.restriction.isAllowed( this.fieldExtractor,
                                            object,
                                            workingMemory );

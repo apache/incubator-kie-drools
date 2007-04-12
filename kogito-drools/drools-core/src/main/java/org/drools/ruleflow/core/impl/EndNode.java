@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,30 +26,32 @@ import org.drools.ruleflow.core.IEndNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class EndNode extends Node implements IEndNode {
-    
+public class EndNode extends Node
+    implements
+    IEndNode {
+
     private static final long serialVersionUID = 3906930075512484153L;
-    
+
     public IConnection getFrom() {
-    	List list = getIncomingConnections();
-    	if (list.size() > 0) {
-    		return (IConnection) list.get(0);
-    	}
-		return null;
+        final List list = getIncomingConnections();
+        if ( list.size() > 0 ) {
+            return (IConnection) list.get( 0 );
+        }
+        return null;
     }
-    
-    protected void validateAddIncomingConnection(IConnection connection) {
-    	super.validateAddIncomingConnection(connection);
-    	if (getIncomingConnections().size() > 0) {    		
-            throw new IllegalArgumentException("An end node cannot have more than one incoming connection");
+
+    protected void validateAddIncomingConnection(final IConnection connection) {
+        super.validateAddIncomingConnection( connection );
+        if ( getIncomingConnections().size() > 0 ) {
+            throw new IllegalArgumentException( "An end node cannot have more than one incoming connection" );
         }
     }
 
-    protected void validateAddOutgoingConnection(IConnection connection) {
-        throw new UnsupportedOperationException("An end node does not have an outgoing connection");
+    protected void validateAddOutgoingConnection(final IConnection connection) {
+        throw new UnsupportedOperationException( "An end node does not have an outgoing connection" );
     }
 
-    protected void validateRemoveOutgoingConnection(IConnection connection) {
-        throw new UnsupportedOperationException("An end node does not have an outgoing connection");
+    protected void validateRemoveOutgoingConnection(final IConnection connection) {
+        throw new UnsupportedOperationException( "An end node does not have an outgoing connection" );
     }
 }

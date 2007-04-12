@@ -35,7 +35,7 @@ public class DefaultKnowledgeHelper
     implements
     KnowledgeHelper {
 
-    private static final long serialVersionUID = 3692991484157215686L;
+    private static final long                  serialVersionUID = 3692991484157215686L;
 
     private Rule                               rule;
     private GroupElement                       subrule;
@@ -90,7 +90,7 @@ public class DefaultKnowledgeHelper
                                          this.activation );
     }
 
-    public void modifyObject(FactHandle handle,
+    public void modifyObject(final FactHandle handle,
                              final Object newObject) throws FactException {
         // only modify if this fact exists in the wm
         this.workingMemory.modifyObject( handle,
@@ -158,8 +158,8 @@ public class DefaultKnowledgeHelper
     public void setFocus(final AgendaGroup focus) {
         this.workingMemory.setFocus( focus );
     }
-    
-    public Declaration getDeclaration( String identifier ) {
+
+    public Declaration getDeclaration(final String identifier) {
         return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
     }
 }

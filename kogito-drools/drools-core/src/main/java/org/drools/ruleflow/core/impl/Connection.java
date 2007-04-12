@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,17 +26,20 @@ import org.drools.ruleflow.core.INode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class Connection implements IConnection, Serializable {
-    
+public class Connection
+    implements
+    IConnection,
+    Serializable {
+
     private static final long serialVersionUID = 320L;
 
-    private int type;
-    private Node from;
-    private Node to;
-    
+    private int               type;
+    private Node              from;
+    private Node              to;
+
     private Connection() {
     }
-    
+
     /**
      * Creates a new connection, given a from node, a to node 
      * and a type.
@@ -44,64 +48,65 @@ public class Connection implements IConnection, Serializable {
      * @param to		The to node
      * @param type		The connection type
      */
-    public Connection(INode from, INode to, int type) {
-    	if (from == null) {
-    		throw new IllegalArgumentException("From node is null!");
-    	}
-    	if (to == null) {
-    		throw new IllegalArgumentException("To node is null!");    		
-    	}
-    	if (from.equals(to)) {
-    		throw new IllegalArgumentException("To and from nodes are the same!");    		
-    	}
-    	this.from = (Node) from;
+    public Connection(final INode from,
+                      final INode to,
+                      final int type) {
+        if ( from == null ) {
+            throw new IllegalArgumentException( "From node is null!" );
+        }
+        if ( to == null ) {
+            throw new IllegalArgumentException( "To node is null!" );
+        }
+        if ( from.equals( to ) ) {
+            throw new IllegalArgumentException( "To and from nodes are the same!" );
+        }
+        this.from = (Node) from;
         this.to = (Node) to;
         this.type = type;
-    	this.from.addOutgoingConnection(this);
-    	this.to.addIncomingConnection(this);
+        this.from.addOutgoingConnection( this );
+        this.to.addIncomingConnection( this );
     }
-    
+
     public synchronized void terminate() {
-    	from.removeOutgoingConnection(this);
-    	to.removeIncomingConnection(this);
-    	type = 0;
-    	from = null;
-    	to = null;
+        this.from.removeOutgoingConnection( this );
+        this.to.removeIncomingConnection( this );
+        this.type = 0;
+        this.from = null;
+        this.to = null;
     }
 
     public INode getFrom() {
-    	return from;
+        return this.from;
     }
-    
+
     public INode getTo() {
-    	return to;
+        return this.to;
     }
-    
+
     public int getType() {
-    	return type;
+        return this.type;
     }
-    
-    public boolean equals(Object object) {
-    	if (object instanceof Connection) {
-            Connection connection = (Connection) object;
-            return type == connection.getType() && getFrom().equals(connection.getFrom())
-                && getTo().equals(connection.getTo()); 
+
+    public boolean equals(final Object object) {
+        if ( object instanceof Connection ) {
+            final Connection connection = (Connection) object;
+            return this.type == connection.getType() && getFrom().equals( connection.getFrom() ) && getTo().equals( connection.getTo() );
         }
         return false;
     }
-    
+
     public int hashCode() {
-        return getFrom().hashCode() + 3*getTo().hashCode() + 5*getType();
+        return getFrom().hashCode() + 3 * getTo().hashCode() + 5 * getType();
     }
-    
+
     public String toString() {
-    	StringBuffer sb = new StringBuffer("Connection ");
-    	sb.append(getFrom());
-    	sb.append(" - ");
-    	sb.append(getTo());
-    	sb.append(" [type=");
-    	sb.append(getType());
-    	sb.append("]");
-    	return sb.toString();
+        final StringBuffer sb = new StringBuffer( "Connection " );
+        sb.append( getFrom() );
+        sb.append( " - " );
+        sb.append( getTo() );
+        sb.append( " [type=" );
+        sb.append( getType() );
+        sb.append( "]" );
+        return sb.toString();
     }
 }

@@ -9,7 +9,8 @@ import org.drools.spi.Restriction;
 
 public class MultiRestrictionFieldConstraint
     implements
-    AlphaNodeFieldConstraint, BetaNodeFieldConstraint {
+    AlphaNodeFieldConstraint,
+    BetaNodeFieldConstraint {
 
     /**
      * 
@@ -58,23 +59,27 @@ public class MultiRestrictionFieldConstraint
         return this.extractor.equals( other.extractor ) && this.restrictions.equals( other.restrictions );
     }
 
-    public boolean isAllowed(Object object,
-                             InternalWorkingMemory workingMemory) {
-        return this.restrictions.isAllowed( extractor, object, workingMemory );
+    public boolean isAllowed(final Object object,
+                             final InternalWorkingMemory workingMemory) {
+        return this.restrictions.isAllowed( this.extractor,
+                                            object,
+                                            workingMemory );
     }
 
     public ContextEntry getContextEntry() {
         return this.restrictions.getContextEntry();
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
-        return this.restrictions.isAllowedCachedLeft( context, object );
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
+        return this.restrictions.isAllowedCachedLeft( context,
+                                                      object );
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
-        return this.restrictions.isAllowedCachedRight( tuple, context );
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
+        return this.restrictions.isAllowedCachedRight( tuple,
+                                                       context );
     }
 
 }

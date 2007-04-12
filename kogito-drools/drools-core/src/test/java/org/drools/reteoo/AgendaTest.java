@@ -523,7 +523,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
         rule.setLockOnActive( true );
-        agendaGroup.setActive( true );        
+        agendaGroup.setActive( true );
         node.assertTuple( tuple,
                           context,
                           workingMemory );
@@ -532,19 +532,19 @@ public class AgendaTest extends DroolsTestCase {
                       agendaGroup.size() );
 
         // lock-on-active is now false so activation should propagate
-        rule.setLockOnActive( false );        
+        rule.setLockOnActive( false );
         node.assertTuple( tuple,
                           context,
-                          workingMemory );        
+                          workingMemory );
         assertEquals( 1,
                       agendaGroup.size() );
-        
+
         // even if lock-on-active is true, unless the agenda group is active the activation will still propagate
-        rule.setLockOnActive( true );        
-        agendaGroup.setActive( false );        
+        rule.setLockOnActive( true );
+        agendaGroup.setActive( false );
         node.assertTuple( tuple,
                           context,
-                          workingMemory );        
+                          workingMemory );
         assertEquals( 2,
                       agendaGroup.size() );
     }
@@ -1274,7 +1274,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );
     }
-    
+
     public void testRuleFlowGroupLockOnActive() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
@@ -1284,15 +1284,15 @@ public class AgendaTest extends DroolsTestCase {
         // create the agendaGroup
         //final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
         //agenda.addAgendaGroup( agendaGroup );
-        
-        final RuleFlowGroupImpl ruleFlowGroup = ( RuleFlowGroupImpl ) agenda.getRuleFlowGroup( "rule-flow-group-0" );
+
+        final RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
         final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         // create a rule for the agendaGroup
-        final Rule rule = new Rule( "test-rule" );        
-        rule.setRuleFlowGroup( "rule-flow-group-0" );        
+        final Rule rule = new Rule( "test-rule" );
+        rule.setRuleFlowGroup( "rule-flow-group-0" );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                             new MockTupleSource( 2 ),
                                                             rule,
@@ -1305,7 +1305,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
         rule.setLockOnActive( true );
-        ruleFlowGroup.setActive( true );        
+        ruleFlowGroup.setActive( true );
         node.assertTuple( tuple,
                           context,
                           workingMemory );
@@ -1314,22 +1314,21 @@ public class AgendaTest extends DroolsTestCase {
                       ruleFlowGroup.size() );
 
         // lock-on-active is now false so activation should propagate
-        rule.setLockOnActive( false );        
+        rule.setLockOnActive( false );
         node.assertTuple( tuple,
                           context,
-                          workingMemory );        
+                          workingMemory );
         assertEquals( 1,
                       ruleFlowGroup.size() );
-        
+
         // even if lock-on-active is true, unless the agenda group is active the activation will still propagate
-        rule.setLockOnActive( true );        
-        ruleFlowGroup.setActive( false );        
+        rule.setLockOnActive( true );
+        ruleFlowGroup.setActive( false );
         node.assertTuple( tuple,
                           context,
-                          workingMemory );        
+                          workingMemory );
         assertEquals( 2,
                       ruleFlowGroup.size() );
     }
-    
 
 }

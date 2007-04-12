@@ -100,10 +100,10 @@ public class FactTemplateFactory
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             final Object value1 = extractor1.getValue( object1 );
             final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {
@@ -159,10 +159,10 @@ public class FactTemplateFactory
             return !((ObjectVariableContextEntry) context).left.equals( value );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             final Object value1 = extractor1.getValue( object1 );
             final Object value2 = extractor2.getValue( object2 );
             if ( value1 == null ) {

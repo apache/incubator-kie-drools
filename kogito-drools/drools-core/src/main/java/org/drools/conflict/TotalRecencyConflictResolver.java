@@ -19,7 +19,6 @@ package org.drools.conflict;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
-import org.drools.spi.Tuple;
 
 /**
  * A conflict resolver that compares the total recency of a tuple when 

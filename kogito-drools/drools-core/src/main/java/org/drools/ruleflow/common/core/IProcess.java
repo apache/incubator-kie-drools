@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -32,45 +33,49 @@ public interface IProcess {
      * @param id the id of the process
      */
     void setId(String id);
+
     /**
      * Returns the id of this process.
      * @return the id of this process
      */
     String getId();
-    
+
     /**
      * Sets the name of this process.
      * @param name the name of this process
      */
     void setName(String name);
+
     /**
      * Returns the name of this process.
      * If no name is specified, null is returned.
      * @return the name of this process
      */
     String getName();
-    
+
     /**
      * Sets the version of this process.
      * @param version the version of this process
      */
     void setVersion(String version);
+
     /**
      * Returns the version of this process.
      * If no version is specified, null is returned.
      * @return the version of this process
      */
     String getVersion();
-    
+
     /**
      * Sets the type of this process.
      * @param type the type of this process
      */
     void setType(String type);
+
     /**
      * Returns the type of this process.
      * @return the type of this process
      */
     String getType();
-    
+
 }

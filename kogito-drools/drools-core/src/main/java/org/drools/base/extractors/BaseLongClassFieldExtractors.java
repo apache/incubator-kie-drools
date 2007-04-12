@@ -24,8 +24,8 @@ public abstract class BaseLongClassFieldExtractors extends BaseClassFieldExtract
      * @param valueType
      */
     protected BaseLongClassFieldExtractors(final int index,
-                                             final Class fieldType,
-                                             final ValueType valueType) {
+                                           final Class fieldType,
+                                           final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
@@ -68,15 +68,17 @@ public abstract class BaseLongClassFieldExtractors extends BaseClassFieldExtract
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getLongValue", new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            return this.getClass().getDeclaredMethod( "getLongValue",
+                                                      new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
-    
-    public int getHashCode(Object object) {
-        long temp = getLongValue( object );
-        return (int) ( temp ^ ( temp >>> 32 ));
+
+    public int getHashCode(final Object object) {
+        final long temp = getLongValue( object );
+        return (int) (temp ^ (temp >>> 32));
     }
-    
+
 }

@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.datatype.impl.type;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -27,32 +28,35 @@ import org.drools.ruleflow.common.datatype.IDataType;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ListDataType implements IDataType, Serializable {
-    
+public class ListDataType
+    implements
+    IDataType,
+    Serializable {
+
     private static final long serialVersionUID = 3689069551774415161L;
 
-    private IDataType dataType;
-    
-    public void setDataType(IDataType dataType) {
+    private IDataType         dataType;
+
+    public void setDataType(final IDataType dataType) {
         this.dataType = dataType;
     }
-    
+
     public IDataType getDataType() {
-        return dataType;
+        return this.dataType;
     }
 
-    public boolean verifyDataType(Object value) {
-    	if (value == null) {
-    		return true;    		
-    	}
-    	if (value instanceof List) {
-            for (Iterator it = ((List) value).iterator(); it.hasNext(); ) {
-                if (!dataType.verifyDataType(it.next())) {
+    public boolean verifyDataType(final Object value) {
+        if ( value == null ) {
+            return true;
+        }
+        if ( value instanceof List ) {
+            for ( final Iterator it = ((List) value).iterator(); it.hasNext(); ) {
+                if ( !this.dataType.verifyDataType( it.next() ) ) {
                     return false;
                 }
             }
             return true;
-    	}
-    	return false;
+        }
+        return false;
     }
 }

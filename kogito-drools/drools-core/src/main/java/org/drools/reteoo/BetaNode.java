@@ -223,10 +223,7 @@ abstract class BetaNode extends TupleSource
 
         final BetaNode other = (BetaNode) object;
 
-        return this.getClass() == other.getClass() &&
-               this.leftInput.equals( other.leftInput ) && 
-               this.rightInput.equals( other.rightInput ) && 
-               this.constraints.equals( other.constraints );
+        return this.getClass() == other.getClass() && this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
     }
 
     /**

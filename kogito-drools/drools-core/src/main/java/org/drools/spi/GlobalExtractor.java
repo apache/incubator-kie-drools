@@ -33,19 +33,21 @@ public class GlobalExtractor
     Extractor {
 
     private static final long serialVersionUID = -756967384190918798L;
-    private String            key;
+    private final String            key;
     private Map               map;
     private ObjectType        objectType;
 
-    public GlobalExtractor(final String key, final Map map) {
+    public GlobalExtractor(final String key,
+                           final Map map) {
+        this.key = key;
         this.map = map;
         this.objectType = new ClassObjectType( Object.class );
     }
 
     public Object getValue(final Object object) {
-        return this.map.get( key );
+        return this.map.get( this.key );
     }
-    
+
     public ObjectType getObjectType() {
         return this.objectType;
     }
@@ -59,8 +61,8 @@ public class GlobalExtractor
     }
 
     public boolean getBooleanValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Boolean ) {
                 return ((Boolean) value).booleanValue();
             }
@@ -70,8 +72,8 @@ public class GlobalExtractor
     }
 
     public byte getByteValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Number ) {
                 return ((Number) value).byteValue();
             }
@@ -81,8 +83,8 @@ public class GlobalExtractor
     }
 
     public char getCharValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Character ) {
                 return ((Character) value).charValue();
             }
@@ -92,8 +94,8 @@ public class GlobalExtractor
     }
 
     public double getDoubleValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Number ) {
                 return ((Number) value).doubleValue();
             }
@@ -103,8 +105,8 @@ public class GlobalExtractor
     }
 
     public float getFloatValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Number ) {
                 return ((Number) value).floatValue();
             }
@@ -114,8 +116,8 @@ public class GlobalExtractor
     }
 
     public int getIntValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Number ) {
                 return ((Number) value).intValue();
             }
@@ -125,8 +127,8 @@ public class GlobalExtractor
     }
 
     public long getLongValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Number ) {
                 return ((Number) value).longValue();
             }
@@ -136,8 +138,8 @@ public class GlobalExtractor
     }
 
     public short getShortValue(final Object object) {
-        Object value = this.map.get( this.key );
-        if( value != null ) {
+        final Object value = this.map.get( this.key );
+        if ( value != null ) {
             if ( value instanceof Number ) {
                 return ((Number) value).shortValue();
             }
@@ -148,31 +150,33 @@ public class GlobalExtractor
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue", new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            return this.getClass().getDeclaredMethod( "getValue",
+                                                      new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
 
-    public int getHashCode(Object object) {
-        Object value = this.map.get( this.key );
+    public int getHashCode(final Object object) {
+        final Object value = this.map.get( this.key );
         return value != null ? value.hashCode() : 0;
     }
-    
+
     public int hashCode() {
         return this.objectType.hashCode();
     }
-    
-    public boolean equals(Object obj) {
-        if( this == obj ) {
+
+    public boolean equals(final Object obj) {
+        if ( this == obj ) {
             return true;
         }
-        if( ! ( obj instanceof GlobalExtractor ) ) {
+        if ( !(obj instanceof GlobalExtractor) ) {
             return false;
         }
-        GlobalExtractor other = (GlobalExtractor) obj;
-        Object value = this.map.get( this.key );
-        Object othervalue = other.map.get( this.key );
+        final GlobalExtractor other = (GlobalExtractor) obj;
+        final Object value = this.map.get( this.key );
+        final Object othervalue = other.map.get( this.key );
         return value == null ? othervalue == null : value.equals( othervalue );
     }
 }

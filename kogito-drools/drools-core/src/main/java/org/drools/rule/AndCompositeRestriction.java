@@ -13,9 +13,9 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         super( restriction );
     }
 
-    public boolean isAllowed(Extractor extractor,
-                             Object object,
-                             InternalWorkingMemory workingMemory) {
+    public boolean isAllowed(final Extractor extractor,
+                             final Object object,
+                             final InternalWorkingMemory workingMemory) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( !this.restrictions[i].isAllowed( extractor,
                                                   object,
@@ -26,8 +26,8 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         return true;
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( !this.restrictions[i].isAllowedCachedLeft( this.contextEntry.contextEntries[i],
                                                             object ) ) {
@@ -37,8 +37,8 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         return true;
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( !this.restrictions[i].isAllowedCachedRight( tuple,
                                                              this.contextEntry.contextEntries[i] ) ) {

@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -27,14 +28,17 @@ import org.drools.ruleflow.common.datatype.IDataType;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface IVariable {
-	
+
     String getName();
+
     void setName(String name);
-    
+
     IDataType getType();
+
     void setType(IDataType type);
-    
-	Serializable getValue();
+
+    Serializable getValue();
+
     void setValue(Serializable value);
-    
+
 }

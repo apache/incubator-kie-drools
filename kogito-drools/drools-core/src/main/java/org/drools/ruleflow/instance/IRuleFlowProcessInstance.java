@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -29,24 +30,26 @@ import org.drools.ruleflow.core.IRuleFlowProcess;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IRuleFlowProcessInstance extends IProcessInstance {
-	
-	IRuleFlowProcess getRuleFlowProcess();
-	
-	void addNodeInstance(IRuleFlowNodeInstance nodeInstance);
+public interface IRuleFlowProcessInstance
+    extends
+    IProcessInstance {
 
-	void removeNodeInstance(IRuleFlowNodeInstance nodeInstance);
+    IRuleFlowProcess getRuleFlowProcess();
 
-	Collection getNodeInstances();
+    void addNodeInstance(IRuleFlowNodeInstance nodeInstance);
 
-	IRuleFlowNodeInstance getFirstNodeInstance(long nodeId);
-	
-	void setAgenda(Agenda agenda);
-	
-	Agenda getAgenda();
-	
-	IRuleFlowNodeInstance getNodeInstance(INode node);
-	
-	void start();
-	
+    void removeNodeInstance(IRuleFlowNodeInstance nodeInstance);
+
+    Collection getNodeInstances();
+
+    IRuleFlowNodeInstance getFirstNodeInstance(long nodeId);
+
+    void setAgenda(Agenda agenda);
+
+    Agenda getAgenda();
+
+    IRuleFlowNodeInstance getNodeInstance(INode node);
+
+    void start();
+
 }

@@ -106,21 +106,21 @@ public class FieldFactory {
         if ( valueType == ValueType.NULL_TYPE ) {
             field = new ObjectFieldImpl( null );
         } else if ( valueType == ValueType.PCHAR_TYPE ) {
-            field = new LongFieldImpl( ((Character)value).charValue() );
+            field = new LongFieldImpl( ((Character) value).charValue() );
         } else if ( valueType == ValueType.PBYTE_TYPE ) {
-            field = new LongFieldImpl( ((Number)value).byteValue() );
+            field = new LongFieldImpl( ((Number) value).byteValue() );
         } else if ( valueType == ValueType.PSHORT_TYPE ) {
-            field = new LongFieldImpl( ((Number)value).shortValue() );
+            field = new LongFieldImpl( ((Number) value).shortValue() );
         } else if ( valueType == ValueType.PINTEGER_TYPE ) {
-            field = new LongFieldImpl( ((Number)value).intValue() );
+            field = new LongFieldImpl( ((Number) value).intValue() );
         } else if ( valueType == ValueType.PLONG_TYPE ) {
-            field = new LongFieldImpl( ((Number)value).longValue() );
+            field = new LongFieldImpl( ((Number) value).longValue() );
         } else if ( valueType == ValueType.PFLOAT_TYPE ) {
-            field = new DoubleFieldImpl( ((Number)value).floatValue() );
+            field = new DoubleFieldImpl( ((Number) value).floatValue() );
         } else if ( valueType == ValueType.PDOUBLE_TYPE ) {
-            field = new DoubleFieldImpl( ((Number)value).doubleValue() );
+            field = new DoubleFieldImpl( ((Number) value).doubleValue() );
         } else if ( valueType == ValueType.PBOOLEAN_TYPE ) {
-            field = new BooleanFieldImpl( ((Boolean)value).booleanValue() );
+            field = new BooleanFieldImpl( ((Boolean) value).booleanValue() );
         } else if ( valueType == ValueType.CHAR_TYPE ) {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BYTE_TYPE ) {

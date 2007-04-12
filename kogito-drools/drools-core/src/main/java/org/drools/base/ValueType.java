@@ -144,7 +144,7 @@ public class ValueType
         this.classType = classType;
         this.simpleType = simpleType;
         this.evaluatorFactory = evaluatorFactory;
-    }    
+    }
 
     private Object readResolve() throws java.io.ObjectStreamException {
         return determineValueType( this.classType );
@@ -152,12 +152,12 @@ public class ValueType
 
     public String getName() {
         return this.name;
-    }        
+    }
 
     public Class getClassType() {
         return this.classType;
     }
-    
+
     public int getSimpleType() {
         return this.simpleType;
     }
@@ -243,43 +243,43 @@ public class ValueType
     }
 
     public boolean isNumber() {
-        return ( this.simpleType == SimpleValueType.INTEGER || this.simpleType == SimpleValueType.DECIMAL || this.simpleType == SimpleValueType.CHAR );
-//        return (this.classType == Integer.TYPE) || 
-//               (this.classType == Long.TYPE) || 
-//               (this.classType == Float.TYPE) || 
-//               (this.classType == Double.TYPE) ||
-//               (this.classType == Byte.TYPE) || 
-//               (this.classType == Short.TYPE) || 
-//               (this.classType == Character.TYPE) ||
-//               (this.classType == Character.class) || 
-//               (Number.class.isAssignableFrom( this.classType ));
+        return (this.simpleType == SimpleValueType.INTEGER || this.simpleType == SimpleValueType.DECIMAL || this.simpleType == SimpleValueType.CHAR);
+        //        return (this.classType == Integer.TYPE) || 
+        //               (this.classType == Long.TYPE) || 
+        //               (this.classType == Float.TYPE) || 
+        //               (this.classType == Double.TYPE) ||
+        //               (this.classType == Byte.TYPE) || 
+        //               (this.classType == Short.TYPE) || 
+        //               (this.classType == Character.TYPE) ||
+        //               (this.classType == Character.class) || 
+        //               (Number.class.isAssignableFrom( this.classType ));
     }
 
     public boolean isIntegerNumber() {
         return this.simpleType == SimpleValueType.INTEGER;
-//        return (this.classType == Integer.TYPE) || 
-//               (this.classType == Long.TYPE) || 
-//               (this.classType == Integer.class) || 
-//               (this.classType == Long.class) || 
-//               (this.classType == Character.class) || 
-//               (this.classType == Character.TYPE) ||
-//               (this.classType == Byte.TYPE) ||
-//               (this.classType == Short.TYPE) || 
-//               (this.classType == Byte.class) || 
-//               (this.classType == Short.class);
+        //        return (this.classType == Integer.TYPE) || 
+        //               (this.classType == Long.TYPE) || 
+        //               (this.classType == Integer.class) || 
+        //               (this.classType == Long.class) || 
+        //               (this.classType == Character.class) || 
+        //               (this.classType == Character.TYPE) ||
+        //               (this.classType == Byte.TYPE) ||
+        //               (this.classType == Short.TYPE) || 
+        //               (this.classType == Byte.class) || 
+        //               (this.classType == Short.class);
     }
 
     public boolean isFloatNumber() {
         return this.simpleType == SimpleValueType.DECIMAL;
-//        return (this.classType == Float.TYPE) || 
-//               (this.classType == Double.TYPE) || 
-//               (this.classType == Float.class) || 
-//               (this.classType == Double.class);
+        //        return (this.classType == Float.TYPE) || 
+        //               (this.classType == Double.TYPE) || 
+        //               (this.classType == Float.class) || 
+        //               (this.classType == Double.class);
     }
 
     public boolean isChar() {
         return this.simpleType == SimpleValueType.CHAR;
-//        return ((this.classType == Character.class) || (this.classType == Character.TYPE));
+        //        return ((this.classType == Character.class) || (this.classType == Character.TYPE));
     }
 
 }

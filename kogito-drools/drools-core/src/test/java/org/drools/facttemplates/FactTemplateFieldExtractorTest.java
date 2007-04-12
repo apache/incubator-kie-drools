@@ -12,20 +12,20 @@ public class FactTemplateFieldExtractorTest extends TestCase {
         final Package pkg = new Package( "org.store" );
 
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                          0,
-                                                          String.class );
+                                                                0,
+                                                                String.class );
         final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                           1,
-                                                           Integer.class );
+                                                                 1,
+                                                                 Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese = new FactTemplateImpl( pkg,
-                                                    "Cheese",
-                                                    fields );
+                                                          "Cheese",
+                                                          fields );
 
         final Extractor extractName = new FactTemplateFieldExtractor( cheese,
-                                                                0 );
+                                                                      0 );
         final Extractor extractPrice = new FactTemplateFieldExtractor( cheese,
-                                                                 1 );
+                                                                       1 );
 
         final Fact stilton = cheese.createFact( 10 );
         stilton.setFieldValue( "name",
@@ -56,21 +56,21 @@ public class FactTemplateFieldExtractorTest extends TestCase {
         final Package pkg = new Package( "org.store" );
 
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                          0,
-                                                          String.class );
+                                                                0,
+                                                                String.class );
         final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                           1,
-                                                           Integer.class );
+                                                                 1,
+                                                                 Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese = new FactTemplateImpl( pkg,
-                                                    "Cheese",
-                                                    fields );
+                                                          "Cheese",
+                                                          fields );
 
         final Extractor extractName = new FactTemplateFieldExtractor( cheese,
-                                                                0 );
+                                                                      0 );
 
         final Column column = new Column( 0,
-                                    new FactTemplateObjectType( cheese ) );
+                                          new FactTemplateObjectType( cheese ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractName,

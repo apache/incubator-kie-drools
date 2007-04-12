@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,20 +23,21 @@ import org.drools.ruleflow.core.IRuleFlowProcessValidationError;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowProcessValidationError implements
-		IRuleFlowProcessValidationError {
+public class RuleFlowProcessValidationError
+    implements
+    IRuleFlowProcessValidationError {
 
-	private String type;
-	
-	public RuleFlowProcessValidationError(String type) {
-		this.type = type;
-	}
-	
-	public String toString() {
-		return type;
-	}
+    private String type;
 
-	public String getType() {
-		return type;
-	}
+    public RuleFlowProcessValidationError(final String type) {
+        this.type = type;
+    }
+
+    public String toString() {
+        return this.type;
+    }
+
+    public String getType() {
+        return this.type;
+    }
 }

@@ -248,8 +248,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
     protected void removeRule(final Rule rule) {
         this.reteooBuilder.removeRule( rule );
     }
-    
-    private static class InitialFactHandleDummyObject implements Serializable {
+
+    private static class InitialFactHandleDummyObject
+        implements
+        Serializable {
         private static final long serialVersionUID = 1L;
     }
 

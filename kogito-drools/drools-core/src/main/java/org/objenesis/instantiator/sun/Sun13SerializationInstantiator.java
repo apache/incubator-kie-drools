@@ -12,20 +12,20 @@ import org.objenesis.instantiator.SerializationInstantiatorHelper;
  * @see org.objenesis.instantiator.ObjectInstantiator
  */
 public class Sun13SerializationInstantiator extends Sun13InstantiatorBase {
-   private final Class superType;
+    private final Class superType;
 
-   public Sun13SerializationInstantiator(Class type) {
-      super(type);
-      this.superType = SerializationInstantiatorHelper.getNonSerializableSuperClass(type);
-   }
+    public Sun13SerializationInstantiator(final Class type) {
+        super( type );
+        this.superType = SerializationInstantiatorHelper.getNonSerializableSuperClass( type );
+    }
 
-   public Object newInstance() {
-      try {
-         return allocateNewObjectMethod.invoke(null, new Object[] {type, superType});
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return allocateNewObjectMethod.invoke( null,
+                                                   new Object[]{this.type, this.superType} );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 
 }

@@ -228,7 +228,7 @@ public interface WorkingMemory
      *         
      * @throws IllegalArgumentException 
      *         if no query named "query" is found in the rulebase         
-     */ 
+     */
     public QueryResults getQueryResults(String query);
 
     /**
@@ -299,7 +299,7 @@ public interface WorkingMemory
      * 
      */
     void dispose();
-    
+
     /**
      * Starts a new process instance for the process with the given id. 
      */

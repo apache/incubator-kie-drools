@@ -22,7 +22,7 @@ package org.drools.base;
 public interface ShadowProxy {
 
     public void updateProxy();
-    
+
     public Object getShadowedObject();
 
 }

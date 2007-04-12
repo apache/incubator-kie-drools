@@ -1,11 +1,12 @@
 package org.drools;
 
 public class Person {
-    
+
     private String name;
-    private int age;
-    
-    public Person( String name, int age ) {
+    private int    age;
+
+    public Person(final String name,
+                  final int age) {
         this.name = name;
         this.age = age;
     }
@@ -14,13 +15,13 @@ public class Person {
      * @return the age
      */
     public int getAge() {
-        return age;
+        return this.age;
     }
 
     /**
      * @param age the age to set
      */
-    public void setAge(int age) {
+    public void setAge(final int age) {
         this.age = age;
     }
 
@@ -28,15 +29,14 @@ public class Person {
      * @return the name
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
-    
 
 }

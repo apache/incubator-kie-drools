@@ -25,26 +25,25 @@ import org.objenesis.instantiator.sun.Sun13SerializationInstantiator;
  */
 public class SerializingInstantiatorStrategy extends BaseInstantiatorStrategy {
 
-   /**
-    * Return an {@link ObjectInstantiator} allowing to create instance following the java
-    * serialization framework specifications.
-    * 
-    * @param type Class to instantiate
-    * @return The ObjectInstantiator for the class
-    */
-   public ObjectInstantiator newInstantiatorOf(Class type) {
-      if(!Serializable.class.isAssignableFrom(type)) {
-         throw new ObjenesisException(new NotSerializableException(type+" not serializable"));
-      }
-      if(JVM_NAME.startsWith(SUN)) {
-         if(VM_VERSION.startsWith("1.3")) {
-            return new Sun13SerializationInstantiator(type);
-         }
-      }
-      else if(JVM_NAME.startsWith(GNU)) {
-         return new GCJSerializationInstantiator(type);
-      }
-      return new ObjectStreamClassInstantiator(type);
-   }
+    /**
+     * Return an {@link ObjectInstantiator} allowing to create instance following the java
+     * serialization framework specifications.
+     * 
+     * @param type Class to instantiate
+     * @return The ObjectInstantiator for the class
+     */
+    public ObjectInstantiator newInstantiatorOf(final Class type) {
+        if ( !Serializable.class.isAssignableFrom( type ) ) {
+            throw new ObjenesisException( new NotSerializableException( type + " not serializable" ) );
+        }
+        if ( JVM_NAME.startsWith( SUN ) ) {
+            if ( VM_VERSION.startsWith( "1.3" ) ) {
+                return new Sun13SerializationInstantiator( type );
+            }
+        } else if ( JVM_NAME.startsWith( GNU ) ) {
+            return new GCJSerializationInstantiator( type );
+        }
+        return new ObjectStreamClassInstantiator( type );
+    }
 
 }

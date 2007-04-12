@@ -50,13 +50,13 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Object.class ),
                                                                   rete,
-                                                                  3);
+                                                                  3 );
         objectTypeNode.attach();
 
         final ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
-                                                                  3);
+                                                                  3 );
         stringTypeNode.attach();
 
         final Field field = Rete.class.getDeclaredField( "objectTypeNodes" );
@@ -86,7 +86,7 @@ public class ReteTest extends DroolsTestCase {
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( List.class ),
                                                             rete,
-                                                            3);
+                                                            3 );
         objectTypeNode.attach();
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -94,7 +94,7 @@ public class ReteTest extends DroolsTestCase {
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( Collection.class ),
                                              rete,
-                                             3);
+                                             3 );
         objectTypeNode.attach();
         sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -102,7 +102,7 @@ public class ReteTest extends DroolsTestCase {
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( ArrayList.class ),
                                              rete,
-                                             3);
+                                             3 );
         objectTypeNode.attach();
         sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -111,13 +111,19 @@ public class ReteTest extends DroolsTestCase {
         final DefaultFactHandle h1 = new DefaultFactHandle( 1,
                                                             new ArrayList() );
         rete.assertObject( h1,
-                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
+                           new PropagationContextImpl( 0,
+                                                       PropagationContext.ASSERTION,
+                                                       null,
+                                                       null ),
                            workingMemory );
 
         // LinkedList matches two ObjectTypeNodes        
         h1.setObject( new LinkedList() );
         rete.assertObject( h1,
-                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
+                           new PropagationContextImpl( 0,
+                                                       PropagationContext.ASSERTION,
+                                                       null,
+                                                       null ),
                            workingMemory );
 
         final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( rete );
@@ -144,7 +150,7 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( List.class ),
                                                                   rete,
-                                                                  3);
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
@@ -168,7 +174,10 @@ public class ReteTest extends DroolsTestCase {
                                                             list );
 
         rete.assertObject( h2,
-                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
+                           new PropagationContextImpl( 0,
+                                                       PropagationContext.ASSERTION,
+                                                       null,
+                                                       null ),
                            workingMemory );
 
         final List asserted = sink1.getAsserted();
@@ -194,7 +203,7 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( List.class ),
                                                                   rete,
-                                                                  3);
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
@@ -217,11 +226,17 @@ public class ReteTest extends DroolsTestCase {
 
         // need  to assert first, to force it to build  up the cache
         rete.assertObject( h2,
-                           new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
+                           new PropagationContextImpl( 0,
+                                                       PropagationContext.ASSERTION,
+                                                       null,
+                                                       null ),
                            workingMemory );
 
         rete.retractObject( h2,
-                            new PropagationContextImpl(0, PropagationContext.ASSERTION, null, null),
+                            new PropagationContextImpl( 0,
+                                                        PropagationContext.ASSERTION,
+                                                        null,
+                                                        null ),
                             workingMemory );
 
         final List retracted = sink1.getRetracted();

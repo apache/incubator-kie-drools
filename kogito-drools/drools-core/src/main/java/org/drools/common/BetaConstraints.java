@@ -6,11 +6,15 @@ import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.LinkedList;
 
-public interface BetaConstraints extends Serializable {
+public interface BetaConstraints
+    extends
+    Serializable {
 
-    public void updateFromTuple(InternalWorkingMemory workingMemory, ReteTuple tuple);
+    public void updateFromTuple(InternalWorkingMemory workingMemory,
+                                ReteTuple tuple);
 
-    public void updateFromFactHandle(InternalWorkingMemory workingMemory, InternalFactHandle handle);
+    public void updateFromFactHandle(InternalWorkingMemory workingMemory,
+                                     InternalFactHandle handle);
 
     public boolean isAllowedCachedLeft(Object object);
 

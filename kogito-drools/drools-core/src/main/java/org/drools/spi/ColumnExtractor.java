@@ -41,9 +41,9 @@ public class ColumnExtractor
     public Object getValue(final Object object) {
         // need to use instanceof because an object may be created in nodes like accumulate and from
         // where no shadow is applied
-        return ( object instanceof ShadowProxy ) ? ((ShadowProxy)object).getShadowedObject() : object;
+        return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
     }
-    
+
     public ObjectType getObjectType() {
         return this.objectType;
     }
@@ -119,28 +119,30 @@ public class ColumnExtractor
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue", new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            return this.getClass().getDeclaredMethod( "getValue",
+                                                      new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
 
-    public int getHashCode(Object object) {
+    public int getHashCode(final Object object) {
         return getValue( object ).hashCode();
     }
-    
+
     public int hashCode() {
         return this.objectType.hashCode();
     }
-    
-    public boolean equals(Object obj) {
-        if( this == obj ) {
+
+    public boolean equals(final Object obj) {
+        if ( this == obj ) {
             return true;
         }
-        if( ! ( obj instanceof ColumnExtractor ) ) {
+        if ( !(obj instanceof ColumnExtractor) ) {
             return false;
         }
-        ColumnExtractor other = (ColumnExtractor) obj;
+        final ColumnExtractor other = (ColumnExtractor) obj;
         return this.objectType.equals( other.objectType );
     }
 }

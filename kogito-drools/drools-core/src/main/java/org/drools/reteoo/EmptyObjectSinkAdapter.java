@@ -7,12 +7,12 @@ import org.drools.spi.PropagationContext;
 public class EmptyObjectSinkAdapter
     implements
     ObjectSinkPropagator {
-	private static final EmptyObjectSinkAdapter instance = new EmptyObjectSinkAdapter();
-	
-	public static EmptyObjectSinkAdapter getInstance() { 
-		return instance;
-	}
-	
+    private static final EmptyObjectSinkAdapter instance = new EmptyObjectSinkAdapter();
+
+    public static EmptyObjectSinkAdapter getInstance() {
+        return instance;
+    }
+
     private EmptyObjectSinkAdapter() {
     }
 

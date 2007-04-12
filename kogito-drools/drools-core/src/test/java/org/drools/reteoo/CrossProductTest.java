@@ -37,7 +37,7 @@ public class CrossProductTest extends TestCase {
     private Package       pkg;
     private WorkingMemory workingMemory;
     private List          values;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         final ObjectType list1ObjectType = new ClassObjectType( String.class );
@@ -58,7 +58,7 @@ public class CrossProductTest extends TestCase {
         final Declaration s1Declaration = rule.getDeclaration( "s1" );
         final Declaration s2Declaration = rule.getDeclaration( "s2" );
 
-        values = new ArrayList();
+        this.values = new ArrayList();
 
         rule.setConsequence( new Consequence() {
 
@@ -71,52 +71,50 @@ public class CrossProductTest extends TestCase {
                                  final WorkingMemory workingMemory) throws Exception {
                 final String s1 = (String) knowledgeHelper.get( s1Declaration );
                 final String s2 = (String) knowledgeHelper.get( s2Declaration );
-                values.add( new String[]{s1, s2} );
+                CrossProductTest.this.values.add( new String[]{s1, s2} );
             }
 
         } );
 
-        pkg = new Package( "org.drools" );
-        pkg.addRule( rule );
+        this.pkg = new Package( "org.drools" );
+        this.pkg.addRule( rule );
     }
-    
+
     public void testNotRemoveIdentities() throws Exception {
         // Default is remove identity FALSE
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
+        ruleBase.addPackage( this.pkg );
 
-        workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( "F1" );
-        workingMemory.assertObject( "F2" );
-        workingMemory.assertObject( "F3" );
-        workingMemory.assertObject( "F4" );
+        this.workingMemory = ruleBase.newWorkingMemory();
+        this.workingMemory.assertObject( "F1" );
+        this.workingMemory.assertObject( "F2" );
+        this.workingMemory.assertObject( "F3" );
+        this.workingMemory.assertObject( "F4" );
 
-        workingMemory.fireAllRules();
+        this.workingMemory.fireAllRules();
 
         // A full cross product is 16, this is just 12
         assertEquals( 16,
-                      values.size() );
+                      this.values.size() );
     }
-    
+
     public void testRemoveIdentities() throws Exception {
-        System.setProperty( "drools.removeIdentities", "true" );
+        System.setProperty( "drools.removeIdentities",
+                            "true" );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
+        ruleBase.addPackage( this.pkg );
 
-        workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( "F1" );
-        workingMemory.assertObject( "F2" );
-        workingMemory.assertObject( "F3" );
-        workingMemory.assertObject( "F4" );
+        this.workingMemory = ruleBase.newWorkingMemory();
+        this.workingMemory.assertObject( "F1" );
+        this.workingMemory.assertObject( "F2" );
+        this.workingMemory.assertObject( "F3" );
+        this.workingMemory.assertObject( "F4" );
 
-        workingMemory.fireAllRules();
+        this.workingMemory.fireAllRules();
 
         // A full cross product is 16, this is just 12
         assertEquals( 12,
-                      values.size() );
+                      this.values.size() );
     }
-    
-    
-    
 
 }

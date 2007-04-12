@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -30,102 +31,100 @@ import org.drools.ruleflow.core.ISplit;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class Split extends Node implements ISplit {
-    
+public class Split extends Node
+    implements
+    ISplit {
+
     private static final long serialVersionUID = 3258413949669159736L;
 
-    private int type;
-    private Map constraints;
-        
+    private int               type;
+    private Map               constraints;
+
     public Split() {
-    	type = TYPE_UNDEFINED;
-    	constraints = new HashMap();    	
+        this.type = TYPE_UNDEFINED;
+        this.constraints = new HashMap();
     }
-    
-    public Split(int type) {
-    	this.type = type;
-    	constraints = new HashMap();
+
+    public Split(final int type) {
+        this.type = type;
+        this.constraints = new HashMap();
     }
-    
-    public void setType(int type) {
+
+    public void setType(final int type) {
         this.type = type;
     }
-    
+
     public int getType() {
-        return type;
+        return this.type;
     }
-    
-    public IConstraint getConstraint(IConnection connection) {
-    	if (connection == null) {
-    		throw new IllegalArgumentException("connection is null");
-    	}
-    	
-    	// dirty hack because keys were entered wrong
-    	// probably caused by xstreams
-    	HashMap newMap = new HashMap();
-		for (Iterator it = constraints.entrySet().iterator(); it.hasNext(); ) {
-			Entry entry = (Entry) it.next();
-			newMap.put(entry.getKey(), entry.getValue());
-		}
-		constraints = newMap;
-		
-    	if (type == TYPE_OR || type == TYPE_XOR) {
-    		return (IConstraint) constraints.get(connection);
-    	}
-		throw new UnsupportedOperationException("Constraints are "
-			+ "only supported with XOR or OR split types, not with: "
-			+ getType());
+
+    public IConstraint getConstraint(final IConnection connection) {
+        if ( connection == null ) {
+            throw new IllegalArgumentException( "connection is null" );
+        }
+
+        // dirty hack because keys were entered wrong
+        // probably caused by xstreams
+        final HashMap newMap = new HashMap();
+        for ( final Iterator it = this.constraints.entrySet().iterator(); it.hasNext(); ) {
+            final Entry entry = (Entry) it.next();
+            newMap.put( entry.getKey(),
+                        entry.getValue() );
+        }
+        this.constraints = newMap;
+
+        if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
+            return (IConstraint) this.constraints.get( connection );
+        }
+        throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with: " + getType() );
     }
-    
-    public void setConstraint(IConnection connection, IConstraint constraint) {    	  	
-    	if (type == TYPE_OR || type == TYPE_XOR) {
-    		if (connection == null) {
-        		throw new IllegalArgumentException("connection is null");
-        	}  
-    		if (!getOutgoingConnections().contains(connection)) {
-        		throw new IllegalArgumentException("connection is unknown:" + connection);
-        	}
-    		constraints.put(connection, constraint);
-    	} else {
-    		throw new UnsupportedOperationException("Constraints are "
-    				+ "only supported with XOR or OR split types, not with type:"
-    				+ getType());
-    	} 
-    }
-    
-    public Map getConstraints() {
-    	if (type == TYPE_OR || type == TYPE_XOR) {
-    		return Collections.unmodifiableMap(constraints);
-    	}
-		throw new UnsupportedOperationException("Constraints are "
-			+ "only supported with XOR or OR split types, not with: "
-			+ getType());
-    }
-    
-    public IConnection getFrom() {
-    	if (getIncomingConnections().size() > 0) {
-    		return (IConnection) getIncomingConnections().get(0);
-    	}
-		return null;
-    }
-    
-    protected void validateAddIncomingConnection(IConnection connection) {
-    	super.validateAddIncomingConnection(connection);
-    	if (getIncomingConnections().size() > 0) {
-            throw new IllegalArgumentException("A split cannot have more than one incoming connection");
+
+    public void setConstraint(final IConnection connection,
+                              final IConstraint constraint) {
+        if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
+            if ( connection == null ) {
+                throw new IllegalArgumentException( "connection is null" );
+            }
+            if ( !getOutgoingConnections().contains( connection ) ) {
+                throw new IllegalArgumentException( "connection is unknown:" + connection );
+            }
+            this.constraints.put( connection,
+                                  constraint );
+        } else {
+            throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with type:" + getType() );
         }
     }
-   
-    protected void validateAddOutgoingConnection(IConnection connection) {
-    	super.validateAddOutgoingConnection(connection);
-    	if (connection.getType() != IConnection.TYPE_NORMAL) {
-            throw new IllegalArgumentException("Unknown connection type :" + connection.getType()
-            		+ ", only NORMAL is allowed as outgoing connection.");
-        }    	
+
+    public Map getConstraints() {
+        if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
+            return Collections.unmodifiableMap( this.constraints );
+        }
+        throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with: " + getType() );
     }
-    
-    public void removeOutgoingConnection(IConnection connection) {
-        super.removeOutgoingConnection(connection);
-        constraints.remove(connection);
+
+    public IConnection getFrom() {
+        if ( getIncomingConnections().size() > 0 ) {
+            return (IConnection) getIncomingConnections().get( 0 );
+        }
+        return null;
+    }
+
+    protected void validateAddIncomingConnection(final IConnection connection) {
+        super.validateAddIncomingConnection( connection );
+        if ( getIncomingConnections().size() > 0 ) {
+            throw new IllegalArgumentException( "A split cannot have more than one incoming connection" );
+        }
+    }
+
+    protected void validateAddOutgoingConnection(final IConnection connection) {
+        super.validateAddOutgoingConnection( connection );
+        if ( connection.getType() != IConnection.TYPE_NORMAL ) {
+            throw new IllegalArgumentException( "Unknown connection type :" + connection.getType() + ", only NORMAL is allowed as outgoing connection." );
+        }
+    }
+
+    public void removeOutgoingConnection(final IConnection connection) {
+        super.removeOutgoingConnection( connection );
+        this.constraints.remove( connection );
     }
 }

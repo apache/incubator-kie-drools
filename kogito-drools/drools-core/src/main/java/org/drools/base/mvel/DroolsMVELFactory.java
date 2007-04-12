@@ -27,47 +27,46 @@ public class DroolsMVELFactory
         this.resolvers = Collections.EMPTY_MAP;
     }
 
-    public DroolsMVELFactory(Map previousDeclarations,
-                             Map localDeclarations,
-                             Map globals) {
+    public DroolsMVELFactory(final Map previousDeclarations,
+                             final Map localDeclarations,
+                             final Map globals) {
 
     }
 
-    public void setPreviousDeclarationMap(Map declarations) {
+    public void setPreviousDeclarationMap(final Map declarations) {
         this.previousDeclarations = declarations;
     }
 
-    public void setLocalDeclarationMap(Map declarations) {
+    public void setLocalDeclarationMap(final Map declarations) {
         this.localDeclarations = declarations;
     }
 
-    public void setGlobalsMap(Map globals) {
+    public void setGlobalsMap(final Map globals) {
         this.globals = globals;
     }
-
 
     public Object getObject() {
         return this.object;
     }
 
-    public void setContext(Tuple tuple,
-                           Object object,
-                           WorkingMemory workingMemory) {
+    public void setContext(final Tuple tuple,
+                           final Object object,
+                           final WorkingMemory workingMemory) {
         this.tuple = tuple;
         this.object = object;
         this.workingMemory = workingMemory;
     }
 
-    public Object getValue(Declaration declaration) {
-        return tuple.get( declaration ).getObject();
+    public Object getValue(final Declaration declaration) {
+        return this.tuple.get( declaration ).getObject();
     }
 
-    public Object getValue(String identifier) {
+    public Object getValue(final String identifier) {
         return this.workingMemory.getGlobal( identifier );
     }
 
-    public VariableResolver createVariable(String name,
-                                           Object value) {
+    public VariableResolver createVariable(final String name,
+                                           final Object value) {
         throw new UnsupportedOperationException( "Variables cannot be created here" );
     }
 
@@ -75,15 +74,15 @@ public class DroolsMVELFactory
         return null;
     }
 
-    public VariableResolverFactory setNextFactory(VariableResolverFactory resolverFactory) {
+    public VariableResolverFactory setNextFactory(final VariableResolverFactory resolverFactory) {
         throw new UnsupportedOperationException( "Chained factories are not support for DroolsMVELFactory" );
     }
 
-    public VariableResolver getVariableResolver(String name) {
+    public VariableResolver getVariableResolver(final String name) {
         return (VariableResolver) this.resolvers.get( name );
     }
 
-    public boolean isResolveable(String name) {
+    public boolean isResolveable(final String name) {
         //return this.declarations.containsKey( name ) || this.globals.containsKey( name );
         if ( this.resolvers == Collections.EMPTY_MAP ) {
             this.resolvers = new HashMap();
@@ -95,7 +94,7 @@ public class DroolsMVELFactory
             return true;
         }
 
-        if (  this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
+        if ( this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
             resolver = new DroolsMVELPreviousDeclarationVariable( (Declaration) this.previousDeclarations.get( name ),
                                                                   this );
         } else if ( this.localDeclarations != null && this.localDeclarations.containsKey( name ) ) {
@@ -116,7 +115,7 @@ public class DroolsMVELFactory
         }
     }
 
-    public boolean isTarget(String name) {
+    public boolean isTarget(final String name) {
         return this.resolvers.containsKey( name );
     }
 

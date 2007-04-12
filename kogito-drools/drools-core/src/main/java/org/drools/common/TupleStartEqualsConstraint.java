@@ -46,17 +46,17 @@ import org.drools.spi.BetaNodeFieldConstraint;
 public class TupleStartEqualsConstraint
     implements
     BetaNodeFieldConstraint {
-    
-    private static final long serialVersionUID = 7766998673828986129L;
-    
-    private final Declaration[] declarations     = new Declaration[0];
-    
-    private static final TupleStartEqualsConstraint INSTANCE = new TupleStartEqualsConstraint(); 
+
+    private static final long                       serialVersionUID = 7766998673828986129L;
+
+    private final Declaration[]                     declarations     = new Declaration[0];
+
+    private static final TupleStartEqualsConstraint INSTANCE         = new TupleStartEqualsConstraint();
 
     // this is a stateless constraint, so we can make it a singleton
     private TupleStartEqualsConstraint() {
     }
-    
+
     public static TupleStartEqualsConstraint getInstance() {
         return INSTANCE;
     }
@@ -72,13 +72,13 @@ public class TupleStartEqualsConstraint
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final Object object) {
         // object MUST be a ReteTuple
-        ReteTuple tuple = ((ReteTuple)object).getSubTuple( ((TupleStartEqualsConstraintContextEntry) context).compareSize );
+        final ReteTuple tuple = ((ReteTuple) object).getSubTuple( ((TupleStartEqualsConstraintContextEntry) context).compareSize );
         return ((TupleStartEqualsConstraintContextEntry) context).left.equals( tuple );
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
-        return tuple.equals(((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ));
+        return tuple.equals( ((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ) );
     }
 
     public String toString() {
@@ -101,14 +101,14 @@ public class TupleStartEqualsConstraint
         ContextEntry {
 
         private static final long serialVersionUID = 5841221599619051196L;
-        
-        public ReteTuple        left;
-        public ReteTuple        right;
-        
-        // the size of the tuple to compare
-        public int              compareSize;
 
-        private ContextEntry entry;
+        public ReteTuple          left;
+        public ReteTuple          right;
+
+        // the size of the tuple to compare
+        public int                compareSize;
+
+        private ContextEntry      entry;
 
         public TupleStartEqualsConstraintContextEntry() {
         }
@@ -121,12 +121,14 @@ public class TupleStartEqualsConstraint
             this.entry = entry;
         }
 
-        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
             this.left = tuple;
             this.compareSize = tuple.size();
-        } 
+        }
 
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
             // if it is not a rete tuple, then there is a bug in the engine...
             // it MUST be a rete tuple
             this.right = (ReteTuple) handle.getObject();

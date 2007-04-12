@@ -46,13 +46,15 @@ public class EmptyBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
+    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                final ReteTuple tuple) {
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
+    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                     final InternalFactHandle handle) {
     }
 
     /* (non-Javadoc)
@@ -79,7 +81,7 @@ public class EmptyBetaConstraints
 
     public BetaMemory createBetaMemory() {
         final BetaMemory memory = new BetaMemory( new TupleHashTable(),
-                                            new FactHashTable() );
+                                                  new FactHashTable() );
 
         return memory;
     }
@@ -110,7 +112,7 @@ public class EmptyBetaConstraints
             return true;
         }
 
-        return (object != null && ( object instanceof EmptyBetaConstraints ) );
+        return (object != null && (object instanceof EmptyBetaConstraints));
     }
 
 }

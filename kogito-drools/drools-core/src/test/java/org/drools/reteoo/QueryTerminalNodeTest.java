@@ -42,14 +42,14 @@ import org.drools.spi.FieldValue;
 public class QueryTerminalNodeTest extends TestCase {
     public void testQueryTerminalNode() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        
+
         final Rete rete = ruleBase.getRete();
 
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
                                                                        queryObjectType,
                                                                        rete,
-                                                                       3);
+                                                                       3 );
         queryObjectTypeNode.attach();
 
         ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
@@ -75,7 +75,7 @@ public class QueryTerminalNodeTest extends TestCase {
         final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
                                                                         cheeseObjectType,
                                                                         rete,
-                                                                        3);
+                                                                        3 );
         cheeseObjectTypeNode.attach();
 
         extractor = new ClassFieldExtractor( Cheese.class,
@@ -102,22 +102,23 @@ public class QueryTerminalNodeTest extends TestCase {
         final QueryTerminalNode queryNode = new QueryTerminalNode( 7,
                                                                    joinNode,
                                                                    query,
-                                                                   query.getLhs());
+                                                                   query.getLhs() );
 
         queryNode.attach();
 
-        final org.drools.rule.Package pkg = new org.drools.rule.Package("com.drools.test");
+        final org.drools.rule.Package pkg = new org.drools.rule.Package( "com.drools.test" );
         pkg.addRule( query );
-        
+
         try {
-            Field pkgField = ruleBase.getClass().getSuperclass().getDeclaredField( "pkgs" );
+            final Field pkgField = ruleBase.getClass().getSuperclass().getDeclaredField( "pkgs" );
             pkgField.setAccessible( true );
-            Map pkgs = (Map) pkgField.get( ruleBase );
-            pkgs.put( pkg.getName(), pkg );
-        } catch ( Exception e ) {
-            Assert.fail("Should not throw any exception: "+e.getMessage());
+            final Map pkgs = (Map) pkgField.get( ruleBase );
+            pkgs.put( pkg.getName(),
+                      pkg );
+        } catch ( final Exception e ) {
+            Assert.fail( "Should not throw any exception: " + e.getMessage() );
         }
-        
+
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         QueryResults results = workingMemory.getQueryResults( "query-1" );
 
@@ -156,13 +157,13 @@ public class QueryTerminalNodeTest extends TestCase {
         assertEquals( 1,
                       result.size() );
         assertEquals( stilton2,
-                    result.get( 0 ) );
+                      result.get( 0 ) );
 
         result = results.get( 1 );
         assertEquals( 1,
                       result.size() );
         assertEquals( stilton1,
-                    result.get( 0 ) );
+                      result.get( 0 ) );
 
         int i = 0;
         for ( final Iterator it = results.iterator(); it.hasNext(); ) {

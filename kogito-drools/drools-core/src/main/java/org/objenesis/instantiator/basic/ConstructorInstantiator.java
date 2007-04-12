@@ -11,26 +11,26 @@ import org.objenesis.instantiator.ObjectInstantiator;
  * 
  * @see ObjectInstantiator
  */
-public class ConstructorInstantiator implements ObjectInstantiator {
+public class ConstructorInstantiator
+    implements
+    ObjectInstantiator {
 
-   protected Constructor constructor;
+    protected Constructor constructor;
 
-   public ConstructorInstantiator(Class type) {
-      try {
-         constructor = type.getDeclaredConstructor((Class[]) null);
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public ConstructorInstantiator(final Class type) {
+        try {
+            this.constructor = type.getDeclaredConstructor( (Class[]) null );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 
-   public Object newInstance() {
-      try {
-         return constructor.newInstance((Object[]) null);
-      }
-      catch(Exception e) {
-          throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return this.constructor.newInstance( (Object[]) null );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 
 }

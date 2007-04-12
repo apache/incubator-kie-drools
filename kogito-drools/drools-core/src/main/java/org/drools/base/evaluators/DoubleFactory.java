@@ -91,10 +91,10 @@ public class DoubleFactory
             return ((DoubleVariableContextEntry) context).left == context.extractor.getDoubleValue( right );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) == extractor2.getDoubleValue( object2 );
         }
@@ -135,10 +135,10 @@ public class DoubleFactory
             return ((DoubleVariableContextEntry) context).left != context.extractor.getDoubleValue( right );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) != extractor2.getDoubleValue( object2 );
         }
@@ -179,10 +179,10 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) < ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) < extractor2.getDoubleValue( object2 );
         }
@@ -223,10 +223,10 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) <= ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) <= extractor2.getDoubleValue( object2 );
         }
@@ -267,10 +267,10 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) > ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) > extractor2.getDoubleValue( object2 );
         }
@@ -311,10 +311,10 @@ public class DoubleFactory
             return context.extractor.getDoubleValue( right ) >= ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) >= extractor2.getDoubleValue( object2 );
         }

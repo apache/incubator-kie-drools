@@ -59,7 +59,7 @@ public class ReteooBuilder
     private Map                             rules;
 
     private transient ReteooRuleBuilder     ruleBuilder;
-    
+
     private IdGenerator                     idGenerator;
 
     // ------------------------------------------------------------
@@ -76,7 +76,7 @@ public class ReteooBuilder
         this.rules = new HashMap();
 
         //Set to 1 as Rete node is set to 0
-        this.idGenerator = new IdGenerator(1);
+        this.idGenerator = new IdGenerator( 1 );
         this.ruleBuilder = new ReteooRuleBuilder();
     }
 
@@ -112,8 +112,10 @@ public class ReteooBuilder
      * @throws InvalidPatternException
      */
     void addRule(final Rule rule) throws InvalidPatternException {
-        List terminals = this.ruleBuilder.addRule( rule, this.ruleBase, this.attachedNodes, this.idGenerator );
-        
+        final List terminals = this.ruleBuilder.addRule( rule,
+                                                   this.ruleBase,
+                                                   this.attachedNodes,
+                                                   this.idGenerator );
 
         this.rules.put( rule,
                         terminals.toArray( new BaseNode[terminals.size()] ) );
@@ -136,26 +138,27 @@ public class ReteooBuilder
                          this.workingMemories );
         }
     }
-    
-    public static class IdGenerator implements Serializable {
+
+    public static class IdGenerator
+        implements
+        Serializable {
 
         private static final long serialVersionUID = -5909710713463187779L;
 
-        private int nextId;
-        
-        public IdGenerator( int firstId ) {
+        private int               nextId;
+
+        public IdGenerator(final int firstId) {
             this.nextId = firstId;
         }
-        
+
         public int getNextId() {
             return this.nextId++;
         }
-        
+
         public void releaseLastId() {
             this.nextId--;
         }
-        
-    }
 
+    }
 
 }

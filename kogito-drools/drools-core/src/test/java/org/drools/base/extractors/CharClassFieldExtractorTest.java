@@ -63,7 +63,7 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetIntValue() {
         try {
             Assert.assertEquals( 'a',
-                                 (int) this.extractor.getIntValue( this.bean ) );
+                                 this.extractor.getIntValue( this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw exception" );
         }
@@ -90,7 +90,7 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetValue() {
         try {
             Assert.assertEquals( 'a',
-                                 ((Number)this.extractor.getValue( this.bean )).intValue() );
+                                 ((Number) this.extractor.getValue( this.bean )).intValue() );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

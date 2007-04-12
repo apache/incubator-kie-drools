@@ -26,58 +26,56 @@ import org.objenesis.instantiator.ObjectInstantiator;
  * @author Leonardo Mesquita
  * @see org.objenesis.instantiator.ObjectInstantiator
  */
-public class JRockit131Instantiator implements ObjectInstantiator {
+public class JRockit131Instantiator
+    implements
+    ObjectInstantiator {
 
-   private Constructor mungedConstructor;
+    private Constructor   mungedConstructor;
 
-   private static Method newConstructorForSerializationMethod;
+    private static Method newConstructorForSerializationMethod;
 
-   private static void initialize() {
-      if(newConstructorForSerializationMethod == null) {
-         Class cl;
-         try {
-            cl = Class.forName("COM.jrockit.reflect.MemberAccess");
-            newConstructorForSerializationMethod = cl.getDeclaredMethod(
-               "newConstructorForSerialization", new Class[] {Constructor.class, Class.class});
-            newConstructorForSerializationMethod.setAccessible(true);
-         }
-         catch(Exception e) {
-            throw new ObjenesisException(e);
-         }
-      }
-   }
+    private static void initialize() {
+        if ( newConstructorForSerializationMethod == null ) {
+            Class cl;
+            try {
+                cl = Class.forName( "COM.jrockit.reflect.MemberAccess" );
+                newConstructorForSerializationMethod = cl.getDeclaredMethod( "newConstructorForSerialization",
+                                                                             new Class[]{Constructor.class, Class.class} );
+                newConstructorForSerializationMethod.setAccessible( true );
+            } catch ( final Exception e ) {
+                throw new ObjenesisException( e );
+            }
+        }
+    }
 
-   public JRockit131Instantiator(Class type) {
-      initialize();
+    public JRockit131Instantiator(final Class type) {
+        initialize();
 
-      if(newConstructorForSerializationMethod != null) {
+        if ( newConstructorForSerializationMethod != null ) {
 
-         Constructor javaLangObjectConstructor;
+            Constructor javaLangObjectConstructor;
 
-         try {
-            javaLangObjectConstructor = Object.class.getConstructor((Class[]) null);
-         }
-         catch(NoSuchMethodException e) {
-            throw new Error("Cannot find constructor for java.lang.Object!");
-         }
+            try {
+                javaLangObjectConstructor = Object.class.getConstructor( (Class[]) null );
+            } catch ( final NoSuchMethodException e ) {
+                throw new Error( "Cannot find constructor for java.lang.Object!" );
+            }
 
-         try {
-            mungedConstructor = (Constructor) newConstructorForSerializationMethod.invoke(null,
-               new Object[] {javaLangObjectConstructor, type});
-         }
-         catch(Exception e) {
-        	 throw new ObjenesisException(e);
-         }
-      }
+            try {
+                this.mungedConstructor = (Constructor) newConstructorForSerializationMethod.invoke( null,
+                                                                                               new Object[]{javaLangObjectConstructor, type} );
+            } catch ( final Exception e ) {
+                throw new ObjenesisException( e );
+            }
+        }
 
-   }
+    }
 
-   public Object newInstance() {
-      try {
-         return mungedConstructor.newInstance((Object[]) null);
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return this.mungedConstructor.newInstance( (Object[]) null );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 }

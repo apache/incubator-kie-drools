@@ -138,10 +138,10 @@ public class DefaultFactHandle
         return this.shadowFact;
     }
 
-    public void setShadowFact(boolean shadowFact) {
-        this.shadowFact = shadowFact;        
-    }    
-    
+    public void setShadowFact(final boolean shadowFact) {
+        this.shadowFact = shadowFact;
+    }
+
     public Object getObject() {
         return this.object;
     }

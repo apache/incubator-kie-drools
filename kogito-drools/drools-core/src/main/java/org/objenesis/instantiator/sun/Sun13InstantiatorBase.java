@@ -12,29 +12,30 @@ import org.objenesis.instantiator.ObjectInstantiator;
  * 
  * @author Leonardo Mesquita
  */
-public abstract class Sun13InstantiatorBase implements ObjectInstantiator {
-   protected static Method allocateNewObjectMethod = null;
+public abstract class Sun13InstantiatorBase
+    implements
+    ObjectInstantiator {
+    protected static Method allocateNewObjectMethod = null;
 
-   private static void initialize() {
-      if(allocateNewObjectMethod == null) {
-         try {
-            allocateNewObjectMethod = ObjectInputStream.class.getDeclaredMethod(
-               "allocateNewObject", new Class[] {Class.class, Class.class});
-            allocateNewObjectMethod.setAccessible(true);
-         }
-         catch(Exception e) {
-            throw new ObjenesisException(e);
-         }
-      }
-   }
+    private static void initialize() {
+        if ( allocateNewObjectMethod == null ) {
+            try {
+                allocateNewObjectMethod = ObjectInputStream.class.getDeclaredMethod( "allocateNewObject",
+                                                                                     new Class[]{Class.class, Class.class} );
+                allocateNewObjectMethod.setAccessible( true );
+            } catch ( final Exception e ) {
+                throw new ObjenesisException( e );
+            }
+        }
+    }
 
-   protected final Class type;
+    protected final Class type;
 
-   public Sun13InstantiatorBase(Class type) {
-      this.type = type;
-      initialize();
-   }
+    public Sun13InstantiatorBase(final Class type) {
+        this.type = type;
+        initialize();
+    }
 
-   public abstract Object newInstance();
+    public abstract Object newInstance();
 
 }

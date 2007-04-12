@@ -49,7 +49,7 @@ class InitialFactImpl
             return true;
         }
 
-        if ( object == null || !(object instanceof InitialFactImpl ) ) {
+        if ( object == null || !(object instanceof InitialFactImpl) ) {
             return false;
         }
 

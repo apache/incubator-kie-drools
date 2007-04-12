@@ -34,7 +34,7 @@ public class ClassTypeResolver
 
     private Map               cachedImports    = new HashMap();
 
-    private static Map        internalNamesMap = new HashMap();
+    private static final Map        internalNamesMap = new HashMap();
     static {
         internalNamesMap.put( "int",
                               "I" );
@@ -123,18 +123,18 @@ public class ClassTypeResolver
     public Class resolveType(String className) throws ClassNotFoundException {
         Class clazz = null;
         boolean isArray = false;
-        StringBuffer arrayClassName = new StringBuffer();
+        final StringBuffer arrayClassName = new StringBuffer();
 
         //is the class a primitive type ?
         if ( internalNamesMap.containsKey( className ) ) {
             clazz = Class.forName( "[" + internalNamesMap.get( className ),
                                    true,
-                                   classLoader ).getComponentType();
+                                   this.classLoader ).getComponentType();
             // Could also be a primitive array
         } else if ( className.indexOf( '[' ) > 0 ) {
             isArray = true;
             int bracketIndex = className.indexOf( '[' );
-            String componentName = className.substring( 0,
+            final String componentName = className.substring( 0,
                                                         bracketIndex );
             arrayClassName.append( '[' );
             while ( (bracketIndex = className.indexOf( '[',
@@ -210,7 +210,7 @@ public class ClassTypeResolver
             }
             try {
                 clazz = Class.forName( arrayClassName.toString() );
-            } catch ( ClassNotFoundException e ) {
+            } catch ( final ClassNotFoundException e ) {
                 clazz = null;
             }
         }
@@ -270,8 +270,8 @@ public class ClassTypeResolver
         return clazz;
     }
 
-    private Class defaultClass(String className) {
-        String qualifiedClass = "java.lang." + className;
+    private Class defaultClass(final String className) {
+        final String qualifiedClass = "java.lang." + className;
         Class clazz = null;
         try {
             clazz = this.classLoader.loadClass( qualifiedClass );

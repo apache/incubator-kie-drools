@@ -20,18 +20,18 @@ import java.util.List;
  */
 
 public class TestBean {
-    private final String  name        = "michael";
-    private final int     age         = 42;
+    private final String name        = "michael";
+    private final int    age         = 42;
 
-    private boolean booleanAttr = true;
-    private byte    byteAttr    = 1;
-    private char    charAttr    = 'a';
-    private short   shortAttr   = 3;
-    private int     intAttr     = 4;
-    private long    longAttr    = 5;
-    private float   floatAttr   = 6.0f;
-    private double  doubleAttr  = 7.0;
-    private List    listAttr    = Collections.EMPTY_LIST;
+    private final boolean      booleanAttr = true;
+    private final byte         byteAttr    = 1;
+    private final char         charAttr    = 'a';
+    private final short        shortAttr   = 3;
+    private final int          intAttr     = 4;
+    private final long         longAttr    = 5;
+    private final float        floatAttr   = 6.0f;
+    private final double       doubleAttr  = 7.0;
+    private final List         listAttr    = Collections.EMPTY_LIST;
 
     public String getName() {
         return this.name;

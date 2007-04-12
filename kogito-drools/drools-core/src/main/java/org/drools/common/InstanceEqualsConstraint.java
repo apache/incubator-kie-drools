@@ -93,12 +93,12 @@ public class InstanceEqualsConstraint
         ContextEntry {
 
         private static final long serialVersionUID = 5841221599619051196L;
-        
-        public Object        left;
-        public Object        right;
 
-        private Column       column;
-        private ContextEntry entry;
+        public Object             left;
+        public Object             right;
+
+        private Column            column;
+        private ContextEntry      entry;
 
         public InstanceEqualsConstraintContextEntry(final Column column) {
             this.column = column;
@@ -112,11 +112,13 @@ public class InstanceEqualsConstraint
             this.entry = entry;
         }
 
-        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
             this.left = tuple.get( this.column.getOffset() ).getObject();
-        } 
+        }
 
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
             this.right = handle.getObject();
         }
     }

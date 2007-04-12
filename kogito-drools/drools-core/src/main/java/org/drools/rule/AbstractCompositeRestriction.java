@@ -80,13 +80,13 @@ public abstract class AbstractCompositeRestriction
     public static class CompositeContextEntry
         implements
         ContextEntry {
-        public ContextEntry[]        contextEntries;
+        public ContextEntry[] contextEntries;
 
-        private ContextEntry         entry;
+        private ContextEntry  entry;
 
-        public CompositeContextEntry(Restriction[] restrictions) {
-            ContextEntry[] contextEntries = new ContextEntry[restrictions.length];
-            for(int i = 0; i < restrictions.length; i++) {
+        public CompositeContextEntry(final Restriction[] restrictions) {
+            final ContextEntry[] contextEntries = new ContextEntry[restrictions.length];
+            for ( int i = 0; i < restrictions.length; i++ ) {
                 contextEntries[i] = restrictions[i].getContextEntry();
             }
         }
@@ -99,17 +99,19 @@ public abstract class AbstractCompositeRestriction
             this.entry = entry;
         }
 
-        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
-                                         InternalFactHandle handle) {
-            for(int i = 0, length = contextEntries.length ; i < length; i++) {
-                contextEntries[i].updateFromFactHandle( workingMemory, handle );
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
+                this.contextEntries[i].updateFromFactHandle( workingMemory,
+                                                        handle );
             }
         }
 
-        public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                    ReteTuple tuple) {
-            for(int i = 0, length = contextEntries.length ; i < length; i++) {
-                contextEntries[i].updateFromTuple( workingMemory, tuple );
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
+            for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
+                this.contextEntries[i].updateFromTuple( workingMemory,
+                                                   tuple );
             }
         }
 

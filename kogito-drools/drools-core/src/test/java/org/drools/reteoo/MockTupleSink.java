@@ -39,9 +39,9 @@ public class MockTupleSink extends TupleSource
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();
 
-    private TupleSinkNode           previousTupleSinkNode;
-    private TupleSinkNode           nextTupleSinkNode;
-    
+    private TupleSinkNode     previousTupleSinkNode;
+    private TupleSinkNode     nextTupleSinkNode;
+
     public MockTupleSink() {
         super( 0 );
     }
@@ -116,7 +116,7 @@ public class MockTupleSink extends TupleSource
         // TODO Auto-generated method stub
         return Collections.EMPTY_LIST;
     }
-    
+
     /**
      * Returns the next node
      * @return
@@ -151,6 +151,6 @@ public class MockTupleSink extends TupleSource
      */
     public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
-    }    
+    }
 
 }

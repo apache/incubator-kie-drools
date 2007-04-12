@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -26,48 +27,50 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface ISplit extends INode {
-	
-	int TYPE_UNDEFINED = 0;
+public interface ISplit
+    extends
+    INode {
+
+    int TYPE_UNDEFINED = 0;
     /**
      * All outgoing connections of a split of this type are triggered
      * when its incoming connection has been triggered.  A split of this
      * type should have no constraints linked to any of its outgoing
      * connections.
-     */ 
-	int TYPE_AND = 1;
+     */
+    int TYPE_AND       = 1;
     /**
      * Exactly one outgoing connection of a split of this type is triggered
      * when its incoming connection has been triggered.  Which connection
      * is based on the constraints associated with each of the connections:
      * the connection with the highest priority whose constraint is satisfied
      * is triggered.  
-     */ 
-	int TYPE_XOR = 2;
+     */
+    int TYPE_XOR       = 2;
     /**
      * One or multiple outgoing connections of a split of this type are
      * triggered when its incoming connection has been triggered.  Which
      * connections is based on the constraints associated with each of the
      * connections: all connections whose constraint is satisfied are
      * triggered.  
-     */ 
-	int TYPE_OR = 3;
-    
-	/**
+     */
+    int TYPE_OR        = 3;
+
+    /**
      * Sets the type of the split.
      * 
      * @param type	The type of the split
      * @throws IllegalArgumentException if type is null
-     */	
+     */
     void setType(int type);
-    
+
     /**
      * Returns the type of the split.
      * 
      * @return the type of the split.
-     */  
+     */
     int getType();
-    
+
     /**
      * Returns the corresponding constraint of the given outgoing connection
      * 
@@ -79,7 +82,7 @@ public interface ISplit extends INode {
      * on a split with split type of something else than XOR or OR
      */
     IConstraint getConstraint(IConnection connection);
-    
+
     /**
      * Method for setting a constraint corresponding to the given
      * outgoing connection
@@ -91,8 +94,9 @@ public interface ISplit extends INode {
      * @throws UnsupportedOperationException if the split type is 
      * something else than XOR or OR
      */
-    void setConstraint(IConnection connection, IConstraint constraint);
-    
+    void setConstraint(IConnection connection,
+                       IConstraint constraint);
+
     /**
      * Returns the constraints of the split.
      * 
@@ -102,12 +106,12 @@ public interface ISplit extends INode {
      * on a split with split type of something else than XOR or OR
      */
     Map getConstraints();
-    
+
     /**
      * Convenience method for returning the incoming connection of the split.
      * 
      * @return the incoming connection ot the split.
      */
     IConnection getFrom();
-    
+
 }

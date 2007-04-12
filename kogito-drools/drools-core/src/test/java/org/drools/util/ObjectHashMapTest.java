@@ -106,12 +106,12 @@ public class ObjectHashMapTest extends TestCase {
     }
 
     public void testStringData() {
-        ObjectHashMap map = new ObjectHashMap();
+        final ObjectHashMap map = new ObjectHashMap();
         assertNotNull( map );
-        int count = 1000;
+        final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
-            String key = "key" + idx;
-            String val = "value" + idx;
+            final String key = "key" + idx;
+            final String val = "value" + idx;
             map.put( key,
                      val );
             assertEquals( val,
@@ -120,12 +120,12 @@ public class ObjectHashMapTest extends TestCase {
     }
 
     public void testIntegerData() {
-        ObjectHashMap map = new ObjectHashMap();
+        final ObjectHashMap map = new ObjectHashMap();
         assertNotNull( map );
-        int count = 1000;
+        final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
-            Integer key = new Integer( idx );
-            Integer val = new Integer( idx );
+            final Integer key = new Integer( idx );
+            final Integer val = new Integer( idx );
             map.put( key,
                      val );
             assertEquals( val,

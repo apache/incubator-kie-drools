@@ -17,15 +17,16 @@ public class FieldIndexEntryTest extends TestCase {
 
     public void testSingleEntry() {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "type" );
+                                                                       "type" );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ));
-        final SingleIndex singleIndex = new SingleIndex(new FieldIndex[] { fieldIndex }, 1);
-        
+                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+        final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
+                                                         1 );
+
         final FieldIndexEntry index = new FieldIndexEntry( singleIndex,
-                                                     "stilton".hashCode() );
+                                                           "stilton".hashCode() );
 
         // Test initial construction
         assertNull( index.getFirst() );
@@ -33,9 +34,9 @@ public class FieldIndexEntryTest extends TestCase {
                       index.hashCode() );
 
         final Cheese stilton1 = new Cheese( "stilton",
-                                      35 );
+                                            35 );
         final InternalFactHandle h1 = new DefaultFactHandle( 1,
-                                                       stilton1 );
+                                                             stilton1 );
 
         // test add
         index.add( h1 );
@@ -59,23 +60,24 @@ public class FieldIndexEntryTest extends TestCase {
 
     public void testTwoEntries() {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "type" );
+                                                                       "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ));
-        final SingleIndex singleIndex = new SingleIndex(new FieldIndex[] { fieldIndex }, 1);
-        
+                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+        final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
+                                                         1 );
+
         final FieldIndexEntry index = new FieldIndexEntry( singleIndex,
-                                                     "stilton".hashCode() );
+                                                           "stilton".hashCode() );
 
         final Cheese stilton1 = new Cheese( "stilton",
-                                      35 );
+                                            35 );
         final InternalFactHandle h1 = new DefaultFactHandle( 1,
-                                                       stilton1 );
+                                                             stilton1 );
         final Cheese stilton2 = new Cheese( "stilton",
-                                      59 );
+                                            59 );
         final InternalFactHandle h2 = new DefaultFactHandle( 2,
-                                                       stilton2 );
+                                                             stilton2 );
 
         // test add
         index.add( h1 );
@@ -109,27 +111,28 @@ public class FieldIndexEntryTest extends TestCase {
 
     public void testThreeEntries() {
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "type" );
+                                                                       "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ));
-        final SingleIndex singleIndex = new SingleIndex(new FieldIndex[] { fieldIndex }, 1);
-        
+                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+        final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
+                                                         1 );
+
         final FieldIndexEntry index = new FieldIndexEntry( singleIndex,
-                                                     "stilton".hashCode() );
+                                                           "stilton".hashCode() );
 
         final Cheese stilton1 = new Cheese( "stilton",
-                                      35 );
+                                            35 );
         final InternalFactHandle h1 = new DefaultFactHandle( 1,
-                                                       stilton1 );
+                                                             stilton1 );
         final Cheese stilton2 = new Cheese( "stilton",
-                                      59 );
+                                            59 );
         final InternalFactHandle h2 = new DefaultFactHandle( 2,
-                                                       stilton2 );
+                                                             stilton2 );
         final Cheese stilton3 = new Cheese( "stilton",
-                                      59 );
+                                            59 );
         final InternalFactHandle h3 = new DefaultFactHandle( 3,
-                                                       stilton3 );
+                                                             stilton3 );
 
         // test add
         index.add( h1 );

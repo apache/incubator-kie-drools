@@ -76,7 +76,7 @@ public class InstanceNotEqualsConstraint
             return true;
         }
 
-        if ( object == null || !(object instanceof InstanceNotEqualsConstraint ) ) {
+        if ( object == null || !(object instanceof InstanceNotEqualsConstraint) ) {
             return false;
         }
 
@@ -89,11 +89,11 @@ public class InstanceNotEqualsConstraint
         ContextEntry {
 
         private static final long serialVersionUID = -1229222687367782322L;
-        public Object        left;
-        public Object        right;
+        public Object             left;
+        public Object             right;
 
-        private Column       column;
-        private ContextEntry entry;
+        private Column            column;
+        private ContextEntry      entry;
 
         public InstanceNotEqualsConstraintContextEntry(final Column column) {
             this.column = column;
@@ -107,11 +107,13 @@ public class InstanceNotEqualsConstraint
             this.entry = entry;
         }
 
-        public void updateFromTuple(final InternalWorkingMemory workingMemory, final ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
             this.left = tuple.get( this.column.getOffset() ).getObject();
         }
 
-        public void updateFromFactHandle(final InternalWorkingMemory workingMemory, final InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
             this.right = handle.getObject();
 
         }

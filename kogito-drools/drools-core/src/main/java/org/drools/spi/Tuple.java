@@ -32,7 +32,9 @@ import org.drools.rule.Declaration;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public interface Tuple extends Serializable {
+public interface Tuple
+    extends
+    Serializable {
     /**
      * Returns the <code>FactHandle</code> for the given column index. If the column is empty
      * It returns null.
@@ -62,7 +64,7 @@ public interface Tuple extends Serializable {
      * @return
      */
     long getRecency();
-    
+
     /**
      * Returns the size of this tuple in number of elements (columns)
      * @return

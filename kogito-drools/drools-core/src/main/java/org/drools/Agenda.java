@@ -18,9 +18,9 @@ public interface Agenda {
     public AgendaGroup getFocus();
 
     public AgendaGroup getAgendaGroup(String name);
-    
+
     public RuleFlowGroup getRuleFlowGroup(String name);
-    
+
     /**
      * Activates the <code>RuleFlowGroup</code> with the given name.
      * All activations in the given <code>RuleFlowGroup</code> are added to the agenda.

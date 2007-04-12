@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.instance;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -26,21 +27,26 @@ import org.drools.ruleflow.common.core.IProcess;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IProcessInstance extends Serializable {
+public interface IProcessInstance
+    extends
+    Serializable {
 
-	int STATE_PENDING = 0;
-	int STATE_ACTIVE = 1;
-	int STATE_COMPLETED = 2;
-	int STATE_ABORTED = 3;
-	int STATE_SUSPENDED = 4;
+    int STATE_PENDING   = 0;
+    int STATE_ACTIVE    = 1;
+    int STATE_COMPLETED = 2;
+    int STATE_ABORTED   = 3;
+    int STATE_SUSPENDED = 4;
 
-	void setId(long id);
+    void setId(long id);
+
     long getId();
-    
+
     void setProcess(IProcess process);
+
     IProcess getProcess();
-    
+
     void setState(int state);
+
     int getState();
-    
+
 }

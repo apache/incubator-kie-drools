@@ -26,8 +26,9 @@ public class ObjectHashMap extends AbstractHashTable {
     }
 
     public void clear() {
-        this.table = new Entry[Math.min( this.table.length, 16 )];
-        this.threshold = (int) ( this.table.length * this.loadFactor );
+        this.table = new Entry[Math.min( this.table.length,
+                                         16 )];
+        this.threshold = (int) (this.table.length * this.loadFactor);
     }
 
     public Object put(final Object key,
@@ -35,14 +36,14 @@ public class ObjectHashMap extends AbstractHashTable {
                       final boolean checkExists) {
         final int hashCode = this.comparator.hashCodeOf( key );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         // scan the linked entries to see if it exists
         if ( checkExists ) {
             ObjectEntry current = (ObjectEntry) this.table[index];
             while ( current != null ) {
                 if ( hashCode == current.hashCode && this.comparator.equal( key,
-                                                                       current.key ) ) {
+                                                                            current.key ) ) {
                     final Object oldValue = current.value;
                     current.value = value;
                     return oldValue;
@@ -53,8 +54,8 @@ public class ObjectHashMap extends AbstractHashTable {
 
         // We aren't checking the key exists, or it didn't find the key
         final ObjectEntry entry = new ObjectEntry( key,
-                                             value,
-                                             hashCode );
+                                                   value,
+                                                   hashCode );
         entry.next = this.table[index];
         this.table[index] = entry;
 
@@ -67,12 +68,12 @@ public class ObjectHashMap extends AbstractHashTable {
     public Object get(final Object key) {
         final int hashCode = this.comparator.hashCodeOf( key );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         ObjectEntry current = (ObjectEntry) this.table[index];
         while ( current != null ) {
             if ( hashCode == current.hashCode && this.comparator.equal( key,
-                                                                   current.key ) ) {
+                                                                        current.key ) ) {
                 return current.value;
             }
             current = (ObjectEntry) current.getNext();
@@ -83,14 +84,14 @@ public class ObjectHashMap extends AbstractHashTable {
     public Object remove(final Object key) {
         final int hashCode = this.comparator.hashCodeOf( key );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         ObjectEntry previous = (ObjectEntry) this.table[index];
         ObjectEntry current = previous;
         while ( current != null ) {
             final ObjectEntry next = (ObjectEntry) current.getNext();
             if ( hashCode == current.hashCode && this.comparator.equal( key,
-                                                                   current.key ) ) {
+                                                                        current.key ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
                 } else {
@@ -109,7 +110,7 @@ public class ObjectHashMap extends AbstractHashTable {
     public Entry getBucket(final Object object) {
         final int hashCode = this.comparator.hashCodeOf( object );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         return this.table[index];
     }
@@ -120,13 +121,13 @@ public class ObjectHashMap extends AbstractHashTable {
 
         private static final long serialVersionUID = -2589987113898296555L;
 
-        private Object key;
+        private Object            key;
 
-        private Object value;
+        private Object            value;
 
-        private int    hashCode;
+        private int               hashCode;
 
-        private Entry  next;
+        private Entry             next;
 
         public ObjectEntry(final Object key,
                            final Object value,

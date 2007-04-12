@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -26,55 +27,58 @@ import org.drools.ruleflow.core.IVariable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class Variable implements IVariable, Serializable {
+public class Variable
+    implements
+    IVariable,
+    Serializable {
 
     private static final long serialVersionUID = 320L;
 
-    private String name;
-    private IDataType type;
-    private Serializable value;    
-    
+    private String            name;
+    private IDataType         type;
+    private Serializable      value;
+
     public Variable() {
-    	type = UndefinedDataType.getInstance();
+        this.type = UndefinedDataType.getInstance();
     }
-    
+
     public String getName() {
-        return name;
+        return this.name;
     }
-    
-    public void setName(String name) {
+
+    public void setName(final String name) {
         this.name = name;
     }
-    
+
     public IDataType getType() {
-        return type;
+        return this.type;
     }
-    
-    public void setType(IDataType type) {
-    	if (type == null) {
-    		throw new IllegalArgumentException("type is null");
-    	}
+
+    public void setType(final IDataType type) {
+        if ( type == null ) {
+            throw new IllegalArgumentException( "type is null" );
+        }
         this.type = type;
     }
-    
+
     public Serializable getValue() {
-        return value;
+        return this.value;
     }
-    
-    public void setValue(Serializable value) {
-    	if (this.type.verifyDataType(value)) {
-    		this.value = value;
-    	} else {
-    		StringBuffer sb = new StringBuffer();
-    		sb.append("Value <");
-    		sb.append(value);
-    		sb.append("> is not valid for datatype: ");
-    		sb.append(type);
-    		throw new IllegalArgumentException(sb.toString());
-    	}
+
+    public void setValue(final Serializable value) {
+        if ( this.type.verifyDataType( value ) ) {
+            this.value = value;
+        } else {
+            final StringBuffer sb = new StringBuffer();
+            sb.append( "Value <" );
+            sb.append( value );
+            sb.append( "> is not valid for datatype: " );
+            sb.append( this.type );
+            throw new IllegalArgumentException( sb.toString() );
+        }
     }
-    
+
     public String toString() {
-        return name;
+        return this.name;
     }
 }

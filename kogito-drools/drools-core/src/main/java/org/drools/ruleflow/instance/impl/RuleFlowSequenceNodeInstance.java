@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,17 +26,16 @@ import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
  */
 public class RuleFlowSequenceNodeInstance extends RuleFlowNodeInstance {
 
-	protected IRuleSetNode getRuleSetNode() {
-		return (IRuleSetNode) getNode();
-	}
-	
-	public void trigger(IRuleFlowNodeInstance from) {
-    	getProcessInstance().getAgenda()
-			.activateRuleFlowGroup(getRuleSetNode().getRuleFlowGroup());
-	}
+    protected IRuleSetNode getRuleSetNode() {
+        return (IRuleSetNode) getNode();
+    }
 
-	public void triggerCompleted() {
-		getProcessInstance().getNodeInstance(getRuleSetNode().getTo().getTo()).trigger(this);
-	}
+    public void trigger(final IRuleFlowNodeInstance from) {
+        getProcessInstance().getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+    }
+
+    public void triggerCompleted() {
+        getProcessInstance().getNodeInstance( getRuleSetNode().getTo().getTo() ).trigger( this );
+    }
 
 }

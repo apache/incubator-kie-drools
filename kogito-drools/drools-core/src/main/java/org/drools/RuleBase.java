@@ -128,7 +128,7 @@ public interface RuleBase
     void addProcess(IProcess process);
 
     void removeProcess(String id);
-    
+
     IProcess getProcess(String id);
 
     void removeRule(String packageName,

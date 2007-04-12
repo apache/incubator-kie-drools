@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -26,53 +27,53 @@ import org.drools.ruleflow.core.IRuleSetNode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleSetNode extends Node implements IRuleSetNode {
-    
+public class RuleSetNode extends Node
+    implements
+    IRuleSetNode {
+
     private static final long serialVersionUID = 3257285846544691769L;
 
-    private String ruleFlowGroup;
-    
-    public void setRuleFlowGroup(String ruleFlowGroup) {
+    private String            ruleFlowGroup;
+
+    public void setRuleFlowGroup(final String ruleFlowGroup) {
         this.ruleFlowGroup = ruleFlowGroup;
     }
-    
-    public String getRuleFlowGroup() {
-        return ruleFlowGroup;
-    }
-    
-    public IConnection getFrom() {
-    	List list = getIncomingConnections();
-    	if (list.size() > 0) {
-    		return (IConnection) list.get(0);
-    	}
-		return null;
-    }
-    
-    public IConnection getTo() {
-    	List list = getOutgoingConnections();
-    	if (list.size() > 0) {
-    		return (IConnection) list.get(0);
-    	}
-		return null;
-    }
-    
-    protected void validateAddIncomingConnection(IConnection connection) {
-    	super.validateAddIncomingConnection(connection);
-    	if (getIncomingConnections().size() > 0) {
-    		throw new IllegalArgumentException(
-				"A RuleSetNode cannot have more than one incoming node");
-        }        
-    }    
 
-    protected void validateAddOutgoingConnection(IConnection connection) {
-    	super.validateAddOutgoingConnection(connection);
-    	for (Iterator it = getOutgoingConnections().iterator(); it.hasNext(); ) {
-    		IConnection conn = (IConnection) it.next();
-    		if (conn.getType() == connection.getType()) {
-    			throw new IllegalArgumentException(
-    				"A RuleSetNode can have at most one outgoing node");
-    		}
-    	}
+    public String getRuleFlowGroup() {
+        return this.ruleFlowGroup;
     }
-    
+
+    public IConnection getFrom() {
+        final List list = getIncomingConnections();
+        if ( list.size() > 0 ) {
+            return (IConnection) list.get( 0 );
+        }
+        return null;
+    }
+
+    public IConnection getTo() {
+        final List list = getOutgoingConnections();
+        if ( list.size() > 0 ) {
+            return (IConnection) list.get( 0 );
+        }
+        return null;
+    }
+
+    protected void validateAddIncomingConnection(final IConnection connection) {
+        super.validateAddIncomingConnection( connection );
+        if ( getIncomingConnections().size() > 0 ) {
+            throw new IllegalArgumentException( "A RuleSetNode cannot have more than one incoming node" );
+        }
+    }
+
+    protected void validateAddOutgoingConnection(final IConnection connection) {
+        super.validateAddOutgoingConnection( connection );
+        for ( final Iterator it = getOutgoingConnections().iterator(); it.hasNext(); ) {
+            final IConnection conn = (IConnection) it.next();
+            if ( conn.getType() == connection.getType() ) {
+                throw new IllegalArgumentException( "A RuleSetNode can have at most one outgoing node" );
+            }
+        }
+    }
+
 }

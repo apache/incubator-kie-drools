@@ -46,36 +46,36 @@ public class DefaultBetaConstraints
     /**
      * 
      */
-    private static final long serialVersionUID = 320L;
+    private static final long     serialVersionUID = 320L;
 
-    private final LinkedList  constraints;
+    private final LinkedList      constraints;
 
-    private ContextEntry      contexts;
+    private ContextEntry          contexts;
 
-    private int               indexed;
-    
-    private RuleBaseConfiguration         conf;
+    private int                   indexed;
+
+    private RuleBaseConfiguration conf;
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                   final RuleBaseConfiguration conf) {
-        this.conf = conf;        
+        this.conf = conf;
         this.indexed = -1;
         this.constraints = new LinkedList();
         ContextEntry current = null;
-        int depth = conf.getCompositeKeyDepth();
-        
+        final int depth = conf.getCompositeKeyDepth();
+
         // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
             if ( isIndexable( constraints[i] ) ) {
-                if ( depth >= 1 && indexed == -1 ) {
+                if ( depth >= 1 && this.indexed == -1 ) {
                     // first index, so just add to the front
                     this.constraints.insertAfter( null,
                                                   new LinkedListEntry( constraints[i] ) );
-                    indexed++;
-                } else if ( depth >= this.indexed +1){ //this.indexed is zero based, so adjust
+                    this.indexed++;
+                } else if ( depth >= this.indexed + 1 ) { //this.indexed is zero based, so adjust
                     // insert this index after  the previous index
-                    this.constraints.insertAfter( findNode( indexed++ ),
+                    this.constraints.insertAfter( findNode( this.indexed++ ),
                                                   new LinkedListEntry( constraints[i] ) );
                 }
             } else {
@@ -86,7 +86,7 @@ public class DefaultBetaConstraints
 
         // Now create the ContextEntries  in the same order the constraints
         for ( LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-            BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
+            final BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
             final ContextEntry context = constraint.getContextEntry();
             if ( current == null ) {
                 current = context;
@@ -98,7 +98,7 @@ public class DefaultBetaConstraints
         }
     }
 
-    private LinkedListEntry findNode(int pos) {
+    private LinkedListEntry findNode(final int pos) {
         LinkedListEntry current = (LinkedListEntry) this.constraints.getFirst();
         for ( int i = 0; i < pos; i++ ) {
             current = (LinkedListEntry) current.getNext();
@@ -183,34 +183,34 @@ public class DefaultBetaConstraints
         BetaMemory memory;
         if ( this.indexed > 0 ) {
             LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
-            List list = new ArrayList();
-            
+            final List list = new ArrayList();
+
             for ( int pos = 0; pos < this.indexed; pos++ ) {
                 final Constraint constraint = (Constraint) entry.getObject();
                 final VariableConstraint variableConstraint = (VariableConstraint) constraint;
                 final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                          variableConstraint.getRequiredDeclarations()[0],
-                                                         variableConstraint.getEvaluator());
+                                                         variableConstraint.getEvaluator() );
                 list.add( index );
                 entry = (LinkedListEntry) entry.getNext();
             }
-            
-            FieldIndex[] indexes = ( FieldIndex[] ) list.toArray( new FieldIndex[ list.size() ] );
+
+            final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             TupleMemory tupleMemory;
-            if ( conf.isIndexLeftBetaMemory() ) {
+            if ( this.conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new FactHandleIndexHashTable( indexes );           
-            }  else {
+            if ( this.conf.isIndexRightBetaMemory() ) {
+                factHandleMemory = new FactHandleIndexHashTable( indexes );
+            } else {
                 factHandleMemory = new FactHashTable();
             }
             memory = new BetaMemory( tupleMemory,
-                                     factHandleMemory );   
+                                     factHandleMemory );
         } else {
             memory = new BetaMemory( new TupleHashTable(),
                                      new FactHashTable() );
@@ -244,7 +244,7 @@ public class DefaultBetaConstraints
             return true;
         }
 
-        if ( object == null || !( object instanceof DefaultBetaConstraints ) ) {
+        if ( object == null || !(object instanceof DefaultBetaConstraints) ) {
             return false;
         }
 

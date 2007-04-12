@@ -39,7 +39,9 @@ import org.drools.rule.Rule;
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:mproctor@codehaus.org">mark proctor</a>
  */
-public interface KnowledgeHelper extends Serializable {
+public interface KnowledgeHelper
+    extends
+    Serializable {
     /**
      * Asserts an object, notice that it does not return the FactHandle
      * 
@@ -117,7 +119,7 @@ public interface KnowledgeHelper extends Serializable {
     void setFocus(String focus);
 
     void setFocus(AgendaGroup focus);
-    
-    public Declaration getDeclaration(String identifier);    
+
+    public Declaration getDeclaration(String identifier);
 
 }

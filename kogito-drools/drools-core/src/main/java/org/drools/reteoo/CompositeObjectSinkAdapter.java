@@ -25,29 +25,30 @@ public class CompositeObjectSinkAdapter
     implements
     ObjectSinkPropagator {
 
-//    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
-//    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
-//
-//    /** The threshold for when hashing kicks in */
-//    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
-//                                                                                                      "3" ) );
+    //    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
+    //    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
+    //
+    //    /** The threshold for when hashing kicks in */
+    //    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
+    //                                                                                                      "3" ) );
 
-    private static final long  serialVersionUID               = 320L;
-    ObjectSinkNodeList         otherSinks;
-    ObjectSinkNodeList         hashableSinks;
+    private static final long serialVersionUID = 320L;
+    ObjectSinkNodeList        otherSinks;
+    ObjectSinkNodeList        hashableSinks;
 
-    LinkedList                 hashedFieldIndexes;
+    LinkedList                hashedFieldIndexes;
 
-    ObjectHashMap              hashedSinkMap;
+    ObjectHashMap             hashedSinkMap;
 
-    private HashKey            hashKey;
-    
-    private final int  alphaNodeHashingThreshold;
+    private HashKey           hashKey;
+
+    private final int         alphaNodeHashingThreshold;
 
     public CompositeObjectSinkAdapter() {
-        this(3);
+        this( 3 );
     }
-    public CompositeObjectSinkAdapter(int alphaNodeHashingThreshold) {
+
+    public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold) {
         this.hashKey = new HashKey();
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
@@ -66,7 +67,7 @@ public class CompositeObjectSinkAdapter
                     final FieldIndex fieldIndex = registerFieldIndex( index,
                                                                       literalConstraint.getFieldExtractor() );
 
-                    if ( fieldIndex.getCount() >= alphaNodeHashingThreshold ) {
+                    if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold ) {
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
@@ -110,9 +111,10 @@ public class CompositeObjectSinkAdapter
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
 
                     if ( fieldIndex.isHashed() ) {
-                        this.hashKey.setValue( index, value );
+                        this.hashKey.setValue( index,
+                                               value );
                         this.hashedSinkMap.remove( this.hashKey );
-                        if ( fieldIndex.getCount() <= alphaNodeHashingThreshold - 1 ) {
+                        if ( fieldIndex.getCount() <= this.alphaNodeHashingThreshold - 1 ) {
                             // we have less than three so unhash
                             unHashSinks( fieldIndex );
                         }
@@ -174,19 +176,19 @@ public class CompositeObjectSinkAdapter
     public void unHashSinks(final FieldIndex fieldIndex) {
         final int index = fieldIndex.getIndex();
 
-        List sinks = new ArrayList();
+        final List sinks = new ArrayList();
 
         //iterate twice as custom iterator is immutable
-        Iterator mapIt = this.hashedSinkMap.iterator();
+        final Iterator mapIt = this.hashedSinkMap.iterator();
         for ( ObjectHashMap.ObjectEntry e = (ObjectHashMap.ObjectEntry) mapIt.next(); e != null; ) {
 
             sinks.add( e.getValue() );
             e = (ObjectHashMap.ObjectEntry) mapIt.next();
         }
 
-        for ( java.util.Iterator iter = sinks.iterator(); iter.hasNext(); ) {
-            AlphaNode sink = (AlphaNode) iter.next();
-            final AlphaNode alphaNode = (AlphaNode) sink;
+        for ( final java.util.Iterator iter = sinks.iterator(); iter.hasNext(); ) {
+            final AlphaNode sink = (AlphaNode) iter.next();
+            final AlphaNode alphaNode = sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
             final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
             final Evaluator evaluator = literalConstraint.getEvaluator();
@@ -287,7 +289,9 @@ public class CompositeObjectSinkAdapter
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
                 final int index = fieldIndex.getIndex();
                 final FieldExtractor extractor = fieldIndex.getFieldExtactor();
-                this.hashKey.setValue( index, object, extractor );
+                this.hashKey.setValue( index,
+                                       object,
+                                       extractor );
                 final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
                 if ( sink != null ) {
                     // The sink exists so propagate
@@ -334,7 +338,9 @@ public class CompositeObjectSinkAdapter
 
                     final int index = fieldIndex.getIndex();
                     final FieldExtractor extractor = fieldIndex.getFieldExtactor();
-                    this.hashKey.setValue( index, object, extractor );
+                    this.hashKey.setValue( index,
+                                           object,
+                                           extractor );
                     final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
                     if ( sink != null ) {
                         // The sink exists so propagate
@@ -401,9 +407,9 @@ public class CompositeObjectSinkAdapter
 
     public int size() {
         int size = 0;
-        size += ((otherSinks != null) ? otherSinks.size() : 0);
-        size += ((hashableSinks != null) ? hashableSinks.size() : 0);
-        size += ((hashedSinkMap != null) ? hashedSinkMap.size() : 0);
+        size += ((this.otherSinks != null) ? this.otherSinks.size() : 0);
+        size += ((this.hashableSinks != null) ? this.hashableSinks.size() : 0);
+        size += ((this.hashedSinkMap != null) ? this.hashedSinkMap.size() : 0);
         return size;
     }
 
@@ -411,86 +417,92 @@ public class CompositeObjectSinkAdapter
         implements
         Serializable {
         private static final long serialVersionUID = 1949191240975565186L;
-        
-        private static final byte OBJECT = 1;
-        private static final byte LONG   = 2;
-        private static final byte DOUBLE = 3;
-        private static final byte BOOL   = 4;
+
+        private static final byte OBJECT           = 1;
+        private static final byte LONG             = 2;
+        private static final byte DOUBLE           = 3;
+        private static final byte BOOL             = 4;
 
         private int               index;
-        
+
         private byte              type;
         private Object            ovalue;
         private long              lvalue;
         private boolean           bvalue;
         private double            dvalue;
-        
+
         private int               hashCode;
-        
+
         public HashKey() {
         }
 
         public HashKey(final int index,
-                       final FieldValue value ) {
-            this.setValue( index, value );
+                       final FieldValue value) {
+            this.setValue( index,
+                           value );
         }
 
         public HashKey(final int index,
                        final Object value,
                        final Extractor extractor) {
-            this.setValue( index, value, extractor );
+            this.setValue( index,
+                           value,
+                           extractor );
         }
 
         public int getIndex() {
             return this.index;
         }
 
-        public void setValue(final int index, final Object value, final Extractor extractor) {
+        public void setValue(final int index,
+                             final Object value,
+                             final Extractor extractor) {
             this.index = index;
-            ValueType vtype = extractor.getValueType(); 
-            if( vtype.isBoolean() ) {
+            final ValueType vtype = extractor.getValueType();
+            if ( vtype.isBoolean() ) {
                 this.bvalue = extractor.getBooleanValue( value );
                 this.type = BOOL;
                 this.setHashCode( this.bvalue ? 1231 : 1237 );
-            } else if( vtype.isIntegerNumber() ) {
+            } else if ( vtype.isIntegerNumber() ) {
                 this.lvalue = extractor.getLongValue( value );
                 this.type = LONG;
-                this.setHashCode( (int) ( this.lvalue ^ ( this.lvalue >>> 32 ) ) );
-            } else if( vtype.isFloatNumber() ) {
+                this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
+            } else if ( vtype.isFloatNumber() ) {
                 this.dvalue = extractor.getDoubleValue( value );
                 this.type = DOUBLE;
-                long temp = Double.doubleToLongBits( this.dvalue );
-                this.setHashCode( (int) ( temp ^ ( temp >>> 32 )));
+                final long temp = Double.doubleToLongBits( this.dvalue );
+                this.setHashCode( (int) (temp ^ (temp >>> 32)) );
             } else {
                 this.ovalue = extractor.getValue( value );
                 this.type = OBJECT;
                 this.setHashCode( this.ovalue.hashCode() );
             }
         }
-        
-        public void setValue(final int index, final FieldValue value) {
+
+        public void setValue(final int index,
+                             final FieldValue value) {
             this.index = index;
-            if( value.isBooleanField() ) {
+            if ( value.isBooleanField() ) {
                 this.bvalue = value.getBooleanValue();
                 this.type = BOOL;
                 this.setHashCode( this.bvalue ? 1231 : 1237 );
-            } else if( value.isIntegerNumberField() ) {
+            } else if ( value.isIntegerNumberField() ) {
                 this.lvalue = value.getLongValue();
                 this.type = LONG;
-                this.setHashCode( (int) ( this.lvalue ^ ( this.lvalue >>> 32 ) ) );
-            } else if( value.isFloatNumberField() ) {
+                this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
+            } else if ( value.isFloatNumberField() ) {
                 this.dvalue = value.getDoubleValue();
                 this.type = DOUBLE;
-                long temp = Double.doubleToLongBits( this.dvalue );
-                this.setHashCode( (int) ( temp ^ ( temp >>> 32 )));
+                final long temp = Double.doubleToLongBits( this.dvalue );
+                this.setHashCode( (int) (temp ^ (temp >>> 32)) );
             } else {
                 this.ovalue = value.getValue();
                 this.type = OBJECT;
                 this.setHashCode( this.ovalue.hashCode() );
             }
         }
-        
-        private void setHashCode(int hashSeed) {
+
+        private void setHashCode(final int hashSeed) {
             final int PRIME = 31;
             int result = 1;
             result = PRIME * result + hashSeed;
@@ -499,81 +511,81 @@ public class CompositeObjectSinkAdapter
         }
 
         public boolean getBooleanValue() {
-            switch( this.type ) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue;
-                case OBJECT:
-                    if( this.ovalue instanceof Boolean ) {
+                case OBJECT :
+                    if ( this.ovalue instanceof Boolean ) {
                         return ((Boolean) this.ovalue).booleanValue();
-                    } else if( this.ovalue instanceof String ){
+                    } else if ( this.ovalue instanceof String ) {
                         return Boolean.valueOf( (String) this.ovalue ).booleanValue();
                     } else {
-                        throw new ClassCastException( "Can't convert "+this.ovalue.getClass()+" to a boolean value.");
+                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a boolean value." );
                     }
-                case LONG:
-                    throw new ClassCastException( "Can't convert long to a boolean value.");
-                case DOUBLE:
-                    throw new ClassCastException( "Can't convert double to a boolean value.");
-                    
+                case LONG :
+                    throw new ClassCastException( "Can't convert long to a boolean value." );
+                case DOUBLE :
+                    throw new ClassCastException( "Can't convert double to a boolean value." );
+
             }
             return false;
         }
-        
+
         public long getLongValue() {
-            switch( this.type ) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue ? 1 : 0;
-                case OBJECT:
-                    if( this.ovalue instanceof Number ) {
+                case OBJECT :
+                    if ( this.ovalue instanceof Number ) {
                         return ((Number) this.ovalue).longValue();
-                    } else if( this.ovalue instanceof String ){
+                    } else if ( this.ovalue instanceof String ) {
                         return Long.parseLong( (String) this.ovalue );
                     } else {
-                        throw new ClassCastException( "Can't convert "+this.ovalue.getClass()+" to a long value.");
+                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a long value." );
                     }
-                case LONG:
+                case LONG :
                     return this.lvalue;
-                case DOUBLE:
+                case DOUBLE :
                     return (long) this.dvalue;
-                    
+
             }
             return 0;
         }
-        
+
         public double getDoubleValue() {
-            switch( this.type ) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue ? 1 : 0;
-                case OBJECT:
-                    if( this.ovalue instanceof Number ) {
+                case OBJECT :
+                    if ( this.ovalue instanceof Number ) {
                         return ((Number) this.ovalue).doubleValue();
-                    } else if( this.ovalue instanceof String ){
+                    } else if ( this.ovalue instanceof String ) {
                         return Double.parseDouble( (String) this.ovalue );
                     } else {
-                        throw new ClassCastException( "Can't convert "+this.ovalue.getClass()+" to a double value.");
+                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a double value." );
                     }
-                case LONG:
+                case LONG :
                     return this.lvalue;
-                case DOUBLE:
+                case DOUBLE :
                     return this.dvalue;
             }
             return 0;
         }
-        
+
         public Object getObjectValue() {
-            switch( this.type ) {
-                case BOOL:
+            switch ( this.type ) {
+                case BOOL :
                     return this.bvalue ? Boolean.TRUE : Boolean.FALSE;
-                case OBJECT:
+                case OBJECT :
                     return this.ovalue;
-                case LONG:
+                case LONG :
                     return new Long( this.lvalue );
-                case DOUBLE:
+                case DOUBLE :
                     return new Double( this.dvalue );
             }
             return null;
         }
-        
+
         public int hashCode() {
             return this.hashCode;
         }
@@ -581,19 +593,19 @@ public class CompositeObjectSinkAdapter
         public boolean equals(final Object object) {
             final HashKey other = (HashKey) object;
 
-            switch( this.type ) {
-                case BOOL:
-                    return ( this.index == other.index ) && ( this.bvalue == other.getBooleanValue() );
-                case LONG:
-                    return ( this.index == other.index ) && ( this.lvalue == other.getLongValue() );
-                case DOUBLE:
-                    return ( this.index == other.index ) && ( this.dvalue == other.getDoubleValue() );
-                case OBJECT:
-                    Object otherValue = other.getObjectValue();
-                    if( ( this.ovalue instanceof Number ) && ( otherValue instanceof Number )) {
-                        return ( this.index == other.index ) && ( ( ( Number ) this.ovalue ).doubleValue() == ( ( Number ) otherValue ).doubleValue() );
+            switch ( this.type ) {
+                case BOOL :
+                    return (this.index == other.index) && (this.bvalue == other.getBooleanValue());
+                case LONG :
+                    return (this.index == other.index) && (this.lvalue == other.getLongValue());
+                case DOUBLE :
+                    return (this.index == other.index) && (this.dvalue == other.getDoubleValue());
+                case OBJECT :
+                    final Object otherValue = other.getObjectValue();
+                    if ( (this.ovalue instanceof Number) && (otherValue instanceof Number) ) {
+                        return (this.index == other.index) && (((Number) this.ovalue).doubleValue() == ((Number) otherValue).doubleValue());
                     }
-                    return ( this.index == other.index ) && ( this.ovalue.equals( otherValue ) );
+                    return (this.index == other.index) && (this.ovalue.equals( otherValue ));
             }
             return false;
         }

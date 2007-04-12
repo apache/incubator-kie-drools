@@ -30,14 +30,14 @@ public class VariableRestriction
     implements
     Restriction {
 
-    private static final long   serialVersionUID = 320;
+    private static final long          serialVersionUID = 320;
 
-    private final Declaration   declaration;
+    private final Declaration          declaration;
 
-    private final Declaration[] requiredDeclarations;
+    private final Declaration[]        requiredDeclarations;
 
-    private final Evaluator     evaluator;
-    
+    private final Evaluator            evaluator;
+
     private final VariableContextEntry contextEntry;
 
     public VariableRestriction(final FieldExtractor fieldExtractor,
@@ -60,7 +60,10 @@ public class VariableRestriction
     public boolean isAllowed(final Extractor extractor,
                              final Object object,
                              final InternalWorkingMemory workingMemoiry) {
-        return this.evaluator.evaluate( this.contextEntry.extractor, object, this.contextEntry.declaration.getExtractor(), object );
+        return this.evaluator.evaluate( this.contextEntry.extractor,
+                                        object,
+                                        this.contextEntry.declaration.getExtractor(),
+                                        object );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
@@ -105,8 +108,8 @@ public class VariableRestriction
         return this.declaration.equals( other.declaration ) && this.evaluator.equals( other.evaluator ) && Arrays.equals( this.requiredDeclarations,
                                                                                                                           other.requiredDeclarations );
     }
-    
-    private final VariableContextEntry createContextEntry(FieldExtractor fieldExtractor) {
+
+    private final VariableContextEntry createContextEntry(final FieldExtractor fieldExtractor) {
         if ( fieldExtractor.getValueType().isBoolean() ) {
             return new BooleanVariableContextEntry( fieldExtractor,
                                                     this.declaration );
@@ -136,7 +139,7 @@ public class VariableRestriction
         public ContextEntry   entry;
 
         public VariableContextEntry(final FieldExtractor extractor,
-                                        final Declaration declaration) {
+                                    final Declaration declaration) {
             this.extractor = extractor;
             this.declaration = declaration;
         }
@@ -170,8 +173,8 @@ public class VariableRestriction
     public static class ObjectVariableContextEntry extends VariableContextEntry {
 
         private static final long serialVersionUID = 3607107040739298581L;
-        public Object left;
-        public Object right;
+        public Object             left;
+        public Object             right;
 
         public ObjectVariableContextEntry(final FieldExtractor extractor,
                                           final Declaration declaration) {
@@ -196,8 +199,8 @@ public class VariableRestriction
 
         private static final long serialVersionUID = -5316792696755228175L;
 
-        public long left;
-        public long right;
+        public long               left;
+        public long               right;
 
         public LongVariableContextEntry(final FieldExtractor extractor,
                                         final Declaration declaration) {
@@ -222,8 +225,8 @@ public class VariableRestriction
 
         private static final long serialVersionUID = 6996094205302851397L;
 
-        public double left;
-        public double right;
+        public double             left;
+        public double             right;
 
         public DoubleVariableContextEntry(final FieldExtractor extractor,
                                           final Declaration declaration) {
@@ -247,8 +250,8 @@ public class VariableRestriction
     public static class BooleanVariableContextEntry extends VariableContextEntry {
 
         private static final long serialVersionUID = -7664012658143075200L;
-        public boolean left;
-        public boolean right;
+        public boolean            left;
+        public boolean            right;
 
         public BooleanVariableContextEntry(final FieldExtractor extractor,
                                            final Declaration declaration) {

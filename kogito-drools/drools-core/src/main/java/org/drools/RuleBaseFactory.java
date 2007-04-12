@@ -36,18 +36,22 @@ public class RuleBaseFactory {
 
     /** Create a new default rule base (RETEOO type engine) */
     public static RuleBase newRuleBase() {
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO, null );
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
+                                            null );
     }
 
     public static RuleBase newRuleBase(final int type) {
-        return RuleBaseFactory.newRuleBase( type, null );
+        return RuleBaseFactory.newRuleBase( type,
+                                            null );
     }
 
     /** Create a new RuleBase of the appropriate type */
-    public static RuleBase newRuleBase(final int type, final RuleBaseConfiguration config) {
+    public static RuleBase newRuleBase(final int type,
+                                       final RuleBaseConfiguration config) {
         switch ( type ) {
             case RuleBase.RETEOO :
-                return new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(), config );
+                return new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
+                                                             config );
             case RuleBase.LEAPS :
                 //@todo this needs to be reflection based  now, as we do  not know the  module is  in the classpath
                 //return new org.drools.leaps.LeapsRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString() );

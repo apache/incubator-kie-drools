@@ -55,7 +55,7 @@ import org.drools.spi.PropagationContext;
 
 public class RuleFlowGroupTest extends DroolsTestCase {
 
-	public void testRuleFlowGroup() {
+    public void testRuleFlowGroup() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
@@ -121,53 +121,69 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                                         null );
 
         // nodes
-        IStartNode start = new StartNode();
-        IRuleSetNode ruleSet0 = new RuleSetNode();
-        ruleSet0.setRuleFlowGroup("rule-flow-group-0");
-        IRuleSetNode ruleSet1 = new RuleSetNode();
-        ruleSet1.setRuleFlowGroup("rule-flow-group-1");
-        IRuleSetNode ruleSet2 = new RuleSetNode();
-        ruleSet2.setRuleFlowGroup("rule-flow-group-2");
-        IRuleSetNode ruleSet3 = new RuleSetNode();
-        ruleSet3.setRuleFlowGroup("rule-flow-group-3");
-        ISplit split = new Split();
-        split.setType(ISplit.TYPE_AND);
-        IJoin join = new Join();
-        join.setType(IJoin.TYPE_AND);
-        IEndNode end = new EndNode();
+        final IStartNode start = new StartNode();
+        final IRuleSetNode ruleSet0 = new RuleSetNode();
+        ruleSet0.setRuleFlowGroup( "rule-flow-group-0" );
+        final IRuleSetNode ruleSet1 = new RuleSetNode();
+        ruleSet1.setRuleFlowGroup( "rule-flow-group-1" );
+        final IRuleSetNode ruleSet2 = new RuleSetNode();
+        ruleSet2.setRuleFlowGroup( "rule-flow-group-2" );
+        final IRuleSetNode ruleSet3 = new RuleSetNode();
+        ruleSet3.setRuleFlowGroup( "rule-flow-group-3" );
+        final ISplit split = new Split();
+        split.setType( ISplit.TYPE_AND );
+        final IJoin join = new Join();
+        join.setType( IJoin.TYPE_AND );
+        final IEndNode end = new EndNode();
         // connections
-        new Connection(start, ruleSet0, IConnection.TYPE_NORMAL);
-        new Connection(ruleSet0, split, IConnection.TYPE_NORMAL);
-        new Connection(split, ruleSet1, IConnection.TYPE_NORMAL);
-        new Connection(split, ruleSet2, IConnection.TYPE_NORMAL);
-        new Connection(ruleSet1, join, IConnection.TYPE_NORMAL);
-        new Connection(ruleSet2, join, IConnection.TYPE_NORMAL);
-        new Connection(join, ruleSet3, IConnection.TYPE_NORMAL);
-        new Connection(ruleSet3, end, IConnection.TYPE_NORMAL);
-        
+        new Connection( start,
+                        ruleSet0,
+                        IConnection.TYPE_NORMAL );
+        new Connection( ruleSet0,
+                        split,
+                        IConnection.TYPE_NORMAL );
+        new Connection( split,
+                        ruleSet1,
+                        IConnection.TYPE_NORMAL );
+        new Connection( split,
+                        ruleSet2,
+                        IConnection.TYPE_NORMAL );
+        new Connection( ruleSet1,
+                        join,
+                        IConnection.TYPE_NORMAL );
+        new Connection( ruleSet2,
+                        join,
+                        IConnection.TYPE_NORMAL );
+        new Connection( join,
+                        ruleSet3,
+                        IConnection.TYPE_NORMAL );
+        new Connection( ruleSet3,
+                        end,
+                        IConnection.TYPE_NORMAL );
+
         // process
-        IRuleFlowProcess process = new RuleFlowProcess();
-        process.addNode(start);
-        process.addNode(ruleSet0);
-        process.addNode(ruleSet1);
-        process.addNode(ruleSet2);
-        process.addNode(ruleSet3);
-        process.addNode(split);
-        process.addNode(join);
-        process.addNode(end);
+        final IRuleFlowProcess process = new RuleFlowProcess();
+        process.addNode( start );
+        process.addNode( ruleSet0 );
+        process.addNode( ruleSet1 );
+        process.addNode( ruleSet2 );
+        process.addNode( ruleSet3 );
+        process.addNode( split );
+        process.addNode( join );
+        process.addNode( end );
 
         // proces instance
-        IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setAgenda(agenda);
-        processInstance.setProcess(process);
+        final IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
+        processInstance.setAgenda( agenda );
+        processInstance.setProcess( process );
         assertEquals( IProcessInstance.STATE_PENDING,
-  			  		  processInstance.getState() );
-        
+                      processInstance.getState() );
+
         final RuleFlowGroupImpl ruleFlowGroup0 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
         final RuleFlowGroupImpl ruleFlowGroup1 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-1" );
         final RuleFlowGroupImpl ruleFlowGroup2 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-2" );
         final RuleFlowGroupImpl ruleFlowGroup3 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-3" );
-        
+
         final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
         node0.assertTuple( tuple0,
@@ -193,10 +209,10 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                            workingMemory );
 
         final ReteTuple tuple4 = new ReteTuple( new DefaultFactHandle( 1,
-        															   "cheese" ) );
-		node3.assertTuple( tuple4,
-						   context0,
-						   workingMemory );
+                                                                       "cheese" ) );
+        node3.assertTuple( tuple4,
+                           context0,
+                           workingMemory );
 
         // RuleFlowGroups should be populated, but the agenda shouldn't
         assertEquals( 2,
@@ -204,9 +220,9 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( 1,
                       ruleFlowGroup1.size() );
         assertEquals( 1,
-                      ruleFlowGroup2.size() );        
+                      ruleFlowGroup2.size() );
         assertEquals( 1,
-                	  ruleFlowGroup3.size() );        
+                      ruleFlowGroup3.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
 
@@ -214,7 +230,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // but should now also be in the Agenda
         processInstance.start();
         assertEquals( IProcessInstance.STATE_ACTIVE,
-  			  		  processInstance.getState() );
+                      processInstance.getState() );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
         assertEquals( 2,
@@ -235,45 +251,45 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( 1,
                       ruleFlowGroup1.size() );
         assertEquals( 1,
-                      ruleFlowGroup2.size() );        
+                      ruleFlowGroup2.size() );
         assertEquals( 2,
-                      agenda.agendaSize() );        
+                      agenda.agendaSize() );
 
         // we set the salience higher on rule2, so it sould fire first and empty ruleFlowGroup2
         agenda.fireNextItem( null );
         assertEquals( 1,
                       ruleFlowGroup1.size() );
         assertEquals( 0,
-                      ruleFlowGroup2.size() );        
+                      ruleFlowGroup2.size() );
         assertEquals( 1,
                       agenda.agendaSize() );
-        
+
         // executing rule1, which should activate AND-join and thus group 3 
         agenda.fireNextItem( null );
         assertEquals( 0,
-                      ruleFlowGroup0.size() );        
+                      ruleFlowGroup0.size() );
         assertEquals( 0,
                       ruleFlowGroup1.size() );
         assertEquals( 0,
-                      ruleFlowGroup2.size() );        
+                      ruleFlowGroup2.size() );
         assertEquals( 1,
-                	  ruleFlowGroup3.size() );        
+                      ruleFlowGroup3.size() );
         assertEquals( 1,
-                      agenda.agendaSize() );   
-        
+                      agenda.agendaSize() );
+
         // executing rule3, and finishing execution
         agenda.fireNextItem( null );
         assertEquals( 0,
-                      ruleFlowGroup0.size() );        
+                      ruleFlowGroup0.size() );
         assertEquals( 0,
                       ruleFlowGroup1.size() );
         assertEquals( 0,
-                      ruleFlowGroup2.size() );        
+                      ruleFlowGroup2.size() );
         assertEquals( 0,
-                	  ruleFlowGroup3.size() );        
+                      ruleFlowGroup3.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
         assertEquals( IProcessInstance.STATE_COMPLETED,
-        			  processInstance.getState() );
+                      processInstance.getState() );
     }
 }

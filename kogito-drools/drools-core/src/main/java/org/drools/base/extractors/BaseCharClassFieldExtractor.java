@@ -24,8 +24,8 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
      * @param valueType
      */
     protected BaseCharClassFieldExtractor(final int index,
-                                             final Class fieldType,
-                                             final ValueType valueType) {
+                                          final Class fieldType,
+                                          final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
@@ -46,19 +46,19 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
     public abstract char getCharValue(Object object);
 
     public double getDoubleValue(final Object object) {
-        return (double) getCharValue( object );
+        return getCharValue( object );
     }
 
     public float getFloatValue(final Object object) {
-        return (float) getCharValue( object );
+        return getCharValue( object );
     }
 
     public int getIntValue(final Object object) {
-        return (int) getCharValue( object );
+        return getCharValue( object );
     }
 
     public long getLongValue(final Object object) {
-        return (long) getCharValue( object );
+        return getCharValue( object );
     }
 
     public short getShortValue(final Object object) {
@@ -67,13 +67,15 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getCharValue", new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            return this.getClass().getDeclaredMethod( "getCharValue",
+                                                      new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
 
-    public int getHashCode(Object object) {
+    public int getHashCode(final Object object) {
         return getCharValue( object );
     }
 }

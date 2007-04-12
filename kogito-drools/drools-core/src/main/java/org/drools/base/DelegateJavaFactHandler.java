@@ -17,31 +17,31 @@ public class DelegateJavaFactHandler
         if ( workingMemory == null ) {
             return false;
         }
-        
-        if (isRegistered( workingMemory ) ) {
+
+        if ( isRegistered( workingMemory ) ) {
             return false;
         }
-        
+
         final JavaFactRegistryEntry[] newEntries;
         int position;
         if ( this.entries == null ) {
             newEntries = new JavaFactRegistryEntry[1];
             position = 0;
-        } else  {
-            int newLength = this.entries.length + 1;
-            newEntries = new JavaFactRegistryEntry[ newLength ];
+        } else {
+            final int newLength = this.entries.length + 1;
+            newEntries = new JavaFactRegistryEntry[newLength];
             System.arraycopy( this.entries,
                               0,
                               newEntries,
                               0,
                               newLength - 1 );
-            position  = this.entries.length;
+            position = this.entries.length;
         }
 
         final FactHandle handle = workingMemory.assertObject( this );
 
         newEntries[position] = new JavaFactRegistryEntry( workingMemory,
-                                                                handle );
+                                                          handle );
 
         this.entries = newEntries;
         return true;
@@ -60,53 +60,51 @@ public class DelegateJavaFactHandler
         if ( this.entries == null ) {
             return false;
         }
-        
 
         //  If there is only one entry, see if it matched and if so null
         if ( this.entries.length == 1 && this.entries[0].getWorkingMemory() == workingMemory ) {
             this.entries = null;
             return true;
         }
-        
 
         //  try the first
         if ( this.entries[0].getWorkingMemory() == workingMemory ) {
-            final JavaFactRegistryEntry[] newEntries = new JavaFactRegistryEntry[this.entries.length - 1];                
+            final JavaFactRegistryEntry[] newEntries = new JavaFactRegistryEntry[this.entries.length - 1];
             System.arraycopy( this.entries,
                               1,
                               newEntries,
                               0,
-                              newEntries.length );    
+                              newEntries.length );
             this.entries = newEntries;
             return true;
         }
-        
+
         // try the last
-        if ( this.entries[this.entries.length-1].getWorkingMemory() == workingMemory ) {
-            final JavaFactRegistryEntry[] newEntries = new JavaFactRegistryEntry[this.entries.length - 1];                
+        if ( this.entries[this.entries.length - 1].getWorkingMemory() == workingMemory ) {
+            final JavaFactRegistryEntry[] newEntries = new JavaFactRegistryEntry[this.entries.length - 1];
             System.arraycopy( this.entries,
                               0,
                               newEntries,
                               0,
-                              newEntries.length ); 
+                              newEntries.length );
             this.entries = newEntries;
-            return true;            
+            return true;
         }
-        
+
         // try middle
         for ( int i = 0, length = this.entries.length; i < length; i++ ) {
-            if  ( this.entries[i].getWorkingMemory() ==  workingMemory ) {
-                final JavaFactRegistryEntry[] newEntries = new JavaFactRegistryEntry[this.entries.length - 1];                
+            if ( this.entries[i].getWorkingMemory() == workingMemory ) {
+                final JavaFactRegistryEntry[] newEntries = new JavaFactRegistryEntry[this.entries.length - 1];
                 System.arraycopy( this.entries,
                                   0,
                                   newEntries,
                                   0,
-                                  i );     
+                                  i );
                 System.arraycopy( this.entries,
-                                  i+1,
+                                  i + 1,
                                   newEntries,
                                   i,
-                                  newEntries.length -1  );
+                                  newEntries.length - 1 );
                 this.entries = newEntries;
                 return true;
             }
@@ -118,9 +116,9 @@ public class DelegateJavaFactHandler
         if ( this.entries == null ) {
             return false;
         }
-        
+
         for ( int i = 0, length = this.entries.length; i < length; i++ ) {
-            if  ( this.entries[i].getWorkingMemory() ==  workingMemory ) {
+            if ( this.entries[i].getWorkingMemory() == workingMemory ) {
                 return true;
             }
         }

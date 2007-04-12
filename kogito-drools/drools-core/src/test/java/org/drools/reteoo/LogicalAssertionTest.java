@@ -51,9 +51,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Rule rule1 = new Rule( "test-rule1" );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs());
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
@@ -150,9 +150,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.addObjectSink( sink );
 
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs() );
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
@@ -238,9 +238,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs() );
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -372,9 +372,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs() );
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setLogicalOverride( RuleBaseConfiguration.LogicalOverride.PRESERVE );
 
@@ -462,9 +462,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs() );
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -507,9 +507,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create the second activation to justify the "logical" fact
         final Rule rule2 = new Rule( "test-rule2" );
         final RuleTerminalNode node2 = new RuleTerminalNode( 4,
-                                                     new MockTupleSource( 3 ),
-                                                     rule2,
-                                                     rule2.getLhs() );
+                                                             new MockTupleSource( 3 ),
+                                                             rule2,
+                                                             rule2.getLhs() );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
@@ -560,9 +560,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs() );
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -598,9 +598,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Create the second justifer
         final Rule rule2 = new Rule( "test-rule2" );
         final RuleTerminalNode node2 = new RuleTerminalNode( 4,
-                                                     new MockTupleSource( 3 ),
-                                                     rule2,
-                                                     rule2.getLhs() );
+                                                             new MockTupleSource( 3 ),
+                                                             rule2,
+                                                             rule2.getLhs() );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
@@ -687,9 +687,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs() );
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -781,14 +781,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
-                                                                  3);
+                                                                  3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleTerminalNode node = new RuleTerminalNode( 2,
-                                                    new MockTupleSource( 2 ),
-                                                    rule1,
-                                                    rule1.getLhs() );
+                                                            new MockTupleSource( 2 ),
+                                                            rule1,
+                                                            rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 

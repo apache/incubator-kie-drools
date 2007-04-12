@@ -88,10 +88,10 @@ public class CharacterFactory
             return ((LongVariableContextEntry) context).left == context.extractor.getCharValue( right );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getCharValue( object1 ) == extractor2.getCharValue( object2 );
         }
 
@@ -128,10 +128,10 @@ public class CharacterFactory
             return ((LongVariableContextEntry) context).left != context.extractor.getCharValue( right );
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getCharValue( object1 ) != extractor2.getCharValue( object2 );
         }
 
@@ -165,13 +165,13 @@ public class CharacterFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
-            return context.extractor.getCharValue( right ) <((LongVariableContextEntry) context).left;
+            return context.extractor.getCharValue( right ) < ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getCharValue( object1 ) < extractor2.getCharValue( object2 );
         }
 
@@ -208,10 +208,10 @@ public class CharacterFactory
             return context.extractor.getCharValue( right ) <= ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getCharValue( object1 ) <= extractor2.getCharValue( object2 );
         }
 
@@ -248,10 +248,10 @@ public class CharacterFactory
             return context.extractor.getCharValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getCharValue( object1 ) > extractor2.getCharValue( object2 );
         }
 
@@ -288,10 +288,10 @@ public class CharacterFactory
             return context.extractor.getCharValue( right ) >= ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(Extractor extractor1,
-                                Object object1,
-                                Extractor extractor2,
-                                Object object2) {
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
             return extractor1.getCharValue( object1 ) >= extractor2.getCharValue( object2 );
         }
 

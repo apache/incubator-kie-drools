@@ -76,7 +76,7 @@ public class AgendaItem
 
     private ActivationGroupNode      activationGroupNode;
 
-    private RuleFlowGroupNode     	 ruleFlowGroupNode;
+    private RuleFlowGroupNode        ruleFlowGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -215,18 +215,18 @@ public class AgendaItem
     }
 
     public AgendaGroup getAgendaGroup() {
-        return agendaGroup;
+        return this.agendaGroup;
     }
 
-    public void setAgendaGroup(AgendaGroupImpl agendaGroup) {
+    public void setAgendaGroup(final AgendaGroupImpl agendaGroup) {
         this.agendaGroup = agendaGroup;
     }
 
     public RuleFlowGroupNode getRuleFlowGroupNode() {
-        return ruleFlowGroupNode;
+        return this.ruleFlowGroupNode;
     }
 
-    public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode) {
+    public void setRuleFlowGroupNode(final RuleFlowGroupNode ruleFlowGroupNode) {
         this.ruleFlowGroupNode = ruleFlowGroupNode;
     }
 

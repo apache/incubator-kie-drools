@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -24,37 +25,39 @@ import org.drools.ruleflow.instance.IRuleFlowProcessInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class RuleFlowNodeInstance implements IRuleFlowNodeInstance {
+public abstract class RuleFlowNodeInstance
+    implements
+    IRuleFlowNodeInstance {
 
-	private long id;
-	private long nodeId;
-	private IRuleFlowProcessInstance processInstance;
+    private long                     id;
+    private long                     nodeId;
+    private IRuleFlowProcessInstance processInstance;
 
-	public void setId(long id) {
-		this.id = id;
-	}
-	
-	public long getId() {
-		return id;
-	}
-	
-    public void setNodeId(long nodeId) {
+    public void setId(final long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public void setNodeId(final long nodeId) {
         this.nodeId = nodeId;
     }
-    
+
     public long getNodeId() {
-        return nodeId;
+        return this.nodeId;
     }
-    
-    public void setProcessInstance(IRuleFlowProcessInstance processInstance) {
+
+    public void setProcessInstance(final IRuleFlowProcessInstance processInstance) {
         this.processInstance = processInstance;
     }
-    
-    public IRuleFlowProcessInstance getProcessInstance() {		
-        return processInstance;
+
+    public IRuleFlowProcessInstance getProcessInstance() {
+        return this.processInstance;
     }
-    
+
     protected INode getNode() {
-    	return processInstance.getRuleFlowProcess().getNode(nodeId);
+        return this.processInstance.getRuleFlowProcess().getNode( this.nodeId );
     }
 }

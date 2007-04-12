@@ -34,14 +34,16 @@ import org.drools.util.LinkedList;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public interface Activation extends Serializable {
+public interface Activation
+    extends
+    Serializable {
     /**
      * Retrieve the <code>Rule</code> that was activated.
      * 
      * @return The rule.
      */
     Rule getRule();
-    
+
     /**
      * Retrieve the subrule that was activated.
      * 
@@ -82,14 +84,14 @@ public interface Activation extends Serializable {
     public boolean isActivated();
 
     public void setActivated(boolean activated);
-    
+
     public AgendaGroup getAgendaGroup();
 
     public ActivationGroupNode getActivationGroupNode();
 
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode);
-    
+
     public RuleFlowGroupNode getRuleFlowGroupNode();
-    
+
     public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode);
 }

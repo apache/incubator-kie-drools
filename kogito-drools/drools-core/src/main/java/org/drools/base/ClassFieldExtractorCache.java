@@ -26,9 +26,9 @@ public class ClassFieldExtractorCache {
             return (ClassFieldExtractor) this.cache.get( key );
         } else {
             final ClassFieldExtractor ex = new ClassFieldExtractor( clazz,
-                                                              fieldName );
+                                                                    fieldName );
             this.cache.put( key,
-                       ex );
+                            ex );
             return ex;
         }
     }

@@ -23,14 +23,14 @@ public class MVELEvalExpression
         this.factory = factory;
     }
 
-    public boolean evaluate(Tuple tuple,
-                            Declaration[] requiredDeclarations,
-                            WorkingMemory workingMemory) throws Exception {
-        factory.setContext( tuple,
+    public boolean evaluate(final Tuple tuple,
+                            final Declaration[] requiredDeclarations,
+                            final WorkingMemory workingMemory) throws Exception {
+        this.factory.setContext( tuple,
                             null,
                             workingMemory );
-        Boolean result = (Boolean) MVEL.executeExpression( this.expr,
-                                                           factory );
+        final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
+                                                           this.factory );
         return result.booleanValue();
     }
 

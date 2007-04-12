@@ -16,8 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.Map;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -106,7 +104,6 @@ public class LeftInputAdapterNode extends TupleSource
     //        return array;
     //    }
 
-
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
      */
@@ -173,9 +170,9 @@ public class LeftInputAdapterNode extends TupleSource
         if ( this.hasMemory ) {
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             propagate = memory.remove( handle );
-        } 
+        }
 
-        if( propagate ) {
+        if ( propagate ) {
             this.sink.createAndPropagateRetractTuple( handle,
                                                       context,
                                                       workingMemory );
@@ -190,8 +187,8 @@ public class LeftInputAdapterNode extends TupleSource
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             final Iterator it = memory.iterator();
             for ( final FactEntry entry = (FactEntry) it.next(); entry != null; it.next() ) {
-                final InternalFactHandle handle = (InternalFactHandle) entry.getFactHandle();
-                sink.assertTuple( new ReteTuple(handle),
+                final InternalFactHandle handle = entry.getFactHandle();
+                sink.assertTuple( new ReteTuple( handle ),
                                   context,
                                   workingMemory );
             }
@@ -263,7 +260,7 @@ public class LeftInputAdapterNode extends TupleSource
             return true;
         }
 
-        if ( object == null || !( object instanceof LeftInputAdapterNode ) ) {
+        if ( object == null || !(object instanceof LeftInputAdapterNode) ) {
             return false;
         }
 

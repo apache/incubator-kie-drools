@@ -5,12 +5,14 @@ package org.objenesis.instantiator;
  * 
  * @author Henri Tremblay
  */
-public class NullInstantiator implements ObjectInstantiator {
+public class NullInstantiator
+    implements
+    ObjectInstantiator {
 
-   /**
-    * @return Always null
-    */
-   public Object newInstance() {
-      return null;
-   }
+    /**
+     * @return Always null
+     */
+    public Object newInstance() {
+        return null;
+    }
 }

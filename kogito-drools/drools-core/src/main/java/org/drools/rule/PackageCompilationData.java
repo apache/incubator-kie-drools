@@ -296,7 +296,7 @@ public class PackageCompilationData
             final Class clazz = findLoadedClass( name );
 
             if ( clazz == null ) {
-                final byte[] clazzBytes = read( convertClassToResourcePath(name) );
+                final byte[] clazzBytes = read( convertClassToResourcePath( name ) );
                 if ( clazzBytes != null ) {
                     return defineClass( name,
                                         clazzBytes,
@@ -349,37 +349,40 @@ public class PackageCompilationData
                 return new ByteArrayInputStream( bytes );
             } else {
                 InputStream input = this.getParent().getResourceAsStream( name );
-                if( input == null ){
+                if ( input == null ) {
                     input = super.getResourceAsStream( name );
                 }
                 return input;
             }
         }
     }
-    
+
     /**
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class
      */
-    public static String convertResourceToClassName( final String pResourceName ) {
-        return stripExtension(pResourceName).replace('/', '.');
+    public static String convertResourceToClassName(final String pResourceName) {
+        return stripExtension( pResourceName ).replace( '/',
+                                                        '.' );
     }
 
     /**
      * Please do not use - internal
      * org.my.Class -> org/my/Class.class
      */
-    public static String convertClassToResourcePath( final String pName ) {
-        return pName.replace('.', '/') + ".class";
+    public static String convertClassToResourcePath(final String pName) {
+        return pName.replace( '.',
+                              '/' ) + ".class";
     }
 
     /**
      * Please do not use - internal
      * org/my/Class.xxx -> org/my/Class
      */
-    public static String stripExtension( final String pResourceName ) {
-        final int i = pResourceName.lastIndexOf('.');
-        final String withoutExtension = pResourceName.substring(0, i);
+    public static String stripExtension(final String pResourceName) {
+        final int i = pResourceName.lastIndexOf( '.' );
+        final String withoutExtension = pResourceName.substring( 0,
+                                                                 i );
         return withoutExtension;
     }
 

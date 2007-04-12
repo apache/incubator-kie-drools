@@ -100,7 +100,7 @@ public class ClassFieldExtractor
             return true;
         }
 
-        if ( object == null || !( object instanceof ClassFieldExtractor ) ) {
+        if ( object == null || !(object instanceof ClassFieldExtractor) ) {
             return false;
         }
 
@@ -140,12 +140,12 @@ public class ClassFieldExtractor
     public short getShortValue(final Object object) {
         return this.extractor.getShortValue( object );
     }
-    
+
     public Method getNativeReadMethod() {
         return this.extractor.getNativeReadMethod();
     }
 
-    public int getHashCode(Object object) {
+    public int getHashCode(final Object object) {
         return this.extractor.getHashCode( object );
     }
 }

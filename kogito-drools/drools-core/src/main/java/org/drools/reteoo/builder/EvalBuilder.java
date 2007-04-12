@@ -32,9 +32,9 @@ public class EvalBuilder
     /**
      * @inheritDoc
      */
-    public void build(BuildContext context,
-                      BuildUtils utils,
-                      RuleConditionElement rce) {
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleConditionElement rce) {
 
         final EvalCondition eval = (EvalCondition) rce;
         utils.checkUnboundDeclarations( context,
@@ -49,8 +49,8 @@ public class EvalBuilder
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation(BuildUtils utils,
-                                          RuleConditionElement rce) {
+    public boolean requiresLeftActivation(final BuildUtils utils,
+                                          final RuleConditionElement rce) {
         return true;
     }
 

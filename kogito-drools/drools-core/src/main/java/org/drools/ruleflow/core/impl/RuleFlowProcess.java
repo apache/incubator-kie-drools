@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -33,101 +34,101 @@ import org.drools.ruleflow.core.IVariable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowProcess extends Process implements IRuleFlowProcess {
-    
-    public static final String RULEFLOW_TYPE = "RuleFlow";
+public class RuleFlowProcess extends Process
+    implements
+    IRuleFlowProcess {
 
-    private static final long serialVersionUID = 3257005445309609272L;
+    public static final String RULEFLOW_TYPE    = "RuleFlow";
 
-    private Map nodes;
-    private List variables;
-	private long lastNodeId;
-    
+    private static final long  serialVersionUID = 3257005445309609272L;
+
+    private Map                nodes;
+    private List               variables;
+    private long               lastNodeId;
+
     public RuleFlowProcess() {
         super();
-        setType(RULEFLOW_TYPE);
-        nodes = new HashMap();
-        variables = new ArrayList();
+        setType( RULEFLOW_TYPE );
+        this.nodes = new HashMap();
+        this.variables = new ArrayList();
     }
-    
+
     public IStartNode getStart() {
-    	for (Iterator it = nodes.values().iterator(); it.hasNext(); ) {
-    		INode node = (INode) it.next();
-    		if (node instanceof IStartNode) {
-    			return (IStartNode) node;
-    		}
-    	}
-		return null;
+        for ( final Iterator it = this.nodes.values().iterator(); it.hasNext(); ) {
+            final INode node = (INode) it.next();
+            if ( node instanceof IStartNode ) {
+                return (IStartNode) node;
+            }
+        }
+        return null;
     }
-    
+
     public INode[] getNodes() {
-        return (INode[]) nodes.values().toArray(new INode[nodes.size()]);
+        return (INode[]) this.nodes.values().toArray( new INode[this.nodes.size()] );
     }
-    
-    public INode getNode(long id) {
-    	Long idLong = new Long(id);
-    	if (!nodes.containsKey(idLong)) {
-    		throw new IllegalArgumentException("Unknown node id: " + id);
-    	} 
-        return (INode) nodes.get(idLong);
-    }   
-    
-    
-	private IEndNode getEnd() {
-    	for (Iterator it = nodes.values().iterator(); it.hasNext(); ) {
-    		INode node = (INode) it.next();
-    		if (node instanceof IEndNode) {
-    			return (IEndNode) node;
-    		}
-    	}
-		return null;
+
+    public INode getNode(final long id) {
+        final Long idLong = new Long( id );
+        if ( !this.nodes.containsKey( idLong ) ) {
+            throw new IllegalArgumentException( "Unknown node id: " + id );
+        }
+        return (INode) this.nodes.get( idLong );
     }
-	
-    public void removeNode(INode node) {
-    	if (node == null) {
-    		throw new IllegalArgumentException("Node is null");
-    	}
-    	INode n = (INode) nodes.remove(new Long(node.getId()));
-        if (n == null) {
-        	throw new IllegalArgumentException("Unknown node: " + node);
+
+    private IEndNode getEnd() {
+        for ( final Iterator it = this.nodes.values().iterator(); it.hasNext(); ) {
+            final INode node = (INode) it.next();
+            if ( node instanceof IEndNode ) {
+                return (IEndNode) node;
+            }
+        }
+        return null;
+    }
+
+    public void removeNode(final INode node) {
+        if ( node == null ) {
+            throw new IllegalArgumentException( "Node is null" );
+        }
+        final INode n = (INode) this.nodes.remove( new Long( node.getId() ) );
+        if ( n == null ) {
+            throw new IllegalArgumentException( "Unknown node: " + node );
         }
     }
-    
+
     public List getVariables() {
-        return variables;
+        return this.variables;
     }
-    
-    public void setVariables(List variables) {
-    	if (variables == null) {
-    		throw new IllegalArgumentException("Variables is null");    		
-    	}
+
+    public void setVariables(final List variables) {
+        if ( variables == null ) {
+            throw new IllegalArgumentException( "Variables is null" );
+        }
         this.variables = variables;
     }
 
-    public String[] getVariableNames() {    	
-        String[] result = new String[variables.size()];        
-        for (int i = 0; i < variables.size(); i++) {
-            result[i] = ((IVariable) variables.get(i)).getName();
+    public String[] getVariableNames() {
+        final String[] result = new String[this.variables.size()];
+        for ( int i = 0; i < this.variables.size(); i++ ) {
+            result[i] = ((IVariable) this.variables.get( i )).getName();
         }
         return result;
     }
 
-	public void addNode(INode node) {
-		validateAddNode(node);
-		if (!nodes.containsValue(node)) {
-			node.setId(++lastNodeId);
-			nodes.put(new Long(node.getId()), node);
-		}
+    public void addNode(final INode node) {
+        validateAddNode( node );
+        if ( !this.nodes.containsValue( node ) ) {
+            node.setId( ++this.lastNodeId );
+            this.nodes.put( new Long( node.getId() ),
+                            node );
+        }
     }
-	
-	private void validateAddNode(INode node) {
-		if ((node instanceof IStartNode) && (getStart() != null)) {
-			throw new IllegalArgumentException(
-				"A ruleflow process cannot have more than one start node!");
-		}
-		if ((node instanceof IEndNode) && (getEnd() != null)) {
-			throw new IllegalArgumentException(
-				"A ruleflow process cannot have more than one end node!");
-		}		
-	}
+
+    private void validateAddNode(final INode node) {
+        if ( (node instanceof IStartNode) && (getStart() != null) ) {
+            throw new IllegalArgumentException( "A ruleflow process cannot have more than one start node!" );
+        }
+        if ( (node instanceof IEndNode) && (getEnd() != null) ) {
+            throw new IllegalArgumentException( "A ruleflow process cannot have more than one end node!" );
+        }
+    }
 }

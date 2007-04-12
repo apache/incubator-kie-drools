@@ -380,8 +380,8 @@ public abstract class AbstractWorkingMemory
      * If no items are fired, then it will assert a temporary "Otherwise"
      * fact and allow any rules to fire to handle "otherwise" cases.
      */
-    private void doOtherwise(AgendaFilter agendaFilter) {
-        FactHandle handle = this.assertObject( new Otherwise() );
+    private void doOtherwise(final AgendaFilter agendaFilter) {
+        final FactHandle handle = this.assertObject( new Otherwise() );
         if ( !this.factQueue.isEmpty() ) {
             propagateQueuedActions();
         }
@@ -437,7 +437,7 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
 
             // Make sure the FactHandle is from this WorkingMemory
-            InternalFactHandle internalHandle = (InternalFactHandle) this.assertMap.get( handle );
+            final InternalFactHandle internalHandle = (InternalFactHandle) this.assertMap.get( handle );
             if ( internalHandle == null ) {
                 return null;
             }
@@ -472,8 +472,8 @@ public abstract class AbstractWorkingMemory
     public List getFactHandles() {
         try {
             this.lock.lock();
-            List list = new ArrayList( this.assertMap.size() );
-            org.drools.util.Iterator it = this.assertMap.iterator();
+            final List list = new ArrayList( this.assertMap.size() );
+            final org.drools.util.Iterator it = this.assertMap.iterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 list.add( entry.getKey() );
             }
@@ -500,10 +500,10 @@ public abstract class AbstractWorkingMemory
     public List getObjects() {
         final List list = new ArrayList( this.assertMap.size() );
 
-        org.drools.util.Iterator it = this.assertMap.iterator();
+        final org.drools.util.Iterator it = this.assertMap.iterator();
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-            Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+            final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
+            final Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
             list.add( object );
         }
         return list;
@@ -512,10 +512,10 @@ public abstract class AbstractWorkingMemory
     public List getObjects(final Class objectClass) {
         final List list = new ArrayList( this.assertMap.size() );
 
-        org.drools.util.Iterator it = this.assertMap.iterator();
+        final org.drools.util.Iterator it = this.assertMap.iterator();
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-            Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+            final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
+            final Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
             if ( objectClass.isInstance( object ) ) {
                 list.add( object );
             }
@@ -987,7 +987,7 @@ public abstract class AbstractWorkingMemory
                                                                factHandle,
                                                                originalObject,
                                                                object );
-            
+
             propagationContext.clearRetractedTuples();
 
             if ( !this.factQueue.isEmpty() ) {
@@ -1146,28 +1146,28 @@ public abstract class AbstractWorkingMemory
                            this.activationOrigin );
         }
     }
-    
+
     public class RuleFlowDeactivateEvent {
-        
+
         public void propagate() {
-            
+
         }
     }
-    
-    public IProcessInstance startProcess(String processId) {
-    	IProcess process = getRuleBase().getProcess(processId);
-    	if (process == null) {
-    		throw new IllegalArgumentException("Unknown process ID: " + processId);
-    	}
-    	if (process instanceof IRuleFlowProcess) {
-            IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-            processInstance.setAgenda(agenda);
-            processInstance.setProcess(process);
+
+    public IProcessInstance startProcess(final String processId) {
+        final IProcess process = getRuleBase().getProcess( processId );
+        if ( process == null ) {
+            throw new IllegalArgumentException( "Unknown process ID: " + processId );
+        }
+        if ( process instanceof IRuleFlowProcess ) {
+            final IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
+            processInstance.setAgenda( this.agenda );
+            processInstance.setProcess( process );
             processInstance.start();
             return processInstance;
-    	} else {
-    		throw new IllegalArgumentException("Unknown process type: " + process.getClass());
-    	}
+        } else {
+            throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );
+        }
     }
 
 }

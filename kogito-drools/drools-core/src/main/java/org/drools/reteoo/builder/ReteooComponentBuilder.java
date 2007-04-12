@@ -24,15 +24,17 @@ import org.drools.rule.RuleConditionElement;
  * @author etirelli
  */
 public interface ReteooComponentBuilder {
-    
+
     /**
      * Builds and attach if needed the given RuleConditionalElement
      * 
      * @param context current build context
      * @param rce 
      */
-    public void build( BuildContext context, BuildUtils utils, RuleConditionElement rce );
-    
+    public void build(BuildContext context,
+                      BuildUtils utils,
+                      RuleConditionElement rce);
+
     /**
      * A boolean function that indicates if the builder requires a previous left 
      * (tuple) activation in order to corretly build the given component.
@@ -48,6 +50,7 @@ public interface ReteooComponentBuilder {
      * 
      * @return true if a tuple source is required, false otherwise.
      */
-    public boolean requiresLeftActivation( BuildUtils utils, RuleConditionElement rce );
+    public boolean requiresLeftActivation(BuildUtils utils,
+                                          RuleConditionElement rce);
 
 }

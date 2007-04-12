@@ -16,11 +16,10 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
 public abstract class ConditionalElement
     implements
     RuleConditionElement {
-    
+
     public abstract Object clone();
-    
+
 }

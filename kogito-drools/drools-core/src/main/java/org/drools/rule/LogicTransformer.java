@@ -71,8 +71,8 @@ class LogicTransformer {
     }
 
     public GroupElement[] transform(final GroupElement and) throws InvalidPatternException {
-        GroupElement cloned = (GroupElement) and.clone();
-        
+        final GroupElement cloned = (GroupElement) and.clone();
+
         processTree( cloned );
         cloned.pack();
 
@@ -81,13 +81,13 @@ class LogicTransformer {
         if ( cloned.isAnd() ) {
             // Yes, so just return it
             ands = new GroupElement[]{cloned};
-        } else if( cloned.isOr() ){
+        } else if ( cloned.isOr() ) {
             // it is an OR, so each child is an AND branch
             ands = new GroupElement[cloned.getChildren().size()];
             int i = 0;
-            for( Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
-                RuleConditionElement branch = (RuleConditionElement) it.next();
-                if( ( branch instanceof GroupElement ) && (((GroupElement)branch).isAnd()) ){
+            for ( final Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
+                final RuleConditionElement branch = (RuleConditionElement) it.next();
+                if ( (branch instanceof GroupElement) && (((GroupElement) branch).isAnd()) ) {
                     ands[i++] = (GroupElement) branch;
                 } else {
                     ands[i] = GroupElementFactory.newAndInstance();
@@ -97,7 +97,7 @@ class LogicTransformer {
             }
         } else {
             // no, so just wrap into an AND
-            GroupElement wrapper = GroupElementFactory.newAndInstance();
+            final GroupElement wrapper = GroupElementFactory.newAndInstance();
             wrapper.addChild( cloned );
             ands = new GroupElement[]{wrapper};
         }
@@ -120,10 +120,10 @@ class LogicTransformer {
     void processTree(final GroupElement ce) throws InvalidPatternException {
 
         boolean hasChildOr = false;
-        
+
         // first we eliminicate any redundancy
         ce.pack();
-        
+
         for ( final ListIterator it = ce.getChildren().listIterator(); it.hasNext(); ) {
             final Object object = it.next();
             if ( object instanceof GroupElement ) {
@@ -142,7 +142,7 @@ class LogicTransformer {
     }
 
     void applyOrTransformation(final GroupElement parent) throws InvalidPatternException {
-        Transformation transformation = (Transformation) this.orTransformations.get( parent.getType() );
+        final Transformation transformation = (Transformation) this.orTransformations.get( parent.getType() );
 
         if ( transformation == null ) {
             throw new RuntimeException( "applyOrTransformation could not find transformation for parent '" + parent.getType() + "' and child 'OR'" );
@@ -186,20 +186,20 @@ class LogicTransformer {
         Transformation {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
-            List orsList = new ArrayList();
+            final List orsList = new ArrayList();
             // must keep order, so, using array
-            Object[] others = new Object[parent.getChildren().size()];
+            final Object[] others = new Object[parent.getChildren().size()];
 
             // first we split children as OR or not OR
             int permutations = 1;
             int index = 0;
-            for ( Iterator it = parent.getChildren().iterator(); it.hasNext(); ) {
-                Object child = it.next();
+            for ( final Iterator it = parent.getChildren().iterator(); it.hasNext(); ) {
+                final Object child = it.next();
                 if ( (child instanceof GroupElement) && ((GroupElement) child).isOr() ) {
                     permutations *= ((GroupElement) child).getChildren().size();
                     orsList.add( child );
                 } else {
-                    others[index] = child ;
+                    others[index] = child;
                 }
                 index++;
             }
@@ -209,18 +209,19 @@ class LogicTransformer {
             parent.getChildren().clear();
 
             // prepare arrays and indexes to calculate permutation
-            GroupElement[] ors = (GroupElement[]) orsList.toArray( new GroupElement[orsList.size()] );
-            int[] indexes = new int[ors.length];
+            final GroupElement[] ors = (GroupElement[]) orsList.toArray( new GroupElement[orsList.size()] );
+            final int[] indexes = new int[ors.length];
 
             // now we know how many permutations we will have, so create it
             for ( int i = 1; i <= permutations; i++ ) {
-                GroupElement and = GroupElementFactory.newAndInstance();
+                final GroupElement and = GroupElementFactory.newAndInstance();
 
                 // create the actual permutations
                 int mod = 1;
                 for ( int j = ors.length - 1; j >= 0; j-- ) {
                     // we must insert at the beggining to keep the order
-                    and.getChildren().add( 0, ors[j].getChildren().get( indexes[j] ) );
+                    and.getChildren().add( 0,
+                                           ors[j].getChildren().get( indexes[j] ) );
                     if ( (i % mod) == 0 ) {
                         indexes[j] = (indexes[j] + 1) % ors[j].getChildren().size();
                     }
@@ -229,10 +230,11 @@ class LogicTransformer {
 
                 // elements originally outside OR will be in every permutation, so add them
                 // in their original position
-                for( int j = 0; j < others.length; j++ ) {
-                    if( others[j] != null ) {
+                for ( int j = 0; j < others.length; j++ ) {
+                    if ( others[j] != null ) {
                         // always add clone of them to avoid offset conflicts in declarations
-                        and.getChildren().add( j, ((RuleConditionElement) others[j]).clone() );
+                        and.getChildren().add( j,
+                                               ((RuleConditionElement) others[j]).clone() );
                     }
                 }
                 parent.addChild( and );
@@ -277,11 +279,11 @@ class LogicTransformer {
              * we know an Exists only ever has one child, and the previous algorithm
              * has confirmed the child is an OR
              */
-            GroupElement or = (GroupElement) parent.getChildren().get( 0 );
+            final GroupElement or = (GroupElement) parent.getChildren().get( 0 );
             parent.setType( GroupElement.OR );
             parent.getChildren().clear();
-            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-                GroupElement newExists = GroupElementFactory.newExistsInstance();
+            for ( final Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+                final GroupElement newExists = GroupElementFactory.newExistsInstance();
                 newExists.addChild( (RuleConditionElement) it.next() );
                 parent.addChild( newExists );
             }
@@ -324,11 +326,11 @@ class LogicTransformer {
              * we know a Not only ever has one child, and the previous algorithm
              * has confirmed the child is an OR
              */
-            GroupElement or = (GroupElement) parent.getChildren().get( 0 );
+            final GroupElement or = (GroupElement) parent.getChildren().get( 0 );
             parent.setType( GroupElement.AND );
             parent.getChildren().clear();
-            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-                GroupElement newNot = GroupElementFactory.newNotInstance();
+            for ( final Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+                final GroupElement newNot = GroupElementFactory.newNotInstance();
                 newNot.addChild( (RuleConditionElement) it.next() );
                 parent.addChild( newNot );
             }

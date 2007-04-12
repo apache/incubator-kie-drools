@@ -142,11 +142,11 @@ class Rete extends ObjectSource
 
         ObjectTypeNode[] cachedNodes;
         if ( object instanceof ShadowProxy ) {
-             cachedNodes  = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
+            cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
         } else {
-            cachedNodes  = (ObjectTypeNode[]) memory.get( object.getClass() );
+            cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
         }
-         
+
         // cached might have been cleared, so recalculate matching nodes
         if ( cachedNodes == null ) {
             cachedNodes = getMatchingNodes( object );
@@ -239,7 +239,7 @@ class Rete extends ObjectSource
             return true;
         }
 
-        if ( object == null || !( object instanceof Rete ) ) {
+        if ( object == null || !(object instanceof Rete) ) {
             return false;
         }
 
@@ -252,12 +252,12 @@ class Rete extends ObjectSource
                            final InternalWorkingMemory workingMemory) {
         // JBRULES-612: the cache MUST be invalidated when a new
         // node type is added to the network
-        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
         memory.clear();
-        
+
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-        Iterator it = workingMemory.getFactHandleMap().iterator();
-        for (  ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry =  ( ObjectEntry ) it.next() ) {   	
+        final Iterator it = workingMemory.getFactHandleMap().iterator();
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             final InternalFactHandle handle = (InternalFactHandle) entry.getValue();
             if ( node.matches( handle.getObject() ) ) {
                 node.assertObject( handle,

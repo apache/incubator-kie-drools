@@ -11,9 +11,9 @@ public class FactHandleIndexHashTable extends AbstractHashTable
     implements
     FactHandleMemory {
 
-    private static final long serialVersionUID = -6033183838054653227L;
+    private static final long           serialVersionUID = -6033183838054653227L;
 
-    public static final int             PRIME = 31;
+    public static final int             PRIME            = 31;
 
     private int                         startResult;
 
@@ -30,8 +30,8 @@ public class FactHandleIndexHashTable extends AbstractHashTable
     }
 
     public FactHandleIndexHashTable(final int capacity,
-                               final float loadFactor,
-                               final FieldIndex[] index) {
+                                    final float loadFactor,
+                                    final FieldIndex[] index) {
         super( capacity,
                loadFactor );
 
@@ -45,7 +45,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  0" );
             case 1 :
                 this.index = new SingleIndex( index,
-                                              this.startResult);
+                                              this.startResult );
                 break;
             case 2 :
                 this.index = new DoubleCompositeIndex( index,
@@ -80,7 +80,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
     public Entry getBucket(final Object object) {
         final int hashCode = this.index.hashCodeOf( object );
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         return this.table[index];
     }
@@ -131,9 +131,9 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         final Object object = handle.getObject();
         //this.index.setCachedValue( object );
         final int hashCode = this.index.hashCodeOf( object );
-        
+
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         // search the table for  the Entry, we need to track previous  and next, so if the 
         // Entry is empty after  its had the FactEntry removed, we must remove  it from the table
@@ -170,7 +170,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         final int hashCode = this.index.hashCodeOf( object );
 
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
 
         FieldIndexEntry current = (FieldIndexEntry) this.table[index];
         while ( current != null ) {
@@ -189,7 +189,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         final int hashCode = this.index.hashCodeOf( tuple );
 
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
         FieldIndexEntry entry = (FieldIndexEntry) this.table[index];
 
         while ( entry != null ) {
@@ -216,7 +216,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         final int hashCode = this.index.hashCodeOf( object );
 
         final int index = indexOf( hashCode,
-                             this.table.length );
+                                   this.table.length );
         FieldIndexEntry entry = (FieldIndexEntry) this.table[index];
 
         while ( entry != null ) {
@@ -249,10 +249,10 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         Entry {
 
         private static final long serialVersionUID = -577270475161063671L;
-        private Entry     next;
-        private FactEntry first;
-        private final int hashCode;
-        private Index     index;
+        private Entry             next;
+        private FactEntry         first;
+        private final int         hashCode;
+        private Index             index;
 
         public FieldIndexEntry(final Index index,
                                final int hashCode) {
@@ -336,9 +336,9 @@ public class FactHandleIndexHashTable extends AbstractHashTable
             final FieldIndexEntry other = (FieldIndexEntry) object;
             return this.hashCode == other.hashCode && this.index == other.index;
         }
-        
+
         public String toString() {
-            return "FieldIndexEntry( hashCode="+hashCode+" first="+this.first+" )";
+            return "FieldIndexEntry( hashCode=" + this.hashCode + " first=" + this.first + " )";
         }
     }
 }

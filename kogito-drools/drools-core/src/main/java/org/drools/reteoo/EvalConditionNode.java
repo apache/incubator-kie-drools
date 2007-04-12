@@ -59,9 +59,9 @@ public class EvalConditionNode extends TupleSource
 
     /** The source of incoming <code>Tuples</code>. */
     private final TupleSource   tupleSource;
-    
-    private TupleSinkNode           previousTupleSinkNode;
-    private TupleSinkNode           nextTupleSinkNode;
+
+    private TupleSinkNode       previousTupleSinkNode;
+    private TupleSinkNode       nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -77,8 +77,8 @@ public class EvalConditionNode extends TupleSource
      * @param eval
      */
     public EvalConditionNode(final int id,
-                      final TupleSource tupleSource,
-                      final EvalCondition eval) {
+                             final TupleSource tupleSource,
+                             final EvalCondition eval) {
         super( id );
         this.condition = eval;
         this.tupleSource = tupleSource;
@@ -157,8 +157,8 @@ public class EvalConditionNode extends TupleSource
         final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
 
         // can we improve that?
-        ReteTuple memTuple = memory.remove( tuple ); 
-        if (  memTuple != null ) {
+        final ReteTuple memTuple = memory.remove( tuple );
+        if ( memTuple != null ) {
             this.sink.propagateRetractTuple( memTuple,
                                              context,
                                              workingMemory );
@@ -213,8 +213,8 @@ public class EvalConditionNode extends TupleSource
         }
     }
 
-    public void remove(BaseNode node,
-                       InternalWorkingMemory[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
             removeTupleSink( (TupleSink) node );
         }
@@ -229,7 +229,6 @@ public class EvalConditionNode extends TupleSource
 
     }
 
-    
     /**
      * Returns the next node
      * @return

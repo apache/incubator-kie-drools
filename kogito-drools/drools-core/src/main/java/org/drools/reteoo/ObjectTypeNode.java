@@ -73,10 +73,10 @@ public class ObjectTypeNode extends ObjectSource
     private final ObjectType  objectType;
 
     /** The parent Rete node */
-    private final Rete        rete;   
+    private final Rete        rete;
 
-    protected boolean skipOnModify = false;
-    
+    protected boolean         skipOnModify     = false;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -94,10 +94,12 @@ public class ObjectTypeNode extends ObjectSource
                           final ObjectType objectType,
                           final Rete rete,
                           final int alphaNodeHashingThreshold) {
-        super( id, null, alphaNodeHashingThreshold );
+        super( id,
+               null,
+               alphaNodeHashingThreshold );
         this.rete = rete;
         this.objectType = objectType;
-        setHasMemory( true );       
+        setHasMemory( true );
     }
 
     // ------------------------------------------------------------
@@ -141,7 +143,7 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );        
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
 
         // checks if shadow is enabled
         if ( this.objectType.isShadowEnabled() ) {
@@ -154,28 +156,29 @@ public class ObjectTypeNode extends ObjectSource
                 // we need to check if the shadow proxy matches the current object type
                 // because in a class hirarchy it may happen that the shadow proxy does not
                 // match a class down the hirarchy. See: JBRULES-696.
-                if( this.objectType.matches( handle.getObject() ) ) {
+                if ( this.objectType.matches( handle.getObject() ) ) {
                     ((ShadowProxy) handle.getObject()).updateProxy();
                 } else {
                     // replaces the old shadow proxy for a more specialized version of it
-                    ShadowProxy old = (ShadowProxy)handle.getObject();
+                    final ShadowProxy old = (ShadowProxy) handle.getObject();
                     handle.setObject( this.objectType.getShadow( old.getShadowedObject() ) );
                     handle.setShadowFact( true );
 
                     // we MUST copy state from one proxy to the other as we are in a dynamic rules engine
                     // and new rules with different object types may be added at any moment
-                    ShadowProxyHelper.copyState( old, (ShadowProxy)handle.getObject() );
+                    ShadowProxyHelper.copyState( old,
+                                                 (ShadowProxy) handle.getObject() );
                 }
             }
         }
-        
-        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
+
+        if ( context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             // we do this after the shadowproxy update, just so that its up to date for the future
             return;
-        }                
+        }
 
         memory.add( handle,
-                    false );        
+                    false );
 
         this.sink.propagateAssertObject( handle,
                                          context,
@@ -197,12 +200,12 @@ public class ObjectTypeNode extends ObjectSource
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
 
-        if (context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
+        if ( context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             return;
-        }         
-        
+        }
+
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-        memory.remove( handle );               
+        memory.remove( handle );
 
         this.sink.propagateRetractObject( handle,
                                           context,
@@ -294,7 +297,7 @@ public class ObjectTypeNode extends ObjectSource
             return true;
         }
 
-        if ( object == null || !(object instanceof ObjectTypeNode ) ) {
+        if ( object == null || !(object instanceof ObjectTypeNode) ) {
             return false;
         }
 
@@ -319,7 +322,6 @@ public class ObjectTypeNode extends ObjectSource
         this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
 
-
     /**
      * Checks if a modify action on this object type may
      * be skipped because no constraint is applied to it
@@ -327,7 +329,7 @@ public class ObjectTypeNode extends ObjectSource
      * @param sinks
      * @return
      */
-    private boolean canSkipOnModify( Sink[] sinks ) {
+    private boolean canSkipOnModify(final Sink[] sinks) {
         // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
         boolean hasConstraints = false;
         for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
@@ -335,31 +337,31 @@ public class ObjectTypeNode extends ObjectSource
                 hasConstraints = this.usesDeclaration( ((AlphaNode) sinks[i]).getConstraint() );
             } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
                 hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
-            } 
-            if( !hasConstraints && sinks[i] instanceof ObjectSource ) {
-                hasConstraints = this.canSkipOnModify( ((ObjectSource)sinks[i]).getSinkPropagator().getSinks() );
+            }
+            if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
+                hasConstraints = this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
             } else if ( sinks[i] instanceof TupleSource ) {
-                hasConstraints = this.canSkipOnModify( ((TupleSource)sinks[i]).getSinkPropagator().getSinks() );
+                hasConstraints = this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
             }
         }
 
         // Can only skip if we have no constraints
-        return !hasConstraints;     
+        return !hasConstraints;
     }
-    
-    private boolean usesDeclaration( Constraint[] constraints ) {
+
+    private boolean usesDeclaration(final Constraint[] constraints) {
         boolean usesDecl = false;
-        for( int i = 0; !usesDecl && i < constraints.length; i++ ) {
+        for ( int i = 0; !usesDecl && i < constraints.length; i++ ) {
             usesDecl = this.usesDeclaration( constraints[i] );
         }
         return usesDecl;
     }
 
-    private boolean usesDeclaration( Constraint constraint ) {
+    private boolean usesDeclaration(final Constraint constraint) {
         boolean usesDecl = false;
-        Declaration[] declarations = constraint.getRequiredDeclarations();
-        for( int j = 0; !usesDecl && j < declarations.length; j++ ) {
-            usesDecl = ( declarations[j].getColumn().getObjectType() == this.objectType );
+        final Declaration[] declarations = constraint.getRequiredDeclarations();
+        for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
+            usesDecl = (declarations[j].getColumn().getObjectType() == this.objectType);
         }
         return usesDecl;
     }

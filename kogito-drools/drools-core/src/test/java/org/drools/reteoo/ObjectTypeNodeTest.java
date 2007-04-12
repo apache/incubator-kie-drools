@@ -45,7 +45,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   objectType,
                                                                   source,
-                                                                  3);
+                                                                  3 );
 
         assertEquals( 1,
                       objectTypeNode.getId() );
@@ -116,7 +116,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
                                                                   new Rete(),
-                                                                  3);
+                                                                  3 );
 
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
 
@@ -130,7 +130,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             source,
-                                                            3);
+                                                            3 );
 
         assertFalse( objectTypeNode.matches( new Object() ) );
         assertFalse( objectTypeNode.matches( new Integer( 5 ) ) );
@@ -139,7 +139,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( Object.class ),
                                              source,
-                                             3);
+                                             3 );
 
         assertTrue( objectTypeNode.matches( new Object() ) );
         assertTrue( objectTypeNode.matches( new Integer( 5 ) ) );
@@ -161,7 +161,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
                                                                   source,
-                                                                  3);
+                                                                  3 );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -213,7 +213,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
                                                                   source,
-                                                                  3);
+                                                                  3 );
 
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
@@ -285,7 +285,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                   new ClassObjectType( Cheese.class,
                                                                                        shadowClass ),
                                                                   source,
-                                                                  3);
+                                                                  3 );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -332,7 +332,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                   new ClassObjectType( Person.class,
                                                                                        shadowClass ),
                                                                   source,
-                                                                  3);
+                                                                  3 );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );

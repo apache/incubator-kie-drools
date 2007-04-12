@@ -1,4 +1,5 @@
 package org.drools.ruleflow.common.datatype;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,12 +23,13 @@ import java.io.Serializable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IDataType extends Serializable {
-	
-	
-	/**
-	 * Returns true if the given value is a valid value of this data type.
-	 */
-	boolean verifyDataType(Object value);
-    
+public interface IDataType
+    extends
+    Serializable {
+
+    /**
+     * Returns true if the given value is a valid value of this data type.
+     */
+    boolean verifyDataType(Object value);
+
 }

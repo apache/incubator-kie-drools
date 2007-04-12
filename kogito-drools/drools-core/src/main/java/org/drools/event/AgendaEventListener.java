@@ -34,10 +34,10 @@ public interface AgendaEventListener
 
     void afterActivationFired(AfterActivationFiredEvent event,
                               WorkingMemory workingMemory);
-    
+
     void agendaGroupPopped(AgendaGroupPoppedEvent event,
                            WorkingMemory workingMemory);
-    
+
     void agendaGroupPushed(AgendaGroupPushedEvent event,
-                           WorkingMemory workingMemory);    
+                           WorkingMemory workingMemory);
 }

@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,19 +16,20 @@ package org.drools.ruleflow.core;
  * limitations under the License.
  */
 
-
 /**
  * Represents an end node in a RuleFlow. 
  * An end node has one incoming and no outgoing connections.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IEndNode extends INode {
-    
-	/**
-	 * Convenience method for returning the incoming <code>IConnection</code>.
-	 * @return the incoming <code>IConnection</code>
-	 */
+public interface IEndNode
+    extends
+    INode {
+
+    /**
+     * Convenience method for returning the incoming <code>IConnection</code>.
+     * @return the incoming <code>IConnection</code>
+     */
     IConnection getFrom();
-    
+
 }

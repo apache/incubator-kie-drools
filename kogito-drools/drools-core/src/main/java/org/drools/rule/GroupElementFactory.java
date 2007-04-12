@@ -22,9 +22,10 @@ package org.drools.rule;
  * @author etirelli
  */
 public class GroupElementFactory {
-    
-    private GroupElementFactory() {}
-    
+
+    private GroupElementFactory() {
+    }
+
     public static GroupElement newAndInstance() {
         return new GroupElement( GroupElement.AND );
     }

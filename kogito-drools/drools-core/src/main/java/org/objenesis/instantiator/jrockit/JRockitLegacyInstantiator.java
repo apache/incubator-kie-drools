@@ -28,37 +28,38 @@ import org.objenesis.instantiator.ObjectInstantiator;
  * @see org.objenesis.instantiator.ObjectInstantiator
  * @see org.objenesis.instantiator.sun.SunReflectionFactoryInstantiator
  */
-public class JRockitLegacyInstantiator implements ObjectInstantiator {
-   private static Method safeAllocObjectMethod = null;
+public class JRockitLegacyInstantiator
+    implements
+    ObjectInstantiator {
+    private static Method safeAllocObjectMethod = null;
 
-   private static void initialize() {
-      if(safeAllocObjectMethod == null) {
-         Class memSystem;
-         try {
-            memSystem = Class.forName("jrockit.vm.MemSystem");
-            safeAllocObjectMethod = memSystem.getDeclaredMethod("safeAllocObject",
-               new Class[] {Class.class});
-            safeAllocObjectMethod.setAccessible(true);
-         }
-         catch(Exception e) {
-            throw new ObjenesisException(e);
-         }
-      }
-   }
+    private static void initialize() {
+        if ( safeAllocObjectMethod == null ) {
+            Class memSystem;
+            try {
+                memSystem = Class.forName( "jrockit.vm.MemSystem" );
+                safeAllocObjectMethod = memSystem.getDeclaredMethod( "safeAllocObject",
+                                                                     new Class[]{Class.class} );
+                safeAllocObjectMethod.setAccessible( true );
+            } catch ( final Exception e ) {
+                throw new ObjenesisException( e );
+            }
+        }
+    }
 
-   private Class type;
+    private Class type;
 
-   public JRockitLegacyInstantiator(Class type) {
-      initialize();
-      this.type = type;
-   }
+    public JRockitLegacyInstantiator(final Class type) {
+        initialize();
+        this.type = type;
+    }
 
-   public Object newInstance() {      
-      try {
-         return safeAllocObjectMethod.invoke(null, new Object[] {type});
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return safeAllocObjectMethod.invoke( null,
+                                                 new Object[]{this.type} );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 }

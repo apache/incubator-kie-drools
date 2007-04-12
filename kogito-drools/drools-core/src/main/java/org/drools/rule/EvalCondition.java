@@ -121,13 +121,12 @@ public class EvalCondition extends ConditionalElement {
     public Map getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
-    
+
     /**
      * @inheritDoc
      */
-    public Declaration resolveDeclaration(String identifier) {
-        return (Declaration) null;
+    public Declaration resolveDeclaration(final String identifier) {
+        return null;
     }
 
-    
 };

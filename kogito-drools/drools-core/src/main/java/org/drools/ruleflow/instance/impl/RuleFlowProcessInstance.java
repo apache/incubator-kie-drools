@@ -1,4 +1,5 @@
 package org.drools.ruleflow.instance.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -39,102 +40,102 @@ import org.drools.ruleflow.instance.IRuleFlowProcessInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowProcessInstance extends ProcessInstance implements IRuleFlowProcessInstance {
-    
-	private static final long serialVersionUID = -6760756665603399413L;
-	
-	private Agenda agenda;
-	private List nodeInstances = new ArrayList();
-	
-	public IRuleFlowProcess getRuleFlowProcess() {
-		return (IRuleFlowProcess) getProcess();
-	}
+public class RuleFlowProcessInstance extends ProcessInstance
+    implements
+    IRuleFlowProcessInstance {
 
-    public void addNodeInstance(IRuleFlowNodeInstance nodeInstance) {
-        nodeInstances.add(nodeInstance);
-        nodeInstance.setProcessInstance(this);
+    private static final long serialVersionUID = -6760756665603399413L;
+
+    private Agenda            agenda;
+    private final List        nodeInstances    = new ArrayList();
+
+    public IRuleFlowProcess getRuleFlowProcess() {
+        return (IRuleFlowProcess) getProcess();
     }
-    
-    public void removeNodeInstance(IRuleFlowNodeInstance nodeInstance) {    	
-        nodeInstances.remove(nodeInstance);
+
+    public void addNodeInstance(final IRuleFlowNodeInstance nodeInstance) {
+        this.nodeInstances.add( nodeInstance );
+        nodeInstance.setProcessInstance( this );
     }
-    
+
+    public void removeNodeInstance(final IRuleFlowNodeInstance nodeInstance) {
+        this.nodeInstances.remove( nodeInstance );
+    }
+
     public Collection getNodeInstances() {
-        return Collections.unmodifiableCollection(nodeInstances);
+        return Collections.unmodifiableCollection( this.nodeInstances );
     }
-    
-    public IRuleFlowNodeInstance getFirstNodeInstance(long nodeId) {
-        for (Iterator iterator = nodeInstances.iterator(); iterator.hasNext(); ) {
-        	IRuleFlowNodeInstance nodeInstance = (IRuleFlowNodeInstance) iterator.next();
-            if (nodeInstance.getNodeId() == nodeId) {
+
+    public IRuleFlowNodeInstance getFirstNodeInstance(final long nodeId) {
+        for ( final Iterator iterator = this.nodeInstances.iterator(); iterator.hasNext(); ) {
+            final IRuleFlowNodeInstance nodeInstance = (IRuleFlowNodeInstance) iterator.next();
+            if ( nodeInstance.getNodeId() == nodeId ) {
                 return nodeInstance;
             }
         }
         return null;
     }
-    
-	public Agenda getAgenda() {
-		return agenda;
-	}
 
-	public void setAgenda(Agenda agenda) {
-		this.agenda = agenda;
-	}
+    public Agenda getAgenda() {
+        return this.agenda;
+    }
 
-	public IRuleFlowNodeInstance getNodeInstance(INode node) {
-		if (node instanceof IRuleSetNode) {
-			IRuleFlowNodeInstance result = (IRuleFlowNodeInstance)
-				agenda.getRuleFlowGroup(((IRuleSetNode) node).getRuleFlowGroup());
-			result.setNodeId(node.getId());
-			addNodeInstance(result);
-			return result;
-		} else if (node instanceof ISplit) {
-			IRuleFlowNodeInstance result = getFirstNodeInstance(node.getId());
-			if (result == null) {
-				result = new RuleFlowSplitInstance();
-				result.setNodeId(node.getId());
-				addNodeInstance(result);
-				return result;
-			}
-		} else if (node instanceof IJoin) {
-			IRuleFlowNodeInstance result = getFirstNodeInstance(node.getId());
-			if (result == null) {
-				result = new RuleFlowJoinInstance();
-				result.setNodeId(node.getId());
-				addNodeInstance(result);
-			}
-			return result;
-		} else if (node instanceof IStartNode) {
-			IRuleFlowNodeInstance result = new StartNodeInstance();
-			result.setNodeId(node.getId());
-			addNodeInstance(result);
-			return result;
-		} else if (node instanceof IEndNode) {
-			IRuleFlowNodeInstance result = new EndNodeInstance();
-			result.setNodeId(node.getId());
-			addNodeInstance(result);
-			return result;
-		}
-		throw new IllegalArgumentException("Illegal node type: " + node.getClass());
-	}
-	
-	public void start() {
-		if (getState() != IProcessInstance.STATE_PENDING) {
-			throw new IllegalArgumentException(
-				"A process instance can only be started once");
-		}
-		setState(IProcessInstance.STATE_ACTIVE);
-		getNodeInstance(getRuleFlowProcess().getStart()).trigger(null);
-	}
-	
-	public String toString() {
-    	StringBuffer sb = new StringBuffer("RuleFlowProcessInstance");
-    	sb.append(getId());
-    	sb.append(" [processId=");
-    	sb.append(getProcess().getId());
-    	sb.append(",state=");
-    	sb.append(getState());
-    	sb.append("]");
-    	return sb.toString();
+    public void setAgenda(final Agenda agenda) {
+        this.agenda = agenda;
+    }
+
+    public IRuleFlowNodeInstance getNodeInstance(final INode node) {
+        if ( node instanceof IRuleSetNode ) {
+            final IRuleFlowNodeInstance result = (IRuleFlowNodeInstance) this.agenda.getRuleFlowGroup( ((IRuleSetNode) node).getRuleFlowGroup() );
+            result.setNodeId( node.getId() );
+            addNodeInstance( result );
+            return result;
+        } else if ( node instanceof ISplit ) {
+            IRuleFlowNodeInstance result = getFirstNodeInstance( node.getId() );
+            if ( result == null ) {
+                result = new RuleFlowSplitInstance();
+                result.setNodeId( node.getId() );
+                addNodeInstance( result );
+                return result;
+            }
+        } else if ( node instanceof IJoin ) {
+            IRuleFlowNodeInstance result = getFirstNodeInstance( node.getId() );
+            if ( result == null ) {
+                result = new RuleFlowJoinInstance();
+                result.setNodeId( node.getId() );
+                addNodeInstance( result );
+            }
+            return result;
+        } else if ( node instanceof IStartNode ) {
+            final IRuleFlowNodeInstance result = new StartNodeInstance();
+            result.setNodeId( node.getId() );
+            addNodeInstance( result );
+            return result;
+        } else if ( node instanceof IEndNode ) {
+            final IRuleFlowNodeInstance result = new EndNodeInstance();
+            result.setNodeId( node.getId() );
+            addNodeInstance( result );
+            return result;
+        }
+        throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
+    }
+
+    public void start() {
+        if ( getState() != IProcessInstance.STATE_PENDING ) {
+            throw new IllegalArgumentException( "A process instance can only be started once" );
+        }
+        setState( IProcessInstance.STATE_ACTIVE );
+        getNodeInstance( getRuleFlowProcess().getStart() ).trigger( null );
+    }
+
+    public String toString() {
+        final StringBuffer sb = new StringBuffer( "RuleFlowProcessInstance" );
+        sb.append( getId() );
+        sb.append( " [processId=" );
+        sb.append( getProcess().getId() );
+        sb.append( ",state=" );
+        sb.append( getState() );
+        sb.append( "]" );
+        return sb.toString();
     }
 }

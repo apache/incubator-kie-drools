@@ -10,16 +10,16 @@ import org.objenesis.ObjenesisException;
  * @see org.objenesis.instantiator.ObjectInstantiator
  */
 public class GCJInstantiator extends GCJInstantiatorBase {
-   public GCJInstantiator(Class type) {
-      super(type);
-   }
+    public GCJInstantiator(final Class type) {
+        super( type );
+    }
 
-   public Object newInstance() {
-      try {
-         return newObjectMethod.invoke(dummyStream, new Object[] {type, Object.class});
-      }
-      catch(Exception e) {
-         throw new ObjenesisException(e);
-      }
-   }
+    public Object newInstance() {
+        try {
+            return newObjectMethod.invoke( dummyStream,
+                                           new Object[]{this.type, Object.class} );
+        } catch ( final Exception e ) {
+            throw new ObjenesisException( e );
+        }
+    }
 }

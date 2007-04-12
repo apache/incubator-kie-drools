@@ -168,7 +168,7 @@ public final class QueryTerminalNode extends BaseNode
      * @return the subrule
      */
     public GroupElement getSubrule() {
-        return subrule;
+        return this.subrule;
     }
 
 }

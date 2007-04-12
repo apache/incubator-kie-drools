@@ -257,7 +257,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertFalse( map.contains( f0 ) );
 
         assertNotSame( tuple,
-                    ((Object[]) sink.getRetracted().get( 0 ))[0] );
+                       ((Object[]) sink.getRetracted().get( 0 ))[0] );
 
     }
 

@@ -42,7 +42,8 @@ public class ObjectSourceTest extends DroolsTestCase {
         field.setAccessible( true );
         ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( source );
 
-        assertSame( EmptyObjectSinkAdapter.getInstance(), sink );
+        assertSame( EmptyObjectSinkAdapter.getInstance(),
+                    sink );
 
         final MockObjectSink sink1 = new MockObjectSink();
         source.addObjectSink( sink1 );
@@ -85,6 +86,6 @@ public class ObjectSourceTest extends DroolsTestCase {
         assertSame( EmptyObjectSinkAdapter.getInstance(),
                     sink );
         assertEquals( 0,
-                      sink.getSinks().length );                     
+                      sink.getSinks().length );
     }
 }

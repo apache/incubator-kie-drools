@@ -62,13 +62,14 @@ public class ExistsNodeTest extends DroolsTestCase {
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
-        RuleBaseConfiguration configuration = new RuleBaseConfiguration();
-        
+        final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
+
         // string1Declaration is bound to column 3 
         this.node = new ExistsNode( 15,
-                                 new MockTupleSource( 5 ),
-                                 new MockObjectSource( 8 ),
-                                 new DefaultBetaConstraints( new BetaNodeFieldConstraint[] { this.constraint }, configuration ) );
+                                    new MockTupleSource( 5 ),
+                                    new MockObjectSource( 8 ),
+                                    new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
+                                                                configuration ) );
 
         this.sink = new MockTupleSink();
         this.node.addTupleSink( this.sink );
@@ -118,7 +119,6 @@ public class ExistsNodeTest extends DroolsTestCase {
 
         assertEquals( new ReteTuple( f0 ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
-
 
         // assert tuple, will have matches, so propagate
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.assertObject( new Cheese( "gouda",

@@ -91,13 +91,13 @@ public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtra
         try {
             return this.getClass().getDeclaredMethod( "getBooleanValue",
                                                       new Class[]{Object.class} );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
     }
 
-    public int getHashCode(Object object) {
+    public int getHashCode(final Object object) {
         return getBooleanValue( object ) ? 1231 : 1237;
     }
 

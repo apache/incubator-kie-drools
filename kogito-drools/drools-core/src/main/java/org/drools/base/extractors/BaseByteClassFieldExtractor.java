@@ -46,8 +46,8 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
      * @param valueType
      */
     protected BaseByteClassFieldExtractor(final int index,
-                                             final Class fieldType,
-                                             final ValueType valueType) {
+                                          final Class fieldType,
+                                          final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
@@ -86,16 +86,18 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
     public short getShortValue(final Object object) {
         return getByteValue( object );
     }
-    
+
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getByteValue", new Class[] { Object.class } );
-        } catch ( Exception e ) {
-            throw new RuntimeDroolsException("This is a bug. Please report to development team: "+e.getMessage(), e);
+            return this.getClass().getDeclaredMethod( "getByteValue",
+                                                      new Class[]{Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
         }
     }
 
-    public int getHashCode(Object object) {
+    public int getHashCode(final Object object) {
         return getByteValue( object );
     }
 }

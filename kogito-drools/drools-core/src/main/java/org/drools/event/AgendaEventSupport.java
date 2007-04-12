@@ -65,7 +65,7 @@ public class AgendaEventSupport
     }
 
     public void fireActivationCreated(final Activation activation,
-                                      WorkingMemory workingMemory) {
+                                      final WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -79,7 +79,7 @@ public class AgendaEventSupport
     }
 
     public void fireActivationCancelled(final Activation activation,
-                                        WorkingMemory workingMemory) {
+                                        final WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -93,7 +93,7 @@ public class AgendaEventSupport
     }
 
     public void fireBeforeActivationFired(final Activation activation,
-                                          WorkingMemory workingMemory) {
+                                          final WorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -115,33 +115,33 @@ public class AgendaEventSupport
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event,
-                                                                                  workingMemory );
+                                                                                  this.workingMemory );
         }
     }
-    
-    public void fireAgendaGroupPopped(AgendaGroup agendaGroup) {
+
+    public void fireAgendaGroupPopped(final AgendaGroup agendaGroup) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final AgendaGroupPoppedEvent event = new AgendaGroupPoppedEvent(agendaGroup);
+        final AgendaGroupPoppedEvent event = new AgendaGroupPoppedEvent( agendaGroup );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).agendaGroupPopped( event,
-                                                                               workingMemory );
-        }        
+                                                                               this.workingMemory );
+        }
     }
-    
-    public void fireAgendaGroupPushed(AgendaGroup agendaGroup) {
+
+    public void fireAgendaGroupPushed(final AgendaGroup agendaGroup) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final AgendaGroupPushedEvent event = new AgendaGroupPushedEvent(agendaGroup);
+        final AgendaGroupPushedEvent event = new AgendaGroupPushedEvent( agendaGroup );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).agendaGroupPushed( event,
-                                                                               workingMemory );
-        }        
+                                                                               this.workingMemory );
+        }
     }
 }

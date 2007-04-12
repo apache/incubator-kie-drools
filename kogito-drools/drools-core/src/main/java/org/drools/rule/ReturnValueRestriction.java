@@ -85,9 +85,17 @@ public class ReturnValueRestriction
                                                          previousDeclarations,
                                                          localDeclarations );
 
-        this.requiredDeclarations = new Declaration[ previousDeclarations.length + localDeclarations.length ];
-        System.arraycopy( this.previousDeclarations, 0, this.requiredDeclarations, 0, this.previousDeclarations.length );
-        System.arraycopy( this.localDeclarations, 0, this.requiredDeclarations, this.previousDeclarations.length, this.localDeclarations.length );
+        this.requiredDeclarations = new Declaration[previousDeclarations.length + localDeclarations.length];
+        System.arraycopy( this.previousDeclarations,
+                          0,
+                          this.requiredDeclarations,
+                          0,
+                          this.previousDeclarations.length );
+        System.arraycopy( this.localDeclarations,
+                          0,
+                          this.requiredDeclarations,
+                          this.previousDeclarations.length,
+                          this.localDeclarations.length );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -131,19 +139,19 @@ public class ReturnValueRestriction
         }
     }
 
-    public boolean isAllowed(Extractor extractor,
-                             Object object,
-                             InternalWorkingMemory workingMemoiry) {
+    public boolean isAllowed(final Extractor extractor,
+                             final Object object,
+                             final InternalWorkingMemory workingMemoiry) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+    public boolean isAllowedCachedLeft(final ContextEntry context,
+                                       final Object object) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 
-    public boolean isAllowedCachedRight(ReteTuple tuple,
-                                        ContextEntry context) {
+    public boolean isAllowedCachedRight(final ReteTuple tuple,
+                                        final ContextEntry context) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 
@@ -209,8 +217,8 @@ public class ReturnValueRestriction
         implements
         ContextEntry {
 
-        private static final long serialVersionUID = 3563817867979321431L;
-        
+        private static final long    serialVersionUID = 3563817867979321431L;
+
         public FieldExtractor        fieldExtractor;
         public Object                object;
         public ReteTuple             leftTuple;
@@ -220,9 +228,9 @@ public class ReturnValueRestriction
 
         private ContextEntry         entry;
 
-        public ReturnValueContextEntry(FieldExtractor fieldExtractor,
-                                       Declaration[] previousDeclarations,
-                                       Declaration[] localDeclarations) {
+        public ReturnValueContextEntry(final FieldExtractor fieldExtractor,
+                                       final Declaration[] previousDeclarations,
+                                       final Declaration[] localDeclarations) {
             this.fieldExtractor = fieldExtractor;
             this.previousDeclarations = previousDeclarations;
             this.localDeclarations = localDeclarations;
@@ -236,14 +244,14 @@ public class ReturnValueRestriction
             this.entry = entry;
         }
 
-        public void updateFromFactHandle(InternalWorkingMemory workingMemory,
-                                         InternalFactHandle handle) {
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
             this.workingMemory = workingMemory;
             this.object = handle.getObject();
         }
 
-        public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                    ReteTuple tuple) {
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
             this.workingMemory = workingMemory;
             this.leftTuple = tuple;
         }

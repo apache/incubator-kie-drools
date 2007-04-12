@@ -58,19 +58,19 @@ public class ReteooRuleBuilder {
     public ReteooRuleBuilder() {
         this.utils = new BuildUtils();
 
-        utils.addBuilder( GroupElement.class,
+        this.utils.addBuilder( GroupElement.class,
                           new GroupElementBuilder() );
-        utils.addBuilder( Column.class,
+        this.utils.addBuilder( Column.class,
                           new ColumnBuilder() );
-        utils.addBuilder( EvalCondition.class,
+        this.utils.addBuilder( EvalCondition.class,
                           new EvalBuilder() );
-        utils.addBuilder( From.class,
+        this.utils.addBuilder( From.class,
                           new FromBuilder() );
-        utils.addBuilder( Collect.class,
+        this.utils.addBuilder( Collect.class,
                           new CollectBuilder() );
-        utils.addBuilder( Accumulate.class,
+        this.utils.addBuilder( Accumulate.class,
                           new AccumulateBuilder() );
-        utils.addBuilder( Forall.class,
+        this.utils.addBuilder( Forall.class,
                           new ForallBuilder() );
     }
 
@@ -103,11 +103,11 @@ public class ReteooRuleBuilder {
 
         for ( int i = 0; i < subrules.length; i++ ) {
             // creates a clean build context for each subrule
-            BuildContext context = new BuildContext( rulebase,
+            final BuildContext context = new BuildContext( rulebase,
                                                      attachedNodes,
                                                      idGenerator );
             // adds subrule
-            TerminalNode node = this.addSubRule( context,
+            final TerminalNode node = this.addSubRule( context,
                                                  subrules[i],
                                                  rule );
 
@@ -119,7 +119,7 @@ public class ReteooRuleBuilder {
         return nodes;
     }
 
-    private TerminalNode addSubRule(BuildContext context,
+    private TerminalNode addSubRule(final BuildContext context,
                                     final GroupElement subrule,
                                     final Rule rule) throws InvalidPatternException {
 
@@ -131,10 +131,10 @@ public class ReteooRuleBuilder {
         }
 
         // gets the appropriate builder
-        ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
+        final ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
 
         // checks if an initial-fact is needed
-        if ( builder.requiresLeftActivation( utils,
+        if ( builder.requiresLeftActivation( this.utils,
                                              subrule ) ) {
             this.addInitialFactColumn( context,
                                        subrule,

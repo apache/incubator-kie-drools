@@ -43,28 +43,28 @@ public class GroupElementBuilder
     implements
     ReteooComponentBuilder {
 
-    private Map geBuilders = new HashMap();
+    private final Map geBuilders = new HashMap();
 
     public GroupElementBuilder() {
-        geBuilders.put( GroupElement.AND,
+        this.geBuilders.put( GroupElement.AND,
                         new AndBuilder() );
-        geBuilders.put( GroupElement.OR,
+        this.geBuilders.put( GroupElement.OR,
                         new OrBuilder() );
-        geBuilders.put( GroupElement.NOT,
+        this.geBuilders.put( GroupElement.NOT,
                         new NotBuilder() );
-        geBuilders.put( GroupElement.EXISTS,
+        this.geBuilders.put( GroupElement.EXISTS,
                         new ExistsBuilder() );
     }
 
     /**
      * @inheritDoc
      */
-    public void build(BuildContext context,
-                      BuildUtils utils,
-                      RuleConditionElement rce) {
-        GroupElement ge = (GroupElement) rce;
+    public void build(final BuildContext context,
+                      final BuildUtils utils,
+                      final RuleConditionElement rce) {
+        final GroupElement ge = (GroupElement) rce;
 
-        ReteooComponentBuilder builder = (ReteooComponentBuilder) geBuilders.get( ge.getType() );
+        final ReteooComponentBuilder builder = (ReteooComponentBuilder) this.geBuilders.get( ge.getType() );
 
         builder.build( context,
                        utils,
@@ -74,11 +74,11 @@ public class GroupElementBuilder
     /**
      * @inheritDoc
      */
-    public boolean requiresLeftActivation(BuildUtils utils,
-                                          RuleConditionElement rce) {
-        GroupElement ge = (GroupElement) rce;
+    public boolean requiresLeftActivation(final BuildUtils utils,
+                                          final RuleConditionElement rce) {
+        final GroupElement ge = (GroupElement) rce;
 
-        ReteooComponentBuilder builder = (ReteooComponentBuilder) geBuilders.get( ge.getType() );
+        final ReteooComponentBuilder builder = (ReteooComponentBuilder) this.geBuilders.get( ge.getType() );
 
         return builder.requiresLeftActivation( utils,
                                                rce );
@@ -95,18 +95,18 @@ public class GroupElementBuilder
          * selecting and calling the build procedure for each one
          * 
          */
-        public void build(BuildContext context,
-                          BuildUtils utils,
-                          RuleConditionElement rce) {
+        public void build(final BuildContext context,
+                          final BuildUtils utils,
+                          final RuleConditionElement rce) {
 
-            GroupElement ge = (GroupElement) rce;
+            final GroupElement ge = (GroupElement) rce;
 
             // iterate over each child and build it
-            for ( Iterator it = ge.getChildren().iterator(); it.hasNext(); ) {
+            for ( final Iterator it = ge.getChildren().iterator(); it.hasNext(); ) {
 
-                RuleConditionElement child = (RuleConditionElement) it.next();
+                final RuleConditionElement child = (RuleConditionElement) it.next();
 
-                ReteooComponentBuilder builder = utils.getBuilderFor( child );
+                final ReteooComponentBuilder builder = utils.getBuilderFor( child );
 
                 builder.build( context,
                                utils,
@@ -136,9 +136,9 @@ public class GroupElementBuilder
             }
         }
 
-        public boolean requiresLeftActivation(BuildUtils utils,
-                                              RuleConditionElement rce) {
-            GroupElement and = (GroupElement) rce;
+        public boolean requiresLeftActivation(final BuildUtils utils,
+                                              final RuleConditionElement rce) {
+            final GroupElement and = (GroupElement) rce;
 
             // need to check this because in the case of an empty rule, the root AND
             // will have no child
@@ -146,8 +146,8 @@ public class GroupElementBuilder
                 return true;
             }
 
-            RuleConditionElement child = (RuleConditionElement) and.getChildren().get( 0 );
-            ReteooComponentBuilder builder = utils.getBuilderFor( child );
+            final RuleConditionElement child = (RuleConditionElement) and.getChildren().get( 0 );
+            final ReteooComponentBuilder builder = utils.getBuilderFor( child );
 
             return builder.requiresLeftActivation( utils,
                                                    child );
@@ -161,14 +161,14 @@ public class GroupElementBuilder
         /**
          * @inheritDoc
          */
-        public void build(BuildContext context,
-                          BuildUtils utils,
-                          RuleConditionElement rce) {
+        public void build(final BuildContext context,
+                          final BuildUtils utils,
+                          final RuleConditionElement rce) {
             throw new RuntimeDroolsException( "BUG: Can't build a rete network with an inner OR group element" );
         }
 
-        public boolean requiresLeftActivation(BuildUtils utils,
-                                              RuleConditionElement rce) {
+        public boolean requiresLeftActivation(final BuildUtils utils,
+                                              final RuleConditionElement rce) {
             throw new RuntimeDroolsException( "BUG: Can't build a rete network with an inner OR group element" );
         }
     }
@@ -185,20 +185,20 @@ public class GroupElementBuilder
          * If it is a column, a simple NotNode is added to the rulebase
          * If it is a group element, than a subnetwork must be created
          */
-        public void build(BuildContext context,
-                          BuildUtils utils,
-                          RuleConditionElement rce) {
-            GroupElement not = (GroupElement) rce;
+        public void build(final BuildContext context,
+                          final BuildUtils utils,
+                          final RuleConditionElement rce) {
+            final GroupElement not = (GroupElement) rce;
 
             // NOT must save some context info to restore it later
-            int currentColumnIndex = context.getCurrentColumnOffset();
-            TupleSource tupleSource = context.getTupleSource();
+            final int currentColumnIndex = context.getCurrentColumnOffset();
+            final TupleSource tupleSource = context.getTupleSource();
 
             // get child
-            RuleConditionElement child = (RuleConditionElement) not.getChildren().get( 0 );
+            final RuleConditionElement child = (RuleConditionElement) not.getChildren().get( 0 );
 
             // get builder for child
-            ReteooComponentBuilder builder = utils.getBuilderFor( child );
+            final ReteooComponentBuilder builder = utils.getBuilderFor( child );
 
             // builds the child
             builder.build( context,
@@ -217,8 +217,8 @@ public class GroupElementBuilder
                 context.setTupleSource( tupleSource );
 
                 // create a tuple start equals constraint and set it in the context
-                TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                List predicates = new ArrayList();
+                final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
+                final List predicates = new ArrayList();
                 predicates.add( constraint );
                 context.setBetaconstraints( utils.createBetaNodeConstraint( context,
                                                                             predicates ) );
@@ -240,8 +240,8 @@ public class GroupElementBuilder
             context.setCurrentColumnOffset( currentColumnIndex );
         }
 
-        public boolean requiresLeftActivation(BuildUtils utils,
-                                              RuleConditionElement rce) {
+        public boolean requiresLeftActivation(final BuildUtils utils,
+                                              final RuleConditionElement rce) {
             return true;
         }
     }
@@ -258,20 +258,20 @@ public class GroupElementBuilder
          * If it is a column, a simple ExistsNode is added to the rulebase
          * If it is a group element, than a subnetwork must be created
          */
-        public void build(BuildContext context,
-                          BuildUtils utils,
-                          RuleConditionElement rce) {
-            GroupElement exists = (GroupElement) rce;
+        public void build(final BuildContext context,
+                          final BuildUtils utils,
+                          final RuleConditionElement rce) {
+            final GroupElement exists = (GroupElement) rce;
 
             // EXISTS must save some context info to restore it later
-            int currentColumnIndex = context.getCurrentColumnOffset();
-            TupleSource tupleSource = context.getTupleSource();
+            final int currentColumnIndex = context.getCurrentColumnOffset();
+            final TupleSource tupleSource = context.getTupleSource();
 
             // get child
-            RuleConditionElement child = (RuleConditionElement) exists.getChildren().get( 0 );
+            final RuleConditionElement child = (RuleConditionElement) exists.getChildren().get( 0 );
 
             // get builder for child
-            ReteooComponentBuilder builder = utils.getBuilderFor( child );
+            final ReteooComponentBuilder builder = utils.getBuilderFor( child );
 
             // builds the child
             builder.build( context,
@@ -290,8 +290,8 @@ public class GroupElementBuilder
                 context.setTupleSource( tupleSource );
 
                 // create a tuple start equals constraint and set it in the context
-                TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                List predicates = new ArrayList();
+                final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
+                final List predicates = new ArrayList();
                 predicates.add( constraint );
                 context.setBetaconstraints( utils.createBetaNodeConstraint( context,
                                                                             predicates ) );
@@ -316,8 +316,8 @@ public class GroupElementBuilder
         /**
          * @inheritDoc
          */
-        public boolean requiresLeftActivation(BuildUtils utils,
-                                              RuleConditionElement rce) {
+        public boolean requiresLeftActivation(final BuildUtils utils,
+                                              final RuleConditionElement rce) {
             return true;
         }
     }

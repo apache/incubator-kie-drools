@@ -211,7 +211,7 @@ public class NotNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Must use the tuple in memory as it has the tuple matches count
-        final ReteTuple tuple = (ReteTuple) memory.getTupleMemory().remove( leftTuple );
+        final ReteTuple tuple = memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
             return;
         }
@@ -243,7 +243,7 @@ public class NotNode extends BetaNode {
 
     public String toString() {
         ObjectSource source = this.rightInput;
-        while ( !(source instanceof ObjectTypeNode ) ) {
+        while ( !(source instanceof ObjectTypeNode) ) {
             source = source.objectSource;
         }
 

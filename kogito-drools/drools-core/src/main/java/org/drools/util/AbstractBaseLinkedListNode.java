@@ -30,9 +30,9 @@ public class AbstractBaseLinkedListNode
 
     private static final long serialVersionUID = 320L;
 
-    private LinkedListNode previous;
+    private LinkedListNode    previous;
 
-    private LinkedListNode next;
+    private LinkedListNode    next;
 
     /**
      * Empty Constructor

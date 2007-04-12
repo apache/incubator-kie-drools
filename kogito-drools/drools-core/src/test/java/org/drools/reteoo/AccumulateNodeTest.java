@@ -15,8 +15,6 @@
  */
 package org.drools.reteoo;
 
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.drools.DroolsTestCase;
@@ -33,7 +31,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 /**
  * A test case for AccumulateNode
@@ -75,10 +72,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         final ObjectType srcObjType = new ClassObjectType( String.class );
         final Column sourceColumn = new Column( 0,
-                                          srcObjType );
+                                                srcObjType );
         final ObjectType resultObjType = new ClassObjectType( String.class );
         final Column resultColumn = new Column( 1,
-                                          resultObjType );
+                                                resultObjType );
         this.accumulate = new Accumulate( sourceColumn,
                                           resultColumn,
                                           new Declaration[0],
@@ -173,7 +170,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         Assert.assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
-        TupleMemory memory = this.memory.getTupleMemory();
+        final TupleMemory memory = this.memory.getTupleMemory();
         assertTrue( memory.contains( tuple0 ) );
         assertTrue( memory.contains( tuple1 ) );
 

@@ -11,18 +11,18 @@ public class TupleIndexHashTable extends AbstractHashTable
     implements
     TupleMemory {
 
-    private static final long           serialVersionUID = -6214772340195061306L;
+    private static final long               serialVersionUID = -6214772340195061306L;
 
-    public static final int             PRIME            = 31;
+    public static final int                 PRIME            = 31;
 
-    private int                         startResult;
+    private int                             startResult;
 
-    private FieldIndexHashTableIterator tupleValueIterator;
+    private FieldIndexHashTableIterator     tupleValueIterator;
     private FieldIndexHashTableFullIterator tupleValueFullIterator;
 
-    private int                         factSize;
+    private int                             factSize;
 
-    private Index                       index;
+    private Index                           index;
 
     public TupleIndexHashTable(final FieldIndex[] index) {
         this( 16,
@@ -63,12 +63,12 @@ public class TupleIndexHashTable extends AbstractHashTable
 
     public Iterator iterator() {
         if ( this.tupleValueFullIterator == null ) {
-            this.tupleValueFullIterator = new FieldIndexHashTableFullIterator(this);
+            this.tupleValueFullIterator = new FieldIndexHashTableFullIterator( this );
         }
         this.tupleValueFullIterator.reset();
         return this.tupleValueFullIterator;
     }
-    
+
     public Iterator iterator(final InternalFactHandle handle) {
         if ( this.tupleValueIterator == null ) {
             this.tupleValueIterator = new FieldIndexHashTableIterator();
@@ -144,7 +144,7 @@ public class TupleIndexHashTable extends AbstractHashTable
                     if ( this.row == this.length ) {
                         return null;
                     }
-                    this.entry = ( this.table[this.row] != null ) ? ((FieldIndexEntry) this.table[this.row]).first : null ;
+                    this.entry = (this.table[this.row] != null) ? ((FieldIndexEntry) this.table[this.row]).first : null;
                 }
             } else {
                 this.entry = this.entry.getNext();
@@ -192,7 +192,7 @@ public class TupleIndexHashTable extends AbstractHashTable
             final FieldIndexEntry next = (FieldIndexEntry) current.next;
             if ( current.matches( tuple,
                                   hashCode ) ) {
-                ReteTuple old = current.remove( tuple );
+                final ReteTuple old = current.remove( tuple );
                 this.factSize--;
                 // If the FactEntryIndex is empty, then remove it from the hash table
                 if ( current.first == null ) {
@@ -230,7 +230,7 @@ public class TupleIndexHashTable extends AbstractHashTable
     }
 
     public FieldIndexEntry get(final InternalFactHandle handle) {
-        Object object = handle.getObject();
+        final Object object = handle.getObject();
         final int hashCode = this.index.hashCodeOf( handle.getObject() );
 
         final int index = indexOf( hashCode,

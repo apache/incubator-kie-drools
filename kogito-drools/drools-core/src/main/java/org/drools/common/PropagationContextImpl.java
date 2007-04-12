@@ -16,10 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -109,28 +105,31 @@ public class PropagationContextImpl
         return this.dormantActivations;
     }
 
-    public void addRetractedTuple(Rule rule, ReteTuple tuple) {
+    public void addRetractedTuple(final Rule rule,
+                                  final ReteTuple tuple) {
         if ( this.retracted == null ) {
             this.retracted = new ObjectHashMap();
         }
-        
+
         TupleHashTable tuples = (TupleHashTable) this.retracted.get( rule );
         if ( tuples == null ) {
             tuples = new TupleHashTable();
-            this.retracted.put( rule, tuples );
+            this.retracted.put( rule,
+                                tuples );
         }
-        tuples.add( tuple );        
+        tuples.add( tuple );
     }
-    
-    public ReteTuple removeRetractedTuple(Rule rule, ReteTuple tuple) {
-        if ( this.retracted == null  ) {
+
+    public ReteTuple removeRetractedTuple(final Rule rule,
+                                          final ReteTuple tuple) {
+        if ( this.retracted == null ) {
             return null;
         }
-        
-        TupleHashTable tuples = (TupleHashTable) this.retracted.get( rule );
-        return tuples.remove( tuple ); 
+
+        final TupleHashTable tuples = (TupleHashTable) this.retracted.get( rule );
+        return tuples.remove( tuple );
     }
-    
+
     public void clearRetractedTuples() {
         this.retracted = null;
     }

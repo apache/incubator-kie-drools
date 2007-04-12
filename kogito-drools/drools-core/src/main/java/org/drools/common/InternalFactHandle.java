@@ -38,8 +38,8 @@ public interface InternalFactHandle
     public void invalidate();
 
     public int getObjectHashCode();
-    
+
     public boolean isShadowFact();
-    
+
     public void setShadowFact(boolean shadowFact);
 }

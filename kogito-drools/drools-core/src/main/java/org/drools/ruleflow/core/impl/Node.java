@@ -1,4 +1,5 @@
 package org.drools.ruleflow.core.impl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -28,154 +29,155 @@ import org.drools.ruleflow.core.INode;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class Node implements INode, Serializable {
-    
+public abstract class Node
+    implements
+    INode,
+    Serializable {
+
     protected static final Node[] EMPTY_NODE_ARRAY = new Node[0];
-    
-    private long id;
-    private String name;
-    private List incomingConnections;
-    private List outgoingConnections;
-    
+
+    private long                  id;
+    private String                name;
+    private List                  incomingConnections;
+    private List                  outgoingConnections;
+
     public Node() {
         this.id = -1;
-        incomingConnections = new ArrayList();
-        outgoingConnections = new ArrayList();        
+        this.incomingConnections = new ArrayList();
+        this.outgoingConnections = new ArrayList();
     }
-    
+
     public long getId() {
-        return id;
+        return this.id;
     }
-    
-    public void setId(long id) {
+
+    public void setId(final long id) {
         this.id = id;
     }
-    
+
     public String getName() {
-        return name;
+        return this.name;
     }
-    
-    public void setName(String name) {
+
+    public void setName(final String name) {
         this.name = name;
     }
-        
+
     public List getIncomingConnections() {
-    	return Collections.unmodifiableList(incomingConnections);
+        return Collections.unmodifiableList( this.incomingConnections );
     }
-    
+
     public List getOutgoingConnections() {
-    	return Collections.unmodifiableList(outgoingConnections);
+        return Collections.unmodifiableList( this.outgoingConnections );
     }
-    
-    protected void addIncomingConnection(IConnection connection) {
-    	validateAddIncomingConnection(connection);
-    	incomingConnections.add(connection);
+
+    protected void addIncomingConnection(final IConnection connection) {
+        validateAddIncomingConnection( connection );
+        this.incomingConnections.add( connection );
     }
-    
+
     /**
-	 * This method validates whether the given connection can be added. If the
-	 * connection cannot be added, an IllegalArgumentException is thrown.
-	 * <p>
-	 * 
-	 * @param connection
-	 *            the incoming connection to be added
-	 * @throws IllegalArgumentException
-	 *             is thrown if the connection is null, or if a connection is
-	 *             added twice. If subclasses want to change the rules for
-	 *             adding incoming connections the
-	 *             <code>validateAddIncomingConnection(IConnection connection)</code>
-	 *             should be overridden.
-	 */
-    protected void validateAddIncomingConnection(IConnection connection) {
-    	if (connection == null) {
-    		throw new IllegalArgumentException("Connection cannot be null");
-    	}
-    	if (incomingConnections.contains(connection)) {
-    		throw new IllegalArgumentException("Connection is already added");
-    	}
+     * This method validates whether the given connection can be added. If the
+     * connection cannot be added, an IllegalArgumentException is thrown.
+     * <p>
+     * 
+     * @param connection
+     *            the incoming connection to be added
+     * @throws IllegalArgumentException
+     *             is thrown if the connection is null, or if a connection is
+     *             added twice. If subclasses want to change the rules for
+     *             adding incoming connections the
+     *             <code>validateAddIncomingConnection(IConnection connection)</code>
+     *             should be overridden.
+     */
+    protected void validateAddIncomingConnection(final IConnection connection) {
+        if ( connection == null ) {
+            throw new IllegalArgumentException( "Connection cannot be null" );
+        }
+        if ( this.incomingConnections.contains( connection ) ) {
+            throw new IllegalArgumentException( "Connection is already added" );
+        }
     }
-    
-    protected void addOutgoingConnection(IConnection connection) {
-    	validateAddOutgoingConnection(connection);
-    	outgoingConnections.add(connection);
+
+    protected void addOutgoingConnection(final IConnection connection) {
+        validateAddOutgoingConnection( connection );
+        this.outgoingConnections.add( connection );
     }
-    
+
     /**
-	 * This method validates whether the given connection can be added. If the
-	 * connection cannot be added, an IllegalArgumentException is thrown.
-	 * <p>
-	 * 
-	 * @param connection
-	 *            the outgoin connection to be added
-	 * @throws IllegalArgumentException
-	 *             is thrown if the connection is null, or if a connection is
-	 *             added twice. If subclasses want to change the rules for
-	 *             adding outgoing connections the
-	 *             <code>validateAddIncomingConnection(IConnection connection)</code>
-	 *             should be overridden.
-	 */
-    protected void validateAddOutgoingConnection(IConnection connection) {
-    	if (connection == null) {
-    		throw new IllegalArgumentException("Connection cannot be null");
-    	}
-    	if (outgoingConnections.contains(connection)) {
-    		throw new IllegalArgumentException("Connection is already added");
-    	}
+     * This method validates whether the given connection can be added. If the
+     * connection cannot be added, an IllegalArgumentException is thrown.
+     * <p>
+     * 
+     * @param connection
+     *            the outgoin connection to be added
+     * @throws IllegalArgumentException
+     *             is thrown if the connection is null, or if a connection is
+     *             added twice. If subclasses want to change the rules for
+     *             adding outgoing connections the
+     *             <code>validateAddIncomingConnection(IConnection connection)</code>
+     *             should be overridden.
+     */
+    protected void validateAddOutgoingConnection(final IConnection connection) {
+        if ( connection == null ) {
+            throw new IllegalArgumentException( "Connection cannot be null" );
+        }
+        if ( this.outgoingConnections.contains( connection ) ) {
+            throw new IllegalArgumentException( "Connection is already added" );
+        }
     }
-    
-    protected void removeIncomingConnection(IConnection connection) {
-    	validateRemoveIncomingConnection(connection);
-    	incomingConnections.remove(connection);
+
+    protected void removeIncomingConnection(final IConnection connection) {
+        validateRemoveIncomingConnection( connection );
+        this.incomingConnections.remove( connection );
     }
-    
+
     /**
-	 * This method validates whether the given connection can be removed
-	 * <p>
-	 * 
-	 * @param connection
-	 *            the incoming connection
-	 * @throws IllegalArgumentException
-	 *             is thrown if connectin is null, or unknown. If subclasses
-	 *             want to change the rules for removing incoming connections
-	 *             the
-	 *             <code>validateRemoveIncomingConnection(IConnection connection)</code>
-	 *             should be overridden.
-	 */
-    protected void validateRemoveIncomingConnection(IConnection connection) {
-    	if (connection == null) {
-    		throw new IllegalArgumentException("Connection is null");
-    	}
-    	if (!incomingConnections.contains(connection)) {
-    		throw new IllegalArgumentException("Given connection <"
-				+ connection + "> is not part of the incoming connections");
-    	}
+     * This method validates whether the given connection can be removed
+     * <p>
+     * 
+     * @param connection
+     *            the incoming connection
+     * @throws IllegalArgumentException
+     *             is thrown if connectin is null, or unknown. If subclasses
+     *             want to change the rules for removing incoming connections
+     *             the
+     *             <code>validateRemoveIncomingConnection(IConnection connection)</code>
+     *             should be overridden.
+     */
+    protected void validateRemoveIncomingConnection(final IConnection connection) {
+        if ( connection == null ) {
+            throw new IllegalArgumentException( "Connection is null" );
+        }
+        if ( !this.incomingConnections.contains( connection ) ) {
+            throw new IllegalArgumentException( "Given connection <" + connection + "> is not part of the incoming connections" );
+        }
     }
-    
-    protected void removeOutgoingConnection(IConnection connection) {
-    	validateRemoveOutgoingConnection(connection);
-    	outgoingConnections.remove(connection);
+
+    protected void removeOutgoingConnection(final IConnection connection) {
+        validateRemoveOutgoingConnection( connection );
+        this.outgoingConnections.remove( connection );
     }
-    
+
     /**
-	 * This method validates whether the given connection can be removed
-	 * <p>
-	 * 
-	 * @param connection
-	 *            the outgoing connection
-	 * @throws IllegalArgumentException
-	 *             is thrown if connectin is null, or unknown. If subclasses
-	 *             want to change the rules for removing outgoing connections
-	 *             the
-	 *             <code>validateRemoveOutgoingConnection(IConnection connection)</code>
-	 *             should be overridden.
-	 */
-    protected void validateRemoveOutgoingConnection(IConnection connection) {
-    	if (connection == null) {
-    		throw new IllegalArgumentException("Connection is null");
-    	}
-    	if (!outgoingConnections.contains(connection)) {
-    		throw new IllegalArgumentException("Given connection <"
-				+ connection + "> is not part of the outgoing connections");
-    	}
+     * This method validates whether the given connection can be removed
+     * <p>
+     * 
+     * @param connection
+     *            the outgoing connection
+     * @throws IllegalArgumentException
+     *             is thrown if connectin is null, or unknown. If subclasses
+     *             want to change the rules for removing outgoing connections
+     *             the
+     *             <code>validateRemoveOutgoingConnection(IConnection connection)</code>
+     *             should be overridden.
+     */
+    protected void validateRemoveOutgoingConnection(final IConnection connection) {
+        if ( connection == null ) {
+            throw new IllegalArgumentException( "Connection is null" );
+        }
+        if ( !this.outgoingConnections.contains( connection ) ) {
+            throw new IllegalArgumentException( "Given connection <" + connection + "> is not part of the outgoing connections" );
+        }
     }
 }
