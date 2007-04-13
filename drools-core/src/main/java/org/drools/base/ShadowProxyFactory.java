@@ -91,7 +91,9 @@ public class ShadowProxyFactory {
      */
     public static String getInternalProxyClassNameForClass(final Class clazz) {
         String className = null;
-        if ( clazz.getPackage().getName().startsWith( "java." ) || clazz.getPackage().getName().startsWith( "javax." ) ) {
+        if ( clazz.getPackage() != null && (
+                clazz.getPackage().getName().startsWith( "java." ) || clazz.getPackage().getName().startsWith( "javax." ) )
+                ) {
             className = "org/drools/shadow/" + Type.getInternalName( clazz ) + "ShadowProxy";
         } else {
             className = Type.getInternalName( clazz ) + "ShadowProxy";
@@ -101,7 +103,10 @@ public class ShadowProxyFactory {
 
     public static String getProxyClassNameForClass(final Class clazz) {
         String className = null;
-        if ( clazz.getPackage().getName().startsWith( "java." ) || clazz.getPackage().getName().startsWith( "javax." ) ) {
+        Package pkg = clazz.getPackage();
+        if ( pkg != null && 
+                (pkg.getName().startsWith( "java." ) || pkg.getName().startsWith( "javax." ) )
+                ) {
             className = "org.drools.shadow." + clazz.getName() + "ShadowProxy";
         } else {
             className = clazz.getName() + "ShadowProxy";
