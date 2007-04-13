@@ -96,7 +96,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                            context1,
                            workingMemory );
 
-        workingMemory.propagateQueuedActions();
+        workingMemory.executeQueuedActions();
 
         assertLength( 1,
                       sink.getRetracted() );
@@ -124,7 +124,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                            context1,
                            workingMemory );
 
-        workingMemory.propagateQueuedActions();
+        workingMemory.executeQueuedActions();
 
         assertLength( 2,
                       sink.getRetracted() );
@@ -642,7 +642,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                             context2,
                             workingMemory );
 
-        workingMemory.propagateQueuedActions();
+        workingMemory.executeQueuedActions();
 
         // because this logical fact has two relationships it shouldn't retract yet
         assertLength( 0,
@@ -657,7 +657,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                            context1,
                            workingMemory );
 
-        workingMemory.propagateQueuedActions();
+        workingMemory.executeQueuedActions();
 
         // Should cause the logical fact to be retracted
         assertLength( 1,

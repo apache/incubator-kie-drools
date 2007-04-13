@@ -9,7 +9,7 @@ public interface InternalRuleFlowGroup
 
     void addActivation(Activation activation);
 
-    void removeActivation(Activation activation);
+    void removeActivation(final Activation activation, InternalWorkingMemory workingMemory);
 
     /**
      * Activates or deactivates this <code>RuleFlowGroup</code>.

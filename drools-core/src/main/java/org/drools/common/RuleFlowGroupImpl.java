@@ -16,9 +16,11 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.common.AbstractWorkingMemory.WorkingMemoryAction;
 import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
 import org.drools.ruleflow.instance.impl.RuleFlowSequenceNodeInstance;
 import org.drools.spi.Activation;
+import org.drools.spi.RuleFlowGroup;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedList.LinkedListIterator;
 
@@ -127,18 +129,15 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
         }
     }
 
-    public void removeActivation(final Activation activation) {
+    public void removeActivation(final Activation activation, InternalWorkingMemory workingMemory) {
         final RuleFlowGroupNode node = activation.getRuleFlowGroupNode();
         this.list.remove( node );
         activation.setActivationGroupNode( null );
         if ( this.autoDeactivate ) {
             if ( this.list.isEmpty() ) {
-                this.active = false;
-                // only trigger next node if this RuleFlowGroup was
-                // triggered from inside a process instance
-                if ( getProcessInstance() != null ) {
-                    triggerCompleted();
-                }
+                // deactivate callback
+                WorkingMemoryAction action = new DeactivateCallback( this );
+                workingMemory.queueWorkingMemoryAction( action );
             }
         }
     }
@@ -173,5 +172,25 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
 
     public void trigger(final IRuleFlowNodeInstance parent) {
         setActive( true );
+    }
+
+    public class DeactivateCallback implements WorkingMemoryAction {
+        private InternalRuleFlowGroup ruleFlowGroup;
+
+        public DeactivateCallback(InternalRuleFlowGroup ruleFlowGroup) {
+            this.ruleFlowGroup = ruleFlowGroup;
+        }
+
+        public void execute() {
+            if ( this.ruleFlowGroup.isEmpty() ) {
+                this.ruleFlowGroup.setActive( false );
+                // only trigger next node if this RuleFlowGroup was
+                // triggered from inside a process instance
+                if ( getProcessInstance() != null ) {
+                    triggerCompleted();
+                }
+            }
+        }
+
     }
 }

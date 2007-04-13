@@ -1261,6 +1261,7 @@ public class AgendaTest extends DroolsTestCase {
                       ruleFlowGroup0.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
+        workingMemory.executeQueuedActions();
         assertFalse( ruleFlowGroup0.isActive() );
 
         // A new activation should now be added to the RuleFlowGroup but not to the agenda 

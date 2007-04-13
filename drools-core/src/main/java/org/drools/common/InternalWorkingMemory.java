@@ -2,6 +2,7 @@ package org.drools.common;
 
 import org.drools.FactException;
 import org.drools.WorkingMemory;
+import org.drools.common.AbstractWorkingMemory.WorkingMemoryAction;
 import org.drools.event.AgendaEventSupport;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -26,7 +27,9 @@ public interface InternalWorkingMemory
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem();
 
-    public void propagateQueuedActions();
+    public void executeQueuedActions();
+    
+    public void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     public FactHandleFactory getFactHandleFactory();
 
