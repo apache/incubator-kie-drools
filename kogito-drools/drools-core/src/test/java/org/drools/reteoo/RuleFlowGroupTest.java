@@ -246,6 +246,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // on firing the last activation the child rule flow groups should 
         // activate and thus repopulate the agenda
         agenda.fireNextItem( null );
+        workingMemory.executeQueuedActions();
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 1,
@@ -266,6 +267,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         // executing rule1, which should activate AND-join and thus group 3 
         agenda.fireNextItem( null );
+        workingMemory.executeQueuedActions();
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -279,6 +281,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         // executing rule3, and finishing execution
         agenda.fireNextItem( null );
+        workingMemory.executeQueuedActions();
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
