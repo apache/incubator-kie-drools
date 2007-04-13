@@ -27,6 +27,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
+import org.w3c.dom.views.AbstractView;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
@@ -109,19 +110,44 @@ public class TruthMaintenanceSystem
             if ( set != null ) {
                 set.remove( node );
                 if ( set.isEmpty() ) {
-                    this.justifiedMap.remove( handle.getId() );
                     // this needs to be scheduled so we don't upset the current
-                    // working memory operation
-                    this.workingMemory.queueRetractAction( handle,
-                                                           false,
-                                                           true,
-                                                           context.getRuleOrigin(),
-                                                           context.getActivationOrigin() );
+                    // working memory operation                    
+                    WorkingMemoryAction action = new LogicalRetractCallback( this, set, handle, context );
+                    workingMemory.queueWorkingMemoryAction( action );
                 }
             }
         }
     }
 
+    
+    
+    public static class LogicalRetractCallback implements WorkingMemoryAction {
+        private final TruthMaintenanceSystem tms;
+        private final Set set;
+        private final InternalFactHandle handle;
+        private final PropagationContext context;
+
+        public LogicalRetractCallback(TruthMaintenanceSystem tms, Set set, InternalFactHandle handle, PropagationContext context) {
+            this.tms = tms;
+            this.set = set;
+            this.handle = handle;
+            this.context = context;
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            if ( set.isEmpty() ) {
+                this.tms.getJustifiedMap().remove( handle.getId() );
+                // this needs to be scheduled so we don't upset the current
+                // working memory operation
+                workingMemory.retractObject( this.handle,
+                                             false,
+                                             true,
+                                             context.getRuleOrigin(),
+                                             context.getActivationOrigin() );
+            }
+        }
+    }    
+    
     /**
      * The FactHandle is being removed from the system so remove any logical dependencies
      * between the  justified FactHandle and its justifiers. Removes the FactHandle key 

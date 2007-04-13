@@ -16,7 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.common.AbstractWorkingMemory.WorkingMemoryAction;
 import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
 import org.drools.ruleflow.instance.impl.RuleFlowSequenceNodeInstance;
 import org.drools.spi.Activation;
@@ -174,23 +173,22 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
         setActive( true );
     }
 
-    public class DeactivateCallback implements WorkingMemoryAction {
-        private InternalRuleFlowGroup ruleFlowGroup;
+    public static class DeactivateCallback implements WorkingMemoryAction {
+        private final InternalRuleFlowGroup ruleFlowGroup;
 
         public DeactivateCallback(InternalRuleFlowGroup ruleFlowGroup) {
             this.ruleFlowGroup = ruleFlowGroup;
         }
 
-        public void execute() {
+        public void execute(InternalWorkingMemory workingMemory) {
             if ( this.ruleFlowGroup.isEmpty() ) {
                 this.ruleFlowGroup.setActive( false );
                 // only trigger next node if this RuleFlowGroup was
                 // triggered from inside a process instance
-                if ( getProcessInstance() != null ) {
-                    triggerCompleted();
+                if ( this.ruleFlowGroup.getProcessInstance() != null ) {
+                    this.ruleFlowGroup.triggerCompleted();
                 }
             }
         }
-
     }
 }

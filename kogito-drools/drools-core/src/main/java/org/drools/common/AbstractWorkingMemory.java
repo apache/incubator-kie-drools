@@ -724,11 +724,6 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations() );
 
-            // this.ruleBase.assertObject( handle,
-            // object,
-            // propagationContext,
-            // this );
-
             doAssertObject( handle,
                             object,
                             propagationContext );
@@ -804,29 +799,6 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    // /**
-    // * Associate an object with its handle.
-    // *
-    // * @param handle
-    // * The handle.
-    // * @param object
-    // * The object.
-    // */
-    // public void putObject(InternalFactHandle handle,
-    // Object object) {
-    // this.assertMap.put( object,
-    // handle );
-    //
-    // handle.setObject( object );
-    // }
-    //
-    // public Object removeObject(InternalFactHandle handle) {
-    // Object object = handle.getObject();
-    //
-    // this.assertMap.remove( object );
-    //
-    // return object;
-    // }
 
     public void retractObject(final FactHandle handle) throws FactException {
         retractObject( handle,
@@ -1005,25 +977,13 @@ public abstract class AbstractWorkingMemory
         for ( final Iterator it = this.actionQueue.iterator(); it.hasNext(); ) {
             final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
             it.remove();
-            action.execute();
+            action.execute( this );
         }
 
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
         this.actionQueue.add( action );
-    }
-
-    public void queueRetractAction(final InternalFactHandle factHandle,
-                                   final boolean removeLogical,
-                                   final boolean updateEqualsMap,
-                                   final Rule ruleOrigin,
-                                   final Activation activationOrigin) {
-        queueWorkingMemoryAction( new WorkingMemoryRetractAction( factHandle,
-                                                                  false,
-                                                                  true,
-                                                                  ruleOrigin,
-                                                                  activationOrigin ) );
     }
 
     public void removeLogicalDependencies(final Activation activation,
@@ -1109,45 +1069,6 @@ public abstract class AbstractWorkingMemory
 
     public Lock getLock() {
         return this.lock;
-    }
-
-    public interface WorkingMemoryAction {
-        public void execute();
-    }
-
-    public class WorkingMemoryRetractAction
-        implements
-        WorkingMemoryAction {
-        private InternalFactHandle factHandle;
-
-        private boolean            removeLogical;
-
-        private boolean            updateEqualsMap;
-
-        private Rule               ruleOrigin;
-
-        private Activation         activationOrigin;
-
-        public WorkingMemoryRetractAction(final InternalFactHandle factHandle,
-                                          final boolean removeLogical,
-                                          final boolean updateEqualsMap,
-                                          final Rule ruleOrigin,
-                                          final Activation activationOrigin) {
-            super();
-            this.factHandle = factHandle;
-            this.removeLogical = removeLogical;
-            this.updateEqualsMap = updateEqualsMap;
-            this.ruleOrigin = ruleOrigin;
-            this.activationOrigin = activationOrigin;
-        }
-
-        public void execute() {
-            retractObject( this.factHandle,
-                           this.removeLogical,
-                           this.updateEqualsMap,
-                           this.ruleOrigin,
-                           this.activationOrigin );
-        }
     }
 
     public class RuleFlowDeactivateEvent {
