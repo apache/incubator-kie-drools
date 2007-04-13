@@ -309,7 +309,7 @@ public final class RuleTerminalNode extends BaseNode
 
             if ( activation.getRuleFlowGroupNode() != null ) {
                 final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-                ruleFlowGroup.removeActivation( activation );
+                ruleFlowGroup.removeActivation( activation, workingMemory );
             }
 
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
@@ -377,7 +377,7 @@ public final class RuleTerminalNode extends BaseNode
                                                                                      this.rule );
             }
 
-            workingMemory.propagateQueuedActions();
+            workingMemory.executeQueuedActions();
         }
 
         this.tupleSource.remove( this,

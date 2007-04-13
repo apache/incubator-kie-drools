@@ -67,7 +67,7 @@ public class DefaultAgenda
     private static final long          serialVersionUID = 320L;
 
     /** Working memory of this Agenda. */
-    private final WorkingMemory        workingMemory;
+    private final InternalWorkingMemory workingMemory;
 
     private org.drools.util.LinkedList scheduledActivations;
 
@@ -102,7 +102,7 @@ public class DefaultAgenda
      * @param conflictResolver
      *            The conflict resolver.
      */
-    public DefaultAgenda(final WorkingMemory workingMemory) {
+    public DefaultAgenda(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.knowledgeHelper = new DefaultKnowledgeHelper( this.workingMemory );
         this.agendaGroups = new HashMap();
@@ -392,7 +392,7 @@ public class DefaultAgenda
 
             if ( item.getRuleFlowGroupNode() != null ) {
                 final InternalRuleFlowGroup ruleFlowGroup = item.getRuleFlowGroupNode().getRuleFlowGroup();
-                ruleFlowGroup.removeActivation( item );
+                ruleFlowGroup.removeActivation( item, this.workingMemory );
             }
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
@@ -428,7 +428,7 @@ public class DefaultAgenda
 
                 if ( activation.getRuleFlowGroupNode() != null ) {
                     final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-                    ruleFlowGroup.removeActivation( activation );
+                    ruleFlowGroup.removeActivation( activation, this.workingMemory );
                 }
 
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
@@ -504,7 +504,7 @@ public class DefaultAgenda
 
         if ( activation.getRuleFlowGroupNode() != null ) {
             final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-            ruleFlowGroup.removeActivation( activation );
+            ruleFlowGroup.removeActivation( activation, this.workingMemory );
         }
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );

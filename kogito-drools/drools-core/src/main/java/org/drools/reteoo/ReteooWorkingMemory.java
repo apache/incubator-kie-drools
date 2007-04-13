@@ -148,7 +148,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             this.activationOrigin = activationOrigin;
         }
 
-        public void propagate() {
+        public void execute() {
 
             final PropagationContext context = new PropagationContextImpl( ReteooWorkingMemory.this.propagationIdCounter++,
                                                                            PropagationContext.ASSERTION,

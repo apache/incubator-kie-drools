@@ -122,7 +122,7 @@ public abstract class AbstractWorkingMemory
     /** Rule-firing agenda. */
     protected DefaultAgenda                   agenda;
 
-    protected final List                      factQueue                                     = new ArrayList();
+    protected final List                      actionQueue                                     = new ArrayList();
 
     protected final ReentrantLock             lock                                          = new ReentrantLock();
 
@@ -352,8 +352,8 @@ public abstract class AbstractWorkingMemory
         // nested inside, avoiding concurrent-modification
         // exceptions, depending on code paths of the actions.
 
-        if ( !this.factQueue.isEmpty() ) {
-            propagateQueuedActions();
+        if ( !this.actionQueue.isEmpty() ) {
+            executeQueuedActions();
         }
 
         boolean noneFired = true;
@@ -364,6 +364,9 @@ public abstract class AbstractWorkingMemory
 
                 while ( this.agenda.fireNextItem( agendaFilter ) ) {
                     noneFired = false;
+                    if ( !this.actionQueue.isEmpty() ) {
+                        executeQueuedActions();
+                    }
                 }
             } finally {
                 this.firing = false;
@@ -382,8 +385,8 @@ public abstract class AbstractWorkingMemory
      */
     private void doOtherwise(final AgendaFilter agendaFilter) {
         final FactHandle handle = this.assertObject( new Otherwise() );
-        if ( !this.factQueue.isEmpty() ) {
-            propagateQueuedActions();
+        if ( !this.actionQueue.isEmpty() ) {
+            executeQueuedActions();
         }
 
         while ( this.agenda.fireNextItem( agendaFilter ) ) {
@@ -734,8 +737,8 @@ public abstract class AbstractWorkingMemory
                                                                handle,
                                                                object );
 
-            if ( !this.factQueue.isEmpty() ) {
-                propagateQueuedActions();
+            if ( !this.actionQueue.isEmpty() ) {
+                executeQueuedActions();
             }
         } finally {
             this.lock.unlock();
@@ -893,8 +896,8 @@ public abstract class AbstractWorkingMemory
 
             this.handleFactory.destroyFactHandle( handle );
 
-            if ( !this.factQueue.isEmpty() ) {
-                propagateQueuedActions();
+            if ( !this.actionQueue.isEmpty() ) {
+                executeQueuedActions();
             }
         } finally {
             this.lock.unlock();
@@ -990,25 +993,25 @@ public abstract class AbstractWorkingMemory
 
             propagationContext.clearRetractedTuples();
 
-            if ( !this.factQueue.isEmpty() ) {
-                propagateQueuedActions();
+            if ( !this.actionQueue.isEmpty() ) {
+                executeQueuedActions();
             }
         } finally {
             this.lock.unlock();
         }
     }
 
-    public void propagateQueuedActions() {
-        for ( final Iterator it = this.factQueue.iterator(); it.hasNext(); ) {
+    public void executeQueuedActions() {
+        for ( final Iterator it = this.actionQueue.iterator(); it.hasNext(); ) {
             final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
             it.remove();
-            action.propagate();
+            action.execute();
         }
 
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
-        this.factQueue.add( action );
+        this.actionQueue.add( action );
     }
 
     public void queueRetractAction(final InternalFactHandle factHandle,
@@ -1109,7 +1112,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public interface WorkingMemoryAction {
-        public void propagate();
+        public void execute();
     }
 
     public class WorkingMemoryRetractAction
@@ -1138,7 +1141,7 @@ public abstract class AbstractWorkingMemory
             this.activationOrigin = activationOrigin;
         }
 
-        public void propagate() {
+        public void execute() {
             retractObject( this.factHandle,
                            this.removeLogical,
                            this.updateEqualsMap,
