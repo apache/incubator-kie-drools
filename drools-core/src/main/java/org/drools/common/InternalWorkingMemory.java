@@ -1,8 +1,8 @@
 package org.drools.common;
 
 import org.drools.FactException;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.common.AbstractWorkingMemory.WorkingMemoryAction;
 import org.drools.event.AgendaEventSupport;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -36,4 +36,10 @@ public interface InternalWorkingMemory
     public void removeLogicalDependencies(final Activation activation,
                                           final PropagationContext context,
                                           final Rule rule) throws FactException;
+    
+    void retractObject(final FactHandle factHandle,
+                       final boolean removeLogical,
+                       final boolean updateEqualsMap,
+                       final Rule rule,
+                       final Activation activation) throws FactException;    
 }

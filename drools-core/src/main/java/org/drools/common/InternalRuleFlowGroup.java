@@ -1,5 +1,7 @@
 package org.drools.common;
 
+import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
+import org.drools.ruleflow.instance.IRuleFlowProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.RuleFlowGroup;
 
@@ -26,4 +28,8 @@ public interface InternalRuleFlowGroup
 
     boolean isActive();
 
+    void triggerCompleted();
+    
+    IRuleFlowProcessInstance getProcessInstance();
+    
 }
