@@ -155,8 +155,8 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     private void evalSharingTest(final String drl) throws DroolsParserException,
-                                            IOException,
-                                            Exception {
+                                                  IOException,
+                                                  Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drl ) ) );
         final Package pkg = builder.getPackage();
@@ -201,7 +201,7 @@ public abstract class IntegrationCases extends TestCase {
 
         final Person bigCheese = new Person( "big cheese" );
         final Cheese cheddar = new Cheese( "cheddar",
-                                     15 );
+                                           15 );
         bigCheese.setCheese( cheddar );
 
         final FactHandle bigCheeseHandle = workingMemory.assertObject( bigCheese );
@@ -240,7 +240,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
         final Cheese nullCheese = new Cheese( null,
-                                        2 );
+                                              2 );
         workingMemory.assertObject( nullCheese );
 
         final Person notNullPerson = new Person( "shoes butt back" );
@@ -953,7 +953,7 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         final Cheese cheese = new Cheese( "stilton",
-                                    15 );
+                                          15 );
         workingMemory.assertObject( cheese );
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -994,9 +994,9 @@ public abstract class IntegrationCases extends TestCase {
 
         final Cheesery cheesery = new Cheesery();
         final Cheese stilton = new Cheese( "stilton",
-                                     12 );
+                                           12 );
         final Cheese cheddar = new Cheese( "cheddar",
-                                     15 );
+                                           15 );
         cheesery.addCheese( stilton );
         cheesery.addCheese( cheddar );
         workingMemory.setGlobal( "cheesery",
@@ -1753,7 +1753,7 @@ public abstract class IntegrationCases extends TestCase {
                       list );
 
         final Cheese brie = new Cheese( "brie",
-                                  13 );
+                                        13 );
 
         final Person bob = new Person( "bob" );
         bob.setCheese( brie );
@@ -1782,17 +1782,21 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 2,
                       group1.size() );
 
-        //        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
-        //        agenda.setFocus( group2 );
-        //        
-        //        RuleFlowGroupImpl rfg = ( RuleFlowGroupImpl )wm.getAgenda().getRuleFlowGroup( "ruleflow2" );                
-        //        assertEquals( 3, rfg.size() );          
-        //        
-        //        agenda.activateRuleFlowGroup( "ruleflow2" );
-        //        agenda.fireNextItem( null );        
-        //        assertEquals( 2, rfg.size() );                
-        //        wm.modifyObject( brieHandle, brie );
-        //        assertEquals( 2, group2.size() );        
+        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
+        agenda.setFocus( group2 );
+
+        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) wm.getAgenda().getRuleFlowGroup( "ruleflow2" );
+        assertEquals( 3,
+                      rfg.size() );
+
+        agenda.activateRuleFlowGroup( "ruleflow2" );
+        agenda.fireNextItem( null );
+        assertEquals( 2,
+                      rfg.size() );
+        wm.modifyObject( brieHandle,
+                         brie );
+        assertEquals( 2,
+                      group2.size() );
     }
 
     public void testDumpers() throws Exception {
@@ -3007,18 +3011,18 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final Person p1 = new Person( "p1",
-                                "stilton",
-                                20 );
+                                      "stilton",
+                                      20 );
         p1.setStatus( "europe" );
         final FactHandle c1FactHandle = workingMemory.assertObject( p1 );
         final Person p2 = new Person( "p2",
-                                "stilton",
-                                30 );
+                                      "stilton",
+                                      30 );
         p2.setStatus( "europe" );
         final FactHandle c2FactHandle = workingMemory.assertObject( p2 );
         final Person p3 = new Person( "p3",
-                                "stilton",
-                                40 );
+                                      "stilton",
+                                      40 );
         p3.setStatus( "europe" );
         final FactHandle c3FactHandle = workingMemory.assertObject( p3 );
         workingMemory.fireAllRules();
@@ -3194,7 +3198,7 @@ public abstract class IntegrationCases extends TestCase {
         final int MAX = 5;
         for ( int i = 1; i <= MAX; i++ ) {
             final IndexedNumber n = new IndexedNumber( i,
-                                                 MAX - i + 1 );
+                                                       MAX - i + 1 );
             workingMemory.assertObject( n );
         }
         workingMemory.fireAllRules();
@@ -3325,9 +3329,9 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         final Cheese c = new Cheese( "stilton",
-                               10 );
+                                     10 );
         final Person p = new Person( "Mark",
-                               "stilton" );
+                                     "stilton" );
         workingMemory.assertObject( c );
         workingMemory.assertObject( p );
         workingMemory.fireAllRules();
@@ -3503,14 +3507,14 @@ public abstract class IntegrationCases extends TestCase {
                       results );
 
         final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
-                                                   10 ), new Cheese( "stilton",
-                                                                     2 ), new Cheese( "stilton",
-                                                                                      5 ), new Cheese( "brie",
-                                                                                                       15 ), new Cheese( "brie",
-                                                                                                                         16 ), new Cheese( "provolone",
-                                                                                                                                           8 )};
+                                                         10 ), new Cheese( "stilton",
+                                                                           2 ), new Cheese( "stilton",
+                                                                                            5 ), new Cheese( "brie",
+                                                                                                             15 ), new Cheese( "brie",
+                                                                                                                               16 ), new Cheese( "provolone",
+                                                                                                                                                 8 )};
         final Person bob = new Person( "Bob",
-                                 "stilton" );
+                                       "stilton" );
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
@@ -3610,14 +3614,14 @@ public abstract class IntegrationCases extends TestCase {
                       results );
 
         final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
-                                                   10 ), new Cheese( "stilton",
-                                                                     2 ), new Cheese( "stilton",
-                                                                                      5 ), new Cheese( "brie",
-                                                                                                       15 ), new Cheese( "brie",
-                                                                                                                         16 ), new Cheese( "provolone",
-                                                                                                                                           8 )};
+                                                         10 ), new Cheese( "stilton",
+                                                                           2 ), new Cheese( "stilton",
+                                                                                            5 ), new Cheese( "brie",
+                                                                                                             15 ), new Cheese( "brie",
+                                                                                                                               16 ), new Cheese( "provolone",
+                                                                                                                                                 8 )};
         final Person bob = new Person( "Bob",
-                                 "stilton" );
+                                       "stilton" );
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
@@ -3715,7 +3719,7 @@ public abstract class IntegrationCases extends TestCase {
         wm.addEventListener( l );
 
         final Cheese stilton = new Cheese( "stilton",
-                                     15 );
+                                           15 );
         final FactHandle stiltonHandle = wm.assertObject( stilton );
 
         final Person p1 = new Person( "p1" );
@@ -3760,18 +3764,18 @@ public abstract class IntegrationCases extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final Person p1 = new Person( "p1",
-                                "stilton",
-                                20 );
+                                      "stilton",
+                                      20 );
         p1.setStatus( "europe" );
         final FactHandle c1FactHandle = workingMemory.assertObject( p1 );
         final Person p2 = new Person( "p2",
-                                "stilton",
-                                30 );
+                                      "stilton",
+                                      30 );
         p2.setStatus( "europe" );
         final FactHandle c2FactHandle = workingMemory.assertObject( p2 );
         final Person p3 = new Person( "p3",
-                                "stilton",
-                                40 );
+                                      "stilton",
+                                      40 );
         p3.setStatus( "europe" );
         final FactHandle c3FactHandle = workingMemory.assertObject( p3 );
         workingMemory.fireAllRules();
@@ -3916,14 +3920,14 @@ public abstract class IntegrationCases extends TestCase {
                                      sensors );
 
             final Sensor sensor1 = new Sensor( 100,
-                                         150 );
+                                               150 );
             workingMemory.assertObject( sensor1 );
             workingMemory.fireAllRules();
             assertEquals( 0,
                           sensors.size() );
 
             final Sensor sensor2 = new Sensor( 200,
-                                         150 );
+                                               150 );
             workingMemory.assertObject( sensor2 );
             workingMemory.fireAllRules();
             assertEquals( 3,
@@ -4063,7 +4067,7 @@ public abstract class IntegrationCases extends TestCase {
             wm.assertObject( new Cheese( "d",
                                          10 ) );
             final Cheese e = new Cheese( "e",
-                                   10 );
+                                         10 );
             wm.assertObject( e );
 
             wm.fireAllRules();
@@ -4083,11 +4087,11 @@ public abstract class IntegrationCases extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         final Cheese a = new Cheese( "stilton",
-                               10 );
+                                     10 );
         final Cheese b = new Cheese( "stilton",
-                               15 );
+                                     15 );
         final Cheese c = new Cheese( "stilton",
-                               20 );
+                                     20 );
         workingMemory.assertObject( a );
         workingMemory.assertObject( b );
         workingMemory.assertObject( c );
@@ -4106,11 +4110,11 @@ public abstract class IntegrationCases extends TestCase {
 
         // Assert some simple facts
         final FactA a = new FactA( "hello",
-                             new Integer( 1 ),
-                             new Float( 3.14 ) );
+                                   new Integer( 1 ),
+                                   new Float( 3.14 ) );
         final FactB b = new FactB( "hello",
-                             new Integer( 2 ),
-                             new Float( 6.28 ) );
+                                   new Integer( 2 ),
+                                   new Float( 6.28 ) );
         workingMemory.assertObject( a );
         workingMemory.assertObject( b );
 
@@ -4415,13 +4419,13 @@ public abstract class IntegrationCases extends TestCase {
 
             final Order order = new Order( 10 );
             final OrderItem item1 = new OrderItem( order,
-                                             1 );
+                                                   1 );
             final OrderItem item2 = new OrderItem( order,
-                                             2 );
+                                                   2 );
             final OrderItem anotherItem1 = new OrderItem( null,
-                                                    3 );
+                                                          3 );
             final OrderItem anotherItem2 = new OrderItem( null,
-                                                    4 );
+                                                          4 );
             workingMemory.assertObject( order );
             workingMemory.assertObject( item1 );
             workingMemory.assertObject( item2 );
@@ -4512,11 +4516,11 @@ public abstract class IntegrationCases extends TestCase {
                                  results );
 
         final Cheese cheese = new Cheese( "brie",
-                                    10 );
+                                          10 );
         final FactHandle handle = workingMemory.assertObject( cheese );
 
         final Person bob = new Person( "bob",
-                                 "stilton" );
+                                       "stilton" );
         workingMemory.assertObject( bob );
 
         cheese.setType( "stilton" );
@@ -4592,9 +4596,9 @@ public abstract class IntegrationCases extends TestCase {
         wm.addEventListener( workingMemoryListener );
 
         final Cheese stilton = new Cheese( "stilton",
-                                     15 );
+                                           15 );
         final Cheese cheddar = new Cheese( "cheddar",
-                                     17 );
+                                           17 );
 
         final FactHandle stiltonHandle = wm.assertObject( stilton );
 
@@ -4632,7 +4636,7 @@ public abstract class IntegrationCases extends TestCase {
                                  new Double( 1.2 ) );
 
         final Cheese cheese = new Cheese( "stilton",
-                                    10 );
+                                          10 );
         workingMemory.assertObject( cheese );
 
         workingMemory.fireAllRules();
