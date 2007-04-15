@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
