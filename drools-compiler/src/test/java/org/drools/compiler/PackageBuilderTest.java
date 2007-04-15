@@ -1175,6 +1175,11 @@ public class PackageBuilderTest extends DroolsTestCase {
             // TODO Auto-generated method stub
 
         }
+
+        public void setLogicalDependencies(LinkedList justified) {
+            // TODO Auto-generated method stub
+            
+        }
     }
 
     class MockTuple

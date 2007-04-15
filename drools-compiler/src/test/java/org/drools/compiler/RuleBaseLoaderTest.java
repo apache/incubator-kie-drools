@@ -6,19 +6,18 @@ import java.io.InputStreamReader;
 import junit.framework.TestCase;
 
 import org.drools.RuleBase;
-import org.drools.integrationtests.IntegrationCases;
 
 public class RuleBaseLoaderTest extends TestCase {
 
     public void testLoadRuleBase() throws Exception {
-        final InputStream in = IntegrationCases.class.getResourceAsStream( "HelloWorld.drl" );
+        final InputStream in = RuleBaseLoaderTest.class.getResourceAsStream( "HelloWorld.drl" );
         final RuleBase rb = RuleBaseLoader.getInstance().loadFromReader( new InputStreamReader( in ) );
         assertNotNull( rb );
     }
 
     public void testLoadRuleBaseWithDSL() throws Exception {
-        final InputStream in = IntegrationCases.class.getResourceAsStream( "rule_with_expander_dsl.drl" );
-        final InputStream inDSL = IntegrationCases.class.getResourceAsStream( "test_expander.dsl" );
+        final InputStream in = RuleBaseLoaderTest.class.getResourceAsStream( "rule_with_expander_dsl.drl" );
+        final InputStream inDSL = RuleBaseLoaderTest.class.getResourceAsStream( "test_expander.dsl" );
         final RuleBase rb = RuleBaseLoader.getInstance().loadFromReader( new InputStreamReader( in ),
                                                                          new InputStreamReader( inDSL ) );
         assertNotNull( rb );
