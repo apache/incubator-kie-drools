@@ -119,6 +119,8 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
         assertEquals( cheese1.getType(),
                       list.get( 0 ) );
+        
+        assertEquals( 3, workingMemory.getObjects().size() );
 
         workingMemory.retractObject( h1 );
         workingMemory.fireAllRules();
@@ -303,29 +305,7 @@ public class TruthMaintenanceTest extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
-        logger.setFileName( "logical.log" );
-
-        final AgendaEventListener listener = new DefaultAgendaEventListener() {
-            public void activationCreated(ActivationCreatedEvent event,
-                                          WorkingMemory workingMemory) {
-                System.out.println( event );
-            }
-
-            public void activationCancelled(ActivationCancelledEvent event,
-                                            WorkingMemory workingMemory) {
-                System.out.println( event );
-            }
-
-            public void beforeActivationFired(BeforeActivationFiredEvent event,
-                                              WorkingMemory workingMemory) {
-            }
-
-            public void afterActivationFired(AfterActivationFiredEvent event,
-                                             WorkingMemory workingMemory) {
-                System.out.println( event );
-            }
-        };
-        workingMemory.addEventListener( listener );
+        logger.setFileName( "logical" );
 
         final List events = new ArrayList();
 
@@ -360,8 +340,8 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals( "Only sensor is there",
                       1,
                       list.size() );
-        assertEquals( "Exactly six events",
-                      6,
+        assertEquals( "Exactly seven events",
+                      7,
                       events.size() );
     }
 
@@ -742,7 +722,7 @@ public class TruthMaintenanceTest extends TestCase {
         workingMemory.fireAllRules();
 
         // alarm must continue to sound
-        assertEquals( 4,
+        assertEquals( 3,
                       list.size() );
         assertEquals( 2,
                       workingMemory.getObjects().size() );
@@ -754,7 +734,7 @@ public class TruthMaintenanceTest extends TestCase {
         workingMemory.fireAllRules();
 
         // no alarms anymore
-        assertEquals( 4,
+        assertEquals( 3,
                       list.size() );
         assertEquals( 1,
                       workingMemory.getObjects().size() );
