@@ -129,7 +129,11 @@ public class PropagationContextImpl
         }
 
         final ObjectHashMap tuples = (ObjectHashMap) this.retracted.get( rule );
-        return ( Activation ) tuples.remove( tuple );
+        if  ( tuples != null ) {
+            return ( Activation ) tuples.remove( tuple );
+        } else {
+            return null;
+        }
     }
 
     public void clearRetractedTuples() {
