@@ -126,7 +126,7 @@ public class ClassFieldInspector {
             //and have no args, and return a value
             final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
             if ( ((methods[i].getModifiers() & mask) == Modifier.PUBLIC) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "<init>" )) &&
-            //( !methods[i].getName().equals( "<clinit>" )) && 
+                 ( !methods[i].getName().equals( "<clinit>" )) && 
                  (methods[i].getReturnType() != void.class) ) {
                 final int fieldIndex = this.methods.size();
                 addToMapping( methods[i],
@@ -261,8 +261,8 @@ public class ClassFieldInspector {
             //and have no args, and return a value
             final int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
             if ( (access & mask) == Opcodes.ACC_PUBLIC ) {
-                if ( desc.startsWith( "()" ) && (!name.equals( "<init>" )) /*&&
-                 ( ! name.equals( "<clinit>" ) ) */) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
+                if ( desc.startsWith( "()" ) && (!name.equals( "<init>" )) &&
+                 ( ! name.equals( "<clinit>" ) ) ) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
                         final Method method = this.clazz.getMethod( name,
                                                                     (Class[]) null );
