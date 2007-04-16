@@ -53,9 +53,8 @@ then
 end
 
 rule "Kill The Lonely"
-	salience 10
-	agenda-group "evaluate"	
-	lock-on-active	
+	agenda-group "evaluate"
+	no-loop
 when
 #	A live cell has fewer than 2 live neighbors
 	theCell: Cell(liveNeighbors < 2, cellState == CellState.LIVE, phase == Phase.EVALUATE)
@@ -65,9 +64,8 @@ then
 end
 
 rule "Kill The Overcrowded"
-	salience 10
 	agenda-group "evaluate"
-	lock-on-active	
+	no-loop
 when
 #	A live cell has more than 3 live neighbors
 	theCell: Cell(liveNeighbors > 3, cellState == CellState.LIVE, phase == Phase.EVALUATE)
@@ -77,9 +75,8 @@ then
 end
 
 rule "Give Birth"
-	salience 10
 	agenda-group "evaluate"
-	lock-on-active	
+	no-loop
 when
 #	A dead cell has 3 live neighbors
 	theCell: Cell(liveNeighbors == 3, cellState == CellState.DEAD, phase == Phase.EVALUATE)
@@ -98,7 +95,7 @@ end
 
 rule "kill"
 	agenda-group "kill"
-	lock-on-active	
+	no-loop
 when
 	theCell: Cell(phase == Phase.KILL)
 then
@@ -109,7 +106,7 @@ end
  
 rule "birth"
 	agenda-group "birth"
-	lock-on-active	
+	no-loop
 when
 	theCell: Cell(phase == Phase.BIRTH)
 then
@@ -119,8 +116,8 @@ then
 end	
 
 rule "Calculate Live"
-	lock-on-active
 	agenda-group "calculate"
+	lock-on-active	
 when
 	theCell: Cell(cellState == CellState.LIVE)
 	Neighbor(cell == theCell, $neighbor : neighbor)	
@@ -131,8 +128,8 @@ then
 end	
 
 rule "Calculate Dead"
-	lock-on-active
 	agenda-group "calculate"
+	lock-on-active	
 when
 	theCell: Cell(cellState == CellState.DEAD)
     Neighbor(cell == theCell, $neighbor : neighbor )
@@ -143,9 +140,8 @@ then
 end	
 
 rule "Kill All"
-	salience 10
 	agenda-group "kill all"	
-	lock-on-active	
+	no-loop
 when
 	theCell: Cell(cellState == CellState.LIVE)
 then
