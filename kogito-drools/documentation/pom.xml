@@ -32,11 +32,11 @@
                 <tasks>
                     <delete dir="manual/build"/>
                     <ant dir="manual" inheritRefs="true" />
-                    <delete dir="../drools-ide/help/eclipse"/>
-                    <delete dir="../drools-ide/help/shared"/>
+                    <delete dir="../drools-eclipse/drools-eclipse-plugin/help/eclipse"/>
+                    <delete dir="../drools-eclipse/drools-eclipse-plugin/help/shared"/>
                     <replace file="manual/build/en/eclipse/toc.xml" token="href=&quot;" value="href=&quot;help/eclipse/"/>
                     <replace file="manual/build/en/eclipse/toc.xml" token="topic=&quot;" value="topic=&quot;help/eclipse/"/>
-                    <copy todir="../drools-ide/help">
+                    <copy todir="../drools-eclipse/drools-eclipse-plugin/help">
                       <fileset dir="manual/build/en" includes="shared/** eclipse/**" excludes="**/*.svg **/*.db"/>
                     </copy>
                     <copy todir="../target/docs">
