@@ -288,7 +288,22 @@ public class PackageBuilderTest extends DroolsTestCase {
         
         builder.addPackageFromDrl( new StringReader("package foo") );
         builder.addPackageFromDrl( new StringReader("rule x end") );
-
+        
+        
+        
+    }
+    
+    public void testErrorReset() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        
+        builder.addPackageFromDrl( new StringReader("package foo \n rule ORB") );
+        assertTrue(builder.hasErrors());
+        
+        builder.resetErrors();
+        assertFalse(builder.hasErrors());
+        
+        builder.addPackageFromDrl( new StringReader("package foo \n rule ORB") );
+        assertTrue(builder.hasErrors());
     }
 
     public void testFactTemplate() {
