@@ -379,6 +379,18 @@ public class PackageBuilder {
         }
         return buf.toString();
     }
+    
+    
+    /**
+     * Reset the error list.
+     * This is useful when incrementally building packages.
+     * Care should be used when building this, if you 
+     * clear this when there were errors on items that a rule depends on
+     * (eg functions), then you will get spurious errors which will not be that helpful.
+     */
+    void resetErrors() {
+        this.results.clear();
+    }
 
     public static class MissingPackageNameException extends IllegalArgumentException {
         private static final long serialVersionUID = 320L;
