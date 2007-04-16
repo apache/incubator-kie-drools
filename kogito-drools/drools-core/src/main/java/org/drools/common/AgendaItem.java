@@ -147,6 +147,10 @@ public class AgendaItem
     public LinkedList getLogicalDependencies() {
         return this.justified;
     }
+    
+    public void setLogicalDependencies(LinkedList justified) {
+        this.justified = justified;
+    }
 
     public boolean isActivated() {
         return this.activated;

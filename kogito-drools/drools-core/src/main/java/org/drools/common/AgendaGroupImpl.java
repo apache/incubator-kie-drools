@@ -84,7 +84,7 @@ public class AgendaGroupImpl
         return (Activation) this.queue.dequeue();
     }
 
-    public boolean isActivate() {
+    public boolean isActive() {
         return this.active;
     }
 

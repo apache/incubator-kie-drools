@@ -23,8 +23,10 @@ import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.LogicalDependency;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
@@ -37,6 +39,7 @@ import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.Iterator;
+import org.drools.util.LinkedList;
 import org.drools.util.TupleHashTable;
 
 /**
@@ -234,33 +237,64 @@ public final class RuleTerminalNode extends BaseNode
                 // do not add the activation if the rule is "lock-on-active" and the AgendaGroup is active
                 // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract                
                 if ( context.getType() == PropagationContext.MODIFICATION ) {
-                    if ( this.rule.isLockOnActive() && agendaGroup.isActivate() && context.removeRetractedTuple( this.rule,
-                                                                                                                 tuple ) == null ) {
-                        // This rule is locked and active, do not allow new tuples to activate 
-                        return;
+                    if ( this.rule.isLockOnActive() && agendaGroup.isActive() ) {
+                        Activation justifier = context.removeRetractedTuple( this.rule,
+                                                                             tuple );
+                        if ( justifier == null ) {
+                            // This rule is locked and active, do not allow new tuples to activate 
+                            return;
+                        } else if ( this.rule.hasLogicalDependency() ) {
+                            copyLogicalDependencies( context,
+                                                     workingMemory,
+                                                     item,
+                                                     justifier );
+                        }
+                    } else if ( this.rule.hasLogicalDependency() ) {
+                        Activation justifier = context.removeRetractedTuple( this.rule,
+                                                                             tuple );
+                        copyLogicalDependencies( context,
+                                                 workingMemory,
+                                                 item,
+                                                 justifier );
                     }
-                } else if ( this.rule.isLockOnActive() && agendaGroup.isActivate() ) {
+                } else if ( this.rule.isLockOnActive() && agendaGroup.isActive() ) {
                     return;
                 }
 
                 agendaGroup.add( item );
             } else {
                 //There is  a RuleFlowNode so add it there, instead  of the Agenda
-
+                RuleFlowGroup rfg = memory.getRuleFlowGroup();
                 // Lazy cache ruleFlowGroup
-                if ( memory.getRuleFlowGroup() == null ) {
-                    memory.setRuleFlowGroup( workingMemory.getAgenda().getRuleFlowGroup( this.rule.getRuleFlowGroup() ) );
+                if ( rfg == null ) {
+                    rfg = workingMemory.getAgenda().getRuleFlowGroup( this.rule.getRuleFlowGroup() );
+                    memory.setRuleFlowGroup( rfg );
                 }
 
                 // do not add the activation if the rule is "lock-on-active" and the RuleFlowGroup is active
-                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract 
+                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract                
                 if ( context.getType() == PropagationContext.MODIFICATION ) {
-                    if ( this.rule.isLockOnActive() && memory.getRuleFlowGroup().isActive() && context.removeRetractedTuple( this.rule,
-                                                                                                                             tuple ) == null ) {
-                        // This rule is locked and active, do not allow new tuples to activate 
-                        return;
+                    if ( this.rule.isLockOnActive() && rfg.isActive() ) {
+                        Activation justifier = context.removeRetractedTuple( this.rule,
+                                                                             tuple );
+                        if ( justifier == null ) {
+                            // This rule is locked and active, do not allow new tuples to activate 
+                            return;
+                        } else if ( this.rule.hasLogicalDependency() ) {
+                            copyLogicalDependencies( context,
+                                                     workingMemory,
+                                                     item,
+                                                     justifier );
+                        }
+                    } else if ( this.rule.hasLogicalDependency() ) {
+                        Activation justifier = context.removeRetractedTuple( this.rule,
+                                                                             tuple );
+                        copyLogicalDependencies( context,
+                                                 workingMemory,
+                                                 item,
+                                                 justifier );
                     }
-                } else if ( this.rule.isLockOnActive() && memory.getRuleFlowGroup().isActive() ) {
+                } else if ( this.rule.isLockOnActive() && rfg.isActive() ) {
                     return;
                 }
 
@@ -283,6 +317,24 @@ public final class RuleTerminalNode extends BaseNode
         agenda.increaseActiveActivations();
     }
 
+    private void copyLogicalDependencies(final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory,
+                                         final AgendaItem item,
+                                         Activation justifier) {
+        if ( justifier != null ) {
+            final LinkedList list = justifier.getLogicalDependencies();
+            if ( list != null && !list.isEmpty() ) {
+                for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
+                    final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
+                    workingMemory.getTruthMaintenanceSystem().addLogicalDependency( handle,
+                                                                                    item,
+                                                                                    context,
+                                                                                    this.rule );
+                }
+            }
+        }
+    }
+
     public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
@@ -295,10 +347,19 @@ public final class RuleTerminalNode extends BaseNode
         }
 
         final Activation activation = tuple.getActivation();
+        if ( activation.getLogicalDependencies() != null && !activation.getLogicalDependencies().isEmpty() ) {
+            context.addRetractedTuple( this.rule,
+                                       activation );
+        }
+
         if ( activation.isActivated() ) {
-            if ( this.rule.isLockOnActive() && context.getType() == PropagationContext.MODIFICATION ) {
-                context.addRetractedTuple( this.rule,
-                                           tuple );
+            if ( context.getType() == PropagationContext.MODIFICATION ) {
+                // during a modify if we have either isLockOnActive or the activation has logical dependencies
+                // then we need to track retractions, so we know which are exising activations and which are truly new
+                if ( this.rule.isLockOnActive() ) {
+                    context.addRetractedTuple( this.rule,
+                                               activation );
+                }
             }
 
             activation.remove();
@@ -309,7 +370,8 @@ public final class RuleTerminalNode extends BaseNode
 
             if ( activation.getRuleFlowGroupNode() != null ) {
                 final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-                ruleFlowGroup.removeActivation( activation, workingMemory );
+                ruleFlowGroup.removeActivation( activation,
+                                                workingMemory );
             }
 
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,

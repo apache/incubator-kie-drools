@@ -88,6 +88,8 @@ public class Rule
     private String            ruleFlowGroup;
 
     private boolean           lockOnActive;
+    
+    private boolean           hasLogicalDependency;
 
     /** indicates that the rule is semantically correct. */
     private boolean           semanticallyValid;
@@ -323,6 +325,14 @@ public class Rule
         return (Declaration) this.declarations.get( identifier );
     }
 
+    public boolean hasLogicalDependency() {
+        return this.hasLogicalDependency;
+    }
+    
+    public void setHasLogicalDependency(boolean hasLogicalDependency) {
+        this.hasLogicalDependency = hasLogicalDependency;
+    }
+    
     public boolean isLockOnActive() {
         return this.lockOnActive;
     }
@@ -330,7 +340,7 @@ public class Rule
     public void setLockOnActive(final boolean lockOnActive) {
         this.lockOnActive = lockOnActive;
     }
-
+    
     /**
      * Retrieve the set of all <i>root fact object </i> parameter
      * <code>Declarations</code>.

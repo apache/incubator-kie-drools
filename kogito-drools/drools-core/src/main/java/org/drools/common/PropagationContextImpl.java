@@ -106,28 +106,30 @@ public class PropagationContextImpl
     }
 
     public void addRetractedTuple(final Rule rule,
-                                  final ReteTuple tuple) {
+                                  final Activation activation) {
         if ( this.retracted == null ) {
             this.retracted = new ObjectHashMap();
         }
+        
+        ReteTuple tuple = ( ReteTuple) activation.getTuple();
 
-        TupleHashTable tuples = (TupleHashTable) this.retracted.get( rule );
+        ObjectHashMap tuples = (ObjectHashMap) this.retracted.get( rule );
         if ( tuples == null ) {
-            tuples = new TupleHashTable();
+            tuples = new ObjectHashMap();
             this.retracted.put( rule,
                                 tuples );
         }
-        tuples.add( tuple );
+        tuples.put( tuple, activation );
     }
 
-    public ReteTuple removeRetractedTuple(final Rule rule,
+    public Activation removeRetractedTuple(final Rule rule,
                                           final ReteTuple tuple) {
         if ( this.retracted == null ) {
             return null;
         }
 
-        final TupleHashTable tuples = (TupleHashTable) this.retracted.get( rule );
-        return tuples.remove( tuple );
+        final ObjectHashMap tuples = (ObjectHashMap) this.retracted.get( rule );
+        return ( Activation ) tuples.remove( tuple );
     }
 
     public void clearRetractedTuples() {

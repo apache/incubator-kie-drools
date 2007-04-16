@@ -230,4 +230,8 @@ public class ScheduledAgendaItem extends TimerTask
     public GroupElement getSubRule() {
         return this.subrule;
     }
+
+    public void setLogicalDependencies(LinkedList justified) {
+        this.justified = justified;
+    }
 }

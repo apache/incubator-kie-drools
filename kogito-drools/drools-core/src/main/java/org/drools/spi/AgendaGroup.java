@@ -57,6 +57,6 @@ public interface AgendaGroup
      */
     public int size();
 
-    public boolean isActivate();
+    public boolean isActive();
 
 }
