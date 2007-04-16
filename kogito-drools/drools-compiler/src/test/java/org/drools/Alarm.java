@@ -12,7 +12,7 @@ public class Alarm {
     }
 
     public String toString() {
-        return this.message;
+        return "[Alarm message=" + this.message + "]";
     }
 
     /**

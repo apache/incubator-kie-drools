@@ -1,0 +1,21 @@
+package org.drools.test;
+
+import org.drools.Person
+import org.drools.CheeseEqual;
+
+rule "assert"
+	salience 10
+	when
+		p : Person( name == "person" )
+	then
+		assertLogical( new CheeseEqual( p.getName(), p.getAge() ) );
+end
+
+rule "modify"
+	no-loop true
+	when
+		p : Person( name == "person" )	
+		c : CheeseEqual(price == 2)
+	then
+		modify( p );
+end
