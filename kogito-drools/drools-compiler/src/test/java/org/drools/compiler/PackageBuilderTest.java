@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -270,7 +271,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         return bytes;
     }
 
-    public void testNoPackageName() {
+    public void testNoPackageName() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         try {
             builder.addPackage( new PackageDescr( null ) );
@@ -284,6 +285,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         } catch ( final RuntimeException e ) {
             assertNotNull( e.getMessage() );
         }
+        
+        builder.addPackageFromDrl( new StringReader("package foo") );
+        builder.addPackageFromDrl( new StringReader("rule x end") );
+
     }
 
     public void testFactTemplate() {
