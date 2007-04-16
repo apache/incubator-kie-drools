@@ -80,6 +80,9 @@ public class EqualityKey
                 this.handle = null;
             } else {
                 this.handle = (InternalFactHandle) this.instances.remove( 0 );
+                if ( this.instances.isEmpty() ) {
+                    this.instances = null;
+                }                
             }
         } else {
             this.instances.remove( handle );
