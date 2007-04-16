@@ -12,6 +12,7 @@ public class SimpleGlider
     ConwayPattern {
 
     private final boolean[][] grid = {{false, true, false}, {true, false, false}, {true, true, true}};
+    //private final boolean[][] grid = {{false, false, false}, {true, true, false}, {false, false, false}};
 
     /**
      * This method should return a 2 dimensional array of boolean that represent

@@ -52,16 +52,16 @@ public class ConwayGUI extends JPanel {
                    canvas );
         final Border etchedBorder = BorderFactory.createEtchedBorder( EtchedBorder.LOWERED );
         final Border outerBlankBorder = BorderFactory.createEmptyBorder( 5,
-                                                                   5,
-                                                                   5,
-                                                                   5 );
+                                                                         5,
+                                                                         5,
+                                                                         5 );
         final Border innerBlankBorder = BorderFactory.createEmptyBorder( 5,
-                                                                   5,
-                                                                   5,
-                                                                   5 );
+                                                                         5,
+                                                                         5,
+                                                                         5 );
         final Border border = BorderFactory.createCompoundBorder( BorderFactory.createCompoundBorder( outerBlankBorder,
-                                                                                                etchedBorder ),
-                                                            innerBlankBorder );
+                                                                                                      etchedBorder ),
+                                                                  innerBlankBorder );
         panel.setBorder( border );
         add( BorderLayout.CENTER,
              panel );
@@ -104,7 +104,7 @@ public class ConwayGUI extends JPanel {
             }
         };
         this.timer = new Timer( 500,
-                           timerAction );
+                                timerAction );
         this.startStopButton.addActionListener( new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 if ( ConwayGUI.this.timer.isRunning() ) {
@@ -171,7 +171,7 @@ public class ConwayGUI extends JPanel {
 
     private JPanel createControlPanel() {
         final FormLayout layout = new FormLayout( "pref, 3dlu, pref, 3dlu:grow",
-                                            "pref, 15dlu, pref, 15dlu, pref, 3dlu:grow, pref" );
+                                                  "pref, 15dlu, pref, 15dlu, pref, 3dlu:grow, pref" );
         final PanelBuilder builder = new PanelBuilder( layout );
         final CellConstraints cc = new CellConstraints();
 
@@ -198,8 +198,8 @@ public class ConwayGUI extends JPanel {
                      cc.xy( 3,
                             5 ) );
         final JPanel buttonPanel = ButtonBarFactory.buildLeftAlignedBar( this.nextGenerationButton,
-                                                                   this.startStopButton,
-                                                                   this.clearButton );
+                                                                         this.startStopButton,
+                                                                         this.clearButton );
         builder.add( buttonPanel,
                      cc.xywh( 1,
                               7,
@@ -208,16 +208,16 @@ public class ConwayGUI extends JPanel {
 
         final Border etchedBorder = BorderFactory.createEtchedBorder( EtchedBorder.LOWERED );
         final Border outerBlankBorder = BorderFactory.createEmptyBorder( 5,
-                                                                   5,
-                                                                   5,
-                                                                   5 );
+                                                                         5,
+                                                                         5,
+                                                                         5 );
         final Border innerBlankBorder = BorderFactory.createEmptyBorder( 5,
-                                                                   5,
-                                                                   5,
-                                                                   5 );
+                                                                         5,
+                                                                         5,
+                                                                         5 );
         final Border border = BorderFactory.createCompoundBorder( BorderFactory.createCompoundBorder( outerBlankBorder,
-                                                                                                etchedBorder ),
-                                                            innerBlankBorder );
+                                                                                                      etchedBorder ),
+                                                                  innerBlankBorder );
         builder.setBorder( border );
         return builder.getPanel();
     }

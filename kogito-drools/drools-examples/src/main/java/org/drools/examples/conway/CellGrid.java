@@ -2,6 +2,8 @@ package org.drools.examples.conway;
 
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.DefaultAgendaEventListener;
 import org.drools.examples.conway.patterns.ConwayPattern;
 
 /**
@@ -15,6 +17,8 @@ public class CellGrid {
 
     private final Cell[][] cells;
 
+    private WorkingMemory  workingMemory;
+
     /**
      * Constructs a CellGrid
      * 
@@ -27,30 +31,34 @@ public class CellGrid {
                     final int columns) {
         this.cells = new Cell[rows][columns];
 
+        final RuleBase ruleBase = ConwayRuleBaseFactory.getRuleBase();
+        this.workingMemory = ruleBase.newWorkingMemory();
+
+        DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                                          WorkingMemory workingMemory) {
+                System.out.println( "popped AgendaGroup = '" + event.getAgendaGroup().getName() + "'" );
+                System.out.println( CellGrid.this.toString() );
+                System.out.println( "" );
+            }
+        };
+
+        this.workingMemory.addEventListener( listener );
+
+        this.workingMemory.assertObject( this );
+
         // populate the array of Cells and hook each
         // cell up with its neighbors...
         for ( int row = 0; row < rows; row++ ) {
             for ( int column = 0; column < columns; column++ ) {
-                final Cell newCell = new Cell();
+                final Cell newCell = new Cell( column,
+                                               row );
                 this.cells[row][column] = newCell;
-                if ( row > 0 ) {
-                    // neighbor to the north
-                    newCell.addNeighbor( this.cells[row - 1][column] );
-                    if ( column <= (columns - 2) ) {
-                        // neighbor to the northeast
-                        newCell.addNeighbor( this.cells[row - 1][column + 1] );
-                    }
-                }
-                if ( column > 0 ) {
-                    // neighbor to the west
-                    newCell.addNeighbor( this.cells[row][column - 1] );
-                    if ( row > 0 ) {
-                        // neighbor to the northwest
-                        newCell.addNeighbor( this.cells[row - 1][column - 1] );
-                    }
-                }
+                this.workingMemory.assertObject( newCell );
             }
         }
+        this.workingMemory.setFocus( "register neighbor" );
+        this.workingMemory.fireAllRules();
     }
 
     /**
@@ -89,84 +97,25 @@ public class CellGrid {
      * @see #transitionState()
      */
     public boolean nextGeneration() {
-        boolean didStateChange = false;
-        try {
-            final RuleBase ruleBase = ConwayRuleBaseFactory.getRuleBase();
-            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-            // for (Cell[] rowOfCells : cells) {
-            Cell[] rowOfCells = null;
-            Cell cell = null;
-            for ( int i = 0; i < this.cells.length; i++ ) {
-                rowOfCells = this.cells[i];
-                for ( int j = 0; j < rowOfCells.length; j++ ) {
-                    cell = rowOfCells[j];
-                    workingMemory.assertObject( cell );
-                }
-            }
-            workingMemory.fireAllRules();
-            didStateChange = transitionState();
-        } catch ( final Exception e ) {
-            e.printStackTrace();
-        }
-        return didStateChange;
-    }
-
-    /**
-     * @return the number of cells in the grid that are alive
-     * @see CellState
-     */
-    public int getNumberOfLiveCells() {
-        int number = 0;
-        Cell[] rowOfCells = null;
-        Cell cell = null;
-        for ( int i = 0; i < this.cells.length; i++ ) {
-            rowOfCells = this.cells[i];
-            // for (Cell cell : rowOfCells) {
-            for ( int j = 0; j < rowOfCells.length; j++ ) {
-                cell = rowOfCells[j];
-                if ( cell.getCellState() == CellState.LIVE ) {
-                    number++;
-                }
-            }
-        }
-        return number;
+        System.out.println( "next generation" );
+        workingMemory.setFocus( "calculate" );
+        workingMemory.setFocus( "kill" );
+        workingMemory.setFocus( "birth" );
+        workingMemory.setFocus( "reset calculate" );
+        workingMemory.setFocus( "rest" );
+        workingMemory.setFocus( "evaluate" );
+        workingMemory.fireAllRules();
+        return workingMemory.getAgenda().getAgendaGroup( "evaluate" ).size() != 0;
     }
 
     /**
      * kills all cells in the grid
      */
     public void killAll() {
-        Cell[] rowOfCells = null;
-        Cell cell = null;
-        for ( int i = 0; i < this.cells.length; i++ ) {
-            rowOfCells = this.cells[i];
-            // for (Cell cell : rowOfCells) {
-            for ( int j = 0; j < rowOfCells.length; j++ ) {
-                cell = rowOfCells[j];
-                cell.setCellState( CellState.DEAD );
-            }
-        }
-    }
-
-    /**
-     * Transitions this grid to its next state of evolution
-     * 
-     * @return <code>true</code> if the state changed, otherwise false
-     * @see #nextGeneration()
-     */
-    public boolean transitionState() {
-        boolean stateChanged = false;
-        Cell[] rowOfCells = null;
-        Cell cell = null;
-        for ( int i = 0; i < this.cells.length; i++ ) {
-            rowOfCells = this.cells[i];
-            // for (Cell cell : rowOfCells) {
-            for ( int j = 0; j < rowOfCells.length; j++ ) {
-                cell = rowOfCells[j];
-                stateChanged |= cell.transitionState();
-            }
-        }
-        return stateChanged;
+        this.workingMemory.setFocus( "calculate" );
+        this.workingMemory.setFocus( "kill all" );
+        this.workingMemory.setFocus( "reset calculate" );
+        this.workingMemory.fireAllRules();
     }
 
     /**
@@ -197,14 +146,34 @@ public class CellGrid {
         }
 
         killAll();
+
         for ( int column = 0; column < gridWidth; column++ ) {
             for ( int row = 0; row < gridHeight; row++ ) {
                 if ( gridData[row][column] ) {
                     final Cell cell = getCellAt( row + rowOffset,
-                                           column + columnOffset );
+                                                 column + columnOffset );
                     cell.setCellState( CellState.LIVE );
+                    this.workingMemory.modifyObject( this.workingMemory.getFactHandle( cell ),
+                                                     cell );
                 }
             }
         }
+        workingMemory.setFocus( "calculate" );
+        workingMemory.fireAllRules();
+        System.out.println( "" );
+    }
+
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+
+        for ( int i = 0; i < this.cells.length; i++ ) {
+            for ( int j = 0; j < this.cells[i].length; j++ ) {
+                Cell cell = this.cells[i][j];
+                System.out.print( cell.getLiveNeighbors() + ((cell.getCellState() == CellState.DEAD) ? "D" : "L") + " " );
+            }
+            System.out.println( "" );
+        }
+
+        return buf.toString();
     }
 }

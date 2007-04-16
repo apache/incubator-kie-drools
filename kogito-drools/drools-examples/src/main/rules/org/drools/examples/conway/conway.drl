@@ -1,29 +1,154 @@
 package org.drools.examples
-
-expander conway.dsl
  
 import org.drools.examples.conway.Cell;
+import org.drools.examples.conway.CellGrid;
+import org.drools.examples.conway.Neighbor;
+import org.drools.examples.conway.Phase;
 import org.drools.examples.conway.CellState;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemoryActions;
+import org.drools.RuleBase;
+
+
+rule "register north east"
+	agenda-group "register neighbor"
+when
+    CellGrid( $numberOfColumns : numberOfColumns )
+	$cell: Cell( $row : row > 0, $col : col < ( $numberOfColumns - 1 ) )			
+	$northEast : Cell( row  == ($row - 1), col == $col )	
+then					
+	assert( new Neighbor( $cell, $northEast ) );
+	assert( new Neighbor( $northEast, $cell ) );		
+end
+
+rule "register north"
+	agenda-group "register neighbor"	
+when
+	$cell: Cell( $row : row > 0, $col : col )	
+	$north : Cell( row  == ($row - 1), col == $col )	
+then		
+	assert( new Neighbor( $cell, $north ) );
+	assert( new Neighbor( $north, $cell ) );		
+end
+
+rule "register north west"
+	agenda-group "register neighbor"
+when
+	$cell: Cell( $row : row > 0, $col : col > 0 )			
+	$northWest : Cell( row  == ($row - 1), col == ( $col - 1 ) )						
+then		
+	assert( new Neighbor( $cell, $northWest ) );
+	assert( new Neighbor( $northWest, $cell ) );		
+end
+
+rule "register west"
+	agenda-group "register neighbor"
+when
+	$cell: Cell( $row : row > 0, $col : col > 0 )			
+	$west : Cell( row  == $row, col == ( $col - 1 ) )						
+then		
+	assert( new Neighbor( $cell, $west ) );
+	assert( new Neighbor( $west, $cell ) );			
+end
 
 rule "Kill The Lonely"
+	salience 10
+	agenda-group "evaluate"	
+	lock-on-active	
 when
-	A live cell has fewer than 2 live neighbors
+#	A live cell has fewer than 2 live neighbors
+	theCell: Cell(liveNeighbors < 2, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
-	Kill the cell
+	theCell.setPhase(Phase.KILL);
+	modify( theCell );
 end
 
 rule "Kill The Overcrowded"
+	salience 10
+	agenda-group "evaluate"
+	lock-on-active	
 when
-	A live cell has more than 3 live neighbors
+#	A live cell has more than 3 live neighbors
+	theCell: Cell(liveNeighbors > 3, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
-	Kill the cell
+	theCell.setPhase(Phase.KILL);
+	modify( theCell );
 end
 
 rule "Give Birth"
+	salience 10
+	agenda-group "evaluate"
+	lock-on-active	
 when
-	A dead cell has 3 live neighbors
+#	A dead cell has 3 live neighbors
+	theCell: Cell(liveNeighbors == 3, cellState == CellState.DEAD, phase == Phase.EVALUATE)
 then
-	Bring the cell to life
+	theCell.setPhase(Phase.BIRTH);
+	modify( theCell );
 end
+
+rule "reset calculate"
+	agenda-group "reset calculate"
+when
+then
+	WorkingMemory wm = drools.getWorkingMemory();
+	wm.getAgenda().clearAgendaGroup( "calculate" );
+end
+
+rule "kill"
+	agenda-group "kill"
+	lock-on-active	
+when
+	theCell: Cell(phase == Phase.KILL)
+then
+	theCell.setCellState(CellState.DEAD);
+	theCell.setPhase(Phase.DONE);	
+	modify( theCell );
+end	
  
+rule "birth"
+	agenda-group "birth"
+	lock-on-active	
+when
+	theCell: Cell(phase == Phase.BIRTH)
+then
+	theCell.setCellState(CellState.LIVE);
+	theCell.setPhase(Phase.DONE);
+	modify( theCell );	
+end	
+
+rule "Calculate Live"
+	lock-on-active
+	agenda-group "calculate"
+when
+	theCell: Cell(cellState == CellState.LIVE)
+	Neighbor(cell == theCell, $neighbor : neighbor)	
+then
+	$neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 );
+	$neighbor.setPhase( Phase.EVALUATE );	
+	modify( $neighbor );
+end	
+
+rule "Calculate Dead"
+	lock-on-active
+	agenda-group "calculate"
+when
+	theCell: Cell(cellState == CellState.DEAD)
+    Neighbor(cell == theCell, $neighbor : neighbor )
+then
+	$neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 );
+	$neighbor.setPhase( Phase.EVALUATE );
+	modify( $neighbor );	
+end	
+
+rule "Kill All"
+	salience 10
+	agenda-group "kill all"	
+	lock-on-active	
+when
+	theCell: Cell(cellState == CellState.LIVE)
+then
+	theCell.setCellState(CellState.DEAD);
+	modify( theCell );
+end

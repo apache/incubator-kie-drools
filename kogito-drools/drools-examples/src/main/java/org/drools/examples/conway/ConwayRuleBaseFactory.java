@@ -33,7 +33,7 @@ public class ConwayRuleBaseFactory {
             final Reader source = new InputStreamReader( ConwayRuleBaseFactory.class.getResourceAsStream( "/org/drools/examples/conway/conway.drl" ) );
 
             // optionally read in the DSL (if you are using it).
-            final Reader dsl = new InputStreamReader( ConwayRuleBaseFactory.class.getResourceAsStream( "/org/drools/examples/conway/conway.dsl" ) );
+            //final Reader dsl = new InputStreamReader( ConwayRuleBaseFactory.class.getResourceAsStream( "/org/drools/examples/conway/conway.dsl" ) );
 
             // Use package builder to build up a rule package.
             // An alternative lower level class called "DrlParser" can also be
@@ -47,9 +47,11 @@ public class ConwayRuleBaseFactory {
             // builder.addPackageFromDrl( source );
 
             // Use the following instead of above if you are using a DSL:
-            builder.addPackageFromDrl( source,
-                                       dsl );
+            builder.addPackageFromDrl( source );//,
+                                       //dsl );
 
+            
+            
             // get the compiled package (which is serializable)
             final Package pkg = builder.getPackage();
 
