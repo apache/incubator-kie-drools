@@ -738,8 +738,45 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
         assertEquals( 1,
                       workingMemory.getObjects().size() );
-
     }
+    
+    public void testLogicalAssertionsAccumulatorPattern() throws Exception {
+        // JBRULES-449
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsAccumulatorPattern.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        workingMemory.setGlobal( "ga", "a");
+        workingMemory.setGlobal( "gb", "b");
+        workingMemory.setGlobal( "gs", new Short((short)3));
+        
+        workingMemory.fireAllRules();
+
+        List l;
+        final FactHandle h = workingMemory.assertObject( new Integer( 6 ) );
+        assertEquals( 1,
+                      workingMemory.getObjects().size() );
+
+        workingMemory.fireAllRules();
+        l = workingMemory.getObjects( CheeseEqual.class );
+        assertEquals( "There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated", 2, l.size() );
+        assertEquals( 6, workingMemory.getObjects().size() );
+
+        workingMemory.retractObject( h );
+        l = workingMemory.getObjects( CheeseEqual.class );
+        assertEquals( "There should be only 1 CheeseEqual in Working Memory, 1 stated (the justified should have been retracted). Check TruthMaintenanceSystem justifiedMap", 1, l.size() );
+        l = workingMemory.getObjects( Short.class );
+        assertEquals( 1, l.size() );
+        assertEquals( 2, workingMemory.getObjects().size() );
+        
+        //clean-up
+        workingMemory.fireAllRules();
+        assertEquals( 0, workingMemory.getObjects().size() );
+    }    
     
 
 }

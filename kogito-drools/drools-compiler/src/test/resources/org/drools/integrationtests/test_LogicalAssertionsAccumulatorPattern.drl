@@ -1,0 +1,63 @@
+package org.drools.test;
+
+import java.lang.Integer;
+import java.lang.Float;
+import java.lang.Double;
+import java.lang.Short;
+import java.lang.String;
+import org.drools.CheeseEqual;
+
+global java.lang.String ga;
+global java.lang.String gb;
+global java.lang.Short gs;
+
+rule "assert-item"
+	when
+		i : Integer()
+	then
+		assertLogical(new Double(2.0));
+end
+
+rule "kickstart-accumulation"
+	when
+		i : Integer()
+	then
+		assertLogical(new Float(1.0));
+end
+
+rule "item qualifies"
+    when
+    	d : Double()
+    	f : Float()
+    then
+    	//assert(new Short((short)3));
+    	assert(gs);
+   		assertLogical(new CheeseEqual(ga, 4));
+end
+
+rule "accumulate item"
+	when
+		f : Float()
+		s : Short()
+		c : CheeseEqual(type == (ga), price == 4)
+		not CheeseEqual(type == (gb), price == 5)
+	then
+		modify(f);
+		assert(new CheeseEqual(gb, 5));
+end
+
+rule "clean-up-1"
+	when
+		s : Short()
+		not Float()
+	then
+		retract(s);
+end
+
+rule "clean-up-2"
+	when
+		c : CheeseEqual(type == (gb), price == 5)
+		not Float()
+	then
+		retract(c);
+end
