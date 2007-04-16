@@ -43,10 +43,10 @@ public interface PropagationContext
     public int getDormantActivations();
 
     public void addRetractedTuple(Rule rule,
-                                  ReteTuple tuple);
+                                  Activation activation);
 
-    public ReteTuple removeRetractedTuple(Rule rule,
-                                          ReteTuple tuple);
+    public Activation removeRetractedTuple(Rule rule,
+                                           ReteTuple tuple);
 
     public void clearRetractedTuples();
 

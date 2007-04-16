@@ -80,6 +80,8 @@ public interface Activation
     public void addLogicalDependency(LogicalDependency node);
 
     public LinkedList getLogicalDependencies();
+    
+    public void setLogicalDependencies(LinkedList justified);
 
     public boolean isActivated();
 
