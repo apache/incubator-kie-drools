@@ -213,6 +213,9 @@ public class PackageBuilder {
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
+        if (this.pkg != null) {
+            return;
+        }
         if ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) {
 
             throw new MissingPackageNameException( "Missing package name for rule package." );
