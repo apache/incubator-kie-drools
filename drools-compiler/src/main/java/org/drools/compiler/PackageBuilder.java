@@ -388,7 +388,7 @@ public class PackageBuilder {
      * clear this when there were errors on items that a rule depends on
      * (eg functions), then you will get spurious errors which will not be that helpful.
      */
-    void resetErrors() {
+    protected void resetErrors() {
         this.results.clear();
     }
 
