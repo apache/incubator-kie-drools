@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.brxml.Constraint;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
@@ -169,6 +170,30 @@ public class RuleModelTest extends TestCase {
         assertEquals( "y",
                       b.get( 1 ) );
 
+    }
+    
+    public void testAllVariableBindings() {
+        final RuleModel model = new RuleModel();
+        model.lhs = new IPattern[2];
+        final FactPattern x = new FactPattern( "Car" );
+        model.lhs[0] = x;
+        x.boundName = "boundFact";        
+        x.constraints = new Constraint[2];
+        x.constraints[0] = new Constraint("q");
+        x.constraints[0].fieldBinding = "field1";
+        x.constraints[1] = new Constraint("w");
+        x.constraints[1].fieldBinding = "field2";
+        
+        model.lhs[1] = new CompositeFactPattern();
+     
+        List vars = model.getAllVariables();
+        assertEquals(3, vars.size());
+        assertEquals("boundFact", vars.get( 0 ));
+        assertEquals("field1", vars.get( 1 ));
+        assertEquals("field2", vars.get( 2 ));
+        
+        assertTrue(model.isVariableNameUsed( "field2" ));
+        
     }
 
     public void testRemoveItemLhs() {
