@@ -51,7 +51,7 @@ public class BRXMLToDescrConverterTest extends TestCase {
         model.addLhsItem( pat1 );
 
         final CompositeFactPattern comp1 = new CompositeFactPattern();
-        comp1.type = CompositeFactPattern.OR;
+        comp1.type = CompositeFactPattern.COMPOSITE_TYPE_OR;
 
         final FactPattern pat2 = new FactPattern( "Person" );
         final FactPattern pat3 = new FactPattern( "People" );

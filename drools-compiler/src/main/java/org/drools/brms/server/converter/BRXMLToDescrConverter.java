@@ -71,11 +71,11 @@ public class BRXMLToDescrConverter {
     private void addComposite(final ConditionalElementDescr ce,
                               final CompositeFactPattern pattern) {
         ConditionalElementDescr inner = null;
-        if ( CompositeFactPattern.OR.equals( pattern.type ) ) {
+        if ( CompositeFactPattern.COMPOSITE_TYPE_OR.equals( pattern.type ) ) {
             inner = new OrDescr();
-        } else if ( CompositeFactPattern.NOT.equals( pattern.type ) ) {
+        } else if ( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
             inner = new NotDescr();
-        } else if ( CompositeFactPattern.EXISTS.equals( pattern.type ) ) {
+        } else if ( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
             inner = new ExistsDescr();
         }
         for ( int i = 0; i < pattern.patterns.length; i++ ) {

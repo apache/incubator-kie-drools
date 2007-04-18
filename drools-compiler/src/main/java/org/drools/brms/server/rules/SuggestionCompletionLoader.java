@@ -46,7 +46,7 @@ public class SuggestionCompletionLoader {
     private final SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
     private final DrlParser                         parser  = new DrlParser();
     private final ByteArrayClassLoader        loader;
-    protected List                            errors;
+    protected List                            errors = new ArrayList();
 
     public SuggestionCompletionLoader() {
         this.loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
@@ -61,7 +61,6 @@ public class SuggestionCompletionLoader {
     public SuggestionCompletionEngine getSuggestionEngine(final String header,
                                                           final List jars,
                                                           final List dsls) {
-        this.errors = new ArrayList();
         this.builder.newCompletionEngine();
 
         if ( !header.trim().equals( "" ) ) {

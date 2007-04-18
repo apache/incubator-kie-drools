@@ -229,5 +229,36 @@ public class RuleModel
         }
         return result;
     }
+    
+    /**
+     * This will get a list of all bound variables, including bound fields.
+     */
+    public List getAllVariables() {
+        List result = new ArrayList();
+        for ( int i = 0; i < this.lhs.length; i++ ) {
+            IPattern pat = this.lhs[i];
+            if (pat instanceof FactPattern) {
+                FactPattern fact = (FactPattern) pat;
+                if (fact.isBound()) {
+                    result.add( fact.boundName );
+                }
+                for ( int j = 0; j < fact.constraints.length; j++ ) {
+                    Constraint con = fact.constraints[j];
+                    if (con.isBound()) {
+                        result.add( con.fieldBinding );
+                    }
+                }
+            } 
+        }
+        return result;
+    }
+
+    /**
+     * Checks to see if a variable is used or not, includes fields 
+     * as well as facts.
+     */
+    public boolean isVariableNameUsed(String s) {
+        return getAllVariables().contains( s );
+    }
 
 }

@@ -8,9 +8,9 @@ package org.drools.brms.client.modeldriven.brxml;
 public class CompositeFactPattern
     implements
     IPattern {
-    public static final String NOT    = "not";
-    public static final String EXISTS = "exists";
-    public static final String OR     = "or";
+    public static final String COMPOSITE_TYPE_NOT    = "not";
+    public static final String COMPOSITE_TYPE_EXISTS = "exists";
+    public static final String COMPOSITE_TYPE_OR     = "or";
 
     /**
      * this will one of: [Not, Exist, Or]
@@ -18,6 +18,9 @@ public class CompositeFactPattern
     public String              type;
     public FactPattern[]       patterns;
 
+    /**
+     * This type should be from the contants in this class of course.
+     */
     public CompositeFactPattern(final String type) {
         this.type = type;
     }
