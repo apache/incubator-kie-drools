@@ -42,12 +42,18 @@ public class ClassFieldExtractor
     private String                   fieldName;
     private Class                    clazz;
     private transient FieldExtractor extractor;
-
+    
     public ClassFieldExtractor(final Class clazz,
                                final String fieldName) {
+        this( clazz, fieldName, null );
+    }
+
+    public ClassFieldExtractor(final Class clazz,
+                               final String fieldName,
+                               final ClassLoader classLoader) {
         this.clazz = clazz;
         this.fieldName = fieldName;
-        init();
+        init(classLoader);
     }
 
     private void readObject(final ObjectInputStream is) throws ClassNotFoundException,
@@ -55,13 +61,14 @@ public class ClassFieldExtractor
                                                        Exception {
         //always perform the default de-serialization first
         is.defaultReadObject();
-        init();
+        init(null);
     }
 
-    public void init() {
+    public void init(final ClassLoader classLoader) {
         try {
             this.extractor = ClassFieldExtractorFactory.getClassFieldExtractor( this.clazz,
-                                                                                this.fieldName );
+                                                                                this.fieldName,
+                                                                                classLoader );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
