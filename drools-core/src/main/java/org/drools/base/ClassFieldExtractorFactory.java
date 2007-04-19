@@ -70,6 +70,14 @@ public class ClassFieldExtractorFactory {
 
     public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
                                                                  final String fieldName) {
+        return getClassFieldExtractor( clazz,
+                                       fieldName,
+                                       null );
+    }
+
+    public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
+                                                                 final String fieldName,
+                                                                 final ClassLoader classLoader) {
         try {
             // if it is a self reference
             if ( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
@@ -95,11 +103,11 @@ public class ClassFieldExtractorFactory {
                                            fieldType,
                                            clazz.isInterface() );
                 // use bytes to get a class 
-                final ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
-                final Class newClass = classLoader.defineClass( className.replace( '/',
-                                                                                   '.' ),
-                                                                bytes,
-                                                                PROTECTION_DOMAIN );
+                final ByteArrayClassLoader byteArrayClassLoader = new ByteArrayClassLoader( (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader() );
+                final Class newClass = byteArrayClassLoader.defineClass( className.replace( '/',
+                                                                                            '.' ),
+                                                                         bytes,
+                                                                         PROTECTION_DOMAIN );
                 // instantiating target class
                 final Integer index = (Integer) inspector.getFieldNames().get( fieldName );
                 final ValueType valueType = ValueType.determineValueType( fieldType );

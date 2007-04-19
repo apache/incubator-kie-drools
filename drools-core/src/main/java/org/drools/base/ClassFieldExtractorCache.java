@@ -20,13 +20,15 @@ public class ClassFieldExtractorCache {
     }
 
     public ClassFieldExtractor getExtractor(final Class clazz,
-                                            final String fieldName) {
+                                            final String fieldName,
+                                            ClassLoader classLoader) {
         final String key = clazz.getName() + "|" + fieldName;
         if ( this.cache.containsKey( key ) ) {
             return (ClassFieldExtractor) this.cache.get( key );
         } else {
             final ClassFieldExtractor ex = new ClassFieldExtractor( clazz,
-                                                                    fieldName );
+                                                                    fieldName,
+                                                                    classLoader );
             this.cache.put( key,
                             ex );
             return ex;
