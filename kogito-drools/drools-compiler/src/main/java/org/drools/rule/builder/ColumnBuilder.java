@@ -637,8 +637,10 @@ public class ColumnBuilder {
                                                         factTemplate.getFieldTemplateIndex( fieldName ) );
         } else {
             try {
+                ClassLoader classloader = context.getPkg().getPackageCompilationData().getClassLoader();
                 extractor = utils.getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
-                                                                              fieldName );
+                                                                              fieldName,
+                                                                              classloader );
             } catch ( final RuntimeDroolsException e ) {
                 if ( reportError ) {
                     context.getErrors().add( new RuleError( context.getRule(),
