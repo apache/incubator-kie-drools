@@ -74,7 +74,7 @@ public interface Expander {
 
     /**
      * Returns the list of errors from the last expansion made
-     * @return
+     * @return A list of <code>ExpanderException</code>
      */
     public List getErrors();
 
