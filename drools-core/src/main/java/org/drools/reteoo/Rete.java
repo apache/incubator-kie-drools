@@ -53,7 +53,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-class Rete extends ObjectSource
+public class Rete extends ObjectSource
     implements
     Serializable,
     ObjectSink,

@@ -30,7 +30,7 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-interface TupleSink
+public interface TupleSink
     extends
     Serializable,
     Sink {

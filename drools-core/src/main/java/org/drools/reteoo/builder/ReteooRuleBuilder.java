@@ -59,19 +59,19 @@ public class ReteooRuleBuilder {
         this.utils = new BuildUtils();
 
         this.utils.addBuilder( GroupElement.class,
-                          new GroupElementBuilder() );
+                               new GroupElementBuilder() );
         this.utils.addBuilder( Column.class,
-                          new ColumnBuilder() );
+                               new ColumnBuilder() );
         this.utils.addBuilder( EvalCondition.class,
-                          new EvalBuilder() );
+                               new EvalBuilder() );
         this.utils.addBuilder( From.class,
-                          new FromBuilder() );
+                               new FromBuilder() );
         this.utils.addBuilder( Collect.class,
-                          new CollectBuilder() );
+                               new CollectBuilder() );
         this.utils.addBuilder( Accumulate.class,
-                          new AccumulateBuilder() );
+                               new AccumulateBuilder() );
         this.utils.addBuilder( Forall.class,
-                          new ForallBuilder() );
+                               new ForallBuilder() );
     }
 
     /**
@@ -92,7 +92,6 @@ public class ReteooRuleBuilder {
      */
     public List addRule(final Rule rule,
                         final ReteooRuleBase rulebase,
-                        final Map attachedNodes,
                         final ReteooBuilder.IdGenerator idGenerator) throws InvalidPatternException {
 
         // the list of terminal nodes
@@ -104,12 +103,11 @@ public class ReteooRuleBuilder {
         for ( int i = 0; i < subrules.length; i++ ) {
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( rulebase,
-                                                     attachedNodes,
-                                                     idGenerator );
+                                                           idGenerator );
             // adds subrule
             final TerminalNode node = this.addSubRule( context,
-                                                 subrules[i],
-                                                 rule );
+                                                       subrules[i],
+                                                       rule );
 
             // adds the terminal node to the list of terminal nodes
             nodes.add( node );

@@ -19,12 +19,13 @@ package org.drools.spi;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 
 /**
- * A special extractor for globals
+ * This is a dummy extractor used during rule compilation and build. It is not
+ * supposed to be used to extract real global values during runtime, so
+ * all getValueXXX() methods will raise unsupported operation exceptions.
  * 
  * @author etirelli
  */
@@ -34,18 +35,16 @@ public class GlobalExtractor
 
     private static final long serialVersionUID = -756967384190918798L;
     private final String            key;
-    private Map               map;
-    private ObjectType        objectType;
+    private final ObjectType        objectType;
 
     public GlobalExtractor(final String key,
                            final Map map) {
         this.key = key;
-        this.map = map;
-        this.objectType = new ClassObjectType( Object.class );
+        this.objectType = new ClassObjectType( (Class) map.get( this.key ));
     }
 
     public Object getValue(final Object object) {
-        return this.map.get( this.key );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public ObjectType getObjectType() {
@@ -53,7 +52,7 @@ public class GlobalExtractor
     }
 
     public Class getExtractToClass() {
-        return Object.class;
+        return this.objectType.getValueType().getClassType();
     }
 
     public ValueType getValueType() {
@@ -61,106 +60,43 @@ public class GlobalExtractor
     }
 
     public boolean getBooleanValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Boolean ) {
-                return ((Boolean) value).booleanValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to boolean not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public byte getByteValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Number ) {
-                return ((Number) value).byteValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to byte not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public char getCharValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Character ) {
-                return ((Character) value).charValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to char not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to char not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public double getDoubleValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Number ) {
-                return ((Number) value).doubleValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to double not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to double not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public float getFloatValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Number ) {
-                return ((Number) value).floatValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to float not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to float not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public int getIntValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Number ) {
-                return ((Number) value).intValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to int not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to int not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public long getLongValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Number ) {
-                return ((Number) value).longValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to long not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to long not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public short getShortValue(final Object object) {
-        final Object value = this.map.get( this.key );
-        if ( value != null ) {
-            if ( value instanceof Number ) {
-                return ((Number) value).shortValue();
-            }
-            throw new RuntimeDroolsException( "Conversion to short not supported for type: " + value.getClass() );
-        }
-        throw new RuntimeDroolsException( "Conversion to short not supported for a null value" );
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public Method getNativeReadMethod() {
-        try {
-            return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{Object.class} );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
-        }
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public int getHashCode(final Object object) {
-        final Object value = this.map.get( this.key );
-        return value != null ? value.hashCode() : 0;
+        throw new UnsupportedOperationException("Operation not suported for globals");
     }
 
     public int hashCode() {
@@ -175,8 +111,7 @@ public class GlobalExtractor
             return false;
         }
         final GlobalExtractor other = (GlobalExtractor) obj;
-        final Object value = this.map.get( this.key );
-        final Object othervalue = other.map.get( this.key );
-        return value == null ? othervalue == null : value.equals( othervalue );
+        return ( key == null ? other.key == null : key.equals( other.key ) ) &&
+               ( this.objectType == null ? other.objectType == null : this.objectType.equals( other.objectType ));
     }
 }

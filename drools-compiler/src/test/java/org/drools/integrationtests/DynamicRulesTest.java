@@ -5,6 +5,9 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.FactA;
 import org.drools.FactB;
@@ -17,9 +20,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class DynamicRulesTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -433,5 +433,25 @@ public class DynamicRulesTest extends TestCase {
 
         workingMemory.fireAllRules();
     }    
+    
+    public void testRuleBaseAddRemove() throws Exception
+    {
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        
+        //add and remove
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ));
+        Package pkg = builder.getPackage();
+        ruleBase.addPackage(pkg);
+        ruleBase.removePackage(pkg.getName());
+            
+        //add and remove again
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl(new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ));
+        pkg = builder.getPackage();
+        ruleBase.addPackage(pkg);
+        ruleBase.removePackage(pkg.getName());
+    }
+    
 
 }

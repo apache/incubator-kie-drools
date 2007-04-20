@@ -199,7 +199,8 @@ public class FieldConstraintTest extends TestCase {
 
         final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
                                                                          new Declaration[]{price1Declaration},
-                                                                         new Declaration[]{price2Declaration} );
+                                                                         new Declaration[]{price2Declaration},
+                                                                         new String[]{} );
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
@@ -270,6 +271,7 @@ public class FieldConstraintTest extends TestCase {
                                                                           isDoubleThePrice,
                                                                           new Declaration[]{priceDeclaration},
                                                                           new Declaration[0],
+                                                                          new String[0],
                                                                           ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
 
         final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
@@ -279,6 +281,7 @@ public class FieldConstraintTest extends TestCase {
                                                                           isDoubleThePrice,
                                                                           new Declaration[]{priceDeclaration},
                                                                           new Declaration[0],
+                                                                          new String[0],
                                                                           ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER ) );
 
         final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,

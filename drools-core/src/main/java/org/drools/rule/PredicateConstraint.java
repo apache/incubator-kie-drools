@@ -16,6 +16,8 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.util.Arrays;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -41,25 +43,31 @@ public class PredicateConstraint
     private final Declaration[]        previousDeclarations;
 
     private final Declaration[]        localDeclarations;
+    
+    private final String[]             requiredGlobals;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
+    private static final String[] EMPTY_GLOBALS = new String[0];
 
     public PredicateConstraint(final PredicateExpression evaluator) {
         this( evaluator,
               null,
-              null );
+              null,
+              null);
     }
 
     public PredicateConstraint(final Declaration[] previousDeclarations,
                                final Declaration[] localDeclarations) {
         this( null,
               previousDeclarations,
-              localDeclarations );
+              localDeclarations,
+              null);
     }
 
     public PredicateConstraint(final PredicateExpression expression,
                                final Declaration[] previousDeclarations,
-                               final Declaration[] localDeclarations) {
+                               final Declaration[] localDeclarations,
+                               final String[] requiredGlobals ) {
 
         this.expression = expression;
 
@@ -73,6 +81,12 @@ public class PredicateConstraint
             this.localDeclarations = PredicateConstraint.EMPTY_DECLARATIONS;
         } else {
             this.localDeclarations = localDeclarations;
+        }
+
+        if ( requiredGlobals == null ) {
+            this.requiredGlobals = PredicateConstraint.EMPTY_GLOBALS;
+        } else {
+            this.requiredGlobals = requiredGlobals;
         }
 
         this.requiredDeclarations = new Declaration[this.previousDeclarations.length + this.localDeclarations.length];
@@ -135,6 +149,10 @@ public class PredicateConstraint
             return false;
         }
 
+        if ( this.requiredGlobals.length != other.requiredGlobals.length ) {
+            return false;
+        }
+
         for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
             if ( this.previousDeclarations[i].getColumn().getOffset() != other.previousDeclarations[i].getColumn().getOffset() ) {
                 return false;
@@ -153,6 +171,11 @@ public class PredicateConstraint
             if ( !this.localDeclarations[i].getExtractor().equals( other.localDeclarations[i].getExtractor() ) ) {
                 return false;
             }
+        }
+
+        if ( !Arrays.equals( this.requiredGlobals,
+                             other.requiredGlobals ) ) {
+            return false;
         }
 
         return this.expression.equals( other.expression );

@@ -78,10 +78,12 @@ public class MVELReturnValueBuilderTest extends TestCase {
 
         final Declaration[] previousDeclarations = new Declaration[]{a, b};
         final Declaration[] localDeclarations = new Declaration[]{};
+        final String[] requiredGlobals = new String[]{};
 
         final ReturnValueRestriction returnValue = new ReturnValueRestriction( extractor,
                                                                                previousDeclarations,
                                                                                localDeclarations,
+                                                                               requiredGlobals,
                                                                                ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
 
         final BuildUtils utils = new BuildUtils( new KnowledgeHelperFixer(),

@@ -7,7 +7,7 @@ global java.util.List list
 
 rule "like stilton"
     when
-        Cheese( type:type == "stilton" )
+        Cheese( type:type == "stilton", price > ( -1 )  )
     then
 		list.add( type );
 end  
