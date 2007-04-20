@@ -39,6 +39,8 @@ public class ReturnValueRestriction
     private ReturnValueExpression         expression;
 
     private final Declaration[]           requiredDeclarations;
+    
+    private final String[]                requiredGlobals;
 
     private final Declaration[]           previousDeclarations;
 
@@ -48,16 +50,20 @@ public class ReturnValueRestriction
 
     private static final Declaration[]    noRequiredDeclarations = new Declaration[]{};
 
+    private static final String[]         noRequiredGlobals = new String[]{};
+
     private final ReturnValueContextEntry contextEntry;
 
     public ReturnValueRestriction(final FieldExtractor fieldExtractor,
                                   final Declaration[] previousDeclarations,
                                   final Declaration[] localDeclarations,
+                                  final String[] requiredGlobals,
                                   final Evaluator evaluator) {
         this( fieldExtractor,
               null,
               previousDeclarations,
               localDeclarations,
+              requiredGlobals,
               evaluator );
     }
 
@@ -65,6 +71,7 @@ public class ReturnValueRestriction
                                   final ReturnValueExpression returnValueExpression,
                                   final Declaration[] previousDeclarations,
                                   final Declaration[] localDeclarations,
+                                  final String[] requiredGlobals,
                                   final Evaluator evaluator) {
         this.expression = returnValueExpression;
 
@@ -78,6 +85,12 @@ public class ReturnValueRestriction
             this.localDeclarations = localDeclarations;
         } else {
             this.localDeclarations = ReturnValueRestriction.noRequiredDeclarations;
+        }
+        
+        if ( requiredGlobals != null ) {
+            this.requiredGlobals = requiredGlobals;
+        } else {
+            this.requiredGlobals = ReturnValueRestriction.noRequiredGlobals;
         }
 
         this.evaluator = evaluator;
@@ -162,6 +175,7 @@ public class ReturnValueRestriction
         result = PRIME * result + ((this.expression != null) ? this.expression.hashCode() : 0);
         result = PRIME * result + ReturnValueRestriction.hashCode( this.localDeclarations );
         result = PRIME * result + ReturnValueRestriction.hashCode( this.previousDeclarations );
+        result = PRIME * result + ReturnValueRestriction.hashCode( this.requiredGlobals );
         return result;
     }
 
@@ -184,8 +198,12 @@ public class ReturnValueRestriction
             return false;
         }
 
-        if ( !Arrays.equals( this.previousDeclarations,
-                             other.previousDeclarations ) ) {
+        if ( this.requiredGlobals.length != other.requiredGlobals.length ) {
+            return false;
+        }
+
+        if ( !Arrays.equals( this.localDeclarations,
+                             other.localDeclarations ) ) {
             return false;
         }
 
@@ -194,7 +212,12 @@ public class ReturnValueRestriction
             return false;
         }
 
-        return this.expression.equals( other.expression );
+        if ( !Arrays.equals( this.requiredGlobals,
+                             other.requiredGlobals ) ) {
+            return false;
+        }
+
+        return this.evaluator.equals( other.evaluator ) && this.expression.equals( other.expression );
     }
 
     private static int hashCode(final Object[] array) {

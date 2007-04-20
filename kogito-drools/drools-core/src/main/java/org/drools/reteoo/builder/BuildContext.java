@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
@@ -49,9 +48,6 @@ public class BuildContext {
     // offset of the column
     private int                       currentColumnOffset;
 
-    // attached nodes cache
-    private Map                       attachedNodes;
-
     // rule base to add rules to
     private ReteooRuleBase            rulebase;
 
@@ -68,11 +64,9 @@ public class BuildContext {
     BetaConstraints                   betaconstraints;
 
     public BuildContext(final ReteooRuleBase rulebase,
-                        final Map attachedNodes,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
         this.workingMemories = (ReteooWorkingMemory[]) this.rulebase.getWorkingMemories().toArray( new ReteooWorkingMemory[this.rulebase.getWorkingMemories().size()] );
-        this.attachedNodes = attachedNodes;
         this.idGenerator = idGenerator;
 
         this.objectType = new LinkedHashMap();
@@ -146,26 +140,6 @@ public class BuildContext {
 
     public void decrementCurrentColumnOffset() {
         this.currentColumnOffset--;
-    }
-
-    /**
-     * Checks if the given candidate node is in cache, and if it is returns it. 
-     * Returns null otherwise.
-     *
-     * @param candidate
-     * @return
-     */
-    public BaseNode getNodeFromCache(final BaseNode candidate) {
-        return (BaseNode) this.attachedNodes.get( candidate );
-    }
-
-    /**
-     * Adds given node to node cache
-     * @param candidate
-     */
-    public void addNodeToCache(final BaseNode node) {
-        this.attachedNodes.put( node,
-                                node );
     }
 
     /**

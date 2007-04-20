@@ -16,8 +16,10 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.HashMap;
 import java.util.List;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
@@ -30,9 +32,6 @@ import org.drools.rule.GroupElementFactory;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 /**
  * @author etirelli
@@ -90,7 +89,6 @@ public class ReteooRuleBuilderTest extends TestCase {
 
         final List terminals = this.builder.addRule( rule,
                                                this.rulebase,
-                                               new HashMap(),
                                                new ReteooBuilder.IdGenerator( 1 ) );
 
         Assert.assertEquals( "Rule must have a single terminal node",

@@ -119,7 +119,7 @@ public class BuildUtils {
     public void setStringTemplateAttributes(final BuildContext context,
                                             final StringTemplate st,
                                             final Declaration[] declarations,
-                                            final String[] globals) {
+                                            final String[] globals ) {
         final String[] declarationTypes = new String[declarations.length];
         for ( int i = 0, size = declarations.length; i < size; i++ ) {
             declarationTypes[i] = this.typeFixer.fix( declarations[i] );

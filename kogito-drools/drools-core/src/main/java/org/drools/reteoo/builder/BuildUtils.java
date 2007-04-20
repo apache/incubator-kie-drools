@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
@@ -30,7 +31,10 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
+import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.TupleSink;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
@@ -82,39 +86,53 @@ public class BuildUtils {
      */
     public BaseNode attachNode(final BuildContext context,
                                final BaseNode candidate) {
-        // checks if node is in the cache
-        BaseNode node = context.getNodeFromCache( candidate );
-
-        // if node sharing is enabled and node was found in the cache
-        if ( (node != null) && isSharingEnabledForNode( context,
-                                                        node ) ) {
-            // if node was not previously in use, attach it
-            if ( !node.isInUse() ) {
-                if ( context.getWorkingMemories().length == 0 ) {
-                    node.attach();
-                } else {
-                    node.attach( context.getWorkingMemories() );
+        BaseNode node = null;
+        if( isSharingEnabledForNode( context, candidate ) ) {
+            if ( candidate instanceof ObjectTypeNode ) {
+                ObjectTypeNode otn = (ObjectTypeNode) candidate;
+                otn = (ObjectTypeNode) context.getRuleBase().getRete().getObjectTypeNodes().get( otn.getObjectType() );
+                if ( otn != null ) {
+                    node = otn;
                 }
-            }
-            // increment share counter
-            node.addShare();
-            // undo previous id assignment
-            context.releaseLastId();
-        } else {
-            // attach candidate node
-            if ( context.getWorkingMemories().length == 0 ) {
-                candidate.attach();
+            } else if ( (context.getTupleSource() != null) && ( candidate instanceof TupleSink ) ) {
+                TupleSink[] sinks = context.getTupleSource().getSinkPropagator().getSinks(); 
+                for( int i = 0; i < sinks.length; i++ ) {
+                    if( candidate.equals( sinks[i] ) ) {
+                        node = (BaseNode) sinks[i];
+                        break;
+                    }
+                }
+            } else if ( (context.getObjectSource() != null) && (candidate instanceof ObjectSink) ) {
+                ObjectSink[] sinks = context.getObjectSource().getSinkPropagator().getSinks();
+                for( int i = 0; i < sinks.length; i++ ) {
+                    if( candidate.equals( sinks[i] ) ) {
+                        node = (BaseNode) sinks[i];
+                        break;
+                    }
+                }
             } else {
-                candidate.attach( context.getWorkingMemories() );
+                throw new RuntimeDroolsException( "This is a bug on node sharing verification. Please report to development team." );
             }
-
-            // add it to cache
-            context.addNodeToCache( candidate );
-
-            node = candidate;
+            if( node != null ) {
+                // shared node found
+                // undo previous id assignment
+                context.releaseLastId();
+                node.addShare();
+            }
         }
+        
 
+        if ( node == null ) {
+            // only attach() if it is a new node
+            node = candidate;
+            if ( context.getWorkingMemories().length == 0 ) {
+                node.attach();
+            } else {
+                node.attach( context.getWorkingMemories() );
+            }
+        }
         return node;
+        
     }
 
     /**

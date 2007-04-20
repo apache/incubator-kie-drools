@@ -390,9 +390,12 @@ public class ColumnBuilder {
 
         final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
         final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
+        final String[] requiredGlobals = (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] );
 
-        final PredicateConstraint predicateConstraint = new PredicateConstraint( previousDeclarations,
-                                                                                 localDeclarations );
+        final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
+                                                                                 previousDeclarations,
+                                                                                 localDeclarations,
+                                                                                 requiredGlobals );
         column.addConstraint( predicateConstraint );
 
         final PredicateBuilder builder = this.dialect.getPredicateBuilder();
@@ -604,9 +607,11 @@ public class ColumnBuilder {
 
         final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
         final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
+        final String[] requiredGlobals = (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] );
         final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( extractor,
                                                                                           previousDeclarations,
                                                                                           localDeclarations,
+                                                                                          requiredGlobals,
                                                                                           evaluator );
 
         final ReturnValueBuilder builder = this.dialect.getReturnValueBuilder();

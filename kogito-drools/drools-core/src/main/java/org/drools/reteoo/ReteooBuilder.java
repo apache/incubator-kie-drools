@@ -53,9 +53,6 @@ public class ReteooBuilder
 
     private transient ReteooWorkingMemory[] workingMemories;
 
-    /** Nodes that have been attached. */
-    private final Map                       attachedNodes;
-
     private Map                             rules;
 
     private transient ReteooRuleBuilder     ruleBuilder;
@@ -72,7 +69,6 @@ public class ReteooBuilder
      */
     ReteooBuilder(final ReteooRuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.attachedNodes = new HashMap();
         this.rules = new HashMap();
 
         //Set to 1 as Rete node is set to 0
@@ -114,7 +110,6 @@ public class ReteooBuilder
     void addRule(final Rule rule) throws InvalidPatternException {
         final List terminals = this.ruleBuilder.addRule( rule,
                                                    this.ruleBase,
-                                                   this.attachedNodes,
                                                    this.idGenerator );
 
         this.rules.put( rule,
