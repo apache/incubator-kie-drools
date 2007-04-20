@@ -60,6 +60,7 @@ public class QuadroupleBetaConstraints
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
+    private boolean                       indexed3;
 
     private RuleBaseConfiguration         conf;
 
@@ -70,6 +71,7 @@ public class QuadroupleBetaConstraints
             this.indexed0 = false;
             this.indexed1 = false;
             this.indexed2 = false;
+            this.indexed3 = false;
         } else {
             final int depth = conf.getCompositeKeyDepth();
 
@@ -126,8 +128,8 @@ public class QuadroupleBetaConstraints
                     swap( constraints,
                           3,
                           2 );
-                } else {
-                    throw new IllegalArgumentException( "There cannot be more than 3 indexes" );
+                } else if ( depth >= 4 ){
+                    this.indexed3 = true;
                 }
             }
         }
@@ -205,8 +207,8 @@ public class QuadroupleBetaConstraints
                                                                        object )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
                                                                                                                                             object )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
                                                                                                                                                                                                                  object ))
-               && this.constraint3.isAllowedCachedLeft( this.context3,
-                                                        object );
+               && (this.indexed3 || this.constraint3.isAllowedCachedLeft( this.context3,
+                                                        object ));
     }
 
     /* (non-Javadoc)
@@ -216,8 +218,8 @@ public class QuadroupleBetaConstraints
         return this.constraint0.isAllowedCachedRight( tuple,
                                                       this.context0 ) && this.constraint1.isAllowedCachedRight( tuple,
                                                                                                                 this.context1 ) && this.constraint2.isAllowedCachedRight( tuple,
-                                                                                                                                                                          this.context2 ) && this.constraint3.isAllowedCachedRight( tuple,
-                                                                                                                                                                                                                                    this.context3 );
+                                                                                                                                                                          this.context2 ) && ( this.indexed3 || this.constraint3.isAllowedCachedRight( tuple,
+                                                                                                                                                                                                                                    this.context3 ));
     }
 
     public boolean isIndexed() {
@@ -252,6 +254,14 @@ public class QuadroupleBetaConstraints
 
         if ( this.indexed2 ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
+            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
+                                                     variableConstraint.getRequiredDeclarations()[0],
+                                                     variableConstraint.getEvaluator() );
+            list.add( index );
+        }
+
+        if ( this.indexed3 ) {
+            final VariableConstraint variableConstraint = (VariableConstraint) this.constraint3;
             final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
                                                      variableConstraint.getRequiredDeclarations()[0],
                                                      variableConstraint.getEvaluator() );
