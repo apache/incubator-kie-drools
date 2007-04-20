@@ -141,7 +141,9 @@ public class DefaultBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final Object object) {
-        LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
+        // skip the indexed constraints
+        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed );
+        
         ContextEntry context = this.contexts;
         while ( entry != null ) {
             if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft( context,
@@ -158,7 +160,9 @@ public class DefaultBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
     public boolean isAllowedCachedRight(final ReteTuple tuple) {
-        LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
+        // skip the indexed constraints
+        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed );
+        
         ContextEntry context = this.contexts;
         while ( entry != null ) {
             if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedRight( tuple,
