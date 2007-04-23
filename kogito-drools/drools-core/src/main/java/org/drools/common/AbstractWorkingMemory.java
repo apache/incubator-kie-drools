@@ -249,6 +249,18 @@ public abstract class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
+    public Map getGlobals() {
+        try {
+            this.lock.lock();
+            return this.globals;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * @see WorkingMemory
+     */
     public void setGlobal(final String name,
                           final Object value) {
         // Cannot set null values
