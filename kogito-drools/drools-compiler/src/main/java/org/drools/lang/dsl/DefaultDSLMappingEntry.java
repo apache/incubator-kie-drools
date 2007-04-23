@@ -106,10 +106,15 @@ public class DefaultDSLMappingEntry
         this.key = key;
 
         if ( key != null ) {
-            // retrieving variables list and creating key pattern 
+            // escape '$' to avoid errors  
             final Matcher m = varFinder.matcher( key.replaceAll( "\\$",
                                                            "\\\\\\$" ) );
+            // retrieving variables list and creating key pattern 
             final StringBuffer buf = new StringBuffer();
+
+            // making it start with a space char or a line start
+            buf.append( "(\\W|^)" );
+            
             int counter = 1;
             while ( m.find() ) {
                 if ( this.variables == Collections.EMPTY_MAP ) {
@@ -121,8 +126,12 @@ public class DefaultDSLMappingEntry
                                      m.group( 1 ) + "(.*?)" );
             }
             m.appendTail( buf );
+            
+            // if pattern ends with a variable, append a line end to avoid multiple line matching
             if ( buf.toString().endsWith( "(.*?)" ) ) {
                 buf.append( "$" );
+            } else {
+                buf.append( "\\W" );
             }
 
             // setting the key pattern and making it space insensitive
