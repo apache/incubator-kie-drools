@@ -25,8 +25,8 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         final String inputKey = "The Customer name is {name} and surname is {surname} and it has US$ 50,00 on his {pocket}";
         final String inputValue = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
 
-        final String expectedKeyP = "The\\s*Customer\\s*name\\s*is\\s*(.*?)\\s*and\\s*surname\\s*is\\s*(.*?)\\s*and\\s*it\\s*has\\s*US\\$\\s*50,00\\s*on\\s*his\\s*(.*?)$";
-        final String expectedValP = "Customer( name == \"$1\", surname == \"$2\", money > \\$money )";
+        final String expectedKeyP = "(\\W|^)The\\s*Customer\\s*name\\s*is\\s*(.*?)\\s*and\\s*surname\\s*is\\s*(.*?)\\s*and\\s*it\\s*has\\s*US\\$\\s*50,00\\s*on\\s*his\\s*(.*?)$";
+        final String expectedValP = "Customer( name == \"$2\", surname == \"$3\", money > \\$money )";
 
         final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
                                                             null,
@@ -48,8 +48,8 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         final String inputKey = "-name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
-        final String expectedValP = "name == \"$1\"";
+        final String expectedKeyP = "(\\W|^)-\\s*name\\s*is\\s*(.*?)$";
+        final String expectedValP = "name == \"$2\"";
 
         final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
                                                             null,
@@ -71,8 +71,8 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         final String inputKey = "- name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "-\\s*name\\s*is\\s*(.*?)$";
-        final String expectedValP = "name == \"$1\"";
+        final String expectedKeyP = "(\\W|^)-\\s*name\\s*is\\s*(.*?)$";
+        final String expectedValP = "name == \"$2\"";
 
         final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
                                                             null,
