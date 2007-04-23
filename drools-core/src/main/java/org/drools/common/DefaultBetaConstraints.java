@@ -106,6 +106,14 @@ public class DefaultBetaConstraints
         return current;
     }
 
+    private ContextEntry findContext(final int pos) {
+        ContextEntry current = this.contexts;
+        for ( int i = 0; i < pos; i++ ) {
+            current = current.getNext();
+        }
+        return current;
+    }
+
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint instanceof VariableConstraint ) {
             final VariableConstraint variableConstraint = (VariableConstraint) constraint;
@@ -143,8 +151,8 @@ public class DefaultBetaConstraints
     public boolean isAllowedCachedLeft(final Object object) {
         // skip the indexed constraints
         LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed );
-        
-        ContextEntry context = this.contexts;
+
+        ContextEntry context = findContext( this.indexed );
         while ( entry != null ) {
             if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft( context,
                                                                                      object ) ) {
@@ -162,8 +170,8 @@ public class DefaultBetaConstraints
     public boolean isAllowedCachedRight(final ReteTuple tuple) {
         // skip the indexed constraints
         LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed );
-        
-        ContextEntry context = this.contexts;
+
+        ContextEntry context = findContext( this.indexed );
         while ( entry != null ) {
             if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedRight( tuple,
                                                                                       context ) ) {
