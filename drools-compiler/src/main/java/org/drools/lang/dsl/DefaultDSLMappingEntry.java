@@ -106,11 +106,21 @@ public class DefaultDSLMappingEntry
         this.key = key;
 
         if ( key != null ) {
-            // retrieving variables list and creating key pattern 
+            int substr = 0;
+            // escape '$' to avoid errors  
             final Matcher m = varFinder.matcher( key.replaceAll( "\\$",
                                                            "\\\\\\$" ) );
+            // retrieving variables list and creating key pattern 
             final StringBuffer buf = new StringBuffer();
+
             int counter = 1;
+            if( ! key.startsWith( "^" ) ) {
+                // making it start with a space char or a line start
+                buf.append( "(\\W|^)" );
+                substr += buf.length();
+                counter++;
+            }
+            
             while ( m.find() ) {
                 if ( this.variables == Collections.EMPTY_MAP ) {
                     this.variables = new HashMap( 2 );
@@ -121,14 +131,18 @@ public class DefaultDSLMappingEntry
                                      m.group( 1 ) + "(.*?)" );
             }
             m.appendTail( buf );
+            
+            // if pattern ends with a variable, append a line end to avoid multiple line matching
             if ( buf.toString().endsWith( "(.*?)" ) ) {
                 buf.append( "$" );
+            } else {
+                buf.append( "(\\W|$)" );
             }
 
             // setting the key pattern and making it space insensitive
             String pat = buf.toString().replaceAll( "\\s+",
                                                     "\\\\s*" );
-            if ( pat.trim().startsWith( "-" ) && (!pat.trim().startsWith( "-\\s*" )) ) {
+            if ( pat.substring( substr ).trim().startsWith( "-" ) && (!pat.substring( substr ).trim().startsWith( "-\\s*" )) ) {
                 pat = pat.substring( 0,
                                      pat.indexOf( '-' ) + 1 ) + "\\s*" + pat.substring( pat.indexOf( '-' ) + 1 );
             }

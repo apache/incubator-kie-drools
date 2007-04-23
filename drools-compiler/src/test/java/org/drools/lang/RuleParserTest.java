@@ -1257,7 +1257,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       parser.getErrors().size() );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       err.line );
     }
 
