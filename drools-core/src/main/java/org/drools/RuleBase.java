@@ -45,6 +45,8 @@ public interface RuleBase
 
     public static final int RETEOO = 1;
     public static final int LEAPS  = 2;
+    
+    StatelessSession newStatelessSession();
 
     /**
      * Create a new <code>WorkingMemory</code> session for this
@@ -61,7 +63,7 @@ public interface RuleBase
      * 
      * @return A newly initialized <code>WorkingMemory</code>.
      */
-    WorkingMemory newWorkingMemory();
+    StatefulSession newStatefulSession();
 
     /**
      * Create a new <code>WorkingMemory</code> session for this
@@ -78,7 +80,7 @@ public interface RuleBase
      * 
      * @return A newly initialized <code>WorkingMemory</code>.
      */
-    WorkingMemory newWorkingMemory(boolean keepReference);
+    StatefulSession newStatefulSession(boolean keepReference);
 
     /**
      * RuleBases handle the returning of a Serialized WorkingMemory
@@ -96,7 +98,7 @@ public interface RuleBase
      * 
      * @return A serialised initialized <code>WorkingMemory</code>.
      */
-    WorkingMemory newWorkingMemory(InputStream stream) throws IOException,
+    StatefulSession newStatefulSession(InputStream stream) throws IOException,
                                                       ClassNotFoundException;
 
     /**
@@ -115,7 +117,7 @@ public interface RuleBase
      * 
      * @return A serialised initialized <code>WorkingMemory</code>.
      */
-    WorkingMemory newWorkingMemory(InputStream stream,
+    StatefulSession newStatefulSession(InputStream stream,
                                    boolean keepReference) throws IOException,
                                                          ClassNotFoundException;
 
@@ -134,5 +136,5 @@ public interface RuleBase
     void removeRule(String packageName,
                     String ruleName);
 
-    public Set getWorkingMemories();
+    public StatefulSession[] getStatefulSessions();
 }

@@ -58,7 +58,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
     public void testRuleFlowGroup() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 

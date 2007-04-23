@@ -15,10 +15,10 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
 
 public interface TemplateRuleBase {
 
-	WorkingMemory newWorkingMemory();
+    StatefulSession newStatefulSession();
 
 }

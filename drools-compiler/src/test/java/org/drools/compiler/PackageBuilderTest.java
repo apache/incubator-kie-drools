@@ -154,7 +154,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
                                    Map.class );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final HashMap map = new HashMap();
         workingMemory.setGlobal( "map",
@@ -231,7 +231,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
                                    Map.class );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final HashMap map = new HashMap();
 
@@ -348,7 +348,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         } catch ( final Exception e ) {
             e.printStackTrace();
         }
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Fact stilton = pkg.getFactTemplate( "Cheese" ).createFact( 1 );
         stilton.setFieldValue( "name",
                                "stilton" );

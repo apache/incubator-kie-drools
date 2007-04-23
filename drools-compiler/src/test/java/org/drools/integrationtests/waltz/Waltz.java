@@ -48,7 +48,7 @@ public abstract class Waltz extends TestCase {
 
             //load up the rulebase
             final RuleBase ruleBase = readRule();
-            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
             workingMemory.setGlobal( "sysout",
                                      System.out );

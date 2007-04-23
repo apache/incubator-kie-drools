@@ -37,7 +37,7 @@ public class AddRemoveTest extends DroolsTestCase {
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         // objectTypeNode.
     }

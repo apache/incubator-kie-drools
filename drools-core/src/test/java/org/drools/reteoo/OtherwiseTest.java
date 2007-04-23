@@ -33,7 +33,7 @@ public class OtherwiseTest extends TestCase {
 
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.assertObject( new TestBean() );
         workingMemory.fireAllRules();
 
@@ -56,7 +56,7 @@ public class OtherwiseTest extends TestCase {
 
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.assertObject( new TestBean() );
         workingMemory.fireAllRules();
 
@@ -78,7 +78,7 @@ public class OtherwiseTest extends TestCase {
 
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.fireAllRules();
 
@@ -103,7 +103,7 @@ public class OtherwiseTest extends TestCase {
 
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.fireAllRules();
 

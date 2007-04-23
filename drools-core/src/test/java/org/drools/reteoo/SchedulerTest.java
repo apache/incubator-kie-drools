@@ -40,7 +40,7 @@ public class SchedulerTest extends DroolsTestCase {
     public void testScheduledActivation() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
         final RuleTerminalNode node = new RuleTerminalNode( 1,
@@ -102,7 +102,7 @@ public class SchedulerTest extends DroolsTestCase {
     public void testDoLoopScheduledActivation() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
@@ -179,7 +179,7 @@ public class SchedulerTest extends DroolsTestCase {
     public void testNoLoopScheduledActivation() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );

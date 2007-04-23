@@ -56,7 +56,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -87,7 +87,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -112,7 +112,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -157,7 +157,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         wm.setGlobal( "list",
@@ -217,7 +217,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -263,7 +263,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -316,7 +316,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -346,7 +346,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Assert_Retract_Noloop.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.assertObject( new Cheese( "stilton",
                                      15 ) );
 
@@ -360,7 +360,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -391,7 +391,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -423,7 +423,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ModifyNoloop.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.assertObject( new Cheese( "stilton",
                                      15 ) );
 
@@ -435,7 +435,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ModifyActivationCreationNoLoop.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase.newWorkingMemory();
+        final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase.newStatefulSession();
         final List created = new ArrayList();
         final List cancelled = new ArrayList();
         final AgendaEventListener l = new DefaultAgendaEventListener() {
@@ -497,7 +497,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -525,7 +525,7 @@ public class ExecutionFlowControlTest extends TestCase {
         ruleBase.addPackage( pkg );
         ruleBase.addProcess( processBuilder.getProcesses()[0] );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -577,7 +577,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EffectiveDate.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",

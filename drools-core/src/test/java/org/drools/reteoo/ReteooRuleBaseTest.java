@@ -18,56 +18,36 @@ package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 
 public class ReteooRuleBaseTest extends DroolsTestCase {
     ReteooRuleBase ruleBase;
 
-    WorkingMemory  wm1;
-    WorkingMemory  wm2;
-    WorkingMemory  wm3;
-    WorkingMemory  wm4;
+    StatefulSession  wm1;
+    StatefulSession  wm2;
+    StatefulSession  wm3;
+    StatefulSession  wm4;
 
     public void setUp() {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
-        this.wm1 = this.ruleBase.newWorkingMemory();
-        this.wm2 = this.ruleBase.newWorkingMemory();
-        this.wm3 = this.ruleBase.newWorkingMemory();
-        this.wm4 = this.ruleBase.newWorkingMemory();
+        this.wm1 = this.ruleBase.newStatefulSession();
+        this.wm2 = this.ruleBase.newStatefulSession();
+        this.wm3 = this.ruleBase.newStatefulSession();
+        this.wm4 = this.ruleBase.newStatefulSession();
     }
 
     public void testKeepReference() throws Exception {
         /* Make sure the RuleBase is referencing all 4 Working Memories */
         assertLength( 4,
-                      this.ruleBase.getWorkingMemories() );
-        assertTrue( this.ruleBase.getWorkingMemories().contains( this.wm1 ) );
-        assertTrue( this.ruleBase.getWorkingMemories().contains( this.wm2 ) );
-        assertTrue( this.ruleBase.getWorkingMemories().contains( this.wm3 ) );
-        assertTrue( this.ruleBase.getWorkingMemories().contains( this.wm4 ) );
+                      this.ruleBase.getStatefulSessions() );
+        assertContains( this.wm1, this.ruleBase.getStatefulSessions() );
+        assertContains( this.wm2, this.ruleBase.getStatefulSessions() );
+        assertContains( this.wm3, this.ruleBase.getStatefulSessions() );
+        assertContains( this.wm4, this.ruleBase.getStatefulSessions() );
     }
-
-    public void testWeakReference() throws Exception {
-        /* nulling these two so the keys should get garbage collected */
-        this.wm2 = null;
-        this.wm4 = null;
-
-        /* Run GC */
-        System.gc();
-        Thread.sleep( 200 ); // Shouldn't need to sleep, but put it in anyway
-
-        /* Check we now only have two keys */
-        assertLength( 2,
-                      this.ruleBase.getWorkingMemories() );
-
-        /* Make sure the correct keys were removed */
-        assertTrue( this.ruleBase.getWorkingMemories().contains( this.wm1 ) );
-        assertFalse( this.ruleBase.getWorkingMemories().contains( this.wm2 ) );
-        assertTrue( this.ruleBase.getWorkingMemories().contains( this.wm3 ) );
-        assertFalse( this.ruleBase.getWorkingMemories().contains( this.wm4 ) );
-
-    }
-
+    
     public void testDispose() throws Exception {
         /*
          * Now lets test the dispose method on the WorkingMemory itself. dispose
@@ -77,17 +57,17 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
 
         /* Check only wm3 was removed */
         assertLength( 3,
-                      this.ruleBase.getWorkingMemories() );
-        assertFalse( this.ruleBase.getWorkingMemories().contains( this.wm3 ) );
+                      this.ruleBase.getStatefulSessions() );
+        assertNotContains( this.wm3, this.ruleBase.getStatefulSessions() );
     }
 
     public void testNoKeepReference() throws Exception {
-        final WorkingMemory wm5 = this.ruleBase.newWorkingMemory( false );
-        final WorkingMemory wm6 = this.ruleBase.newWorkingMemory( false );
+        final WorkingMemory wm5 = this.ruleBase.newStatefulSession( false );
+        final WorkingMemory wm6 = this.ruleBase.newStatefulSession( false );
         assertLength( 4,
-                      this.ruleBase.getWorkingMemories() );
-        assertFalse( this.ruleBase.getWorkingMemories().contains( wm5 ) );
-        assertFalse( this.ruleBase.getWorkingMemories().contains( wm6 ) );
+                      this.ruleBase.getStatefulSessions() );
+        assertNotContains( wm5, this.ruleBase.getStatefulSessions() );
+        assertNotContains( wm6, this.ruleBase.getStatefulSessions() );
     }
 
     public void testAddPackage() throws Exception {

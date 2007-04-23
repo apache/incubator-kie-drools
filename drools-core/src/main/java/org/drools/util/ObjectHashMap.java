@@ -3,6 +3,8 @@
  */
 package org.drools.util;
 
+import org.drools.util.AbstractHashTable.EqualityEquals;
+
 public class ObjectHashMap extends AbstractHashTable {
 
     private static final long serialVersionUID = 929633553699602561L;
@@ -17,6 +19,15 @@ public class ObjectHashMap extends AbstractHashTable {
         super( capacity,
                loadFactor );
     }
+    
+    public ObjectHashMap(final Entry[] table) {
+        super( 0.75f, table);
+    }      
+    
+    public ObjectHashMap(final float loadFactor,
+                             final Entry[] table) {
+        super(loadFactor, table);
+    }     
 
     public Object put(final Object key,
                       final Object value) {

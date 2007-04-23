@@ -26,6 +26,8 @@ import javax.rules.RuleRuntime;
 import javax.rules.StatelessRuleSession;
 
 import org.drools.FactException;
+import org.drools.StatelessSession;
+import org.drools.StatelessSessionResult;
 import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
 import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
@@ -42,7 +44,7 @@ import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
  */
 public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
     implements
-    StatelessRuleSession {
+    StatelessRuleSession {    
     /**
      * Gets the <code>RuleExecutionSet</code> for this URI and associates it
      * with a RuleBase.
@@ -70,6 +72,24 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
 
         setRuleExecutionSet( ruleSet );
     }
+    
+    /**
+     * Initialize this <code>RuleSession</code>
+     * with a new <code>WorkingMemory</code>.
+     */
+    protected StatelessSession newStatelessSession() {        
+        final StatelessSession session = this.getRuleExecutionSet().newStatelessSession();
+
+        final Map props = this.getProperties();
+        if ( props != null ) {
+            for ( final Iterator iterator = props.entrySet().iterator(); iterator.hasNext(); ) {
+                final Map.Entry entry = (Map.Entry) iterator.next();
+                session.setGlobal( (String) entry.getKey(),
+                                            entry.getValue() );
+            }
+        }
+        return session;
+    }    
 
     /**
      * Executes the rules in the bound rule execution set using the supplied
@@ -125,21 +145,25 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public List executeRules(final List objects,
                              final ObjectFilter filter) throws InvalidRuleSessionException {
-        // get a new working memory with no references kept (i.e. it doesn't need to be disposed)
-        initWorkingMemory( false );
-
-        WorkingMemory workingMemory = getWorkingMemory();
-        for ( final Iterator objectIter = objects.iterator(); objectIter.hasNext(); ) {
-            workingMemory.assertObject( objectIter.next() );
-        }
-        workingMemory.fireAllRules();            
-
-        final List results = getObjects(filter);
-
-        return results;
+        StatelessSession session = newStatelessSession();
+        StatelessSessionResult results = session.executeWithResults( objects );
+        
+        return IteratorToList.convert( results.iterateObjects( new ObjectFilterAdapter( filter ) ) );
     }
     
     public int getType() throws InvalidRuleSessionException {
         return RuleRuntime.STATELESS_SESSION_TYPE;
     }
+    
+    /**
+     * Ensures this <code>RuleSession</code> is not
+     * in an illegal rule session state.
+     *
+     * @throws InvalidRuleSessionException on illegal rule session state.
+     */
+    protected void checkRuleSessionValidity() throws InvalidRuleSessionException {
+        if ( getRuleExecutionSet() == null ) {
+            throw new InvalidRuleSessionException( "invalid rule session" );
+        }
+    }     
 }

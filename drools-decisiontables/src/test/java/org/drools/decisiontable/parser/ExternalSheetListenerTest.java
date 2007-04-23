@@ -13,9 +13,13 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.NoSuchFactHandleException;
 import org.drools.NoSuchFactObjectException;
+import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.StatelessSession;
 import org.drools.WorkingMemory;
+import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.ruleflow.common.instance.IProcessInstance;
@@ -100,8 +104,8 @@ public class ExternalSheetListenerTest extends TestCase {
 	
 	private class TestTemplateRuleBase implements TemplateRuleBase {
 
-		public WorkingMemory newWorkingMemory() {
-			return new WorkingMemory() {
+		public StatefulSession newStatefulSession() {
+			return new StatefulSession() {
 
 				public void addEventListener(WorkingMemoryEventListener arg0) {
 
@@ -173,20 +177,8 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 
-				public Map getGlobals() {
-					return null;
-				}
-
 				public Object getObject(FactHandle arg0)
 						throws NoSuchFactObjectException {
-					return null;
-				}
-
-				public List getObjects() {
-					return null;
-				}
-
-				public List getObjects(Class arg0) {
 					return null;
 				}
 
@@ -242,6 +234,62 @@ public class ExternalSheetListenerTest extends TestCase {
 				public IProcessInstance startProcess(String processId) {
 					return null;
 				}
+
+                public Map getGlobals() {
+                    return null;
+                }
+
+                public Iterator iterateFactHandles() {
+                    return null;
+                }
+
+                public Iterator iterateFactHandles(ObjectFilter filter) {
+                    return null;
+                }
+
+                public Iterator iterateObjects() {
+                    return null;
+                }
+
+                public Iterator iterateObjects(ObjectFilter filter) {
+                    return null;
+                }
+
+                public Future asyncAssertObject(Object object) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Future asyncAssertObjects(Object[] list) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Future asyncAssertObjects(List list) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Future asyncFireAllRules() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Future asyncFireAllRules(AgendaFilter agendaFilter) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Future asyncModifyObject(FactHandle factHandle,
+                                                Object object) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Future asyncRetractObject(FactHandle factHandle) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}

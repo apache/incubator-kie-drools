@@ -63,7 +63,7 @@ public class FieldConstraintTest extends TestCase {
      */
     public void testLiteralConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "type" );
@@ -108,7 +108,7 @@ public class FieldConstraintTest extends TestCase {
      */
     public void testPrimitiveLiteralConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
@@ -154,7 +154,7 @@ public class FieldConstraintTest extends TestCase {
      */
     public void testPredicateConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
@@ -236,7 +236,7 @@ public class FieldConstraintTest extends TestCase {
      */
     public void testReturnValueConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );

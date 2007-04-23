@@ -2,8 +2,8 @@
   <name>drools-decisiontables</name>
   <comment>A rule production system</comment>
   <projects>
-    <project>drools-compiler</project>
     <project>drools-core</project>
+    <project>drools-compiler</project>
   </projects>
   <buildSpec>
     <buildCommand>

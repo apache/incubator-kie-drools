@@ -59,7 +59,7 @@ public class MVELEvalBuilderTest extends TestCase {
                                                             evalDescr );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final Cheese cheddar = new Cheese( "cheddar",
                                      10 );

@@ -38,7 +38,7 @@ public class WorkingMemoryEventSupportTest extends TestCase {
 
     public void testWorkingMemoryEventListener() {
         final RuleBase rb = RuleBaseFactory.newRuleBase();
-        final WorkingMemory wm = rb.newWorkingMemory();
+        final WorkingMemory wm = rb.newStatefulSession();
 
         final List wmList = new ArrayList();
         final WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {

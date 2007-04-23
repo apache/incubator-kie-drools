@@ -30,7 +30,7 @@ public abstract class AbstractHashTable
         this( 16,
               0.75f );
     }
-
+    
     public AbstractHashTable(final int capacity,
                              final float loadFactor) {
         this.loadFactor = loadFactor;
@@ -38,6 +38,18 @@ public abstract class AbstractHashTable
         this.table = new Entry[capacity];
         this.comparator = EqualityEquals.getInstance();
     }
+    
+    public AbstractHashTable(final Entry[] table) {
+        this( 0.75f, table);
+    }      
+    
+    public AbstractHashTable(final float loadFactor,
+                             final Entry[] table) {
+        this.loadFactor = loadFactor;
+        this.threshold = (int) (table.length * loadFactor);
+        this.table = table;
+        this.comparator = EqualityEquals.getInstance();
+    }    
 
     public Iterator iterator() {
         if ( this.iterator == null ) {

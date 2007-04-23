@@ -9,6 +9,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
+import org.drools.util.concurrent.locks.Lock;
 
 public interface InternalWorkingMemory
     extends
@@ -41,5 +42,7 @@ public interface InternalWorkingMemory
                        final boolean removeLogical,
                        final boolean updateEqualsMap,
                        final Rule rule,
-                       final Activation activation) throws FactException;    
+                       final Activation activation) throws FactException;
+
+    public Lock getLock();    
 }

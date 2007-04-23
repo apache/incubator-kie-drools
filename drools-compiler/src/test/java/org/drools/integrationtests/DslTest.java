@@ -53,7 +53,7 @@ public class DslTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.assertObject( new Person( "Bob",
                                      "http://foo.bar" ) );
         wm.assertObject( new Cheese( "stilton",
@@ -92,7 +92,7 @@ public class DslTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.assertObject( new Person( "rage" ) );
         wm.assertObject( new Cheese( "cheddar",
                                      15 ) );

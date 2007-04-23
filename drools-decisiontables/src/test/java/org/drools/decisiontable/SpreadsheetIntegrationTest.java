@@ -53,7 +53,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
         rb.addPackage( pkg );
 
         //NEW WORKING MEMORY
-        final WorkingMemory wm = rb.newWorkingMemory();
+        final WorkingMemory wm = rb.newStatefulSession();
 
         //ASSERT AND FIRE
         wm.assertObject( new Cheese( "stilton",

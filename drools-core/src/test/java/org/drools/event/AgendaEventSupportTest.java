@@ -82,7 +82,7 @@ public class AgendaEventSupportTest extends TestCase {
         rb.addPackage( pkg );
 
         // create a new working memory and add an AgendaEventListener
-        final WorkingMemory wm = rb.newWorkingMemory();
+        final WorkingMemory wm = rb.newStatefulSession();
         final List agendaList = new ArrayList();
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 

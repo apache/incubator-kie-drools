@@ -54,7 +54,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule1,
                                                             rule1.getLhs() );
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
@@ -155,7 +155,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1.getLhs() );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -242,7 +242,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1,
                                                             rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -379,7 +379,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         conf.setLogicalOverride( RuleBaseConfiguration.LogicalOverride.PRESERVE );
 
         final RuleBase ruleBase = new ReteooRuleBase( conf );
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -466,7 +466,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1,
                                                             rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Consequence consequence = new Consequence() {
             /**
@@ -563,7 +563,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule1,
                                                             rule1.getLhs() );
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -691,7 +691,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1,
                                                             rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -790,7 +790,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1,
                                                             rule1.getLhs() );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
