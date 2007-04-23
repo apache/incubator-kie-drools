@@ -27,7 +27,8 @@ import javax.rules.admin.RuleExecutionSet;
 import org.drools.IntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
+import org.drools.StatelessSession;
 import org.drools.jsr94.rules.Jsr94FactHandleFactory;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -158,9 +159,18 @@ public class RuleExecutionSetImpl
      *
      * @return A new WorkingMemory object.
      */
-    public WorkingMemory newWorkingMemory(boolean keepReference) {
-        return this.ruleBase.newWorkingMemory(keepReference);
+    public StatefulSession newStatefulSession(boolean keepReference) {
+        return this.ruleBase.newStatefulSession(keepReference);
     }
+    
+    /**
+     * Returns a new WorkingMemory object.
+     *
+     * @return A new WorkingMemory object.
+     */
+    public StatelessSession newStatelessSession() {
+        return this.ruleBase.newStatelessSession();
+    }    
 
     // JSR94 interface methods start here -------------------------------------
 

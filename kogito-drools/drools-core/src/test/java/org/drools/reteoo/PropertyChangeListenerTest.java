@@ -12,7 +12,7 @@ public class PropertyChangeListenerTest extends TestCase {
     public void test1() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
 

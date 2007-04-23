@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.RuleIntegrationException;
 import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
@@ -51,7 +52,7 @@ public class ReteooBuilder
     /** The RuleBase */
     private transient ReteooRuleBase        ruleBase;
 
-    private transient ReteooWorkingMemory[] workingMemories;
+    private transient InternalWorkingMemory[] workingMemories;
 
     private Map                             rules;
 
@@ -122,7 +123,7 @@ public class ReteooBuilder
 
     public void removeRule(final Rule rule) {
         // reset working memories for potential propagation
-        this.workingMemories = (ReteooWorkingMemory[]) this.ruleBase.getWorkingMemories().toArray( new ReteooWorkingMemory[this.ruleBase.getWorkingMemories().size()] );
+        this.workingMemories = (InternalWorkingMemory[]) this.ruleBase.getWorkingMemories();
 
         final Object object = this.rules.get( rule );
 

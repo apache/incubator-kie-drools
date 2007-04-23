@@ -58,16 +58,9 @@ abstract class AbstractRuleSessionImpl
     private RuleExecutionSetRepository repository;
 
     public AbstractRuleSessionImpl(final RuleExecutionSetRepository repository) {
-        super();
         this.repository = repository;
     }
-
-    /**
-     * The Drools <code>WorkingMemory</code> associated
-     * with this <code>RuleSession</code>.
-     */
-    protected WorkingMemory        workingMemory;
-
+    
     /**
      * The Drools <code>RuleExecutionSet</code> associated
      * with this <code>RuleSession</code>.
@@ -79,25 +72,6 @@ abstract class AbstractRuleSessionImpl
      * passed as application data to the Drools <code>WorkingMemory</code>.
      */
     private Map                  properties;
-
-    /**
-     * Initialize this <code>RuleSession</code>
-     * with a new <code>WorkingMemory</code>.
-     */
-    protected void initWorkingMemory(boolean keepReference) {        
-        final WorkingMemory newWorkingMemory = this.getRuleExecutionSet().newWorkingMemory(keepReference);
-
-        final Map props = this.getProperties();
-        if ( props != null ) {
-            for ( final Iterator iterator = props.entrySet().iterator(); iterator.hasNext(); ) {
-                final Map.Entry entry = (Map.Entry) iterator.next();
-                newWorkingMemory.setGlobal( (String) entry.getKey(),
-                                            entry.getValue() );
-            }
-        }
-        
-        this.setWorkingMemory( newWorkingMemory );
-    }
 
     /**
      * Sets additional properties used to create this <code>RuleSession</code>.
@@ -121,32 +95,6 @@ abstract class AbstractRuleSessionImpl
     }
 
     /**
-     * Sets the Drools <code>WorkingMemory</code> associated
-     * with this <code>RuleSession</code>.
-     *
-     * @param workingMemory the <code>WorkingMemory</code> to associate
-     *        with this <code>RuleSession</code>.
-     */
-    protected void setWorkingMemory(final WorkingMemory workingMemory) {
-        // first dispose any existing working memories
-        if ( this.workingMemory != null ) {
-            this.workingMemory.dispose();
-        }        
-        this.workingMemory = workingMemory;
-    }
-
-    /**
-     * Returns the Drools <code>WorkingMemory</code> associated
-     * with this <code>RuleSession</code>.
-     *
-     * @return the Drools <code>WorkingMemory</code> to associate
-     *         with this <code>RuleSession</code>.
-     */
-    protected WorkingMemory getWorkingMemory() {
-        return this.workingMemory;
-    }
-
-    /**
      * Sets the Drools <code>RuleExecutionSet</code> associated
      * with this <code>RuleSession</code>.
      *
@@ -167,82 +115,9 @@ abstract class AbstractRuleSessionImpl
     protected RuleExecutionSetImpl getRuleExecutionSet() {
         return this.ruleExecutionSet;
     }
-
-    /**
-     * Ensures this <code>RuleSession</code> is not
-     * in an illegal rule session state.
-     *
-     * @throws InvalidRuleSessionException on illegal rule session state.
-     */
-    protected void checkRuleSessionValidity() throws InvalidRuleSessionException {
-        if ( this.workingMemory == null ) {
-            throw new InvalidRuleSessionException( "invalid rule session" );
-        }
-    }
     
-    /**
-     * Returns a List of all objects in the rule session state of this rule
-     * session. The objects should pass the default filter test of the default
-     * <code>RuleExecutionSet</code> filter (if present). <p/> This may not
-     * neccessarily include all objects added by calls to <code>addObject</code>,
-     * and may include <code>Object</code>s created by side-effects. The
-     * execution of a <code>RuleExecutionSet</code> can add, remove and update
-     * objects as part of the rule session state. Therefore the rule session
-     * state is dependent on the rules that are part of the executed
-     * <code>RuleExecutionSet</code> as well as the rule vendor's specific
-     * rule engine behavior.
-     * 
-     * @return a <code>List</code> of all objects part of the rule session
-     *         state.
-     * 
-     * @throws InvalidRuleSessionException
-     *             on illegal rule session state.
-     */
-    public List getObjects() throws InvalidRuleSessionException {
-        checkRuleSessionValidity();
-
-        return getObjects( getRuleExecutionSet().getObjectFilter() );
-    }    
+    protected abstract void checkRuleSessionValidity() throws InvalidRuleSessionException;    
     
-    /**
-     * Returns a <code>List</code> over the objects in rule session state of
-     * this rule session. The objects should pass the filter test on the
-     * specified <code>ObjectFilter</code>. <p/> This may not neccessarily
-     * include all objects added by calls to <code>addObject</code>, and may
-     * include <code>Object</code>s created by side-effects. The execution of
-     * a <code>RuleExecutionSet</code> can add, remove and update objects as
-     * part of the rule session state. Therefore the rule session state is
-     * dependent on the rules that are part of the executed
-     * <code>RuleExecutionSet</code> as well as the rule vendor's specific
-     * rule engine behavior.
-     * 
-     * @param filter
-     *            the object filter.
-     * 
-     * @return a <code>List</code> of all the objects in the rule session
-     *         state of this rule session based upon the given object filter.
-     * 
-     * @throws InvalidRuleSessionException
-     *             on illegal rule session state.
-     */
-    public List getObjects(final ObjectFilter filter) throws InvalidRuleSessionException {
-        checkRuleSessionValidity();
-
-        final List objects = new ArrayList();
-
-        objects.addAll( getWorkingMemory().getObjects() );
-
-        if ( filter != null ) {
-            for ( final Iterator objectIter = objects.iterator(); objectIter.hasNext(); ) {
-                final Object object = objectIter.next();
-                if ( filter.filter( object ) == null ) {
-                    objectIter.remove();
-                }
-            }
-        }
-
-        return objects;
-    }    
 
     // JSR94 interface methods start here -------------------------------------
 
@@ -274,11 +149,7 @@ abstract class AbstractRuleSessionImpl
      * it is reacquired through the <code>RuleRuntime</code>.
      */
     public void release() {
-        if ( this.workingMemory != null ) {
-            this.workingMemory.dispose();
-        }
         setProperties( null );
-        setWorkingMemory( null );
         setRuleExecutionSet( null );
     }
 }

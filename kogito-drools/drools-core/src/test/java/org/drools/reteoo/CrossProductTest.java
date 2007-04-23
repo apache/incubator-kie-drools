@@ -85,7 +85,7 @@ public class CrossProductTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( this.pkg );
 
-        this.workingMemory = ruleBase.newWorkingMemory();
+        this.workingMemory = ruleBase.newStatefulSession();
         this.workingMemory.assertObject( "F1" );
         this.workingMemory.assertObject( "F2" );
         this.workingMemory.assertObject( "F3" );
@@ -104,7 +104,7 @@ public class CrossProductTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( this.pkg );
 
-        this.workingMemory = ruleBase.newWorkingMemory();
+        this.workingMemory = ruleBase.newStatefulSession();
         this.workingMemory.assertObject( "F1" );
         this.workingMemory.assertObject( "F2" );
         this.workingMemory.assertObject( "F3" );

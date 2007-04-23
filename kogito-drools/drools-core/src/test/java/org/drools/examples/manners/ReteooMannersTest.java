@@ -32,7 +32,7 @@ public class ReteooMannersTest extends BaseMannersTest {
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
         ruleBase.addPackage( this.pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
             private int counter = 0;

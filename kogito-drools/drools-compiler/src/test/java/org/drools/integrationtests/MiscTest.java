@@ -115,7 +115,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -153,7 +153,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         wm.setGlobal( "list",
@@ -178,7 +178,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List events = new ArrayList();
         final WorkingMemoryEventListener listener = new DefaultWorkingMemoryEventListener() {
@@ -224,7 +224,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -260,7 +260,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -300,7 +300,7 @@ public class MiscTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -324,7 +324,7 @@ public class MiscTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -351,7 +351,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -374,7 +374,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -398,7 +398,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -432,7 +432,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -469,7 +469,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -503,7 +503,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory memory = ruleBase.newWorkingMemory();
+        final WorkingMemory memory = ruleBase.newStatefulSession();
         memory.assertObject( cell1 );
         memory.assertObject( cell );
         memory.fireAllRules();
@@ -518,7 +518,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -559,7 +559,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
@@ -576,7 +576,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "five",
                                  new Integer( 5 ) );
@@ -603,7 +603,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "five",
                                  new Integer( 5 ) );
@@ -628,7 +628,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -649,7 +649,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "two",
                                  new Integer( 2 ) );
@@ -682,7 +682,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "two",
                                  new Integer( 2 ) );
@@ -715,7 +715,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final PersonInterface p1 = new Person( "michael",
                                                "food",
@@ -737,7 +737,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List foo = new ArrayList();
         workingMemory.setGlobal( "messages",
                                  foo );
@@ -764,7 +764,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Cheese cheese = new Cheese( "stilton",
                                           15 );
         workingMemory.assertObject( cheese );
@@ -794,7 +794,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list1 = new ArrayList();
         workingMemory.setGlobal( "list1",
                                  list1 );
@@ -849,7 +849,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         final Object globalObject = new Object();
         workingMemory.setGlobal( "list",
@@ -989,7 +989,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1013,7 +1013,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1043,7 +1043,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese mussarela = new Cheese( "Mussarela",
                                              35 );
@@ -1070,7 +1070,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
@@ -1092,7 +1092,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
@@ -1114,7 +1114,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
@@ -1136,7 +1136,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
@@ -1158,7 +1158,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
@@ -1179,7 +1179,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list1 = new ArrayList();
         workingMemory.setGlobal( "list1",
@@ -1256,7 +1256,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1284,7 +1284,7 @@ public class MiscTest extends TestCase {
 
         ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        workingMemory = ruleBase.newWorkingMemory();
+        workingMemory = ruleBase.newStatefulSession();
 
         list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1313,7 +1313,7 @@ public class MiscTest extends TestCase {
 
         ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        workingMemory = ruleBase.newWorkingMemory();
+        workingMemory = ruleBase.newStatefulSession();
 
         list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1341,7 +1341,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1371,7 +1371,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1424,7 +1424,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         // Adding person with null name and likes attributes
         final PersonInterface bob = new Person( null,
@@ -1477,7 +1477,7 @@ public class MiscTest extends TestCase {
         assertEquals( "match Integer",
                       rules[3].getName() );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "list",
                                  new ArrayList() );
@@ -1487,12 +1487,12 @@ public class MiscTest extends TestCase {
 
         final byte[] wm = serializeOut( workingMemory );
 
-        workingMemory = ruleBase.newWorkingMemory( new ByteArrayInputStream( wm ) );
+        workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );
 
         assertEquals( 1,
-                      workingMemory.getObjects().size() );
+                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
         assertEquals( bob,
-                      workingMemory.getObjects().get( 0 ) );
+                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 0 ) );
 
         assertEquals( 2,
                       workingMemory.getAgenda().agendaSize() );
@@ -1508,11 +1508,11 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
 
         assertEquals( 2,
-                      workingMemory.getObjects().size() );
+                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
         assertEquals( bob,
-                      workingMemory.getObjects().get( 0 ) );
+                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 0 ) );
         assertEquals( new Person( "help" ),
-                      workingMemory.getObjects().get( 1 ) );
+                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 1 ) );
     }
 
 
@@ -1523,7 +1523,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1542,7 +1542,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1562,7 +1562,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1614,7 +1614,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List orderedFacts = new ArrayList();
         final List errors = new ArrayList();
@@ -1650,7 +1650,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
 
         final QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
@@ -1682,7 +1682,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
@@ -1711,7 +1711,7 @@ public class MiscTest extends TestCase {
     public void testInsurancePricingExample() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "insurance_pricing_example.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
 
         // now create some test data
         final Driver driver = new Driver();
@@ -1732,7 +1732,7 @@ public class MiscTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
 
         // 1st time
         org.drools.Target tgt = new org.drools.Target();
@@ -1826,7 +1826,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Person p1 = new Person( "p1",
                                       "stilton",
@@ -1911,7 +1911,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1935,7 +1935,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List matchlist = new ArrayList();
         workingMemory.setGlobal( "matchingList",
@@ -1976,7 +1976,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List sensors = new ArrayList();
 
@@ -2024,7 +2024,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -2078,7 +2078,7 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
 
         wm.assertObject( new Cheese( "a",
                                      10 ) );
@@ -2115,7 +2115,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List result = new ArrayList();
         workingMemory.setGlobal( "result",
                                  result );
@@ -2145,7 +2145,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List result = new ArrayList();
         workingMemory.setGlobal( "results",
                                  result );
@@ -2169,7 +2169,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Map result = new HashMap();
         workingMemory.setGlobal( "results",
                                  result );
@@ -2225,7 +2225,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.assertObject( new Child( "gp" ) );
 
@@ -2239,7 +2239,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -2275,7 +2275,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -2332,7 +2332,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -2361,7 +2361,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List agendaList = new ArrayList();
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
@@ -2450,7 +2450,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -2474,7 +2474,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "value",
                                  new Integer( 20 ) );

@@ -43,6 +43,16 @@ public abstract class DroolsTestCase extends TestCase {
                       len,
                       collection.size() );
     }
+    
+    public void assertNotContains (final Object obj,
+                                   final Object[] array) {
+        try {
+            assertContains( obj, array); 
+            fail( Arrays.asList( array ) + " contains " + obj );    
+        } catch(Throwable t) {
+            // do nothing as this is assertion is ok
+        }
+    }
 
     public void assertContains(final Object obj,
                                final Object[] array) {
@@ -55,6 +65,16 @@ public abstract class DroolsTestCase extends TestCase {
         fail( Arrays.asList( array ) + " does not contain " + obj );
     }
 
+    public void assertNotContains (final Object obj,
+                                   final Collection collection) {
+        try {
+            assertContains( obj, collection); 
+            fail( collection + " does not contain " + obj );    
+        } catch(Throwable t) {
+            // do nothing as this is assertion is ok
+        }
+    }    
+    
     public void assertContains(final Object obj,
                                final Collection collection) {
         assertTrue( collection + " does not contain " + obj,

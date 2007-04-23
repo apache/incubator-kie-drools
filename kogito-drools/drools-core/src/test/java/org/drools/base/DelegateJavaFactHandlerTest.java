@@ -15,7 +15,7 @@ public class DelegateJavaFactHandlerTest extends TestCase {
         final Field field = handler.getClass().getDeclaredField( "entries" );
         field.setAccessible( true );
 
-        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newWorkingMemory();
+        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newStatefulSession();
         handler.register( wm1 );
 
         JavaFactRegistryEntry[] entries = (JavaFactRegistryEntry[]) field.get( handler );
@@ -29,7 +29,7 @@ public class DelegateJavaFactHandlerTest extends TestCase {
         assertSame( wm1,
                     handler.listWorkingMemories()[0].getWorkingMemory() );
 
-        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newWorkingMemory();
+        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newStatefulSession();
         assertFalse( handler.isRegistered( wm2 ) );
 
         handler.unregister( wm1 );
@@ -44,8 +44,8 @@ public class DelegateJavaFactHandlerTest extends TestCase {
         final Field field = handler.getClass().getDeclaredField( "entries" );
         field.setAccessible( true );
 
-        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newWorkingMemory();
-        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newWorkingMemory();
+        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newStatefulSession();
+        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newStatefulSession();
         handler.register( wm1 );
         handler.register( wm2 );
 
@@ -96,9 +96,9 @@ public class DelegateJavaFactHandlerTest extends TestCase {
         final Field field = handler.getClass().getDeclaredField( "entries" );
         field.setAccessible( true );
 
-        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newWorkingMemory();
-        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newWorkingMemory();
-        final WorkingMemory wm3 = RuleBaseFactory.newRuleBase().newWorkingMemory();
+        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newStatefulSession();
+        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newStatefulSession();
+        final WorkingMemory wm3 = RuleBaseFactory.newRuleBase().newStatefulSession();
         handler.register( wm1 );
         handler.register( wm2 );
         handler.register( wm3 );

@@ -17,7 +17,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
      * @see JBRULES-356
      */
     public void testBasicWorkingMemoryActions() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
         final TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
         final String string = "test";
         FactHandle fd = workingMemory.assertObject( string );
@@ -61,10 +61,10 @@ public class ReteooWorkingMemoryTest extends TestCase {
 
     public void testId() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
         assertEquals( 0,
                       workingMemory.getId() );
-        workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
         assertEquals( 1,
                       workingMemory.getId() );
     }
@@ -83,7 +83,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
 
         };
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
         workingMemory.setGlobalResolver( resolver );
         assertEquals( "value1",
                       workingMemory.getGlobal( "global1" ) );

@@ -113,65 +113,9 @@ public class TruthMaintenanceSystem
                                                                          node,
                                                                          set,
                                                                          handle,
-                                                                         context );    
+                                                                         context );
                 workingMemory.queueWorkingMemoryAction( action );
             }
-//            if ( set != null ) {
-//                set.remove( node );
-//                if ( set.isEmpty() ) {
-//                    // this needs to be scheduled so we don't upset the current
-//                    // working memory operation                    
-//                    WorkingMemoryAction action = new LogicalRetractCallback( this,
-//                                                                             node,
-//                                                                             set,
-//                                                                             handle,
-//                                                                             context );
-//                    workingMemory.queueWorkingMemoryAction( action );
-//
-//                    //                    this.justifiedMap.remove( handle.getId() );                    
-//                    //                    WorkingMemoryAction action = new WorkingMemoryRetractAction(handle,
-//                    //                                                                                false,
-//                    //                                                                                true,
-//                    //                                                                                context.getRuleOrigin(),
-//                    //                                                                                context.getActivationOrigin() );                    
-//                    //                    this.workingMemory.queueWorkingMemoryAction( action );                  
-//                }
-            }
-        }
-    
-
-    public class WorkingMemoryRetractAction
-        implements
-        WorkingMemoryAction {
-        private InternalFactHandle factHandle;
-
-        private boolean            removeLogical;
-
-        private boolean            updateEqualsMap;
-
-        private Rule               ruleOrigin;
-
-        private Activation         activationOrigin;
-
-        public WorkingMemoryRetractAction(final InternalFactHandle factHandle,
-                                          final boolean removeLogical,
-                                          final boolean updateEqualsMap,
-                                          final Rule ruleOrigin,
-                                          final Activation activationOrigin) {
-            super();
-            this.factHandle = factHandle;
-            this.removeLogical = removeLogical;
-            this.updateEqualsMap = updateEqualsMap;
-            this.ruleOrigin = ruleOrigin;
-            this.activationOrigin = activationOrigin;
-        }
-
-        public void execute(InternalWorkingMemory workingMemory) {
-            workingMemory.retractObject( this.factHandle,
-                                         this.removeLogical,
-                                         this.updateEqualsMap,
-                                         this.ruleOrigin,
-                                         this.activationOrigin );
         }
     }
 
@@ -179,7 +123,7 @@ public class TruthMaintenanceSystem
         implements
         WorkingMemoryAction {
         private final TruthMaintenanceSystem tms;
-        private final LogicalDependency node;
+        private final LogicalDependency      node;
         private final Set                    set;
         private final InternalFactHandle     handle;
         private final PropagationContext     context;
@@ -198,18 +142,18 @@ public class TruthMaintenanceSystem
 
         public void execute(InternalWorkingMemory workingMemory) {
 
+            if ( set.isEmpty() ) {
                 if ( set.isEmpty() ) {
-                    if ( set.isEmpty() ) {
-                        this.tms.getJustifiedMap().remove( handle.getId() );
-                        // this needs to be scheduled so we don't upset the current
-                        // working memory operation
-                        workingMemory.retractObject( this.handle,
-                                                     false,
-                                                     true,
-                                                     context.getRuleOrigin(),
-                                                     context.getActivationOrigin() );
-                    }
+                    this.tms.getJustifiedMap().remove( handle.getId() );
+                    // this needs to be scheduled so we don't upset the current
+                    // working memory operation
+                    workingMemory.retractObject( this.handle,
+                                                 false,
+                                                 true,
+                                                 context.getRuleOrigin(),
+                                                 context.getActivationOrigin() );
                 }
+            }
         }
     }
 
@@ -251,7 +195,7 @@ public class TruthMaintenanceSystem
         final LogicalDependency node = new LogicalDependency( activation,
                                                               handle );
         activation.getRule().setHasLogicalDependency( true );
-        
+
         activation.addLogicalDependency( node );
         Set set = (Set) this.justifiedMap.get( handle.getId() );
         if ( set == null ) {

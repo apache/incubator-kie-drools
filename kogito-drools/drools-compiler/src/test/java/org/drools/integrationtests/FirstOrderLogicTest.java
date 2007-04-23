@@ -45,7 +45,7 @@ public class FirstOrderLogicTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -114,7 +114,7 @@ public class FirstOrderLogicTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -152,7 +152,7 @@ public class FirstOrderLogicTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -223,7 +223,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -249,7 +249,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -290,7 +290,7 @@ public class FirstOrderLogicTest extends TestCase {
                       builder.getErrors().length );
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -327,7 +327,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -365,7 +365,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -409,7 +409,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -442,7 +442,7 @@ public class FirstOrderLogicTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newWorkingMemory();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
         wm.setGlobal( "results",

@@ -22,7 +22,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -42,7 +42,7 @@ public interface InternalRuleBase
 
     public RuleBaseConfiguration getConfiguration();
 
-    void disposeWorkingMemory(WorkingMemory workingMemory);
+    void disposeStatefulSession(StatefulSession statefulSession);
 
     /**
      * Assert a fact object.

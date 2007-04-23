@@ -119,7 +119,7 @@ public class QueryTerminalNodeTest extends TestCase {
             Assert.fail( "Should not throw any exception: " + e.getMessage() );
         }
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         QueryResults results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 0,

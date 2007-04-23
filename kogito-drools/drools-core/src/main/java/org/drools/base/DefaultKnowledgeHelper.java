@@ -112,11 +112,11 @@ public class DefaultKnowledgeHelper
     }
 
     public List getObjects() {
-        return this.workingMemory.getObjects();
+        return null; //this.workingMemory.getObjects();
     }
 
     public List getObjects(final Class objectClass) {
-        return this.workingMemory.getObjects( objectClass );
+        return null; //this.workingMemory.getObjects( objectClass );
     }
 
     public void clearAgenda() {

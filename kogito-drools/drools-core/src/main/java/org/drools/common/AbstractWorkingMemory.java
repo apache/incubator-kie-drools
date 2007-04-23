@@ -33,6 +33,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.NoSuchFactHandleException;
 import org.drools.NoSuchFactObjectException;
+import org.drools.ObjectFilter;
 import org.drools.Otherwise;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
@@ -58,8 +59,10 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
+import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
+import org.drools.util.AbstractHashTable.HashTableIterator;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 import org.drools.util.concurrent.locks.Lock;
 import org.drools.util.concurrent.locks.ReentrantLock;
@@ -246,18 +249,6 @@ public abstract class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    public Map getGlobals() {
-        try {
-            this.lock.lock();
-            return this.globals;
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
-     * @see WorkingMemory
-     */
     public void setGlobal(final String name,
                           final Object value) {
         // Cannot set null values
@@ -285,7 +276,12 @@ public abstract class AbstractWorkingMemory
     }
 
     public void setGlobalResolver(final GlobalResolver globalResolver) {
-        this.globalResolver = globalResolver;
+        try {
+            this.lock.lock();        
+            this.globalResolver = globalResolver;
+        } finally {
+            this.lock.unlock();
+        }            
     }
 
     public long getId() {
@@ -342,7 +338,7 @@ public abstract class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    public void fireAllRules() throws FactException {
+    public synchronized void fireAllRules() throws FactException {
         fireAllRules( null );
     }
 
@@ -376,7 +372,7 @@ public abstract class AbstractWorkingMemory
 
             }
         }
-    }
+    }    
 
     /**
      * This does the "otherwise" phase of processing.
@@ -471,60 +467,49 @@ public abstract class AbstractWorkingMemory
             this.lock.unlock();
         }
     }
-
-    public List getFactHandles() {
-        try {
-            this.lock.lock();
-            final List list = new ArrayList( this.assertMap.size() );
-            final org.drools.util.Iterator it = this.assertMap.iterator();
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                list.add( entry.getKey() );
-            }
-            return list;
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
-     * A helper method used to avoid lookups when iterating over facthandles and
-     * objects at once. DO NOT MAKE THIS METHOD PUBLIC UNLESS YOU KNOW WHAT YOU
-     * ARE DOING
-     * 
-     * @return
+    
+    /** 
+     * This is an internal method, used to avoid java.util.Iterator adaptors
      */
     public ObjectHashMap getFactHandleMap() {
         return this.assertMap;
     }
 
     /**
-     * @see WorkingMemory
+     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public List getObjects() {
-        final List list = new ArrayList( this.assertMap.size() );
-
-        final org.drools.util.Iterator it = this.assertMap.iterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-            final Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
-            list.add( object );
-        }
-        return list;
+    public Iterator iterateObjects() {
+        HashTableIterator iterator = new HashTableIterator( this.assertMap );
+        iterator.reset();
+        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.OBJECT );
+    }
+    
+    /**
+     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
+     */  
+    public Iterator iterateObjects(ObjectFilter filter) {
+        HashTableIterator iterator = new HashTableIterator( this.assertMap );
+        iterator.reset();
+        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.OBJECT, filter );
     }
 
-    public List getObjects(final Class objectClass) {
-        final List list = new ArrayList( this.assertMap.size() );
-
-        final org.drools.util.Iterator it = this.assertMap.iterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            final InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-            final Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
-            if ( objectClass.isInstance( object ) ) {
-                list.add( object );
-            }
-        }
-        return list;
+    /**
+     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
+     */
+    public Iterator iterateFactHandles() {
+        HashTableIterator iterator = new HashTableIterator( this.assertMap );
+        iterator.reset();
+        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.FACT_HANDLE );
     }
+    
+    /**
+     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
+     */  
+    public Iterator iterateFactHandles(ObjectFilter filter) {
+        HashTableIterator iterator = new HashTableIterator( this.assertMap );
+        iterator.reset();
+        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.FACT_HANDLE, filter );
+    }       
 
     public abstract QueryResults getQueryResults(String query);
 
@@ -1061,10 +1046,6 @@ public abstract class AbstractWorkingMemory
 
     public long getNextPropagationIdCounter() {
         return this.propagationIdCounter++;
-    }
-
-    public void dispose() {
-        this.ruleBase.disposeWorkingMemory( this );
     }
 
     public Lock getLock() {

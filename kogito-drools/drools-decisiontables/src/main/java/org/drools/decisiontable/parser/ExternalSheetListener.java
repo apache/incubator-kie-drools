@@ -18,6 +18,8 @@ package org.drools.decisiontable.parser;
 
 import java.util.Properties;
 
+import org.drools.StatefulSession;
+import org.drools.StatelessSession;
 import org.drools.WorkingMemory;
 import org.drools.decisiontable.model.DRLOutput;
 
@@ -36,7 +38,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 
 	private Column[] columns;
 
-	private WorkingMemory wm;
+	private StatefulSession session;
 
 	private TemplateContainer templateContainer;
 
@@ -67,9 +69,9 @@ public class ExternalSheetListener implements RuleSheetListener {
 		this.startCol = startCol - 1;
 		columns = tc.getColumns();
 		this.templateContainer = tc;
-		wm = ruleBase.newWorkingMemory();
+		session = ruleBase.newStatefulSession();
 		this.generator = generator;
-		wm.setGlobal("generator", generator);
+		session.setGlobal("generator", generator);
 	}
 
 	public Properties getProperties() {
@@ -82,10 +84,10 @@ public class ExternalSheetListener implements RuleSheetListener {
 
 	public void finishSheet() {
 		if (currentRow != null) {
-			wm.assertObject(currentRow);
+			session.assertObject(currentRow);
 		}
-		wm.fireAllRules();
-		wm.dispose();
+		session.fireAllRules();
+		session.dispose();
 	}
 
 	public void newCell(int row, int column, String value, int mergedColStart) {
@@ -97,7 +99,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 			Column col = columns[column - startCol];
 			Cell cell = new Cell(currentRow, col, value);
 			currentRow.addCell(cell);
-			wm.assertObject(cell);
+			session.assertObject(cell);
 
 		}
 	}
@@ -109,7 +111,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 				tableFinished = true;
 			} else {
 				if (currentRow != null)
-					wm.assertObject(currentRow);
+					session.assertObject(currentRow);
 				currentRow = new Row(rowNumber);
 			}
 		}

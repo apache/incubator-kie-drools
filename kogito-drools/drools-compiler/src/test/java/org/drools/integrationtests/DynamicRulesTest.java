@@ -43,7 +43,7 @@ public class DynamicRulesTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.setGlobal( "total",
                                  new Integer( 0 ) );
 
@@ -154,7 +154,7 @@ public class DynamicRulesTest extends TestCase {
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
         ruleBase.addPackage( builder2.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -254,7 +254,7 @@ public class DynamicRulesTest extends TestCase {
         }
         ruleBase.addPackage( pkg );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         if ( reteooRuleBase != null ) {
             assertEquals( 1,
@@ -304,7 +304,7 @@ public class DynamicRulesTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -371,7 +371,7 @@ public class DynamicRulesTest extends TestCase {
         final String packageName = builder.getPackage().getName();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.assertObject( new Precondition( "genericcode",
                                                       "genericvalue" ) );
@@ -393,7 +393,7 @@ public class DynamicRulesTest extends TestCase {
     
     public void testDynamicRules() throws Exception {
         final RuleBase ruleBase = getRuleBase();
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Cheese a = new Cheese( "stilton",
                                      10 );
         final Cheese b = new Cheese( "stilton",
@@ -414,7 +414,7 @@ public class DynamicRulesTest extends TestCase {
 
     public void testDynamicRules2() throws Exception {
         final RuleBase ruleBase = getRuleBase();
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         // Assert some simple facts
         final FactA a = new FactA( "hello",

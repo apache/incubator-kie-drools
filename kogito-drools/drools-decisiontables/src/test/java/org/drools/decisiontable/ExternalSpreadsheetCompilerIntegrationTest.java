@@ -58,7 +58,7 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         rb.addPackage( pkg );
 
         //NEW WORKING MEMORY
-        final WorkingMemory wm = rb.newWorkingMemory();
+        final WorkingMemory wm = rb.newStatefulSession();
 
         //ASSERT AND FIRE
         wm.assertObject( new Cheese( "stilton",
@@ -104,7 +104,7 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         final RuleBase rb = RuleBaseFactory.newRuleBase();
         rb.addPackage( pkg );
 
-        WorkingMemory wm = rb.newWorkingMemory();
+        WorkingMemory wm = rb.newStatefulSession();
         
         //now create some test data
         Driver driver = new Driver();

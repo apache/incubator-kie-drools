@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.StatelessSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.decisiontable.model.Condition;
@@ -68,8 +70,8 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 	/* (non-Javadoc)
 	 * @see org.drools.decisiontable.parser.TemplateRuleBase#newWorkingMemory()
 	 */
-	public WorkingMemory newWorkingMemory() {
-		return ruleBase.newWorkingMemory();
+	public StatefulSession newStatefulSession() {
+		return ruleBase.newStatefulSession();
 	}
 	/**
 	 * 

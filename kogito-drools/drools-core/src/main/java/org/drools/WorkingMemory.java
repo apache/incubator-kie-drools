@@ -17,6 +17,7 @@ package org.drools;
  */
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -141,6 +142,7 @@ public interface WorkingMemory
      *             If an error occurs.
      */
     void fireAllRules(AgendaFilter agendaFilter) throws FactException;
+      
 
     /**
      * Retrieve the object associated with a <code>FactHandle</code>.
@@ -174,35 +176,20 @@ public interface WorkingMemory
      */
     FactHandle getFactHandle(Object object) throws NoSuchFactHandleException;
 
-    /**
-     * Retrieve all known objects.
-     * 
-     * @return The list of all known objects.
-     */
-    List getObjects();
+    Iterator iterateObjects();
+    
+    Iterator iterateObjects(ObjectFilter filter);
 
+    Iterator iterateFactHandles();
+    
+    Iterator iterateFactHandles(ObjectFilter filter);    
+    
     public AgendaGroup getFocus();
 
     void setFocus(String focus);
 
     void setFocus(AgendaGroup focus);
-
-    /**
-     * Retrieve all known objects of the specified class.
-     * 
-     * @param objectClass
-     *            The class of object to return.
-     * 
-     * @return The list of all known objects of the specified class.
-     */
-    List getObjects(Class objectClass);
-
-    /**
-     * Retrieve all known Fact Handles.
-     * 
-     * @return The list of all known fact handles.
-     */
-    List getFactHandles();
+        
 
     /**
      * Assert a fact.
@@ -293,12 +280,6 @@ public interface WorkingMemory
      * Clear the Agenda Group
      */
     public void clearAgendaGroup(String group);
-
-    /**
-     * Forces the workingMemory to be derefenced from
-     * 
-     */
-    void dispose();
 
     /**
      * Starts a new process instance for the process with the given id. 

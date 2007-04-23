@@ -22,6 +22,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.drools.common.BetaConstraints;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
@@ -52,7 +53,7 @@ public class BuildContext {
     private ReteooRuleBase            rulebase;
 
     // working memories attached to the given rulebase
-    private ReteooWorkingMemory[]     workingMemories;
+    private InternalWorkingMemory[]     workingMemories;
 
     // id generator
     private ReteooBuilder.IdGenerator idGenerator;
@@ -66,7 +67,7 @@ public class BuildContext {
     public BuildContext(final ReteooRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
-        this.workingMemories = (ReteooWorkingMemory[]) this.rulebase.getWorkingMemories().toArray( new ReteooWorkingMemory[this.rulebase.getWorkingMemories().size()] );
+        this.workingMemories = (InternalWorkingMemory[]) this.rulebase.getWorkingMemories();
         this.idGenerator = idGenerator;
 
         this.objectType = new LinkedHashMap();
@@ -156,7 +157,7 @@ public class BuildContext {
      * 
      * @return
      */
-    public ReteooWorkingMemory[] getWorkingMemories() {
+    public InternalWorkingMemory[] getWorkingMemories() {
         return this.workingMemories;
     }
 

@@ -37,7 +37,7 @@ import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleIntegrationException;
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
@@ -45,6 +45,7 @@ import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.common.core.IProcess;
 import org.drools.spi.FactHandleFactory;
+import org.drools.util.ObjectHashSet;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -82,10 +83,7 @@ abstract public class AbstractRuleBase
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
-    protected transient Map                         workingMemories;
-
-    /** Special value when adding to the underlying map. */
-    protected static final Object                   PRESENT = new Object();
+    protected transient ObjectHashSet               statefulSessions;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it 
@@ -117,7 +115,7 @@ abstract public class AbstractRuleBase
         this.pkgs = new HashMap();
         this.processes = new HashMap();
         this.globals = new HashMap();
-        this.workingMemories = new WeakHashMap();
+        this.statefulSessions = new ObjectHashSet();
     }
 
     // ------------------------------------------------------------
@@ -179,7 +177,7 @@ abstract public class AbstractRuleBase
 
         this.config = (RuleBaseConfiguration) streamWithLoader.readObject();
 
-        this.workingMemories = new WeakHashMap();
+        this.statefulSessions = new ObjectHashSet();
 
         for ( int i = 0, length = objects.length; i < length; i++ ) {
             objects[i] = streamWithLoader.readObject();
@@ -196,17 +194,17 @@ abstract public class AbstractRuleBase
     /**
      * @see RuleBase
      */
-    public WorkingMemory newWorkingMemory() {
-        return newWorkingMemory( true );
+    public StatefulSession newStatefulSession() {
+        return newStatefulSession( true );
     }
 
     /**
      * @see RuleBase
      */
-    abstract public WorkingMemory newWorkingMemory(boolean keepReference);
+    abstract public StatefulSession newStatefulSession(boolean keepReference);
 
-    public void disposeWorkingMemory(final WorkingMemory workingMemory) {
-        this.workingMemories.remove( workingMemory );
+    public synchronized void disposeStatefulSession(final StatefulSession statefulSession) {
+        this.statefulSessions.remove( statefulSession );
     }
 
     /**
@@ -248,14 +246,14 @@ abstract public class AbstractRuleBase
      * @throws FactException
      * @throws InvalidPatternException
      */
-    public void addPackage(final Package newPkg) throws PackageIntegrationException {
+    public synchronized void addPackage(final Package newPkg) throws PackageIntegrationException {
         newPkg.checkValidity();
         final Package pkg = (Package) this.pkgs.get( newPkg.getName() );
         // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
         // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
-        final AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
+        final InternalWorkingMemory[] wms = getWorkingMemories();
 
         try {
             // Iterate each workingMemory and lock it
@@ -359,20 +357,20 @@ abstract public class AbstractRuleBase
         }
     }
 
-    protected void addRule(final Rule rule) throws InvalidPatternException {
+    protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
         if ( !rule.isValid() ) {
             throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
         }
     }
 
-    public void removePackage(final String packageName) {
+    public synchronized void removePackage(final String packageName) {
         final Package pkg = (Package) this.pkgs.get( packageName );
 
         // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
         // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
-        final AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
+        final InternalWorkingMemory[] wms = getWorkingMemories();
 
         try {
             // Iterate each workingMemory and lock it
@@ -420,8 +418,8 @@ abstract public class AbstractRuleBase
         }
     }
 
-    public void removeRule(final String packageName,
-                           final String ruleName) {
+    public synchronized void removeRule(final String packageName,
+                                        final String ruleName) {
         final Package pkg = (Package) this.pkgs.get( packageName );
         final Rule rule = pkg.getRule( ruleName );
 
@@ -429,7 +427,7 @@ abstract public class AbstractRuleBase
         // in the working memory array 
         int lastAquiredLock = 0;
         // get a snapshot of current working memories for locking
-        final AbstractWorkingMemory[] wms = (AbstractWorkingMemory[]) this.workingMemories.keySet().toArray( new AbstractWorkingMemory[this.workingMemories.size()] );
+        final InternalWorkingMemory[] wms = getWorkingMemories();
 
         try {
             // Iterate each workingMemory and lock it
@@ -454,12 +452,12 @@ abstract public class AbstractRuleBase
 
     protected abstract void removeRule(Rule rule);
 
-    public void addProcess(final IProcess process) {
+    public synchronized void addProcess(final IProcess process) {
         this.processes.put( process.getId(),
-                       process );
+                            process );
     }
 
-    public void removeProcess(final String id) {
+    public synchronized void removeProcess(final String id) {
         this.processes.remove( id );
     }
 
@@ -467,31 +465,31 @@ abstract public class AbstractRuleBase
         return (IProcess) this.processes.get( id );
     }
 
-    protected void addWorkingMemory(final WorkingMemory workingMemory,
-                                    final boolean keepReference) {
-        if ( keepReference ) {
-            this.workingMemories.put( workingMemory,
-                                      AbstractRuleBase.PRESENT );
-        }
+    protected synchronized void addStatefulSession(final StatefulSession statefulSession) {
+        this.statefulSessions.add( statefulSession );
     }
 
-    public Set getWorkingMemories() {
-        return this.workingMemories.keySet();
+    public StatefulSession[] getStatefulSessions() {
+        return (StatefulSession[]) this.statefulSessions.toArray( new StatefulSession[ this.statefulSessions.size() ] );
+    }
+    
+    public InternalWorkingMemory[] getWorkingMemories() {
+        return (InternalWorkingMemory[]) this.statefulSessions.toArray( new InternalWorkingMemory[ this.statefulSessions.size() ] );
     }
 
     public RuleBaseConfiguration getConfiguration() {
         return this.config;
     }
 
-    public WorkingMemory newWorkingMemory(final InputStream stream) throws IOException,
-                                                                   ClassNotFoundException {
-        return newWorkingMemory( stream,
-                                 true );
+    public StatefulSession newStatefulSession(final InputStream stream) throws IOException,
+                                                                       ClassNotFoundException {
+        return newStatefulSession( stream,
+                                   true );
     }
 
-    public WorkingMemory newWorkingMemory(final InputStream stream,
-                                          final boolean keepReference) throws IOException,
-                                                                      ClassNotFoundException {
+    public StatefulSession newStatefulSession(final InputStream stream,
+                                              final boolean keepReference) throws IOException,
+                                                                          ClassNotFoundException {
 
         final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( stream,
                                                                                               this.packageClassLoader );
@@ -499,6 +497,6 @@ abstract public class AbstractRuleBase
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
         workingMemory.setRuleBase( this );
 
-        return workingMemory;
+        return (StatefulSession) workingMemory;
     }
 }

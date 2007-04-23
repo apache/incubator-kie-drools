@@ -96,7 +96,7 @@ public class MVELPredicateBuilderTest extends TestCase {
                        predicateDescr );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stilton",
                                      10 );

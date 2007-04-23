@@ -35,7 +35,7 @@ public class PricingRuleLauncher {
 
     	RuleBase ruleBase = buildRuleBase(drl);
     	
-		WorkingMemory wm = ruleBase.newWorkingMemory();
+		WorkingMemory wm = ruleBase.newStatefulSession();
 		
 		//now create some test data
 		Driver driver = new Driver();

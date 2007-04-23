@@ -27,15 +27,20 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
+import org.drools.StatelessSession;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.concurrent.CommandExecutor;
+import org.drools.concurrent.DefaultExecutorService;
+import org.drools.concurrent.ExecutorService;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
+import org.drools.util.ObjectHashSet;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -127,7 +132,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
         this.pkgs = new HashMap();
         this.globals = new HashMap();
-        this.workingMemories = new WeakHashMap();
+        this.statefulSessions = new ObjectHashSet();
 
         this.rete = new Rete();
         this.reteooBuilder = new ReteooBuilder( this );
@@ -220,32 +225,46 @@ public class ReteooRuleBase extends AbstractRuleBase {
     /**
      * @see RuleBase
      */
-    public WorkingMemory newWorkingMemory(final boolean keepReference) {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( this.workingMemoryCounter++,
-                                                                           this );
+    public synchronized StatefulSession newStatefulSession(final boolean keepReference) {
+        ExecutorService executor = new DefaultExecutorService();
+        final ReteooStatefulSession session = new ReteooStatefulSession( this.workingMemoryCounter++,
+                                                                         this,
+                                                                         new DefaultExecutorService() );
+        executor.setCommandExecutor( new CommandExecutor( session ) );
 
-        super.addWorkingMemory( workingMemory,
-                                keepReference );
+        if ( keepReference ) {
+            super.addStatefulSession( session );
+        }
 
-        final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
+        final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
 
-        workingMemory.queueWorkingMemoryAction( workingMemory.new WorkingMemoryReteAssertAction( handle,
-                                                                                                 false,
-                                                                                                 true,
-                                                                                                 null,
-                                                                                                 null ) );
+        session.queueWorkingMemoryAction( session.new WorkingMemoryReteAssertAction( handle,
+                                                                                     false,
+                                                                                     true,
+                                                                                     null,
+                                                                                     null ) );
 
-        return workingMemory;
+        return session;
     }
+    
+    public StatelessSession newStatelessSession() {
+        ExecutorService executor = new DefaultExecutorService();
+        ReteooWorkingMemory wm = new ReteooWorkingMemory( this.workingMemoryCounter++,
+                                                          this  );
+        
+        executor.setCommandExecutor( new CommandExecutor( wm ) );
+        
+        return new ReteooStatelessSession( wm, executor );
+    }    
 
-    protected void addRule(final Rule rule) throws InvalidPatternException {
+    protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
         super.addRule( rule );
 
         // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
         this.reteooBuilder.addRule( rule );
     }
 
-    protected void removeRule(final Rule rule) {
+    protected synchronized void removeRule(final Rule rule) {
         this.reteooBuilder.removeRule( rule );
     }
 
@@ -254,5 +273,4 @@ public class ReteooRuleBase extends AbstractRuleBase {
         Serializable {
         private static final long serialVersionUID = 1L;
     }
-
 }
