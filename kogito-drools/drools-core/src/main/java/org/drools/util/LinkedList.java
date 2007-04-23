@@ -151,11 +151,16 @@ public class LinkedList
         }
 
         if ( existingNode == null ) {
-            // if existing node is null, then insert it as a first node
-            final LinkedListNode node = this.firstNode;
-            node.setPrevious( newNode );
-            newNode.setNext( node );
-            this.firstNode = newNode;
+            if ( this.isEmpty() ) {
+                this.firstNode = newNode;
+                this.lastNode = newNode;
+            } else {
+                // if existing node is null, then insert it as a first node
+                final LinkedListNode node = this.firstNode;
+                node.setPrevious( newNode );
+                newNode.setNext( node );
+                this.firstNode = newNode;
+            }
         } else if ( existingNode == this.lastNode ) {
             existingNode.setNext( newNode );
             newNode.setPrevious( existingNode );

@@ -264,4 +264,14 @@ public class LinkedListTest extends TestCase {
                              3 );
     }
 
+    public void testInsertAfter() {
+        try {
+            this.list.insertAfter( null,
+                                   this.node1 );
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            fail("Should NOT raise NPE!");
+        }
+    }
+
 }
