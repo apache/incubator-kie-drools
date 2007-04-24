@@ -16,6 +16,7 @@
 
 package org.drools.rule.builder.dialect.java;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -92,14 +93,15 @@ public class JavaConsequenceBuilder
         // Must use the rule declarations, so we use the same order as used in the generated invoker
         final List list = Arrays.asList( context.getRule().getDeclarations() );
 
-        final int[] indexes = new int[declarations.length];
+        //final int[] indexes = new int[declarations.length];
+        final List indexes = new ArrayList(declarations.length);
 
         // have to user a String[] as boolean[] is broken in stringtemplate
         final String[] notPatterns = new String[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            indexes[i] = list.indexOf( declarations[i] );
+            indexes.add( i, new Integer( list.indexOf( declarations[i] ) ) );
             notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? null : "true";
-            if ( indexes[i] == -1 ) {
+            if ( ((Integer)indexes.get(i)).intValue() == -1 ) {
                 // some defensive code, this should never happen
                 throw new RuntimeDroolsException( "Unable to find declaration in list while generating the consequence invoker" );
             }
