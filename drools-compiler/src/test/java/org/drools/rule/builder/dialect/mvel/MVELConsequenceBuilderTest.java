@@ -15,11 +15,11 @@ import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.builder.BuildContext;
-import org.drools.spi.ColumnExtractor;
+import org.drools.spi.PatternExtractor;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.ObjectType;
 
@@ -40,14 +40,14 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         final ObjectType cheeseObjeectType = new ClassObjectType( Cheese.class );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                     cheeseObjeectType );
 
-        final ColumnExtractor extractor = new ColumnExtractor( cheeseObjeectType );
+        final PatternExtractor extractor = new PatternExtractor( cheeseObjeectType );
 
         final Declaration declaration = new Declaration( "cheese",
                                                    extractor,
-                                                   column );
+                                                   pattern );
         final Map map = new HashMap();
         map.put( "cheese",
                  declaration );

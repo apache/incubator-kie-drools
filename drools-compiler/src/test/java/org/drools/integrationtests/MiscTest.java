@@ -250,10 +250,10 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void testEmptyColumn() throws Exception {
+    public void testEmptyPattern() throws Exception {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyColumn.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyPattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
@@ -1036,9 +1036,9 @@ public class MiscTest extends TestCase {
     }
 
 
-    public void testPredicateAsFirstColumn() throws Exception {
+    public void testPredicateAsFirstPattern() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_column.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_pattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -1537,7 +1537,7 @@ public class MiscTest extends TestCase {
 
     public void testjustEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoColumns.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoPatterns.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();

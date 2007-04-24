@@ -46,8 +46,8 @@ public class BuildContext {
     // object type cache to check for cross products
     private Map                       objectType;
 
-    // offset of the column
-    private int                       currentColumnOffset;
+    // offset of the pattern
+    private int                       currentPatternOffset;
 
     // rule base to add rules to
     private ReteooRuleBase            rulebase;
@@ -61,7 +61,7 @@ public class BuildContext {
     // a build stack to track nested elements
     private LinkedList                buildstack;
 
-    // beta constraints from the last column attached
+    // beta constraints from the last pattern attached
     BetaConstraints                   betaconstraints;
 
     public BuildContext(final ReteooRuleBase rulebase,
@@ -76,21 +76,21 @@ public class BuildContext {
         this.tupleSource = null;
         this.objectSource = null;
 
-        this.currentColumnOffset = 0;
+        this.currentPatternOffset = 0;
     }
 
     /**
-     * @return the currentColumnOffset
+     * @return the currentPatternOffset
      */
-    public int getCurrentColumnOffset() {
-        return this.currentColumnOffset;
+    public int getCurrentPatternOffset() {
+        return this.currentPatternOffset;
     }
 
     /**
-     * @param currentColumnOffset the currentColumnOffset to set
+     * @param currentPatternOffset the currentPatternOffset to set
      */
-    public void setCurrentColumnOffset(final int currentColumnIndex) {
-        this.currentColumnOffset = currentColumnIndex;
+    public void setCurrentPatternOffset(final int currentPatternIndex) {
+        this.currentPatternOffset = currentPatternIndex;
     }
 
     /**
@@ -135,12 +135,12 @@ public class BuildContext {
         this.tupleSource = tupleSource;
     }
 
-    public void incrementCurrentColumnOffset() {
-        this.currentColumnOffset++;
+    public void incrementCurrentPatternOffset() {
+        this.currentPatternOffset++;
     }
 
-    public void decrementCurrentColumnOffset() {
-        this.currentColumnOffset--;
+    public void decrementCurrentPatternOffset() {
+        this.currentPatternOffset--;
     }
 
     /**

@@ -6,7 +6,7 @@ import java.util.List;
 public class FromDescr extends BaseDescr
     implements
     ConditionalElementDescr {
-    private ColumnDescr             column;
+    private PatternDescr             pattern;
     private DeclarativeInvokerDescr dataSource;
 
     FromDescr() {
@@ -14,11 +14,11 @@ public class FromDescr extends BaseDescr
     }
 
     public int getLine() {
-        return this.column.getLine();
+        return this.pattern.getLine();
     }
 
-    public void setColumn(final ColumnDescr column) {
-        this.column = column;
+    public void setPattern(final PatternDescr pattern) {
+        this.pattern = pattern;
     }
 
     public DeclarativeInvokerDescr getDataSource() {
@@ -29,8 +29,8 @@ public class FromDescr extends BaseDescr
         this.dataSource = dataSource;
     }
 
-    public ColumnDescr getReturnedColumn() {
-        return this.column;
+    public PatternDescr getReturnedPattern() {
+        return this.pattern;
     }
 
     public void addDescr(final BaseDescr baseDescr) {

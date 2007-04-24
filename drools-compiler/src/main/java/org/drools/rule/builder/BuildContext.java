@@ -52,8 +52,8 @@ public class BuildContext {
     // available declarationResolver 
     private DeclarationScopeResolver declarationResolver;
 
-    // a simple counter for columns
-    private int                      columnId = -1;
+    // a simple counter for patterns
+    private int                      patternId = -1;
 
     // errors found when building the current context
     private List                     errors;
@@ -209,16 +209,16 @@ public class BuildContext {
         return this.counter++;
     }
 
-    public int getColumnId() {
-        return this.columnId;
+    public int getPatternId() {
+        return this.patternId;
     }
 
-    public int getNextColumnId() {
-        return ++this.columnId;
+    public int getNextPatternId() {
+        return ++this.patternId;
     }
 
-    public void setColumnId(final int columnId) {
-        this.columnId = columnId;
+    public void setPatternId(final int patternId) {
+        this.patternId = patternId;
     }
 
     public String getRuleClass() {

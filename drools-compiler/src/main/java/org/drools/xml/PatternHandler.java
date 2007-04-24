@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -37,10 +37,10 @@ import org.xml.sax.SAXParseException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-class ColumnHandler extends BaseAbstractHandler
+class PatternHandler extends BaseAbstractHandler
     implements
     Handler {
-    ColumnHandler(final XmlPackageReader xmlPackageReader) {
+    PatternHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
         if ( (this.validParents == null) && (this.validPeers == null) ) {
@@ -57,7 +57,7 @@ class ColumnHandler extends BaseAbstractHandler
             this.validPeers.add( NotDescr.class );
             this.validPeers.add( ExistsDescr.class );
             this.validPeers.add( EvalDescr.class );
-            this.validPeers.add( ColumnDescr.class );
+            this.validPeers.add( PatternDescr.class );
 
             this.allowNesting = false;
         }
@@ -72,28 +72,28 @@ class ColumnHandler extends BaseAbstractHandler
         final String objectType = attrs.getValue( "object-type" );
 
         if ( objectType == null || objectType.trim().equals( "" ) ) {
-            throw new SAXParseException( "<column> requires an 'object-type' attribute",
+            throw new SAXParseException( "<pattern> requires an 'object-type' attribute",
                                          this.xmlPackageReader.getLocator() );
         }
 
-        ColumnDescr columnDescr = null;
+        PatternDescr patternDescr = null;
 
         final String identifier = attrs.getValue( "identifier" );
         if ( identifier == null || identifier.trim().equals( "" ) ) {
-            columnDescr = new ColumnDescr( objectType );
+            patternDescr = new PatternDescr( objectType );
         } else {
-            columnDescr = new ColumnDescr( objectType,
+            patternDescr = new PatternDescr( objectType,
                                            identifier );
         }
 
-        return columnDescr;
+        return patternDescr;
     }
 
     public Object end(final String uri,
                       final String localName) throws SAXException {
         final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        final ColumnDescr columnDescr = (ColumnDescr) this.xmlPackageReader.getCurrent();
+        final PatternDescr patternDescr = (PatternDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
@@ -101,12 +101,12 @@ class ColumnHandler extends BaseAbstractHandler
         final Object parent = it.previous();
 
         final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
-        parentDescr.addDescr( columnDescr );
+        parentDescr.addDescr( patternDescr );
 
         return null;
     }
 
     public Class generateNodeFor() {
-        return ColumnDescr.class;
+        return PatternDescr.class;
     }
 }

@@ -11,18 +11,18 @@ public class From extends ConditionalElement
 
     private static final long serialVersionUID = -2640290731776949513L;
 
-    private Column            column;
+    private Pattern            pattern;
 
     private DataProvider      dataProvider;
 
-    public From(final Column column,
+    public From(final Pattern pattern,
                 final DataProvider dataProvider) {
-        this.column = column;
+        this.pattern = pattern;
         this.dataProvider = dataProvider;
     }
 
-    public Column getColumn() {
-        return this.column;
+    public Pattern getPattern() {
+        return this.pattern;
     }
 
     public DataProvider getDataProvider() {
@@ -35,18 +35,18 @@ public class From extends ConditionalElement
     }
 
     public Map getInnerDeclarations() {
-        return this.column.getInnerDeclarations();
+        return this.pattern.getInnerDeclarations();
     }
 
     public Map getOuterDeclarations() {
-        return this.column.getOuterDeclarations();
+        return this.pattern.getOuterDeclarations();
     }
 
     /**
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.column.getInnerDeclarations().get( identifier );
+        return (Declaration) this.pattern.getInnerDeclarations().get( identifier );
     }
 
 }

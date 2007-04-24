@@ -13,11 +13,11 @@ import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
 
-public class ColumnTest extends TestCase {
+public class PatternTest extends TestCase {
 
     public void testDeclarationsObjectType() throws Exception {
         final ObjectType type = new ClassObjectType( Cheese.class );
-        final Column col = new Column( 0,
+        final Pattern col = new Pattern( 0,
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();
@@ -49,7 +49,7 @@ public class ColumnTest extends TestCase {
 
         final ObjectType type = new FactTemplateObjectType( cheese );
 
-        final Column col = new Column( 0,
+        final Pattern col = new Pattern( 0,
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();

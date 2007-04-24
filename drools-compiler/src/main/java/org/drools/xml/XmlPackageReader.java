@@ -151,8 +151,8 @@ public class XmlPackageReader extends DefaultHandler {
                            new ExistsHandler( this ) );
         this.handlers.put( "eval",
                            new EvalHandler( this ) );
-        this.handlers.put( "column",
-                           new ColumnHandler( this ) );
+        this.handlers.put( "pattern",
+                           new PatternHandler( this ) );
 
         // Field Constraints
         this.handlers.put( "field-constraint",

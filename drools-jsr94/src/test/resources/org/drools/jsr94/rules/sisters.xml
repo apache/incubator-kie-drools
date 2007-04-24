@@ -8,13 +8,13 @@
 
 	<rule name="FindSisters">	
 	    <lhs>	
-		    <column object-type="Person" identifier="$person1">
+		    <pattern object-type="Person" identifier="$person1">
 			    <field-binding field-name="name" identifier="$name1" />		
-			</column>
+			</pattern>
 	
-			<column object-type="Person" identifier="$person2">
+			<pattern object-type="Person" identifier="$person2">
 				<field-binding field-name="name" identifier="$name2" />		
-			</column>
+			</pattern>
 			<eval>$person1.hasSister($person2)</eval>
 		</lhs>
 		

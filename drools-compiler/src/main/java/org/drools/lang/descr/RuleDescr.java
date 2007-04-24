@@ -31,7 +31,7 @@ public class RuleDescr extends BaseDescr {
     private AndDescr          lhs;
     private Object            consequence;
     private int               consequenceLine;
-    private int               consequenceColumn;
+    private int               consequencePattern;
     private int               offset;
     private List              attributes       = Collections.EMPTY_LIST;
 
@@ -96,9 +96,9 @@ public class RuleDescr extends BaseDescr {
     }
 
     public void setConsequenceLocation(final int line,
-                                       final int column) {
+                                       final int pattern) {
         this.consequenceLine = line;
-        this.consequenceColumn = column;
+        this.consequencePattern = pattern;
     }
 
     public void setConsequenceOffset(final int offset) {
@@ -113,7 +113,7 @@ public class RuleDescr extends BaseDescr {
         return this.consequenceLine;
     }
 
-    public int getConsequenceColumn() {
-        return this.consequenceColumn;
+    public int getConsequencePattern() {
+        return this.consequencePattern;
     }
 }

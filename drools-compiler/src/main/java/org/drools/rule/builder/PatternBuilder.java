@@ -32,7 +32,7 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -42,7 +42,7 @@ import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.AndCompositeRestriction;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
@@ -61,34 +61,34 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.Restriction;
 
 /**
- * A builder for columns
+ * A builder for patterns
  * 
  * @author etirelli
  */
-public class ColumnBuilder {
+public class PatternBuilder {
 
     private Dialect dialect;
 
-    public ColumnBuilder(final Dialect dialect) {
+    public PatternBuilder(final Dialect dialect) {
         this.dialect = dialect;
     }
 
     /**
-     * Build a column for the given descriptor in the current 
+     * Build a pattern for the given descriptor in the current 
      * context and using the given utils object
      * 
      * @param context
      * @param utils
-     * @param columnDescr
+     * @param patternDescr
      * @return
      */
-    public Column build(final BuildContext context,
+    public Pattern build(final BuildContext context,
                         final BuildUtils utils,
-                        final ColumnDescr columnDescr) {
+                        final PatternDescr patternDescr) {
 
-        if ( columnDescr.getObjectType() == null || columnDescr.getObjectType().equals( "" ) ) {
+        if ( patternDescr.getObjectType() == null || patternDescr.getObjectType().equals( "" ) ) {
             context.getErrors().add( new RuleError( context.getRule(),
-                                                    columnDescr,
+                                                    patternDescr,
                                                     null,
                                                     "ObjectType not correctly defined" ) );
             return null;
@@ -96,13 +96,13 @@ public class ColumnBuilder {
 
         ObjectType objectType = null;
 
-        final FactTemplate factTemplate = context.getPkg().getFactTemplate( columnDescr.getObjectType() );
+        final FactTemplate factTemplate = context.getPkg().getFactTemplate( patternDescr.getObjectType() );
 
         if ( factTemplate != null ) {
             objectType = new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                final Class userProvidedClass = utils.getTypeResolver().resolveType( columnDescr.getObjectType() );
+                final Class userProvidedClass = utils.getTypeResolver().resolveType( patternDescr.getObjectType() );
                 final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( userProvidedClass );
                 Class shadowClass = null;
                 try {
@@ -122,71 +122,71 @@ public class ColumnBuilder {
                                                   shadowClass );
             } catch ( final ClassNotFoundException e ) {
                 context.getErrors().add( new RuleError( context.getRule(),
-                                                        columnDescr,
+                                                        patternDescr,
                                                         null,
-                                                        "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
+                                                        "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
                 return null;
             }
         }
 
-        Column column;
-        if ( columnDescr.getIdentifier() != null && !columnDescr.getIdentifier().equals( "" ) ) {
+        Pattern pattern;
+        if ( patternDescr.getIdentifier() != null && !patternDescr.getIdentifier().equals( "" ) ) {
 
-            if ( context.getDeclarationResolver().isDuplicated( columnDescr.getIdentifier() ) ) {
+            if ( context.getDeclarationResolver().isDuplicated( patternDescr.getIdentifier() ) ) {
                 // This declaration already  exists, so throw an Exception
                 context.getErrors().add( new RuleError( context.getRule(),
-                                                        columnDescr,
+                                                        patternDescr,
                                                         null,
-                                                        "Duplicate declaration for variable '" + columnDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
+                                                        "Duplicate declaration for variable '" + patternDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
             }
 
-            column = new Column( context.getNextColumnId(),
+            pattern = new Pattern( context.getNextPatternId(),
                                  0, // offset is 0 by default
                                  objectType,
-                                 columnDescr.getIdentifier() );
+                                 patternDescr.getIdentifier() );
         } else {
-            column = new Column( context.getNextColumnId(),
+            pattern = new Pattern( context.getNextPatternId(),
                                  0, // offset is 0 by default
                                  objectType,
                                  null );
         }
-        // adding the newly created column to the build stack
+        // adding the newly created pattern to the build stack
         // this is necessary in case of local declaration usage
-        context.getBuildStack().push( column );
+        context.getBuildStack().push( pattern );
 
-        for ( final Iterator it = columnDescr.getDescrs().iterator(); it.hasNext(); ) {
+        for ( final Iterator it = patternDescr.getDescrs().iterator(); it.hasNext(); ) {
             final Object object = it.next();
             if ( object instanceof FieldBindingDescr ) {
                 build( context,
                        utils,
-                       column,
+                       pattern,
                        (FieldBindingDescr) object );
             } else if ( object instanceof FieldConstraintDescr ) {
                 build( context,
                        utils,
-                       column,
+                       pattern,
                        (FieldConstraintDescr) object );
             } else if ( object instanceof PredicateDescr ) {
                 build( context,
                        utils,
-                       column,
+                       pattern,
                        (PredicateDescr) object );
             }
         }
-        // poping the column
+        // poping the pattern
         context.getBuildStack().pop();
-        return column;
+        return pattern;
     }
 
     private void build(final BuildContext context,
                        final BuildUtils utils,
-                       final Column column,
+                       final Pattern pattern,
                        final FieldConstraintDescr fieldConstraintDescr) {
 
         final FieldExtractor extractor = getFieldExtractor( context,
                                                             utils,
                                                             fieldConstraintDescr,
-                                                            column.getObjectType(),
+                                                            pattern.getObjectType(),
                                                             fieldConstraintDescr.getFieldName(),
                                                             true );
         if ( extractor == null ) {
@@ -199,7 +199,7 @@ public class ColumnBuilder {
 
             final Restriction restriction = buildRestriction( context,
                                                               utils,
-                                                              column,
+                                                              pattern,
                                                               extractor,
                                                               fieldConstraintDescr,
                                                               (RestrictionDescr) object );
@@ -209,13 +209,13 @@ public class ColumnBuilder {
             }
 
             if ( object instanceof LiteralRestrictionDescr ) {
-                column.addConstraint( new LiteralConstraint( extractor,
+                pattern.addConstraint( new LiteralConstraint( extractor,
                                                              (LiteralRestriction) restriction ) );
             } else if ( object instanceof VariableRestrictionDescr ) {
-                column.addConstraint( new VariableConstraint( extractor,
+                pattern.addConstraint( new VariableConstraint( extractor,
                                                               (VariableRestriction) restriction ) );
             } else if ( object instanceof ReturnValueRestrictionDescr ) {
-                column.addConstraint( new ReturnValueConstraint( extractor,
+                pattern.addConstraint( new ReturnValueConstraint( extractor,
                                                                  (ReturnValueRestriction) restriction ) );
             }
 
@@ -256,7 +256,7 @@ public class ColumnBuilder {
                     if ( previousList == null ) {
                         restriction = buildRestriction( context,
                                                         utils,
-                                                        column,
+                                                        pattern,
                                                         extractor,
                                                         fieldConstraintDescr,
                                                         previousRestriction );
@@ -268,7 +268,7 @@ public class ColumnBuilder {
                     } else {
                         restriction = buildRestriction( context,
                                                         utils,
-                                                        column,
+                                                        pattern,
                                                         extractor,
                                                         fieldConstraintDescr,
                                                         previousRestriction );
@@ -299,7 +299,7 @@ public class ColumnBuilder {
 
         final Restriction restriction = buildRestriction( context,
                                                           utils,
-                                                          column,
+                                                          pattern,
                                                           extractor,
                                                           fieldConstraintDescr,
                                                           currentRestriction );
@@ -327,13 +327,13 @@ public class ColumnBuilder {
             // @todo throw error
         }
 
-        column.addConstraint( new MultiRestrictionFieldConstraint( extractor,
+        pattern.addConstraint( new MultiRestrictionFieldConstraint( extractor,
                                                                    restrictions ) );
     }
 
     private void build(final BuildContext context,
                        final BuildUtils utils,
-                       final Column column,
+                       final Pattern pattern,
                        final FieldBindingDescr fieldBindingDescr) {
 
         if ( context.getDeclarationResolver().isDuplicated( fieldBindingDescr.getIdentifier() ) ) {
@@ -348,20 +348,20 @@ public class ColumnBuilder {
         final FieldExtractor extractor = getFieldExtractor( context,
                                                             utils,
                                                             fieldBindingDescr,
-                                                            column.getObjectType(),
+                                                            pattern.getObjectType(),
                                                             fieldBindingDescr.getFieldName(),
                                                             true );
         if ( extractor == null ) {
             return;
         }
 
-        column.addDeclaration( fieldBindingDescr.getIdentifier(),
+        pattern.addDeclaration( fieldBindingDescr.getIdentifier(),
                                extractor );
     }
 
     private void build(final BuildContext context,
                        final BuildUtils utils,
-                       final Column column,
+                       final Pattern pattern,
                        final PredicateDescr predicateDescr) {
 
         // this will return an array with 3 lists
@@ -375,7 +375,7 @@ public class ColumnBuilder {
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
-            if ( decl.getColumn() == column ) {
+            if ( decl.getPattern() == pattern ) {
                 factDeclarations.add( decl );
             } else {
                 tupleDeclarations.add( decl );
@@ -384,7 +384,7 @@ public class ColumnBuilder {
         final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
         this.createImplicitBindings( context,
                                      utils,
-                                     column,
+                                     pattern,
                                      usedIdentifiers[NOT_BOUND_INDEX],
                                      factDeclarations );
 
@@ -396,7 +396,7 @@ public class ColumnBuilder {
                                                                                  previousDeclarations,
                                                                                  localDeclarations,
                                                                                  requiredGlobals );
-        column.addConstraint( predicateConstraint );
+        pattern.addConstraint( predicateConstraint );
 
         final PredicateBuilder builder = this.dialect.getPredicateBuilder();
 
@@ -413,14 +413,14 @@ public class ColumnBuilder {
     /**
      * @param context
      * @param utils
-     * @param column
+     * @param pattern
      * @param usedIdentifiers
      * @param NOT_BOUND_INDEX
      * @param factDeclarations
      */
     private void createImplicitBindings(final BuildContext context,
                                         final BuildUtils utils,
-                                        final Column column,
+                                        final Pattern pattern,
                                         final List unboundIdentifiers,
                                         final List factDeclarations) {
         // the following will create the implicit bindings
@@ -432,7 +432,7 @@ public class ColumnBuilder {
             final FieldExtractor extractor = getFieldExtractor( context,
                                                                 utils,
                                                                 implicitBinding,
-                                                                column.getObjectType(),
+                                                                pattern.getObjectType(),
                                                                 implicitBinding.getFieldName(),
                                                                 false );
             if ( extractor == null ) {
@@ -441,14 +441,14 @@ public class ColumnBuilder {
 
             final Declaration declaration = new Declaration( identifier,
                                                              extractor,
-                                                             column );
+                                                             pattern );
             factDeclarations.add( declaration );
         }
     }
 
     private Restriction buildRestriction(final BuildContext context,
                                          final BuildUtils utils,
-                                         final Column column,
+                                         final Pattern pattern,
                                          final FieldExtractor extractor,
                                          final FieldConstraintDescr fieldConstraintDescr,
                                          final RestrictionDescr restrictionDescr) {
@@ -467,7 +467,7 @@ public class ColumnBuilder {
         } else if ( restrictionDescr instanceof ReturnValueRestrictionDescr ) {
             restriction = buildRestriction( context,
                                             utils,
-                                            column,
+                                            pattern,
                                             extractor,
                                             fieldConstraintDescr,
                                             (ReturnValueRestrictionDescr) restrictionDescr );
@@ -571,7 +571,7 @@ public class ColumnBuilder {
 
     private ReturnValueRestriction buildRestriction(final BuildContext context,
                                                     final BuildUtils utils,
-                                                    final Column column,
+                                                    final Pattern pattern,
                                                     final FieldExtractor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
@@ -583,7 +583,7 @@ public class ColumnBuilder {
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
             final Declaration declaration = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
-            if ( declaration.getColumn() == column ) {
+            if ( declaration.getPattern() == pattern ) {
                 factDeclarations.add( declaration );
             } else {
                 tupleDeclarations.add( declaration );
@@ -593,7 +593,7 @@ public class ColumnBuilder {
         final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
         this.createImplicitBindings( context,
                                      utils,
-                                     column,
+                                     pattern,
                                      usedIdentifiers[NOT_BOUND_INDEX],
                                      factDeclarations );
 

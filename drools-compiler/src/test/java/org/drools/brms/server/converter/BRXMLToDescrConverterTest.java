@@ -11,7 +11,7 @@ import org.drools.brms.client.modeldriven.brxml.IConstraint;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.OrDescr;
@@ -79,12 +79,12 @@ public class BRXMLToDescrConverterTest extends TestCase {
                       noloopDescr.getValue() );
 
         // checking LHS patterns
-        final ColumnDescr col1 = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr pattern1 = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( pat1.boundName,
-                      col1.getIdentifier() );
+                      pattern1.getIdentifier() );
         assertEquals( pat1.factType,
-                      col1.getObjectType() );
-        final FieldConstraintDescr field = (FieldConstraintDescr) col1.getDescrs().get( 0 );
+                      pattern1.getObjectType() );
+        final FieldConstraintDescr field = (FieldConstraintDescr) pattern1.getDescrs().get( 0 );
         assertEquals( pat1.constraints[0].fieldName,
                       field.getFieldName() );
         final LiteralRestrictionDescr lit = (LiteralRestrictionDescr) field.getRestrictions().get( 0 );
@@ -94,13 +94,13 @@ public class BRXMLToDescrConverterTest extends TestCase {
                       lit.getText() );
 
         final OrDescr or1 = (OrDescr) rule.getLhs().getDescrs().get( 1 );
-        final ColumnDescr col2 = (ColumnDescr) or1.getDescrs().get( 0 );
+        final PatternDescr pattern2 = (PatternDescr) or1.getDescrs().get( 0 );
         assertEquals( pat2.factType,
-                      col2.getObjectType() );
+                      pattern2.getObjectType() );
 
-        final ColumnDescr col3 = (ColumnDescr) or1.getDescrs().get( 1 );
+        final PatternDescr pattern3 = (PatternDescr) or1.getDescrs().get( 1 );
         assertEquals( pat3.factType,
-                      col3.getObjectType() );
+                      pattern3.getObjectType() );
 
     }
     
@@ -158,12 +158,12 @@ public class BRXMLToDescrConverterTest extends TestCase {
                       noloopDescr.getValue() );
 
         // checking LHS patterns
-        final ColumnDescr col1 = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr pattern1 = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( pat1.boundName,
-                      col1.getIdentifier() );
+                      pattern1.getIdentifier() );
         assertEquals( pat1.factType,
-                      col1.getObjectType() );
-        final FieldConstraintDescr field = (FieldConstraintDescr) col1.getDescrs().get( 0 );
+                      pattern1.getObjectType() );
+        final FieldConstraintDescr field = (FieldConstraintDescr) pattern1.getDescrs().get( 0 );
         assertEquals( pat1.constraints[0].fieldName,
                       field.getFieldName() );
         final LiteralRestrictionDescr lit = (LiteralRestrictionDescr) field.getRestrictions().get( 0 );
@@ -173,13 +173,13 @@ public class BRXMLToDescrConverterTest extends TestCase {
                       lit.getText() );
 
         final OrDescr or1 = (OrDescr) rule.getLhs().getDescrs().get( 1 );
-        final ColumnDescr col2 = (ColumnDescr) or1.getDescrs().get( 0 );
+        final PatternDescr pattern2 = (PatternDescr) or1.getDescrs().get( 0 );
         assertEquals( pat2.factType,
-                      col2.getObjectType() );
+                      pattern2.getObjectType() );
 
-        final ColumnDescr col3 = (ColumnDescr) or1.getDescrs().get( 1 );
+        final PatternDescr pattern3 = (PatternDescr) or1.getDescrs().get( 1 );
         assertEquals( pat3.factType,
-                      col3.getObjectType() );
+                      pattern3.getObjectType() );
         
     }
 

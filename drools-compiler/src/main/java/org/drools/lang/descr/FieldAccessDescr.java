@@ -3,7 +3,7 @@ package org.drools.lang.descr;
 /**
  * This represents direct field access.
  * Not a whole lot different from what you can do with the method access,
- * but in this case it is just a field by name (same as in a column).
+ * but in this case it is just a field by name (same as in a pattern).
  *
  *
  * eg: foo.bar

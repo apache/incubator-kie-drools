@@ -27,7 +27,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Collect;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
@@ -68,13 +68,13 @@ public class CollectNodeTest extends DroolsTestCase {
         this.sink = new MockTupleSink();
 
         final ObjectType srcObjType = new ClassObjectType( String.class );
-        final Column sourceColumn = new Column( 0,
+        final Pattern sourcePattern = new Pattern( 0,
                                                 srcObjType );
         final ObjectType resultObjType = new ClassObjectType( LinkedList.class );
-        final Column resultColumn = new Column( 1,
+        final Pattern resultPattern = new Pattern( 1,
                                                 resultObjType );
-        this.collect = new Collect( sourceColumn,
-                                    resultColumn );
+        this.collect = new Collect( sourcePattern,
+                                    resultPattern );
 
         this.node = new CollectNode( 15,
                                      this.tupleSource,

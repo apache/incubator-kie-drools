@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -42,7 +42,7 @@ class FieldConstraintHandler extends BaseAbstractHandler
 
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
-            this.validParents.add( ColumnDescr.class );
+            this.validParents.add( PatternDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -82,8 +82,8 @@ class FieldConstraintHandler extends BaseAbstractHandler
         it.previous();
         final Object parent = it.previous();
 
-        final ColumnDescr columnDescr = (ColumnDescr) parent;
-        columnDescr.addDescr( fieldConstraintDescr );
+        final PatternDescr patternDescr = (PatternDescr) parent;
+        patternDescr.addDescr( fieldConstraintDescr );
 
         return null;
     }

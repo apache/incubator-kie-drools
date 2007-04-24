@@ -154,7 +154,7 @@ public class PredicateConstraint
         }
 
         for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
-            if ( this.previousDeclarations[i].getColumn().getOffset() != other.previousDeclarations[i].getColumn().getOffset() ) {
+            if ( this.previousDeclarations[i].getPattern().getOffset() != other.previousDeclarations[i].getPattern().getOffset() ) {
                 return false;
             }
 
@@ -164,7 +164,7 @@ public class PredicateConstraint
         }
 
         for ( int i = 0, length = this.localDeclarations.length; i < length; i++ ) {
-            if ( this.localDeclarations[i].getColumn().getOffset() != other.localDeclarations[i].getColumn().getOffset() ) {
+            if ( this.localDeclarations[i].getPattern().getOffset() != other.localDeclarations[i].getPattern().getOffset() ) {
                 return false;
             }
 

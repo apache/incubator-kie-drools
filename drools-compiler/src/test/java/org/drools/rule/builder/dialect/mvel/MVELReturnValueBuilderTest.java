@@ -19,7 +19,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.ReturnValueRestriction;
@@ -46,18 +46,18 @@ public class MVELReturnValueBuilderTest extends TestCase {
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "price" );
-        final Column columnA = new Column( 0,
+        final Pattern patternA = new Pattern( 0,
                                      new ClassObjectType( int.class ) );
 
-        final Column columnB = new Column( 1,
+        final Pattern patternB = new Pattern( 1,
                                      new ClassObjectType( int.class ) );
 
         final Declaration a = new Declaration( "a",
                                          extractor,
-                                         columnA );
+                                         patternA );
         final Declaration b = new Declaration( "b",
                                          extractor,
-                                         columnB );
+                                         patternB );
 
         final Map map = new HashMap();
         map.put( "a",

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ColumnDescr extends BaseDescr {
+public class PatternDescr extends BaseDescr {
     /**
      * 
      */
@@ -31,17 +31,17 @@ public class ColumnDescr extends BaseDescr {
     private int               leftParentCharacter  = -1;
     private int               rightParentCharacter = -1;
 
-    public ColumnDescr() {
+    public PatternDescr() {
         this( null,
               null );
     }
 
-    public ColumnDescr(final String objectType) {
+    public PatternDescr(final String objectType) {
         this( objectType,
               null );
     }
 
-    public ColumnDescr(final String objectType,
+    public PatternDescr(final String objectType,
                        final String identifier) {
         this.objectType = objectType;
         this.identifier = identifier;
@@ -75,7 +75,7 @@ public class ColumnDescr extends BaseDescr {
     }
 
     public String toString() {
-        return "[Column: id=" + this.identifier + "; objectType=" + this.objectType + "]";
+        return "[Pattern: id=" + this.identifier + "; objectType=" + this.objectType + "]";
     }
 
     /**

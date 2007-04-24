@@ -3,7 +3,7 @@ package org.drools.brms.client.modeldriven.brxml;
 /**
  * A fact pattern is a declaration of a fact type, and its constraint,
  * and perhaps a variable that is it bound to
- * It is the equivalent of a "column" in drools terms. 
+ * It is the equivalent of a "pattern" in drools terms. 
  * @author Michael Neale
  *
  */

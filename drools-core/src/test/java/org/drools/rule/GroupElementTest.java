@@ -9,19 +9,19 @@ public class GroupElementTest extends TestCase {
 
     public void testPackNestedAnd() {
         final GroupElement and1 = GroupElementFactory.newAndInstance();
-        final Column column1 = new Column( 0,
+        final Pattern pattern1 = new Pattern( 0,
                                      null );
-        and1.addChild( column1 );
+        and1.addChild( pattern1 );
 
-        final Column column2 = new Column( 0,
+        final Pattern pattern2 = new Pattern( 0,
                                      null );
-        and1.addChild( column2 );
+        and1.addChild( pattern2 );
 
         assertEquals( 2,
                       and1.getChildren().size() );
-        assertSame( column1,
+        assertSame( pattern1,
                     and1.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     and1.getChildren().get( 1 ) );
 
         final GroupElement and2 = GroupElementFactory.newAndInstance();
@@ -30,27 +30,27 @@ public class GroupElementTest extends TestCase {
         and2.pack();
         assertEquals( 2,
                       and2.getChildren().size() );
-        assertSame( column1,
+        assertSame( pattern1,
                     and2.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     and2.getChildren().get( 1 ) );
     }
 
     public void testPackNestedOr() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
-        final Column column1 = new Column( 0,
+        final Pattern pattern1 = new Pattern( 0,
                                      null );
-        or1.addChild( column1 );
+        or1.addChild( pattern1 );
 
-        final Column column2 = new Column( 0,
+        final Pattern pattern2 = new Pattern( 0,
                                      null );
-        or1.addChild( column2 );
+        or1.addChild( pattern2 );
 
         assertEquals( 2,
                       or1.getChildren().size() );
-        assertSame( column1,
+        assertSame( pattern1,
                     or1.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     or1.getChildren().get( 1 ) );
 
         final GroupElement or2 = GroupElementFactory.newOrInstance();
@@ -60,21 +60,21 @@ public class GroupElementTest extends TestCase {
 
         assertEquals( 2,
                       or2.getChildren().size() );
-        assertSame( column1,
+        assertSame( pattern1,
                     or2.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     or2.getChildren().get( 1 ) );
     }
 
     public void testPackNestedExists() {
         final GroupElement exists1 = GroupElementFactory.newExistsInstance();
-        final Column column1 = new Column( 0,
+        final Pattern pattern1 = new Pattern( 0,
                                      null );
-        exists1.addChild( column1 );
+        exists1.addChild( pattern1 );
 
         assertEquals( 1,
                       exists1.getChildren().size() );
-        assertSame( column1,
+        assertSame( pattern1,
                     exists1.getChildren().get( 0 ) );
 
         final GroupElement exists2 = GroupElementFactory.newExistsInstance();
@@ -84,25 +84,25 @@ public class GroupElementTest extends TestCase {
 
         assertEquals( 1,
                       exists2.getChildren().size() );
-        assertSame( column1,
+        assertSame( pattern1,
                     exists2.getChildren().get( 0 ) );
     }
 
     public void testAddMultipleChildsIntoNot() {
         final GroupElement not = GroupElementFactory.newNotInstance();
 
-        final Column column1 = new Column( 0,
+        final Pattern pattern1 = new Pattern( 0,
                                      null );
         try {
-            not.addChild( column1 );
+            not.addChild( pattern1 );
         } catch ( final RuntimeDroolsException rde ) {
             Assert.fail( "Adding a single child is not supposed to throw Exception for NOT GE: " + rde.getMessage() );
         }
 
-        final Column column2 = new Column( 0,
+        final Pattern pattern2 = new Pattern( 0,
                                      null );
         try {
-            not.addChild( column2 );
+            not.addChild( pattern2 );
             Assert.fail( "Adding a second child into a NOT GE should throw Exception" );
         } catch ( final RuntimeDroolsException rde ) {
             // everything is fine
@@ -111,12 +111,12 @@ public class GroupElementTest extends TestCase {
 
     public void testAddSingleBranchAnd() {
         final GroupElement and1 = GroupElementFactory.newAndInstance();
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                     null );
-        and1.addChild( column );
+        and1.addChild( pattern );
         assertEquals( 1,
                       and1.getChildren().size() );
-        assertSame( column,
+        assertSame( pattern,
                     and1.getChildren().get( 0 ) );
 
         final GroupElement or1 = GroupElementFactory.newOrInstance();
@@ -125,18 +125,18 @@ public class GroupElementTest extends TestCase {
         or1.pack();
         assertEquals( 1,
                       or1.getChildren().size() );
-        assertSame( column,
+        assertSame( pattern,
                     or1.getChildren().get( 0 ) );
     }
 
     public void testAddSingleBranchOr() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                     null );
-        or1.addChild( column );
+        or1.addChild( pattern );
         assertEquals( 1,
                       or1.getChildren().size() );
-        assertSame( column,
+        assertSame( pattern,
                     or1.getChildren().get( 0 ) );
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
@@ -145,7 +145,7 @@ public class GroupElementTest extends TestCase {
         and1.pack();
         assertEquals( 1,
                       and1.getChildren().size() );
-        assertSame( column,
+        assertSame( pattern,
                     and1.getChildren().get( 0 ) );
     }
 
@@ -173,13 +173,13 @@ public class GroupElementTest extends TestCase {
      */
     public void testDeepNestedStructure() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
-        final Column column1 = new Column( 0,
+        final Pattern pattern1 = new Pattern( 0,
                                      null );
-        or1.addChild( column1 );
+        or1.addChild( pattern1 );
 
-        final Column column2 = new Column( 0,
+        final Pattern pattern2 = new Pattern( 0,
                                      null );
-        or1.addChild( column2 );
+        or1.addChild( pattern2 );
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         and1.addChild( or1 );
@@ -188,9 +188,9 @@ public class GroupElementTest extends TestCase {
         assertSame( or1,
                     and1.getChildren().get( 0 ) );
 
-        assertSame( column1,
+        assertSame( pattern1,
                     or1.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     or1.getChildren().get( 1 ) );
 
         final GroupElement or2 = GroupElementFactory.newOrInstance();
@@ -227,9 +227,9 @@ public class GroupElementTest extends TestCase {
         assertEquals( 2,
                       and2.getChildren().size() );
 
-        assertSame( column1,
+        assertSame( pattern1,
                     and2.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     and2.getChildren().get( 1 ) );
 
     }
@@ -260,13 +260,13 @@ public class GroupElementTest extends TestCase {
      */
     public void testDeepNestedStructureWithMultipleElementsInRoot() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
-        final Column column1 = new Column( 0,
+        final Pattern pattern1 = new Pattern( 0,
                                      null );
-        or1.addChild( column1 );
+        or1.addChild( pattern1 );
 
-        final Column column2 = new Column( 0,
+        final Pattern pattern2 = new Pattern( 0,
                                      null );
-        or1.addChild( column2 );
+        or1.addChild( pattern2 );
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         and1.addChild( or1 );
@@ -275,9 +275,9 @@ public class GroupElementTest extends TestCase {
         assertSame( or1,
                     and1.getChildren().get( 0 ) );
 
-        assertSame( column1,
+        assertSame( pattern1,
                     or1.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     or1.getChildren().get( 1 ) );
 
         final GroupElement or2 = GroupElementFactory.newOrInstance();
@@ -299,15 +299,15 @@ public class GroupElementTest extends TestCase {
         final GroupElement and2 = GroupElementFactory.newAndInstance();
         and2.addChild( or3 );
 
-        final Column column3 = new Column( 0,
+        final Pattern pattern3 = new Pattern( 0,
                                      null );
-        and2.addChild( column3 );
+        and2.addChild( pattern3 );
 
         assertEquals( 2,
                       and2.getChildren().size() );
         assertSame( or3,
                     and2.getChildren().get( 0 ) );
-        assertSame( column3,
+        assertSame( pattern3,
                     and2.getChildren().get( 1 ) );
 
         // Now pack the structure
@@ -322,14 +322,14 @@ public class GroupElementTest extends TestCase {
         // order must be the same
         assertSame( or1,
                     and2.getChildren().get( 0 ) );
-        assertSame( column3,
+        assertSame( pattern3,
                     and2.getChildren().get( 1 ) );
 
         assertEquals( 2,
                       or1.getChildren().size() );
-        assertSame( column1,
+        assertSame( pattern1,
                     or1.getChildren().get( 0 ) );
-        assertSame( column2,
+        assertSame( pattern2,
                     or1.getChildren().get( 1 ) );
 
     }

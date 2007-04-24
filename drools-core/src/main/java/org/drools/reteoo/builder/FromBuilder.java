@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.common.BetaConstraints;
 import org.drools.reteoo.FromNode;
 import org.drools.reteoo.TupleSource;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.From;
 import org.drools.rule.LiteralConstraint;
@@ -46,13 +46,13 @@ public class FromBuilder
                       final RuleConditionElement rce) {
         final From from = (From) rce;
 
-        final Column column = from.getColumn();
+        final Pattern pattern = from.getPattern();
 
-        // setting and incrementing column offset as appropriate
-        column.setOffset( context.getCurrentColumnOffset() );
-        context.incrementCurrentColumnOffset();
+        // setting and incrementing pattern offset as appropriate
+        pattern.setOffset( context.getCurrentPatternOffset() );
+        context.incrementCurrentPatternOffset();
 
-        final List constraints = column.getConstraints();
+        final List constraints = pattern.getConstraints();
 
         final List betaConstraints = new ArrayList();
         final List alphaConstraints = new ArrayList();

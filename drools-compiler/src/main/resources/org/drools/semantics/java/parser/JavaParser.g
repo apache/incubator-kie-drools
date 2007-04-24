@@ -14,7 +14,7 @@ tokens {
 */
 
 @parser::header {
-	package org.drools.semantics.java.parser;
+	package org.drools.rule.builder.dialect.java.parser;
 	import java.util.Iterator;
 }
 
@@ -124,7 +124,7 @@ tokens {
 } 
 
 @lexer::header {
-	package org.drools.semantics.java.parser;
+	package org.drools.rule.builder.dialect.java.parser;
 }
 
 @lexer::members {

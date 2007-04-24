@@ -199,7 +199,7 @@ public class Rule
      *         <code>false</code>.
      */
     public boolean isValid() {
-        //if ( this.columns.size() == 0 ) {
+        //if ( this.patterns.size() == 0 ) {
         //    return false;
         //}
 
@@ -407,8 +407,8 @@ public class Rule
         int specificity = 0;
         for ( final Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
             final Object object = it.next();
-            if ( object instanceof Column ) {
-                specificity += getSpecifity( (Column) object );
+            if ( object instanceof Pattern ) {
+                specificity += getSpecifity( (Pattern) object );
             } else if ( object instanceof GroupElement ) {
                 specificity += getSpecifity( (GroupElement) object );
             }
@@ -416,9 +416,9 @@ public class Rule
         return specificity;
     }
 
-    private int getSpecifity(final Column column) {
+    private int getSpecifity(final Pattern pattern) {
         int specificity = 0;
-        for ( final Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+        for ( final Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
             if ( !(it.next() instanceof Declaration) ) {
                 specificity++;
             }

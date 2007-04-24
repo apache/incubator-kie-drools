@@ -21,7 +21,7 @@
 	
 	<query name="my query">
 		<lhs>
-	       <column object-type="Foo" />							
+	       <pattern object-type="Foo" />							
 		</lhs>		
 	</query>
 </package>

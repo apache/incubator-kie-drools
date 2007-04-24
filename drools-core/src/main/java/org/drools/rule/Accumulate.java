@@ -32,41 +32,41 @@ public class Accumulate extends ConditionalElement {
     private static final long serialVersionUID = 4608000398919355806L;
 
     private Accumulator       accumulator;
-    private Column            sourceColumn;
-    private Column            resultColumn;
+    private Pattern            sourcePattern;
+    private Pattern            resultPattern;
     private Declaration[]     requiredDeclarations;
     private Declaration[]     innerDeclarations;
 
-    public Accumulate(final Column sourceColumn,
-                      final Column resultColumn) {
+    public Accumulate(final Pattern sourcePattern,
+                      final Pattern resultPattern) {
 
-        this( sourceColumn,
-              resultColumn,
+        this( sourcePattern,
+              resultPattern,
               new Declaration[0],
               new Declaration[0],
               null );
     }
 
-    public Accumulate(final Column sourceColumn,
-                      final Column resultColumn,
+    public Accumulate(final Pattern sourcePattern,
+                      final Pattern resultPattern,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations) {
 
-        this( sourceColumn,
-              resultColumn,
+        this( sourcePattern,
+              resultPattern,
               requiredDeclarations,
               innerDeclarations,
               null );
     }
 
-    public Accumulate(final Column sourceColumn,
-                      final Column resultColumn,
+    public Accumulate(final Pattern sourcePattern,
+                      final Pattern resultPattern,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations,
                       final Accumulator accumulator) {
 
-        this.sourceColumn = sourceColumn;
-        this.resultColumn = resultColumn;
+        this.sourcePattern = sourcePattern;
+        this.resultPattern = resultPattern;
         this.requiredDeclarations = requiredDeclarations;
         this.innerDeclarations = innerDeclarations;
         this.accumulator = accumulator;
@@ -95,34 +95,34 @@ public class Accumulate extends ConditionalElement {
     }
 
     public Object clone() {
-        return new Accumulate( this.sourceColumn,
-                               this.resultColumn,
+        return new Accumulate( this.sourcePattern,
+                               this.resultPattern,
                                this.requiredDeclarations,
                                this.innerDeclarations,
                                this.accumulator );
     }
 
-    public Column getResultColumn() {
-        return this.resultColumn;
+    public Pattern getResultPattern() {
+        return this.resultPattern;
     }
 
-    public Column getSourceColumn() {
-        return this.sourceColumn;
+    public Pattern getSourcePattern() {
+        return this.sourcePattern;
     }
 
     public Map getInnerDeclarations() {
-        return this.sourceColumn.getInnerDeclarations();
+        return this.sourcePattern.getInnerDeclarations();
     }
 
     public Map getOuterDeclarations() {
-        return this.resultColumn.getOuterDeclarations();
+        return this.resultPattern.getOuterDeclarations();
     }
 
     /**
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.sourceColumn.getInnerDeclarations().get( identifier );
+        return (Declaration) this.sourcePattern.getInnerDeclarations().get( identifier );
     }
 
 }

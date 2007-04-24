@@ -30,7 +30,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.Package;
@@ -57,7 +57,7 @@ public class AgendaEventSupportTest extends TestCase {
         final Rule rule = new Rule( "test1" );
         rule.setAgendaGroup( "test group" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                     cheeseObjectType );
 
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
@@ -70,8 +70,8 @@ public class AgendaEventSupportTest extends TestCase {
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                               evaluator,
                                                               field );
-        column.addConstraint( constraint );
-        rule.addPattern( column );
+        pattern.addConstraint( constraint );
+        rule.addPattern( pattern );
 
         rule.setConsequence( new Consequence() {
             public void evaluate(final KnowledgeHelper knowledgeHelper,

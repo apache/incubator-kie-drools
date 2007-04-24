@@ -28,7 +28,7 @@ import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
 
 /**
- * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Column
+ * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
  * then there are no BetaNodes to propagate to. <code>LeftInputAdapter</code> is used to adapt an ObjectSink propagation into a 
  * <code>TupleSource</code> which propagates a <code>ReteTuple</code> suitable fot the right <code>ReteTuple</code> side 
  * of a <code>BetaNode</code>.
@@ -55,7 +55,7 @@ public class LeftInputAdapterNode extends TupleSource
 
     //    /**
     //     * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
-    //     * parent <code>ObjectSource</code> and adds it to a given column in the resulting Tuples.
+    //     * parent <code>ObjectSource</code> and adds it to a given pattern in the resulting Tuples.
     //     * 
     //     * @param id
     //     *      The unique id of this node in the current Rete network
@@ -71,7 +71,7 @@ public class LeftInputAdapterNode extends TupleSource
 
     /**
      * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
-     * parent <code>ObjectSource</code> and adds it to a given column in the resulting Tuples.
+     * parent <code>ObjectSource</code> and adds it to a given pattern in the resulting Tuples.
      * 
      * @param id
      *      The unique id of this node in the current Rete network
@@ -79,7 +79,7 @@ public class LeftInputAdapterNode extends TupleSource
      *      The parent node, where Facts are propagated from
      * @param binder
      *      An optional binder to filter out propagations. This binder will exist when
-     *      a predicate is used in the first column, for instance
+     *      a predicate is used in the first pattern, for instance
      */
     public LeftInputAdapterNode(final int id,
                                 final ObjectSource source) {

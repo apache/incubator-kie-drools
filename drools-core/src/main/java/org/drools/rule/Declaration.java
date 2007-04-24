@@ -84,7 +84,7 @@ public class Declaration
 
     private final Extractor   extractor;
 
-    private Column            column;
+    private Pattern            pattern;
 
     // ------------------------------------------------------------
     // Constructors
@@ -102,10 +102,10 @@ public class Declaration
      */
     public Declaration(final String identifier,
                        final Extractor extractor,
-                       final Column column) {
+                       final Pattern pattern) {
         this.identifier = identifier;
         this.extractor = extractor;
-        this.column = column;
+        this.pattern = pattern;
     }
 
     // ------------------------------------------------------------
@@ -131,16 +131,16 @@ public class Declaration
     }
 
     /**
-     * Returns the index of the column
+     * Returns the index of the pattern
      * 
-     * @return the column
+     * @return the pattern
      */
-    public Column getColumn() {
-        return this.column;
+    public Pattern getPattern() {
+        return this.pattern;
     }
 
-    public void setColumn(final Column column) {
-        this.column = column;
+    public void setPattern(final Pattern pattern) {
+        this.pattern = pattern;
     }
 
     /**
@@ -201,7 +201,7 @@ public class Declaration
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * this.column.getOffset();
+        result = PRIME * this.pattern.getOffset();
         result = PRIME * this.extractor.hashCode();
         result = PRIME * this.identifier.hashCode();
         return result;
@@ -218,7 +218,7 @@ public class Declaration
 
         final Declaration other = (Declaration) object;
 
-        return this.column.getOffset() == other.column.getOffset() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
+        return this.pattern.getOffset() == other.pattern.getOffset() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
     }
 
 }

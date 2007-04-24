@@ -24,8 +24,8 @@ public class ReteooBuilderTest extends TestCase {
         return RuleBaseFactory.newRuleBase();
     }
 
-    public void testThreeColumnsWithConstraints() throws Exception {
-        //checkRuleBase( "ThreeColumnsWithConstraints" );
+    public void testThreePatternsWithConstraints() throws Exception {
+        //checkRuleBase( "ThreePatternsWithConstraints" );
     }
 
     public void testOneAndTwoOrs() throws Exception {

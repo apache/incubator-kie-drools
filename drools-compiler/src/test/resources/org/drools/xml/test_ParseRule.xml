@@ -26,7 +26,7 @@
 	<rule-attribute name="activation-group" value="activation-group" />
 
 	<lhs>
-		<column identifier="foo3" object-type="Bar" >
+		<pattern identifier="foo3" object-type="Bar" >
 			<field-constraint field-name="a"> 
 				<literal-restriction evaluator="==" value="3" />
 				<restriction-connective connective="|"/>
@@ -38,38 +38,38 @@
 			<field-constraint field-name="a4"> 
 				<literal-restriction evaluator="==" value="null" />
 			</field-constraint>
-		</column>
+		</pattern>
 
-		<column identifier="foo4" object-type="Bar" >
+		<pattern identifier="foo4" object-type="Bar" >
 			<field-binding field-name="a" identifier="a4" />
 			<field-constraint field-name="a"> 
 				<literal-restriction evaluator="!=" value="4" />
 				<restriction-connective connective="&amp;"/>
 				<literal-restriction evaluator="!=" value="5" />
 			</field-constraint>
-		</column>
+		</pattern>
 
-		<column identifier="foo5" object-type="Bar" >
+		<pattern identifier="foo5" object-type="Bar" >
 			<field-constraint field-name="b"> 
 				<return-value-restriction evaluator="==" >a4 + 1</return-value-restriction>
 				<restriction-connective connective="|"/>
 				<variable-restriction evaluator="&gt;" identifier="a4" />
 			</field-constraint>
-		</column>
+		</pattern>
 
-		<column identifier="foo6" object-type="Bar" >
+		<pattern identifier="foo6" object-type="Bar" >
 			<field-binding field-name="a" identifier="a4" />
 			<field-constraint field-name="b"> 
 				<literal-restriction evaluator="==" value="6" />
 			</field-constraint>
-		</column>
+		</pattern>
 
-		<column identifier="foo7" object-type="Bar" >
+		<pattern identifier="foo7" object-type="Bar" >
 			<field-binding field-name="a" identifier="a4" />
 			<field-binding field-name="b" identifier="b4" />
-		</column>
+		</pattern>
 
-		<column object-type="Baz" > </column>
+		<pattern object-type="Baz" > </pattern>
 	</lhs>
 	<rhs>  
 		  if ( a == b ) {

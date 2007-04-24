@@ -19,7 +19,7 @@ package org.drools.rule.builder;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.rule.Collect;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.builder.dialect.java.BuildUtils;
 
@@ -32,32 +32,32 @@ public class CollectBuilder
     ConditionalElementBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
+     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
+                                    final PatternBuilder patternBuilder,
                                     final BaseDescr descr) {
 
         final CollectDescr collectDescr = (CollectDescr) descr;
 
-        final Column sourceColumn = columnBuilder.build( context,
-                                                   utils,
-                                                   collectDescr.getSourceColumn() );
+        final Pattern sourcePattern = patternBuilder.build( context,
+                                                            utils,
+                                                            collectDescr.getSourcePattern() );
 
-        if ( sourceColumn == null ) {
+        if ( sourcePattern == null ) {
             return null;
         }
 
-        final Column resultColumn = columnBuilder.build( context,
-                                                   utils,
-                                                   collectDescr.getResultColumn() );
+        final Pattern resultPattern = patternBuilder.build( context,
+                                                            utils,
+                                                            collectDescr.getResultPattern() );
 
         final String className = "collect" + context.getNextId();
         collectDescr.setClassMethodName( className );
 
-        final Collect collect = new Collect( sourceColumn,
-                                       resultColumn );
+        final Collect collect = new Collect( sourcePattern,
+                                             resultPattern );
         return collect;
     }
 

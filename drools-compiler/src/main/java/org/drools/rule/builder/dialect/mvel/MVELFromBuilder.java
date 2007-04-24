@@ -24,11 +24,11 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.From;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.ColumnBuilder;
+import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.dialect.java.BuildUtils;
@@ -46,19 +46,19 @@ public class MVELFromBuilder
     FromBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.dialect.mvel.FromBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
+     * @see org.drools.dialect.mvel.FromBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
+                                    final PatternBuilder patternBuilder,
                                     final BaseDescr descr) {
         final FromDescr fromDescr = (FromDescr) descr;
 
-        final Column column = columnBuilder.build( context,
-                                                   utils,
-                                                   fromDescr.getReturnedColumn() );
+        final Pattern pattern = patternBuilder.build( context,
+                                                      utils,
+                                                      fromDescr.getReturnedPattern() );
 
-        if ( column == null ) {
+        if ( pattern == null ) {
             return null;
         }
 
@@ -84,7 +84,7 @@ public class MVELFromBuilder
             return null;
         }
 
-        return new From( column,
+        return new From( pattern,
                          dataProvider );
     }
 }

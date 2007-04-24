@@ -19,7 +19,7 @@ rule "not rule with bound variable"
 		list.add( new Integer( 6 ) );
 end
 
-rule "not rule with other columns 1"
+rule "not rule with other patterns 1"
     when
         Cheese( $type : type == "cheddar" )
         not Cheese( price == 5 )
@@ -27,7 +27,7 @@ rule "not rule with other columns 1"
 		list.add( new Integer( 7 ) );
 end
 
-rule "not rule with other columns 2"
+rule "not rule with other patterns 2"
     when
         not Cheese( price == 5 )
         Cheese( $type : type == "cheddar" )

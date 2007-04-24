@@ -203,7 +203,7 @@ public class BuildUtils {
             for ( final ListIterator it = context.stackIterator(); it.hasPrevious(); ) {
                 final RuleConditionElement rce = (RuleConditionElement) it.previous();
                 final Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
-                if ( decl == null || decl.getColumn().getOffset() > declarations[i].getColumn().getOffset() ) {
+                if ( decl == null || decl.getPattern().getOffset() > declarations[i].getPattern().getOffset() ) {
                     list.add( declarations[i].getIdentifier() );
                 }
             }

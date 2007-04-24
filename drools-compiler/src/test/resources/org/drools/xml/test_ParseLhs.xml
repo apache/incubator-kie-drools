@@ -27,13 +27,13 @@
 			<or>
 			</or>
 			
-			<column object-type="Foo" >			
-			</column>							
+			<pattern object-type="Foo" >			
+			</pattern>							
 				
-			<column identifier="bar" object-type="Bar" >			
-			</column>		
+			<pattern identifier="bar" object-type="Bar" >			
+			</pattern>		
 									
-			<column object-type="Foo">
+			<pattern object-type="Foo">
 			    <field-constraint field-name="field1">
 				    <literal-restriction       evaluator="==" value="value1" />
     				<return-value-restriction  evaluator="==">1==1</return-value-restriction>				    
@@ -43,28 +43,28 @@
 				<predicate field-name="field1" identifier="var1">1==1</predicate>
 														
 				<field-binding field-name="field1" identifier="var1" />				
-			</column>		
+			</pattern>		
 			
 			<not>
-				<column object-type="Bar" />			
+				<pattern object-type="Bar" />			
 			</not>
 			
 			<exists>
-				<column object-type="Bar" />							
+				<pattern object-type="Bar" />							
 			</exists>		
 			
 			<and>
 				<or>
-					<column object-type="Bar" />			
+					<pattern object-type="Bar" />			
 				</or>
-				<column object-type="Yada" />							
+				<pattern object-type="Yada" />							
 			</and>							
 				
 			<or>
 				<and>
-					<column object-type="Foo" />							
+					<pattern object-type="Foo" />							
 				</and>	
-				<column object-type="Zaa" />			
+				<pattern object-type="Zaa" />			
 			</or>	
 			
 			<eval>1==1</eval>					

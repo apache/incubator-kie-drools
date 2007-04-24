@@ -62,7 +62,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
-        // string1Declaration is bound to column 3 
+        // string1Declaration is bound to pattern 3 
         this.node = new NotNode( 15,
                                  new MockTupleSource( 5 ),
                                  new MockObjectSource( 8 ),

@@ -30,34 +30,34 @@ public class Collect extends ConditionalElement {
 
     private static final long serialVersionUID = 6064290134136990287L;
 
-    private Column            sourceColumn;
-    private Column            resultColumn;
+    private Pattern            sourcePattern;
+    private Pattern            resultPattern;
 
-    public Collect(final Column sourceColumn,
-                   final Column resultColumn) {
+    public Collect(final Pattern sourcePattern,
+                   final Pattern resultPattern) {
 
-        this.sourceColumn = sourceColumn;
-        this.resultColumn = resultColumn;
+        this.sourcePattern = sourcePattern;
+        this.resultPattern = resultPattern;
     }
 
     public Object clone() {
-        return new Collect( this.sourceColumn,
-                            this.resultColumn );
+        return new Collect( this.sourcePattern,
+                            this.resultPattern );
     }
 
-    public Column getResultColumn() {
-        return this.resultColumn;
+    public Pattern getResultPattern() {
+        return this.resultPattern;
     }
 
-    public Column getSourceColumn() {
-        return this.sourceColumn;
+    public Pattern getSourcePattern() {
+        return this.sourcePattern;
     }
 
     public Collection instantiateResultObject() throws RuntimeDroolsException {
         try {
             // Collect can only be used with a Collection implementation, so
             // FactTemplateObject type is not allowed
-            return (Collection) ((ClassObjectType) this.resultColumn.getObjectType()).getClassType().newInstance();
+            return (Collection) ((ClassObjectType) this.resultPattern.getObjectType()).getClassType().newInstance();
         } catch ( final ClassCastException cce ) {
             throw new RuntimeDroolsException( "Collect CE requires a Collection implementation as return type",
                                               cce );
@@ -71,17 +71,17 @@ public class Collect extends ConditionalElement {
     }
 
     public Map getInnerDeclarations() {
-        return this.sourceColumn.getInnerDeclarations();
+        return this.sourcePattern.getInnerDeclarations();
     }
 
     public Map getOuterDeclarations() {
-        return this.resultColumn.getOuterDeclarations();
+        return this.resultPattern.getOuterDeclarations();
     }
 
     /**
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.sourceColumn.getInnerDeclarations().get( identifier );
+        return (Declaration) this.sourcePattern.getInnerDeclarations().get( identifier );
     }
 }

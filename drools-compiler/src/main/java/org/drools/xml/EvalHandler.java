@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -55,7 +55,7 @@ class EvalHandler extends BaseAbstractHandler
             this.validPeers.add( NotDescr.class );
             this.validPeers.add( ExistsDescr.class );
             this.validPeers.add( EvalDescr.class );
-            this.validPeers.add( ColumnDescr.class );
+            this.validPeers.add( PatternDescr.class );
 
             this.allowNesting = true;
         }

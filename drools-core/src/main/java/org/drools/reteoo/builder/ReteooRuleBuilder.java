@@ -36,7 +36,7 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Forall;
 import org.drools.rule.From;
@@ -60,8 +60,8 @@ public class ReteooRuleBuilder {
 
         this.utils.addBuilder( GroupElement.class,
                                new GroupElementBuilder() );
-        this.utils.addBuilder( Column.class,
-                               new ColumnBuilder() );
+        this.utils.addBuilder( Pattern.class,
+                               new PatternBuilder() );
         this.utils.addBuilder( EvalCondition.class,
                                new EvalBuilder() );
         this.utils.addBuilder( From.class,
@@ -121,9 +121,9 @@ public class ReteooRuleBuilder {
                                     final GroupElement subrule,
                                     final Rule rule) throws InvalidPatternException {
 
-        // if it is a query, needs to add the query column
+        // if it is a query, needs to add the query pattern
         if ( rule instanceof Query ) {
-            this.addQueryColumn( context,
+            this.addQueryPattern( context,
                                  subrule,
                                  (Query) rule );
         }
@@ -134,7 +134,7 @@ public class ReteooRuleBuilder {
         // checks if an initial-fact is needed
         if ( builder.requiresLeftActivation( this.utils,
                                              subrule ) ) {
-            this.addInitialFactColumn( context,
+            this.addInitialFactPattern( context,
                                        subrule,
                                        rule );
         }
@@ -175,18 +175,18 @@ public class ReteooRuleBuilder {
     }
 
     /**
-     * Adds a query column to the given subrule
+     * Adds a query pattern to the given subrule
      * 
      * @param context
      * @param subrule
      * @param query
      */
-    private void addQueryColumn(final BuildContext context,
+    private void addQueryPattern(final BuildContext context,
                                 final GroupElement subrule,
                                 final Query query) {
 
-        // creates a column for initial fact
-        final Column column = new Column( 0,
+        // creates a pattern for initial fact
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( DroolsQuery.class ) );
 
         final ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
@@ -199,33 +199,33 @@ public class ReteooRuleBuilder {
                                                                     ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
                                                                     field );
 
-        // adds appropriate constraint to the column
-        column.addConstraint( constraint );
+        // adds appropriate constraint to the pattern
+        pattern.addConstraint( constraint );
 
-        // adds the column as the first child of the given AND group element
+        // adds the pattern as the first child of the given AND group element
         subrule.addChild( 0,
-                          column );
+                          pattern );
 
     }
 
     /**
-     * Adds a query column to the given subrule
+     * Adds a query pattern to the given subrule
      * 
      * @param context
      * @param subrule
      * @param query
      */
-    private void addInitialFactColumn(final BuildContext context,
+    private void addInitialFactPattern(final BuildContext context,
                                       final GroupElement subrule,
                                       final Rule rule) {
 
-        // creates a column for initial fact
-        final Column column = new Column( 0,
+        // creates a pattern for initial fact
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( InitialFact.class ) );
 
-        // adds the column as the first child of the given AND group element
+        // adds the pattern as the first child of the given AND group element
         subrule.addChild( 0,
-                          column );
+                          pattern );
     }
 
 }

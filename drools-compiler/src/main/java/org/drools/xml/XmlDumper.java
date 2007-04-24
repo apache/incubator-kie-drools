@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -80,19 +80,19 @@ public class XmlDumper extends ReflectiveVisitor
         this.template = "<variable-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
     }
 
-    public void visitColumnDescr(final ColumnDescr descr) {
+    public void visitPatternDescr(final PatternDescr descr) {
         this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
-                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</column>" + XmlDumper.eol;
+                this.template = "<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</pattern>" + XmlDumper.eol;
             } else {
-                this.template = "<column object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</column>" + XmlDumper.eol;
+                this.template = "<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</pattern>" + XmlDumper.eol;
             }
         } else {
             if ( descr.getIdentifier() != null ) {
-                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" > </column>" + XmlDumper.eol;
+                this.template = "<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" > </pattern>" + XmlDumper.eol;
             } else {
-                this.template = "<column object-type=\"" + descr.getObjectType() + "\" > </column>" + XmlDumper.eol;
+                this.template = "<pattern object-type=\"" + descr.getObjectType() + "\" > </pattern>" + XmlDumper.eol;
             }
         }
 

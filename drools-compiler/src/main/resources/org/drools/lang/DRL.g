@@ -678,7 +678,7 @@ lhs[ConditionalElementDescr ce] returns [BaseDescr d]
 	;
 
 	
-lhs_column returns [BaseDescr d]
+lhs_pattern returns [BaseDescr d]
 	@init {
 		d=null;
 	}
@@ -778,9 +778,9 @@ accumulate_statement returns [AccumulateDescr d]
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}	
-		'(' column=lhs_column ',' 
+		'(' pattern=lhs_pattern ',' 
 		{
-		        d.setSourceColumn( (ColumnDescr)column );
+		        d.setSourcePattern( (PatternDescr)pattern );
 		}
 		INIT text=paren_chunk[null] ',' 
 		{
@@ -807,9 +807,9 @@ collect_statement returns [CollectDescr d]
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}	
-		'(' column=lhs_column loc=')'
+		'(' pattern=lhs_pattern loc=')'
 		{
-		        d.setSourceColumn( (ColumnDescr)column );
+		        d.setSourcePattern( (PatternDescr)pattern );
 			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
 		}
 	; 		
@@ -823,12 +823,12 @@ fact_binding returns [BaseDescr d]
  		id=ID ':' 
  		{
  		        // handling incomplete parsing
- 		        d = new ColumnDescr( );
- 		        ((ColumnDescr) d).setIdentifier( id.getText() );
+ 		        d = new PatternDescr( );
+ 		        ((PatternDescr) d).setIdentifier( id.getText() );
  		}
  		fe=fact_expression[id.getText()]
  		{
- 		        // override previously instantiated column
+ 		        // override previously instantiated pattern
  			d=fe;
  			if( d != null ) {
    			    d.setStartCharacter( ((CommonToken)id).getStartIndex() );
@@ -844,7 +844,7 @@ fact_binding returns [BaseDescr d]
  	:	'(' fe=fact_expression[id] ')' { pd=fe; }
  	| 	f=fact
  		{
- 			((ColumnDescr)f).setIdentifier( id );
+ 			((PatternDescr)f).setIdentifier( id );
  			pd = f;
  		}
  		( (OR|'||')
@@ -857,7 +857,7 @@ fact_binding returns [BaseDescr d]
  			}
  			f=fact
  			{
- 				((ColumnDescr)f).setIdentifier( id );
+ 				((PatternDescr)f).setIdentifier( id );
  				((OrDescr)pd).addDescr( f );
  			}
  		)*	
@@ -866,40 +866,40 @@ fact_binding returns [BaseDescr d]
 fact returns [BaseDescr d] 
 	@init {
 		d=null;
-		ColumnDescr column = null;
+		PatternDescr pattern = null;
 	}
  	:	
  	        {
- 			column = new ColumnDescr( );
- 			d = column; 
+ 			pattern = new PatternDescr( );
+ 			d = pattern; 
  	        }
  	        id=dotted_name[d] 
  		{ 
- 		        column.setObjectType( id );
- 		        column.setEndCharacter( -1 );
+ 		        pattern.setObjectType( id );
+ 		        pattern.setEndCharacter( -1 );
  		}
  		loc=LEFT_PAREN {
- 				column.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
- 			        column.setLeftParentCharacter( ((CommonToken)loc).getStartIndex() );
+ 				pattern.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+ 			        pattern.setLeftParentCharacter( ((CommonToken)loc).getStartIndex() );
  			} 
- 		( constraints[column]  )? 
+ 		( constraints[pattern]  )? 
  		endLoc=RIGHT_PAREN
 		{
 		        if( endLoc.getType() == RIGHT_PAREN ) {
-				column.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
-				column.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
- 			        column.setRightParentCharacter( ((CommonToken)endLoc).getStartIndex() );
+				pattern.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
+				pattern.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
+ 			        pattern.setRightParentCharacter( ((CommonToken)endLoc).getStartIndex() );
 			}
  		}
  	;
 	
 	
-constraints[ColumnDescr column]
-	:	(constraint[column]|predicate[column])
-		( ',' (constraint[column]|predicate[column]))*
+constraints[PatternDescr pattern]
+	:	(constraint[pattern]|predicate[pattern])
+		( ',' (constraint[pattern]|predicate[pattern]))*
 	;
 	
-constraint[ColumnDescr column]
+constraint[PatternDescr pattern]
 	@init {
 		FieldBindingDescr fbd = null;
 		FieldConstraintDescr fc = null;
@@ -911,7 +911,7 @@ constraint[ColumnDescr column]
 			fbd.setIdentifier( fb.getText() );
 			fbd.setLocation( offset(fb.getLine()), fb.getCharPositionInLine() );
 			fbd.setStartCharacter( ((CommonToken)fb).getStartIndex() );
-			column.addDescr( fbd );
+			pattern.addDescr( fbd );
 
 		    }
 		)? 
@@ -929,7 +929,7 @@ constraint[ColumnDescr column]
 			
 			// it must be a field constraint, as it is not a binding
 			if( fb == null ) {
-			    column.addDescr( fc );
+			    pattern.addDescr( fc );
 			}
 		    }
 		}
@@ -939,7 +939,7 @@ constraint[ColumnDescr column]
 					fc.addRestriction(rd);
 					// we must add now as we didn't before
 					if( fb != null) {
-					    column.addDescr( fc );
+					    pattern.addDescr( fc );
 					}
 				}
 				(
@@ -960,7 +960,7 @@ constraint[ColumnDescr column]
 				)*
 			)
 		|
-			'->' predicate[column] 
+			'->' predicate[pattern] 
 		)?
 	;
 	
@@ -1018,7 +1018,7 @@ enum_constraint returns [String text]
 	;	
 	
 
-predicate[ColumnDescr column]
+predicate[PatternDescr pattern]
         @init {
 		PredicateDescr d = null;
         }
@@ -1031,7 +1031,7 @@ predicate[ColumnDescr column]
 		        if( text != null ) {
 			        String body = text.substring(1, text.length()-1);
 			        d.setContent( body );
-				column.addDescr( d );
+				pattern.addDescr( d );
 		        }
 		}
 	;
@@ -1223,11 +1223,11 @@ lhs_unary returns [BaseDescr d]
 	:	(	u=lhs_exist
 		|	u=lhs_not
 		|	u=lhs_eval
-		|	u=lhs_column (
+		|	u=lhs_pattern (
 		          FROM (
-		           ( ACCUMULATE ) => (ac=accumulate_statement {ac.setResultColumn((ColumnDescr) u); u=ac;})
-		          |( COLLECT ) => (cs=collect_statement {cs.setResultColumn((ColumnDescr) u); u=cs;}) 
-		          |( ~(ACCUMULATE|COLLECT) ) => (fm=from_statement {fm.setColumn((ColumnDescr) u); u=fm;}) 
+		           ( ACCUMULATE ) => (ac=accumulate_statement {ac.setResultPattern((PatternDescr) u); u=ac;})
+		          |( COLLECT ) => (cs=collect_statement {cs.setResultPattern((PatternDescr) u); u=cs;}) 
+		          |( ~(ACCUMULATE|COLLECT) ) => (fm=from_statement {fm.setPattern((PatternDescr) u); u=fm;}) 
 		          )
 		        )?
 		|	u=lhs_forall  
@@ -1246,16 +1246,16 @@ lhs_exist returns [BaseDescr d]
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
-	        ( ( '(' column=lhs_or 
-	           	{ if ( column != null ) ((ExistsDescr)d).addDescr( column ); }
+	        ( ( '(' pattern=lhs_or 
+	           	{ if ( pattern != null ) ((ExistsDescr)d).addDescr( pattern ); }
 	           end=')' 
 	                { if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() ); }
 	        )    
-	        | column=lhs_column
+	        | pattern=lhs_pattern
 	                {
-	                	if ( column != null ) {
-	                		((ExistsDescr)d).addDescr( column );
-	                		d.setEndCharacter( column.getEndCharacter() );
+	                	if ( pattern != null ) {
+	                		((ExistsDescr)d).addDescr( pattern );
+	                		d.setEndCharacter( pattern.getEndCharacter() );
 	                	}
 	                }
 	        )
@@ -1271,17 +1271,17 @@ lhs_not	returns [NotDescr d]
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		}
-		( ( '(' column=lhs_or  
-	           	{ if ( column != null ) d.addDescr( column ); }
+		( ( '(' pattern=lhs_or  
+	           	{ if ( pattern != null ) d.addDescr( pattern ); }
 	           end=')' 
 	                { if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() ); }
 		  )
 		| 
-		column=lhs_column
+		pattern=lhs_pattern
 	                {
-	                	if ( column != null ) {
-	                		d.addDescr( column );
-	                		d.setEndCharacter( column.getEndCharacter() );
+	                	if ( pattern != null ) {
+	                		d.addDescr( pattern );
+	                		d.setEndCharacter( pattern.getEndCharacter() );
 	                	}
 	                }
 		)
@@ -1307,17 +1307,17 @@ lhs_forall returns [ForallDescr d]
 	@init {
 		d = factory.createForall();
 	}
-	:	loc=FORALL '(' base=lhs_column   
+	:	loc=FORALL '(' base=lhs_pattern   
 		{
 			if ( loc != null ) d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-		        // adding the base column
+		        // adding the base pattern
 		        d.addDescr( base );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
-		( (',')? column=lhs_column
+		( (',')? pattern=lhs_pattern
 		{
-		        // adding additional columns
-			d.addDescr( column );
+		        // adding additional patterns
+			d.addDescr( pattern );
 		}
 		)+
 		end=')'
@@ -1480,7 +1480,7 @@ EOL 	:
         
 INT	
 	:	('-')?('0'..'9')+
-	;
+		;
 
 FLOAT
 	:	('-')?('0'..'9')+ '.' ('0'..'9')+

@@ -40,7 +40,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.LongFieldImpl;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
@@ -171,38 +171,38 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.START_UP )
         // -----------
-        final Column contextColumn = new Column( 0,
+        final Pattern contextPattern = new Pattern( 0,
                                                  this.contextType,
                                                  "context" );
 
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+        contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                            "state",
                                                            Context.START_UP,
                                                            this.integerEqualEvaluator ) );
 
-        rule.addPattern( contextColumn );
+        rule.addPattern( contextPattern );
 
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
 
         // -----------
         // guest: Guest()
         // -----------
-        final Column guestColumn = new Column( 1,
+        final Pattern guestPattern = new Pattern( 1,
                                                this.guestType,
                                                "guest" );
 
-        rule.addPattern( guestColumn );
+        rule.addPattern( guestPattern );
 
         final Declaration guestDeclaration = rule.getDeclaration( "guest" );
 
         // ------------
         // count : Count()
         // ------------
-        final Column countColumn = new Column( 2,
+        final Pattern countPattern = new Pattern( 2,
                                                this.countType,
                                                "count" );
 
-        rule.addPattern( countColumn );
+        rule.addPattern( countPattern );
 
         final Declaration countDeclaration = rule.getDeclaration( "count" );
 
@@ -304,16 +304,16 @@ public abstract class BaseMannersTest extends TestCase {
         // ---------------
         // context : Context( state == Context.ASSIGN_SEATS )
         // ---------------
-        final Column contextColumn = new Column( 0,
+        final Pattern contextPattern = new Pattern( 0,
                                                  this.contextType,
                                                  "context" );
 
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+        contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                            "state",
                                                            Context.ASSIGN_SEATS,
                                                            this.integerEqualEvaluator ) );
 
-        rule.addPattern( contextColumn );
+        rule.addPattern( contextPattern );
 
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
 
@@ -321,31 +321,31 @@ public abstract class BaseMannersTest extends TestCase {
         // Seating( seatingId:id, seatingPid:pid, pathDone == true
         // seatingRightSeat:rightSeat seatingRightGuestName:rightGuestName )
         // -------------------------------
-        final Column seatingColumn = new Column( 1,
+        final Pattern seatingPattern = new Pattern( 1,
                                                  this.seatingType );
 
-        setFieldDeclaration( seatingColumn,
+        setFieldDeclaration( seatingPattern,
                              "id",
                              "seatingId" );
 
-        setFieldDeclaration( seatingColumn,
+        setFieldDeclaration( seatingPattern,
                              "pid",
                              "seatingPid" );
 
-        seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
+        seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
                                                            "pathDone",
                                                            true,
                                                            this.booleanEqualEvaluator ) );
 
-        setFieldDeclaration( seatingColumn,
+        setFieldDeclaration( seatingPattern,
                              "rightSeat",
                              "seatingRightSeat" );
 
-        setFieldDeclaration( seatingColumn,
+        setFieldDeclaration( seatingPattern,
                              "rightGuestName",
                              "seatingRightGuestName" );
 
-        rule.addPattern( seatingColumn );
+        rule.addPattern( seatingPattern );
 
         final Declaration seatingIdDeclaration = rule.getDeclaration( "seatingId" );
         final Declaration seatingPidDeclaration = rule.getDeclaration( "seatingPid" );
@@ -355,23 +355,23 @@ public abstract class BaseMannersTest extends TestCase {
         // Guest( name == seatingRightGuestName, rightGuestSex:sex,
         // rightGuestHobby:hobby )
         // ---------------
-        final Column rightGuestColumn = new Column( 2,
+        final Pattern rightGuestPattern = new Pattern( 2,
                                                     this.guestType );
 
-        rightGuestColumn.addConstraint( getBoundVariableConstraint( rightGuestColumn,
+        rightGuestPattern.addConstraint( getBoundVariableConstraint( rightGuestPattern,
                                                                     "name",
                                                                     seatingRightGuestNameDeclaration,
                                                                     this.objectEqualEvaluator ) );
 
-        setFieldDeclaration( rightGuestColumn,
+        setFieldDeclaration( rightGuestPattern,
                              "sex",
                              "rightGuestSex" );
 
-        setFieldDeclaration( rightGuestColumn,
+        setFieldDeclaration( rightGuestPattern,
                              "hobby",
                              "rightGuestHobby" );
 
-        rule.addPattern( rightGuestColumn );
+        rule.addPattern( rightGuestPattern );
 
         final Declaration rightGuestSexDeclaration = rule.getDeclaration( "rightGuestSex" );
         final Declaration rightGuestHobbyDeclaration = rule.getDeclaration( "rightGuestHobby" );
@@ -380,30 +380,30 @@ public abstract class BaseMannersTest extends TestCase {
         // Guest( leftGuestName:name , sex != rightGuestSex, hobby ==
         // rightGuestHobby )
         // ----------------
-        final Column leftGuestColumn = new Column( 3,
+        final Pattern leftGuestPattern = new Pattern( 3,
                                                    this.guestType );
 
-        setFieldDeclaration( leftGuestColumn,
+        setFieldDeclaration( leftGuestPattern,
                              "name",
                              "leftGuestName" );
 
-        leftGuestColumn.addConstraint( getBoundVariableConstraint( rightGuestColumn,
+        leftGuestPattern.addConstraint( getBoundVariableConstraint( rightGuestPattern,
                                                                    "hobby",
                                                                    rightGuestHobbyDeclaration,
                                                                    this.objectEqualEvaluator ) );
 
-        leftGuestColumn.addConstraint( getBoundVariableConstraint( leftGuestColumn,
+        leftGuestPattern.addConstraint( getBoundVariableConstraint( leftGuestPattern,
                                                                    "sex",
                                                                    rightGuestSexDeclaration,
                                                                    this.objectNotEqualEvaluator ) );
 
-        rule.addPattern( leftGuestColumn );
+        rule.addPattern( leftGuestPattern );
         final Declaration leftGuestNameDeclaration = rule.getDeclaration( "leftGuestName" );
 
         // ---------------
         // count : Count()
         // ---------------
-        final Column count = new Column( 4,
+        final Pattern count = new Pattern( 4,
                                          this.countType,
                                          "count" );
 
@@ -414,45 +414,45 @@ public abstract class BaseMannersTest extends TestCase {
         // --------------
         // not ( Path( id == seatingId, guestName == leftGuestName) )
         // --------------
-        final Column notPathColumn = new Column( 5,
+        final Pattern notPathPattern = new Pattern( 5,
                                                  this.pathType );
 
-        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
+        notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                  "id",
                                                                  seatingIdDeclaration,
                                                                  this.integerEqualEvaluator ) );
 
-        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
+        notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                  "guestName",
                                                                  leftGuestNameDeclaration,
                                                                  this.objectEqualEvaluator ) );
         final GroupElement notPath = GroupElementFactory.newNotInstance();
-        notPath.addChild( notPathColumn );
+        notPath.addChild( notPathPattern );
         rule.addPattern( notPath );
         // ------------
         // not ( Chosen( id == seatingId, guestName == leftGuestName, hobby ==
         // rightGuestHobby ) )
         // ------------
-        final Column notChosenColumn = new Column( 6,
+        final Pattern notChosenPattern = new Pattern( 6,
                                                    this.chosenType );
 
-        notChosenColumn.addConstraint( getBoundVariableConstraint( notChosenColumn,
+        notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
                                                                    "id",
                                                                    seatingIdDeclaration,
                                                                    this.integerEqualEvaluator ) );
 
-        notChosenColumn.addConstraint( getBoundVariableConstraint( notChosenColumn,
+        notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
                                                                    "guestName",
                                                                    leftGuestNameDeclaration,
                                                                    this.objectEqualEvaluator ) );
 
-        notChosenColumn.addConstraint( getBoundVariableConstraint( notChosenColumn,
+        notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
                                                                    "hobby",
                                                                    rightGuestHobbyDeclaration,
                                                                    this.objectEqualEvaluator ) );
 
         final GroupElement notChosen = GroupElementFactory.newNotInstance();
-        notChosen.addChild( notChosenColumn );
+        notChosen.addChild( notChosenPattern );
 
         rule.addPattern( notChosen );
 
@@ -569,36 +569,36 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.MAKE_PATH )
         // -----------
-        final Column contextColumn = new Column( 0,
+        final Pattern contextPattern = new Pattern( 0,
                                                  this.contextType );
 
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+        contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                            "state",
                                                            Context.MAKE_PATH,
                                                            this.integerEqualEvaluator ) );
 
-        rule.addPattern( contextColumn );
+        rule.addPattern( contextPattern );
 
         // ---------------
         // Seating( seatingId:id, seatingPid:pid, pathDone == false )
         // ---------------
-        final Column seatingColumn = new Column( 1,
+        final Pattern seatingPattern = new Pattern( 1,
                                                  this.seatingType );
 
-        setFieldDeclaration( seatingColumn,
+        setFieldDeclaration( seatingPattern,
                              "id",
                              "seatingId" );
 
-        setFieldDeclaration( seatingColumn,
+        setFieldDeclaration( seatingPattern,
                              "pid",
                              "seatingPid" );
 
-        seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
+        seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
                                                            "pathDone",
                                                            false,
                                                            this.booleanEqualEvaluator ) );
 
-        rule.addPattern( seatingColumn );
+        rule.addPattern( seatingPattern );
 
         final Declaration seatingIdDeclaration = rule.getDeclaration( "seatingId" );
         final Declaration seatingPidDeclaration = rule.getDeclaration( "seatingPid" );
@@ -606,44 +606,44 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         // -----------
-        final Column pathColumn = new Column( 2,
+        final Pattern pathPattern = new Pattern( 2,
                                               this.pathType );
 
-        pathColumn.addConstraint( getBoundVariableConstraint( pathColumn,
+        pathPattern.addConstraint( getBoundVariableConstraint( pathPattern,
                                                               "id",
                                                               seatingPidDeclaration,
                                                               this.integerEqualEvaluator ) );
 
-        setFieldDeclaration( pathColumn,
+        setFieldDeclaration( pathPattern,
                              "guestName",
                              "pathGuestName" );
 
-        setFieldDeclaration( pathColumn,
+        setFieldDeclaration( pathPattern,
                              "seat",
                              "pathSeat" );
 
-        rule.addPattern( pathColumn );
+        rule.addPattern( pathPattern );
 
         final Declaration pathGuestNameDeclaration = rule.getDeclaration( "pathGuestName" );
         final Declaration pathSeatDeclaration = rule.getDeclaration( "pathSeat" );
         // -------------
         // (not Path( id == seatingId, guestName == pathGuestName )
         // -------------
-        final Column notPathColumn = new Column( 3,
+        final Pattern notPathPattern = new Pattern( 3,
                                                  this.pathType );
 
-        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
+        notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                  "id",
                                                                  seatingIdDeclaration,
                                                                  this.integerEqualEvaluator ) );
-        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
+        notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
                                                                  "guestName",
                                                                  pathGuestNameDeclaration,
                                                                  this.objectEqualEvaluator ) );
 
         final GroupElement not = GroupElementFactory.newNotInstance();
 
-        not.addChild( notPathColumn );
+        not.addChild( notPathPattern );
 
         rule.addPattern( not );
 
@@ -708,31 +708,31 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.MAKE_PATH )
         // -----------
-        final Column contextColumn = new Column( 0,
+        final Pattern contextPattern = new Pattern( 0,
                                                  this.contextType,
                                                  "context" );
 
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+        contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                            "state",
                                                            Context.MAKE_PATH,
                                                            this.integerEqualEvaluator ) );
 
-        rule.addPattern( contextColumn );
+        rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
 
         // ---------------
         // seating : Seating( pathDone == false )
         // ---------------
-        final Column seatingColumn = new Column( 1,
+        final Pattern seatingPattern = new Pattern( 1,
                                                  this.seatingType,
                                                  "seating" );
 
-        seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
+        seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
                                                            "pathDone",
                                                            false,
                                                            this.booleanEqualEvaluator ) );
 
-        rule.addPattern( seatingColumn );
+        rule.addPattern( seatingPattern );
 
         final Declaration seatingDeclaration = rule.getDeclaration( "seating" );
 
@@ -801,43 +801,43 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.CHECK_DONE )
         // -----------
-        final Column contextColumn = new Column( 0,
+        final Pattern contextPattern = new Pattern( 0,
                                                  this.contextType,
                                                  "context" );
 
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+        contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                            "state",
                                                            Context.CHECK_DONE,
                                                            this.integerEqualEvaluator ) );
 
-        rule.addPattern( contextColumn );
+        rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
 
         // ---------------
         // LastSeat( lastSeat: seat )
         // ---------------
-        final Column lastSeatColumn = new Column( 1,
+        final Pattern lastSeatPattern = new Pattern( 1,
                                                   this.lastSeatType );
 
-        setFieldDeclaration( lastSeatColumn,
+        setFieldDeclaration( lastSeatPattern,
                              "seat",
                              "lastSeat" );
 
-        rule.addPattern( lastSeatColumn );
+        rule.addPattern( lastSeatPattern );
         final Declaration lastSeatDeclaration = rule.getDeclaration( "lastSeat" );
         // -------------
         // Seating( rightSeat == lastSeat )
         // -------------
-        final Column seatingColumn = new Column( 2,
+        final Pattern seatingPattern = new Pattern( 2,
                                                  this.seatingType,
                                                  null );
 
-        seatingColumn.addConstraint( getBoundVariableConstraint( seatingColumn,
+        seatingPattern.addConstraint( getBoundVariableConstraint( seatingPattern,
                                                                  "rightSeat",
                                                                  lastSeatDeclaration,
                                                                  this.integerEqualEvaluator ) );
 
-        rule.addPattern( seatingColumn );
+        rule.addPattern( seatingPattern );
 
         // ------------
         // context.setName( Context.PRINT_RESULTS );
@@ -891,16 +891,16 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.CHECK_DONE )
         // -----------
-        final Column contextColumn = new Column( 0,
+        final Pattern contextPattern = new Pattern( 0,
                                                  this.contextType,
                                                  "context" );
 
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+        contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                            "state",
                                                            Context.CHECK_DONE,
                                                            this.integerEqualEvaluator ) );
 
-        rule.addPattern( contextColumn );
+        rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
 
         // ------------
@@ -956,15 +956,15 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.PRINT_RESULTS )
         // -----------
-        final Column contextColumn = new Column( 0,
+        final Pattern contextPattern = new Pattern( 0,
                                                  this.contextType );
 
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+        contextPattern.addConstraint( getLiteralConstraint( contextPattern,
                                                            "state",
                                                            Context.PRINT_RESULTS,
                                                            this.integerEqualEvaluator ) );
 
-        rule.addPattern( contextColumn );
+        rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
 
         // ------------
@@ -1108,11 +1108,11 @@ public abstract class BaseMannersTest extends TestCase {
         return -1;
     }
 
-    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                           final String fieldName,
                                                           final int fieldValue,
                                                           final Evaluator evaluator) throws IntrospectionException {
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
@@ -1124,11 +1124,11 @@ public abstract class BaseMannersTest extends TestCase {
                                       field );
     }
 
-    private AlphaNodeFieldConstraint getLiteralConstraint(final Column column,
+    private AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                           final String fieldName,
                                                           final boolean fieldValue,
                                                           final Evaluator evaluator) throws IntrospectionException {
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
@@ -1140,23 +1140,23 @@ public abstract class BaseMannersTest extends TestCase {
                                       field );
     }
 
-    private void setFieldDeclaration(final Column column,
+    private void setFieldDeclaration(final Pattern pattern,
                                      final String fieldName,
                                      final String identifier) throws IntrospectionException {
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
 
-        column.addDeclaration( identifier,
+        pattern.addDeclaration( identifier,
                                extractor );
     }
 
-    private BetaNodeFieldConstraint getBoundVariableConstraint(final Column column,
+    private BetaNodeFieldConstraint getBoundVariableConstraint(final Pattern pattern,
                                                                final String fieldName,
                                                                final Declaration declaration,
                                                                final Evaluator evaluator) throws IntrospectionException {
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );

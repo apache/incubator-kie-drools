@@ -25,7 +25,7 @@ import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.ColumnBuilder;
+import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 
 /**
@@ -41,14 +41,14 @@ public class JavaEvalBuilder
      * 
      * @param context The current build context
      * @param utils The current build utils instance
-     * @param columnBuilder not used by EvalBuilder
+     * @param patternBuilder not used by EvalBuilder
      * @param descr The Eval Descriptor to build the eval conditional element from
      * 
      * @return the Eval Conditional Element
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
+                                    final PatternBuilder patternBuilder,
                                     final BaseDescr descr) {
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;

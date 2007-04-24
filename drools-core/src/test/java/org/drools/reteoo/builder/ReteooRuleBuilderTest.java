@@ -26,7 +26,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
 import org.drools.rule.Rule;
@@ -61,13 +61,13 @@ public class ReteooRuleBuilderTest extends TestCase {
     /**
      * Test method for {@link org.drools.reteoo.builder.ReteooRuleBuilder#addRule(org.drools.rule.Rule, org.drools.reteoo.ReteooRuleBase, java.util.Map, int)}.
      */
-    public void testAddRuleWithColumns() {
-        final Rule rule = new Rule( "only columns" );
-        final Column c1 = new Column( 0,
+    public void testAddRuleWithPatterns() {
+        final Rule rule = new Rule( "only patterns" );
+        final Pattern c1 = new Pattern( 0,
                                 new ClassObjectType( String.class ) );
-        final Column c2 = new Column( 1,
+        final Pattern c2 = new Pattern( 1,
                                 new ClassObjectType( String.class ) );
-        final Column c3 = new Column( 2,
+        final Pattern c3 = new Pattern( 2,
                                 new ClassObjectType( String.class ) );
 
         final GroupElement lhsroot = GroupElementFactory.newAndInstance();
