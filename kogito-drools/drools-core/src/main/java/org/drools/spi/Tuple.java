@@ -23,8 +23,8 @@ import org.drools.rule.Declaration;
 
 /**
  * Partial matches are propagated through the Rete network as <code>Tuple</code>s. Each <code>Tuple</code>
- * Is able to return the <code>FactHandleImpl</code> members of the partial match for the requested column.
- * The column refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
+ * Is able to return the <code>FactHandleImpl</code> members of the partial match for the requested pattern.
+ * The pattern refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
  * 
  * @see FactHandle;
  * 
@@ -36,22 +36,22 @@ public interface Tuple
     extends
     Serializable {
     /**
-     * Returns the <code>FactHandle</code> for the given column index. If the column is empty
+     * Returns the <code>FactHandle</code> for the given pattern index. If the pattern is empty
      * It returns null.
      * 
-     * @param column
-     *      The index of the column from which the <code>FactHandleImpl</code> is to be returned
+     * @param pattern
+     *      The index of the pattern from which the <code>FactHandleImpl</code> is to be returned
      * @return
      *      The <code>FactHandle</code>
      */
-    InternalFactHandle get(int column);
+    InternalFactHandle get(int pattern);
 
     /**
      * Returns the <code>FactHandle</code> for the given <code>Declaration</code>, which in turn
-     * specifcy the <code>Column</code> that they depend on.
+     * specifcy the <code>Pattern</code> that they depend on.
      * 
      * @param declaration
-     *      The <code>Declaration</code> which specifies the <code>Column</code>
+     *      The <code>Declaration</code> which specifies the <code>Pattern</code>
      * @return
      *      The <code>FactHandle</code>
      */
@@ -66,7 +66,7 @@ public interface Tuple
     long getRecency();
 
     /**
-     * Returns the size of this tuple in number of elements (columns)
+     * Returns the size of this tuple in number of elements (patterns)
      * @return
      */
     int size();

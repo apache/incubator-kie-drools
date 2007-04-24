@@ -24,12 +24,12 @@ import org.drools.base.ClassObjectType;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.ColumnBuilder;
+import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 
 /**
@@ -42,29 +42,29 @@ public class JavaAccumulateBuilder
     AccumulateBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
+     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.AccumulateBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
+     * @see org.drools.semantics.java.builder.AccumulateBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
+                                    final PatternBuilder patternBuilder,
                                     final BaseDescr descr) {
 
         final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
-        final Column sourceColumn = columnBuilder.build( context,
+        final Pattern sourcePattern = patternBuilder.build( context,
                                                    utils,
-                                                   accumDescr.getSourceColumn() );
+                                                   accumDescr.getSourcePattern() );
 
-        if ( sourceColumn == null ) {
+        if ( sourcePattern == null ) {
             return null;
         }
 
-        final Column resultColumn = columnBuilder.build( context,
+        final Pattern resultPattern = patternBuilder.build( context,
                                                    utils,
-                                                   accumDescr.getResultColumn() );
+                                                   accumDescr.getResultPattern() );
 
         final String className = "accumulate" + context.getNextId();
         accumDescr.setClassMethodName( className );
@@ -91,7 +91,7 @@ public class JavaAccumulateBuilder
         for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
             declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
         }
-        final Declaration[] sourceDeclArr = (Declaration[]) sourceColumn.getOuterDeclarations().values().toArray( new Declaration[0] );
+        final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
 
         final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
 
@@ -119,10 +119,10 @@ public class JavaAccumulateBuilder
 
         String resultType = null;
         // TODO: Need to change this... 
-        if ( resultColumn.getObjectType() instanceof ClassObjectType ) {
-            resultType = ((ClassObjectType) resultColumn.getObjectType()).getClassType().getName();
+        if ( resultPattern.getObjectType() instanceof ClassObjectType ) {
+            resultType = ((ClassObjectType) resultPattern.getObjectType()).getClassType().getName();
         } else {
-            resultType = resultColumn.getObjectType().getValueType().getClassType().getName();
+            resultType = resultPattern.getObjectType().getValueType().getClassType().getName();
         }
 
         st.setAttribute( "resultType",
@@ -149,8 +149,8 @@ public class JavaAccumulateBuilder
         st.setAttribute( "hashCode",
                          actionCode.hashCode() );
 
-        final Accumulate accumulate = new Accumulate( sourceColumn,
-                                                resultColumn,
+        final Accumulate accumulate = new Accumulate( sourcePattern,
+                                                resultPattern,
                                                 declarations,
                                                 sourceDeclArr );
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker";

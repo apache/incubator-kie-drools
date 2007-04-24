@@ -62,8 +62,8 @@ public class RuleBuilder {
     // a map of registered builders
     private Map                builders;
 
-    // the builder for columns
-    private ColumnBuilder      columnBuilder;
+    // the builder for patterns
+    private PatternBuilder      patternBuilder;
 
     // the builder for the consequence
     private ConsequenceBuilder consequenceBuilder;
@@ -101,7 +101,7 @@ public class RuleBuilder {
                       gebuilder );
 
         // dialect specific        
-        this.columnBuilder = new ColumnBuilder( this.dialect );
+        this.patternBuilder = new PatternBuilder( this.dialect );
 
         this.builders.put( FromDescr.class,
                       this.dialect.getFromBuilder() );
@@ -177,7 +177,7 @@ public class RuleBuilder {
         if ( builder != null ) {
             final GroupElement ce = (GroupElement) builder.build( this.context,
                                                             this.utils,
-                                                            this.columnBuilder,
+                                                            this.patternBuilder,
                                                             ruleDescr.getLhs() );
             this.context.getRule().setLhs( ce );
         } else {

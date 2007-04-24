@@ -2,7 +2,7 @@ package SamplePackage
  
 import org.drools.Cheese
 
-rule "Using Predicate as first column"
+rule "Using Predicate as first pattern"
   when
     cheese: Cheese( type == "Mussarela", $price:price -> ( $price < 30 ))
   then

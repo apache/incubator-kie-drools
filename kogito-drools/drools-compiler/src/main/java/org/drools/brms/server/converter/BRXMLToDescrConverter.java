@@ -13,7 +13,7 @@ import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -86,21 +86,21 @@ public class BRXMLToDescrConverter {
     }
 
     private void addFact(final ConditionalElementDescr ce,
-                         final FactPattern pattern) {
-        final ColumnDescr column = new ColumnDescr( pattern.factType );
-        column.setIdentifier( pattern.boundName );
-        ce.addDescr( column );
+                         final FactPattern factPattern) {
+        final PatternDescr pattern = new PatternDescr( factPattern.factType );
+        pattern.setIdentifier( factPattern.boundName );
+        ce.addDescr( pattern );
 
-        for ( int i = 0; i < pattern.constraints.length; i++ ) {
-            final Constraint constr = pattern.constraints[i];
+        for ( int i = 0; i < factPattern.constraints.length; i++ ) {
+            final Constraint constr = factPattern.constraints[i];
             if ( constr.fieldBinding != null ) {
                 final FieldBindingDescr fieldDescr = new FieldBindingDescr( constr.fieldName,
                                                                       constr.fieldBinding );
-                column.addDescr( fieldDescr );
+                pattern.addDescr( fieldDescr );
             }
             if ( constr.constraintValueType == IConstraint.TYPE_PREDICATE ) {
                 final PredicateDescr predicateDescr = new PredicateDescr( constr.value );
-                column.addDescr( predicateDescr );
+                pattern.addDescr( predicateDescr );
             } else {
                 final FieldConstraintDescr constrDescr = new FieldConstraintDescr( constr.fieldName );
                 constrDescr.addRestriction( this.getFieldRestriction( constr.constraintValueType,
@@ -125,7 +125,7 @@ public class BRXMLToDescrConverter {
                                                                               conn.value ) );
                     }
                 }
-                column.addDescr( constrDescr );
+                pattern.addDescr( constrDescr );
             }
         }
     }

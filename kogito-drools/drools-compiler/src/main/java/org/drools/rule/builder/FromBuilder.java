@@ -11,7 +11,7 @@ public interface FromBuilder {
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
+                                    final PatternBuilder patternBuilder,
                                     final BaseDescr descr);
 
 }

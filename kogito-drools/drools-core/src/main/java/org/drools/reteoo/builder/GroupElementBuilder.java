@@ -31,7 +31,7 @@ import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.TupleSource;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 
@@ -182,7 +182,7 @@ public class GroupElementBuilder
          * 
          * Not must verify what is the class of its child:
          * 
-         * If it is a column, a simple NotNode is added to the rulebase
+         * If it is a pattern, a simple NotNode is added to the rulebase
          * If it is a group element, than a subnetwork must be created
          */
         public void build(final BuildContext context,
@@ -191,7 +191,7 @@ public class GroupElementBuilder
             final GroupElement not = (GroupElement) rce;
 
             // NOT must save some context info to restore it later
-            final int currentColumnIndex = context.getCurrentColumnOffset();
+            final int currentPatternIndex = context.getCurrentPatternOffset();
             final TupleSource tupleSource = context.getTupleSource();
 
             // get child
@@ -205,8 +205,8 @@ public class GroupElementBuilder
                            utils,
                            child );
 
-            // if child is not a column adapt it into a subnetwork
-            if ( !(child instanceof Column) ) {
+            // if child is not a pattern adapt it into a subnetwork
+            if ( !(child instanceof Pattern) ) {
 
                 // attach right input adapter node to convert tuple source into an object source
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
@@ -236,8 +236,8 @@ public class GroupElementBuilder
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
-            // restore column index
-            context.setCurrentColumnOffset( currentColumnIndex );
+            // restore pattern index
+            context.setCurrentPatternOffset( currentPatternIndex );
         }
 
         public boolean requiresLeftActivation(final BuildUtils utils,
@@ -255,7 +255,7 @@ public class GroupElementBuilder
          * 
          * Exists must verify what is the class of its child:
          * 
-         * If it is a column, a simple ExistsNode is added to the rulebase
+         * If it is a pattern, a simple ExistsNode is added to the rulebase
          * If it is a group element, than a subnetwork must be created
          */
         public void build(final BuildContext context,
@@ -264,7 +264,7 @@ public class GroupElementBuilder
             final GroupElement exists = (GroupElement) rce;
 
             // EXISTS must save some context info to restore it later
-            final int currentColumnIndex = context.getCurrentColumnOffset();
+            final int currentPatternIndex = context.getCurrentPatternOffset();
             final TupleSource tupleSource = context.getTupleSource();
 
             // get child
@@ -278,8 +278,8 @@ public class GroupElementBuilder
                            utils,
                            child );
 
-            // if child is not a column adapt it into a subnetwork
-            if ( !(child instanceof Column) ) {
+            // if child is not a pattern adapt it into a subnetwork
+            if ( !(child instanceof Pattern) ) {
 
                 // attach right input adapter node to convert tuple source into an object source
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
@@ -309,8 +309,8 @@ public class GroupElementBuilder
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
-            // restore column index
-            context.setCurrentColumnOffset( currentColumnIndex );
+            // restore pattern index
+            context.setCurrentPatternOffset( currentPatternIndex );
         }
 
         /**

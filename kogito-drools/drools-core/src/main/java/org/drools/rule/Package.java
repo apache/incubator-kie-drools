@@ -297,8 +297,8 @@ public class Package
                 final Object object = it.next();
                 if ( object instanceof ConditionalElement ) {
                     removeClasses( (ConditionalElement) object );
-                } else if ( object instanceof Column ) {
-                    removeClasses( (Column) object );
+                } else if ( object instanceof Pattern ) {
+                    removeClasses( (Pattern) object );
                 }
             }
         } else if ( ce instanceof EvalCondition ) {
@@ -306,8 +306,8 @@ public class Package
         }
     }
 
-    private void removeClasses(final Column column) {
-        for ( final Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+    private void removeClasses(final Pattern pattern) {
+        for ( final Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
             final Object object = it.next();
             if ( object instanceof PredicateConstraint ) {
                 this.packageCompilationData.remove( ((PredicateConstraint) object).getPredicateExpression().getClass().getName() );

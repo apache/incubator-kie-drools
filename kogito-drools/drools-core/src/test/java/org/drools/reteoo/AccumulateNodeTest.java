@@ -25,7 +25,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.spi.MockConstraint;
@@ -71,13 +71,13 @@ public class AccumulateNodeTest extends DroolsTestCase {
         this.accumulator = new MockAccumulator();
 
         final ObjectType srcObjType = new ClassObjectType( String.class );
-        final Column sourceColumn = new Column( 0,
+        final Pattern sourcePattern = new Pattern( 0,
                                                 srcObjType );
         final ObjectType resultObjType = new ClassObjectType( String.class );
-        final Column resultColumn = new Column( 1,
+        final Pattern resultPattern = new Pattern( 1,
                                                 resultObjType );
-        this.accumulate = new Accumulate( sourceColumn,
-                                          resultColumn,
+        this.accumulate = new Accumulate( sourcePattern,
+                                          resultPattern,
                                           new Declaration[0],
                                           new Declaration[0],
                                           this.accumulator );

@@ -7,7 +7,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.base.TestBean;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
@@ -116,7 +116,7 @@ public class OtherwiseTest extends TestCase {
 
     private Rule getOtherwise(final String name) {
         final Rule rule = new Rule( name );
-        final Column pat = new Column( 0,
+        final Pattern pat = new Pattern( 0,
                                        new ClassObjectType( Otherwise.class,
                                                             ShadowProxyFactory.getProxy( Otherwise.class ) ) );
         rule.addPattern( pat );
@@ -127,7 +127,7 @@ public class OtherwiseTest extends TestCase {
     private Rule getRule(final String name) {
         final Rule rule = new Rule( name );
 
-        final Column pat = new Column( 0,
+        final Pattern pat = new Pattern( 0,
                                        new ClassObjectType( TestBean.class,
                                                             ShadowProxyFactory.getProxy( TestBean.class ) ) );
 

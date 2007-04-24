@@ -159,23 +159,23 @@ public class FieldConstraintTest extends TestCase {
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
 
-        Column column = new Column( 0,
+        Pattern pattern = new Pattern( 0,
                                     new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
-        // Declarations know the column they derive their value form
+        // Declarations know the pattern they derive their value form
         final Declaration price1Declaration = new Declaration( "price1",
                                                                priceExtractor,
-                                                               column );
+                                                               pattern );
 
-        column = new Column( 1,
+        pattern = new Pattern( 1,
                              new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
-        // Declarations know the column they derive their value form
+        // Declarations know the pattern they derive their value form
         final Declaration price2Declaration = new Declaration( "price2",
                                                                priceExtractor,
-                                                               column );
+                                                               pattern );
 
         final PredicateExpression evaluator = new PredicateExpression() {
 
@@ -241,14 +241,14 @@ public class FieldConstraintTest extends TestCase {
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
-        // Declarations know the column they derive their value form
+        // Declarations know the pattern they derive their value form
         final Declaration priceDeclaration = new Declaration( "price1",
                                                               priceExtractor,
-                                                              column );
+                                                              pattern );
 
         final ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
             /**

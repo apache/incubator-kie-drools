@@ -27,7 +27,7 @@ import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.RuleConditionElement;
@@ -35,11 +35,11 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 
 /**
- * A builder for columns
+ * A builder for patterns
  * 
  * @author etirelli
  */
-public class ColumnBuilder
+public class PatternBuilder
     implements
     ReteooComponentBuilder {
 
@@ -50,27 +50,27 @@ public class ColumnBuilder
                       final BuildUtils utils,
                       final RuleConditionElement rce) {
 
-        final Column column = (Column) rce;
+        final Pattern pattern = (Pattern) rce;
 
-        context.setBetaconstraints( this.attachColumn( context,
+        context.setBetaconstraints( this.attachPattern( context,
                                                        utils,
-                                                       column ) );
+                                                       pattern ) );
 
     }
 
-    private BetaConstraints attachColumn(final BuildContext context,
+    private BetaConstraints attachPattern(final BuildContext context,
                                          final BuildUtils utils,
-                                         final Column column) throws InvalidPatternException {
+                                         final Pattern pattern) throws InvalidPatternException {
 
-        // Set column offset to the appropriate value
-        column.setOffset( context.getCurrentColumnOffset() );
+        // Set pattern offset to the appropriate value
+        pattern.setOffset( context.getCurrentPatternOffset() );
 
-        context.incrementCurrentColumnOffset();
+        context.incrementCurrentPatternOffset();
 
         // Attach alpha nodes
         final List predicates = attachAlphaNodes( context,
                                                   utils,
-                                                  column );
+                                                  pattern );
 
         // Create BetaConstraints object
         final BetaConstraints binder = utils.createBetaNodeConstraint( context,
@@ -81,21 +81,21 @@ public class ColumnBuilder
 
     public List attachAlphaNodes(final BuildContext context,
                                  final BuildUtils utils,
-                                 final Column column) throws InvalidPatternException {
+                                 final Pattern pattern) throws InvalidPatternException {
 
-        final List constraints = column.getConstraints();
+        final List constraints = pattern.getConstraints();
 
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   new ObjectTypeNode( context.getNextId(),
-                                                                                      column.getObjectType(),
+                                                                                      pattern.getObjectType(),
                                                                                       context.getRuleBase().getRete(),
                                                                                       context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
 
         final List betaConstraints = new ArrayList();
 
-        // check if cross products for identity columns should be disabled
+        // check if cross products for identity patterns should be disabled
         checkRemoveIdentities( context,
-                               column,
+                               pattern,
                                betaConstraints );
 
         for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
@@ -111,7 +111,7 @@ public class ColumnBuilder
 
             boolean isAlphaConstraint = true;
             for ( int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
-                if ( declarations[i].getColumn() != column ) {
+                if ( declarations[i].getPattern() != pattern ) {
                     isAlphaConstraint = false;
                 }
             }
@@ -132,36 +132,36 @@ public class ColumnBuilder
 
     /**
      * @param context
-     * @param column
+     * @param pattern
      * @param betaConstraints
      */
     private void checkRemoveIdentities(final BuildContext context,
-                                       final Column column,
+                                       final Pattern pattern,
                                        final List betaConstraints) {
-        if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && column.getObjectType().getClass() == ClassObjectType.class ) {
-            List columns = null;
+        if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
+            List patterns = null;
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
-            final Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
+            final Class thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
             for ( final Iterator it = context.getObjectType().entrySet().iterator(); it.hasNext(); ) {
                 final Map.Entry entry = (Map.Entry) it.next();
                 final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    columns = (List) entry.getValue();
-                    for ( final Iterator columnsIt = columns.iterator(); columnsIt.hasNext(); ) {
-                        betaConstraints.add( new InstanceNotEqualsConstraint( (Column) columnsIt.next() ) );
+                    patterns = (List) entry.getValue();
+                    for ( final Iterator patternIter = patterns.iterator(); patternIter.hasNext(); ) {
+                        betaConstraints.add( new InstanceNotEqualsConstraint( (Pattern) patternIter.next() ) );
                     }
                 }
             }
-            columns = (List) context.getObjectType().get( column.getObjectType() );
-            if ( columns == null ) {
-                columns = new ArrayList();
+            patterns = (List) context.getObjectType().get( pattern.getObjectType() );
+            if ( patterns == null ) {
+                patterns = new ArrayList();
             }
-            columns.add( column );
+            patterns.add( pattern );
 
             // Must be added after the checking, otherwise it matches against itself
-            context.getObjectType().put( column.getObjectType(),
-                                         columns );
+            context.getObjectType().put( pattern.getObjectType(),
+                                         patterns );
         }
     }
 

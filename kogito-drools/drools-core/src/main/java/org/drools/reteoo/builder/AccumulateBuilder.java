@@ -24,7 +24,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.RuleConditionElement;
@@ -46,21 +46,21 @@ public class AccumulateBuilder
                       final RuleConditionElement rce) {
         final Accumulate accumulate = (Accumulate) rce;
 
-        final Column sourceColumn = accumulate.getSourceColumn();
+        final Pattern sourcePattern = accumulate.getSourcePattern();
 
-        // get builder for the column
-        final ReteooComponentBuilder builder = utils.getBuilderFor( sourceColumn );
+        // get builder for the pattern
+        final ReteooComponentBuilder builder = utils.getBuilderFor( sourcePattern );
 
-        // builds the source column
+        // builds the source pattern
         builder.build( context,
                        utils,
-                       sourceColumn );
+                       sourcePattern );
 
-        final Column column = accumulate.getResultColumn();
-        // adjusting target column offset to be the same as the source column
-        column.setOffset( context.getCurrentColumnOffset() - 1 );
+        final Pattern pattern = accumulate.getResultPattern();
+        // adjusting target pattern offset to be the same as the source pattern
+        pattern.setOffset( context.getCurrentPatternOffset() - 1 );
 
-        final List constraints = column.getConstraints();
+        final List constraints = pattern.getConstraints();
 
         final List betaConstraints = new ArrayList();
         final List alphaConstraints = new ArrayList();
@@ -93,7 +93,7 @@ public class AccumulateBuilder
                                                                                     context.getBetaconstraints(),
                                                                                     resultsBinder,
                                                                                     accumulate ) ) );
-        // source column was bound, so nulling context
+        // source pattern was bound, so nulling context
         context.setObjectSource( null );
     }
 

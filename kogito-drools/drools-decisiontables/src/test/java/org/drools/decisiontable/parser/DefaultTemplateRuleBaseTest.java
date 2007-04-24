@@ -51,11 +51,11 @@ public class DefaultTemplateRuleBaseTest extends TestCase {
 		//  Cell(row == r, column == "column1")
 		//  Cell(row == r, column == "column2")
 		assertEquals(3, lhs.getChildren().size());
-		org.drools.rule.Column column = (org.drools.rule.Column) lhs.getChildren().get(1);
-		LiteralConstraint constraint = (LiteralConstraint) column.getConstraints().get(1);
+		org.drools.rule.Pattern pattern = (org.drools.rule.Pattern) lhs.getChildren().get(1);
+		LiteralConstraint constraint = (LiteralConstraint) pattern.getConstraints().get(1);
 		assertEquals("column1", constraint.getField().getValue());
-		column = (org.drools.rule.Column) lhs.getChildren().get(2);
-		constraint = (LiteralConstraint) column.getConstraints().get(1);
+		pattern = (org.drools.rule.Pattern) lhs.getChildren().get(2);
+		constraint = (LiteralConstraint) pattern.getConstraints().get(1);
 		assertEquals("column2", constraint.getField().getValue());
 	}
 }

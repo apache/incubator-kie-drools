@@ -40,11 +40,11 @@ public interface ReteooComponentBuilder {
      * (tuple) activation in order to corretly build the given component.
      * 
      * In other words, if it returns true and no previous TupleSource is already created,
-     * an InitialFact column must be added with appropriate left input adapter for 
+     * an InitialFact pattern must be added with appropriate left input adapter for 
      * the network to be correctly built.
      * 
      * For instance, NOT / EXISTS / ACCUMULATE are examples of builders that must return true 
-     * for this method, while COLUMN must return false.
+     * for this method, while PATTERN must return false.
      * 
      * @param rce the element to be built
      * 

@@ -53,13 +53,13 @@ public class LogicTransformerTest extends DroolsTestCase {
      */
     public void testSingleOrAndOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
-        final Column c = new Column( 2,
+        final Pattern c = new Pattern( 2,
                                      type,
                                      "c" );
 
@@ -129,22 +129,22 @@ public class LogicTransformerTest extends DroolsTestCase {
      */
     public void testMultipleOrAndOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
-        final Column c = new Column( 2,
+        final Pattern c = new Pattern( 2,
                                      type,
                                      "c" );
-        final Column d = new Column( 3,
+        final Pattern d = new Pattern( 3,
                                      type,
                                      "d" );
-        final Column e = new Column( 4,
+        final Pattern e = new Pattern( 4,
                                      type,
                                      "e" );
-        final Column f = new Column( 5,
+        final Pattern f = new Pattern( 5,
                                      type,
                                      "f" );
 
@@ -262,10 +262,10 @@ public class LogicTransformerTest extends DroolsTestCase {
      */
     public void testNotOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
 
@@ -322,10 +322,10 @@ public class LogicTransformerTest extends DroolsTestCase {
      */
     public void testExistOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
 
@@ -362,16 +362,16 @@ public class LogicTransformerTest extends DroolsTestCase {
 
     public void testEliminateEmptyBranchesAndDuplications() throws InvalidRuleException {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
-        final Column c = new Column( 2,
+        final Pattern c = new Pattern( 2,
                                      type,
                                      "c" );
-        final Column d = new Column( 3,
+        final Pattern d = new Pattern( 3,
                                      type,
                                      "d" );
 
@@ -455,28 +455,28 @@ public class LogicTransformerTest extends DroolsTestCase {
                                  ClassNotFoundException,
                                  InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
-        final Column c = new Column( 2,
+        final Pattern c = new Pattern( 2,
                                      type,
                                      "c" );
-        final Column d = new Column( 3,
+        final Pattern d = new Pattern( 3,
                                      type,
                                      "d" );
-        final Column e = new Column( 4,
+        final Pattern e = new Pattern( 4,
                                      type,
                                      "e" );
-        final Column g = new Column( 5,
+        final Pattern g = new Pattern( 5,
                                      type,
                                      "g" );
-        final Column h = new Column( 6,
+        final Pattern h = new Pattern( 6,
                                      type,
                                      "h" );
-        final Column i = new Column( 7,
+        final Pattern i = new Pattern( 7,
                                      type,
                                      "i" );
 
@@ -521,8 +521,8 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        writeTree( result,
-                   "correct_processTree1.dat" );
+//        writeTree( result,
+//                   "correct_processTree1.dat" );
         final ObjectInputStream ois = new ObjectInputStream( this.getClass().getResourceAsStream( "/correct_processTree1.dat" ) );
 
         final GroupElement[] correctResultRoot = (GroupElement[]) ois.readObject();
@@ -536,28 +536,28 @@ public class LogicTransformerTest extends DroolsTestCase {
 
     public void testCloneable() {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
-        final Column c = new Column( 2,
+        final Pattern c = new Pattern( 2,
                                      type,
                                      "c" );
-        final Column d = new Column( 3,
+        final Pattern d = new Pattern( 3,
                                      type,
                                      "d" );
-        final Column e = new Column( 4,
+        final Pattern e = new Pattern( 4,
                                      type,
                                      "e" );
-        final Column f = new Column( 5,
+        final Pattern f = new Pattern( 5,
                                      type,
                                      "f" );
-        final Column g = new Column( 6,
+        final Pattern g = new Pattern( 6,
                                      type,
                                      "g" );
-        final Column h = new Column( 7,
+        final Pattern h = new Pattern( 7,
                                      type,
                                      "h" );
 
@@ -640,28 +640,28 @@ public class LogicTransformerTest extends DroolsTestCase {
                                ClassNotFoundException,
                                InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
-        final Column a = new Column( 0,
+        final Pattern a = new Pattern( 0,
                                      type,
                                      "a" );
-        final Column b = new Column( 1,
+        final Pattern b = new Pattern( 1,
                                      type,
                                      "b" );
-        final Column c = new Column( 2,
+        final Pattern c = new Pattern( 2,
                                      type,
                                      "c" );
-        final Column d = new Column( 3,
+        final Pattern d = new Pattern( 3,
                                      type,
                                      "d" );
-        final Column e = new Column( 4,
+        final Pattern e = new Pattern( 4,
                                      type,
                                      "e" );
-        final Column f = new Column( 5,
+        final Pattern f = new Pattern( 5,
                                      type,
                                      "f" );
-        final Column g = new Column( 6,
+        final Pattern g = new Pattern( 6,
                                      type,
                                      "g" );
-        final Column h = new Column( 7,
+        final Pattern h = new Pattern( 7,
                                      type,
                                      "h" );
 
@@ -698,8 +698,8 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        writeTree( ands,
-                   "correct_transform1.dat" );
+//        writeTree( ands,
+//                   "correct_transform1.dat" );
 
         // Now check the main tree
 

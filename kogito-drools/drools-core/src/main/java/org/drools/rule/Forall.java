@@ -32,43 +32,43 @@ public class Forall extends ConditionalElement {
 
     private static final long serialVersionUID = -5993305516857875971L;
 
-    // forall base column
-    private Column            baseColumn;
-    // foral remaining columns
-    private List              remainingColumns;
+    // forall base pattern
+    private Pattern            basePattern;
+    // foral remaining patterns
+    private List              remainingPatterns;
 
     public Forall() {
         this( null,
               new ArrayList( 1 ) );
     }
 
-    public Forall(final Column baseColumn) {
-        this( baseColumn,
+    public Forall(final Pattern basePattern) {
+        this( basePattern,
               new ArrayList( 1 ) );
     }
 
-    public Forall(final Column baseColumn,
-                  final List remainingColumns) {
-        this.baseColumn = baseColumn;
-        this.remainingColumns = remainingColumns;
+    public Forall(final Pattern basePattern,
+                  final List remainingPatterns) {
+        this.basePattern = basePattern;
+        this.remainingPatterns = remainingPatterns;
     }
 
     /* (non-Javadoc)
      * @see org.drools.rule.ConditionalElement#clone()
      */
     public Object clone() {
-        return new Forall( this.baseColumn,
-                           new ArrayList( this.remainingColumns ) );
+        return new Forall( this.basePattern,
+                           new ArrayList( this.remainingPatterns ) );
     }
 
     /**
-     * Forall inner declarations are only provided by the base columns
-     * since it negates the remaining columns
+     * Forall inner declarations are only provided by the base patterns
+     * since it negates the remaining patterns
      */
     public Map getInnerDeclarations() {
-        final Map inner = new HashMap( this.baseColumn.getOuterDeclarations() );
-        for ( final Iterator it = this.remainingColumns.iterator(); it.hasNext(); ) {
-            inner.putAll( ((Column) it.next()).getOuterDeclarations() );
+        final Map inner = new HashMap( this.basePattern.getOuterDeclarations() );
+        for ( final Iterator it = this.remainingPatterns.iterator(); it.hasNext(); ) {
+            inner.putAll( ((Pattern) it.next()).getOuterDeclarations() );
         }
         return inner;
     }
@@ -81,46 +81,46 @@ public class Forall extends ConditionalElement {
     }
 
     /**
-     * Forall can only resolve declarations from its base column
+     * Forall can only resolve declarations from its base pattern
      */
     public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.getInnerDeclarations().get( identifier );
     }
 
     /**
-     * @return the baseColumn
+     * @return the basePattern
      */
-    public Column getBaseColumn() {
-        return this.baseColumn;
+    public Pattern getBasePattern() {
+        return this.basePattern;
     }
 
     /**
-     * @param baseColumn the baseColumn to set
+     * @param basePattern the basePattern to set
      */
-    public void setBaseColumn(final Column baseColumn) {
-        this.baseColumn = baseColumn;
+    public void setBasePattern(final Pattern basePattern) {
+        this.basePattern = basePattern;
     }
 
     /**
-     * @return the remainingColumns
+     * @return the remainingPatterns
      */
-    public List getRemainingColumns() {
-        return this.remainingColumns;
+    public List getRemainingPatterns() {
+        return this.remainingPatterns;
     }
 
     /**
-     * @param remainingColumns the remainingColumns to set
+     * @param remainingPatterns the remainingPatterns to set
      */
-    public void setRemainingColumns(final List remainingColumns) {
-        this.remainingColumns = remainingColumns;
+    public void setRemainingPatterns(final List remainingPatterns) {
+        this.remainingPatterns = remainingPatterns;
     }
 
     /**
-     * Adds one more column to the list of remaining columns
-     * @param column
+     * Adds one more pattern to the list of remaining patterns
+     * @param pattern
      */
-    public void addRemainingColumn(final Column column) {
-        this.remainingColumns.add( column );
+    public void addRemainingPattern(final Pattern pattern) {
+        this.remainingPatterns.add( pattern );
     }
 
 }

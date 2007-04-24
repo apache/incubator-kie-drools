@@ -15,7 +15,7 @@ import org.drools.base.evaluators.StringFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.AbstractHashTable.FactEntry;
@@ -29,12 +29,12 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
@@ -77,12 +77,12 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
@@ -133,12 +133,12 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
@@ -189,12 +189,12 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( TestClass.class,
                                                                   "object" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( TestClass.class ) );
 
         final Declaration declaration = new Declaration( "theObject",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
@@ -235,12 +235,12 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
@@ -301,12 +301,12 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
@@ -517,12 +517,12 @@ public class FieldIndexHashTableTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                           new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,

@@ -52,8 +52,8 @@ public class DefaultExpander
     // bellow we combine and compile above expressions into a pattern object
     private static final Pattern finder       = Pattern.compile( "(" + rulesExpr + "|" + queryExpr + ")",
                                                                  Pattern.DOTALL | Pattern.MULTILINE );
-    // bellow pattern is used to find a column's constraint list
-    private static final Pattern columnFinder = Pattern.compile( "\\((.*?)\\)" );
+    // bellow pattern is used to find a pattern's constraint list
+    private static final Pattern patternFinder = Pattern.compile( "\\((.*?)\\)" );
 
     private final Map                  mappings     = new HashMap();
     private final List                 keywords     = new LinkedList();
@@ -195,7 +195,7 @@ public class DefaultExpander
         final String[] lines = lhs.split( "\n" ); // since we assembled the string, we know line breaks are \n
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
         int lastExpanded = -1;
-        int lastColumn = -1;
+        int lastPattern = -1;
         for ( int i = 0; i < lines.length; i++ ) {
             final String trimmed = lines[i].trim();
             expanded[++lastExpanded] = lines[i];
@@ -220,13 +220,13 @@ public class DefaultExpander
                                                           i ) );
                 }
                 // but if the original starts with a "-", it means we need to add it
-                // as a constraint to the previous column
+                // as a constraint to the previous pattern
                 if ( trimmed.startsWith( "-" ) && (!lines[i].equals( expanded[lastExpanded] )) ) {
                     int lastMatchStart = -1;
                     int lastMatchEnd = -1;
                     String constraints = "";
-                    if ( lastColumn >= 0 ) {
-                        final Matcher m2 = columnFinder.matcher( expanded[lastColumn] );
+                    if ( lastPattern >= 0 ) {
+                        final Matcher m2 = patternFinder.matcher( expanded[lastPattern] );
                         while ( m2.find() ) {
                             lastMatchStart = m2.start();
                             lastMatchEnd = m2.end();
@@ -234,18 +234,18 @@ public class DefaultExpander
                         }
                     }
                     if ( lastMatchStart > -1 ) {
-                        // rebuilding previous column structure
-                        expanded[lastColumn] = expanded[lastColumn].substring( 0,
-                                                                               lastMatchStart ) + "( " + constraints + ((constraints.length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + " )" + expanded[lastColumn].substring( lastMatchEnd );
+                        // rebuilding previous pattern structure
+                        expanded[lastPattern] = expanded[lastPattern].substring( 0,
+                                                                               lastMatchStart ) + "( " + constraints + ((constraints.length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + " )" + expanded[lastPattern].substring( lastMatchEnd );
                     } else {
-                        // error, column not found to add constraint to
+                        // error, pattern not found to add constraint to
                         // TODO: can we report character position?
-                        this.addError( new ExpanderException( "No column was found to add the constraint to: " + lines[i],
+                        this.addError( new ExpanderException( "No pattern was found to add the constraint to: " + lines[i],
                                                               i ) );
                     }
                     lastExpanded--;
                 } else {
-                    lastColumn = lastExpanded;
+                    lastPattern = lastExpanded;
                 }
             }
         }

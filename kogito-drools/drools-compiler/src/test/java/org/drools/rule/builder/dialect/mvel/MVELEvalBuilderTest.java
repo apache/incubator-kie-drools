@@ -15,7 +15,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
@@ -38,11 +38,11 @@ public class MVELEvalBuilderTest extends TestCase {
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "price" );
-        final Column column = new Column( 0,
+        final Pattern pattern = new Pattern( 0,
                                     new ClassObjectType( int.class ) );
         final Declaration declaration = new Declaration( "a",
                                                    extractor,
-                                                   column );
+                                                   pattern );
         final Map map = new HashMap();
         map.put( "a",
                  declaration );

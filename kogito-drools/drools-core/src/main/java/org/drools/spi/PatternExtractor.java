@@ -24,7 +24,7 @@ import org.drools.facttemplates.Fact;
  * limitations under the License.
  */
 
-public class ColumnExtractor
+public class PatternExtractor
     implements
     Extractor {
 
@@ -34,7 +34,7 @@ public class ColumnExtractor
     private static final long serialVersionUID = 320L;
     private ObjectType        objectType;
 
-    public ColumnExtractor(final ObjectType objectType) {
+    public PatternExtractor(final ObjectType objectType) {
         this.objectType = objectType;
     }
 
@@ -139,10 +139,10 @@ public class ColumnExtractor
         if ( this == obj ) {
             return true;
         }
-        if ( !(obj instanceof ColumnExtractor) ) {
+        if ( !(obj instanceof PatternExtractor) ) {
             return false;
         }
-        final ColumnExtractor other = (ColumnExtractor) obj;
+        final PatternExtractor other = (PatternExtractor) obj;
         return this.objectType.equals( other.objectType );
     }
 }

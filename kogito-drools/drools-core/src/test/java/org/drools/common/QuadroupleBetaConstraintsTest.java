@@ -9,7 +9,7 @@ import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.StringFactory;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -52,7 +52,7 @@ public class QuadroupleBetaConstraintsTest extends TestCase {
                                                                                       fieldName );
         Declaration declaration = new Declaration( fieldName,
                                                    extractor,
-                                                   new Column( 0,
+                                                   new Pattern( 0,
                                                                new ClassObjectType( clazz ) ) );
         Evaluator evaluator = StringFactory.getInstance().getEvaluator( Operator.EQUAL );
         return new VariableConstraint( extractor,

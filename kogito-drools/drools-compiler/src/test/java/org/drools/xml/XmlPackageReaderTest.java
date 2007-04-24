@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -191,9 +191,9 @@ public class XmlPackageReaderTest extends TestCase {
         final AndDescr lhs = ruleDescr.getLhs();
         assertEquals( 6,
                       lhs.getDescrs().size() );
-        final ColumnDescr columnDescr = (ColumnDescr) lhs.getDescrs().get( 0 );
+        final PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "Bar",
-                      columnDescr.getObjectType() );
+                      patternDescr.getObjectType() );
 
         final String consequence = (String) ruleDescr.getConsequence();
         assertNotNull( consequence );
@@ -253,20 +253,20 @@ public class XmlPackageReaderTest extends TestCase {
         final AndDescr lhsDescr = ruleDescr.getLhs();
         AndDescr andDescr = (AndDescr) lhsDescr.getDescrs().get( 0 );
         OrDescr orDescr = (OrDescr) lhsDescr.getDescrs().get( 1 );
-        final ColumnDescr column1 = (ColumnDescr) lhsDescr.getDescrs().get( 2 );
-        assertNull( column1.getIdentifier() );
+        final PatternDescr pattern1 = (PatternDescr) lhsDescr.getDescrs().get( 2 );
+        assertNull( pattern1.getIdentifier() );
         assertEquals( "Foo",
-                      column1.getObjectType() );
+                      pattern1.getObjectType() );
 
-        final ColumnDescr column2 = (ColumnDescr) lhsDescr.getDescrs().get( 3 );
+        final PatternDescr pattern2 = (PatternDescr) lhsDescr.getDescrs().get( 3 );
         assertEquals( "Bar",
-                      column2.getObjectType() );
+                      pattern2.getObjectType() );
         assertEquals( "bar",
-                      column2.getIdentifier() );
+                      pattern2.getIdentifier() );
 
-        final ColumnDescr column3 = (ColumnDescr) lhsDescr.getDescrs().get( 4 );
-        //final LiteralDescr literalDescr = (LiteralDescr) column3.getDescrs().get( 0 );
-        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) column3.getDescrs().get( 0 );
+        final PatternDescr pattern3 = (PatternDescr) lhsDescr.getDescrs().get( 4 );
+        //final LiteralDescr literalDescr = (LiteralDescr) pattern3.getDescrs().get( 0 );
+        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) pattern3.getDescrs().get( 0 );
         final LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 0 );
         assertEquals( "field1",
                       fieldConstraintDescr.getFieldName() );
@@ -287,11 +287,11 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "var1",
                       variableDescr.getIdentifier() );
 
-        final PredicateDescr predicateDescr = (PredicateDescr) column3.getDescrs().get( 1 );
+        final PredicateDescr predicateDescr = (PredicateDescr) pattern3.getDescrs().get( 1 );
         assertEquals( "1==1",
                       predicateDescr.getContent() );
 
-        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) column3.getDescrs().get( 2 );
+        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) pattern3.getDescrs().get( 2 );
         assertEquals( "field1",
                       fieldBindingDescr.getFieldName() );
         assertEquals( "var1",
@@ -300,38 +300,38 @@ public class XmlPackageReaderTest extends TestCase {
         final NotDescr notDescr = (NotDescr) lhsDescr.getDescrs().get( 5 );
         assertEquals( 1,
                       notDescr.getDescrs().size() );
-        ColumnDescr columnDescr = (ColumnDescr) notDescr.getDescrs().get( 0 );
+        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
         assertEquals( "Bar",
-                      columnDescr.getObjectType() );
+                      patternDescr.getObjectType() );
 
         final ExistsDescr existsDescr = (ExistsDescr) lhsDescr.getDescrs().get( 6 );
         assertEquals( 1,
                       existsDescr.getDescrs().size() );
-        columnDescr = (ColumnDescr) existsDescr.getDescrs().get( 0 );
+        patternDescr = (PatternDescr) existsDescr.getDescrs().get( 0 );
         assertEquals( "Bar",
-                      columnDescr.getObjectType() );
+                      patternDescr.getObjectType() );
 
         andDescr = (AndDescr) lhsDescr.getDescrs().get( 7 );
         assertEquals( 2,
                       andDescr.getDescrs().size() );
         orDescr = (OrDescr) andDescr.getDescrs().get( 0 );
-        columnDescr = (ColumnDescr) orDescr.getDescrs().get( 0 );
+        patternDescr = (PatternDescr) orDescr.getDescrs().get( 0 );
         assertEquals( "Bar",
-                      columnDescr.getObjectType() );
-        columnDescr = (ColumnDescr) andDescr.getDescrs().get( 1 );
+                      patternDescr.getObjectType() );
+        patternDescr = (PatternDescr) andDescr.getDescrs().get( 1 );
         assertEquals( "Yada",
-                      columnDescr.getObjectType() );
+                      patternDescr.getObjectType() );
 
         orDescr = (OrDescr) lhsDescr.getDescrs().get( 8 );
         assertEquals( 2,
                       orDescr.getDescrs().size() );
         andDescr = (AndDescr) orDescr.getDescrs().get( 0 );
-        columnDescr = (ColumnDescr) andDescr.getDescrs().get( 0 );
+        patternDescr = (PatternDescr) andDescr.getDescrs().get( 0 );
         assertEquals( "Foo",
-                      columnDescr.getObjectType() );
-        columnDescr = (ColumnDescr) orDescr.getDescrs().get( 1 );
+                      patternDescr.getObjectType() );
+        patternDescr = (PatternDescr) orDescr.getDescrs().get( 1 );
         assertEquals( "Zaa",
-                      columnDescr.getObjectType() );
+                      patternDescr.getObjectType() );
 
         final EvalDescr evalDescr = (EvalDescr) lhsDescr.getDescrs().get( 9 );
         assertEquals( "1==1",
@@ -447,9 +447,9 @@ public class XmlPackageReaderTest extends TestCase {
         final AndDescr lhs = queryDescr.getLhs();
         assertEquals( 1,
                       lhs.getDescrs().size() );
-        final ColumnDescr columnDescr = (ColumnDescr) lhs.getDescrs().get( 0 );
+        final PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "Foo",
-                      columnDescr.getObjectType() );
+                      patternDescr.getObjectType() );
 
     }
 }

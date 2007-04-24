@@ -21,12 +21,12 @@ import java.util.Iterator;
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
@@ -41,11 +41,11 @@ public class GroupElementBuilder
     ConditionalElementBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
+     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
+                                    final PatternBuilder patternBuilder,
                                     final BaseDescr descr) {
         final ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
 
@@ -63,19 +63,19 @@ public class GroupElementBuilder
             if ( cebuilder != null ) {
                 final ConditionalElement ce = cebuilder.build( context,
                                                          utils,
-                                                         columnBuilder,
+                                                         patternBuilder,
                                                          child );
                 if ( ce != null ) {
                     ge.addChild( ce );
                 }
-            } else if ( child instanceof ColumnDescr ) {
-                final Column column = columnBuilder.build( context,
+            } else if ( child instanceof PatternDescr ) {
+                final Pattern pattern = patternBuilder.build( context,
                                                            utils,
-                                                           (ColumnDescr) child );
-                // in case there is a problem with the column building,
-                // builder will return null. Ex: ClassNotFound for the column type
-                if ( column != null ) {
-                    ge.addChild( column );
+                                                           (PatternDescr) child );
+                // in case there is a problem with the pattern building,
+                // builder will return null. Ex: ClassNotFound for the pattern type
+                if ( pattern != null ) {
+                    ge.addChild( pattern );
                 }
 
             } else {

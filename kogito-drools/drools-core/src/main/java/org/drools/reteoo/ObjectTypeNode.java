@@ -361,7 +361,7 @@ public class ObjectTypeNode extends ObjectSource
         boolean usesDecl = false;
         final Declaration[] declarations = constraint.getRequiredDeclarations();
         for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
-            usesDecl = (declarations[j].getColumn().getObjectType() == this.objectType);
+            usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
         }
         return usesDecl;
     }

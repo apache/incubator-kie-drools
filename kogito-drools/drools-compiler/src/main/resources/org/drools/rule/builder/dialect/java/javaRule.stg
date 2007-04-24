@@ -23,7 +23,7 @@ public static boolean <methodName>(<declarationTypes, declarations:{ type, declr
 }
 >>
 
-accumulateMethod(declarations, declarationTypes, innerDeclarations, globals, globalTypes, methodName, columnType, columnDeclaration, resultType, initCode, actionCode, resultCode) ::= <<
+accumulateMethod(declarations, declarationTypes, innerDeclarations, globals, globalTypes, methodName, patternType, patternDeclaration, resultType, initCode, actionCode, resultCode) ::= <<
 public static <resultType> <methodName>(org.drools.rule.Declaration[] innerDeclarations, java.util.List matchingObjects<if(declarations)>, <endif><declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
     <initCode>
     for( java.util.Iterator it = matchingObjects.iterator(); it.hasNext(); ) {

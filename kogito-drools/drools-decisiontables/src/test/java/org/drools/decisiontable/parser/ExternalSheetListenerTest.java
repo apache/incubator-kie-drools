@@ -71,7 +71,7 @@ public class ExternalSheetListenerTest extends TestCase {
 			for (Iterator it2 = cells.iterator(); it2.hasNext(); i++) {
 				Cell cell = (Cell) it2.next();
 				assertEquals("row" + row.getRowNumber() + "col" + i, cell.getValue());
-				assertEquals("Column " + i, cell.getColumn());
+				assertEquals("Pattern " + i, cell.getColumn());
 			}
 		}
 	}
@@ -314,8 +314,8 @@ public class ExternalSheetListenerTest extends TestCase {
 		}
 
 		public Column[] getColumns() {
-			return new Column[] { new Column("Column 1"),
-					new Column("Column 2"), new Column("Column 3") };
+			return new Column[] { new Column("Pattern 1"),
+					new Column("Pattern 2"), new Column("Pattern 3") };
 		}
 
 		public String getHeader() {

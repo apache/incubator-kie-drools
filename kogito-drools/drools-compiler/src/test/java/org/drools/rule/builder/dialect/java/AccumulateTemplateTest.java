@@ -14,7 +14,7 @@ import org.drools.Person;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
-import org.drools.spi.ColumnExtractor;
+import org.drools.spi.PatternExtractor;
 
 public class AccumulateTemplateTest extends TestCase {
 
@@ -38,7 +38,7 @@ public class AccumulateTemplateTest extends TestCase {
                                                                                                        null,
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
-                                                                       new ColumnExtractor( new ClassObjectType( Cheese.class ) ),
+                                                                       new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
                                                                                                 new ClassFieldExtractor( Cheese.class,
                                                                                                                          "price" ),
@@ -58,9 +58,9 @@ public class AccumulateTemplateTest extends TestCase {
                                 globalTypes );
         accMethod.setAttribute( "methodName",
                                 "accumulateTestMethod" );
-        accMethod.setAttribute( "columnType",
+        accMethod.setAttribute( "patternType",
                                 "MyClass" );
-        accMethod.setAttribute( "columnDeclaration",
+        accMethod.setAttribute( "patternDeclaration",
                                 "$myclass" );
         accMethod.setAttribute( "initCode",
                                 "int x = 0;" );

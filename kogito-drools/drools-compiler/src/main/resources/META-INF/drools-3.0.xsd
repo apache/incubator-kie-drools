@@ -116,7 +116,7 @@
         <xs:element ref="drools:not"/>                
         <xs:element ref="drools:exists"/>                
         <xs:element ref="drools:eval"/>
-        <xs:element ref="drools:column"/>        
+        <xs:element ref="drools:pattern"/>        
       </xs:choice>       
     </xs:complexType>
   </xs:element>    
@@ -129,7 +129,7 @@
         <xs:element ref="drools:not"/>                
         <xs:element ref="drools:exists"/>                
         <xs:element ref="drools:eval"/>
-        <xs:element ref="drools:column"/>        
+        <xs:element ref="drools:pattern"/>        
       </xs:choice>            
     </xs:complexType>
   </xs:element>   
@@ -142,7 +142,7 @@
         <xs:element ref="drools:not"/>                
         <xs:element ref="drools:exists"/>                
         <xs:element ref="drools:eval"/>
-        <xs:element ref="drools:column"/>        
+        <xs:element ref="drools:pattern"/>        
       </xs:choice>             
     </xs:complexType>
   </xs:element>  
@@ -150,7 +150,7 @@
   <xs:element name="not">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="drools:column"/>        
+        <xs:element ref="drools:pattern"/>        
       </xs:sequence>       
     </xs:complexType>
   </xs:element>    
@@ -158,14 +158,14 @@
   <xs:element name="exists">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="drools:column"/>        
+        <xs:element ref="drools:pattern"/>        
       </xs:sequence>       
     </xs:complexType>
   </xs:element>     
   
   <xs:element name="eval" type="xs:string" />  
   
-  <xs:element name="column">
+  <xs:element name="pattern">
     <xs:complexType>
       <xs:choice maxOccurs="unbounded" minOccurs="0">
         <xs:element ref="drools:field-binding"/>        

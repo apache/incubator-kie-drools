@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -93,7 +93,7 @@ public class DrlDumper extends ReflectiveVisitor
         this.template = descr.getEvaluator() + " " + descr.getIdentifier();
     }
 
-    public void visitColumnDescr(final ColumnDescr descr) {
+    public void visitPatternDescr(final PatternDescr descr) {
         this.template = new String();
         if ( !descr.getDescrs().isEmpty() ) {
             if ( descr.getIdentifier() != null ) {

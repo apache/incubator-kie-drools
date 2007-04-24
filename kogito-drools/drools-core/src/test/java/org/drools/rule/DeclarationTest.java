@@ -33,14 +33,14 @@ public class DeclarationTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 5,
+        final Pattern pattern = new Pattern( 5,
                                           new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
-        // Declarations know the column they derive their value from
+        // Declarations know the pattern they derive their value from
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         assertEquals( "typeOfCheese",
                       declaration.getIdentifier() );
@@ -52,7 +52,7 @@ public class DeclarationTest extends TestCase {
                     declaration.getExtractor() );
 
         assertEquals( 5,
-                      declaration.getColumn().getOffset() );
+                      declaration.getPattern().getOffset() );
 
     }
 
@@ -60,14 +60,14 @@ public class DeclarationTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        final Column column = new Column( 5,
+        final Pattern pattern = new Pattern( 5,
                                           new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration 
-        // Declarations know the column they derive their value from 
+        // Declarations know the pattern they derive their value from 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         column );
+                                                         pattern );
 
         // Create some facts
         final Cheese cheddar = new Cheese( "cheddar",

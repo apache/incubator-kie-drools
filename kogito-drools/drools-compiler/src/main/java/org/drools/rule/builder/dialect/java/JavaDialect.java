@@ -39,7 +39,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.CollectBuilder;
-import org.drools.rule.builder.ColumnBuilder;
+import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.Dialect;
@@ -83,8 +83,8 @@ public class JavaDialect
     // a map of registered builders
     private Map                         builders;
 
-    // the builder for columns
-    private ColumnBuilder               columnBuilder;
+    // the builder for patterns
+    private PatternBuilder               patternBuilder;
 
     // the builder for the consequence
     private ConsequenceBuilder          consequenceBuilder;
@@ -127,7 +127,7 @@ public class JavaDialect
                       gebuilder );
 
         // dialect specific        
-        this.columnBuilder = new ColumnBuilder( this );
+        this.patternBuilder = new PatternBuilder( this );
 
         this.builders.put( FromDescr.class,
                       getFromBuilder() );

@@ -19,9 +19,9 @@ package org.drools.rule.builder;
 import java.util.Iterator;
 
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ForallDescr;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Forall;
 import org.drools.rule.builder.dialect.java.BuildUtils;
@@ -35,33 +35,33 @@ public class ForallBuilder
     ConditionalElementBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.ColumnBuilder, org.drools.lang.descr.BaseDescr)
+     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
     public ConditionalElement build(final BuildContext context,
                                     final BuildUtils utils,
-                                    final ColumnBuilder columnBuilder,
+                                    final PatternBuilder patternBuilder,
                                     final BaseDescr descr) {
         final ForallDescr forallDescr = (ForallDescr) descr;
 
-        final Column baseColumn = columnBuilder.build( context,
+        final Pattern basePattern = patternBuilder.build( context,
                                                  utils,
-                                                 forallDescr.getBaseColumn() );
+                                                 forallDescr.getBasePattern() );
 
-        if ( baseColumn == null ) {
+        if ( basePattern == null ) {
             return null;
         }
 
-        final Forall forall = new Forall( baseColumn );
+        final Forall forall = new Forall( basePattern );
 
         // adding the newly created forall CE to the build stack
         // this is necessary in case of local declaration usage
         context.getBuildStack().push( forall );
 
-        for ( final Iterator it = forallDescr.getRemainingColumns().iterator(); it.hasNext(); ) {
-            final Column anotherColumn = columnBuilder.build( context,
+        for ( final Iterator it = forallDescr.getRemainingPatterns().iterator(); it.hasNext(); ) {
+            final Pattern anotherPattern = patternBuilder.build( context,
                                                         utils,
-                                                        (ColumnDescr) it.next() );
-            forall.addRemainingColumn( anotherColumn );
+                                                        (PatternDescr) it.next() );
+            forall.addRemainingPattern( anotherPattern );
         }
 
         // poping the forall

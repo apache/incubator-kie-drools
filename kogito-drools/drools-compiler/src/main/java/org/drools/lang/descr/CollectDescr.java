@@ -31,8 +31,8 @@ public class CollectDescr extends BaseDescr
 
     private static final long serialVersionUID = -78056848363435347L;
 
-    private ColumnDescr       sourceColumn;
-    private ColumnDescr       resultColumn;
+    private PatternDescr       sourcePattern;
+    private PatternDescr       resultPattern;
     private String            classMethodName;
 
     CollectDescr() {
@@ -40,15 +40,15 @@ public class CollectDescr extends BaseDescr
     }
 
     public int getLine() {
-        return this.sourceColumn.getLine();
+        return this.sourcePattern.getLine();
     }
 
-    public void setSourceColumn(final ColumnDescr sourceColumn) {
-        this.sourceColumn = sourceColumn;
+    public void setSourcePattern(final PatternDescr sourcePattern) {
+        this.sourcePattern = sourcePattern;
     }
 
-    public ColumnDescr getSourceColumn() {
-        return this.sourceColumn;
+    public PatternDescr getSourcePattern() {
+        return this.sourcePattern;
     }
 
     public String getClassMethodName() {
@@ -59,16 +59,16 @@ public class CollectDescr extends BaseDescr
         this.classMethodName = classMethodName;
     }
 
-    public void setResultColumn(final ColumnDescr resultColumn) {
-        this.resultColumn = resultColumn;
+    public void setResultPattern(final PatternDescr resultPattern) {
+        this.resultPattern = resultPattern;
     }
 
-    public ColumnDescr getResultColumn() {
-        return this.resultColumn;
+    public PatternDescr getResultPattern() {
+        return this.resultPattern;
     }
 
     public String toString() {
-        return "[Collect: id=" + this.resultColumn.getIdentifier() + "; objectType=" + this.resultColumn.getObjectType() + "]";
+        return "[Collect: id=" + this.resultPattern.getIdentifier() + "; objectType=" + this.resultPattern.getObjectType() + "]";
     }
 
     public void addDescr(final BaseDescr patternDescr) {

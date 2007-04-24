@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
@@ -67,7 +67,7 @@ public class DeclarationScopeResolver {
             if ( this.maps[i].containsKey( (name) ) ) {
                 final GlobalExtractor global = new GlobalExtractor( name,
                                                               this.maps[i] );
-                final Column dummy = new Column( 0,
+                final Pattern dummy = new Pattern( 0,
                                            global.getObjectType() );
                 final Declaration declaration = new Declaration( name,
                                                            global,

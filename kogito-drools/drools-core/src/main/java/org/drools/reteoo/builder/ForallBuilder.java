@@ -18,7 +18,7 @@ package org.drools.reteoo.builder;
 
 import java.util.Iterator;
 
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Forall;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
@@ -42,20 +42,20 @@ public class ForallBuilder
         final Forall forall = (Forall) rce;
 
         // forall can be translated into
-        // not( baseColumn and not( <remaining_columns>+ ) ) 
+        // not( basePattern and not( <remaining_patterns>+ ) ) 
         // so we just do that:
 
         final GroupElement and = GroupElementFactory.newAndInstance();
-        and.addChild( forall.getBaseColumn() );
+        and.addChild( forall.getBasePattern() );
 
         final GroupElement not2 = GroupElementFactory.newNotInstance();
-        if ( forall.getRemainingColumns().size() == 1 ) {
-            not2.addChild( (Column) forall.getRemainingColumns().get( 0 ) );
+        if ( forall.getRemainingPatterns().size() == 1 ) {
+            not2.addChild( (Pattern) forall.getRemainingPatterns().get( 0 ) );
             and.addChild( not2 );
-        } else if ( forall.getRemainingColumns().size() > 1 ) {
+        } else if ( forall.getRemainingPatterns().size() > 1 ) {
             final GroupElement and2 = GroupElementFactory.newAndInstance();
-            for ( final Iterator it = forall.getRemainingColumns().iterator(); it.hasNext(); ) {
-                and2.addChild( (Column) it.next() );
+            for ( final Iterator it = forall.getRemainingPatterns().iterator(); it.hasNext(); ) {
+                and2.addChild( (Pattern) it.next() );
             }
             not2.addChild( and2 );
             and.addChild( not2 );

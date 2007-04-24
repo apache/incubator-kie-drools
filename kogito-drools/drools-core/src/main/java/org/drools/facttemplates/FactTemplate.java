@@ -42,7 +42,7 @@ public interface FactTemplate
 
     /**
      * templates may have 1 or more slots. A slot is a named
-     * column with a specific type of value.
+     * pattern with a specific type of value.
      * @return
      */
     int getNumberOfFields();
@@ -60,14 +60,14 @@ public interface FactTemplate
     FieldTemplate getFieldTemplate(String name);
 
     /**
-     * Get the Slot at the given column id
+     * Get the Slot at the given pattern id
      * @param index
      * @return
      */
     FieldTemplate getFieldTemplate(int index);
 
     /**
-     * Get the column index with the given name
+     * Get the pattern index with the given name
      * @param name
      * @return
      */

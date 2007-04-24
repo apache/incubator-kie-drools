@@ -30,42 +30,42 @@ public class ForallDescr extends BaseDescr
 
     private static final long serialVersionUID = 1742161904829304893L;
 
-    private List              columns;
+    private List              patterns;
 
     public ForallDescr() {
-        this.columns = new ArrayList( 2 );
+        this.patterns = new ArrayList( 2 );
     }
 
     /* (non-Javadoc)
      * @see org.drools.lang.descr.ConditionalElementDescr#addDescr(org.drools.lang.descr.BaseDescr)
      */
     public void addDescr(final BaseDescr baseDescr) {
-        // cast to make sure we are adding a column descriptor
-        this.columns.add( baseDescr );
+        // cast to make sure we are adding a pattern descriptor
+        this.patterns.add( baseDescr );
     }
 
     /* (non-Javadoc)
      * @see org.drools.lang.descr.ConditionalElementDescr#getDescrs()
      */
     public List getDescrs() {
-        return this.columns;
+        return this.patterns;
     }
 
     /**
-     * Returns the base column from the forall CE
+     * Returns the base pattern from the forall CE
      * @return
      */
-    public ColumnDescr getBaseColumn() {
-        return (this.columns.size() > 0) ? (ColumnDescr) this.columns.get( 0 ) : null;
+    public PatternDescr getBasePattern() {
+        return (this.patterns.size() > 0) ? (PatternDescr) this.patterns.get( 0 ) : null;
     }
 
     /**
-     * Returns the remaining columns from the forall CE
+     * Returns the remaining patterns from the forall CE
      * @return
      */
-    public List getRemainingColumns() {
-        return (this.columns.size() > 1) ? this.columns.subList( 1,
-                                                                 this.columns.size() ) : Collections.EMPTY_LIST;
+    public List getRemainingPatterns() {
+        return (this.patterns.size() > 1) ? this.patterns.subList( 1,
+                                                                 this.patterns.size() ) : Collections.EMPTY_LIST;
     }
 
 }

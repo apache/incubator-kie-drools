@@ -47,7 +47,7 @@ import org.drools.common.RuleFlowGroupNode;
 import org.drools.facttemplates.Fact;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -64,7 +64,7 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
@@ -93,16 +93,16 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -111,7 +111,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      "x" ) );
 
-        column.addDescr( returnValue );
+        pattern.addDescr( returnValue );
 
         // There is no m this should produce errors.
         ruleDescr.setConsequence( "modify(m);" );
@@ -324,15 +324,15 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         packageDescr.addFactTemplate( cheese );
 
-        final ColumnDescr column = new ColumnDescr( "Cheese",
+        final PatternDescr pattern = new PatternDescr( "Cheese",
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        column.addDescr( literalDescr );
+        pattern.addDescr( literalDescr );
 
         ruleDescr.setConsequence( "System.out.println( stilton.getFieldValue( \"name\" ) + \" \" + stilton.getFieldValue( \"price\" ) );" );
 
@@ -369,15 +369,15 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        column.addDescr( literalDescr );
+        pattern.addDescr( literalDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -397,16 +397,16 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -415,7 +415,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      "(( (Integer) map.get( new Integer( x )) ).intValue() * y)" ) );
 
-        column.addDescr( returnValue );
+        pattern.addDescr( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -431,24 +431,24 @@ public class PackageBuilderTest extends DroolsTestCase {
         createReturnValueRule( packageDescr1,
                                " x + y " );
         builder1.addPackage( packageDescr1 );
-        final Column column1 = (Column) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final ReturnValueConstraint returnValue1 = (ReturnValueConstraint) column1.getConstraints().get( 2 );
+        final Pattern pattern1 = (Pattern) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        final ReturnValueConstraint returnValue1 = (ReturnValueConstraint) pattern1.getConstraints().get( 2 );
 
         final PackageBuilder builder2 = new PackageBuilder();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
         createReturnValueRule( packageDescr2,
                                " x + y " );
         builder2.addPackage( packageDescr2 );
-        final Column column2 = (Column) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final ReturnValueConstraint returnValue2 = (ReturnValueConstraint) column2.getConstraints().get( 2 );
+        final Pattern pattern2 = (Pattern) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        final ReturnValueConstraint returnValue2 = (ReturnValueConstraint) pattern2.getConstraints().get( 2 );
 
         final PackageBuilder builder3 = new PackageBuilder();
         final PackageDescr packageDescr3 = new PackageDescr( "package3" );
         createReturnValueRule( packageDescr3,
                                " x - y " );
         builder3.addPackage( packageDescr3 );
-        final Column column3 = (Column) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final ReturnValueConstraint returnValue3 = (ReturnValueConstraint) column3.getConstraints().get( 2 );
+        final Pattern pattern3 = (Pattern) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        final ReturnValueConstraint returnValue3 = (ReturnValueConstraint) pattern3.getConstraints().get( 2 );
 
         assertEquals( returnValue1,
                       returnValue2 );
@@ -466,23 +466,23 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                            "x" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
 
         final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
                                                                             "y" );
-        column.addDescr( fieldBindingDescr2 );
+        pattern.addDescr( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
         final PredicateDescr predicate = new PredicateDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
-        column.addDescr( predicate );
+        pattern.addDescr( predicate );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -498,24 +498,24 @@ public class PackageBuilderTest extends DroolsTestCase {
         createPredicateRule( packageDescr1,
                              "x==y" );
         builder1.addPackage( packageDescr1 );
-        final Column column1 = (Column) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate1 = (PredicateConstraint) column1.getConstraints().get( 2 );
+        final Pattern pattern1 = (Pattern) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        final PredicateConstraint predicate1 = (PredicateConstraint) pattern1.getConstraints().get( 2 );
 
         final PackageBuilder builder2 = new PackageBuilder();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
         createPredicateRule( packageDescr2,
                              "x==y" );
         builder2.addPackage( packageDescr2 );
-        final Column column2 = (Column) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate2 = (PredicateConstraint) column2.getConstraints().get( 2 );
+        final Pattern pattern2 = (Pattern) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        final PredicateConstraint predicate2 = (PredicateConstraint) pattern2.getConstraints().get( 2 );
 
         final PackageBuilder builder3 = new PackageBuilder();
         final PackageDescr packageDescr3 = new PackageDescr( "package3" );
         createPredicateRule( packageDescr3,
                              "x!=y" );
         builder3.addPackage( packageDescr3 );
-        final Column column3 = (Column) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate3 = (PredicateConstraint) column3.getConstraints().get( 2 );
+        final Pattern pattern3 = (Pattern) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        final PredicateConstraint predicate3 = (PredicateConstraint) pattern3.getConstraints().get( 2 );
 
         assertEquals( predicate1,
                       predicate2 );
@@ -533,16 +533,16 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -607,9 +607,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final GroupElement or = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       or.getChildren() );
-        final Column column = (Column) or.getChildren().get( 0 );
+        final Pattern pattern = (Pattern) or.getChildren().get( 0 );
 
-        final LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
+        final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     public void testAnd() throws Exception {
@@ -627,9 +627,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final GroupElement and = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       and.getChildren() );
-        final Column column = (Column) and.getChildren().get( 0 );
+        final Pattern pattern = (Pattern) and.getChildren().get( 0 );
 
-        final LiteralConstraint literalConstraint = (LiteralConstraint) column.getConstraints().get( 0 );
+        final LiteralConstraint literalConstraint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     public void testNot() throws Exception {
@@ -656,9 +656,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final GroupElement not = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       not.getChildren() );
-        final Column column = (Column) not.getChildren().get( 0 );
+        final Pattern pattern = (Pattern) not.getChildren().get( 0 );
 
-        final LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
+        final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     public void testExists() throws Exception {
@@ -685,9 +685,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final GroupElement exists = (GroupElement) lhs.getChildren().get( 0 );
         assertLength( 1,
                       exists.getChildren() );
-        final Column column = (Column) exists.getChildren().get( 0 );
+        final Pattern pattern = (Pattern) exists.getChildren().get( 0 );
 
-        final LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
+        final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     public void testNumbers() throws Exception {
@@ -816,14 +816,14 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
                                                          "stilton" );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   null ) );
 
-        columnDescr.addDescr( literalDescr );
+        patternDescr.addDescr( literalDescr );
 
         ruleDescr.setConsequence( "" );
 
@@ -846,12 +846,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         packageDescr.addRule( ruleDescr );
         AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
-        ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
+        PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
                                                    "stilton" );
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   null ) );
-        columnDescr.addDescr( literalDescr );
+        patternDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
         ruleDescr = new RuleDescr( "rule-1" );
@@ -860,12 +860,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         packageDescr.addRule( ruleDescr );
         lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
-        columnDescr = new ColumnDescr( Cheese.class.getName(),
+        patternDescr = new PatternDescr( Cheese.class.getName(),
                                        "stilton" );
         literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
                                                                   null ) );
-        columnDescr.addDescr( literalDescr );
+        patternDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
         ruleDescr = new RuleDescr( "rule-2" );
@@ -874,14 +874,14 @@ public class PackageBuilderTest extends DroolsTestCase {
         packageDescr.addRule( ruleDescr );
         lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
-        columnDescr = new ColumnDescr( Cheese.class.getName(),
+        patternDescr = new PatternDescr( Cheese.class.getName(),
                                        "stilton" );
 
         literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
                                                                   null ) );
 
-        columnDescr.addDescr( literalDescr );
+        patternDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
         builder.addPackage( packageDescr );
@@ -906,8 +906,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column1 = new ColumnDescr( Cheese.class.getName() );
-        lhs.addDescr( column1 );
+        final PatternDescr pattern1 = new PatternDescr( Cheese.class.getName() );
+        lhs.addDescr( pattern1 );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "type",
                                                                            "$type" );
@@ -916,12 +916,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        column1.addDescr( fieldBindingDescr );
-        column1.addDescr( literalDescr );
+        pattern1.addDescr( fieldBindingDescr );
+        pattern1.addDescr( literalDescr );
 
-        final ColumnDescr column2 = new ColumnDescr( Cheese.class.getName() );
-        lhs.addDescr( column2 );
-        column2.addDescr( fieldBindingDescr );
+        final PatternDescr pattern2 = new PatternDescr( Cheese.class.getName() );
+        lhs.addDescr( pattern2 );
+        pattern2.addDescr( fieldBindingDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -991,16 +991,16 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -1009,7 +1009,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      expression ) );
 
-        column.addDescr( returnValue );
+        pattern.addDescr( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
     }
@@ -1022,23 +1022,23 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                     "stilton" );
-        lhs.addDescr( column );
+        lhs.addDescr( pattern );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                            "x" );
-        column.addDescr( fieldBindingDescr );
+        pattern.addDescr( fieldBindingDescr );
 
         final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
                                                                             "y" );
-        column.addDescr( fieldBindingDescr2 );
+        pattern.addDescr( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
         final PredicateDescr predicate = new PredicateDescr( expression );
-        column.addDescr( predicate );
+        pattern.addDescr( predicate );
 
         ruleDescr.setConsequence( "modify(stilton);" );
     }
@@ -1070,10 +1070,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column = new ColumnDescr( Primitives.class.getName() );
-        lhs.addDescr( column );
+        final PatternDescr pattern = new PatternDescr( Primitives.class.getName() );
+        lhs.addDescr( pattern );
 
-        column.addDescr( literalDescr );
+        pattern.addDescr( literalDescr );
 
         ruleDescr.setConsequence( "" );
 
@@ -1095,16 +1095,16 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         lhs.addDescr( (BaseDescr) ceDescr );
 
-        final ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
+        final PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
                                                          "stilton" );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        columnDescr.addDescr( literalDescr );
+        patternDescr.addDescr( literalDescr );
 
-        ceDescr.addDescr( columnDescr );
+        ceDescr.addDescr( patternDescr );
 
         ruleDescr.setConsequence( consequence );
 
@@ -1211,7 +1211,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             this.declarations = declarations;
         }
 
-        public InternalFactHandle get(final int column) {
+        public InternalFactHandle get(final int patern) {
             return null;
         }
 

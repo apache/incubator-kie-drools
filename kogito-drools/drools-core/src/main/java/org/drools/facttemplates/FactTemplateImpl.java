@@ -109,7 +109,7 @@ public class FactTemplateImpl
     }
 
     /**
-     * get the Slot at the given column id
+     * get the Slot at the given pattern id
      * @param id
      * @return
      */
@@ -118,7 +118,7 @@ public class FactTemplateImpl
     }
 
     /**
-     * Look up the column index of the slot
+     * Look up the pattern index of the slot
      * @param name
      * @return
      */

@@ -17,7 +17,7 @@ package org.drools.common;
  */
 
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -30,22 +30,22 @@ public class InstanceNotEqualsConstraint
 
     private static final Declaration[] declarations     = new Declaration[0];
 
-    private Column                     otherColumn;
+    private Pattern                     otherPattern;
 
-    public InstanceNotEqualsConstraint(final Column otherColumn) {
-        this.otherColumn = otherColumn;
+    public InstanceNotEqualsConstraint(final Pattern otherPattern) {
+        this.otherPattern = otherPattern;
     }
 
     public Declaration[] getRequiredDeclarations() {
         return InstanceNotEqualsConstraint.declarations;
     }
 
-    public Column getOtherColumn() {
-        return this.otherColumn;
+    public Pattern getOtherPattern() {
+        return this.otherPattern;
     }
 
     public ContextEntry getContextEntry() {
-        return new InstanceNotEqualsConstraintContextEntry( this.otherColumn );
+        return new InstanceNotEqualsConstraintContextEntry( this.otherPattern );
     }
 
     public boolean isAllowed(final ContextEntry entry) {
@@ -60,15 +60,15 @@ public class InstanceNotEqualsConstraint
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
-        return tuple.get( this.otherColumn.getOffset() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
+        return tuple.get( this.otherPattern.getOffset() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
     }
 
     public String toString() {
-        return "[InstanceEqualsConstraint otherColumn=" + this.otherColumn + " ]";
+        return "[InstanceEqualsConstraint otherPattern=" + this.otherPattern + " ]";
     }
 
     public int hashCode() {
-        return this.otherColumn.hashCode();
+        return this.otherPattern.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -81,7 +81,7 @@ public class InstanceNotEqualsConstraint
         }
 
         final InstanceNotEqualsConstraint other = (InstanceNotEqualsConstraint) object;
-        return this.otherColumn.equals( other.otherColumn );
+        return this.otherPattern.equals( other.otherPattern );
     }
 
     public static class InstanceNotEqualsConstraintContextEntry
@@ -92,11 +92,11 @@ public class InstanceNotEqualsConstraint
         public Object             left;
         public Object             right;
 
-        private Column            column;
+        private Pattern            pattern;
         private ContextEntry      entry;
 
-        public InstanceNotEqualsConstraintContextEntry(final Column column) {
-            this.column = column;
+        public InstanceNotEqualsConstraintContextEntry(final Pattern pattern) {
+            this.pattern = pattern;
         }
 
         public ContextEntry getNext() {
@@ -109,7 +109,7 @@ public class InstanceNotEqualsConstraint
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
                                     final ReteTuple tuple) {
-            this.left = tuple.get( this.column.getOffset() ).getObject();
+            this.left = tuple.get( this.pattern.getOffset() ).getObject();
         }
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,

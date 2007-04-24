@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.spi.ColumnExtractor;
+import org.drools.spi.PatternExtractor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
 
-public class Column
+public class Pattern
     implements
     RuleConditionElement {
     /**
@@ -45,7 +45,7 @@ public class Column
     // the position of the related fact inside the tuple; 
     private int               offset;
 
-    public Column(final int index,
+    public Pattern(final int index,
                   final ObjectType objectType) {
         this( index,
               index,
@@ -53,7 +53,7 @@ public class Column
               null );
     }
 
-    public Column(final int index,
+    public Pattern(final int index,
                   final ObjectType objectType,
                   final String identifier) {
         this( index,
@@ -62,7 +62,7 @@ public class Column
               identifier );
     }
 
-    public Column(final int index,
+    public Pattern(final int index,
                   final int offset,
                   final ObjectType objectType,
                   final String identifier) {
@@ -71,7 +71,7 @@ public class Column
         this.objectType = objectType;
         if ( identifier != null && (!identifier.equals( "" )) ) {
             this.declaration = new Declaration( identifier,
-                                                new ColumnExtractor( objectType ),
+                                                new PatternExtractor( objectType ),
                                                 this );
             this.declarations = new HashMap( 2 ); // default to avoid immediate resize
             this.declarations.put( this.declaration.getIdentifier(),
@@ -83,7 +83,7 @@ public class Column
 
     public Object clone() {
         final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
-        final Column clone = new Column( this.index,
+        final Pattern clone = new Pattern( this.index,
                                    this.objectType,
                                    identifier );
 
@@ -146,7 +146,7 @@ public class Column
     }
 
     /**
-     * The offset of the fact related to this column 
+     * The offset of the fact related to this pattern 
      * inside the tuple
      * 
      * @return the offset
@@ -172,7 +172,7 @@ public class Column
     }
 
     public String toString() {
-        return "Column type='" + ((this.objectType == null) ? "null" : this.objectType.toString()) + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + ((this.declaration == null) ? "" : this.declaration.toString())
+        return "Pattern type='" + ((this.objectType == null) ? "null" : this.objectType.toString()) + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + ((this.declaration == null) ? "" : this.declaration.toString())
                + "'";
     }
 
@@ -196,7 +196,7 @@ public class Column
             return false;
         }
 
-        final Column other = (Column) object;
+        final Pattern other = (Pattern) object;
 
         if ( !this.constraints.equals( other.constraints ) ) {
             return false;

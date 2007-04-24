@@ -36,7 +36,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -145,7 +145,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testPartialAST() throws Exception {
-        parseResource( "column_partial.drl" );
+        parseResource( "pattern_partial.drl" );
 
         this.parser.compilation_unit();
 
@@ -158,13 +158,13 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
-        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
 
-        assertNotNull( col );
+        assertNotNull( pattern );
         assertEquals( "Bar",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
         assertEquals( "foo3",
-                      col.getIdentifier() );
+                      pattern.getIdentifier() );
 
     }
 
@@ -421,10 +421,10 @@ public class RuleParserTest extends TestCase {
         assertEquals( 3,
                       lhs.getDescrs().size() );
 
-        ColumnDescr col = (ColumnDescr) lhs.getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( 1,
-                      col.getDescrs().size() );
-        FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+                      pattern.getDescrs().size() );
+        FieldConstraintDescr fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "==",
@@ -436,11 +436,11 @@ public class RuleParserTest extends TestCase {
         assertEquals( false,
                       lit.isStaticFieldValue() );
 
-        col = (ColumnDescr) lhs.getDescrs().get( 1 );
+        pattern = (PatternDescr) lhs.getDescrs().get( 1 );
         assertEquals( 1,
-                      col.getDescrs().size() );
+                      pattern.getDescrs().size() );
 
-        fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( ">",
@@ -450,13 +450,13 @@ public class RuleParserTest extends TestCase {
         assertEquals( "boo",
                       fld.getFieldName() );
 
-        col = (ColumnDescr) lhs.getDescrs().get( 2 );
+        pattern = (PatternDescr) lhs.getDescrs().get( 2 );
         assertEquals( 1,
-                      col.getDescrs().size() );
+                      pattern.getDescrs().size() );
 
         //lit = (LiteralDescr) col.getDescrs().get( 0 );
 
-        fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
         assertEquals( ">",
                       lit.getEvaluator() );
@@ -504,8 +504,8 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void testEmptyColumn() throws Exception {
-        parseResource( "test_EmptyColumn.drl" );
+    public void testEmptyPattern() throws Exception {
+        parseResource( "test_EmptyPattern.drl" );
         this.parser.compilation_unit();
         final PackageDescr packageDescr = this.parser.getPackageDescr();
         assertEquals( 1,
@@ -516,11 +516,11 @@ public class RuleParserTest extends TestCase {
         assertNotNull( ruleDescr.getLhs() );
         assertEquals( 1,
                       ruleDescr.getLhs().getDescrs().size() );
-        final ColumnDescr columnDescr = (ColumnDescr) ruleDescr.getLhs().getDescrs().get( 0 );
+        final PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get( 0 );
         assertEquals( 0,
-                      columnDescr.getDescrs().size() ); //this may be null, not sure as the test doesn't get this far...
+                      patternDescr.getDescrs().size() ); //this may be null, not sure as the test doesn't get this far...
         assertEquals( "Cheese",
-                      columnDescr.getObjectType() );
+                      patternDescr.getObjectType() );
 
     }
 
@@ -611,7 +611,7 @@ public class RuleParserTest extends TestCase {
     //        
     //        assertEquals(3, from.getLine());
     //        
-    //        assertEquals("Foo", from.getReturnedColumn().getObjectType());
+    //        assertEquals("Foo", from.getReturnedPattern().getObjectType());
     //        assertTrue(from.getDataSource() instanceof FieldAccessDescr);
     //        assertEquals("baz", ((FieldAccessDescr) from.getDataSource()).getFieldName());        
     //        assertEquals("bar", ((FieldAccessDescr) from.getDataSource()).getVariableName());
@@ -620,8 +620,8 @@ public class RuleParserTest extends TestCase {
     //        ArgumentValueDescr arg = null;
     //        
     //        from = (FromDescr) rule.getLhs().getDescrs().get(1);
-    //        assertEquals("Foo", from.getReturnedColumn().getObjectType());
-    //        assertEquals(0, from.getReturnedColumn().getDescrs().size());
+    //        assertEquals("Foo", from.getReturnedPattern().getObjectType());
+    //        assertEquals(0, from.getReturnedPattern().getDescrs().size());
     //        FieldAccessDescr fieldAccess = ( FieldAccessDescr ) from.getDataSource();
     //        arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
     //        assertEquals(ArgumentValueDescr.STRING,  arg.getType() );
@@ -691,7 +691,7 @@ public class RuleParserTest extends TestCase {
     //        
     //                
     //        
-    //        assertEquals("Bam", ((ColumnDescr)rule.getLhs().getDescrs().get(8)).getObjectType());
+    //        assertEquals("Bam", ((PatternDescr)rule.getLhs().getDescrs().get(8)).getObjectType());
     //    }
 
     public void testSimpleRule() throws Exception {
@@ -705,7 +705,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 7,
                       rule.getConsequenceLine() );
         assertEquals( 2,
-                      rule.getConsequenceColumn() );
+                      rule.getConsequencePattern() );
 
         final AndDescr lhs = rule.getLhs();
 
@@ -716,8 +716,8 @@ public class RuleParserTest extends TestCase {
 
         //System.err.println( lhs.getDescrs() );
 
-        // Check first column
-        final ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );
+        // Check first pattern
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "foo3",
                       first.getIdentifier() );
         assertEquals( "Bar",
@@ -738,8 +738,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "3",
                       constraint.getText() );
 
-        // Check second column
-        final ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );
+        // Check second pattern
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
         assertEquals( "foo4",
                       second.getIdentifier() );
         assertEquals( "Bar",
@@ -768,8 +768,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "4",
                       constraint.getText() );
 
-        // Check third column
-        final ColumnDescr third = (ColumnDescr) lhs.getDescrs().get( 2 );
+        // Check third pattern
+        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
         assertNull( third.getIdentifier() );
         assertEquals( "Baz",
                       third.getObjectType() );
@@ -794,14 +794,14 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       rule.getLhs().getDescrs().size() );
 
-        //The first column, with 2 restrictions on a single field (plus a connective)
-        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        //The first pattern, with 2 restrictions on a single field (plus a connective)
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Person",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
         assertEquals( 1,
-                      col.getDescrs().size() );
+                      pattern.getDescrs().size() );
 
-        FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        FieldConstraintDescr fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         assertEquals( 3,
                       fld.getRestrictions().size() );
         assertEquals( "age",
@@ -824,13 +824,13 @@ public class RuleParserTest extends TestCase {
                       lit.getText() );
 
         //the second col, with 2 fields, the first with 2 restrictions, the second field with one
-        col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertEquals( "Vehicle",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
         assertEquals( 2,
-                      col.getDescrs().size() );
+                      pattern.getDescrs().size() );
 
-        fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         assertEquals( 3,
                       fld.getRestrictions().size() );
         lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
@@ -851,7 +851,7 @@ public class RuleParserTest extends TestCase {
                       lit.getText() );
 
         //now the second field
-        fld = (FieldConstraintDescr) col.getDescrs().get( 1 );
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 1 );
         assertEquals( 1,
                       fld.getRestrictions().size() );
         lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
@@ -875,7 +875,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 7,
                       rule.getConsequenceLine() );
         assertEquals( 2,
-                      rule.getConsequenceColumn() );
+                      rule.getConsequencePattern() );
 
         final AndDescr lhs = rule.getLhs();
 
@@ -884,8 +884,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( 3,
                       lhs.getDescrs().size() );
 
-        // Check first column
-        final ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );
+        // Check first pattern
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "foo3",
                       first.getIdentifier() );
         assertEquals( "Bar",
@@ -893,14 +893,14 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       first.getDescrs().size() );
 
-        // Check second column
-        final ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );
+        // Check second pattern
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
         assertEquals( "foo4",
                       second.getIdentifier() );
         assertEquals( "Bar",
                       second.getObjectType() );
 
-        final ColumnDescr third = (ColumnDescr) lhs.getDescrs().get( 2 );
+        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
         assertEquals( "Baz",
                       third.getObjectType() );
 
@@ -940,8 +940,8 @@ public class RuleParserTest extends TestCase {
 
         //System.err.println( lhs.getDescrs() );
 
-        // Check first column
-        final ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );
+        // Check first pattern
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "foo3",
                       first.getIdentifier() );
         assertEquals( "Bar",
@@ -964,8 +964,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "3",
                       constraint.getText() );
 
-        // Check second column
-        final ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );
+        // Check second pattern
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
         assertEquals( "foo4",
                       second.getIdentifier() );
         assertEquals( "Bar",
@@ -995,8 +995,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "4",
                       constraint.getText() );
 
-        // Check third column
-        final ColumnDescr third = (ColumnDescr) lhs.getDescrs().get( 2 );
+        // Check third pattern
+        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
         assertNull( third.getIdentifier() );
         assertEquals( "Baz",
                       third.getObjectType() );
@@ -1020,14 +1020,14 @@ public class RuleParserTest extends TestCase {
         final NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
         assertEquals( 1,
                       not.getDescrs().size() );
-        final ColumnDescr col = (ColumnDescr) not.getDescrs().get( 0 );
+        final PatternDescr pattern = (PatternDescr) not.getDescrs().get( 0 );
 
         assertEquals( "Cheese",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
         assertEquals( 1,
-                      col.getDescrs().size() );
+                      pattern.getDescrs().size() );
 
-        final FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        final FieldConstraintDescr fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         final LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "==",
@@ -1078,17 +1078,17 @@ public class RuleParserTest extends TestCase {
         final NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
         assertEquals( 1,
                       not.getDescrs().size() );
-        final ColumnDescr col = (ColumnDescr) not.getDescrs().get( 0 );
+        final PatternDescr pattern = (PatternDescr) not.getDescrs().get( 0 );
 
         assertEquals( "Cheese",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
 
         final ExistsDescr ex = (ExistsDescr) lhs.getDescrs().get( 1 );
         assertEquals( 1,
                       ex.getDescrs().size() );
-        final ColumnDescr exCol = (ColumnDescr) ex.getDescrs().get( 0 );
+        final PatternDescr exPattern = (PatternDescr) ex.getDescrs().get( 0 );
         assertEquals( "Foo",
-                      exCol.getObjectType() );
+                      exPattern.getObjectType() );
 
         assertFalse( parser.hasErrors() );
     }
@@ -1114,8 +1114,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( 3,
                       lhs.getDescrs().size() );
 
-        // Check first column
-        final ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );
+        // Check first pattern
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "foo3",
                       first.getIdentifier() );
         assertEquals( "Bar",
@@ -1137,8 +1137,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "3",
                       constraint.getText() );
 
-        // Check second column
-        final ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );
+        // Check second pattern
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
         assertEquals( "foo4",
                       second.getIdentifier() );
         assertEquals( "Bar",
@@ -1221,8 +1221,8 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "System.out.println(\"I like \" + t);",
                                       (String) rule0.getConsequence() );
 
-        // Check first column
-        ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );
+        // Check first pattern
+        PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "Cheese",
                       first.getObjectType() );
 
@@ -1234,8 +1234,8 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "System.out.println(\"I like \" + t);",
                                       (String) rule1.getConsequence() );
 
-        // Check first column
-        first = (ColumnDescr) lhs.getDescrs().get( 0 );
+        // Check first pattern
+        first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "Cheese",
                       first.getObjectType() );
 
@@ -1292,20 +1292,20 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       rule.getLhs().getDescrs().size() );
 
-        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Person",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
 
         assertEquals( 2,
-                      col.getDescrs().size() );
+                      pattern.getDescrs().size() );
         assertEquals( "age",
-                      ((FieldConstraintDescr) col.getDescrs().get( 0 )).getFieldName() );
+                      ((FieldConstraintDescr) pattern.getDescrs().get( 0 )).getFieldName() );
         assertEquals( "location",
-                      ((FieldConstraintDescr) col.getDescrs().get( 1 )).getFieldName() );
+                      ((FieldConstraintDescr) pattern.getDescrs().get( 1 )).getFieldName() );
 
-        col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertEquals( "Bar",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
 
         assertNotNull( (String) rule.getConsequence() );
 
@@ -1324,16 +1324,16 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
 
-        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Person",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
 
         assertEquals( 2,
-                      col.getDescrs().size() );
+                      pattern.getDescrs().size() );
         assertEquals( "age",
-                      ((FieldConstraintDescr) col.getDescrs().get( 0 )).getFieldName() );
+                      ((FieldConstraintDescr) pattern.getDescrs().get( 0 )).getFieldName() );
         assertEquals( "location",
-                      ((FieldConstraintDescr) col.getDescrs().get( 1 )).getFieldName() );
+                      ((FieldConstraintDescr) pattern.getDescrs().get( 1 )).getFieldName() );
 
         assertNotNull( (String) rule.getConsequence() );
 
@@ -1399,7 +1399,7 @@ public class RuleParserTest extends TestCase {
         final AndDescr lhs = ruleDescr.getLhs();
         assertEquals( 1,
                       lhs.getDescrs().size() );
-        final ColumnDescr cheese = (ColumnDescr) lhs.getDescrs().get( 0 );
+        final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( 1,
                       cheese.getDescrs().size() );
         assertEquals( "Cheese",
@@ -1423,7 +1423,7 @@ public class RuleParserTest extends TestCase {
         final AndDescr lhs = ruleDescr.getLhs();
         assertEquals( 2,
                       lhs.getDescrs().size() );
-        final ColumnDescr cheese = (ColumnDescr) lhs.getDescrs().get( 0 );
+        final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
         assertEquals( 2,
@@ -1442,7 +1442,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "stilton",
                       literalDescr.getText() );
 
-        final ColumnDescr person = (ColumnDescr) lhs.getDescrs().get( 1 );
+        final PatternDescr person = (PatternDescr) lhs.getDescrs().get( 1 );
         fieldBinding = (FieldBindingDescr) person.getDescrs().get( 0 );
         assertEquals( "name",
                       fieldBinding.getFieldName() );
@@ -1489,7 +1489,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       or.getDescrs().size() );
 
-        final ColumnDescr first = (ColumnDescr) or.getDescrs().get( 0 );
+        final PatternDescr first = (PatternDescr) or.getDescrs().get( 0 );
         assertEquals( "Person",
                       first.getObjectType() );
 
@@ -1497,11 +1497,11 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       and.getDescrs().size() );
 
-        final ColumnDescr left = (ColumnDescr) and.getDescrs().get( 0 );
+        final PatternDescr left = (PatternDescr) and.getDescrs().get( 0 );
         assertEquals( "Person",
                       left.getObjectType() );
 
-        final ColumnDescr right = (ColumnDescr) and.getDescrs().get( 1 );
+        final PatternDescr right = (PatternDescr) and.getDescrs().get( 1 );
         assertEquals( "Cheese",
                       right.getObjectType() );
     }
@@ -1529,8 +1529,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       join.getDescrs().size() );
 
-        ColumnDescr left = (ColumnDescr) join.getDescrs().get( 0 );
-        ColumnDescr right = (ColumnDescr) join.getDescrs().get( 1 );
+        PatternDescr left = (PatternDescr) join.getDescrs().get( 0 );
+        PatternDescr right = (PatternDescr) join.getDescrs().get( 1 );
         assertEquals( "Person",
                       left.getObjectType() );
         assertEquals( "Cheese",
@@ -1566,8 +1566,8 @@ public class RuleParserTest extends TestCase {
         final OrDescr or = (OrDescr) and.getDescrs().get( 1 );
         assertEquals( 2,
                       or.getDescrs().size() );
-        left = (ColumnDescr) or.getDescrs().get( 0 );
-        right = (ColumnDescr) or.getDescrs().get( 1 );
+        left = (PatternDescr) or.getDescrs().get( 0 );
+        right = (PatternDescr) or.getDescrs().get( 1 );
         assertEquals( "Person",
                       left.getObjectType() );
         assertEquals( "Cheese",
@@ -1620,19 +1620,19 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       or.getDescrs().size() );
 
-        final ColumnDescr leftCol = (ColumnDescr) or.getDescrs().get( 0 );
+        final PatternDescr leftPattern = (PatternDescr) or.getDescrs().get( 0 );
         assertEquals( "Person",
-                      leftCol.getObjectType() );
+                      leftPattern.getObjectType() );
         assertEquals( "foo",
-                      leftCol.getIdentifier() );
+                      leftPattern.getIdentifier() );
 
-        final ColumnDescr rightCol = (ColumnDescr) or.getDescrs().get( 1 );
+        final PatternDescr rightPattern = (PatternDescr) or.getDescrs().get( 1 );
         assertEquals( "Person",
-                      rightCol.getObjectType() );
+                      rightPattern.getObjectType() );
         assertEquals( "foo",
-                      rightCol.getIdentifier() );
+                      rightPattern.getIdentifier() );
 
-        final ColumnDescr cheeseDescr = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        final PatternDescr cheeseDescr = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertEquals( "Cheese",
                       cheeseDescr.getObjectType() );
         assertEquals( null,
@@ -1664,14 +1664,14 @@ public class RuleParserTest extends TestCase {
                       or.getDescrs().size() );
 
         //first fact
-        final ColumnDescr firstFact = (ColumnDescr) or.getDescrs().get( 0 );
+        final PatternDescr firstFact = (PatternDescr) or.getDescrs().get( 0 );
         assertEquals( "Person",
                       firstFact.getObjectType() );
         assertEquals( "foo",
                       firstFact.getIdentifier() );
 
         //second "option"
-        final ColumnDescr secondFact = (ColumnDescr) or.getDescrs().get( 1 );
+        final PatternDescr secondFact = (PatternDescr) or.getDescrs().get( 1 );
         assertEquals( "Person",
                       secondFact.getObjectType() );
         assertEquals( 1,
@@ -1704,14 +1704,14 @@ public class RuleParserTest extends TestCase {
                       or.getDescrs().size() );
 
         //first fact
-        final ColumnDescr firstFact = (ColumnDescr) or.getDescrs().get( 0 );
+        final PatternDescr firstFact = (PatternDescr) or.getDescrs().get( 0 );
         assertEquals( "Person",
                       firstFact.getObjectType() );
         assertEquals( "foo",
                       firstFact.getIdentifier() );
 
         //second "option"
-        final ColumnDescr secondFact = (ColumnDescr) or.getDescrs().get( 0 );
+        final PatternDescr secondFact = (PatternDescr) or.getDescrs().get( 0 );
         assertEquals( "Person",
                       secondFact.getObjectType() );
         assertEquals( "foo",
@@ -1746,10 +1746,10 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       leftOr.getDescrs().size() );
         final NotDescr not = (NotDescr) leftOr.getDescrs().get( 0 );
-        final ColumnDescr foo1 = (ColumnDescr) not.getDescrs().get( 0 );
+        final PatternDescr foo1 = (PatternDescr) not.getDescrs().get( 0 );
         assertEquals( "Foo",
                       foo1.getObjectType() );
-        final ColumnDescr foo2 = (ColumnDescr) leftOr.getDescrs().get( 1 );
+        final PatternDescr foo2 = (PatternDescr) leftOr.getDescrs().get( 1 );
         assertEquals( "Foo",
                       foo2.getObjectType() );
 
@@ -1757,10 +1757,10 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( 2,
                       rightOr.getDescrs().size() );
-        final ColumnDescr shoes = (ColumnDescr) rightOr.getDescrs().get( 0 );
+        final PatternDescr shoes = (PatternDescr) rightOr.getDescrs().get( 0 );
         assertEquals( "Shoes",
                       shoes.getObjectType() );
-        final ColumnDescr butt = (ColumnDescr) rightOr.getDescrs().get( 1 );
+        final PatternDescr butt = (PatternDescr) rightOr.getDescrs().get( 1 );
         assertEquals( "Butt",
                       butt.getObjectType() );
 
@@ -1785,9 +1785,9 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "abc(\"foo\") + 5",
                                       (String) eval.getContent() );
 
-        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertEquals( "Foo",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
 
     }
 
@@ -1801,12 +1801,12 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
         assertEquals( 3,
                       rule.getLhs().getDescrs().size() );
-        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Foo",
-                      col.getObjectType() );
-        col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+                      pattern.getObjectType() );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertEquals( "Bar",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
 
         final EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 2 );
         assertEqualsIgnoreWhitespace( "abc(\"foo\")",
@@ -1828,7 +1828,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
-        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( 1,
                       col.getDescrs().size() );
         assertEquals( "Foo",
@@ -1857,7 +1857,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
-        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( 2,
                       col.getDescrs().size() );
 
@@ -1886,15 +1886,15 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       rule.getLhs().getDescrs().size() );
 
-        ColumnDescr column = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
-        final FieldBindingDescr fieldBinding = (FieldBindingDescr) column.getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final FieldBindingDescr fieldBinding = (FieldBindingDescr) pattern.getDescrs().get( 0 );
         assertEquals( "$likes",
                       fieldBinding.getIdentifier() );
 
         final NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
-        column = (ColumnDescr) not.getDescrs().get( 0 );
+        pattern = (PatternDescr) not.getDescrs().get( 0 );
 
-        final FieldConstraintDescr fld = (FieldConstraintDescr) column.getDescrs().get( 0 );
+        final FieldConstraintDescr fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         final VariableRestrictionDescr boundVariable = (VariableRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "type",
@@ -2106,7 +2106,7 @@ public class RuleParserTest extends TestCase {
                       rule.getName() );
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
-        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Foo",
                       col.getObjectType() );
         assertEquals( 1,
@@ -2228,7 +2228,7 @@ public class RuleParserTest extends TestCase {
     public void testEndPosition() throws Exception {
         parseResource( "test_EndPosition.drl" ).compilation_unit();
         final RuleDescr rule = (RuleDescr) this.parser.getPackageDescr().getRules().get( 0 );
-        final ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( 6,
                       col.getLine() );
 
@@ -2245,10 +2245,10 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = this.parser.getPackageDescr();
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
-        final ColumnDescr c = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr p = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
 
         assertEquals( "com.cheeseco.Cheese",
-                      c.getObjectType() );
+                      p.getObjectType() );
     }
 
     public void testAccumulate() throws Exception {
@@ -2277,9 +2277,9 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "new Integer(x)",
                                       accum.getResultCode() );
 
-        final ColumnDescr col = (ColumnDescr) accum.getSourceColumn();
+        final PatternDescr pattern = (PatternDescr) accum.getSourcePattern();
         assertEquals( "Person",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
     }
 
     public void testAccumulateWithBindings() throws Exception {
@@ -2298,7 +2298,7 @@ public class RuleParserTest extends TestCase {
 
         final AccumulateDescr accum = (AccumulateDescr) rule.getLhs().getDescrs().get( 0 );
         assertEqualsIgnoreWhitespace( "$counter",
-                                      accum.getResultColumn().getIdentifier() );
+                                      accum.getResultPattern().getIdentifier() );
         assertEqualsIgnoreWhitespace( "int x = 0 ;",
                                       accum.getInitCode() );
         assertEqualsIgnoreWhitespace( "x++;",
@@ -2306,9 +2306,9 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "new Integer(x)",
                                       accum.getResultCode() );
 
-        final ColumnDescr col = (ColumnDescr) accum.getSourceColumn();
+        final PatternDescr pattern = (PatternDescr) accum.getSourcePattern();
         assertEquals( "Person",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
     }
 
     public void testCollect() throws Exception {
@@ -2330,19 +2330,19 @@ public class RuleParserTest extends TestCase {
 
         final CollectDescr collect = (CollectDescr) rule.getLhs().getDescrs().get( 0 );
 
-        final ColumnDescr col = (ColumnDescr) collect.getSourceColumn();
+        final PatternDescr pattern = (PatternDescr) collect.getSourcePattern();
         assertEquals( "Person",
-                      col.getObjectType() );
+                      pattern.getObjectType() );
     }
 
     public void testPredicate() throws Exception {
-        final ColumnDescr column = new ColumnDescr();
-        parse( "$var : attr -> ( $var.equals(\"xyz\") )" ).constraints( column );
+        final PatternDescr pattern = new PatternDescr();
+        parse( "$var : attr -> ( $var.equals(\"xyz\") )" ).constraints( pattern );
 
         assertFalse( this.parser.getErrorMessages().toString(),
                      this.parser.hasErrors() );
 
-        final List constraints = column.getDescrs();
+        final List constraints = pattern.getDescrs();
         assertEquals( 2,
                       constraints.size() );
 
@@ -2357,13 +2357,13 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testPredicate2() throws Exception {
-        final ColumnDescr column = new ColumnDescr();
-        parse( "( $var.equals(\"xyz\") )" ).constraints( column );
+        final PatternDescr pattern = new PatternDescr();
+        parse( "( $var.equals(\"xyz\") )" ).constraints( pattern );
 
         assertFalse( this.parser.getErrorMessages().toString(),
                      this.parser.hasErrors() );
 
-        final List constraints = column.getDescrs();
+        final List constraints = pattern.getDescrs();
         assertEquals( 1,
                       constraints.size() );
 
@@ -2401,16 +2401,16 @@ public class RuleParserTest extends TestCase {
         final NotDescr not1 = (NotDescr) root.getDescrs().get( 0 );
         final AndDescr and1 = (AndDescr) not1.getDescrs().get( 0 );
 
-        final ColumnDescr state = (ColumnDescr) and1.getDescrs().get( 0 );
+        final PatternDescr state = (PatternDescr) and1.getDescrs().get( 0 );
         final NotDescr not2 = (NotDescr) and1.getDescrs().get( 1 );
         final AndDescr and2 = (AndDescr) not2.getDescrs().get( 0 );
-        final ColumnDescr person = (ColumnDescr) and2.getDescrs().get( 0 );
-        final ColumnDescr cheese = (ColumnDescr) and2.getDescrs().get( 1 );
+        final PatternDescr person = (PatternDescr) and2.getDescrs().get( 0 );
+        final PatternDescr cheese = (PatternDescr) and2.getDescrs().get( 1 );
 
-        final ColumnDescr person2 = (ColumnDescr) root.getDescrs().get( 1 );
+        final PatternDescr person2 = (PatternDescr) root.getDescrs().get( 1 );
         final OrDescr or = (OrDescr) root.getDescrs().get( 2 );
-        final ColumnDescr cheese2 = (ColumnDescr) or.getDescrs().get( 0 );
-        final ColumnDescr cheese3 = (ColumnDescr) or.getDescrs().get( 1 );
+        final PatternDescr cheese2 = (PatternDescr) or.getDescrs().get( 0 );
+        final PatternDescr cheese3 = (PatternDescr) or.getDescrs().get( 1 );
 
         assertEquals( state.getObjectType(),
                       "State" );
@@ -2444,13 +2444,13 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( 2,
                       forall.getDescrs().size() );
-        final ColumnDescr col = forall.getBaseColumn();
+        final PatternDescr pattern = forall.getBasePattern();
         assertEquals( "Person",
-                      col.getObjectType() );
-        final List remaining = forall.getRemainingColumns();
+                      pattern.getObjectType() );
+        final List remaining = forall.getRemainingPatterns();
         assertEquals( 1,
                       remaining.size() );
-        final ColumnDescr cheese = (ColumnDescr) remaining.get( 0 );
+        final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
     }

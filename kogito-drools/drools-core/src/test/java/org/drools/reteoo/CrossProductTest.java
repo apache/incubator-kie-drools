@@ -25,7 +25,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -45,15 +45,15 @@ public class CrossProductTest extends TestCase {
 
         final Rule rule = new Rule( "rule-1" );
 
-        final Column list1Column = new Column( 0,
+        final Pattern list1Pattern = new Pattern( 0,
                                                list1ObjectType,
                                                "s1" );
-        final Column list2Column = new Column( 1,
+        final Pattern list2Pattern = new Pattern( 1,
                                                list2ObjectType,
                                                "s2" );
 
-        rule.addPattern( list1Column );
-        rule.addPattern( list2Column );
+        rule.addPattern( list1Pattern );
+        rule.addPattern( list2Pattern );
 
         final Declaration s1Declaration = rule.getDeclaration( "s1" );
         final Declaration s2Declaration = rule.getDeclaration( "s2" );

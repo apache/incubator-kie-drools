@@ -42,7 +42,7 @@ rule "Constraints everywhere" salience 80
         results.add(new Integer($cheesery.getTotalAmount()));
 end  
 
-rule "Source column binds" salience 70
+rule "Source pattern binds" salience 70
     when
         $person      : Person( name == "Bob", $likes : likes )
     	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price: price ),
