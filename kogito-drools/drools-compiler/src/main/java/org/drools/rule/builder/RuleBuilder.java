@@ -73,9 +73,9 @@ public class RuleBuilder {
         return (this.context == null) ? null : this.context.getDescrLookups();
     }
 
-    public String getRuleClass() {
-        return (this.context == null) ? null : this.context.getRuleClass();
-    }
+//    public String getRuleClass() {
+//        return (this.context == null) ? null : this.context.getRuleClass();
+//    }
 
     public Map getInvokerLookups() {
         return (this.context == null) ? null : this.context.getInvokerLookups();
