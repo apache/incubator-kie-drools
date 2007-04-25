@@ -58,9 +58,6 @@ public class RuleBuildContext {
     // errors found when building the current context
     private List                     errors;
 
-    // the class name for the rule    
-    private String                   ruleClass;
-
     // list of generated methods
     private List                     methods;
 
@@ -230,13 +227,13 @@ public class RuleBuildContext {
         this.patternId = patternId;
     }
 
-    public String getRuleClass() {
-        return this.ruleClass;
-    }
-
-    public void setRuleClass(final String ruleClass) {
-        this.ruleClass = ruleClass;
-    }
+//    public String getRuleClass() {
+//        return this.ruleClass;
+//    }
+//
+//    public void setRuleClass(final String ruleClass) {
+//        this.ruleClass = ruleClass;
+//    }
 
     public Stack getBuildStack() {
         return this.buildStack;

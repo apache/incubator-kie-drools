@@ -100,8 +100,12 @@ public class JavaDialect
     private Map                            lineMappings;
     private Map                            errorHandlers;
     private List                           results;
+    // the class name for the rule    
+    private String                   ruleClass;
+    
     private final TypeResolver             typeResolver;
     private final ClassFieldExtractorCache classFieldExtractorCache;
+    
 
     // a map of registered builders
     private Map                            builders;
@@ -195,6 +199,10 @@ public class JavaDialect
                                                          "java",
                                                          this.src );
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
+    }
+    
+    public void setRuleClass(String ruleClass) {
+        this.ruleClass = ruleClass;
     }
 
     public List[] getExpressionIdentifiers(final RuleBuildContext context,
@@ -403,14 +411,14 @@ public class JavaDialect
                         final Rule rule,
                         final RuleDescr ruleDescr) {
         // return if there is no ruleclass name;       
-        if ( builder.getRuleClass() == null ) {
+        if ( this.ruleClass == null ) {
             return;
         }
 
         // The compilation result is for th entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
                              ruleDescr,
-                             builder.getRuleClass(),
+                             this.ruleClass,
                              this.src,
                              new RuleErrorHandler( ruleDescr,
                                                    rule,

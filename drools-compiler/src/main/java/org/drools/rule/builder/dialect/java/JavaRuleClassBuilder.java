@@ -36,9 +36,11 @@ public class JavaRuleClassBuilder
      */
     public void buildRule(final RuleBuildContext context,
                           final RuleDescr ruleDescr) {
+        JavaDialect dialect = (JavaDialect) context.getDialect();
+        
         // If there is no compiled code, return
         if ( context.getMethods().isEmpty() ) {
-            context.setRuleClass( null );
+            dialect.setRuleClass( null );
             return;
         }
         final String lineSeparator = System.getProperty( "line.separator" );
@@ -68,6 +70,6 @@ public class JavaRuleClassBuilder
         buffer.append( context.getMethods().get( context.getMethods().size() - 1 ) + lineSeparator );
         buffer.append( "}" );
 
-        context.setRuleClass( buffer.toString() );
+        dialect.setRuleClass( buffer.toString() );
     }
 }
