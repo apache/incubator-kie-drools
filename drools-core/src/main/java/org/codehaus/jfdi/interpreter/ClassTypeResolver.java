@@ -28,13 +28,13 @@ import java.util.Set;
 public class ClassTypeResolver
     implements
     TypeResolver {
-    private List              imports;
+    private List             imports;
 
-    private final ClassLoader classLoader;
+    private ClassLoader      classLoader;
 
-    private Map               cachedImports    = new HashMap();
+    private Map              cachedImports    = new HashMap();
 
-    private static final Map        internalNamesMap = new HashMap();
+    private static final Map internalNamesMap = new HashMap();
     static {
         internalNamesMap.put( "int",
                               "I" );
@@ -78,6 +78,10 @@ public class ClassTypeResolver
         this.classLoader = classLoader;
     }
 
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -135,7 +139,7 @@ public class ClassTypeResolver
             isArray = true;
             int bracketIndex = className.indexOf( '[' );
             final String componentName = className.substring( 0,
-                                                        bracketIndex );
+                                                              bracketIndex );
             arrayClassName.append( '[' );
             while ( (bracketIndex = className.indexOf( '[',
                                                        bracketIndex + 1 )) > 0 ) {
