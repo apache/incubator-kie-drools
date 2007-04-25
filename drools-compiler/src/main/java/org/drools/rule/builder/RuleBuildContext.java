@@ -34,7 +34,7 @@ import org.drools.spi.DeclarationScopeResolver;
  * 
  * @author etirelli
  */
-public class BuildContext {
+public class RuleBuildContext {
 
     // current package
     private Package                  pkg;
@@ -75,11 +75,13 @@ public class BuildContext {
 
     // a simple counter for generated names
     private int                      counter;
+    
+    private Dialect                  dialect;
 
     /**
      * Default constructor
      */
-    public BuildContext(final Package pkg,
+    public RuleBuildContext(final Package pkg,
                         final RuleDescr ruleDescr) {
         this.pkg = pkg;
 
@@ -98,7 +100,14 @@ public class BuildContext {
         } else {
             this.rule = new Rule( ruleDescr.getName() );
         }
-
+    }
+    
+    public void setDialect(Dialect dialect) {
+        this.dialect = dialect;
+    }
+    
+    public Dialect getDialect() {
+        return this.dialect;
     }
 
     /**

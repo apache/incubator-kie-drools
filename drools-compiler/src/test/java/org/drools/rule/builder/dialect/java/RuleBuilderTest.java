@@ -61,74 +61,71 @@ public class RuleBuilderTest extends TestCase {
     /**
      * Test method for {@link org.drools.rule.builder.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
      */
-    public void testBuild() {
-        try {
-            final DrlParser parser = new DrlParser();
-            final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
+    public void testBuild() throws Exception {
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
-            // just checking there is no parsing errors
-            Assert.assertFalse( parser.getErrors().toString(),
-                                parser.hasErrors() );
+        // just checking there is no parsing errors
+        Assert.assertFalse( parser.getErrors().toString(),
+                            parser.hasErrors() );
 
-            final Package pkg = new Package( "org.drools" );
+        final Package pkg = new Package( "org.drools" );
 
-            final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
-            final String ruleClassName = "RuleClassName.java";
-            ruleDescr.setClassName( ruleClassName );
+        final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
+        final String ruleClassName = "RuleClassName.java";
+        ruleDescr.setClassName( ruleClassName );
 
-            final TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
-                                                               this.getClass().getClassLoader() );
-            // make an automatic import for the current package
-            typeResolver.addImport( pkgDescr.getName() + ".*" );
-            typeResolver.addImport( "java.lang.*" );
+        final TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
+                                                                 this.getClass().getClassLoader() );
+        // make an automatic import for the current package
+        typeResolver.addImport( pkgDescr.getName() + ".*" );
+        typeResolver.addImport( "java.lang.*" );
 
-            final RuleBuilder builder = new RuleBuilder( typeResolver,
-                                                         new ClassFieldExtractorCache(),
-                                                         new JavaDialect( null,
-                                                                          new PackageBuilderConfiguration() ) );
+        final RuleBuilder builder = new RuleBuilder( typeResolver,
+                                                     new ClassFieldExtractorCache(),
+                                                     new JavaDialect( null,
+                                                                      new PackageBuilderConfiguration(),
+                                                                      typeResolver,
+                                                                      new ClassFieldExtractorCache() ) );
 
-            builder.build( pkg,
-                           ruleDescr );
+        builder.build( pkg,
+                       ruleDescr );
 
-            Assert.assertTrue( builder.getErrors().toString(),
-                               builder.getErrors().isEmpty() );
+        Assert.assertTrue( builder.getErrors().toString(),
+                           builder.getErrors().isEmpty() );
 
-            final Rule rule = builder.getRule();
+        final Rule rule = builder.getRule();
 
-            assertEquals( "There should be 2 rule level declarations",
-                          2,
-                          rule.getDeclarations().length );
+        assertEquals( "There should be 2 rule level declarations",
+                      2,
+                      rule.getDeclarations().length );
 
-            // second GE should be a not
-            final GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );
-            assertTrue( not.isNot() );
-            // not has no outer declarations
-            assertTrue( not.getOuterDeclarations().isEmpty() );
-            assertEquals( 1,
-                          not.getInnerDeclarations().size() );
-            assertTrue( not.getInnerDeclarations().keySet().contains( "$state" ) );
+        // second GE should be a not
+        final GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );
+        assertTrue( not.isNot() );
+        // not has no outer declarations
+        assertTrue( not.getOuterDeclarations().isEmpty() );
+        assertEquals( 1,
+                      not.getInnerDeclarations().size() );
+        assertTrue( not.getInnerDeclarations().keySet().contains( "$state" ) );
 
-            // second not
-            final GroupElement not2 = (GroupElement) ((GroupElement) not.getChildren().get( 0 )).getChildren().get( 1 );
-            assertTrue( not2.isNot() );
-            // not has no outer declarations
-            assertTrue( not2.getOuterDeclarations().isEmpty() );
-            assertEquals( 1,
-                          not2.getInnerDeclarations().size() );
-            assertTrue( not2.getInnerDeclarations().keySet().contains( "$likes" ) );
-
-        } catch ( final Exception e ) {
-            e.printStackTrace();
-            fail( "This test is not supposed to throw any exception: " + e.getMessage() );
-        }
-
+        // second not
+        final GroupElement not2 = (GroupElement) ((GroupElement) not.getChildren().get( 0 )).getChildren().get( 1 );
+        assertTrue( not2.isNot() );
+        // not has no outer declarations
+        assertTrue( not2.getOuterDeclarations().isEmpty() );
+        assertEquals( 1,
+                      not2.getInnerDeclarations().size() );
+        assertTrue( not2.getInnerDeclarations().keySet().contains( "$likes" ) );
     }
 
     public void testBuildAttributes() throws Exception {
         final RuleBuilder builder = new RuleBuilder( null,
-                                               null,
-                                               new JavaDialect( null,
-                                                                new PackageBuilderConfiguration() ) );
+                                                     null,
+                                                     new JavaDialect( null,
+                                                                      new PackageBuilderConfiguration(),
+                                                                      null,
+                                                                      null ) );
         Rule rule = new Rule( "myrule" );
         List attributes = new ArrayList();
 

@@ -30,7 +30,6 @@ import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
-import org.drools.rule.builder.dialect.java.BuildUtils;
 
 /**
  * @author etirelli
@@ -43,9 +42,7 @@ public class GroupElementBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils,
-                                    final PatternBuilder patternBuilder,
+    public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
         final ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
 
@@ -58,20 +55,21 @@ public class GroupElementBuilder
             final BaseDescr child = (BaseDescr) it.next();
 
             // gets corresponding builder
-            final ConditionalElementBuilder cebuilder = utils.getBuilder( child.getClass() );
+            //final ConditionalElementBuilder cebuilder = ( ConditionalElementBuilder ) utils.getBuilder( child.getClass() );
+            final Object builder = context.getDialect().getBuilder( child.getClass() );
 
-            if ( cebuilder != null ) {
-                final ConditionalElement ce = cebuilder.build( context,
-                                                         utils,
-                                                         patternBuilder,
-                                                         child );
+            if ( builder instanceof ConditionalElementBuilder ) {
+                ConditionalElementBuilder ceBuilder = (ConditionalElementBuilder) builder;
+                final ConditionalElement ce = ceBuilder.build( context,
+                                                               child );
                 if ( ce != null ) {
                     ge.addChild( ce );
                 }
-            } else if ( child instanceof PatternDescr ) {
+            } else if ( builder instanceof PatternBuilder ) {
+                final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( child.getClass() );
+
                 final Pattern pattern = patternBuilder.build( context,
-                                                           utils,
-                                                           (PatternDescr) child );
+                                                              (PatternDescr) child );
                 // in case there is a problem with the pattern building,
                 // builder will return null. Ex: ClassNotFound for the pattern type
                 if ( pattern != null ) {

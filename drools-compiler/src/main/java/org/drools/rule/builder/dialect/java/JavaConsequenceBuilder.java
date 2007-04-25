@@ -24,9 +24,10 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.spi.PatternExtractor;
+import org.drools.util.StringUtils;
 
 /**
  * @author etirelli
@@ -39,8 +40,7 @@ public class JavaConsequenceBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
-    public void build(final BuildContext context,
-                      final BuildUtils utils,
+    public void build(final RuleBuildContext context,
                       final RuleDescr ruleDescr) {
 
         // pushing consequence LHS into the stack for variable resolution
@@ -50,14 +50,16 @@ public class JavaConsequenceBuilder
         // generate Invoker
         final String className = "consequence";
 
-        StringTemplate st = utils.getRuleGroup().getInstanceOf( "consequenceMethod" );
+        JavaDialect dialect = (JavaDialect) context.getDialect();
+
+        StringTemplate st = dialect.getRuleGroup().getInstanceOf( "consequenceMethod" );
 
         st.setAttribute( "methodName",
                          className );
 
-        final List[] usedIdentifiers = utils.getUsedCIdentifiers( context,
-                                                                  ruleDescr,
-                                                                  (String) ruleDescr.getConsequence() );
+        final List[] usedIdentifiers = context.getDialect().getBlockIdentifiers( context,
+                                                                                 ruleDescr,
+                                                                                 (String) ruleDescr.getConsequence() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
 
@@ -65,43 +67,44 @@ public class JavaConsequenceBuilder
             declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         }
 
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           declarations,
-                                           (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+        dialect.setStringTemplateAttributes( context,
+                                             st,
+                                             declarations,
+                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
         st.setAttribute( "text",
-                         utils.getKnowledgeHelperFixer().fix( (String) ruleDescr.getConsequence() ) );
+                         ((JavaDialect) context.getDialect()).getKnowledgeHelperFixer().fix( (String) ruleDescr.getConsequence() ) );
 
         context.getMethods().add( st.toString() );
 
-        st = utils.getInvokerGroup().getInstanceOf( "consequenceInvoker" );
+        st = dialect.getInvokerGroup().getInstanceOf( "consequenceInvoker" );
 
         st.setAttribute( "package",
                          context.getPkg().getName() );
         st.setAttribute( "ruleClassName",
-                         utils.ucFirst( context.getRuleDescr().getClassName() ) );
+                         StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         ruleDescr.getClassName() + utils.ucFirst( className ) + "Invoker" );
+                         ruleDescr.getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
                          className );
 
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           declarations,
-                                           (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+        dialect.setStringTemplateAttributes( context,
+                                             st,
+                                             declarations,
+                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
 
         // Must use the rule declarations, so we use the same order as used in the generated invoker
         final List list = Arrays.asList( context.getRule().getDeclarations() );
 
         //final int[] indexes = new int[declarations.length];
-        final List indexes = new ArrayList(declarations.length);
+        final List indexes = new ArrayList( declarations.length );
 
         // have to user a String[] as boolean[] is broken in stringtemplate
         final String[] notPatterns = new String[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            indexes.add( i, new Integer( list.indexOf( declarations[i] ) ) );
+            indexes.add( i,
+                         new Integer( list.indexOf( declarations[i] ) ) );
             notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? null : "true";
-            if ( ((Integer)indexes.get(i)).intValue() == -1 ) {
+            if ( ((Integer) indexes.get( i )).intValue() == -1 ) {
                 // some defensive code, this should never happen
                 throw new RuntimeDroolsException( "Unable to find declaration in list while generating the consequence invoker" );
             }
@@ -116,7 +119,7 @@ public class JavaConsequenceBuilder
         st.setAttribute( "text",
                          ruleDescr.getConsequence() );
 
-        final String invokerClassName = context.getPkg().getName() + "." + ruleDescr.getClassName() + utils.ucFirst( className ) + "Invoker";
+        final String invokerClassName = context.getPkg().getName() + "." + ruleDescr.getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
         context.getInvokers().put( invokerClassName,
                                    st.toString() );

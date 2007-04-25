@@ -53,7 +53,6 @@ import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
-import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
@@ -82,9 +81,8 @@ public class PatternBuilder {
      * @param patternDescr
      * @return
      */
-    public Pattern build(final BuildContext context,
-                        final BuildUtils utils,
-                        final PatternDescr patternDescr) {
+    public Pattern build(final RuleBuildContext context,
+                         final PatternDescr patternDescr) {
 
         if ( patternDescr.getObjectType() == null || patternDescr.getObjectType().equals( "" ) ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -102,7 +100,7 @@ public class PatternBuilder {
             objectType = new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                final Class userProvidedClass = utils.getTypeResolver().resolveType( patternDescr.getObjectType() );
+                final Class userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
                 final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( userProvidedClass );
                 Class shadowClass = null;
                 try {
@@ -141,14 +139,14 @@ public class PatternBuilder {
             }
 
             pattern = new Pattern( context.getNextPatternId(),
-                                 0, // offset is 0 by default
-                                 objectType,
-                                 patternDescr.getIdentifier() );
+                                   0, // offset is 0 by default
+                                   objectType,
+                                   patternDescr.getIdentifier() );
         } else {
             pattern = new Pattern( context.getNextPatternId(),
-                                 0, // offset is 0 by default
-                                 objectType,
-                                 null );
+                                   0, // offset is 0 by default
+                                   objectType,
+                                   null );
         }
         // adding the newly created pattern to the build stack
         // this is necessary in case of local declaration usage
@@ -158,17 +156,14 @@ public class PatternBuilder {
             final Object object = it.next();
             if ( object instanceof FieldBindingDescr ) {
                 build( context,
-                       utils,
                        pattern,
                        (FieldBindingDescr) object );
             } else if ( object instanceof FieldConstraintDescr ) {
                 build( context,
-                       utils,
                        pattern,
                        (FieldConstraintDescr) object );
             } else if ( object instanceof PredicateDescr ) {
                 build( context,
-                       utils,
                        pattern,
                        (PredicateDescr) object );
             }
@@ -178,13 +173,11 @@ public class PatternBuilder {
         return pattern;
     }
 
-    private void build(final BuildContext context,
-                       final BuildUtils utils,
+    private void build(final RuleBuildContext context,
                        final Pattern pattern,
                        final FieldConstraintDescr fieldConstraintDescr) {
 
         final FieldExtractor extractor = getFieldExtractor( context,
-                                                            utils,
                                                             fieldConstraintDescr,
                                                             pattern.getObjectType(),
                                                             fieldConstraintDescr.getFieldName(),
@@ -198,7 +191,6 @@ public class PatternBuilder {
             final Object object = fieldConstraintDescr.getRestrictions().get( 0 );
 
             final Restriction restriction = buildRestriction( context,
-                                                              utils,
                                                               pattern,
                                                               extractor,
                                                               fieldConstraintDescr,
@@ -210,13 +202,13 @@ public class PatternBuilder {
 
             if ( object instanceof LiteralRestrictionDescr ) {
                 pattern.addConstraint( new LiteralConstraint( extractor,
-                                                             (LiteralRestriction) restriction ) );
+                                                              (LiteralRestriction) restriction ) );
             } else if ( object instanceof VariableRestrictionDescr ) {
                 pattern.addConstraint( new VariableConstraint( extractor,
-                                                              (VariableRestriction) restriction ) );
+                                                               (VariableRestriction) restriction ) );
             } else if ( object instanceof ReturnValueRestrictionDescr ) {
                 pattern.addConstraint( new ReturnValueConstraint( extractor,
-                                                                 (ReturnValueRestriction) restriction ) );
+                                                                  (ReturnValueRestriction) restriction ) );
             }
 
             return;
@@ -255,7 +247,6 @@ public class PatternBuilder {
                     // Are we are at the first operator? if so treat differently
                     if ( previousList == null ) {
                         restriction = buildRestriction( context,
-                                                        utils,
                                                         pattern,
                                                         extractor,
                                                         fieldConstraintDescr,
@@ -267,7 +258,6 @@ public class PatternBuilder {
                         }
                     } else {
                         restriction = buildRestriction( context,
-                                                        utils,
                                                         pattern,
                                                         extractor,
                                                         fieldConstraintDescr,
@@ -297,8 +287,7 @@ public class PatternBuilder {
             currentRestriction = (RestrictionDescr) object;
         }
 
-        final Restriction restriction = buildRestriction( context,
-                                                          utils,
+        final Restriction restriction = buildRestriction( context,                                                          
                                                           pattern,
                                                           extractor,
                                                           fieldConstraintDescr,
@@ -328,11 +317,10 @@ public class PatternBuilder {
         }
 
         pattern.addConstraint( new MultiRestrictionFieldConstraint( extractor,
-                                                                   restrictions ) );
+                                                                    restrictions ) );
     }
 
-    private void build(final BuildContext context,
-                       final BuildUtils utils,
+    private void build(final RuleBuildContext context,
                        final Pattern pattern,
                        final FieldBindingDescr fieldBindingDescr) {
 
@@ -346,7 +334,6 @@ public class PatternBuilder {
         }
 
         final FieldExtractor extractor = getFieldExtractor( context,
-                                                            utils,
                                                             fieldBindingDescr,
                                                             pattern.getObjectType(),
                                                             fieldBindingDescr.getFieldName(),
@@ -356,11 +343,10 @@ public class PatternBuilder {
         }
 
         pattern.addDeclaration( fieldBindingDescr.getIdentifier(),
-                               extractor );
+                                extractor );
     }
 
-    private void build(final BuildContext context,
-                       final BuildUtils utils,
+    private void build(final RuleBuildContext context,
                        final Pattern pattern,
                        final PredicateDescr predicateDescr) {
 
@@ -368,9 +354,9 @@ public class PatternBuilder {
         // where first list is from rule local variables
         // second list is from global variables
         // and third is for unbound variables
-        final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
-                                                                 predicateDescr,
-                                                                 predicateDescr.getContent() );
+        final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
+                                                                                predicateDescr,
+                                                                                predicateDescr.getContent() );
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -383,7 +369,6 @@ public class PatternBuilder {
         }
         final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
         this.createImplicitBindings( context,
-                                     utils,
                                      pattern,
                                      usedIdentifiers[NOT_BOUND_INDEX],
                                      factDeclarations );
@@ -401,7 +386,6 @@ public class PatternBuilder {
         final PredicateBuilder builder = this.dialect.getPredicateBuilder();
 
         builder.build( context,
-                       utils,
                        usedIdentifiers,
                        previousDeclarations,
                        localDeclarations,
@@ -418,8 +402,7 @@ public class PatternBuilder {
      * @param NOT_BOUND_INDEX
      * @param factDeclarations
      */
-    private void createImplicitBindings(final BuildContext context,
-                                        final BuildUtils utils,
+    private void createImplicitBindings(final RuleBuildContext context,
                                         final Pattern pattern,
                                         final List unboundIdentifiers,
                                         final List factDeclarations) {
@@ -427,10 +410,9 @@ public class PatternBuilder {
         for ( int i = 0, size = unboundIdentifiers.size(); i < size; i++ ) {
             final String identifier = (String) unboundIdentifiers.get( i );
             final FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
-                                                                       identifier );
+                                                                             identifier );
 
             final FieldExtractor extractor = getFieldExtractor( context,
-                                                                utils,
                                                                 implicitBinding,
                                                                 pattern.getObjectType(),
                                                                 implicitBinding.getFieldName(),
@@ -446,8 +428,7 @@ public class PatternBuilder {
         }
     }
 
-    private Restriction buildRestriction(final BuildContext context,
-                                         final BuildUtils utils,
+    private Restriction buildRestriction(final RuleBuildContext context,
                                          final Pattern pattern,
                                          final FieldExtractor extractor,
                                          final FieldConstraintDescr fieldConstraintDescr,
@@ -455,7 +436,6 @@ public class PatternBuilder {
         Restriction restriction = null;
         if ( restrictionDescr instanceof LiteralRestrictionDescr ) {
             restriction = buildRestriction( context,
-                                            utils,
                                             extractor,
                                             fieldConstraintDescr,
                                             (LiteralRestrictionDescr) restrictionDescr );
@@ -466,7 +446,6 @@ public class PatternBuilder {
                                             (VariableRestrictionDescr) restrictionDescr );
         } else if ( restrictionDescr instanceof ReturnValueRestrictionDescr ) {
             restriction = buildRestriction( context,
-                                            utils,
                                             pattern,
                                             extractor,
                                             fieldConstraintDescr,
@@ -477,7 +456,7 @@ public class PatternBuilder {
         return restriction;
     }
 
-    private VariableRestriction buildRestriction(final BuildContext context,
+    private VariableRestriction buildRestriction(final RuleBuildContext context,
                                                  final FieldExtractor extractor,
                                                  final FieldConstraintDescr fieldConstraintDescr,
                                                  final VariableRestrictionDescr variableRestrictionDescr) {
@@ -517,8 +496,7 @@ public class PatternBuilder {
                                         evaluator );
     }
 
-    private LiteralRestriction buildRestriction(final BuildContext context,
-                                                final BuildUtils utils,
+    private LiteralRestriction buildRestriction(final RuleBuildContext context,
                                                 final FieldExtractor extractor,
                                                 final FieldConstraintDescr fieldConstraintDescr,
                                                 final LiteralRestrictionDescr literalRestrictionDescr) {
@@ -529,7 +507,7 @@ public class PatternBuilder {
                                                                                   lastDot );
             final String fieldName = literalRestrictionDescr.getText().substring( lastDot + 1 );
             try {
-                final Class staticClass = utils.getTypeResolver().resolveType( className );
+                final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
                 field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
                                                     extractor.getValueType() );
             } catch ( final ClassNotFoundException e ) {
@@ -569,15 +547,14 @@ public class PatternBuilder {
                                        extractor );
     }
 
-    private ReturnValueRestriction buildRestriction(final BuildContext context,
-                                                    final BuildUtils utils,
+    private ReturnValueRestriction buildRestriction(final RuleBuildContext context,
                                                     final Pattern pattern,
                                                     final FieldExtractor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
-                                                                 returnValueRestrictionDescr,
-                                                                 returnValueRestrictionDescr.getContent() );
+        final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
+                                                                                returnValueRestrictionDescr,
+                                                                                returnValueRestrictionDescr.getContent() );
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
@@ -591,8 +568,7 @@ public class PatternBuilder {
         }
 
         final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
-        this.createImplicitBindings( context,
-                                     utils,
+        createImplicitBindings( context,
                                      pattern,
                                      usedIdentifiers[NOT_BOUND_INDEX],
                                      factDeclarations );
@@ -617,7 +593,6 @@ public class PatternBuilder {
         final ReturnValueBuilder builder = this.dialect.getReturnValueBuilder();
 
         builder.build( context,
-                       utils,
                        usedIdentifiers,
                        previousDeclarations,
                        localDeclarations,
@@ -627,8 +602,7 @@ public class PatternBuilder {
         return returnValueRestriction;
     }
 
-    private FieldExtractor getFieldExtractor(final BuildContext context,
-                                             final BuildUtils utils,
+    private FieldExtractor getFieldExtractor(final RuleBuildContext context,
                                              final BaseDescr descr,
                                              final ObjectType objectType,
                                              final String fieldName,
@@ -643,7 +617,7 @@ public class PatternBuilder {
         } else {
             try {
                 ClassLoader classloader = context.getPkg().getPackageCompilationData().getClassLoader();
-                extractor = utils.getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
+                extractor = context.getDialect().getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
                                                                               fieldName,
                                                                               classloader );
             } catch ( final RuntimeDroolsException e ) {
@@ -659,7 +633,7 @@ public class PatternBuilder {
         return extractor;
     }
 
-    private Evaluator getEvaluator(final BuildContext context,
+    private Evaluator getEvaluator(final RuleBuildContext context,
                                    final BaseDescr descr,
                                    final ValueType valueType,
                                    final String evaluatorString) {

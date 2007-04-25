@@ -50,9 +50,9 @@ import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
 /**
- * This is the main compiler class for parsing and compiling rules and assembling or merging them into a
- * binary Package instance.
- * This can be done by merging into existing binary packages, or totally from source.
+ * This is the main compiler class for parsing and compiling rules and
+ * assembling or merging them into a binary Package instance. This can be done
+ * by merging into existing binary packages, or totally from source.
  */
 public class PackageBuilder {
 
@@ -64,7 +64,7 @@ public class PackageBuilder {
 
     private TypeResolver                typeResolver;
 
-    private ClassFieldExtractorCache    classFieldExtractorCache;
+    private ClassFieldExtractorCache    classFieldExtractorCache;   
 
     private RuleBuilder                 builder;
 
@@ -73,7 +73,7 @@ public class PackageBuilder {
     private DialectRegistry             dialects;
 
     /**
-     * Use this when package is starting from scratch. 
+     * Use this when package is starting from scratch.
      */
     public PackageBuilder() {
         this( null,
@@ -94,9 +94,13 @@ public class PackageBuilder {
     }
 
     /**
-     * This allows you to pass in a pre existing package, and a configuration (for instance to set the classloader).
-     * @param pkg A pre existing package (can be null if none exists)
-     * @param configuration Optional configuration for this builder.
+     * This allows you to pass in a pre existing package, and a configuration
+     * (for instance to set the classloader).
+     * 
+     * @param pkg
+     *            A pre existing package (can be null if none exists)
+     * @param configuration
+     *            Optional configuration for this builder.
      */
     public PackageBuilder(final Package pkg,
                           PackageBuilderConfiguration configuration) {
@@ -108,17 +112,30 @@ public class PackageBuilder {
         this.results = new ArrayList();
         this.pkg = pkg;
         this.classFieldExtractorCache = new ClassFieldExtractorCache();
+        
+        
+        if ( this.pkg != null ) {
+            this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
+                                                       this.pkg.getPackageCompilationData().getClassLoader() );
+            // make an automatic import for the current package
+            this.typeResolver.addImport( this.pkg.getName() + ".*" );
+        } else {
+            this.typeResolver = new ClassTypeResolver( new ArrayList(), configuration.getClassLoader() );
+        }
 
         this.dialects = new DialectRegistry();
         this.dialects.addDialect( "java",
                                   new JavaDialect( pkg,
-                                                   configuration ) );
+                                                   configuration,
+                                                   getTypeResolver(),
+                                                   this.classFieldExtractorCache ) );
 
         this.dialect = this.dialects.getDialect( "java" );
     }
 
     /**
      * Load a rule package from DRL source.
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -133,6 +150,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from XML source.
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -153,8 +171,11 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     * @param source The source of the rules.
-     * @param dsl The source of the domain specific language configuration.
+     * 
+     * @param source
+     *            The source of the rules.
+     * @param dsl
+     *            The source of the domain specific language configuration.
      * @throws DroolsParserException
      * @throws IOException
      */
@@ -168,10 +189,9 @@ public class PackageBuilder {
         addPackage( pkg );
     }
 
-    /** 
-     * This adds a package from a Descr/AST 
-     * This will also trigger a compile, if there are any generated classes to compile
-     * of course.
+    /**
+     * This adds a package from a Descr/AST This will also trigger a compile, if
+     * there are any generated classes to compile of course.
      */
     public void addPackage(final PackageDescr packageDescr) {
 
@@ -179,7 +199,7 @@ public class PackageBuilder {
         validateUniqueRuleNames( packageDescr );
 
         if ( this.pkg != null ) {
-            //mergePackage( packageDescr ) ;
+            // mergePackage( packageDescr ) ;
             mergePackage( this.pkg,
                           packageDescr );
         } else {
@@ -187,21 +207,21 @@ public class PackageBuilder {
         }
 
         this.builder = new RuleBuilder( getTypeResolver(),
-                                   this.classFieldExtractorCache,
-                                   this.dialect );
+                                        this.classFieldExtractorCache,
+                                        this.dialect );
 
-        //only try to compile if there are no parse errors
+        // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
             for ( final Iterator it = packageDescr.getFactTemplates().iterator(); it.hasNext(); ) {
                 addFactTemplate( (FactTemplateDescr) it.next() );
             }
 
-            //iterate and compile
+            // iterate and compile
             for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                 addFunction( (FunctionDescr) it.next() );
             }
 
-            //iterate and compile
+            // iterate and compile
             for ( final Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
                 addRule( (RuleDescr) it.next() );
             }
@@ -213,7 +233,7 @@ public class PackageBuilder {
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
-        if (this.pkg != null) {
+        if ( this.pkg != null ) {
             return;
         }
         if ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) {
@@ -250,17 +270,24 @@ public class PackageBuilder {
 
     private void mergePackage(final Package pkg,
                               final PackageDescr packageDescr) {
+
+        // make sure we have initialised this typeResolver with "default" imports
+        if ( this.typeResolver.getImports().isEmpty() ) {
+            this.typeResolver.addImport( pkg.getName() + ".*" );
+        }
+        
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
-            pkg.addImport( ((ImportDescr) it.next()).getTarget() );
+            String importEntry = ((ImportDescr) it.next()).getTarget();
+            pkg.addImport( importEntry );
+            this.typeResolver.addImport( importEntry );
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
             pkg.addStaticImport( ((FunctionImportDescr) it.next()).getTarget() );
         }
-
-        final TypeResolver typeResolver = new ClassTypeResolver( pkg.getImports(),
-                                                                 pkg.getPackageCompilationData().getClassLoader() );
+        
+        ((ClassTypeResolver)this.typeResolver).setClassLoader( pkg.getPackageCompilationData().getClassLoader() );
 
         final List globals = packageDescr.getGlobals();
         for ( final Iterator it = globals.iterator(); it.hasNext(); ) {
@@ -312,13 +339,13 @@ public class PackageBuilder {
         this.dialect.init( ruleDescr );
 
         this.builder.build( this.pkg,
-                       ruleDescr );
+                            ruleDescr );
 
         this.results.addAll( this.builder.getErrors() );
 
         final Rule rule = this.builder.getRule();
 
-        this.dialect.addRuleSemantics( this.builder,
+        this.dialect.addRule( this.builder,
                                        rule,
                                        ruleDescr );
 
@@ -326,23 +353,18 @@ public class PackageBuilder {
     }
 
     /**
-     * @return a Type resolver, lazily. 
-     * If one does not exist yet, it will be initialised.
+     * @return a Type resolver, lazily. If one does not exist yet, it will be
+     *         initialised.
      */
     private TypeResolver getTypeResolver() {
-        if ( this.typeResolver == null ) {
-            this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
-                                                       this.pkg.getPackageCompilationData().getClassLoader() );
-            // make an automatic import for the current package
-            this.typeResolver.addImport( this.pkg.getName() + ".*" );
-        }
         return this.typeResolver;
     }
 
     /**
-     * @return The compiled package. The package may contain errors, which you can report on
-     * by calling getErrors or printErrors. If you try to add an invalid package (or rule)
-     * to a RuleBase, you will get a runtime exception.
+     * @return The compiled package. The package may contain errors, which you
+     *         can report on by calling getErrors or printErrors. If you try to
+     *         add an invalid package (or rule) to a RuleBase, you will get a
+     *         runtime exception.
      * 
      * Compiled packages are serializable.
      */
@@ -354,21 +376,24 @@ public class PackageBuilder {
         return this.pkg;
     }
 
-    /** This will return true if there were errors in the package building and compiling phase */
+    /**
+     * This will return true if there were errors in the package building and
+     * compiling phase
+     */
     public boolean hasErrors() {
         return this.results.size() > 0;
     }
 
     /**
-     * @return A list of Error objects that resulted from building and compiling the package. 
+     * @return A list of Error objects that resulted from building and compiling
+     *         the package.
      */
     public DroolsError[] getErrors() {
         return (DroolsError[]) this.results.toArray( new DroolsError[this.results.size()] );
     }
 
     /**
-     * This will pretty print the errors (from getErrors())
-     * into lines.
+     * This will pretty print the errors (from getErrors()) into lines.
      */
     public String printErrors() {
         final StringBuffer buf = new StringBuffer();
@@ -379,14 +404,12 @@ public class PackageBuilder {
         }
         return buf.toString();
     }
-    
-    
+
     /**
-     * Reset the error list.
-     * This is useful when incrementally building packages.
-     * Care should be used when building this, if you 
-     * clear this when there were errors on items that a rule depends on
-     * (eg functions), then you will get spurious errors which will not be that helpful.
+     * Reset the error list. This is useful when incrementally building
+     * packages. Care should be used when building this, if you clear this when
+     * there were errors on items that a rule depends on (eg functions), then
+     * you will get spurious errors which will not be that helpful.
      */
     protected void resetErrors() {
         this.results.clear();
@@ -402,20 +425,21 @@ public class PackageBuilder {
     }
 
     /**
-     * This is the super of the error handlers.
-     * Each error handler knows how to report a compile error of its type, should it happen.
-     * This is needed, as the compiling is done as one
-     * hit at the end, and we need to be able to work out what rule/ast element
-     * caused the error.
+     * This is the super of the error handlers. Each error handler knows how to
+     * report a compile error of its type, should it happen. This is needed, as
+     * the compiling is done as one hit at the end, and we need to be able to
+     * work out what rule/ast element caused the error.
      * 
-     * An error handler it created for each class task that is queued to be compiled.
-     * This doesn't mean an error has occurred, it just means it *may* occur
-     * in the future and we need to be able to map it back to the AST element
-     * that originally spawned the code to be compiled.
+     * An error handler it created for each class task that is queued to be
+     * compiled. This doesn't mean an error has occurred, it just means it *may*
+     * occur in the future and we need to be able to map it back to the AST
+     * element that originally spawned the code to be compiled.
      */
     public abstract static class ErrorHandler {
         private final List errors  = new ArrayList();
+
         protected String   message;
+
         private boolean    inError = false;
 
         /** This needes to be checked if there is infact an error */
@@ -430,16 +454,15 @@ public class PackageBuilder {
 
         /**
          * 
-         * @return A DroolsError object populated as appropriate,
-         * should the unthinkable happen and this need to be reported.
+         * @return A DroolsError object populated as appropriate, should the
+         *         unthinkable happen and this need to be reported.
          */
         public abstract DroolsError getError();
 
         /**
-         * We must use an error of JCI problem objects.
-         * If there are no problems, null is returned.
-         * These errors are placed in the DroolsError instances.
-         * Its not 1 to 1 with reported errors.
+         * We must use an error of JCI problem objects. If there are no
+         * problems, null is returned. These errors are placed in the
+         * DroolsError instances. Its not 1 to 1 with reported errors.
          */
         protected CompilationProblem[] collectCompilerProblems() {
             if ( this.errors.size() == 0 ) {
@@ -455,6 +478,7 @@ public class PackageBuilder {
     public static class RuleErrorHandler extends ErrorHandler {
 
         private BaseDescr descr;
+
         private Rule      rule;
 
         public RuleErrorHandler(final BaseDescr ruleDescr,
@@ -475,8 +499,7 @@ public class PackageBuilder {
     }
 
     /**
-     * There isn't much point in reporting invoker errors, as
-     * they are no help. 
+     * There isn't much point in reporting invoker errors, as they are no help.
      */
     public static class RuleInvokerErrorHandler extends RuleErrorHandler {
 

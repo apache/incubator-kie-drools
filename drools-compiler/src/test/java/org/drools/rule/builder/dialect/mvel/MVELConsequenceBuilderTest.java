@@ -18,7 +18,7 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.ObjectType;
@@ -56,7 +56,6 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         builder.build( context,
-                       null,
                        ruleDescr );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -97,7 +96,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         }
     }
 
-    public static class InstrumentedBuildContent extends BuildContext {
+    public static class InstrumentedBuildContent extends RuleBuildContext {
         private DeclarationScopeResolver declarationScopeResolver;
 
         public InstrumentedBuildContent(final Package pkg,

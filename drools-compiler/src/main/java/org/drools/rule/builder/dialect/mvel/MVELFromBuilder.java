@@ -24,14 +24,14 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.From;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.FromBuilder;
-import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.drools.spi.DataProvider;
 import org.mvel.MVEL;
 
@@ -48,14 +48,13 @@ public class MVELFromBuilder
     /* (non-Javadoc)
      * @see org.drools.dialect.mvel.FromBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils,
-                                    final PatternBuilder patternBuilder,
+    public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
         final FromDescr fromDescr = (FromDescr) descr;
 
+        final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
+        
         final Pattern pattern = patternBuilder.build( context,
-                                                      utils,
                                                       fromDescr.getReturnedPattern() );
 
         if ( pattern == null ) {

@@ -1,12 +1,17 @@
 package org.drools.rule.builder.dialect.java;
 
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.antlr.stringtemplate.StringTemplate;
+import org.antlr.stringtemplate.StringTemplateGroup;
+import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.EclipseJavaCompiler;
 import org.apache.commons.jci.compilers.EclipseJavaCompilerSettings;
@@ -17,7 +22,9 @@ import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.RuleError;
 import org.drools.compiler.PackageBuilder.ErrorHandler;
 import org.drools.compiler.PackageBuilder.FunctionErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleErrorHandler;
@@ -33,13 +40,15 @@ import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.Declaration;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.CollectBuilder;
-import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.Dialect;
@@ -47,6 +56,7 @@ import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuilder;
@@ -58,45 +68,57 @@ public class JavaDialect
     implements
     Dialect {
 
-    private final JavaAccumulateBuilder       accumulate  = new JavaAccumulateBuilder();
-    private final JavaConsequenceBuilder      consequence = new JavaConsequenceBuilder();
-    private final JavaEvalBuilder             eval        = new JavaEvalBuilder();
-    private final JavaPredicateBuilder        predicate   = new JavaPredicateBuilder();
-    private final JavaReturnValueBuilder      returnValue = new JavaReturnValueBuilder();
-    private final JavaRuleClassBuilder        rule        = new JavaRuleClassBuilder();
-    private final MVELFromBuilder             from        = new MVELFromBuilder();
+    // the string template groups
+    private final StringTemplateGroup      ruleGroup    = new StringTemplateGroup( new InputStreamReader( JavaDialect.class.getResourceAsStream( "javaRule.stg" ) ),
+                                                                                   AngleBracketTemplateLexer.class );
 
-    private Package                     pkg;
-    private JavaCompiler                compiler;
-    private List                        generatedClassList;
-    private PackageBuilderConfiguration configuration;
+    private final StringTemplateGroup      invokerGroup = new StringTemplateGroup( new InputStreamReader( JavaDialect.class.getResourceAsStream( "javaInvokers.stg" ) ),
+                                                                                   AngleBracketTemplateLexer.class );
 
-    private MemoryResourceReader        src;
-    private PackageStore                packageStoreWrapper;
+    // builders
+    private final PatternBuilder           pattern      = new PatternBuilder( this );
+    private final JavaAccumulateBuilder    accumulate   = new JavaAccumulateBuilder();
+    private final JavaEvalBuilder          eval         = new JavaEvalBuilder();
+    private final JavaPredicateBuilder     predicate    = new JavaPredicateBuilder();
+    private final JavaReturnValueBuilder   returnValue  = new JavaReturnValueBuilder();
+    private final JavaConsequenceBuilder   consequence  = new JavaConsequenceBuilder();
+    private final JavaRuleClassBuilder     rule         = new JavaRuleClassBuilder();
+    private final MVELFromBuilder          from         = new MVELFromBuilder();
 
-    private Map                         lineMappings;
+    // 
+    private final KnowledgeHelperFixer     knowledgeHelperFixer;
+    private final DeclarationTypeFixer     typeFixer;
+    private final JavaExprAnalyzer         analyzer;
 
-    private Map                         errorHandlers;
+    private PackageBuilderConfiguration    configuration;
 
-    private List                        results;
+    private Package                        pkg;
+    private JavaCompiler                   compiler;
+    private List                           generatedClassList;
+    private MemoryResourceReader           src;
+    private PackageStore                   packageStoreWrapper;
+    private Map                            lineMappings;
+    private Map                            errorHandlers;
+    private List                           results;
+    private final TypeResolver             typeResolver;
+    private final ClassFieldExtractorCache classFieldExtractorCache;
 
     // a map of registered builders
-    private Map                         builders;
-
-    // the builder for patterns
-    private PatternBuilder               patternBuilder;
-
-    // the builder for the consequence
-    private ConsequenceBuilder          consequenceBuilder;
-
-    // the builder for the rule class
-    private RuleClassBuilder            classBuilder;
+    private Map                            builders;
 
     public JavaDialect(final Package pkg,
-                       final PackageBuilderConfiguration configuration) {
+                       final PackageBuilderConfiguration configuration,
+                       final TypeResolver typeResolver,
+                       final ClassFieldExtractorCache classFieldExtractorCache) {
         this.pkg = pkg;
         this.configuration = configuration;
         loadCompiler();
+
+        this.typeResolver = typeResolver;
+        this.classFieldExtractorCache = classFieldExtractorCache;
+        this.knowledgeHelperFixer = new KnowledgeHelperFixer();
+        this.typeFixer = new DeclarationTypeFixer();
+        this.analyzer = new JavaExprAnalyzer();
 
         if ( pkg != null ) {
             init( pkg );
@@ -112,35 +134,40 @@ public class JavaDialect
         this.builders = new HashMap();
 
         this.builders.put( CollectDescr.class,
-                      new CollectBuilder() );
+                           new CollectBuilder() );
 
         this.builders.put( ForallDescr.class,
-                      new ForallBuilder() );
-        final GroupElementBuilder gebuilder = new GroupElementBuilder();
-        this.builders.put( AndDescr.class,
-                      gebuilder );
-        this.builders.put( OrDescr.class,
-                      gebuilder );
-        this.builders.put( NotDescr.class,
-                      gebuilder );
-        this.builders.put( ExistsDescr.class,
-                      gebuilder );
+                           new ForallBuilder() );
 
-        // dialect specific        
-        this.patternBuilder = new PatternBuilder( this );
+        final GroupElementBuilder gebuilder = new GroupElementBuilder();
+
+        this.builders.put( AndDescr.class,
+                           gebuilder );
+
+        this.builders.put( OrDescr.class,
+                           gebuilder );
+
+        this.builders.put( NotDescr.class,
+                           gebuilder );
+
+        this.builders.put( ExistsDescr.class,
+                           gebuilder );
+
+        this.builders.put( PatternDescr.class,
+                           getPatternBuilder() );
 
         this.builders.put( FromDescr.class,
-                      getFromBuilder() );
+                           getFromBuilder() );
 
         this.builders.put( AccumulateDescr.class,
-                      getAccumulateBuilder() );
+                           getAccumulateBuilder() );
 
         this.builders.put( EvalDescr.class,
-                      getEvalBuilder() );
+                           getEvalBuilder() );
+    }
 
-        this.consequenceBuilder = getConsequenceBuilder();
-
-        this.classBuilder = getRuleClassBuilder();
+    public Map getBuilders() {
+        return this.builders;
     }
 
     public void init(final Package pkg) {
@@ -170,12 +197,79 @@ public class JavaDialect
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
     }
 
-    public AccumulateBuilder getAccumulateBuilder() {
-        return this.accumulate;
+    public List[] getExpressionIdentifiers(final RuleBuildContext context,
+                                           final BaseDescr descr,
+                                           final Object content) {
+        List[] usedIdentifiers = null;
+        try {
+            usedIdentifiers = this.analyzer.analyzeExpression( (String) content,
+                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    descr,
+                                                    null,
+                                                    "Unable to determine the used declarations" ) );
+        }
+        return usedIdentifiers;
     }
 
-    public ConsequenceBuilder getConsequenceBuilder() {
-        return this.consequence;
+    public List[] getBlockIdentifiers(final RuleBuildContext context,
+                                      final BaseDescr descr,
+                                      final String text) {
+        List[] usedIdentifiers = null;
+        try {
+            usedIdentifiers = this.analyzer.analyzeBlock( text,
+                                                          new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    descr,
+                                                    null,
+                                                    "Unable to determine the used declarations" ) );
+        }
+        return usedIdentifiers;
+    }
+
+    /**
+     * Returns the current type resolver instance
+     * @return
+     */
+    public TypeResolver getTypeResolver() {
+        return this.typeResolver;
+    }
+
+    /**
+     * Returns the cache of field extractors
+     * @return
+     */
+    public ClassFieldExtractorCache getClassFieldExtractorCache() {
+        return this.classFieldExtractorCache;
+    }
+
+    /**
+     * Returns the Knowledge Helper Fixer
+     * @return
+     */
+    public KnowledgeHelperFixer getKnowledgeHelperFixer() {
+        return this.knowledgeHelperFixer;
+    }
+
+    /**
+     * @return the typeFixer
+     */
+    public DeclarationTypeFixer getTypeFixer() {
+        return this.typeFixer;
+    }
+
+    public Object getBuilder(Class clazz) {
+        return this.builders.get( clazz );
+    }
+
+    public PatternBuilder getPatternBuilder() {
+        return this.pattern;
+    }
+
+    public AccumulateBuilder getAccumulateBuilder() {
+        return this.accumulate;
     }
 
     public ConditionalElementBuilder getEvalBuilder() {
@@ -190,12 +284,69 @@ public class JavaDialect
         return this.returnValue;
     }
 
+    public ConsequenceBuilder getConsequenceBuilder() {
+        return this.consequence;
+    }
+
     public RuleClassBuilder getRuleClassBuilder() {
         return this.rule;
     }
 
     public FromBuilder getFromBuilder() {
         return this.from;
+    }
+
+    /**
+     * Sets usual string template attributes:
+     * 
+     * <li> list of declarations and declaration types</li>
+     * <li> list of globals and global types</li>
+     *
+     * @param context the current build context
+     * @param st the string template whose attributes will be set 
+     * @param declarations array of declarations to set
+     * @param globals array of globals to set
+     */
+    public void setStringTemplateAttributes(final RuleBuildContext context,
+                                            final StringTemplate st,
+                                            final Declaration[] declarations,
+                                            final String[] globals) {
+        final String[] declarationTypes = new String[declarations.length];
+        for ( int i = 0, size = declarations.length; i < size; i++ ) {
+            declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( declarations[i] );
+        }
+
+        final List globalTypes = new ArrayList( globals.length );
+        for ( int i = 0, length = globals.length; i < length; i++ ) {
+            globalTypes.add( ((Class) context.getPkg().getGlobals().get( globals[i] )).getName().replace( '$',
+                                                                                                          '.' ) );
+        }
+
+        st.setAttribute( "declarations",
+                         declarations );
+        st.setAttribute( "declarationTypes",
+                         declarationTypes );
+
+        st.setAttribute( "globals",
+                         globals );
+        st.setAttribute( "globalTypes",
+                         globalTypes );
+    }
+
+    /**
+     * Returns the string template group of invokers
+     * @return
+     */
+    public StringTemplateGroup getInvokerGroup() {
+        return this.invokerGroup;
+    }
+
+    /**
+     * Returns the string template group of actual rule templates
+     * @return
+     */
+    public StringTemplateGroup getRuleGroup() {
+        return this.ruleGroup;
     }
 
     /**
@@ -245,12 +396,12 @@ public class JavaDialect
     }
 
     /**
-     * This will setup the semantic components of the rule for compiling later on.
+     * This will add the rule for compiling later on.
      * It will not actually call the compiler
      */
-    public void addRuleSemantics(final RuleBuilder builder,
-                                 final Rule rule,
-                                 final RuleDescr ruleDescr) {
+    public void addRule(final RuleBuilder builder,
+                        final Rule rule,
+                        final RuleDescr ruleDescr) {
         // return if there is no ruleclass name;       
         if ( builder.getRuleClass() == null ) {
             return;

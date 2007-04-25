@@ -19,8 +19,9 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Iterator;
 
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
+import org.drools.util.StringUtils;
 
 /**
  * @author etirelli
@@ -33,8 +34,7 @@ public class JavaRuleClassBuilder
     /* (non-Javadoc)
      * @see org.drools.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.rule.builder.BuildContext, org.drools.rule.builder.dialect.java.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
-    public void buildRule(final BuildContext context,
-                          final BuildUtils utils,
+    public void buildRule(final RuleBuildContext context,
                           final RuleDescr ruleDescr) {
         // If there is no compiled code, return
         if ( context.getMethods().isEmpty() ) {
@@ -54,7 +54,7 @@ public class JavaRuleClassBuilder
             buffer.append( "import static " + it.next() + ";" + lineSeparator );
         }
 
-        buffer.append( "public class " + utils.ucFirst( ruleDescr.getClassName() ) + " {" + lineSeparator );
+        buffer.append( "public class " + StringUtils.ucFirst( ruleDescr.getClassName() ) + " {" + lineSeparator );
         buffer.append( "    private static final long serialVersionUID  = 320L;" + lineSeparator );
 
         for ( int i = 0, size = context.getMethods().size() - 1; i < size; i++ ) {

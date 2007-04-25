@@ -29,9 +29,8 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.ReturnValueBuilder;
-import org.drools.rule.builder.dialect.java.BuildUtils;
 import org.mvel.MVEL;
 
 /**
@@ -42,8 +41,7 @@ public class MVELReturnValueBuilder
     implements
     ReturnValueBuilder {
 
-    public void build(final BuildContext context,
-                      final BuildUtils utils,
+    public void build(final RuleBuildContext context,
                       final List[] usedIdentifiers,
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
@@ -72,8 +70,7 @@ public class MVELReturnValueBuilder
                                                                                         factory ) );
     }
 
-    public void build(final BuildContext context,
-                      final BuildUtils utils,
+    public void build(final RuleBuildContext context,
                       final List[] usedIdentifiers,
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
