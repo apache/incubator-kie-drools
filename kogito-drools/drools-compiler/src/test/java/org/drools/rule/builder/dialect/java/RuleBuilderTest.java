@@ -36,6 +36,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 
 /**
@@ -81,20 +82,19 @@ public class RuleBuilderTest extends TestCase {
         typeResolver.addImport( pkgDescr.getName() + ".*" );
         typeResolver.addImport( "java.lang.*" );
 
-        final RuleBuilder builder = new RuleBuilder( typeResolver,
-                                                     new ClassFieldExtractorCache(),
-                                                     new JavaDialect( null,
-                                                                      new PackageBuilderConfiguration(),
-                                                                      typeResolver,
-                                                                      new ClassFieldExtractorCache() ) );
+        final RuleBuilder builder = new RuleBuilder( );        
+        RuleBuildContext context = new RuleBuildContext(pkg, ruleDescr);
+        JavaDialect dialect =  new JavaDialect( null,
+                                                new PackageBuilderConfiguration(),
+                                                typeResolver,
+                                                new ClassFieldExtractorCache() ) ;        
+        context.setDialect( dialect );
+        builder.build( context );
 
-        builder.build( pkg,
-                       ruleDescr );
+        Assert.assertTrue( context.getErrors().toString(),
+                           context.getErrors().isEmpty() );
 
-        Assert.assertTrue( builder.getErrors().toString(),
-                           builder.getErrors().isEmpty() );
-
-        final Rule rule = builder.getRule();
+        final Rule rule = context.getRule();
 
         assertEquals( "There should be 2 rule level declarations",
                       2,
@@ -120,12 +120,8 @@ public class RuleBuilderTest extends TestCase {
     }
 
     public void testBuildAttributes() throws Exception {
-        final RuleBuilder builder = new RuleBuilder( null,
-                                                     null,
-                                                     new JavaDialect( null,
-                                                                      new PackageBuilderConfiguration(),
-                                                                      null,
-                                                                      null ) );
+        final RuleBuilder builder = new RuleBuilder( );        
+
         Rule rule = new Rule( "myrule" );
         List attributes = new ArrayList();
 

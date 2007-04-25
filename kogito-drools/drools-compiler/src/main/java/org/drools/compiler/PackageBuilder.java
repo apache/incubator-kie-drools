@@ -44,6 +44,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.Dialect;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.xml.XmlPackageReader;
@@ -206,9 +207,7 @@ public class PackageBuilder {
             this.pkg = newPackage( packageDescr );
         }
 
-        this.builder = new RuleBuilder( getTypeResolver(),
-                                        this.classFieldExtractorCache,
-                                        this.dialect );
+        this.builder = new RuleBuilder( );
 
         // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
@@ -337,19 +336,17 @@ public class PackageBuilder {
 
     private void addRule(final RuleDescr ruleDescr) {
         this.dialect.init( ruleDescr );
+        
+        RuleBuildContext context = new RuleBuildContext( pkg,
+                                                         ruleDescr );        
+        context.setDialect( this.dialect );
+        this.builder.build( context );
+                
+        this.results.addAll( context.getErrors() );       
 
-        this.builder.build( this.pkg,
-                            ruleDescr );
+        this.dialect.addRule( context );
 
-        this.results.addAll( this.builder.getErrors() );
-
-        final Rule rule = this.builder.getRule();
-
-        this.dialect.addRule( this.builder,
-                                       rule,
-                                       ruleDescr );
-
-        this.pkg.addRule( rule );
+        this.pkg.addRule( context.getRule() );
     }
 
     /**
