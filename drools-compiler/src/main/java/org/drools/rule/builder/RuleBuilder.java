@@ -17,33 +17,17 @@ package org.drools.rule.builder;
  */
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.evaluators.DateFactory;
-import org.drools.lang.descr.AccumulateDescr;
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.FromDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
-import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
-import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
 
 /**
  * This builds the rule structure from an AST.
@@ -52,51 +36,8 @@ import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
  */
 public class RuleBuilder {
 
-    // the current build context
-    private RuleBuildContext context;
-
-    private Dialect      dialect;
-
     // Constructor
-    public RuleBuilder(final TypeResolver typeResolver,
-                       final ClassFieldExtractorCache cache,
-                       final Dialect dialect) {
-
-        this.dialect = dialect;
-    }
-
-    public Map getInvokers() {
-        return (this.context == null) ? null : this.context.getInvokers();
-    }
-
-    public Map getDescrLookups() {
-        return (this.context == null) ? null : this.context.getDescrLookups();
-    }
-
-//    public String getRuleClass() {
-//        return (this.context == null) ? null : this.context.getRuleClass();
-//    }
-
-    public Map getInvokerLookups() {
-        return (this.context == null) ? null : this.context.getInvokerLookups();
-    }
-
-    public List getErrors() {
-        return (this.context == null) ? null : this.context.getErrors();
-    }
-
-    public Rule getRule() {
-        if ( this.context == null ) {
-            return null;
-        }
-        if ( !this.context.getErrors().isEmpty() ) {
-            this.context.getRule().setSemanticallyValid( false );
-        }
-        return this.context.getRule();
-    }
-
-    public Package getPackage() {
-        return this.context.getPkg();
+    public RuleBuilder() {
     }
 
     /**
@@ -105,22 +46,18 @@ public class RuleBuilder {
      * @param ruleDescr
      * @return
      */
-    public synchronized Rule build(final Package pkg,
-                                   final RuleDescr ruleDescr) {
-        this.context = new RuleBuildContext( pkg,
-                                         ruleDescr );
+    public void build(final RuleBuildContext context) {
+        RuleDescr ruleDescr = context.getRuleDescr();
 
         // Assign attributes
-        setAttributes( this.context.getRule(),
+        setAttributes( context.getRule(),
                        ruleDescr.getAttributes() );
-        
-        this.context.setDialect( this.dialect );
 
-        final ConditionalElementBuilder builder = ( ConditionalElementBuilder ) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
+        final ConditionalElementBuilder builder = (ConditionalElementBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
-            final GroupElement ce = (GroupElement) builder.build( this.context,
+            final GroupElement ce = (GroupElement) builder.build( context,
                                                                   ruleDescr.getLhs() );
-            this.context.getRule().setLhs( ce );
+            context.getRule().setLhs( ce );
         } else {
             throw new RuntimeDroolsException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
         }
@@ -130,13 +67,11 @@ public class RuleBuilder {
         if ( !(ruleDescr instanceof QueryDescr) ) {
             // do not build the consequence if we have a query
 
-            this.dialect.getConsequenceBuilder().build( this.context,
-                                                        ruleDescr );
+            context.getDialect().getConsequenceBuilder().build( context,
+                                                                ruleDescr );
         }
-        this.dialect.getRuleClassBuilder().buildRule( this.context,
-                                                      ruleDescr );
-
-        return this.context.getRule();
+        context.getDialect().getRuleClassBuilder().buildRule( context,
+                                                              ruleDescr );
     }
 
     /**

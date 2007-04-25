@@ -44,9 +44,7 @@ public interface Dialect {
 
     void compileAll();
 
-    void addRule(final RuleBuilder builder,
-                          final Rule rule,
-                          final RuleDescr ruleDescr);
+    void addRule(final RuleBuildContext context);
 
     void addFunction(final FunctionDescr functionDescr,
                      TypeResolver typeResolver);

@@ -407,13 +407,14 @@ public class JavaDialect
      * This will add the rule for compiling later on.
      * It will not actually call the compiler
      */
-    public void addRule(final RuleBuilder builder,
-                        final Rule rule,
-                        final RuleDescr ruleDescr) {
+    public void addRule(final RuleBuildContext context) {
         // return if there is no ruleclass name;       
         if ( this.ruleClass == null ) {
             return;
         }
+        
+        Rule rule = context.getRule();
+        RuleDescr ruleDescr = context.getRuleDescr();     
 
         // The compilation result is for th entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
@@ -424,20 +425,20 @@ public class JavaDialect
                                                    rule,
                                                    "Rule Compilation error" ) );
 
-        for ( final Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
+        for ( final Iterator it = context.getInvokers().keySet().iterator(); it.hasNext(); ) {
             final String className = (String) it.next();
 
             // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
             // If so we add it to the PackageCompilationData as it will get wired up on compilation
-            final Object invoker = builder.getInvokerLookups().get( className );
+            final Object invoker = context.getInvokerLookups().get( className );
             if ( invoker != null ) {
                 this.pkg.getPackageCompilationData().putInvoker( className,
                                                                  invoker );
             }
-            final String text = (String) builder.getInvokers().get( className );
+            final String text = (String) context.getInvokers().get( className );
 
             //System.out.println( className + ":\n" + text );
-            final BaseDescr descr = (BaseDescr) builder.getDescrLookups().get( className );
+            final BaseDescr descr = (BaseDescr) context.getDescrLookups().get( className );
             addClassCompileTask( className,
                                  descr,
                                  text,
