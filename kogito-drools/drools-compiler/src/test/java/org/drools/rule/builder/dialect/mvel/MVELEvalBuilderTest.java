@@ -19,7 +19,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.FieldExtractor;
@@ -34,15 +34,15 @@ public class MVELEvalBuilderTest extends TestCase {
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
-                                                                         ruleDescr );
+                                                                               ruleDescr );
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "price" );
         final Pattern pattern = new Pattern( 0,
-                                    new ClassObjectType( int.class ) );
+                                             new ClassObjectType( int.class ) );
         final Declaration declaration = new Declaration( "a",
-                                                   extractor,
-                                                   pattern );
+                                                         extractor,
+                                                         pattern );
         final Map map = new HashMap();
         map.put( "a",
                  declaration );
@@ -54,15 +54,13 @@ public class MVELEvalBuilderTest extends TestCase {
 
         final MVELEvalBuilder builder = new MVELEvalBuilder();
         final EvalCondition eval = (EvalCondition) builder.build( context,
-                                                            null,
-                                                            null,
-                                                            evalDescr );
+                                                                  evalDescr );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final Cheese cheddar = new Cheese( "cheddar",
-                                     10 );
+                                           10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
         final ReteTuple tuple = new ReteTuple( f0 );
 
@@ -92,7 +90,7 @@ public class MVELEvalBuilderTest extends TestCase {
         }
     }
 
-    public static class InstrumentedBuildContent extends BuildContext {
+    public static class InstrumentedBuildContent extends RuleBuildContext {
         private DeclarationScopeResolver declarationScopeResolver;
 
         public InstrumentedBuildContent(final Package pkg,

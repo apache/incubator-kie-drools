@@ -23,14 +23,16 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.drools.base.ClassObjectType;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
+import org.drools.util.StringUtils;
 
 /**
  * @author etirelli
@@ -47,37 +49,35 @@ public class JavaAccumulateBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.AccumulateBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils,
-                                    final PatternBuilder patternBuilder,
+    public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
 
         final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
+        final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
+
         final Pattern sourcePattern = patternBuilder.build( context,
-                                                   utils,
-                                                   accumDescr.getSourcePattern() );
+                                                            accumDescr.getSourcePattern() );
 
         if ( sourcePattern == null ) {
             return null;
         }
 
         final Pattern resultPattern = patternBuilder.build( context,
-                                                   utils,
-                                                   accumDescr.getResultPattern() );
+                                                            accumDescr.getResultPattern() );
 
         final String className = "accumulate" + context.getNextId();
         accumDescr.setClassMethodName( className );
 
-        final List[] usedIdentifiers1 = utils.getUsedCIdentifiers( context,
-                                                                   accumDescr,
-                                                                   accumDescr.getInitCode() );
-        final List[] usedIdentifiers2 = utils.getUsedCIdentifiers( context,
-                                                                   accumDescr,
-                                                                   accumDescr.getActionCode() );
-        final List[] usedIdentifiers3 = utils.getUsedIdentifiers( context,
-                                                                  accumDescr,
-                                                                  accumDescr.getResultCode() );
+        final List[] usedIdentifiers1 = context.getDialect().getBlockIdentifiers( context,
+                                                                                  accumDescr,
+                                                                                  accumDescr.getInitCode() );
+        final List[] usedIdentifiers2 = context.getDialect().getBlockIdentifiers( context,
+                                                                                  accumDescr,
+                                                                                  accumDescr.getActionCode() );
+        final List[] usedIdentifiers3 = context.getDialect().getExpressionIdentifiers( context,
+                                                                                       accumDescr,
+                                                                                       accumDescr.getResultCode() );
 
         final List requiredDeclarations = new ArrayList( usedIdentifiers1[0] );
         requiredDeclarations.addAll( usedIdentifiers2[0] );
@@ -95,12 +95,14 @@ public class JavaAccumulateBuilder
 
         final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
 
-        StringTemplate st = utils.getRuleGroup().getInstanceOf( "accumulateMethod" );
+        JavaDialect dialect = (JavaDialect) context.getDialect();
 
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           declarations,
-                                           globals );
+        StringTemplate st = dialect.getRuleGroup().getInstanceOf( "accumulateMethod" );
+
+        dialect.setStringTemplateAttributes( context,
+                                             st,
+                                             declarations,
+                                             globals );
 
         st.setAttribute( "innerDeclarations",
                          sourceDeclArr );
@@ -130,30 +132,30 @@ public class JavaAccumulateBuilder
 
         context.getMethods().add( st.toString() );
 
-        st = utils.getInvokerGroup().getInstanceOf( "accumulateInvoker" );
+        st = dialect.getInvokerGroup().getInstanceOf( "accumulateInvoker" );
 
         st.setAttribute( "package",
                          context.getPkg().getName() );
         st.setAttribute( "ruleClassName",
-                         utils.ucFirst( context.getRuleDescr().getClassName() ) );
+                         StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker" );
+                         context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
                          className );
 
-        utils.setStringTemplateAttributes( context,
-                                           st,
-                                           declarations,
-                                           (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] ) );
+        dialect.setStringTemplateAttributes( context,
+                                             st,
+                                             declarations,
+                                             (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] ) );
 
         st.setAttribute( "hashCode",
                          actionCode.hashCode() );
 
         final Accumulate accumulate = new Accumulate( sourcePattern,
-                                                resultPattern,
-                                                declarations,
-                                                sourceDeclArr );
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker";
+                                                      resultPattern,
+                                                      declarations,
+                                                      sourceDeclArr );
+        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
         context.getInvokers().put( invokerClassName,
                                    st.toString() );
         context.getInvokerLookups().put( invokerClassName,

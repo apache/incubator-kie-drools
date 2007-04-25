@@ -18,10 +18,10 @@ package org.drools.rule.builder;
 
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
-import org.drools.rule.builder.dialect.java.BuildUtils;
 
 /**
  * @author etirelli
@@ -34,15 +34,12 @@ public class CollectBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils,
-                                    final PatternBuilder patternBuilder,
+    public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
 
         final CollectDescr collectDescr = (CollectDescr) descr;
-
+        final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
         final Pattern sourcePattern = patternBuilder.build( context,
-                                                            utils,
                                                             collectDescr.getSourcePattern() );
 
         if ( sourcePattern == null ) {
@@ -50,7 +47,6 @@ public class CollectBuilder
         }
 
         final Pattern resultPattern = patternBuilder.build( context,
-                                                            utils,
                                                             collectDescr.getResultPattern() );
 
         final String className = "collect" + context.getNextId();

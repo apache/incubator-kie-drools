@@ -6,15 +6,15 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.builder.BuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.util.StringUtils;
 
 public class JavaPredicateBuilder
     implements
     PredicateBuilder {
 
-    public void build(final BuildContext context,
-                      final BuildUtils utils,
+    public void build(final RuleBuildContext context,
                       final List[] usedIdentifiers,
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
@@ -24,17 +24,19 @@ public class JavaPredicateBuilder
         // generate Invoker
         final String className = "predicate" + context.getNextId();
         predicateDescr.setClassMethodName( className );
+        
+        JavaDialect dialect = (JavaDialect) context.getDialect();
 
-        StringTemplate st = utils.getRuleGroup().getInstanceOf( "predicateMethod" );
+        StringTemplate st = dialect.getRuleGroup().getInstanceOf( "predicateMethod" );
 
-        utils.setStringTemplateAttributes( context,
+        dialect.setStringTemplateAttributes( context,
                                            st,
                                            previousDeclarations,
                                            (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
 
         final String[] localDeclarationTypes = new String[localDeclarations.length];
         for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = utils.getTypeFixer().fix( localDeclarations[i] );
+            localDeclarationTypes[i] = ( (JavaDialect) context.getDialect()).getTypeFixer().fix( localDeclarations[i] );
         }
 
         st.setAttribute( "localDeclarations",
@@ -52,18 +54,18 @@ public class JavaPredicateBuilder
 
         context.getMethods().add( st.toString() );
 
-        st = utils.getInvokerGroup().getInstanceOf( "predicateInvoker" );
+        st = dialect.getInvokerGroup().getInstanceOf( "predicateInvoker" );
 
         st.setAttribute( "package",
                          context.getPkg().getName() );
         st.setAttribute( "ruleClassName",
-                         utils.ucFirst( context.getRuleDescr().getClassName() ) );
+                         StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker" );
+                         context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
         st.setAttribute( "methodName",
                          className );
 
-        utils.setStringTemplateAttributes( context,
+        dialect.setStringTemplateAttributes( context,
                                            st,
                                            previousDeclarations,
                                            (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
@@ -76,7 +78,7 @@ public class JavaPredicateBuilder
         st.setAttribute( "hashCode",
                          predicateText.hashCode() );
 
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + utils.ucFirst( className ) + "Invoker";
+        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
         context.getInvokers().put( invokerClassName,
                                    st.toString() );
         context.getInvokerLookups().put( invokerClassName,

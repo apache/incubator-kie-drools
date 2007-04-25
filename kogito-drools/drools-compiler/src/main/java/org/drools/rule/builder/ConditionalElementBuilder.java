@@ -18,7 +18,6 @@ package org.drools.rule.builder;
 
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.ConditionalElement;
-import org.drools.rule.builder.dialect.java.BuildUtils;
 
 /**
  * An interface to define classes capable of building
@@ -28,9 +27,7 @@ import org.drools.rule.builder.dialect.java.BuildUtils;
  */
 public interface ConditionalElementBuilder {
 
-    public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils,
-                                    final PatternBuilder patternBuilder,
+    public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr);
 
 }

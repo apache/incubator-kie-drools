@@ -22,8 +22,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.rule.builder.BuildContext;
-import org.drools.rule.builder.dialect.java.BuildUtils;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
 import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
@@ -40,22 +39,22 @@ public class MVELPredicateBuilderTest extends TestCase {
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
-                                                                         ruleDescr );
+                                                                               ruleDescr );
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "price" );
         final Pattern patternA = new Pattern( 0,
-                                     new ClassObjectType( int.class ) );
+                                              new ClassObjectType( int.class ) );
 
         final Pattern patternB = new Pattern( 1,
-                                     new ClassObjectType( int.class ) );
+                                              new ClassObjectType( int.class ) );
 
         final Declaration a = new Declaration( "a",
-                                         extractor,
-                                         patternA );
+                                               extractor,
+                                               patternA );
         final Declaration b = new Declaration( "b",
-                                         extractor,
-                                         patternB );
+                                               extractor,
+                                               patternB );
 
         final Map map = new HashMap();
         map.put( "a",
@@ -80,15 +79,7 @@ public class MVELPredicateBuilderTest extends TestCase {
         final PredicateConstraint predicate = new PredicateConstraint( null,
                                                                        localDeclarations );
 
-        final BuildUtils utils = new BuildUtils( new KnowledgeHelperFixer(),
-                                           new DeclarationTypeFixer(),
-                                           new JavaExprAnalyzer(),
-                                           null,
-                                           null,
-                                           null );
-
         builder.build( context,
-                       utils,
                        usedIdentifiers,
                        previousDeclarations,
                        localDeclarations,
@@ -99,10 +90,10 @@ public class MVELPredicateBuilderTest extends TestCase {
         final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stilton",
-                                     10 );
+                                           10 );
 
         final Cheese cheddar = new Cheese( "cheddar",
-                                     10 );
+                                           10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
         final ReteTuple tuple = new ReteTuple( f0 );
 
@@ -136,7 +127,7 @@ public class MVELPredicateBuilderTest extends TestCase {
         }
     }
 
-    public static class InstrumentedBuildContent extends BuildContext {
+    public static class InstrumentedBuildContent extends RuleBuildContext {
         private DeclarationScopeResolver declarationScopeResolver;
 
         public InstrumentedBuildContent(final Package pkg,

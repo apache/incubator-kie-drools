@@ -24,7 +24,6 @@ import org.drools.lang.descr.ForallDescr;
 import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Forall;
-import org.drools.rule.builder.dialect.java.BuildUtils;
 
 /**
  * @author etirelli
@@ -37,15 +36,13 @@ public class ForallBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
      */
-    public ConditionalElement build(final BuildContext context,
-                                    final BuildUtils utils,
-                                    final PatternBuilder patternBuilder,
+    public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
         final ForallDescr forallDescr = (ForallDescr) descr;
 
+        final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
         final Pattern basePattern = patternBuilder.build( context,
-                                                 utils,
-                                                 forallDescr.getBasePattern() );
+                                                          forallDescr.getBasePattern() );
 
         if ( basePattern == null ) {
             return null;
@@ -59,8 +56,7 @@ public class ForallBuilder
 
         for ( final Iterator it = forallDescr.getRemainingPatterns().iterator(); it.hasNext(); ) {
             final Pattern anotherPattern = patternBuilder.build( context,
-                                                        utils,
-                                                        (PatternDescr) it.next() );
+                                                                 (PatternDescr) it.next() );
             forall.addRemainingPattern( anotherPattern );
         }
 
