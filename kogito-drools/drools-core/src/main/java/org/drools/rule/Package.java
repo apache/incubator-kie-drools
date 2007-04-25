@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.util.StringUtils;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -243,7 +244,7 @@ public class Package
 
     public void removeFunction(final String functionName) {
         this.functions.remove( functionName );
-        this.packageCompilationData.remove( this.name + "." + ucFirst( functionName ) );
+        this.packageCompilationData.remove( this.name + "." + StringUtils.ucFirst( functionName ) );
     }
 
     public FactTemplate getFactTemplate(final String name) {
@@ -391,10 +392,6 @@ public class Package
 
     public int hashCode() {
         return this.name.hashCode();
-    }
-
-    private String ucFirst(final String name) {
-        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
     public void clear() {
