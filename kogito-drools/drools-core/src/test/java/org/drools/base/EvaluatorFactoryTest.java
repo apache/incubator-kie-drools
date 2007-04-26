@@ -89,7 +89,8 @@ public class EvaluatorFactoryTest extends TestCase {
 
         final Object[][] data = {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE}, {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE}, {new Integer( 42 ), ">=", new Integer( 41 ), Boolean.TRUE},
                 {new Integer( 42 ), "!=", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), ">", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), "<=", new Integer( 42 ), Boolean.TRUE},
-                {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE}};
+                {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE}, {new Integer( 42 ), "!=", null, Boolean.TRUE}, {new Integer( 42 ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, 
+                {null, "!=", null, Boolean.FALSE}, {null, "!=", new Integer( 42 ), Boolean.TRUE}, {null, "==", new Integer( 42 ), Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PINTEGER_TYPE );
@@ -132,7 +133,8 @@ public class EvaluatorFactoryTest extends TestCase {
 
         //Test data: Obj1, Operand, Obj2
         final Object[][] data = {{new Short( (short) 42 ), "==", new Short( (short) 42 ), Boolean.TRUE}, {new Short( (short) 42 ), "<", new Short( (short) 43 ), Boolean.TRUE}, {new Short( (short) 42 ), ">=", new Short( (short) 41 ), Boolean.TRUE},
-                {new Short( (short) 42 ), "!=", new Short( (short) 41 ), Boolean.TRUE}};
+                {new Short( (short) 42 ), "!=", new Short( (short) 41 ), Boolean.TRUE}, {new Short( (short) 42 ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, 
+                {null, "!=", new Short( (short) 42 ), Boolean.TRUE}, {null, "==", new Short( (short) 42 ), Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PSHORT_TYPE );
@@ -142,7 +144,8 @@ public class EvaluatorFactoryTest extends TestCase {
 
         //Test data: Obj1, Operand, Obj2
         final Object[][] data = {{new Boolean( true ), "==", new Boolean( true ), Boolean.TRUE}, {new Boolean( false ), "!=", new Boolean( true ), Boolean.TRUE}, {new Boolean( true ), "==", new Boolean( false ), Boolean.FALSE},
-                {new Boolean( true ), "!=", new Boolean( false ), Boolean.TRUE}};
+                {new Boolean( true ), "!=", new Boolean( false ), Boolean.TRUE}, {new Boolean( true ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, 
+                {null, "!=", new Boolean( true ), Boolean.TRUE}, {null, "==", new Boolean( true ), Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PBOOLEAN_TYPE );
@@ -151,7 +154,8 @@ public class EvaluatorFactoryTest extends TestCase {
     public void testDouble() {
         final Object[][] data = {{new Double( 42 ), "==", new Double( 42 ), Boolean.TRUE}, {new Double( 42 ), "<", new Double( 43 ), Boolean.TRUE}, {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE},
                 {new Double( 42 ), "!=", new Double( 41 ), Boolean.TRUE}, {new Double( 42 ), ">", new Double( 41 ), Boolean.TRUE}, {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE}, {new Double( 42 ), ">=", new Double( 42 ), Boolean.TRUE},
-                {new Double( 42 ), ">=", new Double( 100 ), Boolean.FALSE}, {new Double( 42 ), "<", new Double( 1 ), Boolean.FALSE}};
+                {new Double( 42 ), ">=", new Double( 100 ), Boolean.FALSE}, {new Double( 42 ), "<", new Double( 1 ), Boolean.FALSE}, {new Double( 42 ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, 
+                {null, "!=", new Double( 42 ), Boolean.TRUE}, {null, "==", new Double( 42 ), Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PDOUBLE_TYPE );
@@ -160,7 +164,8 @@ public class EvaluatorFactoryTest extends TestCase {
     public void testFloat() {
         final Object[][] data = {{new Float( 42 ), "==", new Float( 42 ), Boolean.TRUE}, {new Float( 42 ), "<", new Float( 43 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE},
                 {new Float( 42 ), "!=", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 42 ), Boolean.TRUE},
-                {new Float( 42 ), ">=", new Float( 100 ), Boolean.FALSE}, {new Float( 42 ), "<", new Float( 1 ), Boolean.FALSE}};
+                {new Float( 42 ), ">=", new Float( 100 ), Boolean.FALSE}, {new Float( 42 ), "<", new Float( 1 ), Boolean.FALSE}, {new Float( 42 ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, 
+                {null, "!=", new Float( 42 ), Boolean.TRUE}, {null, "==", new Float( 42 ), Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PFLOAT_TYPE );
@@ -169,7 +174,8 @@ public class EvaluatorFactoryTest extends TestCase {
     public void testLong() {
         final Object[][] data = {{new Long( 42 ), "==", new Long( 42 ), Boolean.TRUE}, {new Long( 42 ), "<", new Long( 43 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE}, {new Long( 42 ), "!=", new Long( 41 ), Boolean.TRUE},
                 {new Long( 42 ), ">", new Long( 41 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 42 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 100 ), Boolean.FALSE},
-                {new Long( 42 ), "<", new Long( 1 ), Boolean.FALSE}};
+                {new Long( 42 ), "<", new Long( 1 ), Boolean.FALSE}, {new Long( 42 ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, {null, "!=", new Long( 42 ), Boolean.TRUE}, 
+                {null, "==", new Long( 42 ), Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PLONG_TYPE );
@@ -178,7 +184,8 @@ public class EvaluatorFactoryTest extends TestCase {
     public void testCharacter() {
         final Object[][] data = {{new Character( 'a' ), "==", new Character( 'a' ), Boolean.TRUE}, {new Character( 'a' ), "<", new Character( 'b' ), Boolean.TRUE}, {new Character( 'a' ), ">=", new Character( 'a' ), Boolean.TRUE},
                 {new Character( 'a' ), "!=", new Character( 'Z' ), Boolean.TRUE}, {new Character( 'z' ), ">", new Character( 'a' ), Boolean.TRUE}, {new Character( 'z' ), ">=", new Character( 'z' ), Boolean.TRUE},
-                {new Character( 'z' ), ">=", new Character( 'a' ), Boolean.TRUE}, {new Character( 'a' ), ">=", new Character( 'z' ), Boolean.FALSE}, {new Character( 'z' ), "<", new Character( 'a' ), Boolean.FALSE}};
+                {new Character( 'z' ), ">=", new Character( 'a' ), Boolean.TRUE}, {new Character( 'a' ), ">=", new Character( 'z' ), Boolean.FALSE}, {new Character( 'z' ), "<", new Character( 'a' ), Boolean.FALSE},
+                {new Character( 'z' ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, {null, "!=", new Character( 'z' ), Boolean.TRUE}, {null, "==", new Character( 'z' ), Boolean.FALSE}};
         runEvaluatorTest( data,
                           ValueType.PCHAR_TYPE );
     }
@@ -200,7 +207,8 @@ public class EvaluatorFactoryTest extends TestCase {
 
     public void testByte() {
         final Object[][] data = {{new Byte( "1" ), "==", new Byte( "1" ), Boolean.TRUE}, {new Byte( "1" ), "==", new Byte( "2" ), Boolean.FALSE}, {new Byte( "1" ), "!=", new Byte( "2" ), Boolean.TRUE},
-                {new Byte( "1" ), "!=", new Byte( "1" ), Boolean.FALSE}, {new Byte( "1" ), "<=", new Byte( "1" ), Boolean.TRUE}};
+                {new Byte( "1" ), "!=", new Byte( "1" ), Boolean.FALSE}, {new Byte( "1" ), "<=", new Byte( "1" ), Boolean.TRUE}, {new Byte( "1" ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, 
+                {null, "!=", null, Boolean.FALSE}, {null, "!=", new Byte( "1" ), Boolean.TRUE}, {null, "==", new Byte( "1" ), Boolean.FALSE}};
         runEvaluatorTest( data,
                           ValueType.PBYTE_TYPE );
 
@@ -352,31 +360,78 @@ public class EvaluatorFactoryTest extends TestCase {
         if ( valueType.isIntegerNumber() || valueType.isChar() ) {
             final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                              declaration );
-            if ( row[2] instanceof Character ) {
-                context.left = ((Character) row[2]).charValue();
-                context.right = ((Character) row[0]).charValue();
+            
+            if ( valueType.isChar() ) {
+                if (row[2] == null) {
+                    context.leftNull = true;
+                } else {
+                    context.left = ((Character) row[2]).charValue();
+                }
+                
+                if (row[0] == null) {
+                    context.rightNull = true;
+                } else {
+                    context.right = ((Character) row[0]).charValue();
+                }
             } else {
-                context.left = ((Number) row[2]).longValue();
-                context.right = ((Number) row[0]).longValue();
+                if (row[2] == null) {
+                    context.leftNull = true;
+                } else {
+                    context.left = ((Number) row[2]).longValue();
+                }
+                
+                if (row[0] == null) {
+                    context.rightNull = true;
+                } else {
+                    context.right = ((Number) row[0]).longValue();
+                }
             }
             return context;
         } else if ( valueType.isBoolean() ) {
             final BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
                                                                                    declaration );
-            context.left = ((Boolean) row[2]).booleanValue();
-            context.right = ((Boolean) row[0]).booleanValue();
+            
+            if (row[2] == null) {
+                context.leftNull = true;
+            } else {
+                context.left = ((Boolean) row[2]).booleanValue();
+            }
+            
+            if (row[0] == null) {
+                context.rightNull = true;
+            } else {
+                context.right = ((Boolean) row[0]).booleanValue();
+            }
             return context;
         } else if ( valueType.isFloatNumber() ) {
             final DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
                                                                                  declaration );
-            context.left = ((Number) row[2]).doubleValue();
-            context.right = ((Number) row[0]).doubleValue();
+            if (row[2] == null) {
+                context.leftNull = true;
+            } else {
+                context.left = ((Number) row[2]).doubleValue();
+            }
+            
+            if (row[0] == null) {
+                context.rightNull = true;
+            } else {
+                context.right = ((Number) row[0]).doubleValue();
+            }
             return context;
         } else {
             final ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
                                                                                  declaration );
-            context.left = row[2];
-            context.right = row[0];
+            if (row[2] == null) {
+                context.leftNull = true;
+            } else {
+                context.left = row[2];
+            }
+            
+            if (row[0] == null) {
+                context.rightNull = true;
+            } else {
+                context.right = row[0];
+            }
             return context;
         }
     }
@@ -433,6 +488,10 @@ public class EvaluatorFactoryTest extends TestCase {
 
         public Object getValue(final Object object) {
             return object;
+        }
+        
+        public boolean isNullValue(final Object object) {
+            return object == null;
         }
 
         public ValueType getValueType() {

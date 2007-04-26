@@ -65,6 +65,10 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
         return (short) getCharValue( object );
     }
 
+    public boolean isNullValue(final Object object) {
+        return false;
+    }
+    
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getCharValue",

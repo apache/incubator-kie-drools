@@ -127,6 +127,10 @@ public class PatternExtractor
         }
     }
 
+    public boolean isNullValue(final Object object) {
+        return getValue( object ) == null;
+    }
+
     public int getHashCode(final Object object) {
         return getValue( object ).hashCode();
     }

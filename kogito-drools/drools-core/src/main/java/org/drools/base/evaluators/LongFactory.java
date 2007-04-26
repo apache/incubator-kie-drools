@@ -75,16 +75,34 @@ public class LongFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return object2.isNull();
+            } else if ( object2.isNull() ) {
+                return false;
+            }
+            
             return extractor.getLongValue( object1 ) == object2.getLongValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return false;
+            }
+            
             return context.declaration.getExtractor().getLongValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if ( context.extractor.isNullValue( right )) {
+                return context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return false;
+            }
+            
             return ((LongVariableContextEntry) context).left == context.extractor.getLongValue( right );
         }
 
@@ -92,6 +110,12 @@ public class LongFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return false;
+            }
+            
             return extractor1.getLongValue( object1 ) == extractor2.getLongValue( object2 );
         }
 
@@ -115,16 +139,34 @@ public class LongFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return !object2.isNull();
+            } else if ( object2.isNull() ) {
+                return true;
+            }
+            
             return extractor.getLongValue( object1 ) != object2.getLongValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return !context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return true;
+            }
+            
             return context.declaration.getExtractor().getLongValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if ( context.extractor.isNullValue( right ) ) {
+                return !context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return true;
+            }
+            
             return ((LongVariableContextEntry) context).left != context.extractor.getLongValue( right );
         }
 
@@ -132,6 +174,12 @@ public class LongFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return !extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return true;
+            }
+            
             return extractor1.getLongValue( object1 ) != extractor2.getLongValue( object2 );
         }
 

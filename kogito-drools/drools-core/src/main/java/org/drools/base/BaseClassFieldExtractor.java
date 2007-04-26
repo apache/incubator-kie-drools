@@ -77,7 +77,7 @@ abstract public class BaseClassFieldExtractor
     public ValueType getValueType() {
         return this.valueType;
     }
-
+    
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;

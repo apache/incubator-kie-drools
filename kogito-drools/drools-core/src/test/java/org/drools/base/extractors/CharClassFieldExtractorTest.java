@@ -95,4 +95,12 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
             fail( "Should not throw an exception" );
         }
     }
+    
+    public void testIsNullValue() {
+        try {
+            Assert.assertFalse( this.extractor.isNullValue( this.bean ) );
+        } catch ( final Exception e ) {
+            fail( "Should not throw an exception" );
+        }
+    }
 }

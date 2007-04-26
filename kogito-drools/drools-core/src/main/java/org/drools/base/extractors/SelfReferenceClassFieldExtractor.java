@@ -37,6 +37,9 @@ public class SelfReferenceClassFieldExtractor extends BaseObjectClassFieldExtrac
 
     public Object getValue(final Object object) {
         return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
+    }   
+    
+    public boolean isNullValue(final Object object) {
+        return getValue( object ) == null;
     }
-
 }

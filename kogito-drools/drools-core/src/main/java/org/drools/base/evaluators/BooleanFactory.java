@@ -67,16 +67,34 @@ public class BooleanFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return object2.isNull();
+            } else if ( object2.isNull() ) {
+                return false;
+            }
+            
             return extractor.getBooleanValue( object1 ) == object2.getBooleanValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return false;
+            }
+            
             return context.declaration.getExtractor().getBooleanValue( left ) == ((BooleanVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
+            if ( context.extractor.isNullValue( object2 )) {
+                return context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return false;
+            }
+            
             return context.extractor.getBooleanValue( object2 ) == ((BooleanVariableContextEntry) context).left;
         }
 
@@ -84,6 +102,12 @@ public class BooleanFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return false;
+            }
+            
             return extractor1.getBooleanValue( object1 ) == extractor2.getBooleanValue( object2 );
         }
 
@@ -108,16 +132,33 @@ public class BooleanFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return !object2.isNull();
+            } else if ( object2.isNull() ) {
+                return true;
+            }
+            
             return extractor.getBooleanValue( object1 ) != object2.getBooleanValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return !context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return true;
+            }
             return context.declaration.getExtractor().getBooleanValue( left ) != ((BooleanVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
+            if ( context.extractor.isNullValue( object2 )) {
+                return !context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return true;
+            }
+            
             return context.extractor.getBooleanValue( object2 ) != ((BooleanVariableContextEntry) context).left;
         }
 
@@ -125,6 +166,12 @@ public class BooleanFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return !extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return true;
+            }
+            
             return extractor1.getBooleanValue( object1 ) != extractor1.getBooleanValue( object2 );
         }
 

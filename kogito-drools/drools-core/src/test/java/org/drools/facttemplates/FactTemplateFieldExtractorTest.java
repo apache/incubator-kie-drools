@@ -39,6 +39,14 @@ public class FactTemplateFieldExtractorTest extends TestCase {
         assertEquals( new Integer( 200 ),
                       extractPrice.getValue( stilton ) );
 
+        assertFalse( extractName.isNullValue( stilton ) );
+        
+        stilton.setFieldValue( "name",
+                               null );
+        
+        assertTrue( extractName.isNullValue( stilton ) );
+        assertFalse( extractPrice.isNullValue( stilton ) );
+        
         final Fact brie = cheese.createFact( 12 );
         brie.setFieldValue( "name",
                             "brie" );
@@ -50,6 +58,14 @@ public class FactTemplateFieldExtractorTest extends TestCase {
 
         assertEquals( new Integer( 55 ),
                       extractPrice.getValue( brie ) );
+        
+        assertFalse( extractName.isNullValue( brie ) );
+        
+        brie.setFieldValue( "name",
+                            null );
+        
+        assertTrue( extractName.isNullValue( brie ) );
+        assertFalse( extractPrice.isNullValue( stilton ) );
     }
 
     public void testDeclaration() {

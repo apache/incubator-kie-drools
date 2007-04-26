@@ -28,7 +28,7 @@ public class BooleanFieldImpl
     FieldValue {
 
     private static final long serialVersionUID = 320;
-    private boolean           value;
+    private final boolean     value;
 
     public BooleanFieldImpl(final boolean value) {
         this.value = value;
@@ -88,6 +88,10 @@ public class BooleanFieldImpl
 
     public int hashCode() {
         return this.value ? 1 : 0;
+    }
+    
+    public boolean isNull() {
+        return false;
     }
 
     public boolean isBooleanField() {

@@ -99,4 +99,16 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
             fail( "Should not throw an exception" );
         }
     }
+    
+    public void testIsNullValue() {
+        try {
+            Assert.assertFalse( this.extractor.isNullValue( this.bean ) );
+            
+            Extractor nullExtractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
+                                                                                         "nullAttr" );
+            Assert.assertTrue( nullExtractor.isNullValue( this.bean ) );
+        } catch ( final Exception e ) {
+            fail( "Should not throw an exception" );
+        }
+    }
 }

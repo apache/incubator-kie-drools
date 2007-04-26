@@ -21,5 +21,7 @@ public abstract class BaseClassFieldExtractorsTest extends TestCase {
     public abstract void testGetDoubleValue();
 
     public abstract void testGetValue();
+    
+    public abstract void testIsNullValue();
 
 }

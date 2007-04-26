@@ -75,23 +75,47 @@ public class IntegerFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return object2.isNull();
+            } else if ( object2.isNull() ) {
+                return false;
+            }
+            
             return extractor.getIntValue( object1 ) == object2.getIntValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
-            return context.declaration.getExtractor().getIntValue( left ) == ((LongVariableContextEntry) context).right;
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return false;
+            }
+            
+            return context.declaration.getExtractor().getIntValue( left ) == ((LongVariableContextEntry) context).right; 
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
+            if ( context.extractor.isNullValue( object2 )) {
+                return context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return false;
+            }
+            
             return context.extractor.getIntValue( object2 ) == ((LongVariableContextEntry) context).left;
         }
 
         public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
                                 final Extractor extractor2,
-                                final Object object2) {
+                                final Object object2) {            
+            if (extractor1.isNullValue( object1 )) {
+                return extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return false;
+            }
+            
             return extractor1.getIntValue( object1 ) == extractor2.getIntValue( object2 );
         }
 
@@ -115,17 +139,35 @@ public class IntegerFactory
 
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
-                                final FieldValue object2) {
+                                final FieldValue object2) {        	          
+            if ( extractor.isNullValue( object1 ) ) {
+                return !object2.isNull();
+            } else if ( object2.isNull() ) {
+                return true;
+            }
+            
             return extractor.getIntValue( object1 ) != object2.getIntValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return !context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return true;
+            }
+            
             return context.declaration.getExtractor().getIntValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object object2) {
+            if ( context.extractor.isNullValue( object2 ) ) {
+                return !context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return true;
+            }
+            
             return context.extractor.getIntValue( object2 ) != ((LongVariableContextEntry) context).left;
         }
 
@@ -133,6 +175,12 @@ public class IntegerFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return !extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return true;
+            }
+            
             return extractor1.getIntValue( object1 ) != extractor2.getIntValue( object2 );
         }
 

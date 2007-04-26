@@ -114,4 +114,8 @@ public class GlobalExtractor
         return ( key == null ? other.key == null : key.equals( other.key ) ) &&
                ( this.objectType == null ? other.objectType == null : this.objectType.equals( other.objectType ));
     }
+
+    public boolean isNullValue(Object object) {
+        throw new UnsupportedOperationException("Operation not supported for globals");
+    }
 }
