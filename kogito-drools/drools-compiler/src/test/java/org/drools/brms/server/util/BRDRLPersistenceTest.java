@@ -13,7 +13,7 @@ import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
-public class BRDRLPersitenceTest extends TestCase {
+public class BRDRLPersistenceTest extends TestCase {
 
     private BRLPersistence p;
 
