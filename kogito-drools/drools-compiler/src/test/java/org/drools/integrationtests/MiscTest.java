@@ -927,9 +927,9 @@ public class MiscTest extends TestCase {
             assertNotNull( e.getMessage() );
             runtime = e;
         }
-        assertTrue( builder.getErrors().length > 0 );
+        assertTrue( builder.getErrors().getErrors().length > 0 );
 
-        final String pretty = builder.printErrors();
+        final String pretty = builder.getErrors().toString();
         assertFalse( pretty.equals( "" ) );
         assertEquals( pretty,
                       runtime.getMessage() );
@@ -943,15 +943,15 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "errors_in_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final DroolsError err = builder.getErrors()[0];
+        final DroolsError err = builder.getErrors().getErrors()[0];
         final RuleError ruleErr = (RuleError) err;
         assertNotNull( ruleErr.getDescr() );
         assertTrue( ruleErr.getLine() != -1 );
 
-        final DroolsError errs[] = builder.getErrors();
+        final DroolsError errs[] = builder.getErrors().getErrors();
 
         assertEquals( 3,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         // check that its getting it from the ruleDescr
         assertEquals( ruleErr.getLine(),
@@ -962,7 +962,7 @@ public class MiscTest extends TestCase {
 
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
-        final RuleError rhs = (RuleError) builder.getErrors()[2];
+        final RuleError rhs = (RuleError) builder.getErrors().getErrors()[2];
         assertTrue( rhs.getLine() > 7 ); // not being too specific - may need to
         // change this when we rework the error
         // reporting
@@ -1456,7 +1456,7 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         RuleBase ruleBase = getRuleBase();// RuleBaseFactory.newRuleBase();
 
@@ -2214,6 +2214,7 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         assertFalse( pkg.isValid() );
+        System.out.println(pkg.getErrorSummary());
         assertEquals( 6,
                       pkg.getErrorSummary().split( "\n" ).length );
     }

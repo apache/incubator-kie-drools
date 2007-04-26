@@ -84,6 +84,7 @@ public class JavaDialect
     private final JavaConsequenceBuilder   consequence  = new JavaConsequenceBuilder();
     private final JavaRuleClassBuilder     rule         = new JavaRuleClassBuilder();
     private final MVELFromBuilder          from         = new MVELFromBuilder();
+    private final JavaFunctionBuilder      function     = new JavaFunctionBuilder();
 
     // 
     private final KnowledgeHelperFixer     knowledgeHelperFixer;
@@ -101,11 +102,10 @@ public class JavaDialect
     private Map                            errorHandlers;
     private List                           results;
     // the class name for the rule    
-    private String                   ruleClass;
-    
+    private String                         ruleClass;
+
     private final TypeResolver             typeResolver;
     private final ClassFieldExtractorCache classFieldExtractorCache;
-    
 
     // a map of registered builders
     private Map                            builders;
@@ -177,20 +177,21 @@ public class JavaDialect
     public void init(final Package pkg) {
         this.pkg = pkg;
         this.errorHandlers = new HashMap();
+        this.results = new ArrayList();
 
         this.src = new MemoryResourceReader();
         if ( pkg != null ) {
-            this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
+            this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData(),
+                                                         this.results );
             this.lineMappings = pkg.getPackageCompilationData().getLineMappings();
         }
 
         this.generatedClassList = new ArrayList();
 
-        this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
+        this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData(),
+                                                     this.results );
         this.lineMappings = new HashMap();
         pkg.getPackageCompilationData().setLineMappings( this.lineMappings );
-
-        this.results = new ArrayList();
     }
 
     public void init(final RuleDescr ruleDescr) {
@@ -200,7 +201,7 @@ public class JavaDialect
                                                          this.src );
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
     }
-    
+
     public void setRuleClass(String ruleClass) {
         this.ruleClass = ruleClass;
     }
@@ -298,6 +299,10 @@ public class JavaDialect
 
     public RuleClassBuilder getRuleClassBuilder() {
         return this.rule;
+    }
+
+    public FunctionBuilder getFunctionBuilder() {
+        return this.function;
     }
 
     public FromBuilder getFromBuilder() {
@@ -401,6 +406,9 @@ public class JavaDialect
                 }
             }
         }
+        
+        // We've compiled everthing, so clear it for the next set of additions
+        this.generatedClassList.clear();
     }
 
     /**
@@ -412,9 +420,9 @@ public class JavaDialect
         if ( this.ruleClass == null ) {
             return;
         }
-        
+
         Rule rule = context.getRule();
-        RuleDescr ruleDescr = context.getRuleDescr();     
+        RuleDescr ruleDescr = context.getRuleDescr();
 
         // The compilation result is for th entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
@@ -465,15 +473,17 @@ public class JavaDialect
         this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
 
-        final FunctionBuilder builder = new JavaFunctionBuilder();
         this.pkg.addFunction( functionDescr.getName() );
+        
+        String functionSrc = getFunctionBuilder().build( this.pkg,
+                                                         functionDescr,
+                                                         typeResolver,
+                                                         this.lineMappings,
+                                                         this.results );
 
         addClassCompileTask( functionClassName,
                              functionDescr,
-                             builder.build( this.pkg,
-                                            functionDescr,
-                                            typeResolver,
-                                            this.lineMappings ),
+                             functionSrc,
                              this.src,
                              new FunctionErrorHandler( functionDescr,
                                                        "Function Compilation error" ) );

@@ -26,7 +26,6 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
-import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
 /**

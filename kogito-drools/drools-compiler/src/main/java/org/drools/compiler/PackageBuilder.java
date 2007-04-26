@@ -368,7 +368,7 @@ public class PackageBuilder {
     public Package getPackage() {
 
         if ( hasErrors() ) {
-            this.pkg.setError( this.printErrors() );
+            this.pkg.setError( getErrors().toString() );
         }
         return this.pkg;
     }
@@ -385,21 +385,8 @@ public class PackageBuilder {
      * @return A list of Error objects that resulted from building and compiling
      *         the package.
      */
-    public DroolsError[] getErrors() {
-        return (DroolsError[]) this.results.toArray( new DroolsError[this.results.size()] );
-    }
-
-    /**
-     * This will pretty print the errors (from getErrors()) into lines.
-     */
-    public String printErrors() {
-        final StringBuffer buf = new StringBuffer();
-        for ( final Iterator iter = this.results.iterator(); iter.hasNext(); ) {
-            final DroolsError err = (DroolsError) iter.next();
-            buf.append( err.getMessage() );
-            buf.append( "\n" );
-        }
-        return buf.toString();
+    public PackageBuilderErrors getErrors() {
+        return new PackageBuilderErrors( (DroolsError[]) this.results.toArray( new DroolsError[this.results.size()] ) );
     }
 
     /**
@@ -486,7 +473,7 @@ public class PackageBuilder {
             this.message = message;
         }
 
-        public DroolsError getError() {
+        public DroolsError getError() {               
             return new RuleError( this.rule,
                                   this.descr,
                                   collectCompilerProblems(),

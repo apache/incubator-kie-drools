@@ -43,12 +43,12 @@ public class DslTest extends TestCase {
         assertEquals( null,
                       pkg.getErrorSummary() );
         // Check errors
-        final String err = builder.printErrors();
+        final String err = builder.getErrors().toString();
         assertEquals( "",
                       err );
 
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -83,11 +83,11 @@ public class DslTest extends TestCase {
         assertEquals( null,
                       pkg.getErrorSummary() );
         // Check errors
-        final String err = builder.printErrors();
+        final String err = builder.getErrors().toString();
         assertEquals( "",
                       err );
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );

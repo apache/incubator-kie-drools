@@ -119,7 +119,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
 
         assertLength( 1,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
     }
 
     public void testErrorsInParser() throws Exception {
@@ -149,7 +149,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         Rule rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
 
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
@@ -218,7 +218,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final Rule rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
 
         final byte[] bytes = serializeOut( pkg );
 
@@ -384,7 +384,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
 
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
     }
 
     public void testReturnValue() throws Exception {
@@ -489,7 +489,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
 
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
     }
 
     public void testPredicateMethodCompare() {
@@ -555,7 +555,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
 
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
 
         final Package pkg = builder.getPackage();
         final Rule rule = pkg.getRule( "rule-1" );
@@ -598,7 +598,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                       builder,
                                       "modify(stilton);" );
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
 
         final GroupElement lhs = rule.getLhs();
         assertLength( 1,
@@ -618,7 +618,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                       builder,
                                       "modify(stilton);" );
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
 
         final GroupElement lhs = rule.getLhs();
         assertLength( 1,
@@ -640,14 +640,14 @@ public class PackageBuilderTest extends DroolsTestCase {
                                 builder,
                                 "modify(stilton);" );
         assertEquals( 1,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         builder = new PackageBuilder();
         rule = createRule( new NotDescr(),
                            builder,
                            "" );
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         final GroupElement lhs = rule.getLhs();
         assertLength( 1,
@@ -669,14 +669,14 @@ public class PackageBuilderTest extends DroolsTestCase {
                                 builder,
                                 "modify(stilton);" );
         assertEquals( 1,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         builder = new PackageBuilder();
         rule = createRule( new ExistsDescr(),
                            builder,
                            "" );
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         final GroupElement lhs = rule.getLhs();
         assertLength( 1,
@@ -833,7 +833,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final Rule rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
     }
 
     public void testDuplicateRuleNames() throws Exception {
@@ -887,8 +887,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
 
         assertLength( 1,
-                      builder.getErrors() );
-        final ParserError err = (ParserError) builder.getErrors()[0];
+                      builder.getErrors().getErrors() );
+        final ParserError err = (ParserError) builder.getErrors().getErrors()[0];
         assertEquals( 42,
                       err.getRow() );
         assertEquals( 43,
@@ -928,7 +928,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
 
         assertLength( 2,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
     }
 
     public void FIXME_testCompilerConfiguration() throws Exception {
@@ -1080,7 +1080,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
 
         assertLength( 0,
-                      builder.getErrors() );
+                      builder.getErrors().getErrors() );
     }
 
     private Rule createRule(final ConditionalElementDescr ceDescr,

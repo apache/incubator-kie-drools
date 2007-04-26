@@ -13,10 +13,12 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.RuntimeDroolsException;
+import org.drools.compiler.FunctionError;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.FunctionBuilder;
+import org.drools.util.StringUtils;
 
 public class JavaFunctionBuilder
     implements
@@ -35,7 +37,8 @@ public class JavaFunctionBuilder
     public String build(final Package pkg,
                         final FunctionDescr functionDescr,
                         final TypeResolver typeResolver,
-                        final Map lineMappings) {
+                        final Map lineMappings,
+                        final List errors) {
         final StringTemplate st = JavaFunctionBuilder.functionGroup.getInstanceOf( "function" );
 
         st.setAttribute( "package",
@@ -45,7 +48,7 @@ public class JavaFunctionBuilder
                          pkg.getImports() );
 
         st.setAttribute( "className",
-                         ucFirst( functionDescr.getName() ) );
+                         StringUtils.ucFirst( functionDescr.getName() ) );
         st.setAttribute( "methodName",
                          functionDescr.getName() );
 
@@ -66,9 +69,8 @@ public class JavaFunctionBuilder
                 params.put( names.get( i ),
                             typeResolver.resolveType( (String) types.get( i ) ) );
             }
-        } catch ( final ClassNotFoundException e ) {
-            // todo : must be a better way so we don't have to try/catch each resolveType call
-            throw new RuntimeDroolsException( e );
+        } catch ( final ClassNotFoundException e ) {            
+            errors.add(  new FunctionError(functionDescr, e, "unable to resolve type while building function") );
         }
 
         st.setAttribute( "text",
@@ -93,19 +95,15 @@ public class JavaFunctionBuilder
             throw new RuntimeDroolsException( "Error determining start offset with function" );
         }
 
-        final String name = pkg.getName() + "." + ucFirst( functionDescr.getName() );
+        final String name = pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         final LineMappings mapping = new LineMappings( name );
         mapping.setStartLine( functionDescr.getLine() );
         mapping.setOffset( functionDescr.getOffset() );
         lineMappings.put( name,
-                          lineMappings );
+                          mapping );
 
         return text;
 
-    }
-
-    private String ucFirst(final String name) {
-        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
 }

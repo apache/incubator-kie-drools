@@ -86,7 +86,7 @@ public class RuleError extends DroolsError {
                 buf.append( problem[i] );
                 buf.append( "\n" );
             }
-        } else {
+        } else if ( this.object != null ) {
             buf.append( this.object );
         }
         return buf.toString();

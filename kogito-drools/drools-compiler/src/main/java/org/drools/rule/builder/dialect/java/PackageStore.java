@@ -16,6 +16,8 @@ package org.drools.rule.builder.dialect.java;
  * limitations under the License.
  */
 
+import java.util.List;
+
 import org.apache.commons.jci.stores.ResourceStore;
 import org.drools.rule.PackageCompilationData;
 
@@ -24,11 +26,13 @@ public class PackageStore
     ResourceStore {
     private PackageCompilationData packageCompilationData;
 
+    private List errors;
     public PackageStore() {
     }
 
-    public PackageStore(final PackageCompilationData packageCompiationData) {
+    public PackageStore(final PackageCompilationData packageCompiationData, List errors) {
         this.packageCompilationData = packageCompiationData;
+        this.errors = errors;
     }
 
     public void setPackageCompilationData(final PackageCompilationData packageCompiationData) {
@@ -41,7 +45,8 @@ public class PackageStore
             this.packageCompilationData.write( resourceName,
                                                clazzData );
         } catch ( final Exception e ) {
-
+            e.printStackTrace();
+            this.errors.add( new JavaDialectError( "PackageStore was unable to write resourceName='" + resourceName + "'" ) );
         }
     }
 
@@ -50,7 +55,7 @@ public class PackageStore
         try {
             clazz = this.packageCompilationData.read( resourceName );
         } catch ( final Exception e ) {
-
+            this.errors.add( new JavaDialectError( "PackageStore was unable to read resourceName='" + resourceName + "'" ) );
         }
         return clazz;
     }
@@ -59,7 +64,8 @@ public class PackageStore
         try {
             this.packageCompilationData.remove( resourceName );
         } catch ( final Exception e ) {
-
+            this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName + "'" ) );
         }
     }
+        
 }

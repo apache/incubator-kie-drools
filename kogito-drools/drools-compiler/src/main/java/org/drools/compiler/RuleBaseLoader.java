@@ -59,7 +59,7 @@ public class RuleBaseLoader {
 
     private RuleBase makeRuleBase(final PackageBuilder builder) throws CheckedDroolsException {
         if ( builder.hasErrors() ) {
-            throw new CheckedDroolsException( "There were errors in the rule source: " + builder.printErrors() );
+            throw new CheckedDroolsException( "There were errors in the rule source: " + builder.getErrors().toString() );
         }
         final Package binaryPackage = builder.getPackage();
 

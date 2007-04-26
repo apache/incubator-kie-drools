@@ -16,6 +16,7 @@ package org.drools.rule.builder;
  * limitations under the License.
  */
 
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jfdi.interpreter.TypeResolver;
@@ -26,5 +27,6 @@ public interface FunctionBuilder {
     public String build(final Package pkg,
                         final FunctionDescr functionDescr,
                         final TypeResolver typeResolver,
-                        final Map lineMappings);
+                        final Map lineMappings,
+                        final List errors);
 }
