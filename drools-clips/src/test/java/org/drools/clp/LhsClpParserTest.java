@@ -17,7 +17,7 @@ import org.drools.clp.valuehandlers.LongValueHandler;
 import org.drools.compiler.SwitchingCommonTokenStream;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
@@ -66,7 +66,7 @@ public class LhsClpParserTest extends TestCase {
                       lhsList.size() );
 
         // Parse the first column
-        ColumnDescr col = (ColumnDescr) lhsList.get( 0 );
+        PatternDescr col = (PatternDescr) lhsList.get( 0 );
         assertEquals( "?b",
                       col.getIdentifier() );
         assertEquals( "person",
@@ -131,7 +131,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );        
 
         // Parse the second column
-        col = (ColumnDescr) lhsList.get( 1 );
+        col = (PatternDescr) lhsList.get( 1 );
         assertEquals( "?c",
                       col.getIdentifier() );
         assertEquals( "hobby",
@@ -187,7 +187,7 @@ public class LhsClpParserTest extends TestCase {
                       lhsList.size() );
 
         // Parse the first column
-        ColumnDescr col = (ColumnDescr) lhsList.get( 0 );
+        PatternDescr col = (PatternDescr) lhsList.get( 0 );
         assertEquals( "?b",
                       col.getIdentifier() );
         assertEquals( "person",
@@ -206,7 +206,7 @@ public class LhsClpParserTest extends TestCase {
                       orDescr.getDescrs().size() );
 
         AndDescr andDescr = (AndDescr) orDescr.getDescrs().get( 0 );
-        col = (ColumnDescr) andDescr.getDescrs().get( 0 );
+        col = (PatternDescr) andDescr.getDescrs().get( 0 );
         assertEquals( "hobby1",
                       col.getObjectType() );
         fieldConstraintDescr = (FieldConstraintDescr) col.getDescrs().get( 0 );
@@ -218,7 +218,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( "qqq1",
                       litDescr.getText() );
 
-        col = (ColumnDescr) andDescr.getDescrs().get( 1 );
+        col = (PatternDescr) andDescr.getDescrs().get( 1 );
         assertEquals( "hobby2",
                       col.getObjectType() );
         fieldConstraintDescr = (FieldConstraintDescr) col.getDescrs().get( 0 );
@@ -230,7 +230,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( "qqq2",
                       litDescr.getText() );
 
-        col = (ColumnDescr) orDescr.getDescrs().get( 1 );
+        col = (PatternDescr) orDescr.getDescrs().get( 1 );
         assertEquals( "food",
                       col.getObjectType() );
         fieldConstraintDescr = (FieldConstraintDescr) col.getDescrs().get( 0 );
@@ -258,7 +258,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( 2,
                       orDescr.getDescrs().size() );
 
-        ColumnDescr col = (ColumnDescr) orDescr.getDescrs().get( 0 );
+        PatternDescr col = (PatternDescr) orDescr.getDescrs().get( 0 );
         assertEquals( "hobby1",
                       col.getObjectType() );
         FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) col.getDescrs().get( 0 );
@@ -277,7 +277,7 @@ public class LhsClpParserTest extends TestCase {
         AndDescr andDescr = (AndDescr) notDescr.getDescrs().get( 0 );
         assertEquals( 2, andDescr.getDescrs().size() );
         ExistsDescr existsDescr = (ExistsDescr) andDescr.getDescrs().get( 0 );
-        col = (ColumnDescr) existsDescr.getDescrs().get( 0 );
+        col = (PatternDescr) existsDescr.getDescrs().get( 0 );
         assertEquals( "person",
                       col.getObjectType() );
         fieldConstraintDescr = (FieldConstraintDescr) col.getDescrs().get( 0 );
@@ -289,7 +289,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( "ppp",
                       litDescr.getText() );              
         
-        col = (ColumnDescr) andDescr.getDescrs().get( 1 );
+        col = (PatternDescr) andDescr.getDescrs().get( 1 );
         assertEquals( "person",
                       col.getObjectType() );
         fieldConstraintDescr = (FieldConstraintDescr) col.getDescrs().get( 0 );
