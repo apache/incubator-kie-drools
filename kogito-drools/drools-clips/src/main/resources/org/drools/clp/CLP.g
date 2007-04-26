@@ -114,7 +114,7 @@ grammar CLP;
                 else if ( e instanceof MismatchedTreeNodeException ) {
                         MismatchedTreeNodeException mtne = (MismatchedTreeNodeException)e;
                         message.append("mismatched tree node: "+
-                                                           mtne.foundNode+
+                                                           //mtne.foundNode+ FIXME
                                                            "; expecting type "+
                                                            tokenNames[mtne.expecting]);
                 }
@@ -230,7 +230,7 @@ defrule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
 	        AndDescr lhs = null;
-	        ColumnDescr colum = null;
+	        PatternDescr colum = null;
 	        AttributeDescr module = null;	        
 	      }
 	:	loc=LEFT_PAREN 
@@ -393,14 +393,14 @@ eval_ce[ConditionalElementDescr in_ce]
 
 normal_pattern[ConditionalElementDescr in_ce]
     @init {
-        ColumnDescr column = null;
+        PatternDescr pattern = null;
     }
 	:	LEFT_PAREN 
 		name=NAME {
-			column = new ColumnDescr(name.getText());
-			in_ce.addDescr( column );
+			pattern = new PatternDescr(name.getText());
+			in_ce.addDescr( pattern );
 		}
-		field_constriant[column]* 	  
+		field_constriant[pattern]* 	  
 		RIGHT_PAREN
 	;		
 	
@@ -408,7 +408,7 @@ normal_pattern[ConditionalElementDescr in_ce]
 
 bound_pattern[ConditionalElementDescr in_ce]
     @init {
-        ColumnDescr column = null;
+        PatternDescr pattern = null;
         String identifier = null;
     }
 	:	var=VAR {
@@ -416,15 +416,15 @@ bound_pattern[ConditionalElementDescr in_ce]
 		}
 		ASSIGN_OP LEFT_PAREN name=NAME 
 		{
-			column = new ColumnDescr(name.getText());
-			column.setIdentifier( identifier );
-			in_ce.addDescr( column );	    
+			pattern = new PatternDescr(name.getText());
+			pattern.setIdentifier( identifier );
+			in_ce.addDescr( pattern );	    
 		}
-		field_constriant[column]* 
+		field_constriant[pattern]* 
 		RIGHT_PAREN	
 	;			
 	
-field_constriant[ColumnDescr column] 
+field_constriant[PatternDescr pattern] 
 	@init {
      	List list = new ArrayList();
 		FieldBindingDescr fbd = null;
@@ -437,31 +437,31 @@ field_constriant[ColumnDescr column]
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
-			column.addDescr( fc );			
+			pattern.addDescr( fc );			
 		}	  
 		
-		connected_constraint[fc, column] 
+		connected_constraint[fc, pattern] 
 		RIGHT_PAREN		
 	;
 	
-connected_constraint[FieldConstraintDescr fc, ColumnDescr column]
+connected_constraint[FieldConstraintDescr fc, PatternDescr pattern]
 	:
-	restriction[fc, column]
+	restriction[fc, pattern]
 	( 
 	    AMPERSAND { fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
-	    connected_constraint[fc, column]
+	    connected_constraint[fc, pattern]
 	| 
 	    PIPE {fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }
-	    connected_constraint[fc, column]
+	    connected_constraint[fc, pattern]
 	)?
 	;	
 	
-restriction[FieldConstraintDescr fc, ColumnDescr column]
+restriction[FieldConstraintDescr fc, PatternDescr pattern]
 	@init {
 			String op = "==";
 	}
 	:	(TILDE{op = "!=";})?	 	  	 
-		(	predicate_constraint[op, column]	  	  	
+		(	predicate_constraint[op, pattern]	  	  	
 	  	|	return_value_restriction[op, fc]
 	  	|	variable_restriction[op, fc]
 	  	| 	lc=literal_restriction {
@@ -471,7 +471,7 @@ restriction[FieldConstraintDescr fc, ColumnDescr column]
 		)		
 	;		
 
-predicate_constraint[String op, ColumnDescr column]	
+predicate_constraint[String op, PatternDescr pattern]	
     @init {
    		ExecutionEngine engine = new CLPPredicate();
 		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
@@ -479,7 +479,7 @@ predicate_constraint[String op, ColumnDescr column]
 	:	COLON
 		fc=lisp_list[context, new LispForm(context)] {	
 		    engine.addFunction( (FunctionCaller) fc );
-			column.addDescr( new PredicateDescr( engine ) );
+			pattern.addDescr( new PredicateDescr( engine ) );
 		}	
 		
 	;
