@@ -85,74 +85,11 @@ public class BRDRLPersistence
     private void marshalLHS(StringBuffer buf,
                             RuleModel model) {
         IPattern[] lhs = model.lhs;
+        LHSPatternVisitor visitor = new LHSPatternVisitor( buf );
         for ( int i = 0; i < lhs.length; i++ ) {
             final IPattern cond = lhs[i];
-            if ( cond instanceof DSLSentence ) {
-                // need to decide what to do with DSL sentences
-                //render((DSLSentence) cond, buf);
-            } else if ( cond instanceof FactPattern ) {
-                marshalFact( buf,
-                             (FactPattern) cond );
-            } else if ( cond instanceof CompositeFactPattern ) {
-//                addComposite( lhsDescr,
-//                              (CompositeFactPattern) cond );
-            }
+            visitor.visit( cond );
         }
-    }
-
-    private void marshalFact(StringBuffer buf,
-                             FactPattern pattern) {
-        buf.append( "\t\t" );
-        if ( pattern.boundName != null ) {
-            buf.append( pattern.boundName );
-            buf.append( " : " );
-        }
-        if ( pattern.factType != null ) {
-            buf.append( pattern.factType );
-        }
-        buf.append( "( " );
-
-        for ( int i = 0; i < pattern.constraints.length; i++ ) {
-            if( i > 0 ) {
-                buf.append( ", " );
-            }
-            final Constraint constr = pattern.constraints[i];
-            if ( constr.constraintValueType == IConstraint.TYPE_PREDICATE ) {
-                buf.append( "( " );
-                buf.append( constr.value );
-                buf.append( " )" );
-            } else {
-                if ( constr.fieldBinding != null ) {
-                    buf.append( constr.fieldBinding );
-                    buf.append( " : " );
-                }
-                buf.append( constr.fieldName );
-
-                addFieldRestriction( buf,
-                                     constr.constraintValueType,
-                                     constr.operator,
-                                     constr.value );
-
-                if ( constr.connectives != null ) {
-                    for ( int j = 0; j < constr.connectives.length; j++ ) {
-                        final ConnectiveConstraint conn = constr.connectives[j];
-                        if ( conn.isANDConnective() ) {
-                            buf.append( " &" );
-                        } else if ( conn.isORConnective() ) {
-                            buf.append( " |" );
-                        } else {
-                            throw new IllegalStateException( "Unknown connective type/operator: [" + conn.operator + "]" );
-                        }
-
-                        addFieldRestriction( buf,
-                                             conn.constraintValueType,
-                                             conn.operator,
-                                             conn.value );
-                    }
-                }
-            }
-        }
-        buf.append( ")\n" );
     }
 
     private void marshalRHS(StringBuffer buf,
@@ -166,26 +103,127 @@ public class BRDRLPersistence
     }
 
 
-    /**
-     * @param constr
-     * @param constrDescr
-     */
-    private void addFieldRestriction(final StringBuffer buf,
-                                     final int type,
-                                     final String operator,
-                                     final String value) {
-        buf.append( " " );
-        buf.append( operator );
-        buf.append( " " );
-        switch ( type ) {
-            case IConstraint.TYPE_RET_VALUE :
-                buf.append( "( " );
-                buf.append( operator );
-                buf.append( " )" );
-                break;
-            default :
-                buf.append( value );
+    public static class LHSPatternVisitor extends ReflectiveVisitor {
+        private StringBuffer buf;
+
+        public LHSPatternVisitor( StringBuffer b ) {
+            buf = b;
         }
+        
+        public void visitFactPattern( FactPattern pattern ) {
+            buf.append( "\t\t" );
+            generateFactPattern( pattern );
+            buf.append( "\n" );
+        }
+        
+        public void visitCompositeFactPattern( CompositeFactPattern pattern ) {
+            buf.append( "\t\t" );
+            if( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
+                buf.append( pattern.type );
+                buf.append( " " );
+                this.generateFactPattern( pattern.patterns[0] );
+                buf.append( "\n" );
+            } else if( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
+                buf.append( pattern.type );
+                buf.append( " " );
+                this.generateFactPattern( pattern.patterns[0] );
+                buf.append( "\n" );
+            } else if( CompositeFactPattern.COMPOSITE_TYPE_OR.equals( pattern.type ) ) {
+                buf.append( "( " );
+                for( int i = 0; i < pattern.patterns.length; i++ ) {
+                    if( i > 0 ) {
+                        buf.append( " " );
+                        buf.append( pattern.type );
+                        buf.append( " " );
+                    }
+                    this.generateFactPattern( pattern.patterns[0] );
+                }
+                buf.append( " )\n" );
+            }
+        }
+
+        public void visitDSLSentence( final DSLSentence sentence ) {
+            buf.append( "\t\t" );
+            buf.append( sentence.sentence );
+            buf.append( "\n" );
+        }
+        
+        private void generateFactPattern(FactPattern pattern) {
+            if ( pattern.boundName != null ) {
+                buf.append( pattern.boundName );
+                buf.append( " : " );
+            }
+            if ( pattern.factType != null ) {
+                buf.append( pattern.factType );
+            }
+            buf.append( "( " );
+
+            for ( int i = 0; i < pattern.constraints.length; i++ ) {
+                if( i > 0 ) {
+                    buf.append( ", " );
+                }
+                final Constraint constr = pattern.constraints[i];
+                if ( constr.constraintValueType == IConstraint.TYPE_PREDICATE ) {
+                    buf.append( "( " );
+                    buf.append( constr.value );
+                    buf.append( " )" );
+                } else {
+                    if ( constr.fieldBinding != null ) {
+                        buf.append( constr.fieldBinding );
+                        buf.append( " : " );
+                    }
+                    buf.append( constr.fieldName );
+
+                    addFieldRestriction( buf,
+                                         constr.constraintValueType,
+                                         constr.operator,
+                                         constr.value );
+
+                    if ( constr.connectives != null ) {
+                        for ( int j = 0; j < constr.connectives.length; j++ ) {
+                            final ConnectiveConstraint conn = constr.connectives[j];
+                            if ( conn.isANDConnective() ) {
+                                buf.append( "&" );
+                            } else if ( conn.isORConnective() ) {
+                                buf.append( "|" );
+                            } else {
+                                throw new IllegalStateException( "Unknown connective type/operator: [" + conn.operator + "]" );
+                            }
+
+                            addFieldRestriction( buf,
+                                                 conn.constraintValueType,
+                                                 conn.operator,
+                                                 conn.value );
+                        }
+                    }
+                }
+            }
+            buf.append( ")" );
+        }
+
+        /**
+         * @param constr
+         * @param constrDescr
+         */
+        private void addFieldRestriction(final StringBuffer buf,
+                                         final int type,
+                                         final String operator,
+                                         final String value) {
+            buf.append( " " );
+            buf.append( operator );
+            buf.append( " " );
+            switch ( type ) {
+                case IConstraint.TYPE_RET_VALUE :
+                    buf.append( "( " );
+                    buf.append( operator );
+                    buf.append( " )" );
+                    break;
+                default :
+                    buf.append( value );
+            }
+            buf.append( " " );
+        }
+        
     }
     
     public static class RHSActionVisitor extends ReflectiveVisitor {
