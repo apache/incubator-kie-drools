@@ -46,7 +46,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
         assertNotNull( pkg );
         System.out.println( pkg.getErrorSummary() );
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         //BUILD RULEBASE
         final RuleBase rb = RuleBaseFactory.newRuleBase();
