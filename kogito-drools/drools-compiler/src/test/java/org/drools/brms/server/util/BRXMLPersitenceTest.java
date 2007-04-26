@@ -13,11 +13,11 @@ import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
-public class BRLPersitenceTest extends TestCase {
+public class BRXMLPersitenceTest extends TestCase {
 
     public void testGenerateEmptyXML() {
-        final BRLPersistence p = BRLPersistence.getInstance();
-        final String xml = p.toXML( new RuleModel() );
+        final BRLPersistence p = BRXMLPersistence.getInstance();
+        final String xml = p.marshal( new RuleModel() );
         assertNotNull( xml );
         assertFalse( xml.equals( "" ) );
 
@@ -26,7 +26,7 @@ public class BRLPersitenceTest extends TestCase {
     }
 
     public void testBasics() {
-        final BRLPersistence p = BRLPersistence.getInstance();
+        final BRLPersistence p = BRXMLPersistence.getInstance();
         final RuleModel m = new RuleModel();
         m.addLhsItem( new FactPattern( "Person" ) );
         m.addLhsItem( new FactPattern( "Accident" ) );
@@ -35,7 +35,8 @@ public class BRLPersitenceTest extends TestCase {
 
         m.addRhsItem( new ActionAssertFact( "Report" ) );
         m.name = "my rule";
-        final String xml = p.toXML( m );
+        final String xml = p.marshal( m );
+        //System.out.println(xml);
         assertTrue( xml.indexOf( "Person" ) > -1 );
         assertTrue( xml.indexOf( "Accident" ) > -1 );
         assertTrue( xml.indexOf( "no-loop" ) > -1 );
@@ -44,11 +45,11 @@ public class BRLPersitenceTest extends TestCase {
     }
 
     public void testMoreComplexRendering() {
-        final BRLPersistence p = BRLPersistence.getInstance();
+        final BRLPersistence p = BRXMLPersistence.getInstance();
         final RuleModel m = getComplexModel();
 
-        final String xml = p.toXML( m );
-        System.out.println( xml );
+        final String xml = p.marshal( m );
+        //System.out.println( xml );
 
         assertTrue( xml.indexOf( "org.drools" ) == -1 );
 
@@ -57,9 +58,9 @@ public class BRLPersitenceTest extends TestCase {
     public void testRoundTrip() {
         final RuleModel m = getComplexModel();
 
-        final String xml = BRLPersistence.getInstance().toXML( m );
+        final String xml = BRXMLPersistence.getInstance().marshal( m );
 
-        final RuleModel m2 = BRLPersistence.getInstance().toModel( xml );
+        final RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml );
         assertNotNull( m2 );
         assertEquals( m.name,
                       m2.name );
@@ -76,7 +77,7 @@ public class BRLPersitenceTest extends TestCase {
         assertEquals( "true",
                       at.value );
 
-        final String newXML = BRLPersistence.getInstance().toXML( m2 );
+        final String newXML = BRXMLPersistence.getInstance().marshal( m2 );
         assertEquals( xml,
                       newXML );
 
@@ -121,10 +122,10 @@ public class BRLPersitenceTest extends TestCase {
     }
 
     public void testLoadEmpty() {
-        RuleModel m = BRLPersistence.getInstance().toModel( null );
+        RuleModel m = BRXMLPersistence.getInstance().unmarshal( null );
         assertNotNull( m );
 
-        m = BRLPersistence.getInstance().toModel( "" );
+        m = BRXMLPersistence.getInstance().unmarshal( "" );
         assertNotNull( m );
     }
 
