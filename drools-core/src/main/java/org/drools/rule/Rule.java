@@ -65,6 +65,8 @@ public class Rule
     private Declaration[]     declarationArray;
 
     private GroupElement      lhsRoot;
+    
+    private String            dialect;
 
     private String            agendaGroup;
 
@@ -140,6 +142,16 @@ public class Rule
         this( name,
               null,
               AgendaGroup.MAIN );
+    }
+    
+    
+
+    public String getDialect() {
+        return dialect;
+    }
+
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.codehaus.jfdi.interpreter;
+package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc

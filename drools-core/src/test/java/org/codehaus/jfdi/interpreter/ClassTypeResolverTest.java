@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.base.ClassTypeResolver;
 
 /**
  * @author fburlet
