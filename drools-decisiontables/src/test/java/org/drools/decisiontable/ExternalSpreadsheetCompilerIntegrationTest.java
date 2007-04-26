@@ -51,7 +51,7 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         final Package pkg = builder.getPackage();
         assertNotNull( pkg );
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
 
         //BUILD RULEBASE
         final RuleBase rb = RuleBaseFactory.newRuleBase();
@@ -92,7 +92,7 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
 
         final Package pkg = builder.getPackage();
         assertNotNull( pkg );
-        DroolsError[] errors = builder.getErrors();
+        DroolsError[] errors = builder.getErrors().getErrors();
 //		for (int i = 0; i < errors.length; i++) {
 //			DroolsError error = errors[i];
 //			System.out.println(error.getMessage());
