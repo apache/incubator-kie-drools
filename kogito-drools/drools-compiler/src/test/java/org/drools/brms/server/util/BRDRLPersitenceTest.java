@@ -51,11 +51,24 @@ public class BRDRLPersitenceTest extends TestCase {
 
     public void testMoreComplexRendering() {
         final RuleModel m = getComplexModel();
+        String expected = "rule \"Complex Rule\"\n" +
+                          "\tno-loop true\n" +
+                          "\tsalience -10\n" +
+                          "\tagenda-group \"aGroup\"\n" +
+                          "\twhen\n"+
+                          "\t\tp1 : Person( f1 : age < 42 )\n"+
+                          "\t\tnot Cancel( )\n"+
+                          "\tthen\n"+
+                          "\t\tp1.setStatus( \"rejected\" );\n"+
+                          "\t\tmodify( p1 );\n"+
+                          "\t\tretract( p1 );\n"+
+                          "\t\tSend an email to {administrator}\n"+
+                          "end\n";
 
         final String drl = p.marshal( m );
         //System.out.println( drl );
 
-        assertTrue( drl.indexOf( "org.drools" ) == -1 );
+        assertEquals( expected, drl );
 
     }
 
