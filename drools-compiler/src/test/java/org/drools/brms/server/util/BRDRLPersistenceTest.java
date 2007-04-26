@@ -56,17 +56,16 @@ public class BRDRLPersistenceTest extends TestCase {
                           "\tsalience -10\n" +
                           "\tagenda-group \"aGroup\"\n" +
                           "\twhen\n"+
-                          "\t\tp1 : Person( f1 : age < 42 )\n"+
-                          "\t\tnot Cancel( )\n"+
+                          "\t\t>p1 : Person( f1 : age < 42 )\n"+
+                          "\t\t>not Cancel( )\n"+
                           "\tthen\n"+
-                          "\t\tp1.setStatus( \"rejected\" );\n"+
-                          "\t\tmodify( p1 );\n"+
-                          "\t\tretract( p1 );\n"+
+                          "\t\t>p1.setStatus( \"rejected\" );\n"+
+                          "\t\t>modify( p1 );\n"+
+                          "\t\t>retract( p1 );\n"+
                           "\t\tSend an email to {administrator}\n"+
                           "end\n";
 
         final String drl = p.marshal( m );
-        //System.out.println( drl );
 
         assertEquals( expected, drl );
 
