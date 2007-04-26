@@ -87,6 +87,10 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
         return getByteValue( object );
     }
 
+    public boolean isNullValue(final Object object) {
+        return false;
+    }
+    
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getByteValue",

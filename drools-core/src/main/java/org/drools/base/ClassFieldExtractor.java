@@ -147,7 +147,11 @@ public class ClassFieldExtractor
     public short getShortValue(final Object object) {
         return this.extractor.getShortValue( object );
     }
-
+    
+    public boolean isNullValue(final Object object) {
+        return this.extractor.isNullValue( object );
+    }
+   
     public Method getNativeReadMethod() {
         return this.extractor.getNativeReadMethod();
     }

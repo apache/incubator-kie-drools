@@ -66,6 +66,10 @@ public abstract class BaseFloatClassFieldExtractor extends BaseClassFieldExtract
         return (short) getFloatValue( object );
     }
 
+    public boolean isNullValue(final Object object) {
+        return false;
+    }
+
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getFloatValue",

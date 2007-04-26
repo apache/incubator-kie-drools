@@ -8,7 +8,7 @@ public class LongFieldImpl
     FieldValue {
 
     private static final long serialVersionUID = 320;
-    private long              value;
+    private final long        value;
 
     public LongFieldImpl(final long value) {
         this.value = value;
@@ -68,6 +68,10 @@ public class LongFieldImpl
 
     public int hashCode() {
         return (int) this.value;
+    }
+    
+    public boolean isNull() {
+        return false;
     }
 
     public boolean isBooleanField() {

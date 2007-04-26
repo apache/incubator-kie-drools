@@ -30,6 +30,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+        
         if ( value instanceof Boolean ) {
             return ((Boolean) value).booleanValue();
         }
@@ -40,6 +41,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+        
         if ( value instanceof Number ) {
             return ((Number) value).byteValue();
         }
@@ -50,6 +52,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+        
         if ( value instanceof Character ) {
             return ((Character) value).charValue();
         }
@@ -60,6 +63,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+        
         if ( value instanceof Number ) {
             return ((Number) value).doubleValue();
         }
@@ -70,6 +74,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+        
         if ( value instanceof Number ) {
             return ((Number) value).floatValue();
         }
@@ -80,6 +85,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+        
         if ( value instanceof Number ) {
             return ((Number) value).intValue();
         }
@@ -90,6 +96,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+        
         if ( value instanceof Number ) {
             return ((Number) value).longValue();
         }
@@ -100,10 +107,19 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( object );
+
         if ( value instanceof Number ) {
             return ((Number) value).shortValue();
         }
         throw new RuntimeDroolsException( "Conversion to short not supported from " + value.getClass().getName() );
+    }
+    
+    public boolean isNullValue(final Object object) {
+        if (object == null) {
+            return true;
+        } else {
+            return getValue( object ) == null;
+        }
     }
 
     public Method getNativeReadMethod() {

@@ -42,6 +42,8 @@ public interface Extractor
     public double getDoubleValue(Object object);
 
     public boolean getBooleanValue(Object object);
+    
+    public boolean isNullValue(Object object);
 
     public ValueType getValueType();
 

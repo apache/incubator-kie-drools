@@ -66,6 +66,10 @@ public abstract class BaseLongClassFieldExtractors extends BaseClassFieldExtract
         return (short) getLongValue( object );
     }
 
+    public boolean isNullValue(final Object object) {
+        return false;
+    }
+
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getLongValue",

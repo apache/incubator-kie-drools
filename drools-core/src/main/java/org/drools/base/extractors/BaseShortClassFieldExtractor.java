@@ -65,6 +65,10 @@ public abstract class BaseShortClassFieldExtractor extends BaseClassFieldExtract
     }
 
     public abstract short getShortValue(Object object);
+    
+    public boolean isNullValue(final Object object) {
+        return false;
+    }
 
     public Method getNativeReadMethod() {
         try {

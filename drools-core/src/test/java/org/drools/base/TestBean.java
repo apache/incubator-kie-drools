@@ -32,6 +32,7 @@ public class TestBean {
     private final float        floatAttr   = 6.0f;
     private final double       doubleAttr  = 7.0;
     private final List         listAttr    = Collections.EMPTY_LIST;
+    private final Object       nullAttr    = null;
 
     public String getName() {
         return this.name;
@@ -77,4 +78,7 @@ public class TestBean {
         return this.shortAttr;
     }
 
+    public Object getNullAttr() {
+        return this.nullAttr;
+    }
 }

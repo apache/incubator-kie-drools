@@ -86,6 +86,10 @@ public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtra
     public short getShortValue(final Object object) {
         throw new RuntimeDroolsException( "Conversion to short not supported from boolean" );
     }
+    
+    public boolean isNullValue(final Object object) {
+        return false;
+    }
 
     public Method getNativeReadMethod() {
         try {

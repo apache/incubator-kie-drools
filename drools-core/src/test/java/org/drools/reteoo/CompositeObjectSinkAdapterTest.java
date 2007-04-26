@@ -266,6 +266,10 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             //  Auto-generated method stub
             return null;
         }
+        
+        public boolean isNullValue(final Object object) {
+            return false;
+        }
 
         public ValueType getValueType() {
             //  Auto-generated method stub

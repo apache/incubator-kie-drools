@@ -8,7 +8,7 @@ public class DoubleFieldImpl
     FieldValue {
 
     private static final long serialVersionUID = 320;
-    private double            value;
+    private final double      value;
 
     public DoubleFieldImpl(final double value) {
         this.value = value;
@@ -68,6 +68,10 @@ public class DoubleFieldImpl
 
     public int hashCode() {
         return (int) this.value;
+    }
+    
+    public boolean isNull() {
+        return false;
     }
 
     public boolean isBooleanField() {

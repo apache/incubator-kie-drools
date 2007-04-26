@@ -75,18 +75,34 @@ public class DoubleFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return object2.isNull();
+            } else if ( object2.isNull() ) {
+                return false;
+            }
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getDoubleValue( object1 ) == object2.getDoubleValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return false;
+            }
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) == ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if ( context.extractor.isNullValue( right )) {
+                return context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return false;
+            }
+            
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left == context.extractor.getDoubleValue( right );
         }
@@ -95,6 +111,12 @@ public class DoubleFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return false;
+            }
+            
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) == extractor2.getDoubleValue( object2 );
         }
@@ -119,18 +141,36 @@ public class DoubleFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return !object2.isNull();
+            } else if ( object2.isNull() ) {
+                return true;
+            }
+            
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getDoubleValue( object1 ) != object2.getDoubleValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return !context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return true;
+            }
+            
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( left ) != ((DoubleVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if ( context.extractor.isNullValue( right )) {
+                return !context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return true;
+            }
+            
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left != context.extractor.getDoubleValue( right );
         }
@@ -139,6 +179,12 @@ public class DoubleFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return !extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return true;
+            }
+            
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( object1 ) != extractor2.getDoubleValue( object2 );
         }

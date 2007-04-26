@@ -81,4 +81,8 @@ public class FactTemplateFieldExtractor
     public int getHashCode(final Object object) {
         return getValue( object ).hashCode();
     }
+
+    public boolean isNullValue(Object object) {
+        return ((Fact) object).getFieldValue( this.fieldIndex ) == null;
+    }
 }

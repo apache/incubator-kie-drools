@@ -66,6 +66,10 @@ public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtrac
         return (short) getDoubleValue( object );
     }
 
+    public boolean isNullValue(final Object object) {
+        return false;
+    }
+
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getDoubleValue",

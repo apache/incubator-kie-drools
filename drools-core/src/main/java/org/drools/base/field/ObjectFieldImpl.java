@@ -24,7 +24,7 @@ public class ObjectFieldImpl
     FieldValue {
 
     private static final long serialVersionUID = 320;
-    private Object            value;
+    private final Object      value;
 
     public ObjectFieldImpl(final Object value) {
         this.value = value;
@@ -112,6 +112,10 @@ public class ObjectFieldImpl
         } else {
             return 0;
         }
+    }
+    
+    public boolean isNull() {
+        return value == null;
     }
 
     public boolean isBooleanField() {

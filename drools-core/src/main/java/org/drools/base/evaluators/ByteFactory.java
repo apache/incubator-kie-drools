@@ -75,16 +75,34 @@ public class ByteFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return object2.isNull();
+            } else if ( object2.isNull() ) {
+                return false;
+            }
+            
             return extractor.getByteValue( object1 ) == object2.getByteValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return false;
+            }
+            
             return context.declaration.getExtractor().getByteValue( left ) == ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if ( context.extractor.isNullValue( right )) {
+                return context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return false;
+            }
+            
             return ((LongVariableContextEntry) context).left == context.extractor.getByteValue( right );
         }
 
@@ -92,6 +110,12 @@ public class ByteFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return false;
+            }
+            
             return extractor1.getByteValue( object1 ) == extractor2.getByteValue( object2 );
         }
 
@@ -116,23 +140,47 @@ public class ByteFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if ( extractor.isNullValue( object1 ) ) {
+                return !object2.isNull();
+            } else if ( object2.isNull() ) {
+                return true;
+            }
+            
             return extractor.getByteValue( object1 ) != object2.getByteValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+                return !context.isRightNull();
+            } else if ( context.isRightNull() ) {
+                return true;
+            }
+            
             return context.declaration.getExtractor().getByteValue( left ) != ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( right );
+                                          final Object object2) {
+            if ( context.extractor.isNullValue( object2 ) ) {
+                return !context.isLeftNull();
+            } else if ( context.isLeftNull() ) {
+                return true;
+            }
+            
+            return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( object2 );
         }
 
         public boolean evaluate(final Extractor extractor1,
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if (extractor1.isNullValue( object1 )) {
+                return !extractor2.isNullValue( object2 );
+            } else if (extractor2.isNullValue( object2 )) {
+                return true;
+            }
+            
             return extractor1.getByteValue( object1 ) != extractor2.getByteValue( object2 );
         }
 
