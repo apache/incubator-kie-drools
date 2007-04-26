@@ -5,13 +5,13 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ClassTypeResolver;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.jci.problems.CompilationProblem;
-import org.codehaus.jfdi.interpreter.ClassTypeResolver;
-import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassTypeResolver;
+import org.drools.base.TypeResolver;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;

@@ -25,9 +25,9 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.codehaus.jfdi.interpreter.ClassTypeResolver;
-import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassTypeResolver;
+import org.drools.base.TypeResolver;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilderConfiguration;

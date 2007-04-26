@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.codehaus.jfdi.interpreter.ClassTypeResolver;
+import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.server.util.SuggestionCompletionEngineBuilder;
 import org.drools.compiler.DrlParser;
