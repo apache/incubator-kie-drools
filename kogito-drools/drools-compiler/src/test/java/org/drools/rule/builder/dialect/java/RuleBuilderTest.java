@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
@@ -75,6 +76,7 @@ public class RuleBuilderTest extends TestCase {
         final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
         final String ruleClassName = "RuleClassName.java";
         ruleDescr.setClassName( ruleClassName );
+        ruleDescr.addAttribute( new AttributeDescr("dialect", "java") );
 
         final TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
                                                                  this.getClass().getClassLoader() );
@@ -83,12 +85,16 @@ public class RuleBuilderTest extends TestCase {
         typeResolver.addImport( "java.lang.*" );
 
         final RuleBuilder builder = new RuleBuilder( );        
-        RuleBuildContext context = new RuleBuildContext(pkg, ruleDescr);
-        JavaDialect dialect =  new JavaDialect( null,
+        
+        JavaDialect dialect =  new JavaDialect( pkg,
                                                 new PackageBuilderConfiguration(),
                                                 typeResolver,
-                                                new ClassFieldExtractorCache() ) ;        
-        context.setDialect( dialect );
+                                                new ClassFieldExtractorCache() ) ;  
+        DialectRegistry registry = new DialectRegistry();
+        registry.addDialect( "java", dialect );
+        
+        RuleBuildContext context = new RuleBuildContext(pkg, ruleDescr, registry);
+      
         builder.build( context );
 
         Assert.assertTrue( context.getErrors().toString(),
@@ -120,19 +126,19 @@ public class RuleBuilderTest extends TestCase {
     }
 
     public void testBuildAttributes() throws Exception {
-        final RuleBuilder builder = new RuleBuilder( );        
-
-        Rule rule = new Rule( "myrule" );
+        Rule rule = new Rule( "my rule" );                
+        
         List attributes = new ArrayList();
 
+        attributes.add( new AttributeDescr("dialect", "java") );
         attributes.add( new AttributeDescr( "no-loop",
                                             "true" ) );
         attributes.add( new AttributeDescr( "enabled",
                                             "false" ) );
         attributes.add( new AttributeDescr( "ruleflow-group",
                                             "mygroup" ) );
-        builder.setAttributes( rule,
-                               attributes );
+        
+        RuleBuildContext.setAttributes( rule, attributes );
 
         assertTrue( rule.getNoLoop() );
         assertFalse( rule.isEffective() );
@@ -147,9 +153,8 @@ public class RuleBuilderTest extends TestCase {
 
         rule = new Rule( "myrule" );
 
-        builder.setAttributes( rule,
-                               attributes );
-
+        RuleBuildContext.setAttributes( rule, attributes );
+        
         final Field eff = rule.getClass().getDeclaredField( "dateEffective" );
         eff.setAccessible( true );
         final Calendar effectiveDate = (Calendar) eff.get( rule );
