@@ -263,6 +263,127 @@ public class StringUtils {
         }
     }
 
+    // Splitting
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Splits the provided text into an array, using whitespace as the
+     * separator.
+     * Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
+     *
+     * <p>The separator is not included in the returned String array.
+     * Adjacent separators are treated as one separator.
+     * For more control over the split use the StrTokenizer class.</p>
+     *
+     * <p>A <code>null</code> input String returns <code>null</code>.</p>
+     *
+     * <pre>
+     * StringUtils.split(null)       = null
+     * StringUtils.split("")         = []
+     * StringUtils.split("abc def")  = ["abc", "def"]
+     * StringUtils.split("abc  def") = ["abc", "def"]
+     * StringUtils.split(" abc ")    = ["abc"]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static String[] split(String str) {
+        return split(str, null, -1);
+    }
+    
+    /**
+     * <p>Splits the provided text into an array, separator specified.
+     * This is an alternative to using StringTokenizer.</p>
+     *
+     * <p>The separator is not included in the returned String array.
+     * Adjacent separators are treated as one separator.
+     * For more control over the split use the StrTokenizer class.</p>
+     *
+     * <p>A <code>null</code> input String returns <code>null</code>.</p>
+     *
+     * <pre>
+     * StringUtils.split(null, *)         = null
+     * StringUtils.split("", *)           = []
+     * StringUtils.split("a.b.c", '.')    = ["a", "b", "c"]
+     * StringUtils.split("a..b.c", '.')   = ["a", "b", "c"]
+     * StringUtils.split("a:b:c", '.')    = ["a:b:c"]
+     * StringUtils.split("a\tb\nc", null) = ["a", "b", "c"]
+     * StringUtils.split("a b c", ' ')    = ["a", "b", "c"]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @param separatorChar  the character used as the delimiter,
+     *  <code>null</code> splits on whitespace
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     * @since 2.0
+     */
+    public static String[] split(String str, char separatorChar) {
+        return splitWorker(str, separatorChar, false);
+    }
+
+    /**
+     * <p>Splits the provided text into an array, separators specified.
+     * This is an alternative to using StringTokenizer.</p>
+     *
+     * <p>The separator is not included in the returned String array.
+     * Adjacent separators are treated as one separator.
+     * For more control over the split use the StrTokenizer class.</p>
+     *
+     * <p>A <code>null</code> input String returns <code>null</code>.
+     * A <code>null</code> separatorChars splits on whitespace.</p>
+     *
+     * <pre>
+     * StringUtils.split(null, *)         = null
+     * StringUtils.split("", *)           = []
+     * StringUtils.split("abc def", null) = ["abc", "def"]
+     * StringUtils.split("abc def", " ")  = ["abc", "def"]
+     * StringUtils.split("abc  def", " ") = ["abc", "def"]
+     * StringUtils.split("ab:cd:ef", ":") = ["ab", "cd", "ef"]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @param separatorChars  the characters used as the delimiters,
+     *  <code>null</code> splits on whitespace
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static String[] split(String str, String separatorChars) {
+        return splitWorker(str, separatorChars, -1, false);
+    }
+
+    /**
+     * <p>Splits the provided text into an array with a maximum length,
+     * separators specified.</p>
+     *
+     * <p>The separator is not included in the returned String array.
+     * Adjacent separators are treated as one separator.</p>
+     *
+     * <p>A <code>null</code> input String returns <code>null</code>.
+     * A <code>null</code> separatorChars splits on whitespace.</p>
+     *
+     * <p>If more than <code>max</code> delimited substrings are found, the last
+     * returned string includes all characters after the first <code>max - 1</code>
+     * returned strings (including separator characters).</p>
+     *
+     * <pre>
+     * StringUtils.split(null, *, *)            = null
+     * StringUtils.split("", *, *)              = []
+     * StringUtils.split("ab de fg", null, 0)   = ["ab", "cd", "ef"]
+     * StringUtils.split("ab   de fg", null, 0) = ["ab", "cd", "ef"]
+     * StringUtils.split("ab:cd:ef", ":", 0)    = ["ab", "cd", "ef"]
+     * StringUtils.split("ab:cd:ef", ":", 2)    = ["ab", "cd:ef"]
+     * </pre>
+     *
+     * @param str  the String to parse, may be null
+     * @param separatorChars  the characters used as the delimiters,
+     *  <code>null</code> splits on whitespace
+     * @param max  the maximum number of elements to include in the
+     *  array. A zero or negative value implies no limit
+     * @return an array of parsed Strings, <code>null</code> if null String input
+     */
+    public static String[] split(String str, String separatorChars, int max) {
+        return splitWorker(str, separatorChars, max, false);
+    }    
+    
     //-----------------------------------------------------------------------
     /**
      * <p>Splits the provided text into an array, using whitespace as the
