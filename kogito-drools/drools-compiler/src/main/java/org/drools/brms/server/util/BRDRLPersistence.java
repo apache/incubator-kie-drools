@@ -39,16 +39,30 @@ public class BRDRLPersistence
      * @see org.drools.brms.server.util.BRLPersistence#marshal(org.drools.brms.client.modeldriven.brxml.RuleModel)
      */
     public String marshal(RuleModel model) {
+        boolean isDSLEnhanced = false;
+        for ( int i = 0; !isDSLEnhanced && i < model.lhs.length; i++ ) {
+            if ( model.lhs[i] instanceof DSLSentence ) {
+                isDSLEnhanced = true;
+            }
+        }
+        for ( int i = 0; !isDSLEnhanced && i < model.rhs.length; i++ ) {
+            if ( model.rhs[i] instanceof DSLSentence ) {
+                isDSLEnhanced = true;
+            }
+        }
+
         StringBuffer buf = new StringBuffer();
         buf.append( "rule \"" + model.name + "\"\n" );
         this.marshalAttributes( buf,
                                 model );
         buf.append( "\twhen\n" );
         this.marshalLHS( buf,
-                         model );
+                         model,
+                         isDSLEnhanced );
         buf.append( "\tthen\n" );
         this.marshalRHS( buf,
-                         model );
+                         model,
+                         isDSLEnhanced );
         buf.append( "end\n" );
         return buf.toString();
     }
@@ -83,9 +97,11 @@ public class BRDRLPersistence
      * @param model
      */
     private void marshalLHS(StringBuffer buf,
-                            RuleModel model) {
+                            RuleModel model,
+                            boolean isDSLEnhanced) {
         IPattern[] lhs = model.lhs;
-        LHSPatternVisitor visitor = new LHSPatternVisitor( buf );
+        LHSPatternVisitor visitor = new LHSPatternVisitor( isDSLEnhanced,
+                                                           buf );
         for ( int i = 0; i < lhs.length; i++ ) {
             final IPattern cond = lhs[i];
             visitor.visit( cond );
@@ -93,45 +109,57 @@ public class BRDRLPersistence
     }
 
     private void marshalRHS(StringBuffer buf,
-                            RuleModel model) {
+                            RuleModel model,
+                            boolean isDSLEnhanced) {
         IAction[] rhs = model.rhs;
-        RHSActionVisitor visitor = new RHSActionVisitor( buf );
+        RHSActionVisitor visitor = new RHSActionVisitor( isDSLEnhanced,
+                                                         buf );
         for ( int i = 0; i < rhs.length; i++ ) {
             final IAction action = rhs[i];
             visitor.visit( action );
         }
     }
 
-
     public static class LHSPatternVisitor extends ReflectiveVisitor {
         private StringBuffer buf;
+        private boolean      isDSLEnhanced;
 
-        public LHSPatternVisitor( StringBuffer b ) {
+        public LHSPatternVisitor(boolean isDSLEnhanced,
+                                 StringBuffer b) {
+            this.isDSLEnhanced = isDSLEnhanced;
             buf = b;
         }
-        
-        public void visitFactPattern( FactPattern pattern ) {
+
+        public void visitFactPattern(FactPattern pattern) {
             buf.append( "\t\t" );
+            if ( isDSLEnhanced ) {
+                // adding passthrough markup
+                buf.append( ">" );
+            }
             generateFactPattern( pattern );
             buf.append( "\n" );
         }
-        
-        public void visitCompositeFactPattern( CompositeFactPattern pattern ) {
+
+        public void visitCompositeFactPattern(CompositeFactPattern pattern) {
             buf.append( "\t\t" );
-            if( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
+            if ( isDSLEnhanced ) {
+                // adding passthrough markup
+                buf.append( ">" );
+            }
+            if ( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
                 buf.append( pattern.type );
                 buf.append( " " );
                 this.generateFactPattern( pattern.patterns[0] );
                 buf.append( "\n" );
-            } else if( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
+            } else if ( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
                 buf.append( pattern.type );
                 buf.append( " " );
                 this.generateFactPattern( pattern.patterns[0] );
                 buf.append( "\n" );
-            } else if( CompositeFactPattern.COMPOSITE_TYPE_OR.equals( pattern.type ) ) {
+            } else if ( CompositeFactPattern.COMPOSITE_TYPE_OR.equals( pattern.type ) ) {
                 buf.append( "( " );
-                for( int i = 0; i < pattern.patterns.length; i++ ) {
-                    if( i > 0 ) {
+                for ( int i = 0; i < pattern.patterns.length; i++ ) {
+                    if ( i > 0 ) {
                         buf.append( " " );
                         buf.append( pattern.type );
                         buf.append( " " );
@@ -142,12 +170,12 @@ public class BRDRLPersistence
             }
         }
 
-        public void visitDSLSentence( final DSLSentence sentence ) {
+        public void visitDSLSentence(final DSLSentence sentence) {
             buf.append( "\t\t" );
             buf.append( sentence.sentence );
             buf.append( "\n" );
         }
-        
+
         private void generateFactPattern(FactPattern pattern) {
             if ( pattern.boundName != null ) {
                 buf.append( pattern.boundName );
@@ -159,7 +187,7 @@ public class BRDRLPersistence
             buf.append( "( " );
 
             for ( int i = 0; i < pattern.constraints.length; i++ ) {
-                if( i > 0 ) {
+                if ( i > 0 ) {
                     buf.append( ", " );
                 }
                 final Constraint constr = pattern.constraints[i];
@@ -223,42 +251,51 @@ public class BRDRLPersistence
             }
             buf.append( " " );
         }
-        
+
     }
-    
+
     public static class RHSActionVisitor extends ReflectiveVisitor {
         private StringBuffer buf;
-        private int idx = 0;
+        private boolean isDSLEnhanced;
+        private int          idx = 0;
 
-        public RHSActionVisitor( StringBuffer b ) {
+        public RHSActionVisitor(boolean isDSLEnhanced, StringBuffer b) {
+            this.isDSLEnhanced = isDSLEnhanced;
             buf = b;
         }
-        
-        public void visitActionAssertFact( final ActionAssertFact action ) {
-            this.generateAssertCall( action, false );
+
+        public void visitActionAssertFact(final ActionAssertFact action) {
+            this.generateAssertCall( action,
+                                     false );
         }
 
-        public void visitActionAssertLogicalFact( final ActionAssertLogicalFact action ) {
-            this.generateAssertCall( action, false );
+        public void visitActionAssertLogicalFact(final ActionAssertLogicalFact action) {
+            this.generateAssertCall( action,
+                                     false );
         }
-        
-        private void generateAssertCall( final ActionAssertFact action, final boolean isLogic ) {
-            if( action.fieldValues.length == 0 ) {
-                buf.append( "\t\tassert( new " );
+
+        private void generateAssertCall(final ActionAssertFact action,
+                                        final boolean isLogic) {
+            buf.append( "\t\t" );
+            if( isDSLEnhanced ) {
+                buf.append( ">" );
+            }
+            if ( action.fieldValues.length == 0 ) {
+                buf.append( "assert( new " );
                 buf.append( action.factType );
                 buf.append( "() );\n" );
             } else {
-                buf.append( "\t\t" );
                 buf.append( action.factType );
                 buf.append( " fact" );
                 buf.append( idx );
                 buf.append( " = new " );
                 buf.append( action.factType );
                 buf.append( "();\n" );
-                generateSetMethodCalls( "fact"+idx, action.fieldValues );
-                if( isLogic ) {
+                generateSetMethodCalls( "fact" + idx,
+                                        action.fieldValues );
+                if ( isLogic ) {
                     buf.append( "\t\tassertLogical( fact" );
-               } else {
+                } else {
                     buf.append( "\t\tassert( fact" );
                 }
                 buf.append( idx++ );
@@ -266,38 +303,51 @@ public class BRDRLPersistence
             }
         }
 
-        public void visitActionModifyField( final ActionModifyField action ) {
+        public void visitActionModifyField(final ActionModifyField action) {
             this.visitActionSetField( action );
-            buf.append( "\t\tmodify( " );
+            buf.append( "\t\t" );
+            if( isDSLEnhanced ) {
+                buf.append( ">" );
+            }
+            buf.append( "modify( " );
             buf.append( action.variable );
             buf.append( " );\n" );
         }
-        
-        public void visitActionRetractFact( final ActionRetractFact action ) {
-            buf.append( "\t\tretract( " );
+
+        public void visitActionRetractFact(final ActionRetractFact action) {
+            buf.append( "\t\t" );
+            if( isDSLEnhanced ) {
+                buf.append( ">" );
+            }
+            buf.append( "retract( " );
             buf.append( action.variableName );
             buf.append( " );\n" );
         }
-        
-        public void visitDSLSentence( final DSLSentence sentence ) {
+
+        public void visitDSLSentence(final DSLSentence sentence) {
             buf.append( "\t\t" );
             buf.append( sentence.sentence );
             buf.append( "\n" );
         }
-        
-        public void visitActionSetField( final ActionSetField action ) {
-            this.generateSetMethodCalls( action.variable, action.fieldValues );
+
+        public void visitActionSetField(final ActionSetField action) {
+            this.generateSetMethodCalls( action.variable,
+                                         action.fieldValues );
         }
-        
-        private void generateSetMethodCalls(final String variableName, final ActionFieldValue[] fieldValues) {
-            for( int i = 0; i < fieldValues.length; i++ ) {
+
+        private void generateSetMethodCalls(final String variableName,
+                                            final ActionFieldValue[] fieldValues) {
+            for ( int i = 0; i < fieldValues.length; i++ ) {
                 buf.append( "\t\t" );
+                if( isDSLEnhanced ) {
+                    buf.append( ">" );
+                }
                 buf.append( variableName );
                 buf.append( ".set" );
                 buf.append( Character.toUpperCase( fieldValues[i].field.charAt( 0 ) ) );
                 buf.append( fieldValues[i].field.substring( 1 ) );
                 buf.append( "( " );
-                if( fieldValues[i].isFormula() ) {
+                if ( fieldValues[i].isFormula() ) {
                     buf.append( fieldValues[i].value );
                 } else {
                     buf.append( "\"" );
@@ -307,7 +357,7 @@ public class BRDRLPersistence
                 buf.append( " );\n" );
             }
         }
-        
+
     }
 
 }
