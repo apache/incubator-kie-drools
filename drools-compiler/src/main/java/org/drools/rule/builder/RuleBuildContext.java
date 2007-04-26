@@ -17,11 +17,16 @@
 package org.drools.rule.builder;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.drools.base.evaluators.DateFactory;
+import org.drools.compiler.DialectRegistry;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
@@ -79,9 +84,10 @@ public class RuleBuildContext {
      * Default constructor
      */
     public RuleBuildContext(final Package pkg,
-                        final RuleDescr ruleDescr) {
+                            final RuleDescr ruleDescr,
+                            final DialectRegistry registry) {
         this.pkg = pkg;
-
+        
         this.methods = new ArrayList();
         this.invokers = new HashMap();
         this.invokerLookups = new HashMap();
@@ -97,10 +103,16 @@ public class RuleBuildContext {
         } else {
             this.rule = new Rule( ruleDescr.getName() );
         }
-    }
-    
-    public void setDialect(Dialect dialect) {
-        this.dialect = dialect;
+        
+        // Assign attributes
+        setAttributes( this.rule,
+                       ruleDescr.getAttributes() );
+        
+        
+        String dialectName = ( this.rule.getDialect() != null ) ? this.rule.getDialect() : "default"; 
+        this.dialect = registry.getDialect( dialectName );
+        
+        this.dialect.init( ruleDescr );
     }
     
     public Dialect getDialect() {
@@ -227,16 +239,69 @@ public class RuleBuildContext {
         this.patternId = patternId;
     }
 
-//    public String getRuleClass() {
-//        return this.ruleClass;
-//    }
-//
-//    public void setRuleClass(final String ruleClass) {
-//        this.ruleClass = ruleClass;
-//    }
-
     public Stack getBuildStack() {
         return this.buildStack;
+    }
+
+    /**
+     * Sets rule Attributes
+     * 
+     * @param rule
+     * @param attributes
+     */
+    public static void setAttributes(final Rule rule,
+                              final List attributes) {
+
+        for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
+            final AttributeDescr attributeDescr = (AttributeDescr) it.next();
+            final String name = attributeDescr.getName();
+            if ( name.equals( "salience" ) ) {
+                rule.setSalience( Integer.parseInt( attributeDescr.getValue() ) );
+            } else if ( name.equals( "no-loop" ) ) {
+                if ( attributeDescr.getValue() == null ) {
+                    rule.setNoLoop( true );
+                } else {
+                    rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                }
+            } else if ( name.equals( "auto-focus" ) ) {
+                if ( attributeDescr.getValue() == null ) {
+                    rule.setAutoFocus( true );
+                } else {
+                    rule.setAutoFocus( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                }
+            } else if ( name.equals( "agenda-group" ) ) {
+                rule.setAgendaGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "activation-group" ) ) {
+                rule.setActivationGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "ruleflow-group" ) ) {
+                rule.setRuleFlowGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "lock-on-active" ) ) {
+                if ( attributeDescr.getValue() == null ) {
+                    rule.setLockOnActive( true );
+                } else {
+                    rule.setLockOnActive( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                }
+            } else if ( name.equals( "duration" ) ) {
+                rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
+                rule.setAgendaGroup( "" );
+            } else if ( name.equals( "enabled" ) ) {
+                if ( attributeDescr.getValue() == null ) {
+                    rule.setEnabled( true );
+                } else {
+                    rule.setEnabled( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                }
+            } else if ( name.equals( "date-effective" ) ) {
+                final Calendar cal = Calendar.getInstance();
+                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
+                rule.setDateEffective( cal );
+            } else if ( name.equals( "date-expires" ) ) {
+                final Calendar cal = Calendar.getInstance();
+                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
+                rule.setDateExpires( cal );
+            } else if ( name.equals( "dialect" ) ) {
+                rule.setDialect( attributeDescr.getValue() );
+            }
+        }
     }
 
 }

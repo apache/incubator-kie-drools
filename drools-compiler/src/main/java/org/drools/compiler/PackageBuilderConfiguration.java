@@ -44,6 +44,9 @@ public class PackageBuilderConfiguration {
     private static final int     CONFIGURED_COMPILER       = getDefaultCompiler();
     private static final String  CONFIGURED_LANGUAGE_LEVEL = getDefaultLanguageLevel();
 
+    public static final String[] DIALECTS                  = new String[]{"java", "mvel"};
+    private String               dialect                   = getDefaultDialect();
+
     private int                  compiler                  = PackageBuilderConfiguration.CONFIGURED_COMPILER;
 
     private ClassLoader          classLoader;
@@ -83,6 +86,14 @@ public class PackageBuilderConfiguration {
         this.languageLevel = level;
     }
 
+    public String getDialect() {
+        return this.dialect;
+    }
+
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+    }
+
     /** 
      * Set the compiler to be used when building the rules semantic code blocks.
      * This overrides the default, and even what was set as a system property. 
@@ -111,6 +122,17 @@ public class PackageBuilderConfiguration {
         }
     }
 
+    static String getDefaultDialect() {
+        String dialect = System.getProperty( "drools.dialect",
+                                             "java" );
+
+        if ( Arrays.binarySearch( DIALECTS,
+                                  dialect ) < 0 ) {
+            throw new RuntimeDroolsException( " dialect is not a valid registered dialect" );
+        }
+        return dialect;
+    }
+
     /**
      * This will attempt to read the System property to work out what default to set.
      * This should only be done once when the class is loaded. After that point, you will have
@@ -137,7 +159,7 @@ public class PackageBuilderConfiguration {
     static String getDefaultLanguageLevel() {
         try {
             final String languageLevel = System.getProperty( "drools.compiler.languagelevel",
-                                                       DEFAULT_LANGUAGE_LEVEL );
+                                                             DEFAULT_LANGUAGE_LEVEL );
 
             if ( Arrays.binarySearch( LANGUAGE_LEVELS,
                                       languageLevel ) < 0 ) {

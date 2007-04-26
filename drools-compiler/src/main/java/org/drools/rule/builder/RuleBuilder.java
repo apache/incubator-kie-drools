@@ -48,10 +48,6 @@ public class RuleBuilder {
     public void build(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
 
-        // Assign attributes
-        setAttributes( context.getRule(),
-                       ruleDescr.getAttributes() );
-
         final ConditionalElementBuilder builder = (ConditionalElementBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
             final GroupElement ce = (GroupElement) builder.build( context,
@@ -72,67 +68,4 @@ public class RuleBuilder {
         context.getDialect().getRuleClassBuilder().buildRule( context,
                                                               ruleDescr );
     }
-
-    /**
-     * Sets rule Attributes
-     * 
-     * @param rule
-     * @param attributes
-     */
-    public void setAttributes(final Rule rule,
-                              final List attributes) {
-
-        for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
-            final AttributeDescr attributeDescr = (AttributeDescr) it.next();
-            final String name = attributeDescr.getName();
-            if ( name.equals( "salience" ) ) {
-                rule.setSalience( Integer.parseInt( attributeDescr.getValue() ) );
-            } else if ( name.equals( "no-loop" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setNoLoop( true );
-                } else {
-                    rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }
-            } else if ( name.equals( "auto-focus" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setAutoFocus( true );
-                } else {
-                    rule.setAutoFocus( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }
-            } else if ( name.equals( "agenda-group" ) ) {
-                rule.setAgendaGroup( attributeDescr.getValue() );
-            } else if ( name.equals( "activation-group" ) ) {
-                rule.setActivationGroup( attributeDescr.getValue() );
-            } else if ( name.equals( "ruleflow-group" ) ) {
-                rule.setRuleFlowGroup( attributeDescr.getValue() );
-            } else if ( name.equals( "lock-on-active" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setLockOnActive( true );
-                } else {
-                    rule.setLockOnActive( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }
-            } else if ( name.equals( "duration" ) ) {
-                rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
-                rule.setAgendaGroup( "" );
-            } else if ( name.equals( "enabled" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setEnabled( true );
-                } else {
-                    rule.setEnabled( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }
-            } else if ( name.equals( "date-effective" ) ) {
-                final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
-                rule.setDateEffective( cal );
-            } else if ( name.equals( "date-expires" ) ) {
-                final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
-                rule.setDateExpires( cal );
-
-            } else if ( name.equals( "language" ) ) {
-                //@todo: we don't currently  support multiple languages
-            }
-        }
-    }
-
 }

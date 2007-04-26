@@ -114,24 +114,32 @@ public class PackageBuilder {
         this.pkg = pkg;
         this.classFieldExtractorCache = new ClassFieldExtractorCache();
         
+        this.dialects = new DialectRegistry();           
         
         if ( this.pkg != null ) {
             this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
                                                        this.pkg.getPackageCompilationData().getClassLoader() );
             // make an automatic import for the current package
             this.typeResolver.addImport( this.pkg.getName() + ".*" );
+            this.dialects.addDialect( "java",
+                                      new JavaDialect( pkg,
+                                                       configuration,
+                                                       getTypeResolver(),
+                                                       this.classFieldExtractorCache ) );            
+            this.dialect = this.dialects.getDialect( "java" ); // TODO this should from the package
+            
         } else {
             this.typeResolver = new ClassTypeResolver( new ArrayList(), configuration.getClassLoader() );
+            this.dialects.addDialect( "java",
+                                      new JavaDialect( pkg,
+                                                       configuration,
+                                                       getTypeResolver(),
+                                                       this.classFieldExtractorCache ) ); 
+            this.dialects.addDialect( "default", this.dialects.getDialect( configuration.getDialect() ) );     
+            this.dialect = this.dialects.getDialect( configuration.getDialect() );
         }
 
-        this.dialects = new DialectRegistry();
-        this.dialects.addDialect( "java",
-                                  new JavaDialect( pkg,
-                                                   configuration,
-                                                   getTypeResolver(),
-                                                   this.classFieldExtractorCache ) );
-
-        this.dialect = this.dialects.getDialect( "java" );
+        //this.dialect = this.dialects.getDialect( "java" );
     }
 
     /**
@@ -258,6 +266,8 @@ public class PackageBuilder {
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
                                          this.configuration.getClassLoader() );
+        
+        this.dialect = this.dialects.getDialect( "java" ); // TODO this should from the package
 
         this.dialect.init( pkg );
 
@@ -335,16 +345,16 @@ public class PackageBuilder {
     }
 
     private void addRule(final RuleDescr ruleDescr) {
-        this.dialect.init( ruleDescr );
+        //this.dialect.init( ruleDescr );
         
         RuleBuildContext context = new RuleBuildContext( pkg,
-                                                         ruleDescr );        
-        context.setDialect( this.dialect );
+                                                         ruleDescr,
+                                                         this.dialects );        
         this.builder.build( context );
                 
         this.results.addAll( context.getErrors() );       
 
-        this.dialect.addRule( context );
+        context.getDialect().addRule( context );
 
         this.pkg.addRule( context.getRule() );
     }
