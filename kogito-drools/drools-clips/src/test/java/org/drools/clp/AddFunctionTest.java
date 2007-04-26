@@ -17,9 +17,9 @@ import org.drools.clp.valuehandlers.TempTokenVariable;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Column;
+import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
-import org.drools.spi.ColumnExtractor;
+import org.drools.spi.PatternExtractor;
 import org.drools.spi.ObjectType;
 
 import junit.framework.TestCase;
@@ -57,35 +57,35 @@ public class AddFunctionTest extends TestCase {
 
     public void testNestedAddWithVars() {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
+        InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         InternalFactHandle factHandle = (InternalFactHandle) workingMemory.assertObject( new BigDecimal( 10 ) );
         ReteTuple tuple = new ReteTuple( factHandle );
 
         ObjectType objectType = new ClassObjectType( BigDecimal.class );
-        Column column0 = new Column( 0,
-                                     objectType );
-        Column column1 = new Column( 1,
-                                     objectType );
-        ColumnExtractor extractor = new ColumnExtractor( objectType );
+        Pattern pattern0 = new Pattern( 0,
+                                        objectType );
+        Pattern pattern1 = new Pattern( 1,
+                                        objectType );
+        PatternExtractor extractor = new PatternExtractor( objectType );
 
-//        VariableValueHandler pd = new CLPPreviousDeclarationVariable( new Declaration( "pd",
-//                                                                                       extractor,
-//                                                                                       column0 ) );
-//
-//        VariableValueHandler ld = new CLPLocalDeclarationVariable( new Declaration( "ld",
-//                                                                                    extractor,
-//                                                                                    column1 ) );
+        //        VariableValueHandler pd = new CLPPreviousDeclarationVariable( new Declaration( "pd",
+        //                                                                                       extractor,
+        //                                                                                       column0 ) );
+        //
+        //        VariableValueHandler ld = new CLPLocalDeclarationVariable( new Declaration( "ld",
+        //                                                                                    extractor,
+        //                                                                                    column1 ) );
 
         Map variables = new HashMap();
         variables.put( "pd",
                        new CLPPreviousDeclarationVariable( new Declaration( "pd",
                                                                             extractor,
-                                                                            column0 ) ) );
+                                                                            pattern0 ) ) );
         variables.put( "ld",
                        new CLPLocalDeclarationVariable( new Declaration( "ld",
                                                                          extractor,
-                                                                         column1 ) ) );
+                                                                         pattern1 ) ) );
 
         ValueHandler val1 = new TempTokenVariable( "pd" );
         ValueHandler val2 = new LocalVariableValue( "lv",
@@ -112,7 +112,7 @@ public class AddFunctionTest extends TestCase {
         f.replaceTempTokens( variables );
 
         assertEquals( new BigDecimal( 30 ),
-                      f.getBigDecimalValue( context ) ); 
+                      f.getBigDecimalValue( context ) );
 
     }
 }
