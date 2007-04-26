@@ -24,12 +24,12 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * 
  * @author Michael Neale
  */
-public class BRLPersistence {
+public class BRXMLPersistence implements BRLPersistence {
 
     private XStream                     xt;
-    private static final BRLPersistence INSTANCE = new BRLPersistence();
+    private static final BRLPersistence INSTANCE = new BRXMLPersistence();
 
-    private BRLPersistence() {
+    private BRXMLPersistence() {
         this.xt = new XStream( new DomDriver() );
 
         this.xt.alias( "rule",
@@ -67,11 +67,17 @@ public class BRLPersistence {
         return INSTANCE;
     }
 
-    public String toXML(final RuleModel model) {
+    /* (non-Javadoc)
+     * @see org.drools.brms.server.util.BRLPersistence#toXML(org.drools.brms.client.modeldriven.brxml.RuleModel)
+     */
+    public String marshal(final RuleModel model) {
         return this.xt.toXML( model );
     }
 
-    public RuleModel toModel(final String xml) {
+    /* (non-Javadoc)
+     * @see org.drools.brms.server.util.BRLPersistence#toModel(java.lang.String)
+     */
+    public RuleModel unmarshal(final String xml) {
         if ( xml == null ) {
             return new RuleModel();
         }
