@@ -33,7 +33,7 @@ public class DynamicRulesTest extends TestCase {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
-    
+
     public void testDynamicRuleAdditions() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) );
 
@@ -141,14 +141,7 @@ public class DynamicRulesTest extends TestCase {
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
         // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
         final RuleBase ruleBase = getRuleBase();
-        // org.drools.reteoo.RuleBaseImpl ruleBase = new
-        // org.drools.reteoo.RuleBaseImpl();
-        if ( ruleBase instanceof org.drools.reteoo.ReteooRuleBase ) {
-            reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-            // } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase )
-            // {
-            // leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
-        }
+        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
         ruleBase.addPackage( pkg );
         final PackageBuilder builder2 = new PackageBuilder();
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
@@ -180,56 +173,29 @@ public class DynamicRulesTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
         workingMemory.assertObject( cheddar );
-        //        
-        // workingMemory.get
-        //        
-        // workingMemory.fireAllRules();
 
         assertEquals( 11,
                       workingMemory.getAgenda().getActivations().length );
 
-        if ( reteooRuleBase != null ) {
-            reteooRuleBase.removeRule( "org.drools.test",
-                                       "Who likes Stilton" );
-            assertEquals( 8,
-                          workingMemory.getAgenda().getActivations().length );
+        reteooRuleBase.removeRule( "org.drools.test",
+                                   "Who likes Stilton" );
+        assertEquals( 8,
+                      workingMemory.getAgenda().getActivations().length );
 
-            reteooRuleBase.removeRule( "org.drools.test",
-                                       "like cheese" );
+        reteooRuleBase.removeRule( "org.drools.test",
+                                   "like cheese" );
 
-            final Cheese muzzarela = new Cheese( "muzzarela",
-                                                 5 );
-            workingMemory.assertObject( muzzarela );
+        final Cheese muzzarela = new Cheese( "muzzarela",
+                                             5 );
+        workingMemory.assertObject( muzzarela );
 
-            assertEquals( 4,
-                          workingMemory.getAgenda().getActivations().length );
+        assertEquals( 4,
+                      workingMemory.getAgenda().getActivations().length );
 
-            reteooRuleBase.removePackage( "org.drools.test" );
+        reteooRuleBase.removePackage( "org.drools.test" );
 
-            assertEquals( 0,
-                          workingMemory.getAgenda().getActivations().length );
-            // } else if ( leapsRuleBase != null ) {
-            // leapsRuleBase.removeRule( "org.drools.test",
-            // "Who likes Stilton" );
-            // assertEquals( 8,
-            // workingMemory.getAgenda().getActivations().length );
-            //
-            // leapsRuleBase.removeRule( "org.drools.test",
-            // "like cheese" );
-            //
-            // final Cheese muzzarela = new Cheese( "muzzarela",
-            // 5 );
-            // workingMemory.assertObject( muzzarela );
-            //
-            // assertEquals( 4,
-            // workingMemory.getAgenda().getActivations().length );
-            //
-            // leapsRuleBase.removePackage( "org.drools.test" );
-            //
-            // assertEquals( 0,
-            // workingMemory.getAgenda().getActivations().length );
-            //
-        }
+        assertEquals( 0,
+                      workingMemory.getAgenda().getActivations().length );
     }
 
     public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
@@ -296,7 +262,7 @@ public class DynamicRulesTest extends TestCase {
             // leapsRuleBase.getPackages().length );
         }
     }
-    
+
     public void testDynamicFunction() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
@@ -362,7 +328,7 @@ public class DynamicRulesTest extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 2 ) );
     }
-    
+
     public void testRemovePackage() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
@@ -390,7 +356,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBaseWM.removePackage( packageName );
         ruleBaseWM.addPackage( builder1.getPackage() );
     }
-    
+
     public void testDynamicRules() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -432,26 +398,24 @@ public class DynamicRulesTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         workingMemory.fireAllRules();
-    }    
-    
-    public void testRuleBaseAddRemove() throws Exception
-    {
+    }
+
+    public void testRuleBaseAddRemove() throws Exception {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        
+
         //add and remove
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ));
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
         Package pkg = builder.getPackage();
-        ruleBase.addPackage(pkg);
-        ruleBase.removePackage(pkg.getName());
-            
+        ruleBase.addPackage( pkg );
+        ruleBase.removePackage( pkg.getName() );
+
         //add and remove again
         builder = new PackageBuilder();
-        builder.addPackageFromDrl(new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ));
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
         pkg = builder.getPackage();
-        ruleBase.addPackage(pkg);
-        ruleBase.removePackage(pkg.getName());
+        ruleBase.addPackage( pkg );
+        ruleBase.removePackage( pkg.getName() );
     }
-    
 
 }

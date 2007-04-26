@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.drools.RuntimeDroolsException;
+import org.drools.compiler.RuleError;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
@@ -105,8 +106,7 @@ public class JavaConsequenceBuilder
                          new Integer( list.indexOf( declarations[i] ) ) );
             notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? null : "true";
             if ( ((Integer) indexes.get( i )).intValue() == -1 ) {
-                // some defensive code, this should never happen
-                throw new RuntimeDroolsException( "Unable to find declaration in list while generating the consequence invoker" );
+                context.getErrors().add( new RuleError(context.getRule(), ruleDescr, null, "Internal Error : Unable to find declaration in list while generating the consequence invoker" ) );                
             }
         }
 

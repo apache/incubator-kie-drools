@@ -287,7 +287,7 @@ public class FirstOrderLogicTest extends TestCase {
         final Rule rule = pkg.getRules()[0];
         assertTrue( rule.isValid() );
         assertEquals( 0,
-                      builder.getErrors().length );
+                      builder.getErrors().getErrors().length );
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
