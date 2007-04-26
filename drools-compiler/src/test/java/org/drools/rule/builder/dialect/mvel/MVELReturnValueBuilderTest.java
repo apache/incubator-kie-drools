@@ -7,13 +7,13 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ClassTypeResolver;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;

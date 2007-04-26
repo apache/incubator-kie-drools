@@ -19,7 +19,7 @@ package org.drools.rule.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jfdi.interpreter.TypeResolver;
+import org.drools.base.TypeResolver;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.Package;
 

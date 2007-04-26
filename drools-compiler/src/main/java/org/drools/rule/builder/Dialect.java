@@ -3,8 +3,8 @@ package org.drools.rule.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jfdi.interpreter.TypeResolver;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.TypeResolver;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.RuleDescr;
