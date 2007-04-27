@@ -71,8 +71,7 @@ public class BRDRLPersistence
      * @see org.drools.brms.server.util.BRLPersistence#unmarshal(java.lang.String)
      */
     public RuleModel unmarshal(String str) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Still not possible to convert pure DRL to RuleModel");
     }
 
     /**
