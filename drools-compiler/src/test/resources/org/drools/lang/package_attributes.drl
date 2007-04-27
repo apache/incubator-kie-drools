@@ -1,0 +1,16 @@
+package com.foo;
+
+
+agenda-group "x"
+dialect "java"
+
+rule bar
+  when
+  then
+end
+
+rule baz
+  dialect "mvel"
+  when
+  then
+end

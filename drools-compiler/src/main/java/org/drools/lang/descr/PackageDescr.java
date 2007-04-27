@@ -18,6 +18,7 @@ package org.drools.lang.descr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class PackageDescr extends BaseDescr {
@@ -124,6 +125,20 @@ public class PackageDescr extends BaseDescr {
     public void addRule(final RuleDescr rule) {
         if ( this.rules == Collections.EMPTY_LIST ) {
             this.rules = new ArrayList( 1 );
+        }
+        for ( Iterator iter = attributes.iterator(); iter.hasNext(); ) {
+            AttributeDescr at = (AttributeDescr) iter.next();
+            boolean overridden = false;
+            //check for attr in rule
+            for ( Iterator iterator = rule.getAttributes().iterator(); iterator.hasNext(); ) {
+                AttributeDescr ruleAt = (AttributeDescr) iterator.next();
+                if (ruleAt.getName().equals( at.getName() )) {
+                    overridden = true;
+                }
+            }
+            if (!overridden) {
+                rule.addAttribute( at );
+            }            
         }
         this.rules.add( rule );
     }
