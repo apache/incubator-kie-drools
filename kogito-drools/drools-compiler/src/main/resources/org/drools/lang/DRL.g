@@ -109,7 +109,7 @@ options {backtrack=true;}
                 else if ( e instanceof MismatchedTreeNodeException ) {
                         MismatchedTreeNodeException mtne = (MismatchedTreeNodeException)e;
                         message.append("mismatched tree node: "+
-                                                           mtne.foundNode+
+                                                           mtne.toString() +
                                                            "; expecting type "+
                                                            tokenNames[mtne.expecting]);
                 }
@@ -182,6 +182,12 @@ prolog
 		{ 
 			this.packageDescr = factory.createPackage( packageName ); 
 		}
+			(ATTRIBUTES ':')?
+			(	','? a=rule_attribute
+				{
+					this.packageDescr.addAttribute( a );
+				}
+			)*		
 	;
 	
 statement
@@ -453,6 +459,7 @@ rule_attribute returns [AttributeDescr d]
 		|	a=enabled {d=a;}
 		|	a=ruleflow_group { d = a; }
 		|	a=lock_on_active{ d = a; }
+		|	a=dialect {d = a; }
 		
 	;
 	
@@ -615,8 +622,8 @@ agenda_group returns [AttributeDescr d]
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
 		}
-	;		
-
+	;
+	
 
 duration returns [AttributeDescr d]
 	@init {
@@ -630,7 +637,24 @@ duration returns [AttributeDescr d]
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
 		}
-	;		
+	;	
+	
+dialect returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+		loc=DIALECT n=STRING   
+		{
+			d = new AttributeDescr( "dialect", getString( n ) );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
+		}
+	;			
+
+
+	
 	
 	
 	
@@ -1554,6 +1578,9 @@ ACTIVATION_GROUP
 	
 AGENDA_GROUP 
 	:	'agenda-group';
+	
+DIALECT 
+	:	'dialect';	
 	
 RULEFLOW_GROUP 
 	:	'ruleflow-group';

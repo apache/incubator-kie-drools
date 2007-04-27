@@ -2151,6 +2151,44 @@ public class RuleParserTest extends TestCase {
         parseResource( "extra_lhs_newline.drl" ).compilation_unit();
         assertFalse( this.parser.hasErrors() );
     }
+    
+    public void testPackageAttributes() throws Exception {
+        parseResource( "package_attributes.drl" ).compilation_unit();
+        if (this.parser.hasErrors()) {
+            System.err.println(this.parser.getErrorMessages());
+        }
+        assertFalse( this.parser.hasErrors() );
+        
+        PackageDescr pkg = this.parser.getPackageDescr();
+        AttributeDescr at = (AttributeDescr) pkg.getAttributes().get( 0 );
+        assertEquals("agenda-group", at.getName());
+        assertEquals( "x", at.getValue() );
+        at = (AttributeDescr) pkg.getAttributes().get( 1 );
+        assertEquals("dialect", at.getName());
+        assertEquals( "java", at.getValue() );        
+        
+        assertEquals(2, pkg.getRules().size());
+        
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals("bar", rule.getName());
+        at = (AttributeDescr) rule.getAttributes().get( 0 );
+        assertEquals("agenda-group", at.getName());
+        assertEquals( "x", at.getValue() );
+        at = (AttributeDescr) rule.getAttributes().get( 1 );
+        assertEquals("dialect", at.getName());
+        assertEquals( "java", at.getValue() );        
+
+        rule = (RuleDescr) pkg.getRules().get( 1 );
+        assertEquals("baz", rule.getName());
+        at = (AttributeDescr) rule.getAttributes().get( 0 );
+        assertEquals("dialect", at.getName());
+        assertEquals( "mvel", at.getValue() );
+        at = (AttributeDescr) rule.getAttributes().get( 1 );
+        assertEquals("agenda-group", at.getName());
+        assertEquals( "x", at.getValue() );        
+        
+        
+    }
 
     public void testStatementOrdering1() throws Exception {
         parseResource( "statement_ordering_1.drl" );
