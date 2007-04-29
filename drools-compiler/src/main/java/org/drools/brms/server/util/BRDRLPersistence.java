@@ -347,7 +347,7 @@ public class BRDRLPersistence
                 buf.append( fieldValues[i].field.substring( 1 ) );
                 buf.append( "( " );
                 if ( fieldValues[i].isFormula() ) {
-                    buf.append( fieldValues[i].value );
+                    buf.append( fieldValues[i].value.substring( 1 ) );
                 } else {
                     buf.append( "\"" );
                     buf.append( fieldValues[i].value );
