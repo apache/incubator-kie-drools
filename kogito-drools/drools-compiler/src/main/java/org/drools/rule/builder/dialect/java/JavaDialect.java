@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.stringtemplate.StringTemplate;
-import org.antlr.stringtemplate.StringTemplateGroup;
-import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.EclipseJavaCompiler;
 import org.apache.commons.jci.compilers.EclipseJavaCompilerSettings;
@@ -47,7 +44,6 @@ import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
@@ -59,7 +55,7 @@ import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
-import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
@@ -67,13 +63,6 @@ import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 public class JavaDialect
     implements
     Dialect {
-
-    // the string template groups
-    private final StringTemplateGroup      ruleGroup    = new StringTemplateGroup( new InputStreamReader( JavaDialect.class.getResourceAsStream( "javaRule.stg" ) ),
-                                                                                   AngleBracketTemplateLexer.class );
-
-    private final StringTemplateGroup      invokerGroup = new StringTemplateGroup( new InputStreamReader( JavaDialect.class.getResourceAsStream( "javaInvokers.stg" ) ),
-                                                                                   AngleBracketTemplateLexer.class );
 
     // builders
     private final PatternBuilder           pattern      = new PatternBuilder( this );
@@ -202,7 +191,7 @@ public class JavaDialect
         ruleDescr.setClassName( ucFirst( ruleClassName ) );
     }
 
-    public void setRuleClass(String ruleClass) {
+    public void setRuleClass(final String ruleClass) {
         this.ruleClass = ruleClass;
     }
 
@@ -269,7 +258,7 @@ public class JavaDialect
         return this.typeFixer;
     }
 
-    public Object getBuilder(Class clazz) {
+    public Object getBuilder(final Class clazz) {
         return this.builders.get( clazz );
     }
 
@@ -307,59 +296,6 @@ public class JavaDialect
 
     public FromBuilder getFromBuilder() {
         return this.from;
-    }
-
-    /**
-     * Sets usual string template attributes:
-     * 
-     * <li> list of declarations and declaration types</li>
-     * <li> list of globals and global types</li>
-     *
-     * @param context the current build context
-     * @param st the string template whose attributes will be set 
-     * @param declarations array of declarations to set
-     * @param globals array of globals to set
-     */
-    public void setStringTemplateAttributes(final RuleBuildContext context,
-                                            final StringTemplate st,
-                                            final Declaration[] declarations,
-                                            final String[] globals) {
-        final String[] declarationTypes = new String[declarations.length];
-        for ( int i = 0, size = declarations.length; i < size; i++ ) {
-            declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( declarations[i] );
-        }
-
-        final List globalTypes = new ArrayList( globals.length );
-        for ( int i = 0, length = globals.length; i < length; i++ ) {
-            globalTypes.add( ((Class) context.getPkg().getGlobals().get( globals[i] )).getName().replace( '$',
-                                                                                                          '.' ) );
-        }
-
-        st.setAttribute( "declarations",
-                         declarations );
-        st.setAttribute( "declarationTypes",
-                         declarationTypes );
-
-        st.setAttribute( "globals",
-                         globals );
-        st.setAttribute( "globalTypes",
-                         globalTypes );
-    }
-
-    /**
-     * Returns the string template group of invokers
-     * @return
-     */
-    public StringTemplateGroup getInvokerGroup() {
-        return this.invokerGroup;
-    }
-
-    /**
-     * Returns the string template group of actual rule templates
-     * @return
-     */
-    public StringTemplateGroup getRuleGroup() {
-        return this.ruleGroup;
     }
 
     /**
@@ -401,12 +337,12 @@ public class JavaDialect
                         //we don't really want to report invoker errors.
                         //mostly as they can happen when there is a syntax error in the RHS
                         //and otherwise, it is a programmatic error in drools itself.
-                        System.err.println( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere." );
+                        throw new RuntimeException( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere." + handler.getError() );
                     }
                 }
             }
         }
-        
+
         // We've compiled everthing, so clear it for the next set of additions
         this.generatedClassList.clear();
     }
@@ -421,8 +357,8 @@ public class JavaDialect
             return;
         }
 
-        Rule rule = context.getRule();
-        RuleDescr ruleDescr = context.getRuleDescr();
+        final Rule rule = context.getRule();
+        final RuleDescr ruleDescr = context.getRuleDescr();
 
         // The compilation result is for th entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
@@ -474,8 +410,8 @@ public class JavaDialect
         functionDescr.setClassName( functionClassName );
 
         this.pkg.addFunction( functionDescr.getName() );
-        
-        String functionSrc = getFunctionBuilder().build( this.pkg,
+
+        final String functionSrc = getFunctionBuilder().build( this.pkg,
                                                          functionDescr,
                                                          typeResolver,
                                                          this.lineMappings,

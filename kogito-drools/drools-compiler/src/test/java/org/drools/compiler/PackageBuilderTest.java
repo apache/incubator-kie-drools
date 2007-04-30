@@ -94,7 +94,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
@@ -285,25 +285,23 @@ public class PackageBuilderTest extends DroolsTestCase {
         } catch ( final RuntimeException e ) {
             assertNotNull( e.getMessage() );
         }
-        
-        builder.addPackageFromDrl( new StringReader("package foo") );
-        builder.addPackageFromDrl( new StringReader("rule x end") );
-        
-        
-        
+
+        builder.addPackageFromDrl( new StringReader( "package foo" ) );
+        builder.addPackageFromDrl( new StringReader( "rule x end" ) );
+
     }
-    
+
     public void testErrorReset() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        
-        builder.addPackageFromDrl( new StringReader("package foo \n rule ORB") );
-        assertTrue(builder.hasErrors());
-        
+
+        builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
+        assertTrue( builder.hasErrors() );
+
         builder.resetErrors();
-        assertFalse(builder.hasErrors());
-        
-        builder.addPackageFromDrl( new StringReader("package foo \n rule ORB") );
-        assertTrue(builder.hasErrors());
+        assertFalse( builder.hasErrors() );
+
+        builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
+        assertTrue( builder.hasErrors() );
     }
 
     public void testFactTemplate() {
@@ -325,7 +323,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         packageDescr.addFactTemplate( cheese );
 
         final PatternDescr pattern = new PatternDescr( "Cheese",
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
@@ -370,7 +368,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
@@ -398,7 +396,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
@@ -421,8 +419,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        //        assertFalse( Arrays.toString( builder.getErrors() ),
-        //                     builder.hasErrors() );
+        assertEquals( "Should not have any errors",
+                      0,
+                      builder.getErrors().getErrors().length );
     }
 
     public void testReturnValueMethodCompare() {
@@ -467,7 +466,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
@@ -534,7 +533,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
@@ -817,7 +816,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
-                                                         "stilton" );
+                                                            "stilton" );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
@@ -847,7 +846,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
         PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
-                                                   "stilton" );
+                                                      "stilton" );
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   null ) );
@@ -861,7 +860,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
         patternDescr = new PatternDescr( Cheese.class.getName(),
-                                       "stilton" );
+                                         "stilton" );
         literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
                                                                   null ) );
@@ -875,7 +874,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
         patternDescr = new PatternDescr( Cheese.class.getName(),
-                                       "stilton" );
+                                         "stilton" );
 
         literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
@@ -992,7 +991,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
@@ -1023,7 +1022,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
-                                                    "stilton" );
+                                                       "stilton" );
         lhs.addDescr( pattern );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
@@ -1096,7 +1095,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         lhs.addDescr( (BaseDescr) ceDescr );
 
         final PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
-                                                         "stilton" );
+                                                            "stilton" );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
@@ -1122,9 +1121,9 @@ public class PackageBuilderTest extends DroolsTestCase {
     class MockActivation
         implements
         Activation {
-        private Rule         rule;
+        private Rule               rule;
         private final GroupElement subrule;
-        private Tuple        tuple;
+        private Tuple              tuple;
 
         public MockActivation(final Rule rule,
                               final GroupElement subrule,
@@ -1198,7 +1197,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         public void setLogicalDependencies(LinkedList justified) {
             // TODO Auto-generated method stub
-            
+
         }
     }
 

@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.antlr.stringtemplate.StringTemplate;
-import org.antlr.stringtemplate.StringTemplateGroup;
-import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.FunctionError;
@@ -19,13 +16,16 @@ import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.util.StringUtils;
+import org.mvel.TemplateInterpreter;
 
 public class JavaFunctionBuilder
     implements
     FunctionBuilder {
 
-    private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
-                                                                                      AngleBracketTemplateLexer.class );
+    //    private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
+    //                                                                                      AngleBracketTemplateLexer.class );
+
+    private static final String template = StringUtils.readFileAsString( new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.mvel" ) ) );
 
     public JavaFunctionBuilder() {
 
@@ -39,28 +39,31 @@ public class JavaFunctionBuilder
                         final TypeResolver typeResolver,
                         final Map lineMappings,
                         final List errors) {
-        final StringTemplate st = JavaFunctionBuilder.functionGroup.getInstanceOf( "function" );
 
-        st.setAttribute( "package",
-                         pkg.getName() );
+        final Map vars = new HashMap();
 
-        st.setAttribute( "imports",
-                         pkg.getImports() );
+        vars.put( "package",
+                  pkg.getName() );
 
-        st.setAttribute( "className",
-                         StringUtils.ucFirst( functionDescr.getName() ) );
-        st.setAttribute( "methodName",
-                         functionDescr.getName() );
+        vars.put( "imports",
+                  pkg.getImports() );
 
-        st.setAttribute( "returnType",
-                         functionDescr.getReturnType() );
+        vars.put( "className",
+                  StringUtils.ucFirst( functionDescr.getName() ) );
 
-        st.setAttribute( "parameterTypes",
-                         functionDescr.getParameterTypes() );
+        vars.put( "methodName",
+                  functionDescr.getName() );
 
-        st.setAttribute( "parameterNames",
-                         functionDescr.getParameterNames() );
+        vars.put( "returnType",
+                  functionDescr.getReturnType() );
 
+        vars.put( "parameterTypes",
+                  functionDescr.getParameterTypes() );
+
+        vars.put( "parameterNames",
+                  functionDescr.getParameterNames() );
+
+        // Check that all the parameters are resolvable
         final Map params = new HashMap();
         final List names = functionDescr.getParameterNames();
         final List types = functionDescr.getParameterTypes();
@@ -69,14 +72,19 @@ public class JavaFunctionBuilder
                 params.put( names.get( i ),
                             typeResolver.resolveType( (String) types.get( i ) ) );
             }
-        } catch ( final ClassNotFoundException e ) {            
-            errors.add(  new FunctionError(functionDescr, e, "unable to resolve type while building function") );
+        } catch ( final ClassNotFoundException e ) {
+            errors.add( new FunctionError( functionDescr,
+                                           e,
+                                           "unable to resolve type while building function" ) );
         }
 
-        st.setAttribute( "text",
-                         functionDescr.getText() );
+        vars.put( "text",
+                  functionDescr.getText() );
 
-        final String text = st.toString();
+        final String text = TemplateInterpreter.evalToString( template,
+                                                              vars );
+
+        System.out.println( text );
 
         final BufferedReader reader = new BufferedReader( new StringReader( text ) );
         String line = null;

@@ -15,7 +15,7 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.antlr.stringtemplate.StringTemplate;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
@@ -37,8 +37,8 @@ public class Column {
 		return cellValue;
 	}
 
-	public void addValue(StringTemplate t, Object value) {
-		t.setAttribute(name, value);
+	public void addValue(Map vars, Object value) {
+		vars.put(name, value);
 	}
 
 }

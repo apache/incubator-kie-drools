@@ -17,6 +17,10 @@ package org.drools.util;
  * limitations under the License.
  */
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,11 +171,10 @@ public class StringUtils {
     public StringUtils() {
         super();
     }
-    
+
     public static String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
-    
 
     // Empty checks
     //-----------------------------------------------------------------------
@@ -288,9 +291,11 @@ public class StringUtils {
      * @return an array of parsed Strings, <code>null</code> if null String input
      */
     public static String[] split(String str) {
-        return split(str, null, -1);
+        return split( str,
+                      null,
+                      -1 );
     }
-    
+
     /**
      * <p>Splits the provided text into an array, separator specified.
      * This is an alternative to using StringTokenizer.</p>
@@ -317,8 +322,11 @@ public class StringUtils {
      * @return an array of parsed Strings, <code>null</code> if null String input
      * @since 2.0
      */
-    public static String[] split(String str, char separatorChar) {
-        return splitWorker(str, separatorChar, false);
+    public static String[] split(String str,
+                                 char separatorChar) {
+        return splitWorker( str,
+                            separatorChar,
+                            false );
     }
 
     /**
@@ -346,8 +354,12 @@ public class StringUtils {
      *  <code>null</code> splits on whitespace
      * @return an array of parsed Strings, <code>null</code> if null String input
      */
-    public static String[] split(String str, String separatorChars) {
-        return splitWorker(str, separatorChars, -1, false);
+    public static String[] split(String str,
+                                 String separatorChars) {
+        return splitWorker( str,
+                            separatorChars,
+                            -1,
+                            false );
     }
 
     /**
@@ -380,10 +392,15 @@ public class StringUtils {
      *  array. A zero or negative value implies no limit
      * @return an array of parsed Strings, <code>null</code> if null String input
      */
-    public static String[] split(String str, String separatorChars, int max) {
-        return splitWorker(str, separatorChars, max, false);
-    }    
-    
+    public static String[] split(String str,
+                                 String separatorChars,
+                                 int max) {
+        return splitWorker( str,
+                            separatorChars,
+                            max,
+                            false );
+    }
+
     //-----------------------------------------------------------------------
     /**
      * <p>Splits the provided text into an array, using whitespace as the
@@ -724,8 +741,8 @@ public class StringUtils {
      * @throws IndexOutOfBoundsException if <code>repeat &lt; 0</code>
      * @see #repeat(String, int)
      */
-    private static String padding(final int repeat,
-                                  final char padChar) throws IndexOutOfBoundsException {
+    public static String padding(final int repeat,
+                                 final char padChar) throws IndexOutOfBoundsException {
         if ( repeat < 0 ) {
             throw new IndexOutOfBoundsException( "Cannot pad a negative amount: " + repeat );
         }
@@ -734,5 +751,26 @@ public class StringUtils {
             buf[i] = padChar;
         }
         return new String( buf );
+    }
+
+    /** @param filePath the name of the file to open. Not sure if it can accept URLs or just filenames. Path handling could be better, and buffer sizes are hardcoded
+     */
+    public static String readFileAsString(Reader reader) {
+        try {
+            StringBuffer fileData = new StringBuffer( 1000 );
+            char[] buf = new char[1024];
+            int numRead = 0;
+            while ( (numRead = reader.read( buf )) != -1 ) {
+                String readData = String.valueOf( buf,
+                                                  0,
+                                                  numRead );
+                fileData.append( readData );
+                buf = new char[1024];
+            }
+            reader.close();
+            return fileData.toString();
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
     }
 }

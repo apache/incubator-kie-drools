@@ -1,6 +1,7 @@
 package org.drools.decisiontable.parser;
 
-import org.antlr.stringtemplate.StringTemplate;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -40,18 +41,18 @@ public class ArrayColumnTest extends TestCase {
 	public void testAddValueSingle() {
 		ArrayColumn ac = new ArrayColumn("array");
 		String[] value = new String[] { "value" };
-		StringTemplate t = new StringTemplate();
-		ac.addValue(t, value);
-		assertEquals("value", t.getAttribute("array0"));
+        Map vars = new HashMap();
+		ac.addValue(vars, value);
+		assertEquals("value", vars.get("array0"));
 	}
 
 	public void testAddValueMultiple() {
 		ArrayColumn ac = new ArrayColumn("array");
 		String[] value = new String[] { "value1", "value2" };
-		StringTemplate t = new StringTemplate();
-		ac.addValue(t, value);
-		assertEquals("value1", t.getAttribute("array0"));
-		assertEquals("value2", t.getAttribute("array1"));
+        Map vars = new HashMap();
+		ac.addValue(vars, value);
+		assertEquals("value1", vars.get("array0"));
+		assertEquals("value2", vars.get("array1"));
 	}
 	
 }

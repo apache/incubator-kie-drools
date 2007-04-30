@@ -26,11 +26,13 @@ public class PackageStore
     ResourceStore {
     private PackageCompilationData packageCompilationData;
 
-    private List errors;
+    private List                   errors;
+
     public PackageStore() {
     }
 
-    public PackageStore(final PackageCompilationData packageCompiationData, List errors) {
+    public PackageStore(final PackageCompilationData packageCompiationData,
+                        final List errors) {
         this.packageCompilationData = packageCompiationData;
         this.errors = errors;
     }
@@ -67,5 +69,5 @@ public class PackageStore
             this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName + "'" ) );
         }
     }
-        
+
 }

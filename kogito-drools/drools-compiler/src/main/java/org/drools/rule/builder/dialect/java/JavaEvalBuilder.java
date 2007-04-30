@@ -17,23 +17,21 @@
 package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
+import java.util.Map;
 
-import org.antlr.stringtemplate.StringTemplate;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
-import org.drools.util.StringUtils;
+import org.drools.rule.builder.RuleBuildContext;
 
 /**
  * @author etirelli
  *
  */
-public class JavaEvalBuilder
+public class JavaEvalBuilder extends AbstractJavaBuilder
     implements
     ConditionalElementBuilder {
 
@@ -67,51 +65,21 @@ public class JavaEvalBuilder
 
         final EvalCondition eval = new EvalCondition( declarations );
 
-        JavaDialect dialect = (JavaDialect) context.getDialect();
+        final Map map = createVariableContext( className,
+                                         (String) evalDescr.getContent(),
+                                         context,
+                                         declarations,
+                                         null,
+                                         (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
 
-        StringTemplate st = dialect.getRuleGroup().getInstanceOf( "evalMethod" );
+        generatTemplates( "evalMethod",
+                          "evalInvoker",
+                          context,
+                          className,
+                          map,
+                          eval,
+                          descr );
 
-        dialect.setStringTemplateAttributes( context,
-                                             st,
-                                             declarations,
-                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-
-        st.setAttribute( "methodName",
-                         className );
-
-        final String evalText = (String) evalDescr.getContent();
-        st.setAttribute( "text",
-                         evalText );
-
-        context.getMethods().add( st.toString() );
-
-        st = dialect.getInvokerGroup().getInstanceOf( "evalInvoker" );
-
-        st.setAttribute( "package",
-                         context.getPkg().getName() );
-        st.setAttribute( "ruleClassName",
-                         StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
-        st.setAttribute( "invokerClassName",
-                         context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
-        st.setAttribute( "methodName",
-                         className );
-
-        dialect.setStringTemplateAttributes( context,
-                                             st,
-                                             declarations,
-                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-
-        st.setAttribute( "hashCode",
-                         evalText.hashCode() );
-
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
-        context.getInvokers().put( invokerClassName,
-                                   st.toString() );
-        context.getInvokerLookups().put( invokerClassName,
-                                         eval );
-        context.getDescrLookups().put( invokerClassName,
-                                       evalDescr );
         return eval;
     }
-
 }

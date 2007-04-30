@@ -1,5 +1,7 @@
 package org.drools.decisiontable.parser;
 
+import java.util.Map;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +17,6 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.antlr.stringtemplate.StringTemplate;
 
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
@@ -54,7 +55,7 @@ public class Cell {
 		return value;
 	}
 
-	public void addValue(StringTemplate t) {
-		column.addValue(t, value);
+	public void addValue(Map vars) {
+		column.addValue(vars, value);
 	}
 }

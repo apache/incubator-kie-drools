@@ -15,7 +15,9 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.antlr.stringtemplate.StringTemplate;
+
+import java.util.Map;
+
 import org.drools.util.StringUtils;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
@@ -25,11 +27,11 @@ import org.drools.util.StringUtils;
  */
 public class ArrayColumn extends Column {
 
-	public void addValue(StringTemplate t, Object value) {
+	public void addValue(Map vars, Object value) {
 
 		String[] values = ((String[]) value);
 		for (int i = 0; i < values.length; i++) {
-			t.setAttribute(getName() + i, values[i]);
+			vars.put(getName() + i, values[i]);
 		}
 	}
 

@@ -36,8 +36,8 @@ public class JavaRuleClassBuilder
      */
     public void buildRule(final RuleBuildContext context,
                           final RuleDescr ruleDescr) {
-        JavaDialect dialect = (JavaDialect) context.getDialect();
-        
+        final JavaDialect dialect = (JavaDialect) context.getDialect();
+
         // If there is no compiled code, return
         if ( context.getMethods().isEmpty() ) {
             dialect.setRuleClass( null );
