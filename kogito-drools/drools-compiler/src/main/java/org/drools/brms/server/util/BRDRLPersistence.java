@@ -1,5 +1,6 @@
 package org.drools.brms.server.util;
 
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
@@ -348,10 +349,12 @@ public class BRDRLPersistence
                 buf.append( "( " );
                 if ( fieldValues[i].isFormula() ) {
                     buf.append( fieldValues[i].value.substring( 1 ) );
-                } else {
+                } else if( SuggestionCompletionEngine.TYPE_STRING.equals( fieldValues[i].type ) ) {
                     buf.append( "\"" );
                     buf.append( fieldValues[i].value );
                     buf.append( "\"" );
+                } else {
+                    buf.append( fieldValues[i].value );
                 }
                 buf.append( " );\n" );
             }
