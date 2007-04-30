@@ -18,6 +18,8 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.IntegerFactory.IntegerMemberOfEvaluator;
+import org.drools.base.evaluators.IntegerFactory.IntegerNotMemberOfEvaluator;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
@@ -55,6 +57,10 @@ public class CharacterFactory
             return CharacterGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return CharacterGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return CharacterMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return CharacterNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for CharacterEvaluator" );
         }
@@ -348,4 +354,34 @@ public class CharacterFactory
         }
     }
 
+    static class CharacterMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new CharacterMemberOfEvaluator();
+
+        private CharacterMemberOfEvaluator() {
+            super( ValueType.PCHAR_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Character memberOf";
+        }
+    }
+
+    static class CharacterNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new CharacterNotMemberOfEvaluator();
+
+        private CharacterNotMemberOfEvaluator() {
+            super( ValueType.PCHAR_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Character not memberOf";
+        }
+    }
+    
 }

@@ -57,6 +57,10 @@ public class BigDecimalFactory
             return BigDecimalGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return BigDecimalGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return BigDecimalMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return BigDecimalNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for BigDecimalEvaluator" );
         }
@@ -352,6 +356,38 @@ public class BigDecimalFactory
 
         public String toString() {
             return "BigDecimal >=";
+        }
+    }
+
+    static class BigDecimalMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new BigDecimalMemberOfEvaluator();
+
+        private BigDecimalMemberOfEvaluator() {
+            super( ValueType.BIG_DECIMAL_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "BigDecimal memberOf";
+        }
+    }
+
+    static class BigDecimalNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new BigDecimalNotMemberOfEvaluator();
+
+        private BigDecimalNotMemberOfEvaluator() {
+            super( ValueType.BIG_DECIMAL_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "BigDecimal not memberOf";
         }
     }
 }

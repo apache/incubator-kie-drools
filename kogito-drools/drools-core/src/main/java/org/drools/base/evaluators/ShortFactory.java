@@ -55,6 +55,10 @@ public class ShortFactory
             return ShortGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return ShortGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return ShortMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return ShortNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
         }
@@ -348,4 +352,34 @@ public class ShortFactory
         }
     }
 
+    static class ShortMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ShortMemberOfEvaluator();
+
+        private ShortMemberOfEvaluator() {
+            super( ValueType.PSHORT_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Short memberOf";
+        }
+    }
+
+    static class ShortNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ShortNotMemberOfEvaluator();
+
+        private ShortNotMemberOfEvaluator() {
+            super( ValueType.PSHORT_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Short not memberOf";
+        }
+    }
+    
 }

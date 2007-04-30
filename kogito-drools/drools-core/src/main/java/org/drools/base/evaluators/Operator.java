@@ -19,6 +19,8 @@ public class Operator
     public static final Operator CONTAINS         = new Operator( "contains" );
     public static final Operator MATCHES          = new Operator( "matches" );
     public static final Operator EXCLUDES         = new Operator( "excludes" );
+    public static final Operator MEMBEROF         = new Operator( "memberOf" );
+    public static final Operator NOTMEMBEROF      = new Operator( "not memberOf" );
 
     private String               operator;
 
@@ -49,6 +51,10 @@ public class Operator
             return Operator.MATCHES;
         } else if ( string.equals( "excludes" ) ) {
             return Operator.EXCLUDES;
+        } else if ( string.equals( "memberOf" ) ) {
+            return Operator.MEMBEROF;
+        } else if ( string.equals( "not memberOf" ) ) {
+            return Operator.NOTMEMBEROF;
         }
         throw new RuntimeDroolsException( "unable to determine operator for String [" + string + "]" );
     }

@@ -89,5 +89,9 @@ public class DoubleFieldImpl
     public boolean isObjectField() {
         return false;
     }
+    
+    public boolean isCollectionField() {
+        return false;
+    }
 
 }

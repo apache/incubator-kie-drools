@@ -55,6 +55,10 @@ public class ByteFactory
             return ByteGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return ByteGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return ByteMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return ByteNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for ByteEvaluator" );
         }
@@ -349,4 +353,34 @@ public class ByteFactory
         }
     }
 
+    static class ByteMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ByteMemberOfEvaluator();
+
+        private ByteMemberOfEvaluator() {
+            super( ValueType.PBYTE_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Byte memberOf";
+        }
+    }
+
+    static class ByteNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ByteNotMemberOfEvaluator();
+
+        private ByteNotMemberOfEvaluator() {
+            super( ValueType.PBYTE_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Byte not memberOf";
+        }
+    }
+    
 }

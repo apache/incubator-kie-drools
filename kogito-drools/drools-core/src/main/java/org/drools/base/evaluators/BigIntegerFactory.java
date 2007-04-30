@@ -57,6 +57,10 @@ public class BigIntegerFactory
             return BigIntegerGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return BigIntegerGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return BigIntegerMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return BigIntegerNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for BigIntegerEvaluator" );
         }
@@ -353,4 +357,37 @@ public class BigIntegerFactory
             return "BigInteger >=";
         }
     }
+    
+    static class BigIntegerMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new BigIntegerMemberOfEvaluator();
+
+        private BigIntegerMemberOfEvaluator() {
+            super( ValueType.BIG_INTEGER_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "BigInteger memberOf";
+        }
+    }
+
+    static class BigIntegerNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new BigIntegerNotMemberOfEvaluator();
+
+        private BigIntegerNotMemberOfEvaluator() {
+            super( ValueType.BIG_INTEGER_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "BigInteger not memberOf";
+        }
+    }
+    
 }

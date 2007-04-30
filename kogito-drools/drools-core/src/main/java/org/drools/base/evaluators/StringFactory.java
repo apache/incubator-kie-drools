@@ -56,6 +56,10 @@ public class StringFactory
             return StringNotEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.MATCHES ) {
             return StringMatchesEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return StringMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return StringNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for StringEvaluator" );
         }
@@ -235,5 +239,36 @@ public class StringFactory
             return "String matches";
         }
     }
+    
+    static class StringMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new StringMemberOfEvaluator();
+
+        private StringMemberOfEvaluator() {
+            super( ValueType.STRING_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "String memberOf";
+        }
+    }
+
+    static class StringNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new StringNotMemberOfEvaluator();
+
+        private StringNotMemberOfEvaluator() {
+            super( ValueType.STRING_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "String not memberOf";
+        }
+    }
+    
 
 }

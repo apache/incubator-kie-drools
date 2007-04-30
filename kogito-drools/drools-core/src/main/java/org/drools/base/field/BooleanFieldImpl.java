@@ -110,4 +110,8 @@ public class BooleanFieldImpl
         return false;
     }
 
+    public boolean isCollectionField() {
+        return false;
+    }
+
 }

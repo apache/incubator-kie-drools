@@ -55,6 +55,10 @@ public class FloatFactory
             return FloatGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return FloatGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return FloatMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return FloatNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for FloatEvaluator" );
         }
@@ -369,4 +373,35 @@ public class FloatFactory
             return "Float >=";
         }
     }
+    
+    static class FloatMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new FloatMemberOfEvaluator();
+
+        private FloatMemberOfEvaluator() {
+            super( ValueType.PFLOAT_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Float memberOf";
+        }
+    }
+
+    static class FloatNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new FloatNotMemberOfEvaluator();
+
+        private FloatNotMemberOfEvaluator() {
+            super( ValueType.PFLOAT_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Float not memberOf";
+        }
+    }
+    
 }

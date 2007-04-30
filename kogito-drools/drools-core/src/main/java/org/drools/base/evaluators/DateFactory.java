@@ -74,6 +74,10 @@ public class DateFactory
             return DateGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return DateGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return DateMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return DateNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for DateEvaluator" );
         }
@@ -428,6 +432,36 @@ public class DateFactory
         }
     }
 
+    static class DateMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new DateMemberOfEvaluator();
+
+        private DateMemberOfEvaluator() {
+            super( ValueType.DATE_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Date memberOf";
+        }
+    }
+
+    static class DateNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new DateNotMemberOfEvaluator();
+
+        private DateNotMemberOfEvaluator() {
+            super( ValueType.DATE_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Date not memberOf";
+        }
+    }
+    
     /** Use the simple date formatter to read the date from a string */
     public static Date parseDate(final String input) {
 

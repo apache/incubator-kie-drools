@@ -89,4 +89,9 @@ public class LongFieldImpl
     public boolean isObjectField() {
         return false;
     }
+
+    public boolean isCollectionField() {
+        return false;
+    }
+
 }
