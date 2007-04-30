@@ -9,17 +9,20 @@ public class ActionFieldValue
     implements
     PortableObject {
 
+    public String field;
+    public String value;
+    public String type;
+
     public ActionFieldValue(final String field,
-                            final String value) {
+                            final String value,
+                            final String type) {
         this.field = field;
         this.value = value;
+        this.type = type;
     }
 
     public ActionFieldValue() {
     }
-
-    public String field;
-    public String value;
 
     /**
      * This will return true if the value is really a "formula" - in 

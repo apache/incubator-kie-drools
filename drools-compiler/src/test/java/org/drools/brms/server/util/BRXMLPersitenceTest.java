@@ -2,6 +2,7 @@ package org.drools.brms.server.util;
 
 import junit.framework.TestCase;
 
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
@@ -108,7 +109,8 @@ public class BRXMLPersitenceTest extends TestCase {
         final ActionModifyField set = new ActionModifyField();
         set.variable = "p1";
         set.addFieldValue( new ActionFieldValue( "status",
-                                                 "rejected" ) );
+                                                 "rejected",
+                                                 SuggestionCompletionEngine.TYPE_STRING ) );
         m.addRhsItem( set );
 
         final ActionRetractFact ret = new ActionRetractFact( "p1" );
