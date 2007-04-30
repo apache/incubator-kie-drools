@@ -47,16 +47,35 @@ public class SuggestionCompletionLoader {
     private final DrlParser                         parser  = new DrlParser();
     private final ByteArrayClassLoader        loader;
     protected List                            errors = new ArrayList();
+    private ClassLoader existingLoader;
 
+    /**
+     * This uses the current classes classloader as a base,
+     * and jars can be added.
+     */
     public SuggestionCompletionLoader() {
         this.loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
+
+    }
+
+    /**
+     * This allows a pre existing classloader to be used (and preferred)
+     * for resolving types.
+     */
+    public SuggestionCompletionLoader(
+                                      ClassLoader classLoader) {
+        this();
+        this.existingLoader = classLoader;
     }
 
     /**
      * This will validate, and generate a new engine, ready to go.
      * If there are errors, you can get them by doing getErrors();
-     * @param pkg
-     * @return
+     * @param header The package configuration file content.
+     * @param jars a list of jars to look inside (pass in empty array if not needed)
+     * this is a list of {@link JarInputStream}
+     * @param dsls any dsl files. This is a list of {@link DSLMappingFile}.
+     * @return A SuggestionCompletionEngine ready to be used in anger.
      */
     public SuggestionCompletionEngine getSuggestionEngine(final String header,
                                                           final List jars,
@@ -293,7 +312,11 @@ public class SuggestionCompletionLoader {
         Class clazz = null;
         try {
             // check if it is already in the classpath
-            clazz = this.loader.loadClass( classname );
+            if (this.existingLoader != null) {
+                clazz = this.existingLoader.loadClass( classname );
+            } else {
+                clazz = this.loader.loadClass( classname );
+            }
 
         } catch ( final ClassNotFoundException e1 ) {
 
