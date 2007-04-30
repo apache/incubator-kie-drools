@@ -50,4 +50,10 @@ public interface FieldValue
 
     public boolean isObjectField();
 
+    /**
+     * Returns true if the given field value implements the Collection interface
+     * @return
+     */
+    public boolean isCollectionField();
+
 }

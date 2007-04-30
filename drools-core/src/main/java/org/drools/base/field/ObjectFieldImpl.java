@@ -16,6 +16,8 @@ package org.drools.base.field;
  * limitations under the License.
  */
 
+import java.util.Collection;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
 
@@ -25,9 +27,18 @@ public class ObjectFieldImpl
 
     private static final long serialVersionUID = 320;
     private final Object      value;
+    
+    private final boolean     isCollection;
+    private final boolean     isNumber;
+    private final boolean     isBoolean;
+    private final boolean     isCharacter;
 
     public ObjectFieldImpl(final Object value) {
         this.value = value;
+        this.isCollection = value instanceof Collection;
+        this.isNumber = value instanceof Number;
+        this.isBoolean = value instanceof Boolean;
+        this.isCharacter = value instanceof Character;
     }
 
     public Object getValue() {
@@ -39,56 +50,56 @@ public class ObjectFieldImpl
     }
 
     public boolean getBooleanValue() {
-        if ( this.value instanceof Boolean ) {
+        if ( isBoolean ) {
             return ((Boolean) this.value).booleanValue();
         }
         throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + this.value.getClass() );
     }
 
     public byte getByteValue() {
-        if ( this.value instanceof Number ) {
+        if ( isNumber ) {
             return ((Number) this.value).byteValue();
         }
         throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + this.value.getClass() );
     }
 
     public char getCharValue() {
-        if ( this.value instanceof Character ) {
+        if ( isCharacter ) {
             return ((Character) this.value).charValue();
         }
         throw new RuntimeDroolsException( "Conversion to char not supported for type: " + this.value.getClass() );
     }
 
     public double getDoubleValue() {
-        if ( this.value instanceof Number ) {
+        if ( isNumber ) {
             return ((Number) this.value).doubleValue();
         }
         throw new RuntimeDroolsException( "Conversion to double not supported for type: " + this.value.getClass() );
     }
 
     public float getFloatValue() {
-        if ( this.value instanceof Number ) {
+        if ( isNumber ) {
             return ((Number) this.value).floatValue();
         }
         throw new RuntimeDroolsException( "Conversion to float not supported for type: " + this.value.getClass() );
     }
 
     public int getIntValue() {
-        if ( this.value instanceof Number ) {
+        if ( isNumber ) {
             return ((Number) this.value).intValue();
         }
         throw new RuntimeDroolsException( "Conversion to int not supported for type: " + this.value.getClass() );
     }
 
     public long getLongValue() {
-        if ( this.value instanceof Number ) {
+        if ( isNumber ) {
             return ((Number) this.value).longValue();
         }
         throw new RuntimeDroolsException( "Conversion to long not supported for type: " + this.value.getClass() );
     }
 
     public short getShortValue() {
-        if ( this.value instanceof Number ) {
+        if ( isNumber ) {
             return ((Number) this.value).shortValue();
         }
         throw new RuntimeDroolsException( "Conversion to short not supported for type: " + this.value.getClass() );
@@ -132,5 +143,9 @@ public class ObjectFieldImpl
 
     public boolean isObjectField() {
         return true;
+    }
+    
+    public boolean isCollectionField() {
+        return this.isCollection;
     }
 }

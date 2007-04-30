@@ -55,6 +55,10 @@ public class IntegerFactory
             return IntegerGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return IntegerGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return IntegerMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return IntegerNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for IntegerEvaluator" );
         }
@@ -348,5 +352,36 @@ public class IntegerFactory
             return "Integer >=";
         }
     }
+    
+    static class IntegerMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new IntegerMemberOfEvaluator();
+
+        private IntegerMemberOfEvaluator() {
+            super( ValueType.PINTEGER_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Integer memberOf";
+        }
+    }
+
+    static class IntegerNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new IntegerNotMemberOfEvaluator();
+
+        private IntegerNotMemberOfEvaluator() {
+            super( ValueType.PINTEGER_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Integer not memberOf";
+        }
+    }
+    
 
 }

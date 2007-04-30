@@ -55,6 +55,10 @@ public class LongFactory
             return LongGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return LongGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return LongMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return LongNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for LongEvaluator" );
         }
@@ -348,4 +352,34 @@ public class LongFactory
         }
     }
 
+    static class LongMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new LongMemberOfEvaluator();
+
+        private LongMemberOfEvaluator() {
+            super( ValueType.PLONG_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Long memberOf";
+        }
+    }
+
+    static class LongNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new LongNotMemberOfEvaluator();
+
+        private LongNotMemberOfEvaluator() {
+            super( ValueType.PLONG_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Long not memberOf";
+        }
+    }
+    
 }

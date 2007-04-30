@@ -16,8 +16,6 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
@@ -55,11 +53,17 @@ public class ArrayFactory
             return ArrayNotEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.CONTAINS ) {
             return ArrayContainsEvaluator.INSTANCE;
+        } else if ( operator == Operator.EXCLUDES ) {
+            return ArrayExcludesEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return ArrayMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return ArrayNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for ArrayEvaluator" );
         }
     }
-
+    
     static class ArrayEqualEvaluator extends BaseEvaluator {
         /**
          * 
@@ -194,24 +198,30 @@ public class ArrayFactory
                                 final FieldValue object2) {
             final Object value = object2.getValue();
             final Object[] array = (Object[]) extractor.getValue( object1 );
-            return Arrays.binarySearch( array,
-                                        value ) != -1;
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
             final Object value = context.declaration.getExtractor().getValue( left );
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
-            return Arrays.binarySearch( array,
-                                        value ) != -1;
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
             final Object[] array = (Object[]) context.extractor.getValue( right );
-            return Arrays.binarySearch( array,
-                                        value ) != -1;
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
         }
 
         public boolean evaluate(final Extractor extractor1,
@@ -221,8 +231,10 @@ public class ArrayFactory
             final Object value = extractor2.getValue( object2 );
             final Object[] array = (Object[]) extractor1.getValue( object1 );
 
-            return Arrays.binarySearch( array,
-                                        value ) != -1;
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
         }
 
         public String toString() {
@@ -230,4 +242,296 @@ public class ArrayFactory
         }
     }
 
+    static class ArrayExcludesEvaluator extends BaseEvaluator {
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ArrayExcludesEvaluator();
+
+        private ArrayExcludesEvaluator() {
+            super( ValueType.ARRAY_TYPE,
+                   Operator.EXCLUDES );
+        }
+
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            final Object value = object2.getValue();
+            final Object[] array = (Object[]) extractor.getValue( object1 );
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( left );
+            final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
+            final Object value = ((ObjectVariableContextEntry) context).left;
+            final Object[] array = (Object[]) context.extractor.getValue( right );
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object value = extractor2.getValue( object2 );
+            final Object[] array = (Object[]) extractor1.getValue( object1 );
+
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public String toString() {
+            return "Array excludes";
+        }
+    }
+
+    static class ArrayMemberOfEvaluator extends BaseEvaluator {
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ArrayMemberOfEvaluator();
+
+        private ArrayMemberOfEvaluator() {
+            super( ValueType.ARRAY_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            final Object[] array = (Object[]) object2.getValue();
+            final Object value = extractor.getValue( object1 );
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
+        }
+
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
+            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( left );
+            final Object value = ((ObjectVariableContextEntry) context).right;
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
+        }
+
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
+            final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).left;
+            final Object value = context.extractor.getValue( right );
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
+        }
+
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object[] array = (Object[]) extractor2.getValue( object2 );
+            final Object value = extractor1.getValue( object1 );
+
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) >= 0;
+        }
+
+        public String toString() {
+            return "Array memberOf";
+        }
+    }
+
+    static class ArrayNotMemberOfEvaluator extends BaseEvaluator {
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ArrayNotMemberOfEvaluator();
+
+        private ArrayNotMemberOfEvaluator() {
+            super( ValueType.ARRAY_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            final Object[] array = (Object[]) object2.getValue();
+            final Object value = extractor.getValue( object1 );
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
+            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( left );
+            final Object value = ((ObjectVariableContextEntry) context).right;
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
+            final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).left;
+            final Object value = context.extractor.getValue( right );
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object[] array = (Object[]) extractor2.getValue( object2 );
+            final Object value = extractor1.getValue( object1 );
+
+            if( array == null )
+                return false;
+            return ArrayUtils.search( array,
+                                        value ) < 0;
+        }
+
+        public String toString() {
+            return "Array not memberOf";
+        }
+    }
+    
+    /**
+     * Utility functions for arrays
+     * 
+     * @author etirelli
+     */
+    static final class ArrayUtils {
+        
+        public static final int search( Object[] array, Object value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if(( array[i] == null && value == null ) ||
+                   ( array[i] != null && array[i].equals( value ) ) ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( boolean[] array, boolean value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( byte[] array, byte value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( short[] array, short value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( int[] array, int value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( long[] array, long value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( float[] array, float value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( double[] array, double value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+        public static final int search( char[] array, char value ) {
+            int index = -1;
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == value ) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
+    }
+    
 }

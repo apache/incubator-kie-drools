@@ -47,6 +47,10 @@ public class BooleanFactory
             return BooleanEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.NOT_EQUAL ) {
             return BooleanNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return BooleanMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return BooleanNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
         }
@@ -180,4 +184,34 @@ public class BooleanFactory
         }
     }
 
+    static class BooleanMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new BooleanMemberOfEvaluator();
+
+        private BooleanMemberOfEvaluator() {
+            super( ValueType.PBOOLEAN_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Boolean memberOf";
+        }
+    }
+
+    static class BooleanNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new BooleanNotMemberOfEvaluator();
+
+        private BooleanNotMemberOfEvaluator() {
+            super( ValueType.PBOOLEAN_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Boolean not memberOf";
+        }
+    }
+    
 }

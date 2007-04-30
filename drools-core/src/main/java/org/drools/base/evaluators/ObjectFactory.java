@@ -72,6 +72,10 @@ public class ObjectFactory
             return ObjectContainsEvaluator.INSTANCE;
         } else if ( operator == Operator.EXCLUDES ) {
             return ObjectExcludesEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return ObjectMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return ObjectNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
         }
@@ -463,4 +467,35 @@ public class ObjectFactory
         }
     }
 
+    static class ObjectMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ObjectMemberOfEvaluator();
+
+        private ObjectMemberOfEvaluator() {
+            super( ValueType.OBJECT_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Object memberOf";
+        }
+    }
+
+    static class ObjectNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new ObjectNotMemberOfEvaluator();
+
+        private ObjectNotMemberOfEvaluator() {
+            super( ValueType.OBJECT_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Object not memberOf";
+        }
+    }
+    
+    
 }

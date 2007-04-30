@@ -998,7 +998,9 @@ constraint_expression returns [RestrictionDescr rd]
 		|	'!='
 		|	CONTAINS
 		|	MATCHES
-		|       EXCLUDES
+		|	EXCLUDES
+		|	MEMBEROF
+		|	NOT_MEMBEROF
 		)	
 		(	bvc=ID
 			{
@@ -1471,6 +1473,7 @@ identifier returns [Token tok]
         |       t=AND	        
         |       t=CONTAINS 	
         |       t=EXCLUDES 	
+        |       t=MEMBEROF
         |       t=MATCHES         
         |       t=NULL	        
         |       t=EXISTS	        
@@ -1613,6 +1616,12 @@ CONTAINS
 	
 EXCLUDES 
 	:	'excludes';
+	
+MEMBEROF
+	:	'memberof';
+
+NOT_MEMBEROF
+	:	'nonmemberof';
 	
 MATCHES :	'matches';
 

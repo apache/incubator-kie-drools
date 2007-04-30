@@ -18,6 +18,7 @@ package org.drools.rule;
 
 import java.util.Arrays;
 
+import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
@@ -46,7 +47,7 @@ public class VariableRestriction
         this.declaration = declaration;
         this.requiredDeclarations = new Declaration[]{declaration};
         this.evaluator = evaluator;
-        this.contextEntry = this.createContextEntry( fieldExtractor );
+        this.contextEntry = this.createContextEntry( this.evaluator, fieldExtractor );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -109,19 +110,25 @@ public class VariableRestriction
                                                                                                                           other.requiredDeclarations );
     }
 
-    private final VariableContextEntry createContextEntry(final FieldExtractor fieldExtractor) {
-        if ( fieldExtractor.getValueType().isBoolean() ) {
-            return new BooleanVariableContextEntry( fieldExtractor,
-                                                    this.declaration );
-        } else if ( fieldExtractor.getValueType().isFloatNumber() ) {
-            return new DoubleVariableContextEntry( fieldExtractor,
-                                                   this.declaration );
-        } else if ( fieldExtractor.getValueType().isIntegerNumber() ) {
-            return new LongVariableContextEntry( fieldExtractor,
-                                                 this.declaration );
-        } else {
+    private final VariableContextEntry createContextEntry(final Evaluator eval, final FieldExtractor fieldExtractor) {
+        if( Operator.MEMBEROF.equals( eval.getOperator() ) ||
+            Operator.NOTMEMBEROF.equals( eval.getOperator() ) ) {
             return new ObjectVariableContextEntry( fieldExtractor,
                                                    this.declaration );
+        } else {
+            if ( fieldExtractor.getValueType().isBoolean() ) {
+                return new BooleanVariableContextEntry( fieldExtractor,
+                                                        this.declaration );
+            } else if ( fieldExtractor.getValueType().isFloatNumber() ) {
+                return new DoubleVariableContextEntry( fieldExtractor,
+                                                       this.declaration );
+            } else if ( fieldExtractor.getValueType().isIntegerNumber() ) {
+                return new LongVariableContextEntry( fieldExtractor,
+                                                     this.declaration );
+            } else {
+                return new ObjectVariableContextEntry( fieldExtractor,
+                                                       this.declaration );
+            }
         }
     }
 

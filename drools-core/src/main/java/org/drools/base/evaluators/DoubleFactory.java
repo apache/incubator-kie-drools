@@ -55,6 +55,10 @@ public class DoubleFactory
             return DoubleGreaterEvaluator.INSTANCE;
         } else if ( operator == Operator.GREATER_OR_EQUAL ) {
             return DoubleGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MEMBEROF ) {
+            return DoubleMemberOfEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOTMEMBEROF ) {
+            return DoubleNotMemberOfEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for DoubleEvaluator" );
         }
@@ -369,4 +373,35 @@ public class DoubleFactory
             return "Double >=";
         }
     }
+    
+    static class DoubleMemberOfEvaluator extends BaseMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new DoubleMemberOfEvaluator();
+
+        private DoubleMemberOfEvaluator() {
+            super( ValueType.PDOUBLE_TYPE,
+                   Operator.MEMBEROF );
+        }
+
+        public String toString() {
+            return "Double memberOf";
+        }
+    }
+
+    static class DoubleNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
+
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new DoubleNotMemberOfEvaluator();
+
+        private DoubleNotMemberOfEvaluator() {
+            super( ValueType.PDOUBLE_TYPE,
+                   Operator.NOTMEMBEROF );
+        }
+
+        public String toString() {
+            return "Double not memberOf";
+        }
+    }
+    
 }

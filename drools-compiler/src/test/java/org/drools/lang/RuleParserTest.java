@@ -2491,6 +2491,29 @@ public class RuleParserTest extends TestCase {
                       cheese.getObjectType() );
     }
 
+    public void testMemberof() throws Exception {
+        final String text = "Country( $cities : city )\nPerson( city memberof $cities )\n";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( descrs.getLine() );
+        parser.normal_lhs_block( descrs );
+        if ( parser.hasErrors() ) {
+            System.err.println( parser.getErrorMessages() );
+        }
+        assertFalse( parser.hasErrors() );
+        
+        assertEquals( 2, descrs.getDescrs().size());
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 1 );
+        FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getDescrs().get( 0 );
+        VariableRestrictionDescr restr = (VariableRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
+        
+        assertEquals( "memberof", restr.getEvaluator() );
+        assertEquals( "$cities", restr.getIdentifier() );
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
