@@ -19,13 +19,13 @@ colour
 minSize
 maxSize
 valid
-rule "This_Is_Rule_Name_Prefix $row.rowNumber$"
+rule "This_Is_Rule_Name_Prefix @{row.rowNumber}"
 	when
-		Foo(myObject.getColour().equals($colour$), myObject.size() > $minSize$)
+		Foo(myObject.getColour().equals(@{colour}), myObject.size() > @{minSize})
 		b: Bar()
-		eval(myObject.size() < $maxSize$)
+		eval(myObject.size() < @{maxSize})
 	then
-		myObject.setIsValid($valid$);
+		myObject.setIsValid(@{valid});
 end
 end template
 

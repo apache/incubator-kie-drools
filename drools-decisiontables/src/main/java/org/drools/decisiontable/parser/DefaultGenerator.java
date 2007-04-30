@@ -22,7 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.antlr.stringtemplate.StringTemplate;
+import org.mvel.MVELTemplateRegistry;
+import org.mvel.TemplateInterpreter;
+import org.mvel.TemplateRegistry;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 
@@ -30,11 +32,11 @@ import org.antlr.stringtemplate.StringTemplate;
  */
 public class DefaultGenerator implements Generator {
 
-	Map ruleTemplates;
+	private Map ruleTemplates;
 
-	Map templates = new HashMap();
+	private TemplateRegistry registry = new MVELTemplateRegistry();
 
-	List rules = new ArrayList();
+	private List rules = new ArrayList();
 
 	public DefaultGenerator(final Map t) {
 		ruleTemplates = t;
@@ -48,30 +50,30 @@ public class DefaultGenerator implements Generator {
 	 */
 	public void generate(String templateName, Row row) {
 		try {
-			StringTemplate t = getTemplate(templateName);
-			t.setAttribute("row", row);
+			String content = getTemplate(templateName);
+            Map vars = new HashMap();
+			vars.put("row", row);
 
 			for (Iterator it = row.getCells().iterator(); it.hasNext();) {
 				Cell cell = (Cell) it.next();
-				cell.addValue(t);
+				cell.addValue(vars);
 			}
-			String drl = t.toString();
+			String drl = (String) TemplateInterpreter.parse( content, null, vars, this.registry ); 
 			rules.add(drl);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private StringTemplate getTemplate(String templateName) throws IOException {
-		String contents = (String) templates.get(templateName);
+	private String getTemplate(String templateName) throws IOException {
+		String contents = (String) registry.getTemplate( templateName );
 		if (contents == null) {
 			RuleTemplate template = (RuleTemplate) ruleTemplates
 					.get(templateName);
 			contents = template.getContents();
-			templates.put(templateName, contents);
+            registry.registerTemplate( templateName, contents);
 		}
-		StringTemplate t = new StringTemplate(contents);
-		return t;
+		return contents;
 	}
 
 	/*

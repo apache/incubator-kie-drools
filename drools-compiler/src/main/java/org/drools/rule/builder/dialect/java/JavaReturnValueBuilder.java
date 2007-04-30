@@ -1,16 +1,15 @@
 package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
+import java.util.Map;
 
-import org.antlr.stringtemplate.StringTemplate;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.ReturnValueBuilder;
-import org.drools.util.StringUtils;
+import org.drools.rule.builder.RuleBuildContext;
 
-public class JavaReturnValueBuilder
+public class JavaReturnValueBuilder extends AbstractJavaBuilder
     implements
     ReturnValueBuilder {
     public void build(final RuleBuildContext context,
@@ -22,64 +21,19 @@ public class JavaReturnValueBuilder
         final String className = "returnValue" + context.getNextId();
         returnValueRestrictionDescr.setClassMethodName( className );
 
-        JavaDialect dialect = (JavaDialect) context.getDialect();
+        final Map map = createVariableContext( className,
+                                         (String) returnValueRestrictionDescr.getContent(),
+                                         context,
+                                         previousDeclarations,
+                                         localDeclarations,
+                                         (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
 
-        StringTemplate st = dialect.getRuleGroup().getInstanceOf( "returnValueMethod" );
-
-        dialect.setStringTemplateAttributes( context,
-                                             st,
-                                             previousDeclarations,
-                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-
-        final String[] localDeclarationTypes = new String[localDeclarations.length];
-        for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-            localDeclarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( localDeclarations[i] );
-        }
-
-        st.setAttribute( "localDeclarations",
-                         localDeclarations );
-        st.setAttribute( "localDeclarationTypes",
-                         localDeclarationTypes );
-
-        st.setAttribute( "methodName",
-                         className );
-
-        final String returnValueText = (String) returnValueRestrictionDescr.getContent();
-        st.setAttribute( "text",
-                         returnValueText );
-
-        context.getMethods().add( st.toString() );
-
-        st = dialect.getInvokerGroup().getInstanceOf( "returnValueInvoker" );
-
-        st.setAttribute( "package",
-                         context.getPkg().getName() );
-        st.setAttribute( "ruleClassName",
-                         StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
-        st.setAttribute( "invokerClassName",
-                         context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
-        st.setAttribute( "methodName",
-                         className );
-
-        dialect.setStringTemplateAttributes( context,
-                                             st,
-                                             previousDeclarations,
-                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-
-        st.setAttribute( "localDeclarations",
-                         localDeclarations );
-        st.setAttribute( "localDeclarationTypes",
-                         localDeclarationTypes );
-
-        st.setAttribute( "hashCode",
-                         returnValueText.hashCode() );
-
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
-        context.getInvokers().put( invokerClassName,
-                                   st.toString() );
-        context.getInvokerLookups().put( invokerClassName,
-                                         returnValueRestriction );
-        context.getDescrLookups().put( invokerClassName,
-                                       returnValueRestrictionDescr );
+        generatTemplates( "returnValueMethod",
+                          "returnValueInvoker",
+                          context,
+                          className,
+                          map,
+                          returnValueRestriction,
+                          returnValueRestrictionDescr );
     }
 }

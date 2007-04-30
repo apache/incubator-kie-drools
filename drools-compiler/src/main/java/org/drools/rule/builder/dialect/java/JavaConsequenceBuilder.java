@@ -16,25 +16,22 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-import org.antlr.stringtemplate.StringTemplate;
-import org.drools.RuntimeDroolsException;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.PatternExtractor;
-import org.drools.util.StringUtils;
 
 /**
  * @author etirelli
  *
  */
-public class JavaConsequenceBuilder
+public class JavaConsequenceBuilder extends AbstractJavaBuilder
     implements
     ConsequenceBuilder {
 
@@ -47,16 +44,7 @@ public class JavaConsequenceBuilder
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
-        // generate 
-        // generate Invoker
         final String className = "consequence";
-
-        JavaDialect dialect = (JavaDialect) context.getDialect();
-
-        StringTemplate st = dialect.getRuleGroup().getInstanceOf( "consequenceMethod" );
-
-        st.setAttribute( "methodName",
-                         className );
 
         final List[] usedIdentifiers = context.getDialect().getBlockIdentifiers( context,
                                                                                  ruleDescr,
@@ -68,65 +56,47 @@ public class JavaConsequenceBuilder
             declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         }
 
-        dialect.setStringTemplateAttributes( context,
-                                             st,
-                                             declarations,
-                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
-        st.setAttribute( "text",
-                         ((JavaDialect) context.getDialect()).getKnowledgeHelperFixer().fix( (String) ruleDescr.getConsequence() ) );
-
-        context.getMethods().add( st.toString() );
-
-        st = dialect.getInvokerGroup().getInstanceOf( "consequenceInvoker" );
-
-        st.setAttribute( "package",
-                         context.getPkg().getName() );
-        st.setAttribute( "ruleClassName",
-                         StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
-        st.setAttribute( "invokerClassName",
-                         ruleDescr.getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
-        st.setAttribute( "methodName",
-                         className );
-
-        dialect.setStringTemplateAttributes( context,
-                                             st,
-                                             declarations,
-                                             (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+        final Map map = createVariableContext( className,
+                                         null,
+                                         context,
+                                         declarations,
+                                         null,
+                                         (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+        map.put( "text",
+                 ((JavaDialect) context.getDialect()).getKnowledgeHelperFixer().fix( (String) ruleDescr.getConsequence() ) );
 
         // Must use the rule declarations, so we use the same order as used in the generated invoker
         final List list = Arrays.asList( context.getRule().getDeclarations() );
 
         //final int[] indexes = new int[declarations.length];
-        final List indexes = new ArrayList( declarations.length );
+        final Integer[] indexes = new Integer[declarations.length];
 
         // have to user a String[] as boolean[] is broken in stringtemplate
-        final String[] notPatterns = new String[declarations.length];
+        final Boolean[] notPatterns = new Boolean[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            indexes.add( i,
-                         new Integer( list.indexOf( declarations[i] ) ) );
-            notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? null : "true";
-            if ( ((Integer) indexes.get( i )).intValue() == -1 ) {
-                context.getErrors().add( new RuleError(context.getRule(), ruleDescr, null, "Internal Error : Unable to find declaration in list while generating the consequence invoker" ) );                
+            indexes[i] = new Integer( list.indexOf( declarations[i] ) );
+            notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? new Boolean( false ) : new Boolean( true );
+            if ( (indexes[i]).intValue() == -1 ) {
+                context.getErrors().add( new RuleError( context.getRule(),
+                                                        ruleDescr,
+                                                        null,
+                                                        "Internal Error : Unable to find declaration in list while generating the consequence invoker" ) );
             }
         }
 
-        st.setAttribute( "indexes",
-                         indexes );
+        map.put( "indexes",
+                 indexes );
 
-        st.setAttribute( "notPatterns",
-                         notPatterns );
+        map.put( "notPatterns",
+                 notPatterns );
 
-        st.setAttribute( "text",
-                         ruleDescr.getConsequence() );
-
-        final String invokerClassName = context.getPkg().getName() + "." + ruleDescr.getClassName() + StringUtils.ucFirst( className ) + "Invoker";
-
-        context.getInvokers().put( invokerClassName,
-                                   st.toString() );
-        context.getInvokerLookups().put( invokerClassName,
-                                         context.getRule() );
-        context.getDescrLookups().put( invokerClassName,
-                                       ruleDescr );
+        generatTemplates( "consequenceMethod",
+                          "consequenceInvoker",
+                          context,
+                          className,
+                          map,
+                          context.getRule(),
+                          ruleDescr );
 
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
