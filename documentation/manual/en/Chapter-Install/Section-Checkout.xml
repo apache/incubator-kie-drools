@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Source Checkout</title>
+
+  <para>Drools is available from two <indexterm>
+      <primary>subversion</primary>
+    </indexterm>Subversion repositories.</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Anonymous SVN</para>
+
+      <para>http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/</para>
+    </listitem>
+
+    <listitem>
+      <para>Developers secured SVN</para>
+
+      <para>https://svn.labs.jboss.com/labs/jbossrules/trunk/</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Setup TortoiseSVN to checkout from the subversion repository and clikc
+  <literal>'OK'</literal> Once the checkout has finished you should see the
+  folders as shown below.</para>
+
+  <screenshot>
+    <screeninfo>Setup TortoiseSVN checkout</screeninfo>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="svn_checkout1.jpg" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
+
+  <screenshot>
+    <screeninfo>Finished Checkout</screeninfo>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="svn_checkout2.jpg" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
+
+  <screenshot>
+    <screeninfo>Checked out directories</screeninfo>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="svn_checkout3.jpg" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
+</section>

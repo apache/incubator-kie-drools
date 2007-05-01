@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Comments</title>
+
+  <para>Comments are sections of text that are ignored by the rule engine.
+  They are effectively stripped out when they are encountered. </para>
+
+  <section>
+    <title>Single line comment</title>
+
+    <figure>
+      <title>Single line comment</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="single_line_comment.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="single_line_comment.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>Multi line comment</title>
+
+    <figure>
+      <title>Multi line comment</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="multi_line_comment.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="multi_line_comment.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para></para>
+  </section>
+
+</section>

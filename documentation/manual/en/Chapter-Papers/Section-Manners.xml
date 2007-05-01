@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Miss Manners and Benchmarking</title>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>Miss Manners is throwing a party and being the good host she wants
+    to arrange good seating. Her initial design arranges everyone in male
+    female pairs, but then she worries about people have things to talk about;
+    what is a good host to do? So she decides to note the hobby of each guest
+    so she can then arrange guests in not only male and female pairs but also
+    ensure that a guest has someone to talk about a common hobby, from either
+    their left or right side.</para>
+
+    <figure>
+      <title>Miss Manners' Guests</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" contentwidth="300"
+                     fileref="guests_at_table.svg" format="SVG" scalefit="1" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="guests_at_table.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <section>
+      <title>BenchMarking</title>
+
+      <para>5 benchmarks were established in the 1991 paper "Effects of
+      Database Size on Rule System Performance: Five Case Studies" by Brant,
+      Timothy Grose, Bernie Lofaso, &amp; Daniel P. Miranker.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Manners</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Uses a depth-first search approach to determine the
+              seating arrangements of boy/girl and one common hobby for dinner
+              guests</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Waltz</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>line labelling for simple scenes by constraint
+              propagation</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>WaltzDB</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>More general version of Walts to be able to adapt to a
+              database of facts</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>ARP</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Route planner for a robotic air vehicle using the A*
+              search algorithm</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Weavera</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>VLSI router for channels and boxes using a black-board
+              technique</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>Manners has become the de facto rule engine benchmark; however
+      it's behaviour is now well known and many engines optimise for this thus
+      negating its usefulness as a benchmark which is why Waltz is becoming
+      more favourable. These 5 benchmarks are also published at the University
+      of Texas <ulink
+      url="http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/">http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/</ulink>.</para>
+    </section>
+
+    <section>
+      <title>Miss Manners Execution Flow</title>
+
+      <para>After the first Seating arrangement has been assigned a
+      depth-first recursion occurs which repeatedly assigns correct Seating
+      arrangements until the last seat is assigned. Manners uses a Context
+      instance to control execution flow; the activity diagram is partitioned
+      to show the relation of the rule execution to the current Context
+      state.</para>
+
+      <figure>
+        <title>Manners Activity Diagram</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" contentwidth="400"
+                       fileref="manners_activity_diagram.svg" format="SVG"
+                       scalefit="1" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata align="center" fileref="manners_activity_diagram.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>The Data and Results</title>
+
+      <para>Before going deeper into the rules lets first take a look at the
+      asserted data and the resulting Seating arrangement. The data is a
+      simple set of 5 guests who should be arranged in male/female pairs with
+      common hobbies.</para>
+
+      <para><emphasis role="bold">The Data</emphasis></para>
+
+      <para>Each line of the results list is printed per execution of the
+      “Assign Seat” rule. They key bit to notice is that each line has pid one
+      greater than the last, the significance of this will be explained in t
+      he “Assign Seating” rule description. The 'l' and the 'r' refer to the
+      left and right, 's' is sean and 'n' is the guest name. In my actual
+      implementation I used longer notation, 'leftGuestName', but this is not
+      practicle in a printed article. I found the notation of left and right
+      preferable to the original OPS5 '1' and '2</para>
+
+      <literallayout>(guest (name n1) (sex m) (hobby  h1)  )
+(guest (name n2) (sex f) (hobby  h1)  )
+(guest (name n2) (sex f) (hobby  h3)  )
+(guest (name n3) (sex m) (hobby  h3)  )
+(guest (name n4) (sex m) (hobby  h1)  )
+(guest (name n4) (sex f) (hobby  h2)  )
+(guest (name n4) (sex f) (hobby  h3)  )
+(guest (name n5) (sex f) (hobby  h2)  )
+(guest (name n5) (sex f) (hobby  h1)  )
+(last_seat (seat 5)  )</literallayout>
+
+      <para><emphasis role="bold">The Results</emphasis></para>
+
+      <literallayout>[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5] 
+[Seating id=2, pid=1, done=false, ls=1, ln=n5, rs=2, rn=n4] 
+[Seating id=3, pid=2, done=false, ls=2, ln=n4, rs=3, rn=n3] 
+[Seating id=4, pid=3, done=false, ls=3, rn=n3, rs=4, rn=n2] 
+[Seating id=5, pid=4, done=false, ls=4, ln=n2, rs=5, rn=n1]</literallayout>
+    </section>
+  </section>
+
+  <section>
+    <title>Indepth look</title>
+
+    <para></para>
+
+    <section>
+      <title>Conflict Resolution</title>
+
+      <para>As the introduction states, manners is a depth-first or LIFO
+      example. Depth-first refers to the Conflict Resolution strategy used to
+      solve the problem. OPS5 had two strategies, LEX and MEA, LEX is a chain
+      of several stratagies including Salience, Recency, Complexity:</para>
+
+      <blockquote>
+        <attribution>Clips Reference Manual</attribution>
+
+        <para>Every fact and instance is marked internally with a “time tag”
+        toindicate its relative recency with respect to every other fact and
+        instance in the system. The pattern entities associated with each rule
+        activation are sorted in descending order for determining placement.
+        An activation with a more recent pattern entities is placed before
+        activations with less recent pattern entities. To determine the
+        placement order of two activations, compare the sorted time tags of
+        the two activations one by one starting with the largest time tags.
+        The comparison should continue until one activation’s time tag is
+        greater than the other activation’s corresponding time tag. The
+        activation with the greater time tag is placed before the other
+        activation on the agenda. If one activation has more pattern entities
+        than the other activation and the compared time tags are all
+        identical, then the activation with more time tags is placed before
+        the other activation on the agenda.</para>
+      </blockquote>
+
+      <para>Clips is able to specify the LEX and MEA strategies as well as
+      others, however the default is a Depth strategy which is implemented
+      from the LEX Recency strategy:</para>
+
+      <blockquote>
+        <attribution>Clips Reference Manual</attribution>
+
+        <para>Newly activated rules are placed above all rules of the same
+        salience. For example, given that fact-a activates rule-1 and rule-2
+        and fact-b activates rule-3 and rule-4, then if fact-a is asserted
+        before fact-b, rule-3 and rule-4 will be above rule-1 and rule-2 on
+        the agenda. However, the position of rule-1 relative to rule-2 and
+        rule-3 relative to rule-4 will be arbitrary.</para>
+      </blockquote>
+
+      <para>Jess only has two strategies, Depth and Breadth, which are
+      documented the same as the Clips ones. When Miss Manners was first
+      implemented in Drools 3.0 using the Depth strategy it was not producing
+      the correct result, which meant it ran forever. This paper discusses the
+      behaviour of Miss Manners with two Rule engines, Clips and Jess, and how
+      they make it work and how it was made to work in Drools.</para>
+    </section>
+
+    <section>
+      <title>Assign First Seat</title>
+
+      <para>Once the context is changed to START_UP Activations are created
+      for all asserted Guests; because all Activations are created as the
+      result of a single Working Memory action, they all have the same
+      Activation time tag. Using the Depth, or Breadth, Conflict Resolution
+      strategy the Activations would be fired arbitrary. With LEX's Recency
+      the last asserted Guest would have a higher time tag and its Activation
+      would fire. The execution order in this rule has little importance, but
+      has a big impact in the rule "Assign Seat". The Activation fires and
+      asserts the first Seating arrangement, a Path and then sets the
+      Context's state to create Activatiosn for "Assign Seat".</para>
+
+      <programlisting>rule assignFirstSeat() {
+  when {
+    context : Context( state == Context.START_UP )
+    guest : Guest()
+    count : Count()
+  } then {
+    String guestName = guest.getName();
+    drools.assert( new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName) );
+    drools.assert( new Path( count.getValue(), 1, guestName ) );
+    count.setCount(  count.getValue() + 1 );
+    context.setPath( Context.ASSIGN_SEATS );
+  }
+} 
+</programlisting>
+    </section>
+
+    <section>
+      <title>Assign Seat</title>
+
+      <para>This rule determines each of the Seating arrangements. The Rule
+      creates cross product solutions for ALL asserted Seating arrangements
+      against ALL the asserted guests; accept against itself or any already
+      assigned Chosen solutions.</para>
+
+      <programlisting>rule assignSeat() {  
+  when {
+    context : Context( state == Context.ASSIGN_SEATS )
+    Seating( seatingId:id, seatingPid:pid, pathDone == true 
+    seatingRightSeat:rightSeat seatingRightGuestName:rightGuestName )
+    Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
+    Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
+    count : Count()
+    not ( Path( id == seatingId, guestName == leftGuestName) )
+    not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby) )
+  } then {
+    int newSeat = rightSeat + 1;
+    drools.assert( new Seating( countValue, id, false, coung.getValue(), rightSeat, rightSeatName, newSeat, leftGuestName);
+    drools.assert( new Path( countValue, leftGuestName, newSeat );
+    drools.assert( new Chosen( id, leftGuestName, rightGuestHobby ) );
+    count.setCount(  countValue + 1 );
+    context.setPath( Context.MAKE_PATH );
+  }
+} 
+</programlisting>
+
+      <para>However, as can be seen from the printed results shown earlier, it
+      is essential that only the Seating with the highest pid cross product be
+      chosen – yet how can this be possible if we have Activations for nearly
+      all existing Seating and Guests. For example on the third iteration of
+      "Assing Seat" these are the produced Activations, remember this is from
+      a very small data set and with larger data sets there would be many more
+      possible Activated Seating solutions, with multiple solutions per
+      pid:</para>
+
+      <literallayout>=&gt;[ActivationCreated(35): rule=findSeating 
+[fid:19:33]:[Seating id=3, pid=2, done=true, ls=2, ln=n4, rs=3, rn=n3] 
+[fid:4:4]:[Guest name=n3, sex=m, hobbies=h3] 
+[fid:3:3]:[Guest name=n2, sex=f, hobbies=h3]
+
+=&gt;[ActivationCreated(35): rule=findSeating 
+[fid:15:23]:[Seating id=2, pid=1, done=true, ls=1, ln=n5, rs=2, rn=n4] 
+[fid:5:5]:[Guest name=n4, sex=m, hobbies=h1] 
+[fid:2:2]:[Guest name=n2, sex=f, hobbies=h1] 
+
+=&gt;[ActivationCreated(35): rule=findSeating 
+[fid:13:13]:[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5] 
+[fid:9:9]:[Guest name=n5, sex=f, hobbies=h1] 
+[fid:1:1]:[Guest name=n1, sex=m, hobbies=h1]</literallayout>
+
+      <para>The creation of all these redundant Activations might seem
+      pointless, but it must be remembered that Manners is not about good rule
+      design; its purposefully designed as a bad rule to full stress test the
+      cross product matching process, which this clearly does. Notice that
+      each Activation has the same time tag of 35, as they were all activated
+      by the change in Context to ASSIGN_SEATS. With OPS5 and LEX it would
+      correctly fire the Activation with the last asserted Seating. With Depth
+      strategy the execution is arbitrary yet Manners does correctly execute
+      for Jess and Clips using the Depth strategy. Clips support, via the
+      public fourms, have said that Manners was</para>
+
+      <blockquote>
+        <attribution>Clips Support Forum</attribution>
+
+        <para>The default conflict resolution strategy for CLIPS, depth, is
+        different than the default conflict resolution strategy used by OPS5.
+        Therefore if you directly translate an OPS5 program to CLIPS, but use
+        the default depth conflict resolution strategy, you're only likely to
+        get the correct behavior by coincidence. The lex and mea conflict
+        resolution strategies are provided in CLIPS to allow you to quickly
+        convert and correctly run an OPS5 program in CLIPS</para>
+      </blockquote>
+
+      <para>Early Drools 3.0 implementations, implementing Depth, would not
+      work as all the Activations had the same priority and the reliance on
+      arbitrary execution meant that Seatings with lower pids where firing. A
+      LEX style recency strategy was implemented and the benchmark worked
+      correctly. This leaves the question how does Jess and Clips work, even
+      if it is by coincidence. While I haven’t looked at Jess or Clips code
+      Peter Lin has confirmed that Clips uses LinkedLists for the memory, as
+      shown by the next* property from the PartialMatch Clips struct:</para>
+
+      <programlisting>struct partialMatch
+  {
+   unsigned int betaMemory  : 1;
+   unsigned int busy        : 1;
+   unsigned int activationf : 1;
+   unsigned int dependentsf : 1;
+   unsigned int notOriginf  : 1;
+   unsigned int counterf    : 1;
+   unsigned int bcount      : 9;
+   struct partialMatch *next;
+   struct genericMatch binds[1];
+  };</programlisting>
+
+      <para>This suggests the joins remember and attempt joins based on the
+      fact assertion order into the node; thus Activation firing would follow
+      fact assertion order. When Manners is executed in Clips with the Breadth
+      strategy other than executing forever, explained in the next section, it
+      also does not fire the Activation with the highest pid for Seating
+      instances and thus solutions are never found. This indicates that the
+      order the Activations with the same time tag are placed on the Agenda
+      are still executed in LIFO/FIFO order. Later versions of Drools have
+      moved away from HashMaps for BetaNode memory and reliance on LEX style
+      recency and instead use LinkedLists relying on assertion order to
+      control LIFO - in much the same manner as Clips. So in Drools Manners
+      works, but it works by coincidence, this level of behaviour should not
+      be expected by the user. It is still unknown how Jess deals with this
+      situation, Peter Lin believes that Jess may have some simple and
+      undocumented fact recency solution.</para>
+    </section>
+
+    <section>
+      <title>Make Path and Path Done</title>
+
+      <para>Make Path must always fires before Path Done. A Path is asserted
+      for each Seating arrangement up to the last asserted Seating. Notice
+      that Path Done is a subset of Make Path, so how do we ensure that Make
+      Path fires first?</para>
+
+      <programlisting>rule makePath() {
+  when {
+    context : Context( state == Context.MAKE_PATH )
+    Seating( seatingId:id, seatingPid:pid, pathDone == false )
+    Path( id == seatingPid, pathGuestName:guest, pathSeat:seat )
+    (not Path( id == seatingId, guestName == pathGuestName )
+  } else {
+    drools.assert( new Path( seatingId, pathSeat, pathGuestName ) );  
+  }
+}
+</programlisting>
+
+      <programlisting>rule pathDone() { 
+  when { 
+    context : Context( state == Context.MAKE_PATH ) 
+    seating : Seating( pathDone == false ) 
+  } then { 
+    seating.setPathDone( true ); 
+    context.setName( Context.CHECK_DONE ); 
+  } 
+}
+</programlisting>
+
+      <figure>
+        <title>Rete Diagram</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" contentdepth="500"
+                       fileref="make_path.svg" format="SVG" scalefit="1" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata align="center" fileref="make_path.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>With OPS5 LEX the recency strategy says that if all compared facts
+      have the same time tag then the activation with more facts wins; which
+      would make sure that "Make Path" always fires before "Path Done". Clips
+      succesfully completes manners, no matter what the defined order of the
+      rules are in the rule file. If a system is not relying on recency and
+      the rule definition order does not impact execution then the Rete build
+      process must attach joins in such a way that propagation ensures that
+      most complex rules activate last - a kind of inbuilt compexity strategy,
+      however this is not documented; thus with LIFO the first created
+      Activation will fire last. When manners is executed in CLIPS with
+      breadth strategy, it may result in an infinite loop if path_done is
+      fired before make_path activations. This is because path_done modifies
+      the context and removes the activations for make_path rule. For proper
+      execution of manners, the activations for make_path have to fire before
+      path_done. This again illustrates that the arbitrary execution for
+      activations placed on the Agenda obey the set LIFO/FIFO strategy.</para>
+    </section>
+
+    <section>
+      <title>Continue and Are We Done</title>
+
+      <para>"Are We Done" only activates when the last seat is assigned, at
+      which point both rules will be activated. For the same reason that "Make
+      Path" always wins over "Path Done" "Are We Done" will take priority over
+      "Continue".</para>
+
+      <programlisting> rule areWeDone() { 
+  when { 
+    context : Context( state == Context.CHECK_DONE ) 
+    LastSeat( lastSeat: seat )
+    Seating( rightSeat == lastSeat ) 
+  } then { 
+    context.setState(Context.PRINT_RESULTS ); 
+  } 
+}
+</programlisting>
+
+      <programlisting>rule continue() { 
+  Context context; 
+  when { 
+    context : Context( state == Context.CHECK_DONE ) 
+  } then { 
+    context.setState( Context.ASSIGN_SEATS ); 
+  } 
+}
+</programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>Conclusion</title>
+
+    <para>What have we learned from this? That Manners was designed to run
+    with OPS5 Recency and that if works with Jess or Clips under Depth then
+    from a user point of view it should be considered purely coincidence -
+    even if the design was by developers intent. As long as manners does
+    complete with the correct output it will always provide a good stress test
+    for the join nodes; however the Agenda Conflict Resolution will only be
+    tested if a fact based Recency type strategy is used. there are known
+    cheats to Miss:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Using arrays for a guests hobbies, instead of asserting each one
+        as a single fact. This massively reduces the cross products.</para>
+      </listitem>
+
+      <listitem>
+        <para>The altering of the sequence of data can also reducing the
+        amount of matching increase execution speed</para>
+      </listitem>
+
+      <listitem>
+        <para>Changing NOT CE (conditional element) such that the test
+        algorithm only uses the "first-best-match". Basically, changing the
+        test algorithm to backward chaining. the results are only comparable
+        to other backward chaining rule engines or ports of Manners.</para>
+      </listitem>
+
+      <listitem>
+        <para>Removing the context so the rule engine matches the guests and
+        seats pre-maturely. A proper port will prevent facts from matching
+        using the context start.</para>
+      </listitem>
+
+      <listitem>
+        <para>Any change which prevents the rule engine from performing
+        combinatorial pattern matching</para>
+      </listitem>
+
+      <listitem>
+        <para>If no facts are retracted in the reasoning cycle, as a result of
+        NOT CE, the port is incorrect.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>All the above are external optimisations, so easily detected and the
+    results made void. However its also possible to optimise internally; this
+    can be sean from the Leaps algorithm; which Drools has an expiremental
+    implementation of. Manners is brute force stress test of the cross product
+    speed of various joins. Leaps avoid full cross product testing by only
+    attempting the leading join, so where as Rete would create hundreds of
+    Activations leaps only creates one - this gives orders of magnitudes speed
+    increases. Modern Rete based Rule Engines are starting to analyse networks
+    and apply this type of optimisation, whether its a leaps style lazy
+    evaluation or a pre-compilation optimisation to avoid erroneous joins.
+    Drools ReteOO does not currently make these types of optimisations
+    although pre-compilation optimisations will be researched in the next
+    release. These optimisations have made the Miss Manners benchmark
+    redundant and the results form a system that optimises in this manner
+    should be considered void. This view is also put forward by James Own who
+    publishes the 2000-2005 Benchmarks, <ulink
+    url="http://www.kbsc.com/Performance2000-2005.xls">http://www.kbsc.com/Performance2000-2005.xls</ulink>:</para>
+
+    <blockquote>
+      <attribution>James Own, 2000-2005 Benchmarks, Knowledge-Based Systems
+      Corporation</attribution>
+
+      <para>Due to significant advances in BRMS engines, the 2000 - 2005
+      Benchmarks will change significantly for 2006 and beyond. For example,
+      Miss Manners and Waltz 50 will be dropped and we will examine all
+      engines (at this time) using only Waltz DB and a yet to be determined
+      sequential benchmark that probably will not use the Rete
+      Algorithm.</para>
+    </blockquote>
+  </section>
+
+  <section>
+    <title>Output Summary</title>
+
+    <literallayout><emphasis role="bold">Assign First seat</emphasis>
+=&gt;[fid:13:13]:[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5]
+=&gt;[fid:14:14]:[Path id=1, seat=1, guest=n5]
+
+==&gt;[ActivationCreated(16): rule=findSeating
+[fid:13:13]:[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5]
+[fid:9:9]:[Guest name=n5, sex=f, hobbies=h1]
+[fid:1:1]:[Guest name=n1, sex=m, hobbies=h1]
+
+==&gt;[ActivationCreated(16): rule=findSeating
+[fid:13:13]:[Seating id=1 , pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5]
+[fid:9:9]:[Guest name=n5, sex=f, hobbies=h1]
+[fid:5:5]:[Guest name=n4, sex=m, hobbies=h1]*
+
+<emphasis role="bold">Assign Seating</emphasis>
+=&gt;[fid:15:17] :[Seating id=2 , pid=1 , done=false, ls=1, lg=n5, rs=2, rn=n4]
+=&gt;[fid:16:18]:[Path id=2, seat=2, guest=n4]
+=&gt;[fid:17:19]:[Chosen id=1, name=n4, hobbies=h1]
+
+=&gt;[ActivationCreated(21): rule=makePath 
+[fid:15:17] : [Seating id=2, pid=1, done=false, ls=1, ln=n5, rs=2, rn=n4]
+[fid:14:14] : [Path id=1, seat=1, guest=n5]*
+
+==&gt;[ActivationCreated(21): rule=pathDone
+[Seating id=2, pid=1, done=false, ls=1, ln=n5, rs=2, rn=n4]*
+
+<emphasis role="bold">Make Path</emphasis>
+=&gt;[fid:18:22:[Path id=2, seat=1, guest=n5]]
+
+<emphasis role="bold">Path Done</emphasis>
+
+<emphasis role="bold">Continue Process</emphasis>
+=&gt;[ActivationCreated(25): rule=findSeating
+[fid:15:23]:[Seating id=2, pid=1, done=true, ls=1, ln=n5, rs=2, rn=n4]
+[fid:7:7]:[Guest name=n4, sex=f, hobbies=h3]
+[fid:4:4] : [Guest name=n3, sex=m, hobbies=h3]*
+
+=&gt;[ActivationCreated(25): rule=findSeating
+[fid:15:23]:[Seating id=2, pid=1, done=true, ls=1, ln=n5, rs=2, rn=n4]
+[fid:5:5]:[Guest name=n4, sex=m, hobbies=h1]
+[fid:2:2]:[Guest name=n2, sex=f, hobbies=h1], [fid:12:20] : [Count value=3]
+
+=&gt;[ActivationCreated(25): rule=findSeating
+[fid:13:13]:[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5]
+[fid:9:9]:[Guest name=n5, sex=f, hobbies=h1]
+[fid:1:1]:[Guest name=n1, sex=m, hobbies=h1]
+
+<emphasis role="bold">Assign Seating</emphasis>
+=&gt;[fid:19:26]:[Seating id=3, pid=2, done=false, ls=2, lnn4, rs=3, rn=n3]]
+=&gt;[fid:20:27]:[Path id=3, seat=3, guest=n3]]
+=&gt;[fid:21:28]:[Chosen id=2, name=n3, hobbies=h3}]
+
+=&gt;[ActivationCreated(30): rule=makePath
+[fid:19:26]:[Seating id=3, pid=2, done=false, ls=2, ln=n4, rs=3, rn=n3]
+[fid:18:22]:[Path id=2, seat=1, guest=n5]*
+
+=&gt;[ActivationCreated(30): rule=makePath 
+[fid:19:26]:[Seating id=3, pid=2, done=false, ls=2, ln=n4, rs=3, rn=n3]
+[fid:16:18]:[Path id=2, seat=2, guest=n4]*
+
+=&gt;[ActivationCreated(30): rule=done 
+[fid:19:26]:[Seating id=3, pid=2, done=false, ls=2, ln=n4, rs=3, rn=n3]*
+
+<emphasis role="bold">Make Path</emphasis>
+=&gt;[fid:22:31]:[Path id=3, seat=1, guest=n5]
+
+<emphasis role="bold">Make Path </emphasis>
+=&gt;[fid:23:32] [Path id=3, seat=2, guest=n4]
+
+<emphasis role="bold">Path Done</emphasis>
+
+<emphasis role="bold">Continue Processing</emphasis>
+=&gt;[ActivationCreated(35): rule=findSeating
+[fid:19:33]:[Seating id=3, pid=2, done=true, ls=2, ln=n4, rs=3, rn=n3]
+[fid:4:4]:[Guest name=n3, sex=m, hobbies=h3]
+[fid:3:3]:[Guest name=n2, sex=f, hobbies=h3], [fid:12:29]*
+
+=&gt;[ActivationCreated(35): rule=findSeating 
+[fid:15:23]:[Seating id=2, pid=1, done=true, ls=1, ln=n5, rs=2, rn=n4] 
+[fid:5:5]:[Guest name=n4, sex=m, hobbies=h1]
+[fid:2:2]:[Guest name=n2, sex=f, hobbies=h1]
+
+=&gt;[ActivationCreated(35): rule=findSeating 
+[fid:13:13]:[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5] 
+[fid:9:9]:[Guest name=n5, sex=f, hobbies=h1], [fid:1:1] : [Guest name=n1, sex=m, hobbies=h1]
+
+<emphasis role="bold">Assign Seating</emphasis>
+=&gt;[fid:24:36]:[Seating id=4, pid=3, done=false, ls=3, ln=n3, rs=4, rn=n2]]
+=&gt;[fid:25:37]:[Path id=4, seat=4, guest=n2]]
+=&gt;[fid:26:38]:[Chosen id=3, name=n2, hobbies=h3]
+
+==&gt;[ActivationCreated(40): rule=makePath 
+[fid:24:36]:[Seating id=4, pid=3, done=false, ls=3, ln=n3, rs=4, rn=n2]
+[fid:23:32]:[Path id=3, seat=2, guest=n4]*
+
+==&gt;[ActivationCreated(40): rule=makePath 
+[fid:24:36]:[Seating id=4, pid=3, done=false, ls=3, ln=n3, rs=4, rn=n2] 
+[fid:20:27]:[Path id=3, seat=3, guest=n3]*
+
+=&gt;[ActivationCreated(40): rule=makePath 
+[fid:24:36]:[Seating id=4, pid=3, done=false, ls=3, ln=n3, rs=4, rn=n2]
+[fid:22:31]:[Path id=3, seat=1, guest=n5]*
+
+=&gt;[ActivationCreated(40): rule=done 
+[fid:24:36]:[Seating id=4, pid=3, done=false, ls=3, ln=n3, rs=4, rn=n2]*
+
+<emphasis role="bold">Make Path </emphasis>
+=&gt;fid:27:41:[Path id=4, seat=2, guest=n4]
+
+<emphasis role="bold">Make Path</emphasis>
+=&gt;fid:28:42]:[Path id=4, seat=1, guest=n5]]
+
+<emphasis role="bold">Make Path</emphasis>
+=&gt;fid:29:43]:[Path id=4, seat=3, guest=n3]]
+
+<emphasis role="bold">Path Done</emphasis>
+
+<emphasis role="bold">Continue  Processing</emphasis>
+=&gt;[ActivationCreated(46): rule=findSeating 
+[fid:15:23]:[Seating id=2, pid=1, done=true, ls=1, ln=n5, rs=2, rn=n4] 
+[fid:5:5]:[Guest name=n4, sex=m, hobbies=h1], [fid:2:2]
+[Guest name=n2, sex=f, hobbies=h1]
+
+=&gt;[ActivationCreated(46): rule=findSeating 
+[fid:24:44]:[Seating id=4, pid=3, done=true, ls=3, ln=n3, rs=4, rn=n2]
+[fid:2:2]:[Guest name=n2, sex=f, hobbies=h1]
+[fid:1:1]:[Guest name=n1, sex=m, hobbies=h1]*
+
+=&gt;[ActivationCreated(46): rule=findSeating 
+[fid:13:13]:[Seating id=1, pid=0, done=true, ls=1, ln=n5, rs=1, rn=n5]
+[fid:9:9]:[Guest name=n5, sex=f, hobbies=h1]
+[fid:1:1]:[Guest name=n1, sex=m, hobbies=h1]
+
+<emphasis role="bold">Assign Seating</emphasis>
+=&gt;[fid:30:47]:[Seating id=5, pid=4, done=false, ls=4, ln=n2, rs=5, rn=n1]
+=&gt;[fid:31:48]:[Path id=5, seat=5, guest=n1]
+=&gt;[fid:32:49]:[Chosen id=4, name=n1, hobbies=h1]
+</literallayout>
+  </section>
+</section>

@@ -1,0 +1,31 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="paper.type">
+<refmeta>
+<refentrytitle>paper.type</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">list</refmiscinfo>
+<refmiscinfo class="other" otherclass="list-type">open</refmiscinfo>
+<refmiscinfo class="other" otherclass="value">A4<alt>210x297 mm</alt></refmiscinfo>
+<refmiscinfo class="other" otherclass="value">USletter<alt>8.5x11 in</alt></refmiscinfo>  
+</refmeta>
+<refnamediv>
+<refname>paper.type</refname>
+<refpurpose>Select the paper type</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="paper.type.frag"><xsl:param name="paper.type" select="'USletter'"/></src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>The paper type is a convenient way to specify the paper size.
+The list of known paper sizes includes USletter and most of the A,
+B, and C sizes. See <literal>page.width.portrait</literal>, for example.
+</para>
+
+</refsection>
+</refentry>

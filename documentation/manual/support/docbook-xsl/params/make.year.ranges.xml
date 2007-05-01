@@ -1,0 +1,31 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="make.year.ranges">
+<refmeta>
+<refentrytitle>make.year.ranges</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>make.year.ranges</refname>
+<refpurpose>Collate copyright years into ranges?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="make.year.ranges.frag"><xsl:param name="make.year.ranges" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>If non-zero, multiple copyright year elements will be
+collated into ranges.
+This works only if each year number is put into a separate
+year element.  The copyright element permits multiple
+year elements. The stylesheet will not successfully parse
+a complex year element such as &lt;2001,2002,2003&gt; into
+a range.</para>
+
+</refsection>
+</refentry>

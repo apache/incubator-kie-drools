@@ -1,0 +1,35 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:src="http://nwalsh.com/xmlns/litprog/fragment"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          version="5.0" xml:id="page.margin.inner">
+<refmeta>
+<refentrytitle>page.margin.inner</refentrytitle>
+<refmiscinfo class="other" otherclass="datatype">length</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>page.margin.inner</refname>
+<refpurpose>The inner page margin</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment xml:id="page.margin.inner.frag"><xsl:param name="page.margin.inner">
+  <xsl:choose>
+    <xsl:when test="$double.sided != 0">1.25in</xsl:when>
+    <xsl:otherwise>1in</xsl:otherwise>
+  </xsl:choose>
+</xsl:param></src:fragment>
+</refsynopsisdiv>
+
+<refsection><info><title>Description</title></info>
+
+<para>The inner page margin is the distance from binding edge of the
+page to the first column of text. In the left-to-right, top-to-bottom writing
+direction, this is the left margin of recto pages.</para>
+<para>The inner and outer margins are usually the same unless the output
+is double-sided.
+</para>
+
+</refsection>
+</refentry>
