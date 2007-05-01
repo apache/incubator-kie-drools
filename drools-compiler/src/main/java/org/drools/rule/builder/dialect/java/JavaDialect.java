@@ -337,7 +337,7 @@ public class JavaDialect
                         //we don't really want to report invoker errors.
                         //mostly as they can happen when there is a syntax error in the RHS
                         //and otherwise, it is a programmatic error in drools itself.
-                        throw new RuntimeException( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere." + handler.getError() );
+                        //throw new RuntimeException( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere." + handler.getError() );
                     }
                 }
             }
