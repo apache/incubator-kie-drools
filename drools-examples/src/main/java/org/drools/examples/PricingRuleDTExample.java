@@ -6,6 +6,8 @@ import java.io.StringReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.StatelessSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -35,16 +37,14 @@ public class PricingRuleDTExample {
 
     	RuleBase ruleBase = buildRuleBase(drl);
     	
-		WorkingMemory wm = ruleBase.newWorkingMemory();
+        // typical decision tables are used statelessly
+		StatelessSession session = ruleBase.newStatelessSession();
 		
 		//now create some test data
 		Driver driver = new Driver();
 		Policy policy = new Policy();
 		
-		wm.assertObject(driver);
-		wm.assertObject(policy);
-		
-		wm.fireAllRules();
+        session.execute( new Object[] { driver, policy } );
 		
 		System.out.println("BASE PRICE IS: " + policy.getBasePrice());
 		System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());

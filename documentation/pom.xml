@@ -39,9 +39,11 @@
                     <copy todir="../drools-eclipse/drools-eclipse-plugin/help">
                       <fileset dir="manual/build/en" includes="shared/** eclipse/**" excludes="**/*.svg **/*.db"/>
                     </copy>
-                    <copy todir="../target/docs">
+                    
+                    <!-- Leave this copy to the assembly for now -->
+                    <!--copy todir="../target/docs">
                       <fileset dir="manual/build/en" includes="shared/** html/** html_single/**" excludes="**/*.svg **/*.db"/>
-                    </copy>
+                    </copy-->
                 </tasks>
               </configuration>
               <goals>

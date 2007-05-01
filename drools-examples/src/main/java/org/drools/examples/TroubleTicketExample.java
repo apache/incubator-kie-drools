@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
@@ -22,9 +23,9 @@ public class TroubleTicketExample {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final StatefulSession session = ruleBase.newStatefulSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/trouble_ticket" );
 
         final Customer a = new Customer( "A",
@@ -41,21 +42,21 @@ public class TroubleTicketExample {
         final Ticket t3 = new Ticket( c );
         final Ticket t4 = new Ticket( d );
 
-        final FactHandle fa = workingMemory.assertObject( a );
-        final FactHandle fb = workingMemory.assertObject( b );
-        final FactHandle fc = workingMemory.assertObject( c );
-        final FactHandle fd = workingMemory.assertObject( d );
+        final FactHandle fa = session.assertObject( a );
+        final FactHandle fb = session.assertObject( b );
+        final FactHandle fc = session.assertObject( c );
+        final FactHandle fd = session.assertObject( d );
 
-        final FactHandle ft1 = workingMemory.assertObject( t1 );
-        final FactHandle ft2 = workingMemory.assertObject( t2 );
-        final FactHandle ft3 = workingMemory.assertObject( t3 );
-        final FactHandle ft4 = workingMemory.assertObject( t4 );
+        final FactHandle ft1 = session.assertObject( t1 );
+        final FactHandle ft2 = session.assertObject( t2 );
+        final FactHandle ft3 = session.assertObject( t3 );
+        final FactHandle ft4 = session.assertObject( t4 );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
 
         t3.setStatus( "Done" );
 
-        workingMemory.modifyObject( ft3,
+        session.modifyObject( ft3,
                                     t3 );
 
         try {
@@ -66,6 +67,8 @@ public class TroubleTicketExample {
         }
 
         System.err.println( "[[ awake ]]" );
+        
+        session.dispose();
 
         logger.writeToDisk();
     }

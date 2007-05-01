@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -35,7 +36,6 @@ import org.drools.rule.Package;
 public abstract class WaltzBenchmark {
 
     public static void main(final String[] args) throws Exception {
-        try {
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "waltz.drl" ) ) );
             Package pkg = builder.getPackage();
@@ -44,7 +44,7 @@ public abstract class WaltzBenchmark {
             final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
             ruleBase.addPackage( pkg );
             
-            WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            StatefulSession session = ruleBase.newStatefulSession();
             
             String filename;
             if (  args.length != 0 ) {
@@ -54,18 +54,15 @@ public abstract class WaltzBenchmark {
                 filename  = "waltz12.dat";
             }
             
-            loadLines( workingMemory, filename );
+            loadLines( session, filename );
             
             Stage stage = new Stage(Stage.DUPLICATE);
-            workingMemory.assertObject( stage );
+            session.assertObject( stage );
             
             long start = System.currentTimeMillis();
-            workingMemory.fireAllRules();
+            session.fireAllRules();
             System.out.println( (System.currentTimeMillis() - start) / 1000 );
-            
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+            session.dispose();
     }
 
     

@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
@@ -21,9 +22,9 @@ public class StateExampleUsingSalience {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final StatefulSession session = ruleBase.newStatefulSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/state" );
 
         final State a = new State( "A" );
@@ -35,16 +36,17 @@ public class StateExampleUsingSalience {
         // PropertyChangeListeners so you don't have to call modifyObject().
         final boolean dynamic = true;
 
-        workingMemory.assertObject( a,
+        session.assertObject( a,
                                     dynamic );
-        workingMemory.assertObject( b,
+        session.assertObject( b,
                                     dynamic );
-        workingMemory.assertObject( c,
+        session.assertObject( c,
                                     dynamic );
-        workingMemory.assertObject( d,
+        session.assertObject( d,
                                     dynamic );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
+        session.dispose();
 
         logger.writeToDisk();
     }

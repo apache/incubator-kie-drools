@@ -164,7 +164,9 @@ public class CellGrid {
     }
 
     public void dispose() {
-        this.session.dispose();
+        if ( this.session != null ) {
+            this.session.dispose();
+        }
     }
     
     public String toString() {

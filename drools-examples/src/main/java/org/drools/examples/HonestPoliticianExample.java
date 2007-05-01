@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
@@ -22,9 +23,9 @@ public class HonestPoliticianExample {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final StatefulSession session = ruleBase.newStatefulSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/honest-politician" );
 
         final Politician blair  = new Politician("blair", true);
@@ -32,14 +33,16 @@ public class HonestPoliticianExample {
         final Politician chirac  = new Politician("chirac", true);
         final Politician schroder   = new Politician("schroder", true);
         
-        workingMemory.assertObject( blair );
-        workingMemory.assertObject( bush );
-        workingMemory.assertObject( chirac );
-        workingMemory.assertObject( schroder );
+        session.assertObject( blair );
+        session.assertObject( bush );
+        session.assertObject( chirac );
+        session.assertObject( schroder );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
         
         logger.writeToDisk();
+        
+        session.dispose();
     }
     
     public static class Politician {

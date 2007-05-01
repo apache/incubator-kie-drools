@@ -5,6 +5,7 @@ import java.io.Reader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -14,23 +15,18 @@ import org.drools.rule.Package;
  */
 public class HelloWorldExample {
 
-    public static final void main(final String[] args) {
-        try {
-
+    public static final void main(final String[] args) throws Exception {
             //load up the rulebase
             final RuleBase ruleBase = readRule();
-            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            final StatefulSession session = ruleBase.newStatefulSession();
 
             //go !
             final Message message = new Message();
             message.setMessage( "Hello World" );
             message.setStatus( Message.HELLO );
-            workingMemory.assertObject( message );
-            workingMemory.fireAllRules();
-
-        } catch ( final Throwable t ) {
-            t.printStackTrace();
-        }
+            session.assertObject( message );
+            session.fireAllRules();
+            session.dispose();
     }
 
     /**
