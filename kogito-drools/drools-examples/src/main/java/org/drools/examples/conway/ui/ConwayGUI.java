@@ -3,6 +3,8 @@ package org.drools.examples.conway.ui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
@@ -35,6 +37,7 @@ public class ConwayGUI extends JPanel {
     private final JButton   clearButton;
     private final JComboBox patternSelector = new JComboBox();
     private final Timer     timer;
+    private final CellGrid  grid;
 
     public ConwayGUI() {
         super( new BorderLayout() );
@@ -44,8 +47,8 @@ public class ConwayGUI extends JPanel {
         this.startStopButton = new JButton( startLabel );
         final String clearLabel = ConwayApplicationProperties.getProperty( "clear.label" );
         this.clearButton = new JButton( clearLabel );
-        final CellGrid grid = new CellGrid( 30,
-                                            30 );
+        this.grid = new CellGrid( 30,
+                                  30 );
         final CellGridCanvas canvas = new CellGridCanvas( grid );
         final JPanel panel = new JPanel( new BorderLayout() );
         panel.add( BorderLayout.CENTER,
@@ -130,6 +133,9 @@ public class ConwayGUI extends JPanel {
         this.patternSelector.setSelectedIndex( -1 );
     }
 
+    public void dispose() {
+        this.grid.dispose();
+    }
     private void populatePatternSelector() {
         final String patternClassNames = ConwayApplicationProperties.getProperty( "conway.pattern.classnames" );
         final StringTokenizer tokenizer = new StringTokenizer( patternClassNames );
@@ -233,12 +239,19 @@ public class ConwayGUI extends JPanel {
         //        System.setProperty( "conway.drl.file",
         //                            args[0] );
 
+        final ConwayGUI gui = new ConwayGUI();
         final String appTitle = ConwayApplicationProperties.getProperty( "app.title" );
         final JFrame f = new JFrame( appTitle );
         f.setResizable( false );
         f.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         f.getContentPane().add( BorderLayout.CENTER,
-                                new ConwayGUI() );
+                                gui );
+
+        f.addWindowListener( new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                gui.dispose();
+            }
+        } );
         f.pack();
         f.setVisible( true );
     }
