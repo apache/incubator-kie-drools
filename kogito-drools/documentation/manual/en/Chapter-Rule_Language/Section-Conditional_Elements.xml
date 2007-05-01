@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Conditional Elements</title>
+
+  <para>uuuere</para>
+
+  <section>
+    <title>'and'</title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>'or'</title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>'eval'</title>
+
+    <figure>
+      <title>eval</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="eval.svg" format="SVG" role=""
+                      />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="eval.png" format="PNG" role=""
+                      />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>'not'</title>
+
+    <figure>
+      <title>eval</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="notl.svg" format="SVG" role=""
+                      />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="not.png" format="PNG" role=""
+                      />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>'exists'</title>
+
+    <figure>
+      <title>eval</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="existsl.svg" format="SVG" role=""
+                      />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="exists.png" format="PNG" role=""
+                      />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para></para>
+  </section>
+</section>

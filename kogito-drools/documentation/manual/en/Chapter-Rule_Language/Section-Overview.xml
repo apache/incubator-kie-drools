@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Overview</title>
+
+  <para>Drools 3 has a "native" rule language that is non XML textual format.
+  This format is very light in terms of punctuation, and supports natural and
+  domain specific languages via "expanders" that allow the language to morph
+  to your problem domain. This chapter is mostly concered with the native rule
+  format. The Diagrams used are known as "rail road" diagrams, and are
+  basically flow charts for the language terms. For the technically very keen,
+  you can also refer to "drl.g" which is the Antlr3 grammar for the rule
+  language. If you use the Rule Workbench, a lot of the rule structure is done
+  for you with content assistance, for example, type "ru" and press
+  ctrl+space, and it will build the rule structure for you.</para>
+
+  <section>
+    <title>A rule file</title>
+
+    <para>A rule file is typically a file with a .drl extension. In a drl file
+    you can have multiple rules, functions etc. However, you are also able to
+    spread your rules across multiple rule files (in that case, the extension
+    .rule is suggested, but not required) - spreading rules across files can
+    help with managing large numbers of rules. A DRL file is simply a text
+    file.</para>
+  </section>
+
+  <section>
+    <title>What makes a rule</title>
+
+    <para>A rule has the following rough structure:<literallayout>
+rule "name"
+    ATTRIBUTES
+    when
+        LHS
+    then
+        RHS
+end
+</literallayout>Its really that simple. Mostly punctuation is not needed, even
+    the double quotes for "name" are optional, as are newlines. ATTRIBUTES are
+    simple (always optional) hints to how the rule should behave. LHS is the
+    conditional parts of the rule, which follows a certain syntax which is
+    covered below. RHS is basically a block that allows Java semantic code to
+    be executed (this will soon support other semantic languages, like groovy,
+    and C#). The only special keywords here are for asserting, retracting or
+    modifying facts. Any variables bound in the LHS are available here.</para>
+
+    <para>It is important to note that whitepace is not important, EXCEPT in
+    thse case of domain specific languages, in which case each line is
+    processed before the following line (and spaces may be significant to the
+    domain language).</para>
+  </section>
+
+  <section>
+    <title>Domain Specific Languages</title>
+
+    <para>Domain specific languages are implemented as an enhancement over the
+    native rule language. They use the "expander" mechanism. The expander
+    mechanism is an extensible API, but by default it can work with .dsl
+    files, which contain mappings from the domain or natural language to the
+    rule language and your domain objects. You can think of these .dsl files
+    also as a mapping to your domain model (which provides you with some
+    insulation). DSLs/expanders work by processing a line in the rule source
+    as it is being compiled - this is the only time that newlines are
+    significant. This is done to aid readability and avoid the need for
+    punctuation. It is expected that over time, alternative expanders and DSLs
+    will be available/prebuilt for various domains, and provide other forms of
+    natural language parsing and analysis. It is up to you if you believe a
+    DSL is of benefit to your application - they certainly make for very nice
+    looking rules, but for some folks, the native rule language is ideal.
+    Freedom is good.</para>
+  </section>
+
+  <section>
+    <title>Reserved words</title>
+
+    <para>There are some reserved keywords that are used in the rule language.
+    It is wise to avoid collisions with these words when naming your domain
+    objects, properties, methods, functions and so on that are used in the
+    rule text. The following list are words that you should try and avoid in
+    the rule contents if possible (often times it will work fine, but in some
+    cases the rules may be parsed incorrectly). Of course, you can have words
+    as part of a method name in camel case, like notSomething() - there are no
+    issues with that scenario.</para>
+
+    <literallayout>
+when
+then
+rule
+end
+contains
+matches
+and
+or
+modify
+retract
+assert
+salience
+function
+query
+exists
+eval
+agenda-group
+no-loop
+duration
+-&gt;
+not
+auto-focus
+</literallayout>
+  </section>
+</section>

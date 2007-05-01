@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>XML Rule Language</title>
+
+  <para>As an option, Drools also supports a "native" <indexterm>
+      <primary>XML</primary>
+    </indexterm> rule language as an alternative to DRL. This allows you to
+  capture and manage your rules as XML data. Just like the non-XML DRL format,
+  the XML format is parsed into the internal "AST" representation - as fast as
+  possible (using a SAX parser). There is no external transformation step
+  required. All the features are available with XML that are available to
+  DRL.</para>
+
+  <section>
+    <title>When to use XML</title>
+
+    <para>There are several scenarios that XML is desirable. However, we
+    recommend that it is not a default choice, as XML is not readily human
+    readable (unless you like headaches) and can create visually bloated
+    rules.</para>
+
+    <para>If you do want to edit XML by hand, use a good schema aware editor
+    that provides nice heirarchical views of the XML, ideally visually
+    (commercial tools like XMLSpy, Oxygen etc are good, but cost money, but
+    then so do headache tablets).</para>
+
+    <para>Other scenarious where you may want to use the XML format are if you
+    have a tool that generates rules from some input (programmatically
+    generated rules), or perhaps interchange from another rule language, or
+    from another tool that emits XML (using XSLT you can easily transform
+    between XML formats). Note you can always generate normal DRL as
+    well.</para>
+
+    <para>Alternatively you may be embedding drools in a product that already
+    uses XML for configuration, so you would like the rules to be in an XML
+    format. You may be creating your own rule language on XML - note that you
+    can always use the AST objects directly to create your own rule language
+    as well (the options are many, due to the open architecture).</para>
+  </section>
+
+  <section>
+    <title>The XML format</title>
+
+    <para>A full W3C standards (XMLSchema) compliant XSD is provided that
+    describes the XML language, which will not be repeated here verbatim. A
+    summary of the language follows.</para>
+
+    <example>
+      <title>Example <indexterm>
+          <primary>XML Rule</primary>
+        </indexterm></title>
+
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;package name="com.sample"
+         xmlns="http://drools.org/drools-3.0"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-3.0 drools-3.0.xsd"&gt;
+         
+&lt;import name="java.util.HashMap" /&gt;
+&lt;import name="org.drools.*" /&gt;
+
+&lt;global identifier="x" type="com.sample.X" /&gt;
+&lt;global identifier="yada" type="com.sample.Yada" /&gt;
+
+&lt;function return-type="void" name="myFunc"&gt;
+    &lt;parameter identifier="foo" type="Bar" /&gt;
+    &lt;parameter identifier="bada" type="Bing" /&gt;
+        
+    &lt;body&gt;
+        System.out.println("hello world");
+    &lt;/body&gt;
+&lt;/function&gt;
+
+&lt;rule name="my rule"&gt;
+  &lt;rule-attribute name="salience" value="10" /&gt;
+
+  &lt;lhs&gt;
+       &lt;column object-type="Foo" /&gt;
+  &lt;/lhs&gt;
+
+  &lt;rhs&gt;
+    System.out.println( "hello" );    
+&lt;/rhs&gt;
+&lt;/rule&gt;
+&lt;/package&gt;
+</programlisting>
+    </example>
+
+    <para>Referring to the above example: Notice the key parts, the
+    declaration for the Drools 3, schema, imports, globals (application-data
+    in drools 2), functions, and the rules. Most of the elements are self
+    explanatory if you have some understanding of the Drools 3
+    features.</para>
+
+    <para>Imports: import the types you wish to use in the rule.</para>
+
+    <para>Globals: These are global objects that can be referred to in the
+    rules.</para>
+
+    <para>Functions: this is a declaration of functions to be used in the
+    rules. You have to specify return types, a unique name and parameters, in
+    the body goes a snippet of code.</para>
+
+    <para>Rule: see below.</para>
+
+    <example>
+      <title>Detail of rule element</title>
+
+      <programlisting>&lt;rule name="my rule"&gt;
+ &lt;lhs&gt;
+
+  &lt;column object-type="Foo" /&gt;
+  &lt;column identifier="bar" object-type="Bar" /&gt;
+
+  &lt;column object-type="Foo"&gt;
+    &lt;literal field-name="field1" evaluator="==" value="value1" /&gt;
+    &lt;predicate field-name="field1" identifier="var1" expression="1==1" /&gt;
+    &lt;return-value field-name="field1" evaluator="==" expression="1==1" /&gt;
+    &lt;field-binding field-name="field1" identifier="var1" /&gt;
+    &lt;bound-variable field-name="field1" evaluator="==" identifier="var1" /&gt;
+  &lt;/column&gt;
+
+  &lt;not&gt;
+    &lt;column object-type="Bar" /&gt;
+  &lt;/not&gt;
+
+  &lt;exists&gt;
+    &lt;column object-type="Bar" /&gt;
+  &lt;/exists&gt;
+
+  &lt;and&gt;
+    &lt;or&gt;
+      &lt;column object-type="Bar" /&gt;
+    &lt;/or&gt;
+    &lt;column object-type="Yada" /&gt;
+  &lt;/and&gt;
+
+  &lt;or&gt;
+    &lt;and&gt;
+      &lt;column object-type="Foo" /&gt;
+    &lt;/and&gt;
+    &lt;column object-type="Zaa" /&gt;
+  &lt;/or&gt;
+
+  &lt;eval&gt;
+    1==1
+  &lt;/eval&gt;
+ &lt;/lhs&gt;
+
+ &lt;rhs&gt;
+   /* semantic actions here */
+ &lt;/rhs&gt;
+&lt;/rule&gt;
+</programlisting>
+    </example>
+
+    <para>Referring to the above rule detail:</para>
+
+    <para>The rule has a LHS and RHS (conditions and consequence) sections.
+    The RHS is simple, it is just a block of semantic code that will be
+    executed when the rule is activated. The LHS is slightly more complicated,
+    certainly more so then Drools 2.x.</para>
+
+    <para>A key element of the LHS is the Column element. This allows you to
+    specify a type (class) and perhaps bind a variable to an instance of that
+    class. Nested under the column object are constraints that have to be met.
+    The Predicate and Return Value constraints allow java expressions to be
+    embedded.</para>
+
+    <para>That leaves the conditional elements, not, exists, and, or etc. They
+    work like their DRL counterparts. Elements that are nested under and an
+    "and" element are logically "anded" together. Likewise with "or" (and you
+    can nest things further). "Exists" and "Not" work around Columns, to check
+    for the existence or non existance of a fact meeting its
+    constraints.</para>
+
+    <para>The Eval element allows the execution of a valid snippet of java
+    code - as long as it evaluates to a boolean (do not end it with a
+    semi-colon, as it is just a fragment) - this can include calling a
+    function. The Eval is less efficient then then columns, as the rule engine
+    has to evaluate it each time, but it is a "catch all" feature for when you
+    can express what you need to do with Column constraints.</para>
+  </section>
+
+  <section>
+    <title>Legacy Drools 2.x XML rule format</title>
+
+    <para>The Drools 2.x legacy XML format is somewhat different to the Drools
+    3 format that you can see above.</para>
+
+    <para>However, there are some similarities. Basically the imports, globals
+    (which replace application-data in drools 2.x) work the same. Functions
+    are also similar, except that they are specified one at a time (in Drools
+    2 they where specified in a single block).</para>
+
+    <para />
+
+    <example>
+      <title>Drools 2.x xml</title>
+
+      <programlisting>  &lt;rule name="Goodbye Cruel World"&gt;
+    &lt;parameter identifier="goodbye"&gt;
+      &lt;class&gt;String&lt;/class&gt;
+    &lt;/parameter&gt;
+
+    &lt;java:condition&gt;goodbye.equals("Goodbye")&lt;/java:condition&gt;
+
+    &lt;java:consequence&gt;
+      goodbyeWorld( goodbye );
+    &lt;/java:consequence&gt;
+  &lt;/rule&gt;</programlisting>
+    </example>
+
+    <section>
+      <title>Migrating to Drools 3</title>
+
+      <para>It is possible generally to migrate from drools 2 to drools 3 XML
+      format, if you have existing rulebases you want to port to drools 3.
+      This may be done with a stylesheet, possibly. Note that Drools 2.x DSLs
+      will not be trivial to port to drools 3 XML. You would be best to look
+      at the new DSL features in Drools 3 DRL.</para>
+
+      <para>Note that while "eval" allows you to more or less directly migrate
+      your conditions from Drools 2.x to 3, it is far more powerful, and
+      performant, to use constraints on columns where possible, as it utilises
+      the full power of the engine.</para>
+
+      <example>
+        <title>Drools 3 XML equivalent</title>
+
+        <programlisting>&lt;rule name="Goodbye Cruel World"&gt;
+ &lt;lhs&gt;
+   &lt;column identifier='goodbye' object-type='String' &gt;
+   &lt;eval&gt;goodbye.equals("Goodbye")&lt;/eval&gt;
+ &lt;/lhs&gt;
+ &lt;rhs&gt;
+   goodbyeWorld( goodbye );
+ &lt;/rhs&gt;
+&lt;/rule&gt;</programlisting>
+      </example>
+    </section>
+  </section>
+
+  <section>
+    <title>Automatic transforming between formats (XML and DRL)</title>
+
+    <para>Drools comes with some utility classes to transform between formats.
+    This works by parsing the rules from the source format into the AST, and
+    then "dumping" out to the appropriate target format. This allows you, for
+    example, to write rules in DRL, and when needed, export to XML if
+    necessary at some point in the future.</para>
+
+    <para>The classes to look at if you need to do this are: <programlisting>XmlDumper - for exporting XML.
+DrlDumper - for exporting DRL.
+DrlParser - reading DRL.
+XmlPackageReader - reading XML.
+</programlisting> Using combinations of the above, you can convert between any
+    format (including round trip). Note that DSLs will not be preserved (from
+    DRLs that are using a DSL) - but they will be able to be converted.</para>
+  </section>
+
+  <para>Feel free to make use of XSLT to provide all sorts of possibilities
+  for XML, XSLT and its ilk are what make XML powerful.</para>
+</section>
