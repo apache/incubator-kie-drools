@@ -18,8 +18,8 @@ validb
 rule "some stuff @{row.rowNumber}"
 	when
 		Foo(myObject.getColour().equals(@{colour}),
-		myObject.size () > @{minSize@},
-		myObject.size () < @{maxSize@})
+		myObject.size () > @{minSize},
+		myObject.size () < @{maxSize})
 	then
 		myObject.setIsValid(@{valida});
 		myObject.setIsValid(@{validb0}, @{validb1});

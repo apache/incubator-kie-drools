@@ -16,6 +16,7 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
@@ -30,16 +31,31 @@ public class Row {
     	
     }
     
-    Row(int r) {
+    Row(int r, Column[] columns) {
         rowNum = r;
+        for (int i = 0; i < columns.length; i++) {
+			cells.add(new Cell(this, columns[i]));
+		}
     }
     
     public int getRowNumber() {
         return rowNum;
     }
 
-    void addCell(Cell cell) {
-        cells.add( cell );
+    Cell getCell(int columnIndex)
+    {
+    	return (Cell) cells.get(columnIndex);
+    }
+    
+    boolean isEmpty() {
+    	for (Iterator it = cells.iterator(); it.hasNext();) {
+			Cell cell = (Cell) it.next();
+			if (cell.getValue() != null)
+			{
+				return false;
+			}
+		}
+    	return true;
     }
     
     public List getCells() {

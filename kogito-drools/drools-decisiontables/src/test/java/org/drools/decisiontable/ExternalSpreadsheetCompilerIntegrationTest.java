@@ -30,7 +30,6 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.decisiontable.parser.ExternalSheetListener;
-import org.drools.decisiontable.parser.DefaultTemplateContainer;
 import org.drools.rule.Package;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a> Some basic unit tests for converter utility.
@@ -39,7 +38,6 @@ import org.drools.rule.Package;
  */
 public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
 {
-    
     public void testIntegration() throws Exception 
     {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
@@ -76,8 +74,7 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         
     }
     
-    // @FIXME
-    public void FIXME_testPricing() throws Exception 
+    public void testPricing() throws Exception 
     {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final List listeners = new ArrayList();
