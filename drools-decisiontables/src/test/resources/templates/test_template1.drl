@@ -17,7 +17,7 @@ coolness
 rule "How cool is @{name} @{row.rowNumber}"
 	when
 		user.getName().equals("@{name}")
-		user.getAge() >= @{age1} && user.getAge() <= @{age2}
+		user.getAge() >= @{age0} && user.getAge() <= @{age1}
 	then
 		System.out.println( "@{log}" );
 		user.setCoolness("@{coolness}");
@@ -30,7 +30,7 @@ log
 rule "How uncool is @{name} @{row.rowNumber}"
 	when
 		user.getName().equals("@{name}")
-		user.getAge() >= @{age1} && user.getAge() <= @{age2}
+		user.getAge() >= @{age0} && user.getAge() <= @{age1}
 	then
 		System.out.println( "@{log}" );
 		user.setCoolness("Not so cool"); //@{coolness} putting the column in the comments makes the line conditionally display
