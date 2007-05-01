@@ -1,6 +1,7 @@
 package org.drools.examples.conway;
 
 import org.drools.RuleBase;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.DefaultAgendaEventListener;
@@ -17,7 +18,7 @@ public class CellGrid {
 
     private final Cell[][] cells;
 
-    private WorkingMemory  workingMemory;
+    private StatefulSession  session;
 
     /**
      * Constructs a CellGrid
@@ -32,7 +33,7 @@ public class CellGrid {
         this.cells = new Cell[rows][columns];
 
         final RuleBase ruleBase = ConwayRuleBaseFactory.getRuleBase();
-        this.workingMemory = ruleBase.newWorkingMemory();
+        this.session = ruleBase.newStatefulSession();
 
         DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
             public void agendaGroupPopped(AgendaGroupPoppedEvent event,
@@ -43,9 +44,9 @@ public class CellGrid {
             }
         };
 
-        this.workingMemory.addEventListener( listener );
+        this.session.addEventListener( listener );
 
-        this.workingMemory.assertObject( this );
+        this.session.assertObject( this );
 
         // populate the array of Cells and hook each
         // cell up with its neighbors...
@@ -54,11 +55,11 @@ public class CellGrid {
                 final Cell newCell = new Cell( column,
                                                row );
                 this.cells[row][column] = newCell;
-                this.workingMemory.assertObject( newCell );
+                this.session.assertObject( newCell );
             }
         }
-        this.workingMemory.setFocus( "register neighbor" );
-        this.workingMemory.fireAllRules();
+        this.session.setFocus( "register neighbor" );
+        this.session.fireAllRules();
     }
 
     /**
@@ -98,24 +99,24 @@ public class CellGrid {
      */
     public boolean nextGeneration() {
         System.out.println( "next generation" );
-        workingMemory.setFocus( "calculate" );
-        workingMemory.setFocus( "kill" );
-        workingMemory.setFocus( "birth" );
-        workingMemory.setFocus( "reset calculate" );
-        workingMemory.setFocus( "rest" );
-        workingMemory.setFocus( "evaluate" );
-        workingMemory.fireAllRules();
-        return workingMemory.getAgenda().getAgendaGroup( "evaluate" ).size() != 0;
+        session.setFocus( "calculate" );
+        session.setFocus( "kill" );
+        session.setFocus( "birth" );
+        session.setFocus( "reset calculate" );
+        session.setFocus( "rest" );
+        session.setFocus( "evaluate" );
+        session.fireAllRules();
+        return session.getAgenda().getAgendaGroup( "evaluate" ).size() != 0;
     }
 
     /**
      * kills all cells in the grid
      */
     public void killAll() {
-        this.workingMemory.setFocus( "calculate" );
-        this.workingMemory.setFocus( "kill all" );
-        this.workingMemory.setFocus( "reset calculate" );
-        this.workingMemory.fireAllRules();
+        this.session.setFocus( "calculate" );
+        this.session.setFocus( "kill all" );
+        this.session.setFocus( "reset calculate" );
+        this.session.fireAllRules();
     }
 
     /**
@@ -153,16 +154,19 @@ public class CellGrid {
                     final Cell cell = getCellAt( row + rowOffset,
                                                  column + columnOffset );
                     cell.setCellState( CellState.LIVE );
-                    this.workingMemory.modifyObject( this.workingMemory.getFactHandle( cell ),
+                    this.session.modifyObject( this.session.getFactHandle( cell ),
                                                      cell );
                 }
             }
         }
-        workingMemory.setFocus( "calculate" );
-        workingMemory.fireAllRules();
-        System.out.println( "" );
+        session.setFocus( "calculate" );
+        session.fireAllRules();
     }
 
+    public void dispose() {
+        this.session.dispose();
+    }
+    
     public String toString() {
         StringBuffer buf = new StringBuffer();
 
