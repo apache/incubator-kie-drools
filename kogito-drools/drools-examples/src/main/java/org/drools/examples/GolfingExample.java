@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 
@@ -20,7 +21,7 @@ public class GolfingExample {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final StatefulSession session = ruleBase.newStatefulSession();
         
         String[] names = new String[] { "Fred", "Joe", "Bob", "Tom" };
         String[] colors = new String[] { "red", "blue", "plaid", "orange" };
@@ -29,12 +30,13 @@ public class GolfingExample {
         for ( int n = 0; n < names.length; n++ ) {
             for ( int c = 0; c < colors.length; c++ ) {
                 for ( int p = 0; p < positions.length; p++ ) {
-                    workingMemory.assertObject( new Golfer( names[n], colors[c], positions[p]) );
+                    session.assertObject( new Golfer( names[n], colors[c], positions[p]) );
                 }                
             }            
         }
 
-        workingMemory.fireAllRules(); 
+        session.fireAllRules();
+        session.dispose();
     }
 
 

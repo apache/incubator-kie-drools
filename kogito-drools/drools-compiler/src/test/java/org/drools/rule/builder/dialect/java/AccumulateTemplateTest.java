@@ -22,6 +22,10 @@ public class AccumulateTemplateTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
+    
+    public void testEmpty() {
+        
+    }
 
 //    public void testMethodGeneration() {
 //        final StringTemplateGroup ruleGroup = new StringTemplateGroup( new InputStreamReader( AccumulateTemplateTest.class.getResourceAsStream( "javaRule.stg" ) ),

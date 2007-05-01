@@ -187,7 +187,7 @@ rule "initial_boundary_junction_arrow"
 		$junction : Junction( type == "3j", name == "arrow", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
 		$edge1 : Edge( p1 == $basePoint, p2 == $p1 )
 		$edge2 : Edge( p1 == $basePoint, p2 == $p2 )
-		$edge2 : Edge( p1 == $basePoint, p2 == $p3 )
+        $edge3 : Edge( p1 == $basePoint, p2 == $p3 ) //@FIXME, is this correct? I changed edge2 to edge3
 		not ( Junction( basePoint > $basePoint ) )
 	then
 		$junction.setVisited( "yes" );

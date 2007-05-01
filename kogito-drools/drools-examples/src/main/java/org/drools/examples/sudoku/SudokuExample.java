@@ -5,10 +5,12 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -22,6 +24,7 @@ import org.drools.rule.Package;
 public class SudokuExample {
 
 	public static void testWithInput(int[][] field){
+        StatefulSession session = null;
 		try {
         	Collection fields = new ArrayList();
         	//create Fields for every element of the matrix
@@ -37,21 +40,21 @@ public class SudokuExample {
         	}
         	//load up the rulebase
             RuleBase ruleBase = readRule();
-            WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            session = ruleBase.newStatefulSession();
             
             //go !
             Iterator iter = fields.iterator();
 
         	Collection handles = new ArrayList();
             while(iter.hasNext()){
-            	handles.add(workingMemory.assertObject( iter.next() ));
+            	handles.add(session.assertObject( iter.next() ));
             }            
-            workingMemory.fireAllRules();
+            session.fireAllRules();
             
-            System.out.println("Size: " + workingMemory.getObjects().size());
+            System.out.println("Size: " + iteratorToList(session.iterateObjects()).size());
             
             //Get Result
-            iter = workingMemory.getObjects().iterator();
+            iter = session.iterateObjects();
             //Copy the values of the fields into the matrix
             while(iter.hasNext()) {
             	Object next = iter.next();
@@ -73,6 +76,10 @@ public class SudokuExample {
             
         } catch (Throwable t) {
             t.printStackTrace();
+        } finally {
+            if ( session != null ) {
+                session.dispose();
+            }
         }
 	}
     public static final void main(String[] args) {
@@ -148,4 +155,11 @@ public class SudokuExample {
 		return ruleBase;
 	}
     
+    private static List iteratorToList(Iterator it) {
+        List list = new ArrayList();
+        for (;it.hasNext();) {
+            list.add( it.next() );
+        }
+        return list;
+    }
 }

@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
@@ -21,21 +22,24 @@ public class FibonacciExample {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final StatefulSession session = ruleBase.newStatefulSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/fibonacci" );
 
         // By setting dynamic to TRUE, Drools will use JavaBean
         // PropertyChangeListeners so you don't have to call modifyObject().
         final boolean dynamic = false;
 
-        workingMemory.assertObject( new Fibonacci( 50 ),
+        session.assertObject( new Fibonacci( 50 ),
                                     dynamic );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
 
         logger.writeToDisk();
+        
+        session.dispose();
+        
     }
 
     public static class Fibonacci {

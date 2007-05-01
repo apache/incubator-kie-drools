@@ -10,14 +10,13 @@ import org.drools.RuleBase;
 import org.drools.rule.Package;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 
 
 public class WaltzDbBenchmark {
-    public static void main(final String[] args) throws Exception {
-        try {
-        	
+    public static void main(final String[] args) throws Exception {        	
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "waltzdb.drl" ) ) );
             Package pkg = builder.getPackage();
@@ -28,7 +27,7 @@ public class WaltzDbBenchmark {
            
     		ruleBase.addPackage( pkg );
            
-            WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            StatefulSession session = ruleBase.newStatefulSession();
             
             java.util.List lines = WaltzDbBenchmark.loadLines("waltzdb16.dat"); //12,8,4
             java.util.List labels = WaltzDbBenchmark.loadLabels("waltzdb16.dat"); //12,8,4
@@ -36,25 +35,22 @@ public class WaltzDbBenchmark {
         	Iterator iter =lines.iterator();
         	while(iter.hasNext()){
         		Line line = (Line)iter.next();
-        		workingMemory.assertObject(line);
+        		session.assertObject(line);
         		System.out.println(line.getP1() + " " +  line.getP2());
         	}
         	
         	iter =labels.iterator();
         	while(iter.hasNext()){
         		Label label = (Label)iter.next();
-        		workingMemory.assertObject(label);
+        		session.assertObject(label);
         		System.out.println(label.getId() + " " +  label.getType());
         	}
             
             Stage stage = new Stage(Stage.DUPLICATE);
-            workingMemory.assertObject( stage );
-            workingMemory.fireAllRules();        
+            session.assertObject( stage );
+            session.fireAllRules();        
         	System.out.println("Time: " + (System.currentTimeMillis() - now));
-        	
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        	session.dispose();
         
     }
 

@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -41,7 +42,7 @@ public class MannersBenchmark {
 		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage(pkg);
 
-		WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+		StatefulSession session = ruleBase.newStatefulSession();
 
 		String filename;
 		if (args.length != 0) {
@@ -55,14 +56,15 @@ public class MannersBenchmark {
 		List list = getInputObjects(is);
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			Object object = it.next();
-			workingMemory.assertObject(object);
+			session.assertObject(object);
 		}
 
-		workingMemory.assertObject(new Count(1));
+		session.assertObject(new Count(1));
 
 		long start = System.currentTimeMillis();
-		workingMemory.fireAllRules();
+		session.fireAllRules();
 		System.err.println(System.currentTimeMillis() - start);
+        session.dispose();
 	}
 
 	/**
