@@ -12,7 +12,7 @@ priorClaims
 policyType
 discount
 
-rule "Discounts_$row.rowNumber$"
+rule "Discounts_@{row.rowNumber}"
 	
 	when
 		Driver(age >= @{age0}, age <= @{age1}, priorClaims == "@{priorClaims}")
