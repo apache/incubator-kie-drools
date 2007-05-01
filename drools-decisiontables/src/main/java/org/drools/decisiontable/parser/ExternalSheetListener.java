@@ -19,8 +19,6 @@ package org.drools.decisiontable.parser;
 import java.util.Properties;
 
 import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.WorkingMemory;
 import org.drools.decisiontable.model.DRLOutput;
 
 /**
@@ -94,25 +92,28 @@ public class ExternalSheetListener implements RuleSheetListener {
 		if (currentRow != null && column >= startCol && value != null
 				&& value.trim().length() > 0) {
 
+			int columnIndex = column - startCol;
 			// System.out.println("asserting cell " + row + ", " + column + ": "
 			// + value);
-			Column col = columns[column - startCol];
-			Cell cell = new Cell(currentRow, col, value);
-			currentRow.addCell(cell);
+			//Column col = columns[columnIndex];
+			//Cell cell = new Cell(currentRow, col, value);
+			//currentRow.addCell(cell);
+			Cell cell = currentRow.getCell(columnIndex);
+			cell.setValue(value);
 			session.assertObject(cell);
 
 		}
 	}
 
-	public void newRow(int rowNumber, int columns) {
+	public void newRow(int rowNumber, int columnCount) {
 		if (!tableFinished && rowNumber >= startRow) {
-			if (currentRow != null && currentRow.cells.isEmpty()) {
+			if (currentRow != null && currentRow.isEmpty()) {
 				currentRow = null;
 				tableFinished = true;
 			} else {
 				if (currentRow != null)
 					session.assertObject(currentRow);
-				currentRow = new Row(rowNumber);
+				currentRow = new Row(rowNumber, columns);
 			}
 		}
 	}

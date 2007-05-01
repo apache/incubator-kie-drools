@@ -33,10 +33,13 @@ public class Cell {
 	public Cell() {
 		
 	}
-	Cell(Row r, Column c, String v) {
+	Cell(Row r, Column c) {
 		row = r;
 		column = c;
-		value = c.getValue(v);
+	}
+	
+	public void setValue(String v) {
+		value = column.getValue(v);
 	}
 
 	public String toString() {

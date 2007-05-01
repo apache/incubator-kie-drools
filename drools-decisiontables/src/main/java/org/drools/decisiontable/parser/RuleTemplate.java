@@ -92,11 +92,10 @@ public class RuleTemplate
 	/*
 	 * Replace the optional columns in the rule contents with an if statement.
 	 * if (column is empty) do not show the line.
-	 * This is based on antlr StringTemplate and should be replaced with MVEL.
 	 */
 	private String replaceOptionals(String contents) {
 		try {
-			final Pattern pattern = Pattern.compile("\\$(.[^\\$]*)\\$");
+			final Pattern pattern = Pattern.compile("@\\{(.[^}]*)\\}");
 			final List columns = new ArrayList(getColumns());
 			columns.add("row.rowNumber");
 			final BufferedReader reader = new BufferedReader(new StringReader(
@@ -109,16 +108,16 @@ public class RuleTemplate
 				while (matcher.find()) {
 					final String c = matcher.group(1);
 					if (!columns.contains(c)) {
-						newLine.append("$if(").append(matcher.group(1)).append(
-								")$");
+						newLine.append("@if{").append(matcher.group(1)).append(
+								" != null} ");
 						optCols++;
 					}
 				}
 				newLine.append(line);
-				newLine.append(StringUtils.repeat("$endif$", optCols));
+				newLine.append(StringUtils.repeat(" @end{}", optCols));
 				newLine.append("\n");
 			}
-			// System.out.println("newLine: " + newLine);
+//			System.out.println("newLine: " + newLine);
 			return newLine.toString();
 
 		} catch (IOException e) {
