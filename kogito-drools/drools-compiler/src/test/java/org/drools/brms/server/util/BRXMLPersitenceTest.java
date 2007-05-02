@@ -1,5 +1,11 @@
 package org.drools.brms.server.util;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -13,6 +19,7 @@ import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.lang.DRLParser;
 
 public class BRXMLPersitenceTest extends TestCase {
 
@@ -83,6 +90,39 @@ public class BRXMLPersitenceTest extends TestCase {
                       newXML );
 
     }
+
+    /**
+     * This will verify that we can load an old BRXML change. If this fails,
+     * then backwards compatability is broken.
+     */
+    public void testBackwardsCompat() throws Exception {
+        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brxml.xml" ) );
+        
+        assertNotNull(m2);
+        assertEquals(3, m2.rhs.length);
+    }
+    
+    private String loadResource(final String name) throws Exception {
+
+        //        System.err.println( getClass().getResource( name ) );
+        final InputStream in = getClass().getResourceAsStream( name );
+
+    
+        final Reader reader = new InputStreamReader( in );
+
+        final StringBuffer text = new StringBuffer();
+
+        final char[] buf = new char[1024];
+        int len = 0;
+
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
+
+        return text.toString();
+    }    
 
     private RuleModel getComplexModel() {
         final RuleModel m = new RuleModel();
