@@ -49,9 +49,10 @@ public class DateFactory
     private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
 
     private static EvaluatorFactory INSTANCE            = new DateFactory();
+    private static SimpleDateFormat df;
 
     private DateFactory() {
-
+        df = new SimpleDateFormat( DateFactory.DATE_FORMAT_MASK );
     }
 
     public static EvaluatorFactory getInstance() {
@@ -464,8 +465,6 @@ public class DateFactory
     
     /** Use the simple date formatter to read the date from a string */
     public static Date parseDate(final String input) {
-
-        final SimpleDateFormat df = new SimpleDateFormat( DateFactory.DATE_FORMAT_MASK );
         try {
             return df.parse( input );
         } catch ( final ParseException e ) {
