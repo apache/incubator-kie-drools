@@ -63,10 +63,12 @@
     <dependency>
       <groupId>jsr94</groupId>
       <artifactId>jsr94-tck</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jsr94</groupId>
       <artifactId>jsr94-sigtest</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

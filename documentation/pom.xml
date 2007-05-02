@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>drools-documentation</artifactId>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
   <name>Drools :: Documentation</name>
 
   <repositories>
@@ -29,21 +29,22 @@
               <id>manual</id>
               <phase>generate-resources</phase>
               <configuration>
-                <tasks>
+                <tasks>            
                     <delete dir="manual/build"/>
+                    <delete dir="src/main/resources"/>
+                    
                     <ant dir="manual" inheritRefs="true" />
-                    <delete dir="../drools-eclipse/drools-eclipse-plugin/help/eclipse"/>
-                    <delete dir="../drools-eclipse/drools-eclipse-plugin/help/shared"/>
+                    
                     <replace file="manual/build/en/eclipse/toc.xml" token="href=&quot;" value="href=&quot;help/eclipse/"/>
                     <replace file="manual/build/en/eclipse/toc.xml" token="topic=&quot;" value="topic=&quot;help/eclipse/"/>
-                    <copy todir="../drools-eclipse/drools-eclipse-plugin/help">
-                      <fileset dir="manual/build/en" includes="shared/** eclipse/**" excludes="**/*.svg **/*.db"/>
-                    </copy>
+                                        
+                    <copy todir="src/main/resources">
+                      <fileset dir="manual/build/en" includes="shared/** eclipse/** html/** html_single/**" excludes="**/*.svg **/*.db"/>
+                    </copy>                   
                     
-                    <!-- Leave this copy to the assembly for now -->
-                    <!--copy todir="../target/docs">
+                    <copy todir="../target/docs">
                       <fileset dir="manual/build/en" includes="shared/** html/** html_single/**" excludes="**/*.svg **/*.db"/>
-                    </copy-->
+                    </copy>
                 </tasks>
               </configuration>
               <goals>
