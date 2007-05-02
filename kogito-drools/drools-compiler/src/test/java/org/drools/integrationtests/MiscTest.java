@@ -106,7 +106,7 @@ public class MiscTest extends TestCase {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
-    
+
     public void testGlobals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -707,7 +707,7 @@ public class MiscTest extends TestCase {
         assertEquals( peter,
                       list.get( 1 ) );
     }
-    
+
     public void testNullBehaviour() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_behaviour.drl" ) ) );
@@ -1035,7 +1035,6 @@ public class MiscTest extends TestCase {
 
     }
 
-
     public void testPredicateAsFirstPattern() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_pattern.drl" ) ) );
@@ -1061,7 +1060,6 @@ public class MiscTest extends TestCase {
                              20,
                              provolone.getPrice() );
     }
-
 
     public void testConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -1246,7 +1244,6 @@ public class MiscTest extends TestCase {
         assertTrue( list4.contains( chili1 ) );
     }
 
-
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
@@ -1333,7 +1330,6 @@ public class MiscTest extends TestCase {
                       list.get( 2 ) );
     }
 
-
     public void testContainsCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ContainsCheese.drl" ) ) );
@@ -1397,7 +1393,6 @@ public class MiscTest extends TestCase {
         assertEquals( cheesery2,
                       list.get( 1 ) );
     }
-
 
     public void testDuplicateRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
@@ -1514,7 +1509,6 @@ public class MiscTest extends TestCase {
         assertEquals( new Person( "help" ),
                       IteratorToList.convert( workingMemory.iterateObjects() ).get( 1 ) );
     }
-
 
     public void testEmptyRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -1705,8 +1699,6 @@ public class MiscTest extends TestCase {
         assertEquals( 1,
                       results.size() );
     }
-
-
 
     public void testInsurancePricingExample() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "insurance_pricing_example.drl" ) );
@@ -2214,7 +2206,7 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         assertFalse( pkg.isValid() );
-        System.out.println(pkg.getErrorSummary());
+        System.out.println( pkg.getErrorSummary() );
         assertEquals( 6,
                       pkg.getErrorSummary().split( "\n" ).length );
     }
@@ -2482,6 +2474,43 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
     }
-    
+
+    public void testMemberOfAndNotMemberOf() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_memberOf.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           12 );
+        final Cheese muzzarela = new Cheese( "muzzarela",
+                                             10 );
+        final Cheese brie = new Cheese( "brie",
+                                        15 );
+        workingMemory.assertObject( stilton );
+        workingMemory.assertObject( muzzarela );
+
+        final Cheesery cheesery = new Cheesery();
+        cheesery.getCheeses().add( stilton.getType() );
+        cheesery.getCheeses().add( brie.getType() );
+        workingMemory.assertObject( cheesery );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertEquals( stilton,
+                      list.get( 0 ) );
+        assertEquals( muzzarela,
+                      list.get( 1 ) );
+    }
 
 }
