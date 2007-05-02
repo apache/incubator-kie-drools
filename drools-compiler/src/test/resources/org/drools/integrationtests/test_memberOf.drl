@@ -1,0 +1,23 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+import org.drools.Cheesery;
+
+global java.util.List list;
+
+rule "Stilton is memberOf Cheesery"
+    salience 10
+    when
+        Cheesery( $cheeses : cheeses )
+        cheese : Cheese( type memberOf $cheeses )
+    then
+		list.add( cheese );
+end   
+
+rule "Muzzarela is not memberOf Cheesery"
+    when
+        Cheesery( $cheeses : cheeses )
+        cheese : Cheese( type not memberOf $cheeses )
+    then
+		list.add( cheese );
+end   

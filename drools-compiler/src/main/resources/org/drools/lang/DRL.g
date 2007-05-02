@@ -990,37 +990,49 @@ constraint[PatternDescr pattern]
 	
 constraint_expression returns [RestrictionDescr rd]
         :	
-		op=(	'=='
-		|	'>'
-		|	'>='
-		|	'<'
-		|	'<='
-		|	'!='
-		|	CONTAINS
-		|	MATCHES
-		|	EXCLUDES
-		|	MEMBEROF
-		|	NOT_MEMBEROF
-		)	
+		op=operator
 		(	bvc=ID
 			{
-				rd = new VariableRestrictionDescr(op.getText(), bvc.getText());
+				rd = new VariableRestrictionDescr(op, bvc.getText());
 			}
 		|
 			lc=enum_constraint 
 			{ 
-				rd  = new LiteralRestrictionDescr(op.getText(), lc, true);
+				rd  = new LiteralRestrictionDescr(op, lc, true);
 			}						
 		|
 			lc=literal_constraint 
 			{ 
-				rd  = new LiteralRestrictionDescr(op.getText(), lc);
+				rd  = new LiteralRestrictionDescr(op, lc);
 			}
 		|	rvc=retval_constraint 
 			{ 
-				rd = new ReturnValueRestrictionDescr(op.getText(), rvc);							
+				rd = new ReturnValueRestrictionDescr(op, rvc);							
 			} 
 		)
+	;	
+	
+operator returns [String op]
+	:
+		(	t='=='
+		|	t='>'
+		|	t='>='
+		|	t='<'
+		|	t='<='
+		|	t='!='
+		|	t=CONTAINS
+		|	t=MATCHES
+		|	t=EXCLUDES
+		|	t=MEMBEROF
+		|	n=NOT t=MEMBEROF
+		)
+		{
+		    if( n != null ) {
+		        op = "not "+t.getText();
+		    } else {
+		        op = t.getText();
+		    }
+		}
 	;	
 		
 literal_constraint returns [String text]
@@ -1618,11 +1630,8 @@ EXCLUDES
 	:	'excludes';
 	
 MEMBEROF
-	:	'memberof';
+	:	'memberOf';
 
-NOT_MEMBEROF
-	:	'nonmemberof';
-	
 MATCHES :	'matches';
 
 NULL	:	'null';

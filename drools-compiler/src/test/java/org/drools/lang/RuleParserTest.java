@@ -2492,7 +2492,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testMemberof() throws Exception {
-        final String text = "Country( $cities : city )\nPerson( city memberof $cities )\n";
+        final String text = "Country( $cities : city )\nPerson( city memberOf $cities )\n";
         final AndDescr descrs = new AndDescr();
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
@@ -2510,7 +2510,30 @@ public class RuleParserTest extends TestCase {
         FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getDescrs().get( 0 );
         VariableRestrictionDescr restr = (VariableRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
         
-        assertEquals( "memberof", restr.getEvaluator() );
+        assertEquals( "memberOf", restr.getEvaluator() );
+        assertEquals( "$cities", restr.getIdentifier() );
+    }
+
+    public void testNotMemberof() throws Exception {
+        final String text = "Country( $cities : city )\nPerson( city not memberOf $cities )\n";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( descrs.getLine() );
+        parser.normal_lhs_block( descrs );
+        if ( parser.hasErrors() ) {
+            System.err.println( parser.getErrorMessages() );
+        }
+        assertFalse( parser.hasErrors() );
+        
+        assertEquals( 2, descrs.getDescrs().size());
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 1 );
+        FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getDescrs().get( 0 );
+        VariableRestrictionDescr restr = (VariableRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
+        
+        assertEquals( "not memberOf", restr.getEvaluator() );
         assertEquals( "$cities", restr.getIdentifier() );
     }
 
