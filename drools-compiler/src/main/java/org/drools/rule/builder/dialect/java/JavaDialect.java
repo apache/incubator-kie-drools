@@ -1,6 +1,5 @@
 package org.drools.rule.builder.dialect.java;
 
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,7 +38,6 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.Declaration;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -506,7 +504,7 @@ public class JavaDialect
                                       final String ext,
                                       final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        String newName = "Rule_" + name.replaceAll( "[^\\w$]",
+        String newName = "Rule_" + name.replaceAll( "[[^\\w]$]",
                                                     "_" );
 
         // make sure the class name does not exist, if it does increase the counter
