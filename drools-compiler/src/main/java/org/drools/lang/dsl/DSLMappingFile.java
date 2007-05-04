@@ -43,6 +43,8 @@ public class DSLMappingFile {
     private static final String  CONDITION   = "[condition]";
     private static final String  CONSEQUENCE = "[consequence]";
     //private static final String  ANY         = "[*]";
+    private static final String  WHEN        = "[when]";
+    private static final String  THEN        = "[then]";
 
     private DSLMapping           mapping;
     private List                 errors;
@@ -101,9 +103,9 @@ public class DSLMappingFile {
                 DSLMappingEntry.Section section = DSLMappingEntry.ANY;
                 if ( KEYWORD.equals( sectionStr ) ) {
                     section = DSLMappingEntry.KEYWORD;
-                } else if ( CONDITION.equals( sectionStr ) ) {
+                } else if ( CONDITION.equals( sectionStr ) || WHEN.equals( sectionStr )) {
                     section = DSLMappingEntry.CONDITION;
-                } else if ( CONSEQUENCE.equals( sectionStr ) ) {
+                } else if ( CONSEQUENCE.equals( sectionStr ) || THEN.equals( sectionStr )) {
                     section = DSLMappingEntry.CONSEQUENCE;
                 }
 
