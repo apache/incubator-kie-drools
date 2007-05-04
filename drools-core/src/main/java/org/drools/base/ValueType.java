@@ -208,7 +208,7 @@ public class ValueType
             return ValueType.DATE_TYPE;
         } else if ( clazz == java.util.Date.class ) {
             return ValueType.DATE_TYPE;
-        } else if ( clazz.isAssignableFrom( Object[].class ) ) {
+        } else if ( clazz.isArray() ) {
             return ValueType.ARRAY_TYPE;
         } else if ( clazz == BigDecimal.class ) {
             return ValueType.BIG_DECIMAL_TYPE;
