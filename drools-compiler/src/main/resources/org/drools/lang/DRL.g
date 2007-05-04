@@ -958,9 +958,8 @@ constraint[PatternDescr pattern]
 		    }
 		}
 		(
-			(	rd=constraint_expression
+			(	constraint_expression[fc]
 				{
-					fc.addRestriction(rd);
 					// we must add now as we didn't before
 					if( fb != null) {
 					    pattern.addDescr( fc );
@@ -975,12 +974,7 @@ constraint[PatternDescr pattern]
 							fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
 						}							
 					}
-					rd=constraint_expression
-					{
-					        if( rd != null ) {
-							fc.addRestriction(rd);
-					        }
-					}
+					constraint_expression[fc]
 				)*
 			)
 		|
@@ -988,31 +982,23 @@ constraint[PatternDescr pattern]
 		)?
 	;
 	
-constraint_expression returns [RestrictionDescr rd]
+constraint_expression[FieldConstraintDescr fc]
         :	
-		op=operator
-		(	bvc=ID
-			{
-				rd = new VariableRestrictionDescr(op, bvc.getText());
-			}
-		|
-			lc=enum_constraint 
-			{ 
-				rd  = new LiteralRestrictionDescr(op, lc, true);
-			}						
-		|
-			lc=literal_constraint 
-			{ 
-				rd  = new LiteralRestrictionDescr(op, lc);
-			}
-		|	rvc=retval_constraint 
-			{ 
-				rd = new ReturnValueRestrictionDescr(op, rvc);							
-			} 
+		(
+			compound_operator[fc]
 		)
+		|
+		(
+			op=simple_operator rd=expression_value[op]
+			{
+			    if( rd != null ) {
+			        fc.addRestriction( rd );
+			    }
+			}
+ 		)
 	;	
 	
-operator returns [String op]
+simple_operator returns [String op]
 	:
 		(	t='=='
 		|	t='>'
@@ -1034,7 +1020,78 @@ operator returns [String op]
 		    }
 		}
 	;	
-		
+	
+compound_operator[FieldConstraintDescr fc]
+	@init {
+		String op = null;
+	}
+	:
+		( IN 
+		{
+		  op = "==";
+		}	
+ 		LEFT_PAREN rd=expression_value[op]
+		{
+		    if( rd != null ) {
+		        fc.addRestriction( rd );
+		    }
+		}
+		( COMMA rd=expression_value[op]
+		{
+		    if( rd != null ) {
+			fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
+		        fc.addRestriction( rd );
+		    }
+		}
+		)* 
+		RIGHT_PAREN 
+		)
+		|
+		( NOT IN 
+		{
+		  op = "!=";
+		}	
+ 		LEFT_PAREN rd=expression_value[op]
+		{
+		    if( rd != null ) {
+		        fc.addRestriction( rd );
+		    }
+		}
+		( COMMA rd=expression_value[op]
+		{
+		    if( rd != null ) {
+			fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));	
+		        fc.addRestriction( rd );
+		    }
+		}
+		)* 
+		RIGHT_PAREN 
+		)
+	;
+	
+expression_value[String op] returns [RestrictionDescr rd]
+	:
+		(	bvc=ID
+			{
+				rd = new VariableRestrictionDescr(op, bvc.getText());
+			}
+		|
+			lc=enum_constraint 
+			{ 
+				rd  = new LiteralRestrictionDescr(op, lc, true);
+			}						
+		|
+			lc=literal_constraint 
+			{ 
+				rd  = new LiteralRestrictionDescr(op, lc);
+			}
+		|	rvc=retval_constraint 
+			{ 
+				rd = new ReturnValueRestrictionDescr(op, rvc);							
+			} 
+		)	
+	;	
+	
 literal_constraint returns [String text]
 	@init {
 		text = null;
@@ -1494,7 +1551,8 @@ identifier returns [Token tok]
         |       t=FORALL	            					
         |       t=WHEN            
         |       t=THEN	        
-        |       t=END             
+        |       t=END     
+        |	t=IN        
 	) 
 	{
 	    tok = t;
@@ -1634,6 +1692,8 @@ MEMBEROF
 
 MATCHES :	'matches';
 
+IN	:	'in';
+
 NULL	:	'null';
 
 EXISTS	:	'exists';
@@ -1695,7 +1755,10 @@ MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
 	;
+	
+COMMA	:	','
+	;
 
 MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+'  | '?' | '|' | ',' | '=' | '/' | '\'' | '\\'
+		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+'  | '?' | '|' | '=' | '/' | '\'' | '\\'
 	;
