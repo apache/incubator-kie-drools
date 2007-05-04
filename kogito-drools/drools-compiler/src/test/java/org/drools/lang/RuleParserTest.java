@@ -2537,6 +2537,170 @@ public class RuleParserTest extends TestCase {
         assertEquals( "$cities", restr.getIdentifier() );
     }
 
+    public void testInOperator() throws Exception {
+        final RuleDescr rule = parseResource( "in_operator_test.drl" ).rule();
+
+        assertFalse( this.parser.getErrors().toString(),
+                     this.parser.hasErrors() );
+        assertNotNull( rule );
+
+        assertEqualsIgnoreWhitespace( "consequence();",
+                                      (String) rule.getConsequence() );
+        assertEquals( "simple_rule",
+                      rule.getName() );
+        assertEquals( 2,
+                      rule.getLhs().getDescrs().size() );
+
+        //The first pattern, with 2 restrictions on a single field (plus a connective)
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+
+        FieldConstraintDescr fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( 3,
+                      fld.getRestrictions().size() );
+        assertEquals( "age",
+                      fld.getFieldName() );
+
+        LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        assertEquals( ">",
+                      lit.getEvaluator() );
+        assertEquals( "30",
+                      lit.getText() );
+
+        RestrictionConnectiveDescr con = (RestrictionConnectiveDescr) fld.getRestrictions().get( 1 );
+        assertEquals( RestrictionConnectiveDescr.AND,
+                      con.getConnective() );
+
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 2 );
+        assertEquals( "<",
+                      lit.getEvaluator() );
+        assertEquals( "40",
+                      lit.getText() );
+
+        //the second col, with 2 fields, the first with 2 restrictions, the second field with one
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "Vehicle",
+                      pattern.getObjectType() );
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( 3,
+                      fld.getRestrictions().size() );
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        assertEquals( "type",
+                      fld.getFieldName() );
+        assertEquals( "==",
+                      lit.getEvaluator() );
+        assertEquals( "sedan",
+                      lit.getText() );
+        con = (RestrictionConnectiveDescr) fld.getRestrictions().get( 1 );
+        assertEquals( RestrictionConnectiveDescr.OR,
+                      con.getConnective() );
+
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 2 );
+        assertEquals( "==",
+                      lit.getEvaluator() );
+        assertEquals( "wagon",
+                      lit.getText() );
+
+        //now the second field
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( 1,
+                      fld.getRestrictions().size() );
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        assertEquals( "<",
+                      lit.getEvaluator() );
+        assertEquals( "3",
+                      lit.getText() );
+
+    }
+
+    public void testNotInOperator() throws Exception {
+        final RuleDescr rule = parseResource( "notin_operator_test.drl" ).rule();
+
+        assertFalse( this.parser.getErrors().toString(),
+                     this.parser.hasErrors() );
+        assertNotNull( rule );
+
+        assertEqualsIgnoreWhitespace( "consequence();",
+                                      (String) rule.getConsequence() );
+        assertEquals( "simple_rule",
+                      rule.getName() );
+        assertEquals( 2,
+                      rule.getLhs().getDescrs().size() );
+
+        //The first pattern, with 2 restrictions on a single field (plus a connective)
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+
+        FieldConstraintDescr fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( 3,
+                      fld.getRestrictions().size() );
+        assertEquals( "age",
+                      fld.getFieldName() );
+
+        LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        assertEquals( ">",
+                      lit.getEvaluator() );
+        assertEquals( "30",
+                      lit.getText() );
+
+        RestrictionConnectiveDescr con = (RestrictionConnectiveDescr) fld.getRestrictions().get( 1 );
+        assertEquals( RestrictionConnectiveDescr.AND,
+                      con.getConnective() );
+
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 2 );
+        assertEquals( "<",
+                      lit.getEvaluator() );
+        assertEquals( "40",
+                      lit.getText() );
+
+        //the second col, with 2 fields, the first with 2 restrictions, the second field with one
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "Vehicle",
+                      pattern.getObjectType() );
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( 3,
+                      fld.getRestrictions().size() );
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        assertEquals( "type",
+                      fld.getFieldName() );
+        assertEquals( "!=",
+                      lit.getEvaluator() );
+        assertEquals( "sedan",
+                      lit.getText() );
+        con = (RestrictionConnectiveDescr) fld.getRestrictions().get( 1 );
+        assertEquals( RestrictionConnectiveDescr.AND,
+                      con.getConnective() );
+
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 2 );
+        assertEquals( "!=",
+                      lit.getEvaluator() );
+        assertEquals( "wagon",
+                      lit.getText() );
+
+        //now the second field
+        fld = (FieldConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( 1,
+                      fld.getRestrictions().size() );
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        assertEquals( "<",
+                      lit.getEvaluator() );
+        assertEquals( "3",
+                      lit.getText() );
+
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
