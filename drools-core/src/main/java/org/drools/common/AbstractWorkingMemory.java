@@ -1086,5 +1086,14 @@ public abstract class AbstractWorkingMemory
             throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );
         }
     }
+    
+    public List iterateObjectsToList() {
+    	List result = new ArrayList();
+    	Iterator iterator = iterateObjects();
+    	for ( ; iterator.hasNext(); ) {
+    		result.add(iterator.next());
+    	}
+    	return result;
+    }
 
 }
