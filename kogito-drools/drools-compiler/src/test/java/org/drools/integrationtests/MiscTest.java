@@ -2513,4 +2513,31 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    public void testContainsInArray() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_contains_in_array.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Primitives p = new Primitives( );
+        p.setStringArray( new String[] { "test1", "test3" } );
+        workingMemory.assertObject( p );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertEquals( "ok1",
+                      list.get( 0 ) );
+        assertEquals( "ok2",
+                      list.get( 1 ) );
+    }
 }
