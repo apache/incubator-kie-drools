@@ -18,6 +18,8 @@ package org.drools;
 
 import java.io.Serializable;
 
+import org.drools.concurrent.ExecutorService;
+
 /**
  * RuleBaseConfiguration
  * 
@@ -68,6 +70,7 @@ public class RuleBaseConfiguration
     private boolean           indexRightBetaMemory;
     private AssertBehaviour   assertBehaviour;
     private LogicalOverride   logicalOverride;
+    private ExecutorService   executorService;
 
     public RuleBaseConfiguration() {
         this.immutable = false;
@@ -102,6 +105,9 @@ public class RuleBaseConfiguration
                                                                                           "IDENTITY" ) ) );
         setLogicalOverride( LogicalOverride.determineLogicalOverride( System.getProperty( "drools.logicalOverride",
                                                                                           "DISCARD" ) ) );
+
+        setExecutorService( RuleBaseConfiguration.determineExecutorService( System.getProperty( "drools.executorService",
+                                                                                                "org.drools.concurrent.DefaultExecutorService" ) ) );
     }
 
     /**
@@ -230,6 +236,40 @@ public class RuleBaseConfiguration
     public void setLogicalOverride(final LogicalOverride logicalOverride) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.logicalOverride = logicalOverride;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public void setExecutorService(ExecutorService executorService) {
+        checkCanChange(); // throws an exception if a change isn't possible;    	
+        this.executorService = executorService;
+    }
+
+    public static ExecutorService determineExecutorService(String className) {
+        Class clazz = null;
+        try {
+            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                return (ExecutorService) clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate ExecutorService '" + className + "'" );
+            }
+        } else {
+            throw new IllegalArgumentException( "ExecutorService '" + className + "' not found" );
+        }
     }
 
     public static class AssertBehaviour
