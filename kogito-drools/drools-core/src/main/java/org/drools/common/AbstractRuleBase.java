@@ -330,6 +330,7 @@ abstract public class AbstractRuleBase
         }
 
         // Merge imports
+        // @TODO we should check for duplicates
         imports.addAll( newPkg.getImports() );
 
         // Add invokers

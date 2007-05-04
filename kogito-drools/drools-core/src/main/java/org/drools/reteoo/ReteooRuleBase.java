@@ -226,10 +226,12 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * @see RuleBase
      */
     public synchronized StatefulSession newStatefulSession(final boolean keepReference) {
-        ExecutorService executor = new DefaultExecutorService();
+        ExecutorService executor = this.config.getExecutorService();
         final ReteooStatefulSession session = new ReteooStatefulSession( this.workingMemoryCounter++,
                                                                          this,
-                                                                         new DefaultExecutorService() );
+                                                                         executor );
+        
+        
         executor.setCommandExecutor( new CommandExecutor( session ) );
 
         if ( keepReference ) {
@@ -248,7 +250,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
     
     public StatelessSession newStatelessSession() {
-        ExecutorService executor = new DefaultExecutorService();
+        ExecutorService executor = this.config.getExecutorService();
         ReteooWorkingMemory wm = new ReteooWorkingMemory( this.workingMemoryCounter++,
                                                           this  );
         
