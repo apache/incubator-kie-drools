@@ -40,8 +40,8 @@ public class DSLMappingFile {
     // [<section>][<metadata>]?<key>=<value>
     private static final Pattern pattern     = Pattern.compile( "((\\[[^\\[]*\\])\\s*(\\[([^\\[]*)\\])?)?\\s*([^=]*)=(.*)" );
     private static final String  KEYWORD     = "[keyword]";
-    private static final String  CONDITION   = "[when]";
-    private static final String  CONSEQUENCE = "[then]";
+    private static final String  CONDITION   = "[condition]";
+    private static final String  CONSEQUENCE = "[consequence]";
     //private static final String  ANY         = "[*]";
 
     private DSLMapping           mapping;

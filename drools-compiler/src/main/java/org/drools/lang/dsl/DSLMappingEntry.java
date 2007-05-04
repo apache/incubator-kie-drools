@@ -305,7 +305,8 @@ public interface DSLMappingEntry {
     public static class AnySection
         implements
         Section {
-        private static final String symbol = "*";
+
+        private static final String symbol = "[*]";
 
         private AnySection() {
         }
