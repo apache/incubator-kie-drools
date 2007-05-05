@@ -262,6 +262,11 @@ public class CompiledFunctionsTest extends TestCase {
         
         assertEquals( "416256", new String( bais.toByteArray() ) );          
     }
+    
+    public void testFactorial() throws Exception {
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(deffunction factorial (?n) (if (>= ?n 1) then (* ?n (factorial (- ?n 1))) else 1))" ).rhs();
+        //engine.ex
+    }
 
     private CLPParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
