@@ -13,8 +13,6 @@ public class BlockExecutionEngine
     implements
     Consequence,
     ExecutionEngine {
-    //private Map variableMap = new HashMap();
-
     private FunctionCaller[] functions;
 
     private int              index;

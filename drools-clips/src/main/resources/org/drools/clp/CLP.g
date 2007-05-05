@@ -20,9 +20,7 @@ grammar CLP;
 	private int lineOffset = 0;
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
-	private FunctionRegistry functionRegistry;
-	
-    FunctionRegistry factoryRegistry;
+	private FunctionRegistry functionRegistry;	
 	
 	public void setFunctionRegistry(FunctionRegistry functionRegistry) {
 		this.functionRegistry = functionRegistry;
@@ -222,6 +220,13 @@ package_statement returns [String packageName]
 	;	
 */
 
+eval_script[ParserHandler parserHandler]
+	:	(		r=defrule { parserHandler.ruleDescrHandler( r ); }
+			|	e=execution_block { parserHandler.lispFormHandler( e ); }
+		)
+	;
+	
+
 deffunction
 	:
 	;
@@ -272,7 +277,7 @@ defrule returns [RuleDescr rule]
 		
 		'=>'
 		
-		engine=rhs { rule.setConsequence( engine ); }
+		engine=execution_block { rule.setConsequence( engine ); }
 		
 		RIGHT_PAREN
 	;
@@ -311,7 +316,7 @@ ce[ConditionalElementDescr in_ce]
 		)
 	;
 
-rhs returns[ExecutionEngine engine]
+execution_block returns[ExecutionEngine engine]
 	@init {
 	        engine = new BlockExecutionEngine();
 			ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );  	

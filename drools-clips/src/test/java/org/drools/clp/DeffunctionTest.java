@@ -34,7 +34,5 @@ public class DeffunctionTest extends TestCase {
         w.setValue( context,  new LongValueHandler( 7 ) );
         
         assertEquals( new BigDecimal( 17 ), function.execute( new ValueHandler[] { q, w }, context ).getBigDecimalValue( context ) );
-    }
-    
-    
+    }      
 }
