@@ -12,5 +12,13 @@ package org.drools.testing.core.model;
 
 public class TestSuite {
 
-	public Scenario[] scenarios;
+	private Scenario[] scenarios;
+
+	public Scenario[] getScenarios() {
+		return scenarios;
+	}
+
+	public void setScenarios(Scenario[] scenarios) {
+		this.scenarios = scenarios;
+	}
 }
