@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.common.BetaConstraints;
@@ -260,6 +261,36 @@ public class CollectNode extends BetaNode
                               context,
                               workingMemory );
         }
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#hashCode()
+     */
+    public int hashCode() {
+        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.collect.hashCode() ^ this.resultsBinder.hashCode() ^
+               Arrays.hashCode( this.resultConstraints );
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(final Object object) {
+        if ( this == object ) {
+            return true;
+        }
+
+        if ( object == null || !(object instanceof CollectNode) ) {
+            return false;
+        }
+
+        final CollectNode other = (CollectNode) object;
+        
+        if( this.getClass() != other.getClass() || ( ! this.leftInput.equals( other.leftInput ) ) || 
+            ( ! this.rightInput.equals( other.rightInput ) ) || (! this.constraints.equals( other.constraints )) ) {
+            return false;
+        }
+        
+        return this.collect.equals( other.collect ) && resultsBinder.equals( other.resultsBinder ) && Arrays.equals( this.resultConstraints, other.resultConstraints );
     }
 
     public String toString() {

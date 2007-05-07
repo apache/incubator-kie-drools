@@ -17,6 +17,7 @@
 package org.drools.reteoo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.common.BetaConstraints;
@@ -259,6 +260,38 @@ public class AccumulateNode extends BetaNode {
                               workingMemory );
         }
     }
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#hashCode()
+     */
+    public int hashCode() {
+        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^
+               Arrays.hashCode( this.resultConstraints );
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(final Object object) {
+        if ( this == object ) {
+            return true;
+        }
+
+        if ( object == null || !(object instanceof AccumulateNode) ) {
+            return false;
+        }
+
+        final AccumulateNode other = (AccumulateNode) object;
+        
+        if( this.getClass() != other.getClass() || ( ! this.leftInput.equals( other.leftInput ) ) || 
+            ( ! this.rightInput.equals( other.rightInput ) ) || (! this.constraints.equals( other.constraints )) ) {
+            return false;
+        }
+        
+        return this.accumulate.equals( other.accumulate ) && resultBinder.equals( other.resultBinder ) && Arrays.equals( this.resultConstraints, other.resultConstraints );
+    }
+
+    
 
     public String toString() {
         return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
