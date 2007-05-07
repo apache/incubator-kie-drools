@@ -993,6 +993,8 @@ constraint_expression[FieldConstraintDescr fc]
 			{
 			    if( rd != null ) {
 			        fc.addRestriction( rd );
+			    } else if ( rd == null && op != null ) {
+			        fc.addRestriction( new LiteralRestrictionDescr(op, null) );
 			    }
 			}
  		)
