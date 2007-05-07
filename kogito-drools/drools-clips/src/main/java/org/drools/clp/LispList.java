@@ -7,6 +7,6 @@ public interface LispList {
 
     public ValueHandler getValueHandler();
 
-    public void setContext(ExecutionBuildContext context);
+    public void setContext(BuildContext context);
 
 }

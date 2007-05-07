@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.ANTLRStringStream;
@@ -15,7 +17,7 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.Person;
 import org.drools.clp.valuehandlers.ListValueHandler;
-import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
 import org.drools.clp.valuehandlers.LongValueHandler;
 import org.drools.clp.valuehandlers.ObjectValueHandler;
 import org.drools.compiler.SwitchingCommonTokenStream;
@@ -26,7 +28,7 @@ public class CompiledFunctionsTest extends TestCase {
     private CLPParser parser;
 
     public void testPrintout() throws Exception {        
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(printout d xx (eq 1 1) ?c (create$ (+ 1 1) x y) zzz)" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(printout d xx (eq 1 1) ?c (create$ (+ 1 1) x y) zzz)" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          1 );
@@ -45,7 +47,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
     
     public void testBindAndModify() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (+ 20 11) ) (modify ?p (age ?x) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (+ 20 11) ) (modify ?p (age ?x) )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -63,7 +65,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
 
     public void testSimpleCreate$() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (create$ 1 2 3) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (create$ 1 2 3) )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          1 );
@@ -83,7 +85,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
 
     public void testNestedCreate$() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (create$ 1 2 (+ 1 2) ) ) (bind ?y (create$ (+ 1 0) ?x (create$ a b ?x (+ 1 1) ) 3) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (create$ 1 2 (+ 1 2) ) ) (bind ?y (create$ (+ 1 0) ?x (create$ a b ?x (+ 1 1) ) 3) )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -130,7 +132,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
 
     public void testIf() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(if (< ?x ?y ) then (modify ?p (age 15) ) (printout d 15) else (modify ?p (age 5)) (printout d 5) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(if (< ?x ?y ) then (modify ?p (age 15) ) (printout d 15) else (modify ?p (age 5)) (printout d 5) )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -141,7 +143,7 @@ public class CompiledFunctionsTest extends TestCase {
         vars.put( "?x",
                   new LongValueHandler( 10 ) );
         vars.put( "?y",
-                  new LocalVariableValue( "?y",
+                  new IndexedLocalVariableValue( "?y",
                                           0 ) );
         vars.put( "?p",
                   new ObjectValueHandler( p ) );
@@ -168,7 +170,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
 
     public void testWhile() throws Exception {               
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(while (< ?x ?y) do (bind ?x (+ ?x 1)) (printout d ?x \" \") )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(while (< ?x ?y) do (bind ?x (+ ?x 1)) (printout d ?x \" \") )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -176,10 +178,10 @@ public class CompiledFunctionsTest extends TestCase {
         Map vars = new HashMap();
 
         vars.put( "?x",
-                  new LocalVariableValue( "?x",
+                  new IndexedLocalVariableValue( "?x",
                                           0 ) );
         vars.put( "?y",
-                  new LocalVariableValue( "?y",
+                  new IndexedLocalVariableValue( "?y",
                                           1 ) );
         engine.replaceTempTokens( vars );
 
@@ -199,7 +201,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
 
     public void testForeach() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x 0) (foreach ?e (create$ 1 2 3) (bind ?x (+ ?x ?e) ) (printout d ?x \" \") )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x 0) (foreach ?e (create$ 1 2 3) (bind ?x (+ ?x ?e) ) (printout d ?x \" \") )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -215,7 +217,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
     
     public void testSwitch() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?cheese ?var) (switch ?cheese (case stilton then (bind ?x ?cheese ) (break) ) (case cheddar then (bind ?x ?cheese ) (break) ) (default (bind ?x \"default\" ) ) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?cheese ?var) (switch ?cheese (case stilton then (bind ?x ?cheese ) (break) ) (case cheddar then (bind ?x ?cheese ) (break) ) (default (bind ?x \"default\" ) ) )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          3 );
@@ -223,7 +225,7 @@ public class CompiledFunctionsTest extends TestCase {
         Map vars = new HashMap();
 
         vars.put( "?var",
-                  new LocalVariableValue( "?var",
+                  new IndexedLocalVariableValue( "?var",
                                           2 ) );        
         engine.replaceTempTokens( vars );
 
@@ -250,7 +252,7 @@ public class CompiledFunctionsTest extends TestCase {
     }    
     
     public void testProgn() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?n 2) (while (progn (bind ?n (* ?n ?n)) (< ?n 1000)) do (printout d ?n) )" ).rhs();
+        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?n 2) (while (progn (bind ?n (* ?n ?n)) (< ?n 1000)) do (printout d ?n) )" ).execution_block();
         ExecutionContext context = new ExecutionContext( null,
                                                          null,
                                                          2 );
@@ -264,9 +266,21 @@ public class CompiledFunctionsTest extends TestCase {
     }
     
     public void testFactorial() throws Exception {
-        BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(deffunction factorial (?n) (if (>= ?n 1) then (* ?n (factorial (- ?n 1))) else 1))" ).rhs();
-        //engine.ex
-    }
+        Deffunction engine = (Deffunction) parse( "(deffunction factorial (?n) (if (>= ?n 1) then (* ?n (factorial (- ?n 1))) else 1)) " ).deffunction();
+        
+        ExecutionContext context = new ExecutionContext( null,
+                                                         null,
+                                                         1 );
+
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();              
+        context.addPrintoutRouter( "d", new PrintStream(bais) );                                
+
+        //engine.execute( context );
+        engine.execute( new ValueHandler[] { new LongValueHandler( 6 ) }, context );
+        
+        
+        assertEquals( "416256", new String( bais.toByteArray() ) );    
+    }    
 
     private CLPParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );

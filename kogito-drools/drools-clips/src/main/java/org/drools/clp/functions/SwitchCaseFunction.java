@@ -1,6 +1,6 @@
 package org.drools.clp.functions;
 
-import org.drools.clp.ExecutionBuildContext;
+import org.drools.clp.BuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
@@ -23,7 +23,7 @@ public class SwitchCaseFunction extends BaseFunction
     public ValueHandler addParameterCallback(int index,
                                              FunctionCaller caller,
                                              ValueHandler valueHandler,
-                                             ExecutionBuildContext context) {
+                                             BuildContext context) {
         if ( index == 0 ) {
             // swap the element for an equality check        
             FunctionCaller switchCaller  = new FunctionCaller( context.getFunctionRegistry().getFunction( "eq" ) );

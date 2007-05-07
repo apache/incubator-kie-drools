@@ -1,6 +1,6 @@
 package org.drools.clp.functions;
 
-import org.drools.clp.ExecutionBuildContext;
+import org.drools.clp.BuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
@@ -12,14 +12,14 @@ public abstract class BaseFunction
     implements
     Function {
 
-    public void initCallback(ExecutionBuildContext context) {
+    public void initCallback(BuildContext context) {
 
     }
 
     public ValueHandler addParameterCallback(int index,
                                              FunctionCaller caller,
                                              ValueHandler valueHandler,
-                                             ExecutionBuildContext context) {
+                                             BuildContext context) {
         caller.addParameter( valueHandler );
         return valueHandler;
     }

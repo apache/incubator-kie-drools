@@ -46,7 +46,7 @@ public class LhsClpParserTest extends TestCase {
     }
 
     public void testParseFunction() throws Exception {        
-        ExecutionBuildContext context = new ExecutionBuildContext( new CLPPredicate(), this.registry );
+        BuildContext context = new ExecutionBuildContext( new CLPPredicate(), this.registry );
         FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm(context) );
         
         assertEquals( "<", fc.getName() );        

@@ -1,6 +1,6 @@
 package org.drools.clp.functions;
 
-import org.drools.clp.ExecutionBuildContext;
+import org.drools.clp.BuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
@@ -9,7 +9,7 @@ import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.BaseValueHandler;
 import org.drools.clp.valuehandlers.BooleanValueHandler;
 import org.drools.clp.valuehandlers.FunctionCaller;
-import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
 import org.drools.clp.valuehandlers.TempTokenVariable;
 
 public class SwitchFunction extends BaseFunction
@@ -24,9 +24,9 @@ public class SwitchFunction extends BaseFunction
     public ValueHandler addParameterCallback(int index,
                                              FunctionCaller caller,
                                              ValueHandler valueHandler,
-                                             ExecutionBuildContext context) {
+                                             BuildContext context) {
         if ( index == 0 ) {
-            if ( !(valueHandler instanceof LocalVariableValue ) ) {
+            if ( !(valueHandler instanceof IndexedLocalVariableValue ) ) {
                 // this should already be bound as a local variable
                 throw new RuntimeException( "The variable must already have been declared to use it in a switch statement" );
             } else {

@@ -5,10 +5,10 @@ import org.drools.clp.valuehandlers.FunctionCaller;
 public class LispForm
     implements
     LispList {
-    private ExecutionBuildContext context;
+    private BuildContext context;
     private FunctionCaller        caller;
 
-    public LispForm(ExecutionBuildContext context) {
+    public LispForm(BuildContext context) {
         this.context = context;
     }
 
@@ -65,7 +65,7 @@ public class LispForm
         return list;
     }
 
-    public void setContext(ExecutionBuildContext context) {
+    public void setContext(BuildContext context) {
         this.context = context;
     }
 
