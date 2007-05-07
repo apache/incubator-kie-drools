@@ -23,7 +23,7 @@ public class BlockExecutionTest extends TestCase {
     
     public void testAddWithModify() {
         BlockExecutionEngine engine = new BlockExecutionEngine();        
-        ExecutionBuildContext build = new ExecutionBuildContext(engine, this.registry );                
+        BuildContext build = new ExecutionBuildContext(engine, this.registry );                
         
         FunctionCaller addCaller = new FunctionCaller( new PlusFunction() );
         addCaller.addParameter( new ObjectValueHandler( new BigDecimal( 20) ) );

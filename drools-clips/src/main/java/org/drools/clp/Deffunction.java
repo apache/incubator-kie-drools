@@ -1,24 +1,29 @@
 package org.drools.clp;
 
 import org.drools.clp.valuehandlers.FunctionCaller;
-import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
 import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 public class Deffunction
     implements
-    Function {
+    Function,
+    ExecutionEngine {
     private final String     name;
     private FunctionCaller[] functions;
 
     private ValueHandler[]   parameters;
 
+    private int              index;
+
     public Deffunction(String name) {
         this.name = name;
     }
 
-    public void addParameter(ValueHandler parameter) {
+    public VariableValueHandler addParameter(String name) {
+        VariableValueHandler param = new IndexedLocalVariableValue( name,
+                                                                    index++ );
         if ( parameters == null ) {
-            this.parameters = new ValueHandler[]{parameter};
+            this.parameters = new ValueHandler[]{param};
         } else {
             ValueHandler[] temp = new ValueHandler[parameters.length + 1];
             System.arraycopy( this.parameters,
@@ -26,9 +31,10 @@ public class Deffunction
                               temp,
                               0,
                               this.parameters.length );
-            temp[temp.length - 1] = parameter;
+            temp[temp.length - 1] = param;
             this.parameters = temp;
         }
+        return param;
     }
 
     public void addFunction(FunctionCaller function) {
@@ -53,12 +59,12 @@ public class Deffunction
     public ValueHandler addParameterCallback(int index,
                                              FunctionCaller caller,
                                              ValueHandler valueHandler,
-                                             ExecutionBuildContext context) {
+                                             BuildContext context) {
         caller.addParameter( valueHandler );
         return valueHandler;
     }
 
-    public void initCallback(ExecutionBuildContext context) {
+    public void initCallback(BuildContext context) {
     }
 
     public ValueHandler execute(ValueHandler[] args,
@@ -84,7 +90,7 @@ public class Deffunction
             // We know that each argument is a local variable, so we can cast and access the underlying value handler, 
             // as we don't want the variable fully resolved at this stage, just mapped.
             newContext.setLocalVariable( i,
-                                         ((LocalVariableValue) args[i]).getValue( context ) );
+                                         ((ValueHandler) args[i]).getValue( context ) );
         }
         return newContext;
     }
@@ -95,5 +101,13 @@ public class Deffunction
 
     public LispList createList(int index) {
         return new LispForm();
+    }
+
+    public VariableValueHandler createLocalVariable(String identifier) {
+        return addParameter( identifier );
+    }
+
+    public FunctionCaller[] getFunctions() {
+        return this.functions;
     }
 }

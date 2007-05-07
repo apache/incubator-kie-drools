@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -40,8 +41,9 @@ public class CLPEval
         return new FunctionCaller[]{this.function};
     }
 
-    public int getNextIndex() {
-        return this.index++;
+    public VariableValueHandler createLocalVariable(String identifier) {
+        return new IndexedLocalVariableValue( identifier,
+                                              this.index++ );
     }
 
     public boolean evaluate(Tuple tuple,

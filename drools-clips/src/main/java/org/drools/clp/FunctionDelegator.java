@@ -27,7 +27,7 @@ public class FunctionDelegator
     public ValueHandler addParameterCallback(int index,
                                              FunctionCaller caller,
                                              ValueHandler valueHandler,
-                                             ExecutionBuildContext context) {
+                                             BuildContext context) {
         if ( this.function == null ) {
             caller.addParameter( valueHandler );
         } else {
@@ -39,7 +39,7 @@ public class FunctionDelegator
         return valueHandler;
     }
 
-    public void initCallback(ExecutionBuildContext context) {
+    public void initCallback(BuildContext context) {
         this.function.initCallback( context );
     }
 

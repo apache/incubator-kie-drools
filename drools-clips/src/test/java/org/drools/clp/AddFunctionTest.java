@@ -11,7 +11,7 @@ import org.drools.clp.functions.PlusFunction;
 import org.drools.clp.valuehandlers.CLPLocalDeclarationVariable;
 import org.drools.clp.valuehandlers.CLPPreviousDeclarationVariable;
 import org.drools.clp.valuehandlers.FunctionCaller;
-import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
 import org.drools.clp.valuehandlers.ObjectValueHandler;
 import org.drools.clp.valuehandlers.TempTokenVariable;
 import org.drools.common.InternalFactHandle;
@@ -88,7 +88,7 @@ public class AddFunctionTest extends TestCase {
                                                                          pattern1 ) ) );
 
         ValueHandler val1 = new TempTokenVariable( "pd" );
-        ValueHandler val2 = new LocalVariableValue( "lv",
+        ValueHandler val2 = new IndexedLocalVariableValue( "lv",
                                                     0 );
         ValueHandler val3 = new TempTokenVariable( "ld" );
 

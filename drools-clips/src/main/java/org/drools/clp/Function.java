@@ -8,12 +8,12 @@ public interface Function { //extends ValueHandler {
 
     public String getName();
 
-    public void initCallback(ExecutionBuildContext context);
+    public void initCallback(BuildContext context);
 
     public ValueHandler addParameterCallback(int index,
                                              FunctionCaller caller,
                                              ValueHandler valueHandler,                                             
-                                             ExecutionBuildContext context);
+                                             BuildContext context);
 
     public LispList createList(int index);
 }

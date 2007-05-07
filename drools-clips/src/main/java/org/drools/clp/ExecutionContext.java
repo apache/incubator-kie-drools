@@ -13,12 +13,22 @@ public class ExecutionContext {
     private ReteTuple             tuple;
     private Object                object;
     private ValueHandler[]        localVariables;
-    private Map                   printoutRouters;             
+    private Map                   printoutRouters;   
+    private Shell                 shell;
 
+    
     public ExecutionContext(InternalWorkingMemory workingMemory,
                             ReteTuple tuple,
                             int localVariableSize) {
-        this( workingMemory,
+        this( null, workingMemory, tuple, localVariableSize);
+    }
+    
+    public ExecutionContext(Shell shell,
+                            InternalWorkingMemory workingMemory,
+                            ReteTuple tuple,
+                            int localVariableSize) {
+        this( shell,
+              workingMemory,
               tuple,
               null,
               localVariableSize );
@@ -28,6 +38,15 @@ public class ExecutionContext {
                             ReteTuple tuple,
                             Object object,
                             int localVariableSize) {
+        this(null, workingMemory, tuple, object, localVariableSize );
+    }
+    
+    public ExecutionContext(Shell shell,
+                            InternalWorkingMemory workingMemory,
+                            ReteTuple tuple,
+                            Object object,
+                            int localVariableSize) {
+        this.shell = shell;
         this.workingMemory = workingMemory;
         this.tuple = tuple;
         this.object = object;
@@ -69,4 +88,12 @@ public class ExecutionContext {
         this.localVariables[index] = valueHandler;
     }
 
+    public ValueHandler getShellVariable(String identifier) {
+        return null;
+    }
+
+    public void setShellVariable(String identifier,
+                                   ValueHandler valueHandler) {
+        //this.localVariables[index] = valueHandler;
+    }
 }

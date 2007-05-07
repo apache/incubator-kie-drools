@@ -1,9 +1,12 @@
 package org.drools.clp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Consequence;
@@ -34,10 +37,6 @@ public class BlockExecutionEngine
 
     public FunctionCaller[] getFunctions() {
         return this.functions;
-    }
-
-    public int getNextIndex() {
-        return this.index++;
     }
 
     public void execute(InternalWorkingMemory workingMemory,
@@ -78,6 +77,11 @@ public class BlockExecutionEngine
         for ( int i = 0, length = functions.length; i < length; i++ ) {
             this.functions[i].replaceTempTokens( variables );
         }
+    }
+
+    public VariableValueHandler createLocalVariable(String identifier) {
+        return new IndexedLocalVariableValue( identifier,
+                                              this.index++ );
     }
 
 }

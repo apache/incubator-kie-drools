@@ -3,7 +3,7 @@ package org.drools.clp;
 import org.drools.Person;
 import org.drools.clp.functions.ModifyFunction;
 import org.drools.clp.valuehandlers.ListValueHandler;
-import org.drools.clp.valuehandlers.LocalVariableValue;
+import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
 import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 import junit.framework.TestCase;
@@ -16,7 +16,7 @@ public class ModifyFunctionTest extends TestCase {
        ExecutionContext context = new ExecutionContext(null, null, 1);
        //context.setLocalVariable( 0, p );
        
-       LocalVariableValue var = new LocalVariableValue("p", 0);
+       IndexedLocalVariableValue var = new IndexedLocalVariableValue("p", 0);
        var.setValue( context, new ObjectValueHandler( p ) );
        
        ListValueHandler list = new ListValueHandler();

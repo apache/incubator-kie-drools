@@ -7,7 +7,7 @@ public class LispData
     LispList {
 
     private ListValueHandler      list;
-    private ExecutionBuildContext context;
+    private BuildContext context;
 
     public LispData() {
         this.list = new ListValueHandler();
@@ -29,7 +29,7 @@ public class LispData
         return this.list;
     }
 
-    public void setContext(ExecutionBuildContext context) {
+    public void setContext(BuildContext context) {
         this.context = context;
     }
 

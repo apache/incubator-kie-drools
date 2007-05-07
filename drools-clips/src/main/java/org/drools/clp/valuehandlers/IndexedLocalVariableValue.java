@@ -5,7 +5,7 @@ import org.drools.clp.ValueHandler;
 import org.drools.clp.VariableValueHandler;
 
 
-public class LocalVariableValue extends BaseValueHandler implements VariableValueHandler {
+public class IndexedLocalVariableValue extends BaseValueHandler implements VariableValueHandler {
     private static final long serialVersionUID = 320L;    
 
     /** The identifier for the variable. */
@@ -18,7 +18,7 @@ public class LocalVariableValue extends BaseValueHandler implements VariableValu
      * @param identifier
      *            The name of the variable.
      */
-    public LocalVariableValue(final String identifier, final int index) {
+    public IndexedLocalVariableValue(final String identifier, final int index) {
         this.identifier = identifier;
         this.index = index;
     }

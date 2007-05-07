@@ -1,6 +1,6 @@
 package org.drools.clp.functions;
 
-import org.drools.clp.ExecutionBuildContext;
+import org.drools.clp.BuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.ValueHandler;
@@ -19,7 +19,7 @@ public class BindFunction extends BaseFunction
     public ValueHandler addParameterCallback(int index,
                                              FunctionCaller caller,
                                              ValueHandler valueHandler,
-                                             ExecutionBuildContext context) {
+                                             BuildContext context) {
         // The first index in the 'bind' function is the variable
         // register the variable, if it doesn't already exist, will be a TempTokenVariable if it does not already exist
         if ( index == 0 && (valueHandler instanceof TempTokenVariable) ) {

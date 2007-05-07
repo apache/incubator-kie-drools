@@ -219,17 +219,49 @@ package_statement returns [String packageName]
 		}
 	;	
 */
-
+/*
 eval_script[ParserHandler parserHandler]
 	:	(		r=defrule { parserHandler.ruleDescrHandler( r ); }
 			|	e=execution_block { parserHandler.lispFormHandler( e ); }
-		)
+		)*
 	;
+*/	
+
+execution_list returns[ExecutionEngine engine]
+	@init {
+	        engine = new BlockExecutionEngine();
+			BuildContext context = new ExecutionBuildContext( engine, functionRegistry );  	
+	}
+	
+	:
+		(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })
+	;	
 	
 
-deffunction
-	:
+deffunction returns[Deffunction function]
+	@init {
+			BuildContext context;  	
+	}
+	:	loc=LEFT_PAREN	 
+	  	DEFFUNCTION 
+	  	ruleName=NAME {
+	    	function = new Deffunction( ruleName.getText() );
+			functionRegistry.addFunction( function );
+	      	context = new ExecutionBuildContext( function, functionRegistry );
+	  	}
+	  	deffunction_params[context]?
+	  	(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })*
+	  	RIGHT_PAREN
 	;
+	
+deffunction_params[BuildContext context]
+	:	loc=LEFT_PAREN	 
+		 (v=VAR {
+		    // this creates a parameter on the underlying function
+		 	context.createLocalVariable( v.getText() );
+		 })*	  
+	 	 RIGHT_PAREN	
+	;	
 
 defrule returns [RuleDescr rule]
 	@init { 
@@ -319,7 +351,7 @@ ce[ConditionalElementDescr in_ce]
 execution_block returns[ExecutionEngine engine]
 	@init {
 	        engine = new BlockExecutionEngine();
-			ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );  	
+			BuildContext context = new ExecutionBuildContext( engine, functionRegistry );  	
 	}
 	
 	:
@@ -382,7 +414,7 @@ eval_ce[ConditionalElementDescr in_ce]
     @init {
         EvalDescr evalDescr= null;    
    		ExecutionEngine engine = new CLPEval();     
-		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );   		         
+		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );   		         
     }
 	:	LEFT_PAREN	
 		TEST {
@@ -479,7 +511,7 @@ restriction[FieldConstraintDescr fc, PatternDescr pattern]
 predicate_constraint[String op, PatternDescr pattern]	
     @init {
    		ExecutionEngine engine = new CLPPredicate();
-		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
+		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
     }
 	:	COLON
 		fc=lisp_list[context, new LispForm(context)] {	
@@ -493,7 +525,7 @@ predicate_constraint[String op, PatternDescr pattern]
 return_value_restriction[String op, FieldConstraintDescr fc]
 	@init {
 		ExecutionEngine engine = new CLPReturnValue();
-		ExecutionBuildContext context = new ExecutionBuildContext( engine, functionRegistry );
+		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );
 	}
 	:	EQUALS 
 		func=lisp_list[context, new LispForm(context)] {					
@@ -519,7 +551,7 @@ literal_restriction returns [String text]
 	    }
 	;		
 
-lisp_list[ExecutionBuildContext context, LispList list] returns[ValueHandler valueHandler]
+lisp_list[BuildContext context, LispList list] returns[ValueHandler valueHandler]
 	:	LEFT_PAREN	
 		(		a=lisp_atom[context]					{ list.add( a ); }
 			|	a=lisp_list[context, list.createList()]	{ list.add( a ); }
@@ -528,7 +560,7 @@ lisp_list[ExecutionBuildContext context, LispList list] returns[ValueHandler val
 	    { valueHandler = list.getValueHandler(); }
 	;
 	
-lisp_atom[ExecutionBuildContext context] returns[ValueHandler value] 
+lisp_atom[BuildContext context] returns[ValueHandler value] 
 	@init {
 		value  =  null;		
 	}
@@ -564,18 +596,19 @@ WS      :       (	' '
                 { $channel=HIDDEN; }
         ;                      
         
-DEFRULE	:	'defrule';
-OR 	:	'or';
-AND 	:	'and';
-NOT 	:	'not';
-EXISTS 	:	'exists';
-TEST 	:	'test';
+DEFRULE		:	'defrule';
+DEFFUNCTION :	'defunction';
+OR 			:	'or';
+AND 		:	'and';
+NOT 		:	'not';
+EXISTS 		:	'exists';
+TEST 		:	'test';
 
-NULL	:	'null';
+NULL		:	'null';
 
-DECLARE :	'declare';        		
+DECLARE 	:	'declare';        		
 
-SALIENCE:	'salience';
+SALIENCE	:	'salience';
 
 //MODIFY  :	'modify';
 
