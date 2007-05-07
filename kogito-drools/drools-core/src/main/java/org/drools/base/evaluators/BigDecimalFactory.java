@@ -198,18 +198,27 @@ public class BigDecimalFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
             return comp.compareTo( (BigDecimal) object2.getValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( left ) ) < 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
             return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) < 0;
         }
@@ -218,6 +227,9 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
             return comp.compareTo( (BigDecimal) extractor2.getValue( object2 ) ) < 0;
         }
@@ -242,18 +254,27 @@ public class BigDecimalFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
             return comp.compareTo( (BigDecimal) object2.getValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( left ) ) <= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
             return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) <= 0;
         }
@@ -262,6 +283,9 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
             return comp.compareTo( (BigDecimal) extractor2.getValue( object2 ) ) <= 0;
         }
@@ -286,18 +310,27 @@ public class BigDecimalFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
             return comp.compareTo( (BigDecimal) object2.getValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( left ) ) > 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
             return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) > 0;
         }
@@ -306,6 +339,9 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
             return comp.compareTo( (BigDecimal) extractor2.getValue( object2 ) ) > 0;
         }
@@ -330,18 +366,27 @@ public class BigDecimalFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor.getValue( object1 );
             return comp.compareTo( (BigDecimal) object2.getValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( (BigDecimal) context.declaration.getExtractor().getValue( left ) ) >= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) context.extractor.getValue( right );
             return comp.compareTo( (BigDecimal) ((ObjectVariableContextEntry) context).left ) >= 0;
         }
@@ -350,6 +395,9 @@ public class BigDecimalFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final BigDecimal comp = (BigDecimal) extractor1.getValue( object1 );
             return comp.compareTo( (BigDecimal) extractor2.getValue( object2 ) ) >= 0;
         }
