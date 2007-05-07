@@ -107,7 +107,7 @@ public class MiscTest extends TestCase {
                                             config );
     }
 
-    public void xxxtestGlobals() throws Exception {
+    public void testGlobals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule_test.drl" ) ) );
@@ -134,12 +134,12 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestFieldBiningsAndEvalSharing() throws Exception {
+    public void testFieldBiningsAndEvalSharing() throws Exception {
         final String drl = "test_FieldBindingsAndEvalSharing.drl";
         evalSharingTest( drl );
     }
 
-    public void xxxtestFieldBiningsAndPredicateSharing() throws Exception {
+    public void testFieldBiningsAndPredicateSharing() throws Exception {
         final String drl = "test_FieldBindingsAndPredicateSharing.drl";
         evalSharingTest( drl );
     }
@@ -169,7 +169,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestFactBindings() throws Exception {
+    public void testFactBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -215,7 +215,7 @@ public class MiscTest extends TestCase {
                     event.getObject() );
     }
 
-    public void xxxtestNullHandling() throws Exception {
+    public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHandling.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -250,7 +250,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestEmptyPattern() throws Exception {
+    public void testEmptyPattern() throws Exception {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyPattern.drl" ) ) );
@@ -296,7 +296,7 @@ public class MiscTest extends TestCase {
         return ruleBase;
     }
 
-    public void xxxtestExplicitAnd() throws Exception {
+    public void testExplicitAnd() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
@@ -318,7 +318,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestHelloWorld() throws Exception {
+    public void testHelloWorld() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
@@ -344,7 +344,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestLiteral() throws Exception {
+    public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -367,7 +367,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestLiteralWithBoolean() throws Exception {
+    public void testLiteralWithBoolean() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_with_boolean.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -391,7 +391,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestFactTemplate() throws Exception {
+    public void testFactTemplate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactTemplate.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -425,7 +425,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestPropertyChangeSupport() throws Exception {
+    public void testPropertyChangeSupport() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -461,7 +461,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestBigDecimal() throws Exception {
+    public void testBigDecimal() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_comparable.drl" ) ) );
@@ -493,7 +493,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestCell() throws Exception {
+    public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
 
@@ -511,7 +511,7 @@ public class MiscTest extends TestCase {
                       cell.getValue() );
     }
 
-    public void xxxtestOr() throws Exception {
+    public void testOr() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -552,7 +552,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestQuery() throws Exception {
+    public void testQuery() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -569,7 +569,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
-    public void xxxtestEval() throws Exception {
+    public void testEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -594,7 +594,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestJaninoEval() throws Exception {
+    public void testJaninoEval() throws Exception {
         final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         config.setCompiler( PackageBuilderConfiguration.JANINO );
         final PackageBuilder builder = new PackageBuilder( config );
@@ -621,7 +621,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestEvalMore() throws Exception {
+    public void testEvalMore() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test_more.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -642,7 +642,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestReturnValue() throws Exception {
+    public void testReturnValue() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -675,7 +675,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void xxxtestPredicate() throws Exception {
+    public void testPredicate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -708,7 +708,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void xxxtestNullBehaviour() throws Exception {
+    public void testNullBehaviour() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_behaviour.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -730,7 +730,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestNullConstraint() throws Exception {
+    public void testNullConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_constraint.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -757,7 +757,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestImportFunctions() throws Exception {
+    public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -786,7 +786,7 @@ public class MiscTest extends TestCase {
                       list.get( 3 ) );
     }
 
-    public void xxxtestBasicFrom() throws Exception {
+    public void testBasicFrom() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -841,7 +841,7 @@ public class MiscTest extends TestCase {
                       list3.get( 0 ) );
     }
 
-    public void xxxtestFromWithParams() throws Exception {
+    public void testFromWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -909,7 +909,7 @@ public class MiscTest extends TestCase {
                     list.get( 5 ) );
     }
 
-    public void xxxtestWithInvalidRule() throws Exception {
+    public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -936,7 +936,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestErrorLineNumbers() throws Exception {
+    public void testErrorLineNumbers() throws Exception {
         // this test aims to test semantic errors
         // parser errors are another test case
         final PackageBuilder builder = new PackageBuilder();
@@ -969,7 +969,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestErrorsParser() throws Exception {
+    public void testErrorsParser() throws Exception {
         final DrlParser parser = new DrlParser();
         assertEquals( 0,
                       parser.getErrors().size() );
@@ -982,7 +982,7 @@ public class MiscTest extends TestCase {
         assertFalse( first.getMessage().equals( "" ) );
     }
 
-    public void xxxtestFunction() throws Exception {
+    public void testFunction() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionInConsequence.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1005,7 +1005,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestAssertRetract() throws Exception {
+    public void testAssertRetract() throws Exception {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
@@ -1035,7 +1035,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestPredicateAsFirstPattern() throws Exception {
+    public void testPredicateAsFirstPattern() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_pattern.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1061,7 +1061,7 @@ public class MiscTest extends TestCase {
                              provolone.getPrice() );
     }
 
-    public void xxxtestConsequenceException() throws Exception {
+    public void testConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1083,7 +1083,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestFunctionException() throws Exception {
+    public void testFunctionException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1105,7 +1105,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestEvalException() throws Exception {
+    public void testEvalException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1127,7 +1127,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestPredicateException() throws Exception {
+    public void testPredicateException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PredicateException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1149,7 +1149,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestReturnValueException() throws Exception {
+    public void testReturnValueException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1170,7 +1170,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestMultiRestrictionFieldConstraint() throws Exception {
+    public void testMultiRestrictionFieldConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultiRestrictionFieldConstraint.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1244,7 +1244,7 @@ public class MiscTest extends TestCase {
         assertTrue( list4.contains( chili1 ) );
     }
 
-    public void xxxtestDumpers() throws Exception {
+    public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
 
@@ -1330,7 +1330,7 @@ public class MiscTest extends TestCase {
                       list.get( 2 ) );
     }
 
-    public void xxxtestContainsCheese() throws Exception {
+    public void testContainsCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ContainsCheese.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1360,7 +1360,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestStaticFieldReference() throws Exception {
+    public void testStaticFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1394,7 +1394,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void xxxtestDuplicateRuleNames() throws Exception {
+    public void testDuplicateRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName1.drl" ) ) );
 
@@ -1410,7 +1410,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestNullValuesIndexing() throws Exception {
+    public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
@@ -1442,7 +1442,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestSerializable() throws Exception {
+    public void testSerializable() throws Exception {
 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
 
@@ -1510,7 +1510,7 @@ public class MiscTest extends TestCase {
                       IteratorToList.convert( workingMemory.iterateObjects() ).get( 1 ) );
     }
 
-    public void xxxtestEmptyRule() throws Exception {
+    public void testEmptyRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyRule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1529,7 +1529,7 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( "fired2" ) );
     }
 
-    public void xxxtestjustEval() throws Exception {
+    public void testjustEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoPatterns.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1548,7 +1548,7 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( "fired3" ) );
     }
 
-    public void xxxtestOrWithBinding() throws Exception {
+    public void testOrWithBinding() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrWithBindings.drl" ) ) );
@@ -1599,7 +1599,7 @@ public class MiscTest extends TestCase {
         return bytes;
     }
 
-    public void xxxtestJoinNodeModifyObject() throws Exception {
+    public void testJoinNodeModifyObject() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyObject.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
@@ -1637,7 +1637,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestQuery2() throws Exception {
+    public void testQuery2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
 
@@ -1666,7 +1666,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestTwoQuerries() throws Exception {
+    public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
 
@@ -1700,7 +1700,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
-    public void xxxtestInsurancePricingExample() throws Exception {
+    public void testInsurancePricingExample() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "insurance_pricing_example.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
         final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -1718,7 +1718,7 @@ public class MiscTest extends TestCase {
                       policy.getBasePrice() );
     }
 
-    public void xxxtestLLR() throws Exception {
+    public void testLLR() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
@@ -1811,7 +1811,7 @@ public class MiscTest extends TestCase {
         wm.fireAllRules();
     }
 
-    public void xxxtestDoubleQueryWithExists() throws Exception {
+    public void testDoubleQueryWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DoubleQueryWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1896,7 +1896,7 @@ public class MiscTest extends TestCase {
                       queryResults.size() );
     }
 
-    public void xxxtestFunctionWithPrimitives() throws Exception {
+    public void testFunctionWithPrimitives() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionWithPrimitives.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1919,7 +1919,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void xxxtestReturnValueAndGlobal() throws Exception {
+    public void testReturnValueAndGlobal() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueAndGlobal.drl" ) ) );
@@ -1958,7 +1958,7 @@ public class MiscTest extends TestCase {
                       nonmatchlist.size() );
     }
 
-    public void xxxtestDeclaringAndUsingBindsInSamePattern() throws Exception {
+    public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
         final RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setRemoveIdentities( true );
 
@@ -1990,7 +1990,7 @@ public class MiscTest extends TestCase {
                       sensors.size() );
     }
 
-    public void xxxtestMissingImports() {
+    public void testMissingImports() {
         try {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_missing_import.drl" ) ) );
@@ -2008,7 +2008,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestNestedConditionalElements() throws Exception {
+    public void testNestedConditionalElements() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedConditionalElements.drl" ) ) );
@@ -2043,7 +2043,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
-    public void xxxtestDeclarationUsage() throws Exception {
+    public void testDeclarationUsage() throws Exception {
 
         try {
             final PackageBuilder builder = new PackageBuilder();
@@ -2062,7 +2062,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void xxxtestUnbalancedTrees() throws Exception {
+    public void testUnbalancedTrees() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_UnbalancedTrees.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2092,7 +2092,7 @@ public class MiscTest extends TestCase {
         // success
     }
 
-    public void xxxtestImportConflict() throws Exception {
+    public void testImportConflict() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportConflict.drl" ) ) );
@@ -2100,7 +2100,7 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
     }
 
-    public void xxxtestPrimitiveArray() throws Exception {
+    public void testPrimitiveArray() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2130,7 +2130,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestEmptyIdentifier() throws Exception {
+    public void testEmptyIdentifier() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_emptyIdentifier.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2154,7 +2154,7 @@ public class MiscTest extends TestCase {
                       result.size() );
     }
 
-    public void xxxtestDuplicateVariableBinding() throws Exception {
+    public void testDuplicateVariableBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2200,7 +2200,7 @@ public class MiscTest extends TestCase {
                       ((Integer) result.get( "test3" + brie.getType() )).intValue() );
     }
 
-    public void xxxtestDuplicateVariableBindingError() throws Exception {
+    public void testDuplicateVariableBindingError() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2211,7 +2211,7 @@ public class MiscTest extends TestCase {
                       pkg.getErrorSummary().split( "\n" ).length );
     }
 
-    public void xxxtestShadowProxyInHirarchies() throws Exception {
+    public void testShadowProxyInHirarchies() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyInHirarchies.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2225,7 +2225,7 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
-    public void xxxtestSelfReference() throws Exception {
+    public void testSelfReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2261,7 +2261,7 @@ public class MiscTest extends TestCase {
         assertTrue( results.contains( item2 ) );
     }
 
-    public void xxxtestNumberComparisons() throws Exception {
+    public void testNumberComparisons() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NumberComparisons.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2318,7 +2318,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void xxxtestSkipModify() throws Exception {
+    public void testSkipModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_skipModify.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2347,7 +2347,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
-    public void xxxtestEventModel() throws Exception {
+    public void testEventModel() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EventModel.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2436,7 +2436,7 @@ public class MiscTest extends TestCase {
         wm.assertObject( cheddar );
     }
 
-    public void xxxtestImplicitDeclarations() throws Exception {
+    public void testImplicitDeclarations() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_implicitDeclarations.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2460,7 +2460,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
-    public void xxxtestCastingInsideEvals() throws Exception {
+    public void testCastingInsideEvals() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_castsInsideEval.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2475,7 +2475,7 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
-    public void xxxtestMemberOfAndNotMemberOf() throws Exception {
+    public void testMemberOfAndNotMemberOf() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_memberOf.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2513,7 +2513,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void xxxtestContainsInArray() throws Exception {
+    public void testContainsInArray() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_contains_in_array.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -2566,4 +2566,36 @@ public class MiscTest extends TestCase {
                       ((List) list.get( 0 )).size() );
     }
     
+    public void testNodeSharingNotExists() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nodeSharingNotExists.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+
+        assertEquals( "rule1",
+                      list.get( 0 ) );
+        
+        workingMemory.assertObject( new Cheese( "stilton", 10 ) );
+        workingMemory.fireAllRules();
+        
+        assertEquals( 2,
+                      list.size() );
+
+        assertEquals( "rule2",
+                      list.get( 1 ) );
+        
+    }
 }
