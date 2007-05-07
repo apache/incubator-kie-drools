@@ -249,11 +249,17 @@ deffunction returns[Deffunction function]
 			functionRegistry.addFunction( function );
 	      	context = new ExecutionBuildContext( function, functionRegistry );
 	  	}
-	  	deffunction_params[context]?
+		loc=LEFT_PAREN	 
+		 (v=VAR {
+		    // this creates a parameter on the underlying function
+		 	context.createLocalVariable( v.getText() );
+		 })*	  
+	 	 RIGHT_PAREN
 	  	(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })*
 	  	RIGHT_PAREN
 	;
 	
+/*	
 deffunction_params[BuildContext context]
 	:	loc=LEFT_PAREN	 
 		 (v=VAR {
@@ -262,7 +268,7 @@ deffunction_params[BuildContext context]
 		 })*	  
 	 	 RIGHT_PAREN	
 	;	
-
+*/
 defrule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
