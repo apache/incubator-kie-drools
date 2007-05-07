@@ -207,16 +207,25 @@ public class ShortFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getShortValue( object1 ) < object2.getShortValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getShortValue( right ) < ((LongVariableContextEntry) context).left;
         }
 
@@ -224,6 +233,9 @@ public class ShortFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getShortValue( object1 ) < extractor2.getShortValue( object2 );
         }
 
@@ -247,16 +259,25 @@ public class ShortFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getShortValue( object1 ) <= object2.getShortValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getShortValue( right ) <= ((LongVariableContextEntry) context).left;
         }
 
@@ -264,6 +285,9 @@ public class ShortFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getShortValue( object1 ) <= extractor2.getShortValue( object2 );
         }
 
@@ -287,16 +311,25 @@ public class ShortFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getShortValue( object1 ) > object2.getShortValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getShortValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
@@ -304,6 +337,9 @@ public class ShortFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getShortValue( object1 ) > extractor2.getShortValue( object2 );
         }
 
@@ -327,16 +363,25 @@ public class ShortFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getShortValue( object1 ) >= object2.getShortValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getShortValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getShortValue( right ) >= ((LongVariableContextEntry) context).left;
         }
 
@@ -344,6 +389,9 @@ public class ShortFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getShortValue( object1 ) >= extractor2.getShortValue( object2 );
         }
 

@@ -18,8 +18,6 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.IntegerFactory.IntegerMemberOfEvaluator;
-import org.drools.base.evaluators.IntegerFactory.IntegerNotMemberOfEvaluator;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
@@ -209,16 +207,25 @@ public class CharacterFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getCharValue( object1 ) < object2.getCharValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getCharValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getCharValue( right ) < ((LongVariableContextEntry) context).left;
         }
 
@@ -226,6 +233,9 @@ public class CharacterFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getCharValue( object1 ) < extractor2.getCharValue( object2 );
         }
 
@@ -249,16 +259,25 @@ public class CharacterFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getCharValue( object1 ) <= object2.getCharValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getCharValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getCharValue( right ) <= ((LongVariableContextEntry) context).left;
         }
 
@@ -266,6 +285,9 @@ public class CharacterFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getCharValue( object1 ) <= extractor2.getCharValue( object2 );
         }
 
@@ -289,16 +311,25 @@ public class CharacterFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getCharValue( object1 ) > object2.getCharValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getCharValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getCharValue( right ) > ((LongVariableContextEntry) context).left;
         }
 
@@ -306,6 +337,9 @@ public class CharacterFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getCharValue( object1 ) > extractor2.getCharValue( object2 );
         }
 
@@ -329,16 +363,25 @@ public class CharacterFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor.getCharValue( object1 ) >= object2.getCharValue();
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getCharValue( left );
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             return context.extractor.getCharValue( right ) >= ((LongVariableContextEntry) context).left;
         }
 
@@ -346,6 +389,9 @@ public class CharacterFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             return extractor1.getCharValue( object1 ) >= extractor2.getCharValue( object2 );
         }
 

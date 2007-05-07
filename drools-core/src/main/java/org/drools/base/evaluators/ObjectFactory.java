@@ -210,18 +210,27 @@ public class ObjectFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor.getValue( object1 );
             return comp.compareTo( object2.getValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) < 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) context.extractor.getValue( right );
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) < 0;
         }
@@ -230,6 +239,9 @@ public class ObjectFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor1.getValue( object1 );
             return comp.compareTo( extractor2.getValue( object2 ) ) < 0;
         }
@@ -254,18 +266,27 @@ public class ObjectFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor.getValue( object1 );
             return comp.compareTo( object2.getValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) <= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) context.extractor.getValue( right );
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) <= 0;
         }
@@ -274,6 +295,9 @@ public class ObjectFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor1.getValue( object1 );
             return comp.compareTo( extractor2.getValue( object2 ) ) <= 0;
         }
@@ -298,18 +322,27 @@ public class ObjectFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor.getValue( object1 );
             return comp.compareTo( object2.getValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) > 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) context.extractor.getValue( right );
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) > 0;
         }
@@ -318,6 +351,9 @@ public class ObjectFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor1.getValue( object1 );
             return comp.compareTo( extractor2.getValue( object2 ) ) > 0;
         }
@@ -342,18 +378,27 @@ public class ObjectFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor.getValue( object1 );
             return comp.compareTo( object2.getValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
             return comp.compareTo( context.declaration.getExtractor().getValue( left ) ) >= 0;
         }
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) context.extractor.getValue( right );
             return comp.compareTo( ((ObjectVariableContextEntry) context).left ) >= 0;
         }
@@ -362,6 +407,9 @@ public class ObjectFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Comparable comp = (Comparable) extractor1.getValue( object1 );
             return comp.compareTo( extractor2.getValue( object2 ) ) >= 0;
         }

@@ -244,6 +244,9 @@ public class DateFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor.getValue( object1 );
             final Object value2 = object2.getValue();
             return value1.compareTo( getRightDate( value2 ) ) < 0;
@@ -251,6 +254,9 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return getRightDate( value2 ).compareTo( value1 ) < 0;
@@ -258,6 +264,9 @@ public class DateFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( right );
             return getRightDate( value2 ).compareTo( value1 ) < 0;
@@ -267,11 +276,11 @@ public class DateFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor1.getValue( object1 );
             final Date value2 = (Date) extractor2.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
             return value1.compareTo( value2 ) < 0;
         }
 
@@ -295,6 +304,9 @@ public class DateFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor.getValue( object1 );
             final Object value2 = object2.getValue();
             return value1.compareTo( getRightDate( value2 ) ) <= 0;
@@ -302,6 +314,9 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return getRightDate( value2 ).compareTo( value1 ) <= 0;
@@ -309,6 +324,9 @@ public class DateFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( right );
             return getRightDate( value2 ).compareTo( value1 ) <= 0;
@@ -318,11 +336,11 @@ public class DateFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor1.getValue( object1 );
             final Date value2 = (Date) extractor2.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
             return value1.compareTo( value2 ) <= 0;
         }
 
@@ -346,6 +364,9 @@ public class DateFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor.getValue( object1 );
             final Object value2 = object2.getValue();
             return value1.compareTo( getRightDate( value2 ) ) > 0;
@@ -353,6 +374,9 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return getRightDate( value2 ).compareTo( value1 ) > 0;
@@ -360,6 +384,9 @@ public class DateFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( right );
             return getRightDate( value2 ).compareTo( value1 ) > 0;
@@ -369,11 +396,11 @@ public class DateFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor1.getValue( object1 );
             final Date value2 = (Date) extractor2.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
             return value1.compareTo( value2 ) > 0;
         }
 
@@ -397,6 +424,9 @@ public class DateFactory
         public boolean evaluate(final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
+            if( extractor.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor.getValue( object1 );
             final Object value2 = object2.getValue();
             return value1.compareTo( getRightDate( value2 ) ) >= 0;
@@ -404,6 +434,9 @@ public class DateFactory
 
         public boolean evaluateCachedRight(final VariableContextEntry context,
                                            final Object left) {
+            if( context.rightNull ) {
+                return false;
+            }
             final Date value1 = (Date) context.declaration.getExtractor().getValue( left );
             final Object value2 = ((ObjectVariableContextEntry) context).right;
             return getRightDate( value2 ).compareTo( value1 ) >= 0;
@@ -411,6 +444,9 @@ public class DateFactory
 
         public boolean evaluateCachedLeft(final VariableContextEntry context,
                                           final Object right) {
+            if( context.extractor.isNullValue( right ) ) {
+                return false;
+            }
             final Date value1 = (Date) ((ObjectVariableContextEntry) context).left;
             final Object value2 = context.extractor.getValue( right );
             return getRightDate( value2 ).compareTo( value1 ) >= 0;
@@ -420,11 +456,11 @@ public class DateFactory
                                 final Object object1,
                                 final Extractor extractor2,
                                 final Object object2) {
+            if( extractor1.isNullValue( object1 ) ) {
+                return false;
+            }
             final Date value1 = (Date) extractor1.getValue( object1 );
             final Date value2 = (Date) extractor2.getValue( object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
             return value1.compareTo( value2 ) >= 0;
         }
 

@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,6 +66,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "==", null, Boolean.TRUE}, 
                                  {null, "==", list, Boolean.FALSE}, 
                                  {null, "!=", list, Boolean.TRUE},
+                                 {null, "<", new Integer( 43 ), Boolean.FALSE}, 
+                                 {null, ">=", new Integer( -10 ), Boolean.FALSE},
+                                 {null, ">", new Integer( -10 ), Boolean.FALSE}, 
+                                 {null, "<=", new Integer( 42 ), Boolean.FALSE},
                                  {new BigDecimal( "42.42" ), "<", new BigDecimal( "43" ), Boolean.TRUE}, 
                                  {new BigDecimal( "42.42" ), ">", new BigDecimal( "43" ), Boolean.FALSE}, 
                                  {new BigDecimal( "42.42" ), "<=", new BigDecimal( "42.42" ), Boolean.TRUE},
@@ -175,6 +180,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", new Integer( 42 ), Boolean.TRUE}, 
                                  {null, "==", new Integer( 42 ), Boolean.FALSE},
+                                 {null, "<", new Integer( 43 ), Boolean.FALSE}, 
+                                 {null, ">=", new Integer( -10 ), Boolean.FALSE},
+                                 {null, ">", new Integer( -10 ), Boolean.FALSE}, 
+                                 {null, "<=", new Integer( 42 ), Boolean.FALSE},
                                  {new Integer( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Integer( 43 ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -211,6 +220,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {new BigDecimal( 42 ), "!=", null, Boolean.TRUE}, 
                                  {null, "==", new BigDecimal( 42 ), Boolean.FALSE},
                                  {null, "!=", new BigDecimal( 42 ), Boolean.TRUE},
+                                 {null, "<", new BigDecimal( 43 ), Boolean.FALSE}, 
+                                 {null, ">=", new BigDecimal( -10 ), Boolean.FALSE},
+                                 {null, ">", new BigDecimal( -10 ), Boolean.FALSE}, 
+                                 {null, "<=", new BigDecimal( 42 ), Boolean.FALSE},
                                  {new BigDecimal( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new BigDecimal( 43 ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -247,6 +260,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {new BigInteger( "42" ), "!=", null, Boolean.TRUE}, 
                                  {null, "==", new BigInteger( "42" ), Boolean.FALSE},
                                  {null, "!=", new BigInteger( "42" ), Boolean.TRUE},
+                                 {null, "<", new BigInteger( "43" ), Boolean.FALSE}, 
+                                 {null, ">=", new BigInteger( "-10" ), Boolean.FALSE},
+                                 {null, ">", new BigInteger( "-10" ), Boolean.FALSE}, 
+                                 {null, "<=", new BigInteger( "42" ), Boolean.FALSE},
                                  {new BigInteger( "42" ), "memberOf", col, Boolean.TRUE},
                                  {new BigInteger( "43" ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -278,6 +295,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", new Short( (short) 42 ), Boolean.TRUE}, 
                                  {null, "==", new Short( (short) 42 ), Boolean.FALSE},
+                                 {null, "<", new Short( (short)43 ), Boolean.FALSE}, 
+                                 {null, ">=", new Short( (short)-10 ), Boolean.FALSE},
+                                 {null, ">", new Short( (short)-10 ), Boolean.FALSE}, 
+                                 {null, "<=", new Short((short) 42 ), Boolean.FALSE},
                                  {new Short( (short) 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Short( (short) 43 ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -341,6 +362,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", new Double( 42 ), Boolean.TRUE}, 
                                  {null, "==", new Double( 42 ), Boolean.FALSE},
+                                 {null, "<", new Double( 43 ), Boolean.FALSE}, 
+                                 {null, ">=", new Double( -10 ), Boolean.FALSE},
+                                 {null, ">", new Double( -10 ), Boolean.FALSE}, 
+                                 {null, "<=", new Double( 42 ), Boolean.FALSE},
                                  {new Double( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Double( 43 ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -374,6 +399,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", new Float( 42 ), Boolean.TRUE}, 
                                  {null, "==", new Float( 42 ), Boolean.FALSE},
+                                 {null, "<", new Float( 43 ), Boolean.FALSE}, 
+                                 {null, ">=", new Float( -10 ), Boolean.FALSE},
+                                 {null, ">", new Float( -10 ), Boolean.FALSE}, 
+                                 {null, "<=", new Float( 42 ), Boolean.FALSE},
                                  {new Float( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Float( 43 ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -407,6 +436,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", new Long( 42 ), Boolean.TRUE}, 
                                  {null, "==", new Long( 42 ), Boolean.FALSE},
+                                 {null, "<", new Long( 43 ), Boolean.FALSE}, 
+                                 {null, ">=", new Long( -10 ), Boolean.FALSE},
+                                 {null, ">", new Long( -10 ), Boolean.FALSE}, 
+                                 {null, "<=", new Long( 42 ), Boolean.FALSE},
                                  {new Long( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Long( 43 ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -440,6 +473,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", new Character( 'z' ), Boolean.TRUE}, 
                                  {null, "==", new Character( 'z' ), Boolean.FALSE},
+                                 {null, "<", new Character( 'a' ), Boolean.FALSE}, 
+                                 {null, ">=", new Character( '\0' ), Boolean.FALSE},
+                                 {null, ">", new Character( '\0' ), Boolean.FALSE}, 
+                                 {null, "<=", new Character( 'a' ), Boolean.FALSE},
                                  {new Character( 'a' ), "memberOf", col, Boolean.TRUE},
                                  {new Character( 'z' ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -478,6 +515,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {null, "==", df.parse( "10-Jul-1974" ), Boolean.FALSE}, 
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                                 {null, "<", df.parse( "10-Jul-1974" ), Boolean.FALSE}, 
+                                 {null, ">=", new Date(0), Boolean.FALSE},
+                                 {null, ">", new Date(0), Boolean.FALSE}, 
+                                 {null, "<=", df.parse( "10-Jul-1974" ), Boolean.FALSE},
                                  {df.parse( "10-Jul-1974" ), "memberOf", col, Boolean.TRUE},
                                  {df.parse( "15-Jul-1974" ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -502,10 +543,18 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {new Byte( "1" ), "!=", new Byte( "1" ), Boolean.FALSE}, 
                                  {new Byte( "1" ), "<=", new Byte( "1" ), Boolean.TRUE}, 
                                  {new Byte( "1" ), "==", null, Boolean.FALSE}, 
+                                 {new Byte( "1" ), "<", new Byte( "2" ), Boolean.TRUE}, 
+                                 {new Byte( "2" ), ">=", new Byte( "1" ), Boolean.TRUE},
+                                 {new Byte( "2" ), ">", new Byte( "1" ), Boolean.TRUE}, 
+                                 {new Byte( "1" ), "<=", new Byte( "2" ), Boolean.TRUE},
                                  {null, "==", null, Boolean.TRUE}, 
                                  {null, "!=", null, Boolean.FALSE}, 
                                  {null, "!=", new Byte( "1" ), Boolean.TRUE}, 
                                  {null, "==", new Byte( "1" ), Boolean.FALSE},
+                                 {null, "<", new Byte( Byte.MAX_VALUE), Boolean.FALSE}, 
+                                 {null, ">=", new Byte( Byte.MIN_VALUE ), Boolean.FALSE},
+                                 {null, ">", new Byte( Byte.MIN_VALUE ), Boolean.FALSE}, 
+                                 {null, "<=", new Byte( Byte.MAX_VALUE ), Boolean.FALSE},
                                  {new Byte( "1" ), "memberOf", col, Boolean.TRUE},
                                  {new Byte( "3" ), "memberOf", col, Boolean.FALSE},
                                  {null, "memberOf", col, Boolean.FALSE},
@@ -772,19 +821,19 @@ public class EvaluatorFactoryTest extends TestCase {
         private static final long serialVersionUID = 2759666130893301563L;
 
         public boolean getBooleanValue(final Object object) {
-            return ((Boolean) object).booleanValue();
+            return object != null ? ((Boolean) object).booleanValue() : false;
         }
 
         public byte getByteValue(final Object object) {
-            return ((Number) object).byteValue();
+            return object != null ? ((Number) object).byteValue() : (byte) 0;
         }
 
         public char getCharValue(final Object object) {
-            return ((Character) object).charValue();
+            return object != null ? ((Character) object).charValue() : '\0';
         }
 
         public double getDoubleValue(final Object object) {
-            return ((Number) object).doubleValue();
+            return object != null ? ((Number) object).doubleValue() : 0.0;
         }
 
         public Class getExtractToClass() {
@@ -792,7 +841,7 @@ public class EvaluatorFactoryTest extends TestCase {
         }
 
         public float getFloatValue(final Object object) {
-            return ((Number) object).floatValue();
+            return object != null ? ((Number) object).floatValue() : (float) 0.0;
         }
 
         public int getHashCode(final Object object) {
@@ -800,11 +849,11 @@ public class EvaluatorFactoryTest extends TestCase {
         }
 
         public int getIntValue(final Object object) {
-            return ((Number) object).intValue();
+            return object != null ? ((Number) object).intValue() : 0;
         }
 
         public long getLongValue(final Object object) {
-            return ((Number) object).longValue();
+            return object != null ? ((Number) object).longValue() : 0;
         }
 
         public Method getNativeReadMethod() {
@@ -812,7 +861,7 @@ public class EvaluatorFactoryTest extends TestCase {
         }
 
         public short getShortValue(final Object object) {
-            return ((Number) object).shortValue();
+            return object != null ? ((Number) object).shortValue() : (short) 0;
         }
 
         public Object getValue(final Object object) {
