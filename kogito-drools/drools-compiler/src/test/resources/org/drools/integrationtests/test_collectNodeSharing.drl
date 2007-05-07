@@ -9,7 +9,6 @@ when
     $a : ArrayList( size:size == 2 ) from collect (Cheese())
 then
     results.add( $a );
-    System.out.println("A: size = " + size);
 end
 
 rule "B"
@@ -17,5 +16,4 @@ when
     $b : ArrayList( size:size == 3 ) from collect (Cheese())
 then
     results.add( $b );
-    System.out.println("B: size = " + size);
 end

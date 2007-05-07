@@ -21,6 +21,9 @@ import java.io.Serializable;
 public class Cheese
     implements
     Serializable {
+    
+    public static final String STILTON = "stilton";
+    
     /**
      * 
      */

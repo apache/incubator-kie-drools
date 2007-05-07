@@ -1,0 +1,17 @@
+package org.drools;
+
+global java.util.List results;
+
+rule rule1
+when
+       not Cheese( type == Cheese.STILTON )
+then
+       results.add( "rule1" );
+end
+
+rule rule2
+when
+       exists Cheese( type == Cheese.STILTON )
+then
+       results.add( "rule2" );
+end
