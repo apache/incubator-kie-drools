@@ -265,7 +265,7 @@ public class CompiledFunctionsTest extends TestCase {
         assertEquals( "416256", new String( bais.toByteArray() ) );          
     }
     
-    public void testFactorial() throws Exception {
+    public void testDefTemplate() throws Exception {
         Deffunction engine = (Deffunction) parse( "(deffunction factorial (?n) (if (>= ?n 1) then (* ?n (factorial (- ?n 1))) else 1)) " ).deffunction();
         
         ExecutionContext context = new ExecutionContext( null,
@@ -273,13 +273,9 @@ public class CompiledFunctionsTest extends TestCase {
                                                          1 );
 
         ByteArrayOutputStream bais = new ByteArrayOutputStream();              
-        context.addPrintoutRouter( "d", new PrintStream(bais) );                                
-
-        //engine.execute( context );
-        engine.execute( new ValueHandler[] { new LongValueHandler( 6 ) }, context );
+        context.addPrintoutRouter( "d", new PrintStream(bais) );                                              
         
-        
-        assertEquals( "416256", new String( bais.toByteArray() ) );    
+        assertEquals( 720,engine.execute( new ValueHandler[] { new LongValueHandler( 6 ) }, context ).getBigDecimalValue( context ).longValue() );    
     }    
 
     private CLPParser parse(final String text) throws Exception {

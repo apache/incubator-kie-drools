@@ -18,7 +18,7 @@ public class ListValueHandler
     }
 
     public ValueHandler getValue(ExecutionContext context) {
-        return null;
+        return this;
     }
 
     public int getValueType(ExecutionContext context) {

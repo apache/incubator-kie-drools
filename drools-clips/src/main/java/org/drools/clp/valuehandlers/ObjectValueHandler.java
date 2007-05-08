@@ -16,7 +16,7 @@ public class ObjectValueHandler extends BaseValueHandler {
     }
     
     public ValueHandler getValue(ExecutionContext context) {
-        return null;
+        return this;
     }    
     
     public void setValue(ExecutionContext context, Object value) {

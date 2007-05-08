@@ -18,7 +18,7 @@ public class CLPPreviousDeclarationVariable implements VariableValueHandler {
     }
     
     public ValueHandler getValue(ExecutionContext context) {
-        return null;
+        return this;
     }    
 
     public String getIdentifier() {

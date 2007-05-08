@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-05-08 00:37:11
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-05-08 00:55:17
 
 	package org.drools.clp;
 	

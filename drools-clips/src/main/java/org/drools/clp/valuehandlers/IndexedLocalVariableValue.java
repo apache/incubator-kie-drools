@@ -43,7 +43,7 @@ public class IndexedLocalVariableValue extends BaseValueHandler implements Varia
     public ValueHandler getValue(ExecutionContext context) {
         ValueHandler valueHandler = context.getLocalVariable( this.index );
         ValueHandler nested; 
-        while ( (nested = valueHandler.getValue( context ) ) != null ) {
+        while ( (nested = valueHandler.getValue( context ) ) != valueHandler ) {
             valueHandler = nested;
         }
         return valueHandler;

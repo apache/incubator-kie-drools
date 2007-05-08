@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-05-08 00:37:11
+// $ANTLR 3.0b7 C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g 2007-05-08 00:55:18
 
 	package org.drools.clp;
 
@@ -184,10 +184,10 @@ public class CLPLexer extends Lexer {
     public final void mDEFFUNCTION() throws RecognitionException {
         try {
             int _type = DEFFUNCTION;
-            // C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:15: ( 'defunction' )
-            // C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:15: 'defunction'
+            // C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:15: ( 'deffunction' )
+            // C:\\dev\\jbossrules\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g:606:15: 'deffunction'
             {
-            match("defunction"); if (failed) return ;
+            match("deffunction"); if (failed) return ;
 
 
             }
@@ -1891,49 +1891,49 @@ public class CLPLexer extends Lexer {
 
     protected DFA20 dfa20 = new DFA20(this);
     static final String DFA20_eotS =
-        "\1\uffff\1\40\1\uffff\1\2\10\36\1\54\1\uffff\2\36\1\uffff\2\36\2"+
+        "\1\uffff\1\40\1\uffff\1\2\10\36\1\53\1\uffff\2\36\1\uffff\2\36\2"+
         "\uffff\1\65\1\66\1\67\1\70\3\uffff\1\36\1\72\1\uffff\1\73\1\uffff"+
-        "\1\36\1\76\7\36\1\54\1\36\1\uffff\2\36\1\15\2\36\1\uffff\2\36\4"+
-        "\uffff\1\121\2\uffff\2\36\1\uffff\1\125\1\36\1\127\4\36\1\134\6"+
-        "\36\1\uffff\1\36\1\uffff\1\36\1\uffff\3\36\1\uffff\1\145\1\uffff"+
-        "\1\36\1\147\1\150\1\36\1\uffff\4\36\1\117\3\36\1\uffff\1\36\2\uffff"+
-        "\3\36\1\147\3\36\1\166\2\36\1\171\1\36\1\173\1\uffff\2\36\1\uffff"+
-        "\1\36\1\uffff\1\176\1\36\1\uffff\1\u0080\1\uffff";
+        "\1\36\1\76\7\36\1\53\1\uffff\3\36\1\15\1\36\1\uffff\3\36\4\uffff"+
+        "\1\121\2\uffff\2\36\1\uffff\1\125\1\36\1\127\4\36\1\134\6\36\1\uffff"+
+        "\1\36\1\uffff\1\36\1\uffff\3\36\1\uffff\1\145\1\uffff\1\36\1\147"+
+        "\1\150\1\36\1\uffff\4\36\1\117\3\36\1\uffff\1\36\2\uffff\3\36\1"+
+        "\147\3\36\1\166\2\36\1\171\1\36\1\173\1\uffff\2\36\1\uffff\1\36"+
+        "\1\uffff\1\176\1\36\1\uffff\1\36\1\u0081\1\uffff";
     static final String DFA20_eofS =
-        "\u0081\uffff";
+        "\u0082\uffff";
     static final String DFA20_minS =
         "\2\0\1\uffff\1\0\1\145\1\162\1\156\1\157\1\170\1\145\1\141\1\60"+
         "\1\0\1\uffff\1\0\1\141\1\uffff\1\0\1\52\2\uffff\4\0\3\uffff\1\55"+
         "\1\0\1\uffff\1\0\1\uffff\1\143\1\0\1\144\1\154\1\164\1\151\1\165"+
-        "\1\163\1\154\1\0\1\60\1\uffff\1\42\2\0\1\154\1\0\1\uffff\2\0\4\uffff"+
-        "\1\0\2\uffff\1\162\1\154\1\uffff\1\0\1\154\1\0\1\163\1\145\1\164"+
-        "\1\151\2\0\1\60\2\0\1\163\1\0\1\uffff\1\0\1\uffff\1\0\1\uffff\1"+
-        "\165\1\156\1\141\1\uffff\1\0\1\uffff\1\164\2\0\1\145\1\uffff\1\60"+
-        "\2\0\1\145\1\0\1\154\1\143\1\162\1\uffff\1\163\2\uffff\1\156\1\60"+
-        "\2\0\1\145\1\164\1\145\1\0\1\143\1\60\1\0\1\151\1\0\1\uffff\1\145"+
-        "\1\0\1\uffff\1\157\1\uffff\1\0\1\156\1\uffff\1\0\1\uffff";
+        "\1\163\1\154\1\0\1\uffff\1\60\1\42\2\0\1\154\1\uffff\3\0\4\uffff"+
+        "\1\0\2\uffff\1\146\1\154\1\uffff\1\0\1\154\1\0\1\163\1\145\1\164"+
+        "\1\151\2\0\1\60\2\0\1\163\1\0\1\uffff\1\0\1\uffff\1\0\1\uffff\2"+
+        "\165\1\141\1\uffff\1\0\1\uffff\1\164\2\0\1\145\1\uffff\1\60\2\0"+
+        "\1\145\1\0\1\154\1\156\1\162\1\uffff\1\163\2\uffff\1\156\1\60\2"+
+        "\0\1\145\1\143\1\145\1\0\1\143\1\60\1\0\1\164\1\0\1\uffff\1\145"+
+        "\1\0\1\uffff\1\151\1\uffff\1\0\1\157\1\uffff\1\156\1\0\1\uffff";
     static final String DFA20_maxS =
         "\2\ufffe\1\uffff\1\ufffe\1\145\1\162\1\156\1\165\1\170\1\162\1\141"+
         "\1\71\1\ufffe\1\uffff\1\ufffe\1\141\1\uffff\1\ufffe\1\57\2\uffff"+
         "\4\ufffe\3\uffff\1\55\1\ufffe\1\uffff\1\ufffe\1\uffff\1\146\1\ufffe"+
-        "\1\144\1\154\1\164\1\151\1\165\1\163\1\154\1\ufffe\1\71\1\uffff"+
-        "\1\165\2\ufffe\1\154\1\ufffe\1\uffff\2\ufffe\4\uffff\1\ufffe\2\uffff"+
-        "\1\165\1\154\1\uffff\1\ufffe\1\154\1\ufffe\1\163\1\145\1\164\1\151"+
-        "\2\ufffe\1\146\2\ufffe\1\163\1\ufffe\1\uffff\1\ufffe\1\uffff\1\ufffe"+
-        "\1\uffff\1\165\1\156\1\141\1\uffff\1\ufffe\1\uffff\1\164\2\ufffe"+
-        "\1\145\1\uffff\1\146\2\ufffe\1\145\1\ufffe\1\154\1\143\1\162\1\uffff"+
-        "\1\163\2\uffff\1\156\1\146\2\ufffe\1\145\1\164\1\145\1\ufffe\1\143"+
-        "\1\146\1\ufffe\1\151\1\ufffe\1\uffff\1\145\1\ufffe\1\uffff\1\157"+
-        "\1\uffff\1\ufffe\1\156\1\uffff\1\ufffe\1\uffff";
+        "\1\144\1\154\1\164\1\151\1\165\1\163\1\154\1\ufffe\1\uffff\1\71"+
+        "\1\165\2\ufffe\1\154\1\uffff\3\ufffe\4\uffff\1\ufffe\2\uffff\1\162"+
+        "\1\154\1\uffff\1\ufffe\1\154\1\ufffe\1\163\1\145\1\164\1\151\2\ufffe"+
+        "\1\146\2\ufffe\1\163\1\ufffe\1\uffff\1\ufffe\1\uffff\1\ufffe\1\uffff"+
+        "\2\165\1\141\1\uffff\1\ufffe\1\uffff\1\164\2\ufffe\1\145\1\uffff"+
+        "\1\146\2\ufffe\1\145\1\ufffe\1\154\1\156\1\162\1\uffff\1\163\2\uffff"+
+        "\1\156\1\146\2\ufffe\1\145\1\143\1\145\1\ufffe\1\143\1\146\1\ufffe"+
+        "\1\164\1\ufffe\1\uffff\1\145\1\ufffe\1\uffff\1\151\1\uffff\1\ufffe"+
+        "\1\157\1\uffff\1\156\1\ufffe\1\uffff";
     static final String DFA20_acceptS =
         "\2\uffff\1\2\12\uffff\1\17\2\uffff\1\21\2\uffff\1\24\1\25\4\uffff"+
-        "\1\32\1\33\1\34\2\uffff\1\41\1\uffff\1\37\13\uffff\1\15\5\uffff"+
-        "\1\22\2\uffff\1\26\1\27\1\30\1\31\1\uffff\1\36\1\1\2\uffff\1\5\16"+
+        "\1\32\1\33\1\34\2\uffff\1\41\1\uffff\1\37\12\uffff\1\15\5\uffff"+
+        "\1\22\3\uffff\1\26\1\27\1\30\1\31\1\uffff\1\36\1\1\2\uffff\1\5\16"+
         "\uffff\1\23\1\uffff\1\40\1\uffff\1\35\3\uffff\1\6\1\uffff\1\7\4"+
         "\uffff\1\16\10\uffff\1\12\1\uffff\1\20\1\11\15\uffff\1\10\2\uffff"+
-        "\1\3\1\uffff\1\13\2\uffff\1\14\1\uffff\1\4";
+        "\1\3\1\uffff\1\13\2\uffff\1\14\2\uffff\1\4";
     static final String DFA20_specialS =
-        "\u0081\uffff}>";
+        "\u0082\uffff}>";
     static final String[] DFA20_transitionS = {
             "\11\36\2\2\1\36\1\3\1\2\22\36\1\2\1\36\1\15\1\21\2\36\1\32\1"+
             "\16\1\23\1\24\3\36\1\13\1\36\1\22\12\14\1\35\1\uffff\1\34\1"+
@@ -1956,7 +1956,7 @@ public class CLPLexer extends Lexer {
             "\1\51",
             "\12\52",
             "\11\36\2\uffff\2\36\1\uffff\22\36\1\uffff\1\36\1\uffff\3\36"+
-            "\1\uffff\1\36\2\uffff\4\36\1\53\1\36\12\52\1\36\2\uffff\2\36"+
+            "\1\uffff\1\36\2\uffff\4\36\1\54\1\36\12\52\1\36\2\uffff\2\36"+
             "\1\uffff\74\36\1\uffff\1\36\1\uffff\uff80\36",
             "",
             "\11\56\2\15\2\56\1\15\22\56\1\15\1\56\1\15\3\56\1\15\1\57\2"+
@@ -1964,8 +1964,8 @@ public class CLPLexer extends Lexer {
             "\56",
             "\1\60",
             "",
-            "\11\61\2\62\2\61\1\62\22\61\1\62\1\61\1\62\3\61\1\62\1\61\2"+
-            "\62\21\61\2\62\2\61\1\62\74\61\1\62\1\61\1\62\uff80\61",
+            "\11\62\2\61\2\62\1\61\22\62\1\61\1\62\1\61\3\62\1\61\1\62\2"+
+            "\61\21\62\2\61\2\62\1\61\74\62\1\61\1\62\1\61\uff80\62",
             "\1\64\4\uffff\1\63",
             "",
             "",
@@ -2005,10 +2005,10 @@ public class CLPLexer extends Lexer {
             "\1\104",
             "\1\105",
             "\11\36\2\uffff\2\36\1\uffff\22\36\1\uffff\1\36\1\uffff\3\36"+
-            "\1\uffff\1\36\2\uffff\4\36\1\53\1\36\12\52\1\36\2\uffff\2\36"+
+            "\1\uffff\1\36\2\uffff\4\36\1\54\1\36\12\52\1\36\2\uffff\2\36"+
             "\1\uffff\74\36\1\uffff\1\36\1\uffff\uff80\36",
-            "\12\106",
             "",
+            "\12\106",
             "\1\15\4\uffff\1\107\10\uffff\4\111\4\112\44\uffff\1\107\5\uffff"+
             "\1\107\3\uffff\1\107\7\uffff\1\107\3\uffff\1\107\1\uffff\1\107"+
             "\1\110",
@@ -2019,9 +2019,9 @@ public class CLPLexer extends Lexer {
             "\1\uffff\1\36\2\uffff\21\36\2\uffff\2\36\1\uffff\74\36\1\uffff"+
             "\1\36\1\uffff\uff80\36",
             "\1\113",
-            "\11\61\2\62\2\61\1\62\22\61\1\62\1\61\1\62\3\61\1\62\1\61\2"+
-            "\62\21\61\2\62\2\61\1\62\74\61\1\62\1\61\1\62\uff80\61",
             "",
+            "\11\62\2\61\2\62\1\61\22\62\1\61\1\62\1\61\3\62\1\61\1\62\2"+
+            "\61\21\62\2\61\2\62\1\61\74\62\1\61\1\62\1\61\uff80\62",
             "\11\114\2\115\2\114\1\115\22\114\1\115\1\114\1\115\3\114\1\115"+
             "\1\114\2\115\21\114\2\115\2\114\1\115\74\114\1\115\1\114\1\115"+
             "\uff80\114",
@@ -2037,7 +2037,7 @@ public class CLPLexer extends Lexer {
             "\1\36\1\uffff\uff80\36",
             "",
             "",
-            "\1\122\2\uffff\1\123",
+            "\1\123\13\uffff\1\122",
             "\1\124",
             "",
             "\11\36\2\uffff\2\36\1\uffff\22\36\1\uffff\1\36\1\uffff\3\36"+
@@ -2148,6 +2148,7 @@ public class CLPLexer extends Lexer {
             "\1\36\1\uffff\uff80\36",
             "\1\177",
             "",
+            "\1\u0080",
             "\11\36\2\uffff\2\36\1\uffff\22\36\1\uffff\1\36\1\uffff\3\36"+
             "\1\uffff\1\36\2\uffff\21\36\2\uffff\2\36\1\uffff\74\36\1\uffff"+
             "\1\36\1\uffff\uff80\36",

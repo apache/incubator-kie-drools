@@ -37,7 +37,7 @@ public class IfFunction extends BaseFunction
         } else if ( valueHandler instanceof ObjectValueHandler ) {
             String token = valueHandler.getStringValue( null );
             if ( token.equals( "else" ) ) {
-                ((ListValueHandler) caller.getParameters()[0]).add( new LongValueHandler( index + 1 ) );
+                ((ListValueHandler) caller.getParameters()[0]).add( new LongValueHandler( index ) );
             }
         }
         
@@ -52,17 +52,17 @@ public class IfFunction extends BaseFunction
         
          ValueHandler result = null;      
         
-        int elseIndex = args.length;
+        int elseIndex = -1;
         if ( list.length == 2 ) {
             elseIndex = list[1].getIntValue( context );
         }
         
         if ( list[0].getBooleanValue( context ) ) {
-            for ( int i = 0; i < elseIndex; i++ ) {
+            for ( int i = 2; i < elseIndex; i++ ) {
                 result = args[i].getValue( context );
             }
-        } else if ( elseIndex != args.length) {
-            for ( int i = elseIndex; i < args.length; i++ ) {
+        } else if ( elseIndex != -1) {
+            for ( int i = elseIndex+1; i < args.length; i++ ) {
                 result = args[i].getValue( context );
             }            
         } else {

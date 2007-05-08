@@ -15,7 +15,7 @@ public class TempTokenVariable extends BaseValueHandler implements VariableValue
     }
     
     public ValueHandler getValue(ExecutionContext context) {
-        return null;
+        return this;
     }    
 
     public String getIdentifier() {
