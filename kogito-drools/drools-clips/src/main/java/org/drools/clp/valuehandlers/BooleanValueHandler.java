@@ -19,7 +19,7 @@ public class BooleanValueHandler implements ValueHandler {
     } 
 
     public ValueHandler getValue(ExecutionContext context) {
-        return null;
+        return this;
     }    
     
     public int getValueType(ExecutionContext context) {

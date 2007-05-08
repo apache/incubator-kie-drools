@@ -17,7 +17,7 @@ public class CLPLocalDeclarationVariable implements VariableValueHandler {
     }  
     
     public ValueHandler getValue(ExecutionContext context) {
-        return null;
+        return this;
     }    
     
     public String getIdentifier() {

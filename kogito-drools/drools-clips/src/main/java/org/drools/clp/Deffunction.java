@@ -2,6 +2,7 @@ package org.drools.clp;
 
 import org.drools.clp.valuehandlers.FunctionCaller;
 import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
+import org.drools.clp.valuehandlers.ListValueHandler;
 import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 public class Deffunction
@@ -87,8 +88,6 @@ public class Deffunction
                                                             context.getTuple(),
                                                             args.length );
         for ( int i = 0, length = args.length; i < length; i++ ) {
-            // We know that each argument is a local variable, so we can cast and access the underlying value handler, 
-            // as we don't want the variable fully resolved at this stage, just mapped.
             newContext.setLocalVariable( i,
                                          ((ValueHandler) args[i]).getValue( context ) );
         }

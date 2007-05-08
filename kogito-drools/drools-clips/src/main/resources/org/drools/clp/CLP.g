@@ -603,7 +603,7 @@ WS      :       (	' '
         ;                      
         
 DEFRULE		:	'defrule';
-DEFFUNCTION :	'defunction';
+DEFFUNCTION :	'deffunction';
 OR 			:	'or';
 AND 		:	'and';
 NOT 		:	'not';
