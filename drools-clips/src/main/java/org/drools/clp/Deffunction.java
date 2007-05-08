@@ -103,7 +103,8 @@ public class Deffunction
     }
 
     public VariableValueHandler createLocalVariable(String identifier) {
-        return addParameter( identifier );
+        return new IndexedLocalVariableValue( name,
+                                              index++ );
     }
 
     public FunctionCaller[] getFunctions() {

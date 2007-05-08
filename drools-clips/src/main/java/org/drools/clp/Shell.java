@@ -1,6 +1,7 @@
 package org.drools.clp;
 
 import java.io.Reader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.NamedShellVariableValue;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.SwitchingCommonTokenStream;
 import org.drools.lang.DRLLexer;
@@ -24,10 +26,10 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.spi.GlobalResolver;
 
-public class Shell implements ParserHandler, GlobalResolver, BuildContext {
+public class  Shell implements ParserHandler, GlobalResolver, BuildContext {
     private FunctionRegistry registry;
     private Map variables;
-    //private Map packageBulders;
+    private Map              properties = Collections.EMPTY_MAP;
     
     private RuleBase ruleBase;
     private StatefulSession session;
@@ -118,34 +120,49 @@ public class Shell implements ParserHandler, GlobalResolver, BuildContext {
     }
 
     public void addFunction(FunctionCaller function) {
-        // TODO Auto-generated method stub
+        //function.getValue( this );
         
     }
 
     public ValueHandler createLocalVariable(String identifier) {
-        // TODO Auto-generated method stub
-        return null;
+        ValueHandler var = (ValueHandler) this.variables.get( identifier );
+        if ( var == null ) {
+            var = new NamedShellVariableValue( identifier );
+            this.variables.put( identifier,
+                                var );
+        }
+        return var;
     }
 
     public FunctionRegistry getFunctionRegistry() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.registry;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.clp.BuildContext#setProperty(java.lang.Object, java.lang.Object)
+     */
+    public Object setProperty(Object key,
+                              Object value) {
+        if ( this.properties == Collections.EMPTY_MAP ) {
+            this.properties = new HashMap();
+        }
+        return this.properties.put( key,
+                                    value );
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.clp.BuildContext#getProperty(java.lang.Object)
+     */
     public Object getProperty(Object key) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.properties.get( key );
     }
 
     public ValueHandler getVariableValueHandler(String identifier) {
-        // TODO Auto-generated method stub
-        return null;
+        return ( ValueHandler ) this.variables.get( identifier );      
     }
 
-    public Object setProperty(Object key,
-                              Object value) {
-        // TODO Auto-generated method stub
-        return null;
+    public void addVariable(VariableValueHandler var) {
+        this.variables.put( var.getIdentifier(), var );
     }
 
 }

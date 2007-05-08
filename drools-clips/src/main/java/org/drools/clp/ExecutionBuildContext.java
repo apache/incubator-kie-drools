@@ -67,6 +67,10 @@ public class ExecutionBuildContext
         }
         return var;
     }
+    
+    public void addVariable(VariableValueHandler var) {
+        this.vars.put( var.getIdentifier(), var);
+    }
 
     /* (non-Javadoc)
      * @see org.drools.clp.BuildContext#getVariableValueHandler(java.lang.String)
