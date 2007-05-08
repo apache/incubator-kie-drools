@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "null binding"
+when
+	bob : Person( name == "bob" )
+    a: Person( $name : name, ($name != bob.getName()) )
+then
+    results.add("OK");
+end

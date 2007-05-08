@@ -2598,4 +2598,30 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
         
     }
+
+    public void testNullBinding() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nullBindings.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        workingMemory.assertObject( new Person("bob") );
+        workingMemory.assertObject( new Person( null ) );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+
+        assertEquals( "OK",
+                      list.get( 0 ) );
+        
+    }
 }
