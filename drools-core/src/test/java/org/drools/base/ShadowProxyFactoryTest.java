@@ -269,4 +269,31 @@ public class ShadowProxyFactoryTest extends TestCase {
         }
     }
 
+    public void testClassWithDelegateMethodWithLongParam() {
+        try {
+            // creating original object
+            final String originalType = "stilton";
+            final int originalPrice = 15;
+            final Cheese cheese = new Cheese( originalType,
+                                              originalPrice );
+
+            // creating proxy
+            final Class proxy = ShadowProxyFactory.getProxy( Cheese.class );
+            final Cheese cheeseProxy1 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
+            final Cheese cheeseProxy2 = (Cheese) proxy.getConstructor( new Class[]{Cheese.class} ).newInstance( new Object[]{cheese} );
+
+            final int cheesehash = cheeseHashCode( cheese );
+            Assert.assertEquals( cheeseProxy1,
+                                 cheeseProxy2 );
+            Assert.assertEquals( cheeseProxy2,
+                                 cheeseProxy1 );
+            Assert.assertEquals( cheesehash,
+                                 cheeseProxy1.hashCode() );
+
+        } catch ( final Exception e ) {
+            e.printStackTrace();
+            fail( "Error: " + e.getMessage() );
+        }
+    }
+
 }
