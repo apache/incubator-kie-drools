@@ -74,6 +74,16 @@ public class Cheese
     public void setType(final String type) {
         this.type = type;
     }
+    
+    /**
+     * This is a test method to test shadow proxy delegation
+     * when in the presence of a long or double parameter
+     * @param newPrice
+     * @param bla
+     */
+    public void updatePriceFromLong( long newPrice, double xyz, String bla ) {
+        this.price = (int) newPrice;
+    }
 
     public String toString() {
         return "Cheese type='" + this.type + "' price='" + this.price + "'";

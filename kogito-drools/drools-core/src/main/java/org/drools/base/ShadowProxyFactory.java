@@ -652,9 +652,11 @@ public class ShadowProxyFactory {
                            Type.getDescriptor( clazz ) );
 
         final Class[] parameters = method.getParameterTypes();
-        for ( int i = 0; i < parameters.length; i++ ) {
-            mv.visitVarInsn( Type.getType( parameters[i] ).getOpcode( Opcodes.ILOAD ),
-                             i + 1 );
+        for ( int i = 0, offset = 1; i < parameters.length; i++ ) {
+            Type type = Type.getType( parameters[i] );
+            mv.visitVarInsn( type.getOpcode( Opcodes.ILOAD ),
+                             offset );
+            offset += type.getSize();
         }
         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                             Type.getInternalName( clazz ),
@@ -669,13 +671,14 @@ public class ShadowProxyFactory {
                                l0,
                                l1,
                                0 );
-        for ( int i = 0; i < parameters.length; i++ ) {
+        for ( int i = 0, offset = 0; i < parameters.length; i++ ) {
             mv.visitLocalVariable( "arg" + i,
                                    Type.getDescriptor( parameters[i] ),
                                    null,
                                    l0,
                                    l1,
-                                   i + 1 );
+                                   offset );
+            offset += Type.getType( parameters[i] ).getSize();
         }
         mv.visitMaxs( 0,
                       0 );
