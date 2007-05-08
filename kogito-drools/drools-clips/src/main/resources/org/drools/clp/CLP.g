@@ -251,8 +251,7 @@ deffunction returns[Deffunction function]
 	  	}
 		loc=LEFT_PAREN	 
 		 (v=VAR {
-		    // this creates a parameter on the underlying function
-		 	context.createLocalVariable( v.getText() );
+			context.addVariable( function.addParameter( v.getText() ) );
 		 })*	  
 	 	 RIGHT_PAREN
 	  	(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })*
