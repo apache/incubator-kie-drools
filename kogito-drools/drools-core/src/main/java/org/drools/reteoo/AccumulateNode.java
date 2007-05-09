@@ -27,6 +27,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Accumulate;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.util.ArrayUtils;
 import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -266,7 +267,7 @@ public class AccumulateNode extends BetaNode {
      */
     public int hashCode() {
         return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^
-               Arrays.hashCode( this.resultConstraints );
+            ArrayUtils.hashCode( this.resultConstraints );
     }
 
     /* (non-Javadoc)

@@ -1,4 +1,6 @@
 package org.drools.util;
+
+import java.lang.reflect.Array;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -114,4 +116,22 @@ public class ArrayUtils {
         }
         return INDEX_NOT_FOUND;
     }
+    
+    public static int hashCode(Object[] array) {
+        final int PRIME = 31;
+        if ( array == null ) return 0;
+        int result = 1;
+        for ( int index = 0; index < array.length; index++ ) {
+            result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+        }
+        return result;
+    }    
+    
+    public static Object[] copyOf(Object[] original, int newLength, Class newType) {
+        Object[] arr = (newType == Object[].class) ? new Object[newLength] :
+            (Object[])Array.newInstance(newType.getComponentType(), newLength);
+        int len  = (original.length < newLength ? original.length : newLength);
+        System.arraycopy(original, 0, arr, 0, len);
+        return arr;
+    }    
 }

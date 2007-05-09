@@ -14,6 +14,8 @@ import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.Collection;
 
+import org.drools.util.ArrayUtils;
+
 /**
  * <p>
  * This class groups together the functionality of java.util.concurrent that
@@ -182,7 +184,7 @@ public final class Utils {
             if (!itr.hasNext()) {
                 if (idx == len) return arr;
                 // otherwise have to trim
-                return Arrays.copyOf(arr, idx, Object[].class);
+                return ArrayUtils.copyOf(arr, idx, Object[].class);
             }
             // otherwise, have to grow
             int newcap = ((arr.length/2)+1)*3;
@@ -195,7 +197,7 @@ public final class Utils {
                     throw new OutOfMemoryError("required array size too large");
                 }
             }
-            arr = Arrays.copyOf(arr, newcap, Object[].class);
+            arr = ArrayUtils.copyOf(arr, newcap, Object[].class);
             len = newcap;
         }
     }
@@ -221,7 +223,7 @@ public final class Utils {
                 }
                 else {
                     // have to trim
-                    return Arrays.copyOf(arr, idx, aType);
+                    return ArrayUtils.copyOf(arr, idx, aType);
                 }
             }
             // otherwise, have to grow
@@ -235,7 +237,7 @@ public final class Utils {
                     throw new OutOfMemoryError("required array size too large");
                 }
             }
-            arr = Arrays.copyOf(arr, newcap, aType);
+            arr = ArrayUtils.copyOf(arr, newcap, aType);
             len = newcap;
         }
     }
