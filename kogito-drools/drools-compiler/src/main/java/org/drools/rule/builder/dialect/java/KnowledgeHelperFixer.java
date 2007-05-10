@@ -22,13 +22,13 @@ import java.util.regex.Pattern;
 public class KnowledgeHelperFixer {
 
     static String  KNOWLEDGE_HELPER_PFX = "";                               //could also be: "drools\\." for "classic" mode.
-    static Pattern MODIFY               = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^)]+)\\)(.*)",
+    static Pattern MODIFY               = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^)]+)\\)(\\s*;.*)",
                                                            Pattern.DOTALL );
-    static Pattern ASSERT               = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "assert\\s*\\((.*)\\)(.*)",
+    static Pattern ASSERT               = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "assert\\s*\\((.*)\\)(\\s*;.*)",
                                                            Pattern.DOTALL );
-    static Pattern ASSERT_LOGICAL       = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "assertLogical\\s*\\((.*)\\)(.*)",
+    static Pattern ASSERT_LOGICAL       = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "assertLogical\\s*\\((.*)\\)(\\s*;.*)",
                                                            Pattern.DOTALL );
-    static Pattern RETRACT              = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "retract\\s*\\(([^)]+)\\)(.*)",
+    static Pattern RETRACT              = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "retract\\s*\\((.+)\\)(\\s*;.*)",
                                                            Pattern.DOTALL );
 
     /**
@@ -147,7 +147,7 @@ public class KnowledgeHelperFixer {
         }
 
         public String getReplacement(final String guts) {
-            return "drools.modifyObject(" + guts.trim() + "__Handle__, " + guts + ")";
+            return "drools.modifyObject( " + guts + " )";
         }
 
     }
@@ -163,7 +163,7 @@ public class KnowledgeHelperFixer {
         }
 
         public String getReplacement(final String guts) {
-            return "drools.retractObject(" + guts.trim() + "__Handle__)";
+            return "drools.retractObject( " + guts.trim() + " )";
         }
 
     }

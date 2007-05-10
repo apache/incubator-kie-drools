@@ -84,7 +84,7 @@ public class JavaFunctionBuilder
         final String text = TemplateInterpreter.evalToString( template,
                                                               vars );
 
-        System.out.println( text );
+        //System.out.println( text );
 
         final BufferedReader reader = new BufferedReader( new StringReader( text ) );
         String line = null;

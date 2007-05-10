@@ -32,10 +32,14 @@ public class IdentityAssertMapComparator
     }
 
     public int hashCodeOf(final Object obj) {
-        if ( obj instanceof FactHandle ) {
-            return rehash( ((InternalFactHandle) obj).getObjectHashCode() );
+        Object realObject = obj;
+        if ( realObject instanceof FactHandle ) {
+            realObject = ((InternalFactHandle) obj).getObject();
         }
-        return rehash( obj.hashCode() );
+        if ( realObject instanceof ShadowProxy ) {
+            realObject = ((ShadowProxy)realObject).getShadowedObject();
+        }
+        return rehash( System.identityHashCode( realObject ) );
     }
 
     public int rehash(int h) {
@@ -55,10 +59,13 @@ public class IdentityAssertMapComparator
         if ( o1 instanceof FactHandle ) {
             return ((InternalFactHandle) o1).getObject() == ((InternalFactHandle) o2).getObject();
         }
-
+        Object left = o1;
+        if ( left instanceof ShadowProxy ) {
+            left = ((ShadowProxy)left).getShadowedObject();
+        }
         final InternalFactHandle handle = ((InternalFactHandle) o2);
 
-        return o1 == ((handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject());
+        return left == ((handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject());
     }
 
     public int compare(final Object o1,

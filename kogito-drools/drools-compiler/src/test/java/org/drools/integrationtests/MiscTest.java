@@ -63,6 +63,7 @@ import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
+import org.drools.common.AbstractWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -1505,9 +1506,9 @@ public class MiscTest extends TestCase {
         assertEquals( 2,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
         assertEquals( bob,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 0 ) );
-        assertEquals( new Person( "help" ),
                       IteratorToList.convert( workingMemory.iterateObjects() ).get( 1 ) );
+        assertEquals( new Person( "help" ),
+                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 0 ) );
     }
 
     public void testEmptyRule() throws Exception {
@@ -2526,8 +2527,8 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        final Primitives p = new Primitives( );
-        p.setStringArray( new String[] { "test1", "test3" } );
+        final Primitives p = new Primitives();
+        p.setStringArray( new String[]{"test1", "test3"} );
         workingMemory.assertObject( p );
 
         workingMemory.fireAllRules();
@@ -2540,7 +2541,7 @@ public class MiscTest extends TestCase {
         assertEquals( "ok2",
                       list.get( 1 ) );
     }
-    
+
     public void testCollectNodeSharing() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_collectNodeSharing.drl" ) ) );
@@ -2554,8 +2555,10 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        workingMemory.assertObject( new Cheese( "stilton", 10 ) );
-        workingMemory.assertObject( new Cheese( "brie", 15 ) );
+        workingMemory.assertObject( new Cheese( "stilton",
+                                                10 ) );
+        workingMemory.assertObject( new Cheese( "brie",
+                                                15 ) );
 
         workingMemory.fireAllRules();
 
@@ -2565,7 +2568,7 @@ public class MiscTest extends TestCase {
         assertEquals( 2,
                       ((List) list.get( 0 )).size() );
     }
-    
+
     public void testNodeSharingNotExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nodeSharingNotExists.drl" ) ) );
@@ -2579,7 +2582,6 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -2587,16 +2589,17 @@ public class MiscTest extends TestCase {
 
         assertEquals( "rule1",
                       list.get( 0 ) );
-        
-        workingMemory.assertObject( new Cheese( "stilton", 10 ) );
+
+        workingMemory.assertObject( new Cheese( "stilton",
+                                                10 ) );
         workingMemory.fireAllRules();
-        
+
         assertEquals( 2,
                       list.size() );
 
         assertEquals( "rule2",
                       list.get( 1 ) );
-        
+
     }
 
     public void testNullBinding() throws Exception {
@@ -2612,7 +2615,7 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        workingMemory.assertObject( new Person("bob") );
+        workingMemory.assertObject( new Person( "bob" ) );
         workingMemory.assertObject( new Person( null ) );
 
         workingMemory.fireAllRules();
@@ -2622,6 +2625,38 @@ public class MiscTest extends TestCase {
 
         assertEquals( "OK",
                       list.get( 0 ) );
-        
+
     }
+
+    public void testModifyRetractWithFunction() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RetractModifyWithFunction.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           7 );
+        final Cheese muzzarella = new Cheese( "muzzarella",
+                                              9 );
+        final int sum = stilton.getPrice() + muzzarella.getPrice();
+        final FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+        final FactHandle muzzarellaHandle = workingMemory.assertObject( muzzarella );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( sum,
+                      stilton.getPrice() );
+        assertEquals( 1,
+                      workingMemory.getFactHandleMap().size() );
+        assertNotNull( workingMemory.getObject( stiltonHandle ) );
+        assertNotNull( workingMemory.getFactHandle( stilton ) );
+
+        assertNull( workingMemory.getObject( muzzarellaHandle ) );
+        assertNull( workingMemory.getFactHandle( muzzarella ) );
+
+    }
+
 }

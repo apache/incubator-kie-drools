@@ -63,7 +63,6 @@ import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.AbstractHashTable.HashTableIterator;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 import org.drools.util.concurrent.locks.Lock;
 import org.drools.util.concurrent.locks.ReentrantLock;
 
@@ -662,7 +661,19 @@ public abstract class AbstractWorkingMemory
                             // existing handle
                             key.setStatus( EqualityKey.STATED );
                             handle = key.getFactHandle();
-                            handle.setObject( object );
+                            
+                            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
+                                // as assertMap may be using an "identity" equality comparator,
+                                // we need to remove the handle from the map, before replacing the object
+                                // and then re-add the handle. Otherwise we may end up with a leak.
+                                this.assertMap.remove( handle );
+                                handle.setObject( object );
+                                this.assertMap.put( handle, 
+                                                    handle, 
+                                                    false );
+                            } else {
+                                handle.setObject( object );
+                            }
                             return handle;
                         } else {
                             // override, then instantiate new handle for assertion
