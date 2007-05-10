@@ -99,7 +99,31 @@ public class DefaultKnowledgeHelper
                                          this.activation );
     }
 
+    public void modifyObject( final Object object ) throws FactException {
+        FactHandle handle = this.workingMemory.getFactHandle( object );
+        if( handle == null ) {
+            throw new FactException("Modify error: handle not found for object: "+object+". Is it in the working memory?");
+        }
+        // only modify if this fact exists in the wm
+        this.workingMemory.modifyObject( handle,
+                                         object,
+                                         this.rule,
+                                         this.activation );
+    }
+
     public void retractObject(final FactHandle handle) throws FactException {
+        this.workingMemory.retractObject( handle,
+                                          true,
+                                          true,
+                                          this.rule,
+                                          this.activation );
+    }
+
+    public void retractObject(final Object object) throws FactException {
+        FactHandle handle = this.workingMemory.getFactHandle( object );
+        if( handle == null ) {
+            throw new FactException("Retract error: handle not found for object: "+object+". Is it in the working memory?");
+        }
         this.workingMemory.retractObject( handle,
                                           true,
                                           true,

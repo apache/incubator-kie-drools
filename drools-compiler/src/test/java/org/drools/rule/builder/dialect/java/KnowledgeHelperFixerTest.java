@@ -25,32 +25,32 @@ public class KnowledgeHelperFixerTest extends TestCase {
     private static final KnowledgeHelperFixer fixer = new KnowledgeHelperFixer();
 
     public void testAdd__Handle__Simple() {
-        String result = KnowledgeHelperFixerTest.fixer.fix( "modify(myObject )" );
-        assertEquals( "drools.modifyObject(myObject__Handle__, myObject)",
+        String result = KnowledgeHelperFixerTest.fixer.fix( "modify(myObject );" );
+        assertEquals( "drools.modifyObject( myObject );",
                       result );
 
-        result = KnowledgeHelperFixerTest.fixer.fix( "modify ( myObject )" );
-        assertEquals( "drools.modifyObject(myObject__Handle__, myObject)",
+        result = KnowledgeHelperFixerTest.fixer.fix( "modify ( myObject );" );
+        assertEquals( "drools.modifyObject( myObject );",
                       result );
     }
 
     public void testAdd__Handle__withNewLines() {
-        final String result = KnowledgeHelperFixerTest.fixer.fix( "\n\t\n\tmodify(myObject )" );
-        assertEquals( "\n\t\n\tdrools.modifyObject(myObject__Handle__, myObject)",
+        final String result = KnowledgeHelperFixerTest.fixer.fix( "\n\t\n\tmodify(myObject );" );
+        assertEquals( "\n\t\n\tdrools.modifyObject( myObject );",
                       result );
     }
 
     public void testAdd__Handle__rComplex() {
         String result = KnowledgeHelperFixerTest.fixer.fix( "something modify(myObject ); other" );
-        assertEquals( "something drools.modifyObject(myObject__Handle__, myObject); other",
+        assertEquals( "something drools.modifyObject( myObject ); other",
                       result );
 
-        result = KnowledgeHelperFixerTest.fixer.fix( "something modify (myObject )" );
-        assertEquals( "something drools.modifyObject(myObject__Handle__, myObject)",
+        result = KnowledgeHelperFixerTest.fixer.fix( "something modify (myObject );" );
+        assertEquals( "something drools.modifyObject( myObject );",
                       result );
 
-        result = KnowledgeHelperFixerTest.fixer.fix( " modify(myObject ) x" );
-        assertEquals( " drools.modifyObject(myObject__Handle__, myObject) x",
+        result = KnowledgeHelperFixerTest.fixer.fix( " modify(myObject ); x" );
+        assertEquals( " drools.modifyObject( myObject ); x",
                       result );
 
         //should not touch, as it is not a stand alone word
@@ -60,12 +60,12 @@ public class KnowledgeHelperFixerTest extends TestCase {
     }
 
     public void testMultipleMatches() {
-        String result = KnowledgeHelperFixerTest.fixer.fix( "modify(myObject) modify(myObject )" );
-        assertEquals( "drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(myObject__Handle__, myObject)",
+        String result = KnowledgeHelperFixerTest.fixer.fix( "modify(myObject); modify(myObject );" );
+        assertEquals( "drools.modifyObject( myObject ); drools.modifyObject( myObject );",
                       result );
 
-        result = KnowledgeHelperFixerTest.fixer.fix( "xxx modify(myObject ) modify(myObject ) modify(yourObject ) yyy" );
-        assertEquals( "xxx drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(yourObject__Handle__, yourObject) yyy",
+        result = KnowledgeHelperFixerTest.fixer.fix( "xxx modify(myObject ); modify(myObject ); modify(yourObject ); yyy" );
+        assertEquals( "xxx drools.modifyObject( myObject ); drools.modifyObject( myObject ); drools.modifyObject( yourObject ); yyy",
                       result );
 
     }
@@ -85,12 +85,12 @@ public class KnowledgeHelperFixerTest extends TestCase {
     }
 
     public void testAllActionsMushedTogether() {
-        String result = KnowledgeHelperFixerTest.fixer.fix( "assert(myObject ) modify(ourObject);\t retract(herObject)" );
-        assertEquals( "drools.assertObject(myObject ) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)",
+        String result = KnowledgeHelperFixerTest.fixer.fix( "assert(myObject ); modify(ourObject);\t retract(herObject);" );
+        assertEquals( "drools.assertObject(myObject ); drools.modifyObject( ourObject );\t drools.retractObject( herObject );",
                       result );
 
-        result = KnowledgeHelperFixerTest.fixer.fix( "assert(myObject ) modify(ourObject);\t retract(herObject)\nassert(myObject) modify(ourObject);\t retract(herObject)" );
-        assertEquals( "drools.assertObject(myObject ) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)\ndrools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)",
+        result = KnowledgeHelperFixerTest.fixer.fix( "assert(myObject ); modify(ourObject);\t retract(herObject);\nassert(myObject); modify(ourObject);\t retract(herObject);" );
+        assertEquals( "drools.assertObject(myObject ); drools.modifyObject( ourObject );\t drools.retractObject( herObject);\ndrools.assertObject(myObject); drools.modifyObject( ourObject );\t drools.retractObject( herObject );",
                       result );
     }
 

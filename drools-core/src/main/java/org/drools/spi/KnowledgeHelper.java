@@ -76,8 +76,12 @@ public interface KnowledgeHelper
     void modifyObject(FactHandle handle,
                       Object newObject) throws FactException;
 
+    void modifyObject( Object newObject ) throws FactException;
+
     void retractObject(FactHandle handle) throws FactException;
 
+    void retractObject(Object object) throws FactException;
+    
     public Object get(Declaration declaration);
 
     /**
