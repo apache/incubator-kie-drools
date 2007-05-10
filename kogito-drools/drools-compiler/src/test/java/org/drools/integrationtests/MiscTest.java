@@ -1505,10 +1505,8 @@ public class MiscTest extends TestCase {
 
         assertEquals( 2,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
-        assertEquals( bob,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 1 ) );
-        assertEquals( new Person( "help" ),
-                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 0 ) );
+        assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( bob ) );
+        assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( new Person( "help" ) ) );
     }
 
     public void testEmptyRule() throws Exception {
