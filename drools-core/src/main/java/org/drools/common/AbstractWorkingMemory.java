@@ -928,15 +928,19 @@ public abstract class AbstractWorkingMemory
             doRetract( handle,
                        propagationContext );
 
-            // set anyway, so that it updates the hashCodes
-            handle.setObject( object );
+            if(( originalObject != object ) || ( this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY )) {
+                // as assertMap may be using an "identity" equality comparator,
+                // we need to remove the handle from the map, before replacing the object
+                // and then re-add the handle. Otherwise we may end up with a leak.
+                this.assertMap.remove( handle );
+                // set anyway, so that it updates the hashCodes
+                handle.setObject( object );
+                this.assertMap.put( handle, 
+                                    handle, 
+                                    false );
+            }  
 
             if ( this.maintainTms ) {
-                // We only need to put objects, if its a new object
-                if ( originalObject != object ) {
-                    this.assertMap.put( handle,
-                                        handle );
-                }
 
                 // the hashCode and equality has changed, so we must update the EqualityKey
                 EqualityKey key = handle.getEqualityKey();
