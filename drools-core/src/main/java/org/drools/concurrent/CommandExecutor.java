@@ -36,7 +36,6 @@ public class CommandExecutor implements Runnable, Serializable {
             try {
                 Command executor = ( Command ) this.queue.take();
                 executor.execute( this.workingMemory );
-                Thread.sleep( 100 );
             } catch(InterruptedException e) {
                 return;
             }
