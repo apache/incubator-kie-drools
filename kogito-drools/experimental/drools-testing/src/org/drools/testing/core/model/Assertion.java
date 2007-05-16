@@ -1,5 +1,11 @@
 package org.drools.testing.core.model;
 
+/**
+ * 
+ * @author Matt
+ *
+ * (c) Matt Shaw
+ */
 public class Assertion {
 
 	private String name;
