@@ -74,7 +74,6 @@ public class TestRunner {
 	 */
 	private void parseScenario (Scenario scenario) throws RuleTestLanguageException {
 		
-		
 		// create the working memory
 		WorkingMemory wm = RuleBaseWrapper.getInstance().getRuleBase().newWorkingMemory(true);
 		
@@ -82,11 +81,13 @@ public class TestRunner {
 		for (int i=0; i<scenario.getFacts().length; i++) {
 			Fact factDefn = scenario.getFacts()[i];
 			Class classDefn = ObjectUtils.getClassDefn(factDefn.getType(), pkg.getImports(),null);
+			Object fact;
 			try {
-				Object fact = classDefn.newInstance(); 
+				fact = classDefn.newInstance(); 
 			}catch (Exception e) {
 				throw new RuleTestServiceUnavailableException("Exception ocurred",e);
 			}
+			
 			
 		}
 	}
