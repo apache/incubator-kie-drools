@@ -1,6 +1,6 @@
 package org.drools.testing.core.engine;
 
-import org.codehaus.plexus.util.PropertyUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.drools.WorkingMemory;
 import org.drools.rule.Package;
 import org.drools.testing.core.exception.RuleTestLanguageException;
@@ -78,10 +78,23 @@ public class TestRunner {
 		
 		// create the working memory
 		WorkingMemory wm = RuleBaseWrapper.getInstance().getRuleBase().newWorkingMemory(true);
+		parseFacts(scenario.getFacts(), wm);
 		
-		// assert the facts
-		for (int i=0; i<scenario.getFacts().length; i++) {
-			Fact factDefn = scenario.getFacts()[i];
+	}
+	
+	/**
+	 * iterator over the array of facts assigning required fields
+	 * then assert them into the working memory
+	 * 
+	 * @param facts
+	 * @param wm
+	 * @throws RuleTestLanguageException
+	 */
+	private void parseFacts (Fact[] facts, WorkingMemory wm) throws RuleTestLanguageException {
+	
+		// iterating over the facts
+		for (int i=0; i<facts.length; i++) {
+			Fact factDefn = facts[i];
 			Class classDefn = ObjectUtils.getClassDefn(factDefn.getType(), pkg.getImports(),null);
 			Object fact;
 			try {
@@ -95,8 +108,14 @@ public class TestRunner {
 			for (int j=0; j<fields.length; j++) {
 				Field field = fields[j];
 				// set the property on our newly instantiated fact bean
-				
+				try {
+					PropertyUtils.setProperty(fact, field.getName(), field.getValue());
+				}catch (Exception e) {
+					throw new RuleTestServiceUnavailableException("Exception ocurred",e);
+				}
 			}
+			// assert the fact into working memory
+			wm.assertObject(fact);
 		}
 	}
 }
