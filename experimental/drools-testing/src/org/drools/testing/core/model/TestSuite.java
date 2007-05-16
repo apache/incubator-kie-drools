@@ -8,6 +8,8 @@ package org.drools.testing.core.model;
  * in a testing environment.
  * 
  * A test suite has many test scenarios.
+ * 
+ * (c) Matt Shaw
  */
 
 public class TestSuite {

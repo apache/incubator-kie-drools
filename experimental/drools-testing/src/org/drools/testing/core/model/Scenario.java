@@ -1,9 +1,16 @@
 package org.drools.testing.core.model;
 
+/**
+ * 
+ * @author Matt
+ *
+ * (c) Matt Shaw
+ */
 public class Scenario {
 
 	public Fact[] facts;
 	public Outcome[] outcomes;
+	public Rule[] rules;
 	
 	public Fact[] getFacts() {
 		return facts;
@@ -16,5 +23,11 @@ public class Scenario {
 	}
 	public void setOutcomes(Outcome[] outcomes) {
 		this.outcomes = outcomes;
+	}
+	public Rule[] getRules() {
+		return rules;
+	}
+	public void setRules(Rule[] rules) {
+		this.rules = rules;
 	}
 }

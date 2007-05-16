@@ -6,6 +6,8 @@ package org.drools.testing.core.model;
  *
  * A fact represents any object used in conidtional clauses within
  * the set of rules being tested.
+ * 
+ * (c) Matt Shaw
  */
 public class Fact {
 
