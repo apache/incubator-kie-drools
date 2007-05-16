@@ -1,12 +1,17 @@
 package org.drools.testing.core.engine;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.drools.WorkingMemory;
 import org.drools.rule.Package;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
+import org.drools.testing.core.filters.MultipleRuleAgendaFilter;
 import org.drools.testing.core.model.Fact;
 import org.drools.testing.core.model.Field;
+import org.drools.testing.core.model.Rule;
 import org.drools.testing.core.model.Scenario;
 import org.drools.testing.core.utils.ObjectUtils;
 import org.drools.testing.core.wrapper.RuleBaseWrapper;
@@ -79,7 +84,9 @@ public class TestRunner {
 		// create the working memory
 		WorkingMemory wm = RuleBaseWrapper.getInstance().getRuleBase().newWorkingMemory(true);
 		parseFacts(scenario.getFacts(), wm);
-		
+		Collection rules = specifyRulesToFire(scenario.getRules(), wm);
+		// fire the rules
+		wm.fireAllRules(new MultipleRuleAgendaFilter(rules));
 	}
 	
 	/**
@@ -117,5 +124,22 @@ public class TestRunner {
 			// assert the fact into working memory
 			wm.assertObject(fact);
 		}
+	}
+	
+	/**
+	 * add the multipleRuleNameAgenda filter to the working memory
+	 * 
+	 * @param rules
+	 * @param wm
+	 * @throws RuleTestLanguageException
+	 */
+	private Collection specifyRulesToFire (Rule[] rules, WorkingMemory wm) throws RuleTestLanguageException {
+		
+		Collection items = new ArrayList();
+		for (int i=0; i<rules.length; i++) {
+			if (rules[i].isFire())
+				items.add(rules[i].getName());
+		}
+		return items;
 	}
 }
