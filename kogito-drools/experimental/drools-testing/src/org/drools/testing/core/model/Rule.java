@@ -11,6 +11,8 @@ public class Rule {
 	private String name;
 	private boolean fire;
 	
+	public Rule () {}
+	
 	public boolean isFire() {
 		return fire;
 	}

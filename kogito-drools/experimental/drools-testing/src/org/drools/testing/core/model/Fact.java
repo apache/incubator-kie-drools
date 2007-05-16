@@ -15,6 +15,8 @@ public class Fact {
 	private String type;
 	private Field[] fields;
 	
+	public Fact () {}
+	
 	public Field[] getFields() {
 		return fields;
 	}
