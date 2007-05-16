@@ -1,5 +1,6 @@
 package org.drools.testing.core.engine;
 
+import org.drools.WorkingMemory;
 import org.drools.rule.Package;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
@@ -52,11 +53,6 @@ public class TestRunner {
 	}
 	
 	/**
-	 * This is the method which converts the model into a set of facts to be
-	 * inserted into working memory.
-	 * 
-	 *  The objects are created asserted. Any agenda filters required are added.
-	 *  The tests are executed and the result set is populated.
 	 *
 	 */
 	private void parseTestSuite () throws RuleTestLanguageException {
@@ -65,7 +61,21 @@ public class TestRunner {
 			parseScenario(testSuite.getScenarios()[i]);
 	}
 	
+	/**
+	 * The objects are created asserted. Any agenda filters required are added.
+	 *  The tests are executed and the result set is populated.
+	 * 
+	 * @param scenario
+	 * @throws RuleTestLanguageException
+	 */
 	private void parseScenario (Scenario scenario) throws RuleTestLanguageException {
 		
+		// create the working memory
+		WorkingMemory wm = RuleBaseWrapper.getInstance().getRuleBase().newWorkingMemory(true);
+		
+		// assert the facts
+		for (int i=0; i<scenario.getFacts().length; i++) {
+			
+		}
 	}
 }
