@@ -1,10 +1,12 @@
 package org.drools.testing.core.engine;
 
+import org.codehaus.plexus.util.PropertyUtils;
 import org.drools.WorkingMemory;
 import org.drools.rule.Package;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
 import org.drools.testing.core.model.Fact;
+import org.drools.testing.core.model.Field;
 import org.drools.testing.core.model.Scenario;
 import org.drools.testing.core.utils.ObjectUtils;
 import org.drools.testing.core.wrapper.RuleBaseWrapper;
@@ -88,7 +90,13 @@ public class TestRunner {
 				throw new RuleTestServiceUnavailableException("Exception ocurred",e);
 			}
 			
-			
+			// get the fields to set from the fact definition
+			Field[] fields = factDefn.getFields();
+			for (int j=0; j<fields.length; j++) {
+				Field field = fields[j];
+				// set the property on our newly instantiated fact bean
+				
+			}
 		}
 	}
 }
