@@ -4,7 +4,9 @@ import org.drools.WorkingMemory;
 import org.drools.rule.Package;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
+import org.drools.testing.core.model.Fact;
 import org.drools.testing.core.model.Scenario;
+import org.drools.testing.core.utils.ObjectUtils;
 import org.drools.testing.core.wrapper.RuleBaseWrapper;
 
 /**
@@ -26,6 +28,7 @@ import org.drools.testing.core.wrapper.RuleBaseWrapper;
 public class TestRunner {
 
 	private org.drools.testing.core.model.TestSuite testSuite;
+	private Package pkg;
 	
 	public TestRunner (org.drools.testing.core.model.TestSuite otherValue) {
 		this.testSuite = otherValue;
@@ -40,6 +43,7 @@ public class TestRunner {
 	 * @throws RuleTestLanguageException
 	 */
 	public boolean run (Package pkg) throws RuleTestLanguageException {
+		this.pkg = pkg;
 		try {
 			RuleBaseWrapper.getInstance().getRuleBase().addPackage(pkg);
 		}catch (Exception e) {
@@ -70,12 +74,14 @@ public class TestRunner {
 	 */
 	private void parseScenario (Scenario scenario) throws RuleTestLanguageException {
 		
+		
 		// create the working memory
 		WorkingMemory wm = RuleBaseWrapper.getInstance().getRuleBase().newWorkingMemory(true);
 		
 		// assert the facts
 		for (int i=0; i<scenario.getFacts().length; i++) {
-			
+			Fact factDefn = scenario.getFacts()[i];
+			Class classDefn = ObjectUtils.getClassDefn(factDefn.getType(), pkg.getImports(),null);
 		}
 	}
 }
