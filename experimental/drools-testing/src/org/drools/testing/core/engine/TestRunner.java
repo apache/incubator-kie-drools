@@ -1,9 +1,9 @@
 package org.drools.testing.core.engine;
 
 import org.drools.rule.Package;
-import org.drools.testing.core.beans.TestSuite;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
+import org.drools.testing.core.model.Scenario;
 import org.drools.testing.core.wrapper.RuleBaseWrapper;
 
 /**
@@ -24,9 +24,9 @@ import org.drools.testing.core.wrapper.RuleBaseWrapper;
  */
 public class TestRunner {
 
-	private TestSuite testSuite;
+	private org.drools.testing.core.model.TestSuite testSuite;
 	
-	public TestRunner (TestSuite otherValue) {
+	public TestRunner (org.drools.testing.core.model.TestSuite otherValue) {
 		this.testSuite = otherValue;
 	}
 	
@@ -60,6 +60,12 @@ public class TestRunner {
 	 *
 	 */
 	private void parseTestSuite () throws RuleTestLanguageException {
+		
+		for (int i=0; i<testSuite.getScenarios().length; i++) 
+			parseScenario(testSuite.getScenarios()[i]);
+	}
+	
+	private void parseScenario (Scenario scenario) throws RuleTestLanguageException {
 		
 	}
 }
