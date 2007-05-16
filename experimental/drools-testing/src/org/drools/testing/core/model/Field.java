@@ -11,6 +11,9 @@ public class Field {
 	private String name;
 	private String type;
 	private String value;
+	
+	public Field () {}
+	
 	public String getName() {
 		return name;
 	}

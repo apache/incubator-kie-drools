@@ -11,6 +11,8 @@ public class Assertion {
 	private String name;
 	private boolean success;
 	
+	public Assertion () {}
+	
 	public String getName() {
 		return name;
 	}

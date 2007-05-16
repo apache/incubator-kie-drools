@@ -15,6 +15,8 @@ package org.drools.testing.core.model;
 public class TestSuite {
 
 	private Scenario[] scenarios;
+	
+	public TestSuite () {}
 
 	public Scenario[] getScenarios() {
 		return scenarios;

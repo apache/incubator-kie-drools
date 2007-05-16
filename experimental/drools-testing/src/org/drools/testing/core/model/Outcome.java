@@ -11,6 +11,8 @@ public class Outcome {
 	public Rule[] rules;
 	public Assertion[] assertions;
 	
+	public Outcome () {}
+	
 	public Assertion[] getAssertions() {
 		return assertions;
 	}

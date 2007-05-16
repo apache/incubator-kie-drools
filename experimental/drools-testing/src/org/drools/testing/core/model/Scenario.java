@@ -12,6 +12,8 @@ public class Scenario {
 	public Outcome[] outcomes;
 	public Rule[] rules;
 	
+	public Scenario () {}
+	
 	public Fact[] getFacts() {
 		return facts;
 	}
