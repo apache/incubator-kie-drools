@@ -16,6 +16,10 @@ import org.drools.testing.core.wrapper.RuleBaseWrapper;
  * This class relies on the underlying testing model and will return
  * results reflected in the model by the test scenarios.
  * 
+ * Eventually there will be multiple run methods depending on services this API will
+ * be used in. for now the run method accepts a drools Package object, implying that the 
+ * calling application has it's own method of generating a package.
+ * 
  * (c) Matt Shaw
  */
 public class TestRunner {
@@ -42,6 +46,8 @@ public class TestRunner {
 					+pkg.getName());
 		}
 		
+		parseTestSuite();
+		RuleBaseWrapper.getInstance().getRuleBase().removePackage(pkg.getName());
 		return true;
 	}
 	
