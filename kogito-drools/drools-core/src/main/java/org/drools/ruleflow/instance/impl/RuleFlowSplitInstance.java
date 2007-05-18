@@ -19,9 +19,13 @@ package org.drools.ruleflow.instance.impl;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.common.RuleFlowGroupNode;
 import org.drools.ruleflow.core.IConnection;
+import org.drools.ruleflow.core.IConstraint;
 import org.drools.ruleflow.core.ISplit;
 import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
+import org.drools.spi.Activation;
+import org.drools.spi.RuleFlowGroup;
 
 /**
  * Runtime counterpart of a split node.
@@ -40,10 +44,60 @@ public class RuleFlowSplitInstance extends RuleFlowNodeInstance
         final ISplit split = getSplitNode();
         switch ( split.getType() ) {
             case ISplit.TYPE_AND :
-                final List outgoing = split.getOutgoingConnections();
+                List outgoing = split.getOutgoingConnections();
                 for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
                     final IConnection connection = (IConnection) iterator.next();
                     getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
+                }
+                break;
+            case ISplit.TYPE_XOR :
+                outgoing = split.getOutgoingConnections();
+                int priority = Integer.MAX_VALUE;
+                IConnection selected = null;
+            	RuleFlowGroup systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
+                for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
+                    final IConnection connection = (IConnection) iterator.next();
+                    IConstraint constraint = split.getConstraint(connection);
+                    if (constraint != null && constraint.getPriority() < priority) {
+                    	String rule = "RuleFlow-" + getProcessInstance().getProcess().getId() + "-" +
+                		getNode().getId() + "-" + connection.getTo().getId();
+                    	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
+                    		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
+                    		if (rule.equals(activation.getRule().getName())) {
+                        		selected = connection;
+                        		priority = constraint.getPriority();
+                        		break;
+                    		}
+                    	}
+                    }
+                }
+                if (selected == null) {
+                	throw new IllegalArgumentException("XOR split could not find at least one valid outgoing connection for split " + getSplitNode().getName());
+                }
+                getProcessInstance().getNodeInstance( selected.getTo() ).trigger( this );
+                break;
+            case ISplit.TYPE_OR :
+                outgoing = split.getOutgoingConnections();
+                boolean found = false;
+            	systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
+                for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
+                    final IConnection connection = (IConnection) iterator.next();
+                    IConstraint constraint = split.getConstraint(connection);
+                    if (constraint != null) {
+                    	String rule = "RuleFlow-" + getProcessInstance().getProcess().getId() + "-" +
+                    		getNode().getId() + "-" + connection.getTo().getId();
+                    	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
+                    		Activation activation = (Activation) activations.next();
+                    		if (rule.equals(activation.getRule().getName())) {
+                                getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
+                                found = true;
+                        		break;
+                    		}
+                    	}
+                    }
+                    if (!found) {
+                    	throw new IllegalArgumentException("OR split could not find at least one valid outgoing connection for split " + getSplitNode().getName());
+                    }
                 }
                 break;
             default :
