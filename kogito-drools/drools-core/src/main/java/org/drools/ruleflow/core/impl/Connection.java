@@ -87,17 +87,17 @@ public class Connection
         return this.type;
     }
 
-    public boolean equals(final Object object) {
-        if ( object instanceof Connection ) {
-            final Connection connection = (Connection) object;
-            return this.type == connection.getType() && getFrom().equals( connection.getFrom() ) && getTo().equals( connection.getTo() );
-        }
-        return false;
-    }
+//    public boolean equals(final Object object) {
+//        if ( object instanceof Connection ) {
+//            final Connection connection = (Connection) object;
+//            return this.type == connection.getType() && getFrom().equals( connection.getFrom() ) && getTo().equals( connection.getTo() );
+//        }
+//        return false;
+//    }
 
-    public int hashCode() {
-        return (getFrom() == null ? 0 : getFrom().hashCode()) + 7 * (getTo() == null ? 0 : getTo().hashCode()) + 19 * getType();
-    }
+//    public int hashCode() {
+//        return (getFrom() == null ? 0 : getFrom().hashCode()) + 7 * (getTo() == null ? 0 : getTo().hashCode()) + 19 * getType();
+//    }
 
     public String toString() {
         final StringBuffer sb = new StringBuffer( "Connection " );
