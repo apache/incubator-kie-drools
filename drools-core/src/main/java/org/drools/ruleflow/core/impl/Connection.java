@@ -96,7 +96,7 @@ public class Connection
     }
 
     public int hashCode() {
-        return getFrom().hashCode() + 3 * getTo().hashCode() + 5 * getType();
+        return (getFrom() == null ? 0 : getFrom().hashCode()) + 7 * (getTo() == null ? 0 : getTo().hashCode()) + 19 * getType();
     }
 
     public String toString() {
