@@ -55,7 +55,6 @@ public class ProcessBuilder {
         this.processes.add( process );
         // generate and add rule for process
         String rules = generateRules( process );
-        System.out.println(rules);
         if (rules != null && rules.length() != 0) {
         	try {
         		packageBuilder.addPackageFromDrl(new StringReader(rules));
