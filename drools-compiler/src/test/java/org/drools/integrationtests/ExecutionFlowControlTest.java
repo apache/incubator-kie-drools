@@ -518,7 +518,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         final Package pkg = builder.getPackage();
-        final ProcessBuilder processBuilder = new ProcessBuilder();
+        final ProcessBuilder processBuilder = new ProcessBuilder(builder);
         processBuilder.addProcessFromFile( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
 
         final RuleBase ruleBase = getRuleBase();
