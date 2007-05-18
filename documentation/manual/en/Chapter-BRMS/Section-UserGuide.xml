@@ -58,9 +58,11 @@
         <title>Rule authoring</title>
   </section>
 
+<!--
   <section> 
 	<title>Syncronising with developers (SCM system integration)</title>
   </section>
+-->
 
   <section>
         <title>Integrating with your applications</title>
