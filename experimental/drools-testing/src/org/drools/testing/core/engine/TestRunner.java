@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.drools.WorkingMemory;
-import org.drools.rule.Package;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
 import org.drools.testing.core.filters.MultipleRuleAgendaFilter;
@@ -35,7 +34,7 @@ import org.drools.testing.core.wrapper.RuleBaseWrapper;
 public class TestRunner {
 
 	private org.drools.testing.core.model.TestSuite testSuite;
-	private Package pkg;
+	private org.drools.rule.Package pkg;
 	
 	public TestRunner (org.drools.testing.core.model.TestSuite otherValue) {
 		this.testSuite = otherValue;
@@ -49,7 +48,7 @@ public class TestRunner {
 	 * @return boolean
 	 * @throws RuleTestLanguageException
 	 */
-	public boolean run (Package pkg) throws RuleTestLanguageException {
+	public boolean run (org.drools.rule.Package pkg) throws RuleTestLanguageException {
 		this.pkg = pkg;
 		try {
 			RuleBaseWrapper.getInstance().getRuleBase().addPackage(pkg);
