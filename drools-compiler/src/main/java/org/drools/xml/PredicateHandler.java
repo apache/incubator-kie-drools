@@ -84,7 +84,7 @@ class PredicateHandler extends BaseAbstractHandler
         it.previous();
         final PatternDescr patternDescr = (PatternDescr) it.previous();
 
-        patternDescr.addDescr( predicateDescr );
+        patternDescr.addConstraint( predicateDescr );
 
         return null;
     }

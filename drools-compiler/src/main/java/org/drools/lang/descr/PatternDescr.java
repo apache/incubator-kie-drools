@@ -1,5 +1,7 @@
 package org.drools.lang.descr;
 
+import java.util.List;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,20 +18,17 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class PatternDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID     = 63959215220308107L;
-    private String            objectType;
-    private String            identifier;
-    private List              descrs               = Collections.EMPTY_LIST;
-    private int               leftParentCharacter  = -1;
-    private int               rightParentCharacter = -1;
+    private static final long       serialVersionUID     = 63959215220308107L;
+    private String                  objectType;
+    private String                  identifier;
+    private ConditionalElementDescr constraint          = new AndDescr();
+    private int                     leftParentCharacter  = -1;
+    private int                     rightParentCharacter = -1;
 
     public PatternDescr() {
         this( null,
@@ -42,16 +41,9 @@ public class PatternDescr extends BaseDescr {
     }
 
     public PatternDescr(final String objectType,
-                       final String identifier) {
+                        final String identifier) {
         this.objectType = objectType;
         this.identifier = identifier;
-    }
-
-    public void addDescr(final BaseDescr baseDescr) {
-        if ( this.descrs == Collections.EMPTY_LIST ) {
-            this.descrs = new ArrayList( 1 );
-        }
-        this.descrs.add( baseDescr );
     }
 
     public void setIdentifier(final String identifier) {
@@ -71,7 +63,15 @@ public class PatternDescr extends BaseDescr {
     }
 
     public List getDescrs() {
-        return this.descrs;
+        return this.constraint.getDescrs();
+    }
+    
+    public void addConstraint( BaseDescr base ) {
+        this.constraint.addDescr( base );
+    }
+    
+    public ConditionalElementDescr getConstraint() {
+        return this.constraint;
     }
 
     public String toString() {

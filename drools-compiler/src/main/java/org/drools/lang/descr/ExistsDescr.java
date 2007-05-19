@@ -44,4 +44,12 @@ public class ExistsDescr extends BaseDescr
         return this.descrs;
     }
 
+    public void addOrMerge(BaseDescr baseDescr) {
+        if( baseDescr instanceof ExistsDescr ) {
+            this.descrs.addAll( ((ExistsDescr)baseDescr).getDescrs() ); 
+        } else {
+            this.descrs.add( baseDescr );        
+        }
+    }
+
 }

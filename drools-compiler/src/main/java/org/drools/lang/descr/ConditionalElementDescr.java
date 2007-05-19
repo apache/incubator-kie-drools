@@ -21,6 +21,8 @@ import java.util.List;
 public interface ConditionalElementDescr {
 
     public void addDescr(BaseDescr baseDescr);
-
+    
+    public void addOrMerge(final BaseDescr baseDescr);
+    
     public List getDescrs();
 }

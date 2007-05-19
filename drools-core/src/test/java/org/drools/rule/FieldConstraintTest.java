@@ -160,7 +160,7 @@ public class FieldConstraintTest extends TestCase {
                                                                        "price" );
 
         Pattern pattern = new Pattern( 0,
-                                    new ClassObjectType( Cheese.class ) );
+                                       new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the pattern they derive their value form
@@ -169,7 +169,7 @@ public class FieldConstraintTest extends TestCase {
                                                                pattern );
 
         pattern = new Pattern( 1,
-                             new ClassObjectType( Cheese.class ) );
+                               new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the pattern they derive their value form
@@ -242,7 +242,7 @@ public class FieldConstraintTest extends TestCase {
                                                                        "price" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the pattern they derive their value form
@@ -268,21 +268,21 @@ public class FieldConstraintTest extends TestCase {
         };
 
         final ReturnValueRestriction restriction1 = new ReturnValueRestriction( priceExtractor,
-                                                                          isDoubleThePrice,
-                                                                          new Declaration[]{priceDeclaration},
-                                                                          new Declaration[0],
-                                                                          new String[0],
-                                                                          ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+                                                                                isDoubleThePrice,
+                                                                                new Declaration[]{priceDeclaration},
+                                                                                new Declaration[0],
+                                                                                new String[0],
+                                                                                ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
 
         final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
                                                                              restriction1 );
 
         final ReturnValueRestriction restriction2 = new ReturnValueRestriction( priceExtractor,
-                                                                          isDoubleThePrice,
-                                                                          new Declaration[]{priceDeclaration},
-                                                                          new Declaration[0],
-                                                                          new String[0],
-                                                                          ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER ) );
+                                                                                isDoubleThePrice,
+                                                                                new Declaration[]{priceDeclaration},
+                                                                                new Declaration[0],
+                                                                                new String[0],
+                                                                                ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER ) );
 
         final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
                                                                              restriction2 );
@@ -320,4 +320,228 @@ public class FieldConstraintTest extends TestCase {
                                                      f2.getObject() ) );
     }
 
+    /**
+     * <pre>
+     *        
+     *         
+     *                type == &quot;cheddar&quot &amp;&amp; price &gt; 10 
+     *          
+     *         
+     * </pre>
+     * 
+     * Test the use of the composite AND constraint. Composite AND constraints are only
+     * used when nested inside other field constraints, as the top level AND is implicit
+     * 
+     * @throws IntrospectionException
+     */
+    public void testCompositeAndConstraint() {
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
+
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "type" );
+
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+
+        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+
+        final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
+                                                                     evaluator,
+                                                                     field );
+
+        final ClassFieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
+                                                                            "price" );
+
+        final FieldValue priceField = FieldFactory.getFieldValue( 10 );
+
+        final Evaluator priceEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
+
+        final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
+                                                                     priceEvaluator,
+                                                                     priceField );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           15 );
+
+        final AndConstraint constraint = new AndConstraint();
+        constraint.addAlphaConstraint( constraint1 );
+        constraint.addAlphaConstraint( constraint2 );
+
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+
+        // check constraint
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+                                          workingMemory ) );
+
+        cheddar.setPrice( 5 );
+        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+        
+        cheddar.setType( "stilton" );
+        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+        
+        cheddar.setPrice( 15 );
+        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+    }
+
+    /**
+     * <pre>
+     *        
+     *         
+     *                Cheese( type == &quot;cheddar&quot || price &gt; 10 ) 
+     *          
+     *         
+     * </pre>
+     * 
+     * Test the use of the composite OR constraint. 
+     * 
+     * @throws IntrospectionException
+     */
+    public void testCompositeOrConstraint() {
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
+
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "type" );
+
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+
+        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+
+        final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
+                                                                     evaluator,
+                                                                     field );
+
+        final ClassFieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
+                                                                            "price" );
+
+        final FieldValue priceField = FieldFactory.getFieldValue( 10 );
+
+        final Evaluator priceEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
+
+        final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
+                                                                     priceEvaluator,
+                                                                     priceField );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           15 );
+
+        final OrConstraint constraint = new OrConstraint();
+        constraint.addAlphaConstraint( constraint1 );
+        constraint.addAlphaConstraint( constraint2 );
+
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+
+        // check constraint
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+                                          workingMemory ) );
+
+        cheddar.setPrice( 5 );
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+        
+        cheddar.setType( "stilton" );
+        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+        
+        cheddar.setPrice( 15 );
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+    }
+    
+    /**
+     * <pre>
+     *        
+     *         
+     *                Cheese( ( type == &quot;cheddar&quot &amp;&amp; price &gt; 10) || ( type == &quote;stilton&quote; && price &lt; 10 ) ) 
+     *          
+     *         
+     * </pre>
+     * 
+     * Test the use of the composite OR constraint. 
+     * 
+     * @throws IntrospectionException
+     */
+    public void testNestedCompositeConstraints() {
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
+
+        final ClassFieldExtractor typeExtractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "type" );
+
+        final FieldValue cheddarField = FieldFactory.getFieldValue( "cheddar" );
+
+        final Evaluator stringEqual = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+
+        // type == 'cheddar'
+        final LiteralConstraint constraint1 = new LiteralConstraint( typeExtractor,
+                                                                     stringEqual,
+                                                                     cheddarField );
+
+        final ClassFieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
+                                                                            "price" );
+
+        final FieldValue field10 = FieldFactory.getFieldValue( 10 );
+
+        final Evaluator integerGreater = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
+
+        // price > 10
+        final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
+                                                                     integerGreater,
+                                                                     field10 );
+
+        // type == 'cheddar' && price > 10
+        final AndConstraint and1 = new AndConstraint();
+        and1.addAlphaConstraint( constraint1 );
+        and1.addAlphaConstraint( constraint2 );
+
+        
+        final FieldValue stiltonField = FieldFactory.getFieldValue( "stilton" );
+        // type == 'stilton'
+        final LiteralConstraint constraint3 = new LiteralConstraint( typeExtractor,
+                                                                     stringEqual,
+                                                                     stiltonField );
+
+        final Evaluator integerLess = ValueType.INTEGER_TYPE.getEvaluator( Operator.LESS );
+
+        // price < 10
+        final LiteralConstraint constraint4 = new LiteralConstraint( priceExtractor,
+                                                                     integerLess,
+                                                                     field10 );
+
+
+        // type == 'stilton' && price < 10
+        final AndConstraint and2 = new AndConstraint();
+        and2.addAlphaConstraint( constraint3 );
+        and2.addAlphaConstraint( constraint4 );
+
+        // ( type == 'cheddar' && price > 10 ) || ( type == 'stilton' && price < 10 )
+        final OrConstraint constraint = new OrConstraint();
+        constraint.addAlphaConstraint( and1 );
+        constraint.addAlphaConstraint( and2 );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           15 );
+        
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+
+        // check constraint
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+                                          workingMemory ) );
+
+        cheddar.setPrice( 5 );
+        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+        
+        cheddar.setType( "stilton" );
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+        
+        cheddar.setPrice( 15 );
+        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+                                           workingMemory ) );
+    }
+    
 }

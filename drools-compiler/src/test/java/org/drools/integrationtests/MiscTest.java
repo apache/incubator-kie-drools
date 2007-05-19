@@ -2657,4 +2657,57 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testConstraintConnectors() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintConnectors.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        final Person youngChili1 = new Person( "young chili1" );
+        youngChili1.setAge( 12 );
+        youngChili1.setHair( "blue" );
+        final Person youngChili2 = new Person( "young chili2" );
+        youngChili2.setAge( 25 );
+        youngChili2.setHair( "purple" );
+
+        final Person chili1 = new Person( "chili1" );
+        chili1.setAge( 35 );
+        chili1.setHair( "red" );
+
+        final Person chili2 = new Person( "chili2" );
+        chili2.setAge( 38 );
+        chili2.setHair( "indigigo" );
+
+        final Person oldChili1 = new Person( "old chili2" );
+        oldChili1.setAge( 45 );
+        oldChili1.setHair( "green" );
+
+        final Person oldChili2 = new Person( "old chili2" );
+        oldChili2.setAge( 48 );
+        oldChili2.setHair( "blue" );
+
+        workingMemory.assertObject( youngChili1 );
+        workingMemory.assertObject( youngChili2 );
+        workingMemory.assertObject( chili1 );
+        workingMemory.assertObject( chili2 );
+        workingMemory.assertObject( oldChili1 );
+        workingMemory.assertObject( oldChili2 );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 3,
+                      results.size() );
+        assertEquals( chili1, results.get( 0 ) );
+        assertEquals( oldChili1, results.get( 1 ) );
+        assertEquals( youngChili1, results.get( 2 ) );
+
+    }
+
 }

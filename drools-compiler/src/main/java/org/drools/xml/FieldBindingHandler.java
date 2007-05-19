@@ -88,7 +88,7 @@ class FieldBindingHandler extends BaseAbstractHandler
         it.previous();
         final PatternDescr patternDescr = (PatternDescr) it.previous();
 
-        patternDescr.addDescr( fieldBindingDescr );
+        patternDescr.addConstraint( fieldBindingDescr );
 
         return null;
     }

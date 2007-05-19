@@ -84,7 +84,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
         if ( !descr.getRestrictions().isEmpty() ) {
-            this.template = descr.getFieldName() + " " + processFieldConstraint( descr.getRestrictions() );
+            this.template = descr.getFieldName() + " " + processFieldConstraint( descr.getRestriction(), false );
         }
     }
 
@@ -95,11 +95,11 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitPatternDescr(final PatternDescr descr) {
         this.template = new String();
-        if ( !descr.getDescrs().isEmpty() ) {
+        if ( !descr.getConstraint().getDescrs().isEmpty() ) {
             if ( descr.getIdentifier() != null ) {
-                this.template = "\t\t" + descr.getIdentifier() + " : " + descr.getObjectType() + "( " + processColoumnConstraintList( descr.getDescrs() ) + ")";
+                this.template = "\t\t" + descr.getIdentifier() + " : " + descr.getObjectType() + "( " + processColoumnConstraintList( descr.getConstraint().getDescrs() ) + ")";
             } else {
-                this.template = "\t\t" + descr.getObjectType() + "( " + processColoumnConstraintList( descr.getDescrs() ) + ")";
+                this.template = "\t\t" + descr.getObjectType() + "( " + processColoumnConstraintList( descr.getConstraint().getDescrs() ) + ")";
             }
         } else {
             if ( descr.getIdentifier() != null ) {
@@ -157,11 +157,7 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        if ( descr.getConnective() == RestrictionConnectiveDescr.OR ) {
-            this.template = " | ";
-        } else {
-            this.template = " & ";
-        }
+        this.template = this.processFieldConstraint( descr, true );
     }
 
     public void visitNotDescr(final NotDescr descr) {
@@ -205,7 +201,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitPredicateDescr(final PredicateDescr descr) {
         this.template = new String();
-        this.template = "( " + descr.getContent() + " )";
+        this.template = "eval( " + descr.getContent() + " )";
 
     }
 
@@ -220,6 +216,7 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     private String template;
+    private boolean needsBracket = false;
 
     private String processRules(final List rules) {
         String ruleList = "";
@@ -298,13 +295,32 @@ public class DrlDumper extends ReflectiveVisitor
                                       descrString.length() );
     }
 
-    private String processFieldConstraint(final List list) {
+    private String processFieldConstraint(final RestrictionConnectiveDescr restriction, boolean addBrackets ) {
         String descrString = "";
-        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+        String connective = "";
+        boolean bracketTmp = this.needsBracket;
+        this.needsBracket = restriction.getRestrictions().size() > 1;
+        
+        if ( restriction.getConnective() == RestrictionConnectiveDescr.OR ) {
+            connective = " || ";
+        } else {
+            connective = " && ";
+        }
+        if( addBrackets && bracketTmp ) {
+            descrString += "( ";
+        }
+        for ( final Iterator it = restriction.getRestrictions().iterator(); it.hasNext(); ) {
             final Object temp = it.next();
             visit( temp );
             descrString += this.template;
+            if( it.hasNext() ) {
+                descrString += connective;
+            }
         }
+        if( addBrackets && bracketTmp ) {
+            descrString += " )";
+        }
+        this.needsBracket = bracketTmp;
         return descrString;
     }
 

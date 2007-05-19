@@ -199,7 +199,7 @@ end
 rule "match edge"
 	when
 	    Stage( value == Stage.LABELING )
-        $edge1: Edge( $p1:p1, $p2:p2, $label:label == Edge.PLUS | == Edge.MINUS | == Edge.B )
+        $edge1: Edge( $p1:p1, $p2:p2, $label:label == Edge.PLUS || == Edge.MINUS || == Edge.B )
         $edge2: Edge( p1 == $p2, p2 == $p1, label == Edge.NIL )
 	then
 	    $edge1.setPlotted( true );
@@ -221,7 +221,7 @@ rule "label L"
 	when
 	    Stage( value == Stage.LABELING )
 	    Junction( type == Junction.L, $basePoint:basePoint )
-	    Edge( p1 == $basePoint, $Edge1P2 : p2, label == Edge.PLUS | == Edge.MINUS )
+	    Edge( p1 == $basePoint, $Edge1P2 : p2, label == Edge.PLUS || == Edge.MINUS )
         $edge: Edge( p1 == $basePoint, p2 != $Edge1P2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.B );
@@ -316,7 +316,7 @@ rule "label arrow 1A" salience 5
 	when
         Stage( value == Stage.LABELING )
         Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $basePoint, p2 == $p1, $label:label == Edge.B | == Edge.MINUS )
+        Edge( p1 == $basePoint, p2 == $p1, $label:label == Edge.B || == Edge.MINUS )
         $edge1: Edge( p1 == $basePoint, p2 == $p2, label == Edge.NIL )
         $edge2: Edge( p1 == $basePoint, p2 == $p3 )
 	then
@@ -331,7 +331,7 @@ rule "label arrow 1B"
 	when
         Stage( value == Stage.LABELING )
         Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $basePoint, p2 == $p1, $label:label == Edge.B | == Edge.MINUS )
+        Edge( p1 == $basePoint, p2 == $p1, $label:label == Edge.B || == Edge.MINUS )
         $edge1: Edge( p1 == $basePoint, p2 == $p2 )
         $edge2: Edge( p1 == $basePoint, p2 == $p3, label == Edge.NIL )
 	then
@@ -346,7 +346,7 @@ rule "label arrow 2A" salience 5
 	when
         Stage( value == Stage.LABELING )
         Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $basePoint, p2 == $p3, $label:label == Edge.B | == Edge.MINUS )
+        Edge( p1 == $basePoint, p2 == $p3, $label:label == Edge.B || == Edge.MINUS )
         $edge1: Edge( p1 == $basePoint, p2 == $p2, label == Edge.NIL )
         $edge2: Edge( p1 == $basePoint, p2 == $p1 )
 	then
@@ -361,7 +361,7 @@ rule "label arrow 2B"
 	when
         Stage( value == Stage.LABELING )
         Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
-        Edge( p1 == $basePoint, p2 == $p3,  $label:label == Edge.B | == Edge.MINUS  )
+        Edge( p1 == $basePoint, p2 == $p3,  $label:label == Edge.B || == Edge.MINUS  )
         $edge1: Edge( p1 == $basePoint, p2 == $p2 )
         $edge2: Edge( p1 == $basePoint, p2 == $p1, label == Edge.NIL )
 	then

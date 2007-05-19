@@ -7,7 +7,7 @@ rule testSkipModify
        Cheese( $type : type )
        Person( )
        Person( likes == $type )
-       Person( $likes : likes, ( $likes.equals( $type ) ) )
+       Person( $likes : likes, eval( $likes.equals( $type ) ) )
        eval( $likes.equals( $type ) )
    then
        results.add( "FIRED" );
@@ -18,7 +18,7 @@ rule testSkipModify2
        Cheese( )
        Person( )
        Person( likes == "stilton" )
-       Person( $likes : likes, ( $likes.equals( "stilton" ) ) )
+       Person( $likes : likes, eval( $likes.equals( "stilton" ) ) )
        eval( $likes.equals( "stilton" ) )
    then
        results.add( "FIRED" );

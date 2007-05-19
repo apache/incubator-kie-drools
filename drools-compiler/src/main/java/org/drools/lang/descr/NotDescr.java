@@ -44,4 +44,12 @@ public class NotDescr extends BaseDescr
         return this.descrs;
     }
 
+    public void addOrMerge(BaseDescr baseDescr) {
+        if( baseDescr instanceof NotDescr ) {
+            this.descrs.addAll( ((NotDescr)baseDescr).getDescrs() ); 
+        } else {
+            this.descrs.add( baseDescr );        
+        }
+    }
+
 }

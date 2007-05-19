@@ -5,7 +5,7 @@ global java.util.List results;
 rule "null binding"
 when
 	bob : Person( name == "bob" )
-    a: Person( $name : name, ($name != bob.getName()) )
+    a: Person( $name : name, eval($name != bob.getName()) )
 then
     results.add("OK");
 end

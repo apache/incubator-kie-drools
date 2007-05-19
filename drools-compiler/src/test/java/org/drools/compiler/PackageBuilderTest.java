@@ -99,10 +99,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -111,7 +111,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      "x" ) );
 
-        pattern.addDescr( returnValue );
+        pattern.addConstraint( returnValue );
 
         // There is no m this should produce errors.
         ruleDescr.setConsequence( "modify(m);" );
@@ -330,7 +330,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        pattern.addDescr( literalDescr );
+        pattern.addConstraint( literalDescr );
 
         ruleDescr.setConsequence( "System.out.println( stilton.getFieldValue( \"name\" ) + \" \" + stilton.getFieldValue( \"price\" ) );" );
 
@@ -375,7 +375,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        pattern.addDescr( literalDescr );
+        pattern.addConstraint( literalDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -401,10 +401,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -413,7 +413,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      "(( (Integer) map.get( new Integer( x )) ).intValue() * y)" ) );
 
-        pattern.addDescr( returnValue );
+        pattern.addConstraint( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -471,17 +471,17 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                            "x" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
                                                                             "y" );
-        pattern.addDescr( fieldBindingDescr2 );
+        pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
         final PredicateDescr predicate = new PredicateDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
-        pattern.addDescr( predicate );
+        pattern.addConstraint( predicate );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -538,10 +538,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -822,7 +822,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   null ) );
 
-        patternDescr.addDescr( literalDescr );
+        patternDescr.addConstraint( literalDescr );
 
         ruleDescr.setConsequence( "" );
 
@@ -850,7 +850,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   null ) );
-        patternDescr.addDescr( literalDescr );
+        patternDescr.addConstraint( literalDescr );
         ruleDescr.setConsequence( "" );
 
         ruleDescr = new RuleDescr( "rule-1" );
@@ -864,7 +864,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
                                                                   null ) );
-        patternDescr.addDescr( literalDescr );
+        patternDescr.addConstraint( literalDescr );
         ruleDescr.setConsequence( "" );
 
         ruleDescr = new RuleDescr( "rule-2" );
@@ -880,7 +880,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new LiteralRestrictionDescr( "!=",
                                                                   null ) );
 
-        patternDescr.addDescr( literalDescr );
+        patternDescr.addConstraint( literalDescr );
         ruleDescr.setConsequence( "" );
 
         builder.addPackage( packageDescr );
@@ -915,12 +915,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        pattern1.addDescr( fieldBindingDescr );
-        pattern1.addDescr( literalDescr );
+        pattern1.addConstraint( fieldBindingDescr );
+        pattern1.addConstraint( literalDescr );
 
         final PatternDescr pattern2 = new PatternDescr( Cheese.class.getName() );
         lhs.addDescr( pattern2 );
-        pattern2.addDescr( fieldBindingDescr );
+        pattern2.addConstraint( fieldBindingDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -996,10 +996,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                      "x" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new FieldBindingDescr( "price",
                                                    "y" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -1008,7 +1008,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
                                                                      expression ) );
 
-        pattern.addDescr( returnValue );
+        pattern.addConstraint( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
     }
@@ -1027,17 +1027,17 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
                                                                            "x" );
-        pattern.addDescr( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
                                                                             "y" );
-        pattern.addDescr( fieldBindingDescr2 );
+        pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
         final PredicateDescr predicate = new PredicateDescr( expression );
-        pattern.addDescr( predicate );
+        pattern.addConstraint( predicate );
 
         ruleDescr.setConsequence( "modify(stilton);" );
     }
@@ -1072,7 +1072,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PatternDescr pattern = new PatternDescr( Primitives.class.getName() );
         lhs.addDescr( pattern );
 
-        pattern.addDescr( literalDescr );
+        pattern.addConstraint( literalDescr );
 
         ruleDescr.setConsequence( "" );
 
@@ -1101,7 +1101,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
                                                                   "stilton" ) );
 
-        patternDescr.addDescr( literalDescr );
+        patternDescr.addConstraint( literalDescr );
 
         ceDescr.addDescr( patternDescr );
 

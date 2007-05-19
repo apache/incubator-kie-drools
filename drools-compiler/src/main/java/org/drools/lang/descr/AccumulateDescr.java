@@ -105,11 +105,16 @@ public class AccumulateDescr extends BaseDescr
     }
 
     public void addDescr(final BaseDescr patternDescr) {
-        // Nothing to do
+        throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
     }
 
     public List getDescrs() {
         // nothing to do
         return Collections.EMPTY_LIST;
     }
+
+    public void addOrMerge(BaseDescr baseDescr) {
+        throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
+    }
+
 }
