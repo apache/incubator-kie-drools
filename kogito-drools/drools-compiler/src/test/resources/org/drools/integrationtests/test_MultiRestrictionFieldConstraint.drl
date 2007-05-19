@@ -8,31 +8,31 @@ global java.util.List list3;
 global java.util.List list4;
 
 
-rule "& operator with number range"
+rule "1. && operator with number range"
     when    	
-		$person : Person( age > 30 & < 40, hair == "red" )		    
+		$person : Person( age > 30 && < 40, hair == "red" )		    
     then
         list1.add( $person );
 end    
 
-rule "& operator with ! and strings"
+rule "2. && operator with != and strings"
     when    	
-		$person : Person( hair != "blue" & != "purple", age > 30 & < 40  )		    
+		$person : Person( hair != "blue" && != "purple", age > 30 && < 40  )		    
     then
         list2.add( $person );
 end   
 
-rule "| operator with == and strings"
+rule "3. || operator with == and strings"
     when    	
-		$person : Person( hair == "blue" |  == "purple",   age < 30 )		    
+		$person : Person( hair == "blue" ||  == "purple",   age < 30 )		    
     then
         list3.add( $person );
 end   
 
 
-rule "|  and  & operator with ==  and != and strings"
+rule "4. ||  and && operator with ==  and != and strings"
     when    	
-		$person : Person( age > 30 & < 40 | > 10 & < 20, hair == "red" | == "blue" )	
+		$person : Person( age > 30 && < 40 || > 10 && < 20, hair == "red" || == "blue" )	
     then
         list4.add( $person );
 end  

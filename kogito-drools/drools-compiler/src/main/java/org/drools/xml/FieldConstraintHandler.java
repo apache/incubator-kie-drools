@@ -83,7 +83,7 @@ class FieldConstraintHandler extends BaseAbstractHandler
         final Object parent = it.previous();
 
         final PatternDescr patternDescr = (PatternDescr) parent;
-        patternDescr.addDescr( fieldConstraintDescr );
+        patternDescr.addConstraint( fieldConstraintDescr );
 
         return null;
     }

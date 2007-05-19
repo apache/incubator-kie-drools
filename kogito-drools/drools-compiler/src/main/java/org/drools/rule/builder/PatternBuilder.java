@@ -31,28 +31,35 @@ import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.rule.AbstractCompositeConstraint;
+import org.drools.rule.AbstractCompositeRestriction;
 import org.drools.rule.AndCompositeRestriction;
-import org.drools.rule.Pattern;
+import org.drools.rule.AndConstraint;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
 import org.drools.rule.MultiRestrictionFieldConstraint;
 import org.drools.rule.OrCompositeRestriction;
+import org.drools.rule.OrConstraint;
+import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
+import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
@@ -154,28 +161,69 @@ public class PatternBuilder {
 
         for ( final Iterator it = patternDescr.getDescrs().iterator(); it.hasNext(); ) {
             final Object object = it.next();
-            if ( object instanceof FieldBindingDescr ) {
-                build( context,
-                       pattern,
-                       (FieldBindingDescr) object );
-            } else if ( object instanceof FieldConstraintDescr ) {
-                build( context,
-                       pattern,
-                       (FieldConstraintDescr) object );
-            } else if ( object instanceof PredicateDescr ) {
-                build( context,
-                       pattern,
-                       (PredicateDescr) object );
-            }
+            buildConstraint( context,
+                             pattern,
+                             object,
+                             null );
         }
         // poping the pattern
         context.getBuildStack().pop();
         return pattern;
     }
 
+    private void buildConstraint(final RuleBuildContext context,
+                                 final Pattern pattern,
+                                 final Object constraint,
+                                 final AbstractCompositeConstraint container) {
+        if ( constraint instanceof FieldBindingDescr ) {
+            build( context,
+                   pattern,
+                   (FieldBindingDescr) constraint );
+        } else if ( constraint instanceof FieldConstraintDescr ) {
+            build( context,
+                   pattern,
+                   (FieldConstraintDescr) constraint,
+                   container );
+        } else if ( constraint instanceof PredicateDescr ) {
+            build( context,
+                   pattern,
+                   (PredicateDescr) constraint,
+                   container );
+        } else if ( constraint instanceof AndDescr ) {
+            AndConstraint and = new AndConstraint();
+            for ( Iterator it = ((AndDescr) constraint).getDescrs().iterator(); it.hasNext(); ) {
+                this.buildConstraint( context,
+                                      pattern,
+                                      it.next(),
+                                      and );
+            }
+            if ( container == null ) {
+                pattern.addConstraint( and );
+            } else {
+                container.addConstraint( and );
+            }
+        } else if ( constraint instanceof OrDescr ) {
+            OrConstraint or = new OrConstraint();
+            for ( Iterator it = ((OrDescr) constraint).getDescrs().iterator(); it.hasNext(); ) {
+                this.buildConstraint( context,
+                                      pattern,
+                                      it.next(),
+                                      or );
+            }
+            if ( container == null ) {
+                pattern.addConstraint( or );
+            } else {
+                container.addConstraint( or );
+            }
+        } else {
+            throw new UnsupportedOperationException( "This is a bug: unable to build constraint descriptor: " + constraint );
+        }
+    }
+
     private void build(final RuleBuildContext context,
                        final Pattern pattern,
-                       final FieldConstraintDescr fieldConstraintDescr) {
+                       final FieldConstraintDescr fieldConstraintDescr,
+                       final AbstractCompositeConstraint container) {
 
         final FieldExtractor extractor = getFieldExtractor( context,
                                                             fieldConstraintDescr,
@@ -187,137 +235,84 @@ public class PatternBuilder {
             return;
         }
 
-        if ( fieldConstraintDescr.getRestrictions().size() == 1 ) {
-            final Object object = fieldConstraintDescr.getRestrictions().get( 0 );
-
-            final Restriction restriction = buildRestriction( context,
-                                                              pattern,
-                                                              extractor,
-                                                              fieldConstraintDescr,
-                                                              (RestrictionDescr) object );
-            if ( restriction == null ) {
-                // @todo log errors
-                return;
-            }
-
-            if ( object instanceof LiteralRestrictionDescr ) {
-                pattern.addConstraint( new LiteralConstraint( extractor,
-                                                              (LiteralRestriction) restriction ) );
-            } else if ( object instanceof VariableRestrictionDescr ) {
-                pattern.addConstraint( new VariableConstraint( extractor,
-                                                               (VariableRestriction) restriction ) );
-            } else if ( object instanceof ReturnValueRestrictionDescr ) {
-                pattern.addConstraint( new ReturnValueConstraint( extractor,
-                                                                  (ReturnValueRestriction) restriction ) );
-            }
-
+        Restriction restriction = createRestriction( context,
+                                                     pattern,
+                                                     fieldConstraintDescr,
+                                                     fieldConstraintDescr.getRestriction(),
+                                                     extractor );
+        
+        if ( restriction == null ) {
+            // @todo log error
             return;
         }
 
-        final List orList = new ArrayList();
-        List andList = null;
+        Constraint constraint = null;
+        if ( restriction instanceof AbstractCompositeRestriction ) {
+            constraint = new MultiRestrictionFieldConstraint( extractor,
+                                                              restriction );
+        } else if ( restriction instanceof LiteralRestriction ) {
+            constraint = new LiteralConstraint( extractor,
+                                                (LiteralRestriction) restriction );
+        } else if ( restriction instanceof VariableRestriction ) {
+            constraint = new VariableConstraint( extractor,
+                                                 (VariableRestriction) restriction );
+        } else if ( restriction instanceof ReturnValueRestriction ) {
+            constraint = new ReturnValueConstraint( extractor,
+                                                    (ReturnValueRestriction) restriction );
+        } else {
+            throw new UnsupportedOperationException( "Unknown restriction type: " + restriction.getClass() );
 
-        RestrictionDescr currentRestriction = null;
-        RestrictionDescr previousRestriction = null;
-
-        List currentList = null;
-        List previousList = null;
-
-        for ( final Iterator it = fieldConstraintDescr.getRestrictions().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-
-            // Process an and/or connective 
-            if ( object instanceof RestrictionConnectiveDescr ) {
-
-                // is the connective an 'and'?
-                if ( ((RestrictionConnectiveDescr) object).getConnective() == RestrictionConnectiveDescr.AND ) {
-                    // if andList is null, then we know its the first
-                    if ( andList == null ) {
-                        andList = new ArrayList();
-                    }
-                    previousList = currentList;
-                    currentList = andList;
-                } else {
-                    previousList = currentList;
-                    currentList = orList;
-                }
-            } else {
-                Restriction restriction = null;
-                if ( currentList != null ) {
-                    // Are we are at the first operator? if so treat differently
-                    if ( previousList == null ) {
-                        restriction = buildRestriction( context,
-                                                        pattern,
-                                                        extractor,
-                                                        fieldConstraintDescr,
-                                                        previousRestriction );
-                        if ( currentList == andList ) {
-                            andList.add( restriction );
-                        } else {
-                            orList.add( restriction );
-                        }
-                    } else {
-                        restriction = buildRestriction( context,
-                                                        pattern,
-                                                        extractor,
-                                                        fieldConstraintDescr,
-                                                        previousRestriction );
-
-                        if ( previousList == andList && currentList == orList ) {
-                            andList.add( restriction );
-                            if ( andList.size() == 1 ) {
-                                // Can't have an 'and' connective with one child, so add directly to the or list
-                                orList.add( andList.get( 0 ) );
-                            } else {
-                                final Restriction restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
-                                orList.add( restrictions );
-                            }
-                            andList = null;
-                        } else if ( previousList == andList && currentList == andList ) {
-                            andList.add( restriction );
-                        } else if ( previousList == orList && currentList == andList ) {
-                            andList.add( restriction );
-                        } else if ( previousList == orList && currentList == orList ) {
-                            orList.add( restriction );
-                        }
-                    }
-                }
-            }
-            previousRestriction = currentRestriction;
-            currentRestriction = (RestrictionDescr) object;
         }
 
-        final Restriction restriction = buildRestriction( context,                                                          
+        if ( container == null ) {
+            pattern.addConstraint( constraint );
+        } else {
+            container.addConstraint( constraint );
+        }
+    }
+
+    private Restriction createRestriction(final RuleBuildContext context,
+                                          final Pattern pattern,
+                                          final FieldConstraintDescr fieldConstraintDescr,
+                                          final RestrictionConnectiveDescr top,
+                                          final FieldExtractor extractor) {
+        Restriction[] restrictions = new Restriction[top.getRestrictions().size()];
+        int index = 0;
+
+        for ( Iterator it = top.getRestrictions().iterator(); it.hasNext(); ) {
+            RestrictionDescr restrictionDescr = (RestrictionDescr) it.next();
+
+            if ( restrictionDescr instanceof RestrictionConnectiveDescr ) {
+                restrictions[index++] = this.createRestriction( context,
+                                                                pattern,
+                                                                fieldConstraintDescr,
+                                                                (RestrictionConnectiveDescr) restrictionDescr,
+                                                                extractor );
+
+            } else {
+                restrictions[index++] = buildRestriction( context,
                                                           pattern,
                                                           extractor,
                                                           fieldConstraintDescr,
-                                                          currentRestriction );
-        currentList.add( restriction );
-
-        Restriction restrictions = null;
-        if ( currentList == andList && !orList.isEmpty() ) {
-            // Check if it finished with an and, and process it
-            if ( andList != null ) {
-                if ( andList.size() == 1 ) {
-                    // Can't have an 'and' connective with one child, so add directly to the or list
-                    orList.add( andList.get( 0 ) );
-                } else {
-                    orList.add( new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) ) );
-                }
-                andList = null;
+                                                          restrictionDescr );
             }
         }
 
-        if ( !orList.isEmpty() ) {
-            restrictions = new OrCompositeRestriction( (Restriction[]) orList.toArray( new Restriction[orList.size()] ) );
-        } else if ( andList != null && !andList.isEmpty() ) {
-            restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
-        } else {
-            // @todo throw error
-        }
+        if ( restrictions.length > 1 ) {
+            AbstractCompositeRestriction composite = null;
+            if ( top.getConnective() == RestrictionConnectiveDescr.AND ) {
+                composite = new AndCompositeRestriction( restrictions );
+            } else if ( top.getConnective() == RestrictionConnectiveDescr.OR ) {
+                composite = new OrCompositeRestriction( restrictions );
+            } else {
+                throw new UnsupportedOperationException( "Impossible to create a composite restriction for connective: " + top.getConnective() );
+            }
 
-        pattern.addConstraint( new MultiRestrictionFieldConstraint( extractor,
-                                                                    restrictions ) );
+            return composite;
+        } else if ( restrictions.length == 1 ) {
+            return restrictions[0];
+        }
+        throw new UnsupportedOperationException( "Trying to create a restriction for an empty restriction list" );
     }
 
     private void build(final RuleBuildContext context,
@@ -348,15 +343,16 @@ public class PatternBuilder {
 
     private void build(final RuleBuildContext context,
                        final Pattern pattern,
-                       final PredicateDescr predicateDescr) {
+                       final PredicateDescr predicateDescr,
+                       final AbstractCompositeConstraint container) {
 
         // this will return an array with 3 lists
         // where first list is from rule local variables
         // second list is from global variables
         // and third is for unbound variables
         final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
-                                                                                predicateDescr,
-                                                                                predicateDescr.getContent() );
+                                                                                      predicateDescr,
+                                                                                      predicateDescr.getContent() );
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -381,7 +377,12 @@ public class PatternBuilder {
                                                                                  previousDeclarations,
                                                                                  localDeclarations,
                                                                                  requiredGlobals );
-        pattern.addConstraint( predicateConstraint );
+
+        if ( container == null ) {
+            pattern.addConstraint( predicateConstraint );
+        } else {
+            container.addConstraint( predicateConstraint );
+        }
 
         final PredicateBuilder builder = this.dialect.getPredicateBuilder();
 
@@ -553,8 +554,8 @@ public class PatternBuilder {
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
         final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
-                                                                                returnValueRestrictionDescr,
-                                                                                returnValueRestrictionDescr.getContent() );
+                                                                                      returnValueRestrictionDescr,
+                                                                                      returnValueRestrictionDescr.getContent() );
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
@@ -569,9 +570,9 @@ public class PatternBuilder {
 
         final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
         createImplicitBindings( context,
-                                     pattern,
-                                     usedIdentifiers[NOT_BOUND_INDEX],
-                                     factDeclarations );
+                                pattern,
+                                usedIdentifiers[NOT_BOUND_INDEX],
+                                factDeclarations );
 
         final Evaluator evaluator = getEvaluator( context,
                                                   returnValueRestrictionDescr,
@@ -618,8 +619,8 @@ public class PatternBuilder {
             try {
                 ClassLoader classloader = context.getPkg().getPackageCompilationData().getClassLoader();
                 extractor = context.getDialect().getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
-                                                                              fieldName,
-                                                                              classloader );
+                                                                                             fieldName,
+                                                                                             classloader );
             } catch ( final RuntimeDroolsException e ) {
                 if ( reportError ) {
                     context.getErrors().add( new RuleError( context.getRule(),

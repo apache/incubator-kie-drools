@@ -1,4 +1,4 @@
-// $ANTLR 3.0b7 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-05-07 15:16:50
+// $ANTLR 3.0b7 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-05-19 15:56:47
 
 	package org.drools.lang;
 
@@ -10,137 +10,99 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 public class DRLLexer extends Lexer {
-    public static final int EXISTS=53;
-    public static final int COMMA=44;
+    public static final int EXISTS=56;
+    public static final int COMMA=47;
     public static final int T79=79;
     public static final int AUTO_FOCUS=22;
     public static final int END=10;
-    public static final int HexDigit=60;
-    public static final int FORALL=55;
+    public static final int HexDigit=62;
+    public static final int FORALL=57;
     public static final int TEMPLATE=11;
     public static final int T70=70;
-    public static final int MISC=66;
-    public static final int FLOAT=45;
+    public static final int MISC=68;
+    public static final int FLOAT=48;
     public static final int T74=74;
     public static final int QUERY=9;
-    public static final int THEN=56;
+    public static final int THEN=58;
     public static final int RULE=12;
     public static final int INIT=30;
     public static final int IMPORT=6;
     public static final int PACKAGE=5;
     public static final int DATE_EFFECTIVE=14;
-    public static final int OR=35;
-    public static final int AND=51;
+    public static final int OR=37;
+    public static final int DOUBLE_PIPE=38;
+    public static final int AND=54;
     public static final int FUNCTION=7;
     public static final int GLOBAL=8;
-    public static final int EscapeSequence=59;
+    public static final int EscapeSequence=61;
     public static final int DIALECT=27;
     public static final int INT=20;
     public static final int LOCK_ON_ACTIVE=28;
     public static final int DATE_EXPIRES=16;
-    public static final int T81=81;
-    public static final int LEFT_SQUARE=49;
-    public static final int CONTAINS=38;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=63;
+    public static final int LEFT_SQUARE=52;
+    public static final int CONTAINS=41;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=65;
     public static final int T77=77;
     public static final int ATTRIBUTES=4;
-    public static final int LEFT_CURLY=47;
+    public static final int LEFT_CURLY=50;
     public static final int RESULT=32;
     public static final int T69=69;
-    public static final int FROM=52;
+    public static final int FROM=55;
     public static final int ID=34;
     public static final int ACTIVATION_GROUP=23;
-    public static final int LEFT_PAREN=36;
-    public static final int RIGHT_CURLY=48;
+    public static final int LEFT_PAREN=35;
+    public static final int DOUBLE_AMPER=39;
+    public static final int RIGHT_CURLY=51;
     public static final int BOOL=18;
-    public static final int EXCLUDES=40;
+    public static final int EXCLUDES=43;
     public static final int T73=73;
-    public static final int T68=68;
-    public static final int MEMBEROF=41;
+    public static final int MEMBEROF=44;
     public static final int WHEN=13;
     public static final int T78=78;
     public static final int RULEFLOW_GROUP=24;
-    public static final int WS=58;
+    public static final int WS=60;
     public static final int STRING=15;
     public static final int ACTION=31;
     public static final int T71=71;
     public static final int T72=72;
     public static final int COLLECT=33;
     public static final int T76=76;
-    public static final int IN=43;
-    public static final int T80=80;
+    public static final int IN=46;
     public static final int ACCUMULATE=29;
     public static final int NO_LOOP=21;
-    public static final int UnicodeEscape=61;
+    public static final int UnicodeEscape=63;
     public static final int T75=75;
     public static final int DURATION=26;
-    public static final int EVAL=54;
-    public static final int MATCHES=39;
+    public static final int EVAL=40;
+    public static final int MATCHES=42;
     public static final int EOF=-1;
-    public static final int T67=67;
     public static final int AGENDA_GROUP=25;
-    public static final int NULL=46;
-    public static final int EOL=57;
-    public static final int Tokens=82;
+    public static final int NULL=49;
+    public static final int EOL=59;
+    public static final int Tokens=80;
     public static final int SALIENCE=19;
-    public static final int OctalEscape=62;
-    public static final int MULTI_LINE_COMMENT=65;
-    public static final int NOT=42;
-    public static final int RIGHT_PAREN=37;
+    public static final int OctalEscape=64;
+    public static final int MULTI_LINE_COMMENT=67;
+    public static final int RIGHT_PAREN=36;
+    public static final int NOT=45;
     public static final int ENABLED=17;
-    public static final int RIGHT_SQUARE=50;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=64;
+    public static final int RIGHT_SQUARE=53;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=66;
     public DRLLexer() {;} 
     public DRLLexer(CharStream input) {
         super(input);
-        ruleMemo = new HashMap[80+1];
+        ruleMemo = new HashMap[78+1];
      }
     public String getGrammarFileName() { return "/home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g"; }
-
-    // $ANTLR start T67
-    public final void mT67() throws RecognitionException {
-        try {
-            int _type = T67;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:6:7: ( ';' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:6:7: ';'
-            {
-            match(';'); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end T67
-
-    // $ANTLR start T68
-    public final void mT68() throws RecognitionException {
-        try {
-            int _type = T68;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:7:7: ( ':' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:7:7: ':'
-            {
-            match(':'); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end T68
 
     // $ANTLR start T69
     public final void mT69() throws RecognitionException {
         try {
             int _type = T69;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:8:7: ( '.' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:8:7: '.'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:6:7: ( ';' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:6:7: ';'
             {
-            match('.'); if (failed) return ;
+            match(';'); if (failed) return ;
 
             }
 
@@ -155,11 +117,10 @@ public class DRLLexer extends Lexer {
     public final void mT70() throws RecognitionException {
         try {
             int _type = T70;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:9:7: ( '.*' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:9:7: '.*'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:7:7: ( ':' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:7:7: ':'
             {
-            match(".*"); if (failed) return ;
-
+            match(':'); if (failed) return ;
 
             }
 
@@ -174,11 +135,10 @@ public class DRLLexer extends Lexer {
     public final void mT71() throws RecognitionException {
         try {
             int _type = T71;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:10:7: ( '||' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:10:7: '||'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:8:7: ( '.' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:8:7: '.'
             {
-            match("||"); if (failed) return ;
-
+            match('.'); if (failed) return ;
 
             }
 
@@ -193,10 +153,11 @@ public class DRLLexer extends Lexer {
     public final void mT72() throws RecognitionException {
         try {
             int _type = T72;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:11:7: ( '&' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:11:7: '&'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:9:7: ( '.*' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:9:7: '.*'
             {
-            match('&'); if (failed) return ;
+            match(".*"); if (failed) return ;
+
 
             }
 
@@ -211,10 +172,11 @@ public class DRLLexer extends Lexer {
     public final void mT73() throws RecognitionException {
         try {
             int _type = T73;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:12:7: ( '|' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:12:7: '|'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:10:7: ( '->' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:10:7: '->'
             {
-            match('|'); if (failed) return ;
+            match("->"); if (failed) return ;
+
 
             }
 
@@ -229,10 +191,10 @@ public class DRLLexer extends Lexer {
     public final void mT74() throws RecognitionException {
         try {
             int _type = T74;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:13:7: ( '->' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:13:7: '->'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:11:7: ( '==' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:11:7: '=='
             {
-            match("->"); if (failed) return ;
+            match("=="); if (failed) return ;
 
 
             }
@@ -248,11 +210,10 @@ public class DRLLexer extends Lexer {
     public final void mT75() throws RecognitionException {
         try {
             int _type = T75;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:14:7: ( '==' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:14:7: '=='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:12:7: ( '>' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:12:7: '>'
             {
-            match("=="); if (failed) return ;
-
+            match('>'); if (failed) return ;
 
             }
 
@@ -267,10 +228,11 @@ public class DRLLexer extends Lexer {
     public final void mT76() throws RecognitionException {
         try {
             int _type = T76;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:15:7: ( '>' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:15:7: '>'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:13:7: ( '>=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:13:7: '>='
             {
-            match('>'); if (failed) return ;
+            match(">="); if (failed) return ;
+
 
             }
 
@@ -285,11 +247,10 @@ public class DRLLexer extends Lexer {
     public final void mT77() throws RecognitionException {
         try {
             int _type = T77;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:16:7: ( '>=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:16:7: '>='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:14:7: ( '<' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:14:7: '<'
             {
-            match(">="); if (failed) return ;
-
+            match('<'); if (failed) return ;
 
             }
 
@@ -304,10 +265,11 @@ public class DRLLexer extends Lexer {
     public final void mT78() throws RecognitionException {
         try {
             int _type = T78;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:17:7: ( '<' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:17:7: '<'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:15:7: ( '<=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:15:7: '<='
             {
-            match('<'); if (failed) return ;
+            match("<="); if (failed) return ;
+
 
             }
 
@@ -322,27 +284,8 @@ public class DRLLexer extends Lexer {
     public final void mT79() throws RecognitionException {
         try {
             int _type = T79;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:18:7: ( '<=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:18:7: '<='
-            {
-            match("<="); if (failed) return ;
-
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end T79
-
-    // $ANTLR start T80
-    public final void mT80() throws RecognitionException {
-        try {
-            int _type = T80;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:19:7: ( '!=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:19:7: '!='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:16:7: ( '!=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:16:7: '!='
             {
             match("!="); if (failed) return ;
 
@@ -354,35 +297,16 @@ public class DRLLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end T80
-
-    // $ANTLR start T81
-    public final void mT81() throws RecognitionException {
-        try {
-            int _type = T81;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:20:7: ( '&&' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:20:7: '&&'
-            {
-            match("&&"); if (failed) return ;
-
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end T81
+    // $ANTLR end T79
 
     // $ANTLR start WS
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1564:17: ( ( ' ' | '\\t' | '\\f' | EOL ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1564:17: ( ' ' | '\\t' | '\\f' | EOL )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1626:17: ( ( ' ' | '\\t' | '\\f' | EOL ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1626:17: ( ' ' | '\\t' | '\\f' | EOL )
             {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1564:17: ( ' ' | '\\t' | '\\f' | EOL )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1626:17: ( ' ' | '\\t' | '\\f' | EOL )
             int alt1=4;
             switch ( input.LA(1) ) {
             case ' ':
@@ -409,35 +333,35 @@ public class DRLLexer extends Lexer {
             default:
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1564:17: ( ' ' | '\\t' | '\\f' | EOL )", 1, 0, input);
+                    new NoViableAltException("1626:17: ( ' ' | '\\t' | '\\f' | EOL )", 1, 0, input);
 
                 throw nvae;
             }
 
             switch (alt1) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1564:19: ' '
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1626:19: ' '
                     {
                     match(' '); if (failed) return ;
 
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1565:19: '\\t'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1627:19: '\\t'
                     {
                     match('\t'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1566:19: '\\f'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1628:19: '\\f'
                     {
                     match('\f'); if (failed) return ;
 
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1567:19: EOL
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1629:19: EOL
                     {
                     mEOL(); if (failed) return ;
 
@@ -462,10 +386,10 @@ public class DRLLexer extends Lexer {
     // $ANTLR start EOL
     public final void mEOL() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1574:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1574:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1574:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             int alt2=3;
             int LA2_0 = input.LA(1);
 
@@ -484,13 +408,13 @@ public class DRLLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1574:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
+                    new NoViableAltException("1636:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
 
                 throw nvae;
             }
             switch (alt2) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1574:14: ( '\\r\\n' )=> '\\r\\n'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:14: ( '\\r\\n' )=> '\\r\\n'
                     {
                     match("\r\n"); if (failed) return ;
 
@@ -498,14 +422,14 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1575:25: '\\r'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1637:25: '\\r'
                     {
                     match('\r'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1576:25: '\\n'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1638:25: '\\n'
                     {
                     match('\n'); if (failed) return ;
 
@@ -527,10 +451,10 @@ public class DRLLexer extends Lexer {
     public final void mINT() throws RecognitionException {
         try {
             int _type = INT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1581:4: ( ( '-' )? ( '0' .. '9' )+ )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1581:4: ( '-' )? ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:4: ( ( '-' )? ( '0' .. '9' )+ )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:4: ( '-' )? ( '0' .. '9' )+
             {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1581:4: ( '-' )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:4: ( '-' )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -539,7 +463,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt3) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1581:5: '-'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:5: '-'
                     {
                     match('-'); if (failed) return ;
 
@@ -548,7 +472,7 @@ public class DRLLexer extends Lexer {
 
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1581:10: ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:10: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -562,7 +486,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1581:11: '0' .. '9'
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -593,10 +517,10 @@ public class DRLLexer extends Lexer {
     public final void mFLOAT() throws RecognitionException {
         try {
             int _type = FLOAT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:4: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:4: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:4: ( '-' )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:4: ( '-' )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -605,7 +529,7 @@ public class DRLLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:5: '-'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:5: '-'
                     {
                     match('-'); if (failed) return ;
 
@@ -614,7 +538,7 @@ public class DRLLexer extends Lexer {
 
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:10: ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:10: ( '0' .. '9' )+
             int cnt6=0;
             loop6:
             do {
@@ -628,7 +552,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:11: '0' .. '9'
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -646,7 +570,7 @@ public class DRLLexer extends Lexer {
             } while (true);
 
             match('.'); if (failed) return ;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:26: ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:26: ( '0' .. '9' )+
             int cnt7=0;
             loop7:
             do {
@@ -660,7 +584,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1585:27: '0' .. '9'
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1647:27: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -691,7 +615,7 @@ public class DRLLexer extends Lexer {
     public final void mSTRING() throws RecognitionException {
         try {
             int _type = STRING;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:8: ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1651:8: ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) )
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -704,19 +628,19 @@ public class DRLLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1588:1: STRING : ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) );", 10, 0, input);
+                    new NoViableAltException("1650:1: STRING : ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) );", 10, 0, input);
 
                 throw nvae;
             }
             switch (alt10) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1651:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:9: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1651:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1651:9: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
                     {
                     match('\"'); if (failed) return ;
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:13: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1651:13: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
                     loop8:
                     do {
                         int alt8=3;
@@ -732,14 +656,14 @@ public class DRLLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:15: EscapeSequence
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1651:15: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:32: ~ ( '\\\\' | '\"' )
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1651:32: ~ ( '\\\\' | '\"' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -769,13 +693,13 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:9: '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\''
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:9: '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\''
                     {
                     match('\''); if (failed) return ;
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:14: ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:14: ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )*
                     loop9:
                     do {
                         int alt9=3;
@@ -791,14 +715,14 @@ public class DRLLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:16: EscapeSequence
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:16: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:33: ~ ( '\\\\' | '\\'' )
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:33: ~ ( '\\\\' | '\\'' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -839,8 +763,8 @@ public class DRLLexer extends Lexer {
     // $ANTLR start HexDigit
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1594:12: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1594:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1656:12: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1656:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -865,28 +789,47 @@ public class DRLLexer extends Lexer {
     // $ANTLR start EscapeSequence
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1598:9: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' ) | UnicodeEscape | OctalEscape )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1660:9: ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' ) | UnicodeEscape | OctalEscape )
             int alt11=3;
             int LA11_0 = input.LA(1);
 
             if ( (LA11_0=='\\') ) {
                 switch ( input.LA(2) ) {
-                case '\"':
-                case '\'':
-                case '.':
-                case '\\':
-                case 'b':
-                case 'f':
-                case 'n':
-                case 'r':
-                case 't':
-                    {
-                    alt11=1;
-                    }
-                    break;
                 case 'u':
                     {
                     alt11=2;
+                    }
+                    break;
+                case '\"':
+                case '\'':
+                case '.':
+                case 'A':
+                case 'B':
+                case 'D':
+                case 'E':
+                case 'G':
+                case 'Q':
+                case 'S':
+                case 'W':
+                case 'Z':
+                case '\\':
+                case 'a':
+                case 'b':
+                case 'c':
+                case 'd':
+                case 'e':
+                case 'f':
+                case 'n':
+                case 'o':
+                case 'p':
+                case 'r':
+                case 's':
+                case 't':
+                case 'w':
+                case 'x':
+                case 'z':
+                    {
+                    alt11=1;
                     }
                     break;
                 case '0':
@@ -904,7 +847,7 @@ public class DRLLexer extends Lexer {
                 default:
                     if (backtracking>0) {failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1596:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' ) | UnicodeEscape | OctalEscape );", 11, 1, input);
+                        new NoViableAltException("1658:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' ) | UnicodeEscape | OctalEscape );", 11, 1, input);
 
                     throw nvae;
                 }
@@ -913,16 +856,16 @@ public class DRLLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1596:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' ) | UnicodeEscape | OctalEscape );", 11, 0, input);
+                    new NoViableAltException("1658:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' ) | UnicodeEscape | OctalEscape );", 11, 0, input);
 
                 throw nvae;
             }
             switch (alt11) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1598:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1660:9: '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' )
                     {
                     match('\\'); if (failed) return ;
-                    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='.'||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
+                    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='.'||(input.LA(1)>='A' && input.LA(1)<='B')||(input.LA(1)>='D' && input.LA(1)<='E')||input.LA(1)=='G'||input.LA(1)=='Q'||input.LA(1)=='S'||input.LA(1)=='W'||input.LA(1)=='Z'||input.LA(1)=='\\'||(input.LA(1)>='a' && input.LA(1)<='f')||(input.LA(1)>='n' && input.LA(1)<='p')||(input.LA(1)>='r' && input.LA(1)<='t')||(input.LA(1)>='w' && input.LA(1)<='x')||input.LA(1)=='z' ) {
                         input.consume();
                     failed=false;
                     }
@@ -937,14 +880,14 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1599:9: UnicodeEscape
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1661:9: UnicodeEscape
                     {
                     mUnicodeEscape(); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1600:9: OctalEscape
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1662:9: OctalEscape
                     {
                     mOctalEscape(); if (failed) return ;
 
@@ -961,7 +904,7 @@ public class DRLLexer extends Lexer {
     // $ANTLR start OctalEscape
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:9: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:9: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt12=3;
             int LA12_0 = input.LA(1);
 
@@ -972,9 +915,9 @@ public class DRLLexer extends Lexer {
                     int LA12_2 = input.LA(3);
 
                     if ( ((LA12_2>='0' && LA12_2<='7')) ) {
-                        int LA12_4 = input.LA(4);
+                        int LA12_5 = input.LA(4);
 
-                        if ( ((LA12_4>='0' && LA12_4<='7')) ) {
+                        if ( ((LA12_5>='0' && LA12_5<='7')) ) {
                             alt12=1;
                         }
                         else {
@@ -995,7 +938,7 @@ public class DRLLexer extends Lexer {
                 else {
                     if (backtracking>0) {failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1603:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 1, input);
+                        new NoViableAltException("1665:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 1, input);
 
                     throw nvae;
                 }
@@ -1003,31 +946,31 @@ public class DRLLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1603:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 0, input);
+                    new NoViableAltException("1665:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 0, input);
 
                 throw nvae;
             }
             switch (alt12) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:14: ( '0' .. '3' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:15: '0' .. '3'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:14: ( '0' .. '3' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:15: '0' .. '3'
                     {
                     matchRange('0','3'); if (failed) return ;
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:25: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:26: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:25: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:36: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1605:37: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:36: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:37: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -1037,18 +980,18 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1606:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1668:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1606:14: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1606:15: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1668:14: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1668:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1606:25: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1606:26: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1668:25: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1668:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -1058,11 +1001,11 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1607:9: '\\\\' ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1669:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1607:14: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1607:15: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1669:14: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1669:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -1082,8 +1025,8 @@ public class DRLLexer extends Lexer {
     // $ANTLR start UnicodeEscape
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1612:9: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1612:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1674:9: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1674:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); if (failed) return ;
             match('u'); if (failed) return ;
@@ -1104,10 +1047,10 @@ public class DRLLexer extends Lexer {
     public final void mBOOL() throws RecognitionException {
         try {
             int _type = BOOL;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1616:4: ( ( 'true' | 'false' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1616:4: ( 'true' | 'false' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1678:4: ( ( 'true' | 'false' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1678:4: ( 'true' | 'false' )
             {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1616:4: ( 'true' | 'false' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1678:4: ( 'true' | 'false' )
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1120,13 +1063,13 @@ public class DRLLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1616:4: ( 'true' | 'false' )", 13, 0, input);
+                    new NoViableAltException("1678:4: ( 'true' | 'false' )", 13, 0, input);
 
                 throw nvae;
             }
             switch (alt13) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1616:5: 'true'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1678:5: 'true'
                     {
                     match("true"); if (failed) return ;
 
@@ -1134,7 +1077,7 @@ public class DRLLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1616:12: 'false'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1678:12: 'false'
                     {
                     match("false"); if (failed) return ;
 
@@ -1158,8 +1101,8 @@ public class DRLLexer extends Lexer {
     public final void mPACKAGE() throws RecognitionException {
         try {
             int _type = PACKAGE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1619:11: ( 'package' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1619:11: 'package'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1681:11: ( 'package' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1681:11: 'package'
             {
             match("package"); if (failed) return ;
 
@@ -1177,8 +1120,8 @@ public class DRLLexer extends Lexer {
     public final void mIMPORT() throws RecognitionException {
         try {
             int _type = IMPORT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1621:10: ( 'import' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1621:10: 'import'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1683:10: ( 'import' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1683:10: 'import'
             {
             match("import"); if (failed) return ;
 
@@ -1196,8 +1139,8 @@ public class DRLLexer extends Lexer {
     public final void mFUNCTION() throws RecognitionException {
         try {
             int _type = FUNCTION;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1623:12: ( 'function' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1623:12: 'function'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1685:12: ( 'function' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1685:12: 'function'
             {
             match("function"); if (failed) return ;
 
@@ -1215,8 +1158,8 @@ public class DRLLexer extends Lexer {
     public final void mGLOBAL() throws RecognitionException {
         try {
             int _type = GLOBAL;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1625:10: ( 'global' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1625:10: 'global'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1687:10: ( 'global' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1687:10: 'global'
             {
             match("global"); if (failed) return ;
 
@@ -1234,8 +1177,8 @@ public class DRLLexer extends Lexer {
     public final void mRULE() throws RecognitionException {
         try {
             int _type = RULE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1627:11: ( 'rule' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1627:11: 'rule'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1689:11: ( 'rule' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1689:11: 'rule'
             {
             match("rule"); if (failed) return ;
 
@@ -1253,8 +1196,8 @@ public class DRLLexer extends Lexer {
     public final void mQUERY() throws RecognitionException {
         try {
             int _type = QUERY;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1629:9: ( 'query' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1629:9: 'query'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1691:9: ( 'query' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1691:9: 'query'
             {
             match("query"); if (failed) return ;
 
@@ -1272,8 +1215,8 @@ public class DRLLexer extends Lexer {
     public final void mTEMPLATE() throws RecognitionException {
         try {
             int _type = TEMPLATE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1631:12: ( 'template' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1631:12: 'template'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1693:12: ( 'template' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1693:12: 'template'
             {
             match("template"); if (failed) return ;
 
@@ -1291,8 +1234,8 @@ public class DRLLexer extends Lexer {
     public final void mATTRIBUTES() throws RecognitionException {
         try {
             int _type = ATTRIBUTES;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1633:14: ( 'attributes' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1633:14: 'attributes'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1695:14: ( 'attributes' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1695:14: 'attributes'
             {
             match("attributes"); if (failed) return ;
 
@@ -1310,8 +1253,8 @@ public class DRLLexer extends Lexer {
     public final void mDATE_EFFECTIVE() throws RecognitionException {
         try {
             int _type = DATE_EFFECTIVE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:4: ( 'date-effective' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:4: 'date-effective'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1698:4: ( 'date-effective' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1698:4: 'date-effective'
             {
             match("date-effective"); if (failed) return ;
 
@@ -1329,8 +1272,8 @@ public class DRLLexer extends Lexer {
     public final void mDATE_EXPIRES() throws RecognitionException {
         try {
             int _type = DATE_EXPIRES;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1639:4: ( 'date-expires' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1639:4: 'date-expires'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:4: ( 'date-expires' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:4: 'date-expires'
             {
             match("date-expires"); if (failed) return ;
 
@@ -1348,8 +1291,8 @@ public class DRLLexer extends Lexer {
     public final void mENABLED() throws RecognitionException {
         try {
             int _type = ENABLED;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1641:11: ( 'enabled' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1641:11: 'enabled'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1703:11: ( 'enabled' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1703:11: 'enabled'
             {
             match("enabled"); if (failed) return ;
 
@@ -1367,8 +1310,8 @@ public class DRLLexer extends Lexer {
     public final void mSALIENCE() throws RecognitionException {
         try {
             int _type = SALIENCE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1644:4: ( 'salience' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1644:4: 'salience'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1706:4: ( 'salience' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1706:4: 'salience'
             {
             match("salience"); if (failed) return ;
 
@@ -1386,8 +1329,8 @@ public class DRLLexer extends Lexer {
     public final void mNO_LOOP() throws RecognitionException {
         try {
             int _type = NO_LOOP;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1646:11: ( 'no-loop' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1646:11: 'no-loop'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1708:11: ( 'no-loop' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1708:11: 'no-loop'
             {
             match("no-loop"); if (failed) return ;
 
@@ -1405,8 +1348,8 @@ public class DRLLexer extends Lexer {
     public final void mAUTO_FOCUS() throws RecognitionException {
         try {
             int _type = AUTO_FOCUS;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1649:4: ( 'auto-focus' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1649:4: 'auto-focus'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1711:4: ( 'auto-focus' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1711:4: 'auto-focus'
             {
             match("auto-focus"); if (failed) return ;
 
@@ -1424,8 +1367,8 @@ public class DRLLexer extends Lexer {
     public final void mACTIVATION_GROUP() throws RecognitionException {
         try {
             int _type = ACTIVATION_GROUP;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:4: ( 'activation-group' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1652:4: 'activation-group'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1714:4: ( 'activation-group' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1714:4: 'activation-group'
             {
             match("activation-group"); if (failed) return ;
 
@@ -1443,8 +1386,8 @@ public class DRLLexer extends Lexer {
     public final void mAGENDA_GROUP() throws RecognitionException {
         try {
             int _type = AGENDA_GROUP;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1655:4: ( 'agenda-group' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1655:4: 'agenda-group'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1717:4: ( 'agenda-group' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1717:4: 'agenda-group'
             {
             match("agenda-group"); if (failed) return ;
 
@@ -1462,8 +1405,8 @@ public class DRLLexer extends Lexer {
     public final void mDIALECT() throws RecognitionException {
         try {
             int _type = DIALECT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1658:4: ( 'dialect' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1658:4: 'dialect'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1720:4: ( 'dialect' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1720:4: 'dialect'
             {
             match("dialect"); if (failed) return ;
 
@@ -1481,8 +1424,8 @@ public class DRLLexer extends Lexer {
     public final void mRULEFLOW_GROUP() throws RecognitionException {
         try {
             int _type = RULEFLOW_GROUP;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1661:4: ( 'ruleflow-group' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1661:4: 'ruleflow-group'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1723:4: ( 'ruleflow-group' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1723:4: 'ruleflow-group'
             {
             match("ruleflow-group"); if (failed) return ;
 
@@ -1500,8 +1443,8 @@ public class DRLLexer extends Lexer {
     public final void mDURATION() throws RecognitionException {
         try {
             int _type = DURATION;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1664:4: ( 'duration' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1664:4: 'duration'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1726:4: ( 'duration' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1726:4: 'duration'
             {
             match("duration"); if (failed) return ;
 
@@ -1519,8 +1462,8 @@ public class DRLLexer extends Lexer {
     public final void mLOCK_ON_ACTIVE() throws RecognitionException {
         try {
             int _type = LOCK_ON_ACTIVE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:4: ( 'lock-on-active' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1667:4: 'lock-on-active'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1729:4: ( 'lock-on-active' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1729:4: 'lock-on-active'
             {
             match("lock-on-active"); if (failed) return ;
 
@@ -1538,8 +1481,8 @@ public class DRLLexer extends Lexer {
     public final void mFROM() throws RecognitionException {
         try {
             int _type = FROM;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1669:8: ( 'from' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1669:8: 'from'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1731:8: ( 'from' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1731:8: 'from'
             {
             match("from"); if (failed) return ;
 
@@ -1557,8 +1500,8 @@ public class DRLLexer extends Lexer {
     public final void mACCUMULATE() throws RecognitionException {
         try {
             int _type = ACCUMULATE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1672:4: ( 'accumulate' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1672:4: 'accumulate'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1734:4: ( 'accumulate' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1734:4: 'accumulate'
             {
             match("accumulate"); if (failed) return ;
 
@@ -1576,8 +1519,8 @@ public class DRLLexer extends Lexer {
     public final void mINIT() throws RecognitionException {
         try {
             int _type = INIT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1674:8: ( 'init' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1674:8: 'init'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1736:8: ( 'init' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1736:8: 'init'
             {
             match("init"); if (failed) return ;
 
@@ -1595,8 +1538,8 @@ public class DRLLexer extends Lexer {
     public final void mACTION() throws RecognitionException {
         try {
             int _type = ACTION;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1676:10: ( 'action' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1676:10: 'action'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1738:10: ( 'action' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1738:10: 'action'
             {
             match("action"); if (failed) return ;
 
@@ -1614,8 +1557,8 @@ public class DRLLexer extends Lexer {
     public final void mRESULT() throws RecognitionException {
         try {
             int _type = RESULT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1678:10: ( 'result' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1678:10: 'result'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1740:10: ( 'result' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1740:10: 'result'
             {
             match("result"); if (failed) return ;
 
@@ -1633,8 +1576,8 @@ public class DRLLexer extends Lexer {
     public final void mCOLLECT() throws RecognitionException {
         try {
             int _type = COLLECT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1680:11: ( 'collect' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1680:11: 'collect'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1742:11: ( 'collect' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1742:11: 'collect'
             {
             match("collect"); if (failed) return ;
 
@@ -1652,8 +1595,8 @@ public class DRLLexer extends Lexer {
     public final void mOR() throws RecognitionException {
         try {
             int _type = OR;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1682:6: ( 'or' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1682:6: 'or'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1744:6: ( 'or' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1744:6: 'or'
             {
             match("or"); if (failed) return ;
 
@@ -1671,8 +1614,8 @@ public class DRLLexer extends Lexer {
     public final void mAND() throws RecognitionException {
         try {
             int _type = AND;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1684:7: ( 'and' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1684:7: 'and'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1746:7: ( 'and' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1746:7: 'and'
             {
             match("and"); if (failed) return ;
 
@@ -1690,8 +1633,8 @@ public class DRLLexer extends Lexer {
     public final void mCONTAINS() throws RecognitionException {
         try {
             int _type = CONTAINS;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1687:4: ( 'contains' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1687:4: 'contains'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1749:4: ( 'contains' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1749:4: 'contains'
             {
             match("contains"); if (failed) return ;
 
@@ -1709,8 +1652,8 @@ public class DRLLexer extends Lexer {
     public final void mEXCLUDES() throws RecognitionException {
         try {
             int _type = EXCLUDES;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1690:4: ( 'excludes' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1690:4: 'excludes'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1752:4: ( 'excludes' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1752:4: 'excludes'
             {
             match("excludes"); if (failed) return ;
 
@@ -1728,8 +1671,8 @@ public class DRLLexer extends Lexer {
     public final void mMEMBEROF() throws RecognitionException {
         try {
             int _type = MEMBEROF;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1693:4: ( 'memberOf' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1693:4: 'memberOf'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1755:4: ( 'memberOf' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1755:4: 'memberOf'
             {
             match("memberOf"); if (failed) return ;
 
@@ -1747,8 +1690,8 @@ public class DRLLexer extends Lexer {
     public final void mMATCHES() throws RecognitionException {
         try {
             int _type = MATCHES;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1695:11: ( 'matches' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1695:11: 'matches'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1757:11: ( 'matches' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1757:11: 'matches'
             {
             match("matches"); if (failed) return ;
 
@@ -1766,8 +1709,8 @@ public class DRLLexer extends Lexer {
     public final void mIN() throws RecognitionException {
         try {
             int _type = IN;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1697:6: ( 'in' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1697:6: 'in'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1759:6: ( 'in' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1759:6: 'in'
             {
             match("in"); if (failed) return ;
 
@@ -1785,8 +1728,8 @@ public class DRLLexer extends Lexer {
     public final void mNULL() throws RecognitionException {
         try {
             int _type = NULL;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1699:8: ( 'null' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1699:8: 'null'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1761:8: ( 'null' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1761:8: 'null'
             {
             match("null"); if (failed) return ;
 
@@ -1804,8 +1747,8 @@ public class DRLLexer extends Lexer {
     public final void mEXISTS() throws RecognitionException {
         try {
             int _type = EXISTS;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:10: ( 'exists' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:10: 'exists'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1763:10: ( 'exists' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1763:10: 'exists'
             {
             match("exists"); if (failed) return ;
 
@@ -1823,8 +1766,8 @@ public class DRLLexer extends Lexer {
     public final void mNOT() throws RecognitionException {
         try {
             int _type = NOT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1703:7: ( 'not' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1703:7: 'not'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1765:7: ( 'not' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1765:7: 'not'
             {
             match("not"); if (failed) return ;
 
@@ -1842,8 +1785,8 @@ public class DRLLexer extends Lexer {
     public final void mEVAL() throws RecognitionException {
         try {
             int _type = EVAL;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:8: ( 'eval' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:8: 'eval'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1767:8: ( 'eval' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1767:8: 'eval'
             {
             match("eval"); if (failed) return ;
 
@@ -1861,8 +1804,8 @@ public class DRLLexer extends Lexer {
     public final void mFORALL() throws RecognitionException {
         try {
             int _type = FORALL;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1707:10: ( 'forall' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1707:10: 'forall'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1769:10: ( 'forall' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1769:10: 'forall'
             {
             match("forall"); if (failed) return ;
 
@@ -1880,8 +1823,8 @@ public class DRLLexer extends Lexer {
     public final void mWHEN() throws RecognitionException {
         try {
             int _type = WHEN;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:11: ( 'when' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:11: 'when'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1771:11: ( 'when' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1771:11: 'when'
             {
             match("when"); if (failed) return ;
 
@@ -1899,8 +1842,8 @@ public class DRLLexer extends Lexer {
     public final void mTHEN() throws RecognitionException {
         try {
             int _type = THEN;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1711:12: ( 'then' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1711:12: 'then'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1773:12: ( 'then' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1773:12: 'then'
             {
             match("then"); if (failed) return ;
 
@@ -1918,8 +1861,8 @@ public class DRLLexer extends Lexer {
     public final void mEND() throws RecognitionException {
         try {
             int _type = END;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1713:11: ( 'end' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1713:11: 'end'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1775:11: ( 'end' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1775:11: 'end'
             {
             match("end"); if (failed) return ;
 
@@ -1937,8 +1880,8 @@ public class DRLLexer extends Lexer {
     public final void mID() throws RecognitionException {
         try {
             int _type = ID;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1716:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )* )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1716:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1778:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )* )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1778:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '$' | '\\u00c0' .. '\\u00ff' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00FF') ) {
                 input.consume();
@@ -1951,7 +1894,7 @@ public class DRLLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1716:50: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1778:50: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' )*
             loop14:
             do {
                 int alt14=2;
@@ -1996,15 +1939,179 @@ public class DRLLexer extends Lexer {
     }
     // $ANTLR end ID
 
+    // $ANTLR start LEFT_PAREN
+    public final void mLEFT_PAREN() throws RecognitionException {
+        try {
+            int _type = LEFT_PAREN;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1782:11: ( '(' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1782:11: '('
+            {
+            match('('); if (failed) return ;
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end LEFT_PAREN
+
+    // $ANTLR start RIGHT_PAREN
+    public final void mRIGHT_PAREN() throws RecognitionException {
+        try {
+            int _type = RIGHT_PAREN;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1786:11: ( ')' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1786:11: ')'
+            {
+            match(')'); if (failed) return ;
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end RIGHT_PAREN
+
+    // $ANTLR start LEFT_SQUARE
+    public final void mLEFT_SQUARE() throws RecognitionException {
+        try {
+            int _type = LEFT_SQUARE;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1790:11: ( '[' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1790:11: '['
+            {
+            match('['); if (failed) return ;
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end LEFT_SQUARE
+
+    // $ANTLR start RIGHT_SQUARE
+    public final void mRIGHT_SQUARE() throws RecognitionException {
+        try {
+            int _type = RIGHT_SQUARE;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1794:11: ( ']' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1794:11: ']'
+            {
+            match(']'); if (failed) return ;
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end RIGHT_SQUARE
+
+    // $ANTLR start LEFT_CURLY
+    public final void mLEFT_CURLY() throws RecognitionException {
+        try {
+            int _type = LEFT_CURLY;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1798:11: ( '{' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1798:11: '{'
+            {
+            match('{'); if (failed) return ;
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end LEFT_CURLY
+
+    // $ANTLR start RIGHT_CURLY
+    public final void mRIGHT_CURLY() throws RecognitionException {
+        try {
+            int _type = RIGHT_CURLY;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1802:11: ( '}' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1802:11: '}'
+            {
+            match('}'); if (failed) return ;
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end RIGHT_CURLY
+
+    // $ANTLR start COMMA
+    public final void mCOMMA() throws RecognitionException {
+        try {
+            int _type = COMMA;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1805:9: ( ',' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1805:9: ','
+            {
+            match(','); if (failed) return ;
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end COMMA
+
+    // $ANTLR start DOUBLE_AMPER
+    public final void mDOUBLE_AMPER() throws RecognitionException {
+        try {
+            int _type = DOUBLE_AMPER;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1809:4: ( '&&' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1809:4: '&&'
+            {
+            match("&&"); if (failed) return ;
+
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end DOUBLE_AMPER
+
+    // $ANTLR start DOUBLE_PIPE
+    public final void mDOUBLE_PIPE() throws RecognitionException {
+        try {
+            int _type = DOUBLE_PIPE;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1813:4: ( '||' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1813:4: '||'
+            {
+            match("||"); if (failed) return ;
+
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end DOUBLE_PIPE
+
     // $ANTLR start SH_STYLE_SINGLE_LINE_COMMENT
     public final void mSH_STYLE_SINGLE_LINE_COMMENT() throws RecognitionException {
         try {
             int _type = SH_STYLE_SINGLE_LINE_COMMENT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1721:4: ( '#' ( options {greedy=false; } : . )* EOL )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1721:4: '#' ( options {greedy=false; } : . )* EOL
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1817:4: ( '#' ( options {greedy=false; } : . )* EOL )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1817:4: '#' ( options {greedy=false; } : . )* EOL
             {
             match('#'); if (failed) return ;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1721:8: ( options {greedy=false; } : . )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1817:8: ( options {greedy=false; } : . )*
             loop15:
             do {
                 int alt15=2;
@@ -2023,7 +2130,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1721:35: .
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1817:35: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -2053,12 +2160,12 @@ public class DRLLexer extends Lexer {
     public final void mC_STYLE_SINGLE_LINE_COMMENT() throws RecognitionException {
         try {
             int _type = C_STYLE_SINGLE_LINE_COMMENT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1727:4: ( '//' ( options {greedy=false; } : . )* EOL )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1727:4: '//' ( options {greedy=false; } : . )* EOL
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1823:4: ( '//' ( options {greedy=false; } : . )* EOL )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1823:4: '//' ( options {greedy=false; } : . )* EOL
             {
             match("//"); if (failed) return ;
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1727:9: ( options {greedy=false; } : . )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1823:9: ( options {greedy=false; } : . )*
             loop16:
             do {
                 int alt16=2;
@@ -2077,7 +2184,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1727:36: .
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1823:36: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -2103,124 +2210,16 @@ public class DRLLexer extends Lexer {
     }
     // $ANTLR end C_STYLE_SINGLE_LINE_COMMENT
 
-    // $ANTLR start LEFT_PAREN
-    public final void mLEFT_PAREN() throws RecognitionException {
-        try {
-            int _type = LEFT_PAREN;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1733:11: ( '(' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1733:11: '('
-            {
-            match('('); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end LEFT_PAREN
-
-    // $ANTLR start RIGHT_PAREN
-    public final void mRIGHT_PAREN() throws RecognitionException {
-        try {
-            int _type = RIGHT_PAREN;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1737:11: ( ')' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1737:11: ')'
-            {
-            match(')'); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end RIGHT_PAREN
-
-    // $ANTLR start LEFT_SQUARE
-    public final void mLEFT_SQUARE() throws RecognitionException {
-        try {
-            int _type = LEFT_SQUARE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1741:11: ( '[' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1741:11: '['
-            {
-            match('['); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end LEFT_SQUARE
-
-    // $ANTLR start RIGHT_SQUARE
-    public final void mRIGHT_SQUARE() throws RecognitionException {
-        try {
-            int _type = RIGHT_SQUARE;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1745:11: ( ']' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1745:11: ']'
-            {
-            match(']'); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end RIGHT_SQUARE
-
-    // $ANTLR start LEFT_CURLY
-    public final void mLEFT_CURLY() throws RecognitionException {
-        try {
-            int _type = LEFT_CURLY;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1749:11: ( '{' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1749:11: '{'
-            {
-            match('{'); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end LEFT_CURLY
-
-    // $ANTLR start RIGHT_CURLY
-    public final void mRIGHT_CURLY() throws RecognitionException {
-        try {
-            int _type = RIGHT_CURLY;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1753:11: ( '}' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1753:11: '}'
-            {
-            match('}'); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end RIGHT_CURLY
-
     // $ANTLR start MULTI_LINE_COMMENT
     public final void mMULTI_LINE_COMMENT() throws RecognitionException {
         try {
             int _type = MULTI_LINE_COMMENT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1757:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1757:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1828:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1828:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); if (failed) return ;
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1757:9: ( options {greedy=false; } : . )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1828:9: ( options {greedy=false; } : . )*
             loop17:
             do {
                 int alt17=2;
@@ -2245,7 +2244,7 @@ public class DRLLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1757:35: .
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1828:35: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -2272,29 +2271,11 @@ public class DRLLexer extends Lexer {
     }
     // $ANTLR end MULTI_LINE_COMMENT
 
-    // $ANTLR start COMMA
-    public final void mCOMMA() throws RecognitionException {
-        try {
-            int _type = COMMA;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1761:9: ( ',' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1761:9: ','
-            {
-            match(','); if (failed) return ;
-
-            }
-
-            this.type = _type;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end COMMA
-
     // $ANTLR start MISC
     public final void mMISC() throws RecognitionException {
         try {
             int _type = MISC;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1765:3: ( '!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+' | '?' | '|' | '=' | '/' | '\\'' | '\\\\' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1833:3: ( '!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '?' | '=' | '/' | '\\'' | '\\\\' | '|' | '&' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:
             {
             if ( input.LA(1)=='!'||(input.LA(1)>='$' && input.LA(1)<='\'')||(input.LA(1)>='*' && input.LA(1)<='+')||input.LA(1)=='-'||input.LA(1)=='/'||input.LA(1)=='='||(input.LA(1)>='?' && input.LA(1)<='@')||input.LA(1)=='\\'||(input.LA(1)>='^' && input.LA(1)<='_')||input.LA(1)=='|' ) {
@@ -2319,516 +2300,502 @@ public class DRLLexer extends Lexer {
     // $ANTLR end MISC
 
     public void mTokens() throws RecognitionException {
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:10: ( T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | GLOBAL | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | RESULT | COLLECT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | MULTI_LINE_COMMENT | COMMA | MISC )
-        int alt18=73;
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:10: ( T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | GLOBAL | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | RESULT | COLLECT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOUBLE_AMPER | DOUBLE_PIPE | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC )
+        int alt18=71;
         alt18 = dfa18.predict(input);
         switch (alt18) {
             case 1 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:10: T67
-                {
-                mT67(); if (failed) return ;
-
-                }
-                break;
-            case 2 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:14: T68
-                {
-                mT68(); if (failed) return ;
-
-                }
-                break;
-            case 3 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:18: T69
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:10: T69
                 {
                 mT69(); if (failed) return ;
 
                 }
                 break;
-            case 4 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:22: T70
+            case 2 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:14: T70
                 {
                 mT70(); if (failed) return ;
 
                 }
                 break;
-            case 5 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:26: T71
+            case 3 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:18: T71
                 {
                 mT71(); if (failed) return ;
 
                 }
                 break;
-            case 6 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:30: T72
+            case 4 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:22: T72
                 {
                 mT72(); if (failed) return ;
 
                 }
                 break;
-            case 7 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:34: T73
+            case 5 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:26: T73
                 {
                 mT73(); if (failed) return ;
 
                 }
                 break;
-            case 8 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:38: T74
+            case 6 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:30: T74
                 {
                 mT74(); if (failed) return ;
 
                 }
                 break;
-            case 9 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:42: T75
+            case 7 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:34: T75
                 {
                 mT75(); if (failed) return ;
 
                 }
                 break;
-            case 10 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:46: T76
+            case 8 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:38: T76
                 {
                 mT76(); if (failed) return ;
 
                 }
                 break;
-            case 11 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:50: T77
+            case 9 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:42: T77
                 {
                 mT77(); if (failed) return ;
 
                 }
                 break;
-            case 12 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:54: T78
+            case 10 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:46: T78
                 {
                 mT78(); if (failed) return ;
 
                 }
                 break;
-            case 13 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:58: T79
+            case 11 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:50: T79
                 {
                 mT79(); if (failed) return ;
 
                 }
                 break;
-            case 14 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:62: T80
-                {
-                mT80(); if (failed) return ;
-
-                }
-                break;
-            case 15 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:66: T81
-                {
-                mT81(); if (failed) return ;
-
-                }
-                break;
-            case 16 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:70: WS
+            case 12 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:54: WS
                 {
                 mWS(); if (failed) return ;
 
                 }
                 break;
-            case 17 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:73: INT
+            case 13 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:57: INT
                 {
                 mINT(); if (failed) return ;
 
                 }
                 break;
-            case 18 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:77: FLOAT
+            case 14 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:61: FLOAT
                 {
                 mFLOAT(); if (failed) return ;
 
                 }
                 break;
-            case 19 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:83: STRING
+            case 15 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:67: STRING
                 {
                 mSTRING(); if (failed) return ;
 
                 }
                 break;
-            case 20 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:90: BOOL
+            case 16 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:74: BOOL
                 {
                 mBOOL(); if (failed) return ;
 
                 }
                 break;
-            case 21 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:95: PACKAGE
+            case 17 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:79: PACKAGE
                 {
                 mPACKAGE(); if (failed) return ;
 
                 }
                 break;
-            case 22 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:103: IMPORT
+            case 18 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:87: IMPORT
                 {
                 mIMPORT(); if (failed) return ;
 
                 }
                 break;
-            case 23 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:110: FUNCTION
+            case 19 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:94: FUNCTION
                 {
                 mFUNCTION(); if (failed) return ;
 
                 }
                 break;
-            case 24 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:119: GLOBAL
+            case 20 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:103: GLOBAL
                 {
                 mGLOBAL(); if (failed) return ;
 
                 }
                 break;
-            case 25 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:126: RULE
+            case 21 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:110: RULE
                 {
                 mRULE(); if (failed) return ;
 
                 }
                 break;
-            case 26 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:131: QUERY
+            case 22 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:115: QUERY
                 {
                 mQUERY(); if (failed) return ;
 
                 }
                 break;
-            case 27 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:137: TEMPLATE
+            case 23 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:121: TEMPLATE
                 {
                 mTEMPLATE(); if (failed) return ;
 
                 }
                 break;
-            case 28 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:146: ATTRIBUTES
+            case 24 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:130: ATTRIBUTES
                 {
                 mATTRIBUTES(); if (failed) return ;
 
                 }
                 break;
-            case 29 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:157: DATE_EFFECTIVE
+            case 25 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:141: DATE_EFFECTIVE
                 {
                 mDATE_EFFECTIVE(); if (failed) return ;
 
                 }
                 break;
-            case 30 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:172: DATE_EXPIRES
+            case 26 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:156: DATE_EXPIRES
                 {
                 mDATE_EXPIRES(); if (failed) return ;
 
                 }
                 break;
-            case 31 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:185: ENABLED
+            case 27 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:169: ENABLED
                 {
                 mENABLED(); if (failed) return ;
 
                 }
                 break;
-            case 32 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:193: SALIENCE
+            case 28 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:177: SALIENCE
                 {
                 mSALIENCE(); if (failed) return ;
 
                 }
                 break;
-            case 33 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:202: NO_LOOP
+            case 29 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:186: NO_LOOP
                 {
                 mNO_LOOP(); if (failed) return ;
 
                 }
                 break;
-            case 34 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:210: AUTO_FOCUS
+            case 30 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:194: AUTO_FOCUS
                 {
                 mAUTO_FOCUS(); if (failed) return ;
 
                 }
                 break;
-            case 35 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:221: ACTIVATION_GROUP
+            case 31 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:205: ACTIVATION_GROUP
                 {
                 mACTIVATION_GROUP(); if (failed) return ;
 
                 }
                 break;
-            case 36 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:238: AGENDA_GROUP
+            case 32 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:222: AGENDA_GROUP
                 {
                 mAGENDA_GROUP(); if (failed) return ;
 
                 }
                 break;
-            case 37 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:251: DIALECT
+            case 33 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:235: DIALECT
                 {
                 mDIALECT(); if (failed) return ;
 
                 }
                 break;
-            case 38 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:259: RULEFLOW_GROUP
+            case 34 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:243: RULEFLOW_GROUP
                 {
                 mRULEFLOW_GROUP(); if (failed) return ;
 
                 }
                 break;
-            case 39 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:274: DURATION
+            case 35 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:258: DURATION
                 {
                 mDURATION(); if (failed) return ;
 
                 }
                 break;
-            case 40 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:283: LOCK_ON_ACTIVE
+            case 36 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:267: LOCK_ON_ACTIVE
                 {
                 mLOCK_ON_ACTIVE(); if (failed) return ;
 
                 }
                 break;
-            case 41 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:298: FROM
+            case 37 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:282: FROM
                 {
                 mFROM(); if (failed) return ;
 
                 }
                 break;
-            case 42 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:303: ACCUMULATE
+            case 38 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:287: ACCUMULATE
                 {
                 mACCUMULATE(); if (failed) return ;
 
                 }
                 break;
-            case 43 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:314: INIT
+            case 39 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:298: INIT
                 {
                 mINIT(); if (failed) return ;
 
                 }
                 break;
-            case 44 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:319: ACTION
+            case 40 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:303: ACTION
                 {
                 mACTION(); if (failed) return ;
 
                 }
                 break;
-            case 45 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:326: RESULT
+            case 41 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:310: RESULT
                 {
                 mRESULT(); if (failed) return ;
 
                 }
                 break;
-            case 46 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:333: COLLECT
+            case 42 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:317: COLLECT
                 {
                 mCOLLECT(); if (failed) return ;
 
                 }
                 break;
-            case 47 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:341: OR
+            case 43 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:325: OR
                 {
                 mOR(); if (failed) return ;
 
                 }
                 break;
-            case 48 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:344: AND
+            case 44 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:328: AND
                 {
                 mAND(); if (failed) return ;
 
                 }
                 break;
-            case 49 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:348: CONTAINS
+            case 45 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:332: CONTAINS
                 {
                 mCONTAINS(); if (failed) return ;
 
                 }
                 break;
-            case 50 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:357: EXCLUDES
+            case 46 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:341: EXCLUDES
                 {
                 mEXCLUDES(); if (failed) return ;
 
                 }
                 break;
-            case 51 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:366: MEMBEROF
+            case 47 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:350: MEMBEROF
                 {
                 mMEMBEROF(); if (failed) return ;
 
                 }
                 break;
-            case 52 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:375: MATCHES
+            case 48 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:359: MATCHES
                 {
                 mMATCHES(); if (failed) return ;
 
                 }
                 break;
-            case 53 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:383: IN
+            case 49 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:367: IN
                 {
                 mIN(); if (failed) return ;
 
                 }
                 break;
-            case 54 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:386: NULL
+            case 50 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:370: NULL
                 {
                 mNULL(); if (failed) return ;
 
                 }
                 break;
-            case 55 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:391: EXISTS
+            case 51 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:375: EXISTS
                 {
                 mEXISTS(); if (failed) return ;
 
                 }
                 break;
-            case 56 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:398: NOT
+            case 52 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:382: NOT
                 {
                 mNOT(); if (failed) return ;
 
                 }
                 break;
-            case 57 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:402: EVAL
+            case 53 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:386: EVAL
                 {
                 mEVAL(); if (failed) return ;
 
                 }
                 break;
-            case 58 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:407: FORALL
+            case 54 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:391: FORALL
                 {
                 mFORALL(); if (failed) return ;
 
                 }
                 break;
-            case 59 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:414: WHEN
+            case 55 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:398: WHEN
                 {
                 mWHEN(); if (failed) return ;
 
                 }
                 break;
-            case 60 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:419: THEN
+            case 56 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:403: THEN
                 {
                 mTHEN(); if (failed) return ;
 
                 }
                 break;
-            case 61 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:424: END
+            case 57 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:408: END
                 {
                 mEND(); if (failed) return ;
 
                 }
                 break;
-            case 62 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:428: ID
+            case 58 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:412: ID
                 {
                 mID(); if (failed) return ;
 
                 }
                 break;
-            case 63 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:431: SH_STYLE_SINGLE_LINE_COMMENT
-                {
-                mSH_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
-
-                }
-                break;
-            case 64 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:460: C_STYLE_SINGLE_LINE_COMMENT
-                {
-                mC_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
-
-                }
-                break;
-            case 65 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:488: LEFT_PAREN
+            case 59 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:415: LEFT_PAREN
                 {
                 mLEFT_PAREN(); if (failed) return ;
 
                 }
                 break;
-            case 66 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:499: RIGHT_PAREN
+            case 60 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:426: RIGHT_PAREN
                 {
                 mRIGHT_PAREN(); if (failed) return ;
 
                 }
                 break;
-            case 67 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:511: LEFT_SQUARE
+            case 61 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:438: LEFT_SQUARE
                 {
                 mLEFT_SQUARE(); if (failed) return ;
 
                 }
                 break;
-            case 68 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:523: RIGHT_SQUARE
+            case 62 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:450: RIGHT_SQUARE
                 {
                 mRIGHT_SQUARE(); if (failed) return ;
 
                 }
                 break;
-            case 69 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:536: LEFT_CURLY
+            case 63 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:463: LEFT_CURLY
                 {
                 mLEFT_CURLY(); if (failed) return ;
 
                 }
                 break;
-            case 70 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:547: RIGHT_CURLY
+            case 64 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:474: RIGHT_CURLY
                 {
                 mRIGHT_CURLY(); if (failed) return ;
 
                 }
                 break;
-            case 71 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:559: MULTI_LINE_COMMENT
-                {
-                mMULTI_LINE_COMMENT(); if (failed) return ;
-
-                }
-                break;
-            case 72 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:578: COMMA
+            case 65 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:486: COMMA
                 {
                 mCOMMA(); if (failed) return ;
 
                 }
                 break;
-            case 73 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:584: MISC
+            case 66 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:492: DOUBLE_AMPER
+                {
+                mDOUBLE_AMPER(); if (failed) return ;
+
+                }
+                break;
+            case 67 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:505: DOUBLE_PIPE
+                {
+                mDOUBLE_PIPE(); if (failed) return ;
+
+                }
+                break;
+            case 68 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:517: SH_STYLE_SINGLE_LINE_COMMENT
+                {
+                mSH_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
+
+                }
+                break;
+            case 69 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:546: C_STYLE_SINGLE_LINE_COMMENT
+                {
+                mC_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
+
+                }
+                break;
+            case 70 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:574: MULTI_LINE_COMMENT
+                {
+                mMULTI_LINE_COMMENT(); if (failed) return ;
+
+                }
+                break;
+            case 71 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:593: MISC
                 {
                 mMISC(); if (failed) return ;
 
@@ -2841,8 +2808,8 @@ public class DRLLexer extends Lexer {
 
     // $ANTLR start synpred1
     public final void synpred1_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1574:14: ( '\\r\\n' )
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1574:16: '\\r\\n'
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:14: ( '\\r\\n' )
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:16: '\\r\\n'
         {
         match("\r\n"); if (failed) return ;
 
@@ -2869,126 +2836,133 @@ public class DRLLexer extends Lexer {
 
     protected DFA18 dfa18 = new DFA18(this);
     static final String DFA18_eotS =
-        "\3\uffff\1\55\1\57\1\61\2\53\1\65\1\67\1\53\1\uffff\1\72\1\uffff"+
-        "\1\53\21\52\2\uffff\1\53\30\uffff\10\52\1\150\25\52\1\u0083\3\52"+
-        "\2\uffff\11\52\1\uffff\5\52\1\u0095\13\52\1\u00a1\2\52\1\uffff\1"+
-        "\u00a4\4\52\1\uffff\3\52\1\u00ac\1\u00ad\4\52\1\u00b2\1\52\1\u00b4"+
-        "\2\52\1\u00b8\2\52\1\uffff\13\52\1\uffff\1\u00c7\1\52\1\uffff\1"+
-        "\u00c9\5\52\1\u00cf\2\uffff\3\52\1\u00ad\1\uffff\1\52\1\uffff\3"+
-        "\52\1\uffff\1\52\1\u00d8\5\52\2\uffff\5\52\1\uffff\1\52\2\uffff"+
-        "\4\52\1\uffff\2\52\1\u00eb\1\52\1\u00ed\1\u00ee\1\52\1\u00f0\1\uffff"+
-        "\2\52\1\u00f3\2\52\1\uffff\2\52\1\u00fa\11\52\1\uffff\1\u0104\2"+
-        "\uffff\1\52\2\uffff\1\52\1\uffff\2\52\2\uffff\1\u0109\1\52\1\uffff"+
-        "\1\52\1\u010c\1\52\1\u010e\1\52\1\u0110\1\52\1\u0112\1\u0113\1\uffff"+
-        "\4\52\1\uffff\1\u0118\1\u0119\1\uffff\1\u011a\1\uffff\1\u011b\1"+
-        "\uffff\1\u011c\3\uffff\3\52\5\uffff\1\u0120\1\52\1\u0122\3\uffff";
+        "\3\uffff\1\55\2\53\1\61\1\63\1\53\1\uffff\1\65\1\uffff\1\53\21\52"+
+        "\10\uffff\2\53\1\uffff\1\53\15\uffff\10\52\1\146\25\52\1\u0081\3"+
+        "\52\4\uffff\11\52\1\uffff\6\52\1\u0094\11\52\1\u009e\3\52\1\uffff"+
+        "\1\u00a2\4\52\1\uffff\3\52\1\u00aa\1\u00ab\4\52\1\u00b0\1\52\1\u00b2"+
+        "\2\52\1\u00b6\3\52\1\uffff\11\52\1\uffff\1\52\1\u00c5\1\52\1\uffff"+
+        "\1\u00c7\5\52\1\u00cd\2\uffff\2\52\1\u00aa\1\52\1\uffff\1\52\1\uffff"+
+        "\3\52\1\uffff\1\52\1\u00d6\4\52\1\uffff\2\52\1\uffff\4\52\1\uffff"+
+        "\1\52\2\uffff\4\52\1\uffff\1\52\1\u00e8\2\52\1\u00eb\1\u00ec\1\52"+
+        "\1\u00ee\1\uffff\1\52\1\u00f0\4\52\1\uffff\1\52\1\u00f8\10\52\1"+
+        "\uffff\1\52\1\u0102\2\uffff\1\52\1\uffff\1\52\1\uffff\2\52\1\uffff"+
+        "\1\u0107\2\uffff\1\52\1\uffff\1\52\1\u010a\2\52\1\u010d\1\u010e"+
+        "\1\52\1\u0110\1\u0111\1\uffff\4\52\1\uffff\1\u0116\1\u0117\1\uffff"+
+        "\1\u0118\1\u0119\2\uffff\1\u011a\3\uffff\3\52\5\uffff\1\u011e\1"+
+        "\52\1\u0120\3\uffff";
     static final String DFA18_eofS =
-        "\u0123\uffff";
+        "\u0121\uffff";
     static final String DFA18_minS =
-        "\1\11\2\uffff\1\52\1\174\1\46\1\60\4\75\1\uffff\1\56\1\uffff\1\0"+
-        "\1\145\2\141\1\155\1\154\1\145\1\165\1\143\1\141\1\156\1\141\3\157"+
-        "\1\162\1\141\1\150\2\uffff\1\52\30\uffff\1\145\1\165\1\155\1\156"+
-        "\1\162\1\154\1\157\1\143\1\60\1\160\1\157\1\154\1\163\1\145\1\144"+
-        "\1\145\1\143\3\164\1\141\1\162\1\143\2\141\1\154\1\55\1\154\1\143"+
-        "\1\154\1\60\1\164\1\155\1\145\2\uffff\1\156\1\145\1\160\1\143\1"+
-        "\141\1\163\1\155\1\153\1\164\1\uffff\1\157\1\142\1\145\1\165\1\162"+
-        "\1\60\1\156\1\165\1\151\1\162\1\157\1\145\1\154\1\141\1\163\1\154"+
-        "\1\142\1\60\1\154\1\151\1\uffff\1\60\1\154\1\153\1\154\1\164\1\uffff"+
-        "\1\143\1\142\1\156\2\60\1\154\1\164\1\154\1\145\1\60\1\141\1\60"+
-        "\1\162\1\141\1\60\1\154\1\171\1\uffff\1\144\1\155\1\157\1\151\2"+
-        "\55\1\145\2\164\1\165\1\154\1\uffff\1\60\1\145\1\uffff\1\60\1\55"+
-        "\1\145\1\141\1\150\1\145\1\60\2\uffff\1\141\1\151\1\154\1\60\1\uffff"+
-        "\1\147\1\uffff\1\164\2\154\1\uffff\1\164\1\60\1\141\1\165\1\156"+
-        "\1\141\1\142\1\uffff\1\145\1\143\1\151\1\163\1\144\1\145\1\uffff"+
-        "\1\156\2\uffff\1\143\1\151\1\145\1\162\1\uffff\1\164\1\157\1\60"+
-        "\1\145\2\60\1\157\1\60\1\uffff\1\55\1\154\1\60\1\164\1\165\1\146"+
-        "\1\164\1\157\1\60\1\145\1\144\1\143\1\164\1\156\1\163\1\117\1\145"+
-        "\1\156\1\uffff\1\60\2\uffff\1\167\2\uffff\1\141\1\uffff\1\151\1"+
-        "\164\2\uffff\1\60\1\156\1\uffff\1\163\1\60\1\145\1\60\1\163\1\60"+
-        "\1\146\2\60\1\uffff\1\55\1\164\1\157\1\145\1\uffff\2\60\1\uffff"+
-        "\1\60\1\uffff\1\60\1\uffff\1\60\3\uffff\1\145\1\156\1\163\5\uffff"+
+        "\1\11\2\uffff\1\52\1\60\4\75\1\uffff\1\56\1\uffff\1\0\1\145\2\141"+
+        "\1\155\1\154\1\145\1\165\1\143\1\141\1\156\1\141\3\157\1\162\1\141"+
+        "\1\150\10\uffff\1\46\1\174\1\uffff\1\52\15\uffff\1\165\1\145\1\155"+
+        "\1\162\1\154\1\156\1\157\1\143\1\60\1\160\1\157\1\154\1\163\1\145"+
+        "\1\164\1\144\1\143\1\164\1\145\1\141\1\164\1\162\1\143\2\141\1\154"+
+        "\1\55\1\154\1\143\1\154\1\60\1\164\1\155\1\145\4\uffff\1\145\1\156"+
+        "\1\160\1\141\1\163\1\143\1\155\1\153\1\164\1\uffff\1\157\1\142\1"+
+        "\145\1\165\2\162\1\60\1\151\1\165\1\157\1\156\1\154\1\145\1\141"+
+        "\1\163\1\154\1\60\1\142\1\154\1\151\1\uffff\1\60\1\154\1\153\1\164"+
+        "\1\154\1\uffff\1\143\1\142\1\156\2\60\2\154\1\145\1\164\1\60\1\141"+
+        "\1\60\1\162\1\141\1\60\1\154\1\171\1\151\1\uffff\1\157\1\155\1\55"+
+        "\1\144\1\145\1\55\2\164\1\165\1\uffff\1\154\1\60\1\145\1\uffff\1"+
+        "\60\1\55\1\141\1\145\1\150\1\145\1\60\2\uffff\1\141\1\154\1\60\1"+
+        "\151\1\uffff\1\147\1\uffff\1\164\2\154\1\uffff\1\164\1\60\1\142"+
+        "\1\156\1\141\1\165\1\uffff\1\141\1\143\1\145\1\151\1\163\1\144\1"+
+        "\145\1\uffff\1\156\2\uffff\1\151\1\143\1\145\1\162\1\uffff\1\164"+
+        "\1\60\1\157\1\145\2\60\1\157\1\60\1\uffff\1\165\1\60\1\164\1\154"+
+        "\1\55\1\164\1\146\1\157\1\60\1\145\1\144\1\143\1\156\1\164\1\163"+
+        "\1\117\1\145\1\uffff\1\156\1\60\2\uffff\1\167\1\uffff\1\164\1\uffff"+
+        "\1\151\1\141\1\uffff\1\60\2\uffff\1\156\1\uffff\1\163\1\60\1\145"+
+        "\1\163\2\60\1\146\2\60\1\uffff\1\55\1\145\1\157\1\164\1\uffff\2"+
+        "\60\1\uffff\2\60\2\uffff\1\60\3\uffff\1\163\1\156\1\145\5\uffff"+
         "\1\60\1\55\1\60\3\uffff";
     static final String DFA18_maxS =
-        "\1\u00ff\2\uffff\1\52\1\174\1\46\1\76\4\75\1\uffff\1\71\1\uffff"+
-        "\1\ufffe\1\162\1\165\1\141\1\156\1\154\4\165\1\170\1\141\1\165\2"+
-        "\157\1\162\1\145\1\150\2\uffff\1\57\30\uffff\1\145\1\165\1\155\1"+
-        "\156\1\162\1\154\1\157\1\143\1\u00ff\1\160\1\157\1\154\1\163\1\145"+
-        "\1\144\1\145\4\164\1\141\1\162\1\151\1\144\1\141\1\154\1\164\1\154"+
-        "\1\143\1\156\1\u00ff\1\164\1\155\1\145\2\uffff\1\156\1\145\1\160"+
-        "\1\143\1\141\1\163\1\155\1\153\1\164\1\uffff\1\157\1\142\1\145\1"+
-        "\165\1\162\1\u00ff\1\156\1\165\1\151\1\162\1\157\1\145\1\154\1\141"+
-        "\1\163\1\154\1\142\1\u00ff\1\154\1\151\1\uffff\1\u00ff\1\154\1\153"+
-        "\1\154\1\164\1\uffff\1\143\1\142\1\156\2\u00ff\1\154\1\164\1\154"+
-        "\1\145\1\u00ff\1\141\1\u00ff\1\162\1\141\1\u00ff\1\154\1\171\1\uffff"+
-        "\1\144\1\155\1\166\1\151\2\55\1\145\2\164\1\165\1\154\1\uffff\1"+
-        "\u00ff\1\145\1\uffff\1\u00ff\1\55\1\145\1\141\1\150\1\145\1\u00ff"+
-        "\2\uffff\1\141\1\151\1\154\1\u00ff\1\uffff\1\147\1\uffff\1\164\2"+
-        "\154\1\uffff\1\164\1\u00ff\1\141\1\165\1\156\1\141\1\142\1\uffff"+
-        "\1\145\1\143\1\151\1\163\1\144\1\145\1\uffff\1\156\2\uffff\1\143"+
-        "\1\151\1\145\1\162\1\uffff\1\164\1\157\1\u00ff\1\145\2\u00ff\1\157"+
-        "\1\u00ff\1\uffff\1\55\1\154\1\u00ff\1\164\1\165\1\170\1\164\1\157"+
-        "\1\u00ff\1\145\1\144\1\143\1\164\1\156\1\163\1\117\1\145\1\156\1"+
-        "\uffff\1\u00ff\2\uffff\1\167\2\uffff\1\141\1\uffff\1\151\1\164\2"+
-        "\uffff\1\u00ff\1\156\1\uffff\1\163\1\u00ff\1\145\1\u00ff\1\163\1"+
-        "\u00ff\1\146\2\u00ff\1\uffff\1\55\1\164\1\157\1\145\1\uffff\2\u00ff"+
-        "\1\uffff\1\u00ff\1\uffff\1\u00ff\1\uffff\1\u00ff\3\uffff\1\145\1"+
-        "\156\1\163\5\uffff\1\u00ff\1\55\1\u00ff\3\uffff";
+        "\1\u00ff\2\uffff\1\52\1\76\4\75\1\uffff\1\71\1\uffff\1\ufffe\1\162"+
+        "\1\165\1\141\1\156\1\154\4\165\1\170\1\141\1\165\2\157\1\162\1\145"+
+        "\1\150\10\uffff\1\46\1\174\1\uffff\1\57\15\uffff\1\165\1\145\1\155"+
+        "\1\162\1\154\1\156\1\157\1\143\1\u00ff\1\160\1\157\1\154\1\163\1"+
+        "\145\1\164\1\144\2\164\1\145\1\141\1\164\1\162\1\151\1\144\1\141"+
+        "\1\154\1\164\1\154\1\143\1\156\1\u00ff\1\164\1\155\1\145\4\uffff"+
+        "\1\145\1\156\1\160\1\141\1\163\1\143\1\155\1\153\1\164\1\uffff\1"+
+        "\157\1\142\1\145\1\165\2\162\1\u00ff\1\151\1\165\1\157\1\156\1\154"+
+        "\1\145\1\141\1\163\1\154\1\u00ff\1\142\1\154\1\151\1\uffff\1\u00ff"+
+        "\1\154\1\153\1\164\1\154\1\uffff\1\143\1\142\1\156\2\u00ff\2\154"+
+        "\1\145\1\164\1\u00ff\1\141\1\u00ff\1\162\1\141\1\u00ff\1\154\1\171"+
+        "\1\151\1\uffff\1\166\1\155\1\55\1\144\1\145\1\55\2\164\1\165\1\uffff"+
+        "\1\154\1\u00ff\1\145\1\uffff\1\u00ff\1\55\1\141\1\145\1\150\1\145"+
+        "\1\u00ff\2\uffff\1\141\1\154\1\u00ff\1\151\1\uffff\1\147\1\uffff"+
+        "\1\164\2\154\1\uffff\1\164\1\u00ff\1\142\1\156\1\141\1\165\1\uffff"+
+        "\1\141\1\143\1\145\1\151\1\163\1\144\1\145\1\uffff\1\156\2\uffff"+
+        "\1\151\1\143\1\145\1\162\1\uffff\1\164\1\u00ff\1\157\1\145\2\u00ff"+
+        "\1\157\1\u00ff\1\uffff\1\165\1\u00ff\1\164\1\154\1\55\1\164\1\170"+
+        "\1\157\1\u00ff\1\145\1\144\1\143\1\156\1\164\1\163\1\117\1\145\1"+
+        "\uffff\1\156\1\u00ff\2\uffff\1\167\1\uffff\1\164\1\uffff\1\151\1"+
+        "\141\1\uffff\1\u00ff\2\uffff\1\156\1\uffff\1\163\1\u00ff\1\145\1"+
+        "\163\2\u00ff\1\146\2\u00ff\1\uffff\1\55\1\145\1\157\1\164\1\uffff"+
+        "\2\u00ff\1\uffff\2\u00ff\2\uffff\1\u00ff\3\uffff\1\163\1\156\1\145"+
+        "\5\uffff\1\u00ff\1\55\1\u00ff\3\uffff";
     static final String DFA18_acceptS =
-        "\1\uffff\1\1\1\2\10\uffff\1\20\1\uffff\1\23\22\uffff\1\76\1\77\1"+
-        "\uffff\1\101\1\102\1\103\1\104\1\105\1\106\1\110\1\76\1\111\1\4"+
-        "\1\3\1\5\1\7\1\17\1\6\1\10\1\11\1\13\1\12\1\15\1\14\1\16\1\22\1"+
-        "\21\42\uffff\1\100\1\107\11\uffff\1\65\24\uffff\1\41\5\uffff\1\57"+
-        "\21\uffff\1\60\13\uffff\1\75\2\uffff\1\70\7\uffff\1\74\1\24\4\uffff"+
-        "\1\51\1\uffff\1\53\3\uffff\1\31\7\uffff\1\42\6\uffff\1\71\1\uffff"+
-        "\1\66\1\50\4\uffff\1\73\10\uffff\1\32\22\uffff\1\72\1\uffff\1\26"+
-        "\1\30\1\uffff\1\55\1\44\1\uffff\1\54\2\uffff\1\36\1\35\2\uffff\1"+
-        "\67\11\uffff\1\25\4\uffff\1\45\2\uffff\1\37\1\uffff\1\56\1\uffff"+
-        "\1\64\1\uffff\1\33\1\27\1\46\3\uffff\1\47\1\62\1\40\1\61\1\63\3"+
-        "\uffff\1\52\1\43\1\34";
+        "\1\uffff\1\1\1\2\6\uffff\1\14\1\uffff\1\17\22\uffff\1\72\1\73\1"+
+        "\74\1\75\1\76\1\77\1\100\1\101\2\uffff\1\104\1\uffff\1\72\1\107"+
+        "\1\4\1\3\1\5\1\6\1\10\1\7\1\12\1\11\1\13\1\15\1\16\42\uffff\1\102"+
+        "\1\103\1\106\1\105\11\uffff\1\61\24\uffff\1\35\5\uffff\1\53\22\uffff"+
+        "\1\54\11\uffff\1\71\3\uffff\1\64\7\uffff\1\20\1\70\4\uffff\1\45"+
+        "\1\uffff\1\47\3\uffff\1\25\6\uffff\1\36\7\uffff\1\65\1\uffff\1\62"+
+        "\1\44\4\uffff\1\67\10\uffff\1\26\21\uffff\1\66\2\uffff\1\22\1\24"+
+        "\1\uffff\1\51\1\uffff\1\50\2\uffff\1\40\1\uffff\1\32\1\31\1\uffff"+
+        "\1\63\11\uffff\1\21\4\uffff\1\41\2\uffff\1\33\2\uffff\1\52\1\60"+
+        "\1\uffff\1\27\1\23\1\42\3\uffff\1\43\1\56\1\34\1\55\1\57\3\uffff"+
+        "\1\30\1\37\1\46";
     static final String DFA18_specialS =
-        "\u0123\uffff}>";
+        "\u0121\uffff}>";
     static final String[] DFA18_transitionS = {
-            "\2\13\1\uffff\2\13\22\uffff\1\13\1\12\1\15\1\41\1\40\1\53\1"+
-            "\5\1\16\1\43\1\44\2\53\1\51\1\6\1\3\1\42\12\14\1\2\1\1\1\11"+
-            "\1\7\1\10\2\53\32\52\1\45\1\53\1\46\1\53\1\40\1\uffff\1\26\1"+
-            "\52\1\34\1\27\1\30\1\20\1\23\1\52\1\22\2\52\1\33\1\36\1\32\1"+
-            "\35\1\21\1\25\1\24\1\31\1\17\2\52\1\37\3\52\1\47\1\4\1\50\102"+
+            "\2\11\1\uffff\2\11\22\uffff\1\11\1\10\1\13\1\50\1\36\1\53\1"+
+            "\46\1\14\1\37\1\40\2\53\1\45\1\4\1\3\1\51\12\12\1\2\1\1\1\7"+
+            "\1\5\1\6\2\53\32\52\1\41\1\53\1\42\1\53\1\36\1\uffff\1\24\1"+
+            "\52\1\32\1\25\1\26\1\16\1\21\1\52\1\20\2\52\1\31\1\34\1\30\1"+
+            "\33\1\17\1\23\1\22\1\27\1\15\2\52\1\35\3\52\1\43\1\47\1\44\102"+
             "\uffff\100\52",
             "",
             "",
             "\1\54",
-            "\1\56",
+            "\12\12\4\uffff\1\56",
+            "\1\57",
             "\1\60",
-            "\12\14\4\uffff\1\62",
-            "\1\63",
+            "\1\62",
             "\1\64",
-            "\1\66",
-            "\1\70",
             "",
-            "\1\71\1\uffff\12\14",
+            "\1\66\1\uffff\12\12",
             "",
-            "\uffff\15",
-            "\1\75\2\uffff\1\73\11\uffff\1\74",
-            "\1\100\15\uffff\1\77\2\uffff\1\101\2\uffff\1\76",
-            "\1\102",
-            "\1\104\1\103",
-            "\1\105",
-            "\1\107\17\uffff\1\106",
-            "\1\110",
-            "\1\113\3\uffff\1\112\6\uffff\1\111\5\uffff\1\114\1\115",
-            "\1\116\7\uffff\1\117\13\uffff\1\120",
-            "\1\122\7\uffff\1\123\1\uffff\1\121",
+            "\uffff\13",
+            "\1\71\2\uffff\1\70\11\uffff\1\67",
+            "\1\73\15\uffff\1\72\2\uffff\1\75\2\uffff\1\74",
+            "\1\76",
+            "\1\100\1\77",
+            "\1\101",
+            "\1\103\17\uffff\1\102",
+            "\1\104",
+            "\1\107\3\uffff\1\111\6\uffff\1\106\5\uffff\1\105\1\110",
+            "\1\113\7\uffff\1\112\13\uffff\1\114",
+            "\1\116\7\uffff\1\117\1\uffff\1\115",
+            "\1\120",
+            "\1\121\5\uffff\1\122",
+            "\1\123",
             "\1\124",
-            "\1\125\5\uffff\1\126",
-            "\1\127",
+            "\1\125",
+            "\1\126\3\uffff\1\127",
             "\1\130",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "\1\131",
-            "\1\132\3\uffff\1\133",
-            "\1\134",
+            "\1\132",
             "",
-            "",
-            "\1\136\4\uffff\1\135",
-            "",
+            "\1\133\4\uffff\1\134",
             "",
             "",
             "",
@@ -3002,54 +2976,48 @@ public class DRLLexer extends Lexer {
             "",
             "",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
+            "\1\135",
+            "\1\136",
             "\1\137",
             "\1\140",
             "\1\141",
             "\1\142",
             "\1\143",
             "\1\144",
-            "\1\145",
-            "\1\146",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\10\52\1\147\21\52"+
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\10\52\1\145\21\52"+
             "\105\uffff\100\52",
+            "\1\147",
+            "\1\150",
             "\1\151",
             "\1\152",
             "\1\153",
             "\1\154",
             "\1\155",
-            "\1\156",
-            "\1\157",
-            "\1\160\20\uffff\1\161",
+            "\1\157\20\uffff\1\156",
+            "\1\160",
+            "\1\161",
             "\1\162",
             "\1\163",
             "\1\164",
-            "\1\165",
-            "\1\166",
-            "\1\170\5\uffff\1\167",
-            "\1\171\2\uffff\1\172",
-            "\1\173",
-            "\1\174",
-            "\1\175\106\uffff\1\176",
-            "\1\177",
-            "\1\u0080",
-            "\1\u0081\1\uffff\1\u0082",
+            "\1\166\5\uffff\1\165",
+            "\1\170\2\uffff\1\167",
+            "\1\171",
+            "\1\172",
+            "\1\173\106\uffff\1\174",
+            "\1\175",
+            "\1\176",
+            "\1\u0080\1\uffff\1\177",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
+            "\1\u0082",
+            "\1\u0083",
             "\1\u0084",
+            "",
+            "",
+            "",
+            "",
             "\1\u0085",
             "\1\u0086",
-            "",
-            "",
             "\1\u0087",
             "\1\u0088",
             "\1\u0089",
@@ -3057,16 +3025,16 @@ public class DRLLexer extends Lexer {
             "\1\u008b",
             "\1\u008c",
             "\1\u008d",
+            "",
             "\1\u008e",
             "\1\u008f",
-            "",
             "\1\u0090",
             "\1\u0091",
             "\1\u0092",
             "\1\u0093",
-            "\1\u0094",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
+            "\1\u0095",
             "\1\u0096",
             "\1\u0097",
             "\1\u0098",
@@ -3075,177 +3043,175 @@ public class DRLLexer extends Lexer {
             "\1\u009b",
             "\1\u009c",
             "\1\u009d",
-            "\1\u009e",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
             "\1\u009f",
             "\1\u00a0",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
-            "\1\u00a2",
-            "\1\u00a3",
+            "\1\u00a1",
             "",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
+            "\1\u00a3",
+            "\1\u00a4",
             "\1\u00a5",
             "\1\u00a6",
+            "",
             "\1\u00a7",
             "\1\u00a8",
-            "",
             "\1\u00a9",
-            "\1\u00aa",
-            "\1\u00ab",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
+            "\1\u00ac",
+            "\1\u00ad",
             "\1\u00ae",
             "\1\u00af",
-            "\1\u00b0",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
             "\1\u00b1",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "\1\u00b3",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
-            "\1\u00b5",
-            "\1\u00b6",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\5\52\1\u00b7\24\52"+
+            "\1\u00b4",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\5\52\1\u00b5\24\52"+
             "\105\uffff\100\52",
+            "\1\u00b7",
+            "\1\u00b8",
             "\1\u00b9",
-            "\1\u00ba",
             "",
-            "\1\u00bb",
+            "\1\u00ba\6\uffff\1\u00bb",
             "\1\u00bc",
-            "\1\u00bd\6\uffff\1\u00be",
+            "\1\u00bd",
+            "\1\u00be",
             "\1\u00bf",
             "\1\u00c0",
             "\1\u00c1",
             "\1\u00c2",
             "\1\u00c3",
+            "",
             "\1\u00c4",
-            "\1\u00c5",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
             "\1\u00c6",
             "",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "\1\u00c8",
-            "",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
+            "\1\u00c9",
             "\1\u00ca",
             "\1\u00cb",
             "\1\u00cc",
-            "\1\u00cd",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
+            "",
+            "",
             "\1\u00ce",
+            "\1\u00cf",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "",
-            "",
             "\1\u00d0",
+            "",
             "\1\u00d1",
+            "",
             "\1\u00d2",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
-            "",
             "\1\u00d3",
-            "",
             "\1\u00d4",
-            "\1\u00d5",
-            "\1\u00d6",
             "",
-            "\1\u00d7",
+            "\1\u00d5",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
+            "\1\u00d7",
+            "\1\u00d8",
             "\1\u00d9",
             "\1\u00da",
+            "",
             "\1\u00db",
             "\1\u00dc",
             "\1\u00dd",
-            "",
             "\1\u00de",
             "\1\u00df",
             "\1\u00e0",
             "\1\u00e1",
+            "",
             "\1\u00e2",
+            "",
+            "",
             "\1\u00e3",
-            "",
             "\1\u00e4",
-            "",
-            "",
             "\1\u00e5",
             "\1\u00e6",
-            "\1\u00e7",
-            "\1\u00e8",
             "",
+            "\1\u00e7",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
             "\1\u00e9",
             "\1\u00ea",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "\1\u00ec",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
-            "\1\u00ef",
+            "\1\u00ed",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "",
+            "\1\u00ef",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
             "\1\u00f1",
             "\1\u00f2",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
+            "\1\u00f3",
             "\1\u00f4",
-            "\1\u00f5",
-            "\1\u00f7\21\uffff\1\u00f6",
-            "\1\u00f8",
-            "\1\u00f9",
+            "\1\u00f6\21\uffff\1\u00f5",
+            "\1\u00f7",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
+            "\1\u00f9",
+            "\1\u00fa",
             "\1\u00fb",
             "\1\u00fc",
             "\1\u00fd",
             "\1\u00fe",
             "\1\u00ff",
             "\1\u0100",
+            "",
             "\1\u0101",
-            "\1\u0102",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
+            "",
+            "",
             "\1\u0103",
             "",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
-            "",
+            "\1\u0104",
             "",
             "\1\u0105",
-            "",
-            "",
             "\1\u0106",
             "",
-            "\1\u0107",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
+            "",
+            "",
             "\1\u0108",
             "",
-            "",
+            "\1\u0109",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "\1\u010a",
-            "",
             "\1\u010b",
+            "\1\u010c",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "\1\u010d",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "\1\u010f",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "\1\u0111",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "",
+            "\1\u0112",
+            "\1\u0113",
             "\1\u0114",
             "\1\u0115",
-            "\1\u0116",
-            "\1\u0117",
             "",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
@@ -3254,18 +3220,18 @@ public class DRLLexer extends Lexer {
             "",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "",
-            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
-            "\52",
-            "",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "",
             "",
+            "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
+            "\52",
             "",
+            "",
+            "",
+            "\1\u011b",
+            "\1\u011c",
             "\1\u011d",
-            "\1\u011e",
-            "\1\u011f",
             "",
             "",
             "",
@@ -3273,7 +3239,7 @@ public class DRLLexer extends Lexer {
             "",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
-            "\1\u0121",
+            "\1\u011f",
             "\12\52\7\uffff\32\52\4\uffff\1\52\1\uffff\32\52\105\uffff\100"+
             "\52",
             "",
@@ -3311,7 +3277,7 @@ public class DRLLexer extends Lexer {
             this.transition = DFA18_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | GLOBAL | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | RESULT | COLLECT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | MULTI_LINE_COMMENT | COMMA | MISC );";
+            return "1:1: Tokens : ( T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | GLOBAL | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | RESULT | COLLECT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOUBLE_AMPER | DOUBLE_PIPE | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC );";
         }
     }
  

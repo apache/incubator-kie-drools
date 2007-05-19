@@ -20,8 +20,12 @@ options {backtrack=true;}
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
 	
-	// THE FOLLOWING LINE IS A DUMMY ATTRIBUTE TO WORK AROUND AN ANTLR BUG
+	// THE FOLLOWING LINES ARE DUMMY ATTRIBUTES TO WORK AROUND AN ANTLR BUG
 	private BaseDescr from = null;
+	private FieldConstraintDescr fc = null;
+	private RestrictionConnectiveDescr and = null;
+	private RestrictionConnectiveDescr or = null;
+	private ConditionalElementDescr base = null;
 	
 	public void setParserDebug(boolean parserDebug) {
 		this.parserDebug = parserDebug;
@@ -865,13 +869,13 @@ fact_binding returns [BaseDescr d]
  		pd = null;
  		boolean multi = false;
  	}
- 	:	'(' fe=fact_expression[id] ')' { pd=fe; }
+ 	:	LEFT_PAREN fe=fact_expression[id] RIGHT_PAREN { pd=fe; }
  	| 	f=fact
  		{
  			((PatternDescr)f).setIdentifier( id );
  			pd = f;
  		}
- 		( (OR|'||')
+ 		( (OR|DOUBLE_PIPE)
  			{	if ( ! multi ) {
  					BaseDescr first = pd;
  					pd = new OrDescr();
@@ -919,14 +923,64 @@ fact returns [BaseDescr d]
 	
 	
 constraints[PatternDescr pattern]
-	:	(constraint[pattern]|predicate[pattern])
-		( ',' (constraint[pattern]|predicate[pattern]))*
+	:	constraint[pattern]
+		( ',' constraint[pattern] )* 
 	;
 	
 constraint[PatternDescr pattern]
 	@init {
+		ConditionalElementDescr top = null;
+	}
+	:
+		{
+			top = pattern.getConstraint();
+		}
+		or_constr[top]
+	;	
+	
+or_constr[ConditionalElementDescr base]
+	@init {
+		OrDescr or = new OrDescr();
+	}
+	:
+		and_constr[or] ( t=DOUBLE_PIPE and_constr[or] )*
+		{
+		        if( or.getDescrs().size() == 1 ) {
+		                base.addOrMerge( (BaseDescr) or.getDescrs().get(0) );
+		        } else if ( or.getDescrs().size() > 1 ) {
+		        	base.addDescr( or );
+		        }
+		}
+	;
+	
+and_constr[ConditionalElementDescr base]
+	@init {
+		AndDescr and = new AndDescr();
+	}
+	:
+		unary_constr[and] ( t=DOUBLE_AMPER unary_constr[and] )*
+		{
+		        if( and.getDescrs().size() == 1) {
+		                base.addOrMerge( (BaseDescr) and.getDescrs().get(0) );
+		        } else if( and.getDescrs().size() > 1) {
+		        	base.addDescr( and );
+		        }
+		}
+	;
+	
+unary_constr[ConditionalElementDescr base]
+	:
+		( field_constraint[base] 
+		| LEFT_PAREN or_constr[base] RIGHT_PAREN
+		| EVAL predicate[base]
+		)
+	;	
+		
+field_constraint[ConditionalElementDescr base]
+	@init {
 		FieldBindingDescr fbd = null;
 		FieldConstraintDescr fc = null;
+		RestrictionConnectiveDescr top = null;
 	}
 	:
 		( fb=ID ':' 
@@ -935,7 +989,7 @@ constraint[PatternDescr pattern]
 			fbd.setIdentifier( fb.getText() );
 			fbd.setLocation( offset(fb.getLine()), fb.getCharPositionInLine() );
 			fbd.setStartCharacter( ((CommonToken)fb).getStartIndex() );
-			pattern.addDescr( fbd );
+			base.addDescr( fbd );
 
 		    }
 		)? 
@@ -950,57 +1004,70 @@ constraint[PatternDescr pattern]
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
+			top = fc.getRestriction();
 			
 			// it must be a field constraint, as it is not a binding
 			if( fb == null ) {
-			    pattern.addDescr( fc );
+			    base.addDescr( fc );
 			}
 		    }
 		}
 		(
-			(	constraint_expression[fc]
-				{
-					// we must add now as we didn't before
-					if( fb != null) {
-					    pattern.addDescr( fc );
-					}
+			or_restr_connective[top]
+			{
+				// we must add now as we didn't before
+				if( fb != null) {
+				    base.addDescr( fc );
 				}
-				(
-					con=('&'|'|')
-					{
-						if (con.getText().equals("&") ) {								
-							fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));	
-						} else {
-							fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
-						}							
-					}
-					constraint_expression[fc]
-				)*
-			)
+			}
 		|
-			'->' predicate[pattern] 
+			'->' predicate[base] 
 		)?
 	;
 	
-constraint_expression[FieldConstraintDescr fc]
+or_restr_connective[ RestrictionConnectiveDescr base ]
+	@init {
+		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
+	}
+	:
+		and_restr_connective[or] ( DOUBLE_PIPE and_restr_connective[or] )*
+		{
+		        if( or.getRestrictions().size() == 1 ) {
+		                base.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
+		        } else if ( or.getRestrictions().size() > 1 ) {
+		        	base.addRestriction( or );
+		        }
+		}
+	;	
+
+	
+and_restr_connective[ RestrictionConnectiveDescr base ]
+	@init {
+		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
+	}
+	:
+		constraint_expression[and] ( t=DOUBLE_AMPER constraint_expression[and] )*
+		{
+		        if( and.getRestrictions().size() == 1) {
+		                base.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
+		        } else if ( and.getRestrictions().size() > 1 ) {
+		        	base.addRestriction( and );
+		        }
+		}
+	;
+
+constraint_expression[RestrictionConnectiveDescr base]
         :	
-		(
-			compound_operator[fc]
-		)
-		|
-		(
-			op=simple_operator rd=expression_value[op]
-			{
-			    if( rd != null ) {
-			        fc.addRestriction( rd );
-			    } else if ( rd == null && op != null ) {
-			        fc.addRestriction( new LiteralRestrictionDescr(op, null) );
-			    }
-			}
+		( compound_operator[base]
+		| simple_operator[base]
+		| LEFT_PAREN or_restr_connective[base] RIGHT_PAREN
  		)
 	;	
 	
-simple_operator returns [String op]
+simple_operator[RestrictionConnectiveDescr base]
+	@init {
+		String op = null;
+	}
 	:
 		(	t='=='
 		|	t='>'
@@ -1021,54 +1088,49 @@ simple_operator returns [String op]
 		        op = t.getText();
 		    }
 		}
+		rd=expression_value[op]
+		{
+			    if( rd != null ) {
+			        base.addRestriction( rd );
+			    } else if ( rd == null && op != null ) {
+			        base.addRestriction( new LiteralRestrictionDescr(op, null) );
+			    }
+		}
 	;	
 	
-compound_operator[FieldConstraintDescr fc]
+compound_operator[RestrictionConnectiveDescr base]
 	@init {
 		String op = null;
+		RestrictionConnectiveDescr group = null;
 	}
 	:
 		( IN 
-		{
-		  op = "==";
-		}	
- 		LEFT_PAREN rd=expression_value[op]
-		{
-		    if( rd != null ) {
-		        fc.addRestriction( rd );
-		    }
-		}
+			{
+			  op = "==";
+			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
+			  base.addRestriction( group );
+			}
+		| NOT IN 
+			{
+			  op = "!=";
+			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
+			  base.addRestriction( group );
+			}	
+		)
+		LEFT_PAREN rd=expression_value[op]
+			{
+			    if( rd != null ) {
+			        group.addRestriction( rd );
+			    }
+			}
 		( COMMA rd=expression_value[op]
-		{
-		    if( rd != null ) {
-			fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
-		        fc.addRestriction( rd );
-		    }
-		}
+			{
+			    if( rd != null ) {
+		        	group.addRestriction( rd );
+			    }
+			}
 		)* 
 		RIGHT_PAREN 
-		)
-		|
-		( NOT IN 
-		{
-		  op = "!=";
-		}	
- 		LEFT_PAREN rd=expression_value[op]
-		{
-		    if( rd != null ) {
-		        fc.addRestriction( rd );
-		    }
-		}
-		( COMMA rd=expression_value[op]
-		{
-		    if( rd != null ) {
-			fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));	
-		        fc.addRestriction( rd );
-		    }
-		}
-		)* 
-		RIGHT_PAREN 
-		)
 	;
 	
 expression_value[String op] returns [RestrictionDescr rd]
@@ -1115,7 +1177,7 @@ enum_constraint returns [String text]
 	;	
 	
 
-predicate[PatternDescr pattern]
+predicate[ConditionalElementDescr base]
         @init {
 		PredicateDescr d = null;
         }
@@ -1128,7 +1190,7 @@ predicate[PatternDescr pattern]
 		        if( text != null ) {
 			        String body = text.substring(1, text.length()-1);
 			        d.setContent( body );
-				pattern.addDescr( d );
+				base.addDescr( d );
 		        }
 		}
 	;
@@ -1299,7 +1361,7 @@ lhs_and returns [BaseDescr d]
 	}
 	:
 		left=lhs_unary { d = left; }
-		( (AND|'&&')
+		( (AND|DOUBLE_AMPER)
 			right=lhs_unary
 			{
 				if ( and == null ) {
@@ -1595,7 +1657,7 @@ HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 fragment
 EscapeSequence
-    :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\'|'.')
+    :   '\\' ('b'|'B'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\'|'.'|'o'|'x'|'a'|'e'|'c'|'d'|'D'|'s'|'S'|'w'|'W'|'p'|'A'|'G'|'Z'|'z'|'Q'|'E')
     |   UnicodeEscape
     |   OctalEscape
     ;
@@ -1716,19 +1778,6 @@ ID
 	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
 	;
 		
-
-SH_STYLE_SINGLE_LINE_COMMENT	
-	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
-                { $channel=HIDDEN; }
-	;
-        
-        
-C_STYLE_SINGLE_LINE_COMMENT	
-	:	'//' ( options{greedy=false;} : .)* EOL // ('\r')? '\n' 
-                { $channel=HIDDEN; }
-	;
-
-
 LEFT_PAREN
         :	'('
         ;
@@ -1753,14 +1802,33 @@ RIGHT_CURLY
         :	'}'
         ;
         
+COMMA	:	','
+	;
+	
+DOUBLE_AMPER
+	:	'&&'
+	;
+	
+DOUBLE_PIPE
+	:	'||'
+	;				
+	
+SH_STYLE_SINGLE_LINE_COMMENT	
+	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
+                { $channel=HIDDEN; }
+	;
+        
+        
+C_STYLE_SINGLE_LINE_COMMENT	
+	:	'//' ( options{greedy=false;} : .)* EOL // ('\r')? '\n' 
+                { $channel=HIDDEN; }
+	;
+
 MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
 	;
-	
-COMMA	:	','
-	;
 
 MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+'  | '?' | '|' | '=' | '/' | '\'' | '\\'
+		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '=' | '/' | '\'' | '\\' | '|' | '&'
 	;

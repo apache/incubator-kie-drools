@@ -16,17 +16,10 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.Sensor;
 import org.drools.WorkingMemory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectFilter;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaEventListener;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.DefaultAgendaEventListener;
 import org.drools.event.DefaultWorkingMemoryEventListener;
 import org.drools.event.ObjectAssertedEvent;
 import org.drools.event.ObjectModifiedEvent;
@@ -306,8 +299,8 @@ public class TruthMaintenanceTest extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
-        logger.setFileName( "logical" );
+//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+//        logger.setFileName( "logical" );
 
         final List events = new ArrayList();
 
@@ -337,7 +330,7 @@ public class TruthMaintenanceTest extends TestCase {
                                     sensor );
 
         workingMemory.fireAllRules();
-        logger.writeToDisk();
+//        logger.writeToDisk();
 
         assertEquals( "Only sensor is there",
                       1,

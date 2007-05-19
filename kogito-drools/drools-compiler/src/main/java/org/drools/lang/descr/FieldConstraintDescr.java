@@ -1,7 +1,5 @@
 package org.drools.lang.descr;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -29,7 +27,7 @@ public class FieldConstraintDescr extends BaseDescr {
 
     private static final long serialVersionUID = 320;
     private String            fieldName;
-    private List              restrictions     = Collections.EMPTY_LIST;
+    private RestrictionConnectiveDescr restriction     = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
 
     public FieldConstraintDescr(final String fieldName) {
         this.fieldName = fieldName;
@@ -40,24 +38,15 @@ public class FieldConstraintDescr extends BaseDescr {
     }
 
     public void addRestriction(final RestrictionDescr restriction) {
-        if ( this.restrictions == Collections.EMPTY_LIST ) {
-            this.restrictions = new ArrayList();
-        }
-        this.restrictions.add( restriction );
+        this.restriction.addRestriction( restriction );
     }
 
     public List getRestrictions() {
-        return this.restrictions;
+        return this.restriction.getRestrictions();
     }
-
-    /*    public boolean isBound(String identifier) {
-     for ( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
-     Object object = it.next();
-     if ( object instanceof FieldBindingDescr ) {
-     FieldBindingDescr descr = 
-     }
-     }
-     return false;
-     }*/
+    
+    public RestrictionConnectiveDescr getRestriction() {
+        return this.restriction;
+    }
 
 }

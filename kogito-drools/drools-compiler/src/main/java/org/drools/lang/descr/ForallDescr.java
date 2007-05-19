@@ -68,4 +68,10 @@ public class ForallDescr extends BaseDescr
                                                                  this.patterns.size() ) : Collections.EMPTY_LIST;
     }
 
+    public void addOrMerge(BaseDescr baseDescr) {
+        this.patterns.add( baseDescr );        
+    }
+
+    
+    
 }

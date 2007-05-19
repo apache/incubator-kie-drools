@@ -17,7 +17,7 @@ package org.drools.lang.descr;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class AndDescr extends BaseDescr
@@ -27,20 +27,24 @@ public class AndDescr extends BaseDescr
      * 
      */
     private static final long serialVersionUID = 8225023304408452585L;
-    private List              descrs           = Collections.EMPTY_LIST;
+    private List              descrs           = new ArrayList();
 
     public AndDescr() {
     }
 
     public void addDescr(final BaseDescr baseDescr) {
-        if ( this.descrs == Collections.EMPTY_LIST ) {
-            this.descrs = new ArrayList( 1 );
-        }
-
         this.descrs.add( baseDescr );
     }
 
     public List getDescrs() {
         return this.descrs;
+    }
+
+    public void addOrMerge(final BaseDescr baseDescr) {
+        if( baseDescr instanceof AndDescr ) {
+            this.descrs.addAll( ((AndDescr)baseDescr).getDescrs() );
+        } else {
+            this.descrs.add( baseDescr );
+        }
     }
 }

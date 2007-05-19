@@ -96,11 +96,11 @@ public class BRXMLToDescrConverter {
             if ( constr.fieldBinding != null ) {
                 final FieldBindingDescr fieldDescr = new FieldBindingDescr( constr.fieldName,
                                                                       constr.fieldBinding );
-                pattern.addDescr( fieldDescr );
+                pattern.addConstraint( fieldDescr );
             }
             if ( constr.constraintValueType == IConstraint.TYPE_PREDICATE ) {
                 final PredicateDescr predicateDescr = new PredicateDescr( constr.value );
-                pattern.addDescr( predicateDescr );
+                pattern.addConstraint( predicateDescr );
             } else {
                 final FieldConstraintDescr constrDescr = new FieldConstraintDescr( constr.fieldName );
                 constrDescr.addRestriction( this.getFieldRestriction( constr.constraintValueType,
@@ -125,7 +125,7 @@ public class BRXMLToDescrConverter {
                                                                               conn.value ) );
                     }
                 }
-                pattern.addDescr( constrDescr );
+                pattern.addConstraint( constrDescr );
             }
         }
     }
