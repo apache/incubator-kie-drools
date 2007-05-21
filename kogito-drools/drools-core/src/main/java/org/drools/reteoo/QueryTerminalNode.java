@@ -37,7 +37,7 @@ import org.drools.spi.PropagationContext;
  */
 public final class QueryTerminalNode extends BaseNode
     implements
-    TupleSink,
+    TupleSinkNode,
     NodeMemory,
     TerminalNode {
     // ------------------------------------------------------------
@@ -52,6 +52,9 @@ public final class QueryTerminalNode extends BaseNode
     private final Rule         rule;
     private final GroupElement subrule;
     private final TupleSource  tupleSource;
+    
+    private TupleSinkNode      previousTupleSinkNode;
+    private TupleSinkNode      nextTupleSinkNode;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -170,5 +173,41 @@ public final class QueryTerminalNode extends BaseNode
     public GroupElement getSubrule() {
         return this.subrule;
     }
+    
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous TupleSinkNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode() {
+        return this.previousTupleSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous TupleSinkNode
+     */
+    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+        this.previousTupleSinkNode = previous;
+    }    
+    
+    /**
+     * Returns the next node
+     * @return
+     *      The next TupleSinkNode
+     */
+    public TupleSinkNode getNextTupleSinkNode() {
+        return this.nextTupleSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next TupleSinkNode
+     */
+    public void setNextTupleSinkNode(final TupleSinkNode next) {
+        this.nextTupleSinkNode = next;
+    }    
 
 }
