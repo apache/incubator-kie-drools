@@ -18,7 +18,7 @@ public class DroolsMVELFactory
     private Map           localDeclarations;
     private Map           previousDeclarations;
     private Map           globals;
-
+    
     private Map           resolvers;
     //private
     private WorkingMemory workingMemory;
@@ -117,6 +117,13 @@ public class DroolsMVELFactory
 
     public boolean isTarget(final String name) {
         return this.resolvers.containsKey( name );
+    }
+
+    /**
+     * This is not used in drools.
+     */
+    public VariableResolver createVariable(String arg0, Object arg1, Class arg2) {
+        return null;
     }
 
     //    public ValueHandler createExternalVariable(String identifier) {        
