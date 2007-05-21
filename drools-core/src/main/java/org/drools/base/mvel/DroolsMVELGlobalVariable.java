@@ -38,4 +38,17 @@ public class DroolsMVELGlobalVariable
         return 0;
     }
 
+    /**
+     * Not used in drools.
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * Not used in drools.
+     */
+    public void setStaticType(Class arg0) {
+    }
+
 }
