@@ -18,6 +18,8 @@ public interface Dialect {
 
     ClassFieldExtractorCache getClassFieldExtractorCache();    
     
+    PatternBuilder getPatternBuilder();    
+    
     ConditionalElementBuilder getEvalBuilder();
 
     AccumulateBuilder getAccumulateBuilder();

@@ -65,7 +65,10 @@ public class RuleBuilder {
             context.getDialect().getConsequenceBuilder().build( context,
                                                                 ruleDescr );
         }
-        context.getDialect().getRuleClassBuilder().buildRule( context,
-                                                              ruleDescr );
+        RuleClassBuilder classBuilder = context.getDialect().getRuleClassBuilder();
+        if ( classBuilder != null ) {
+            classBuilder.buildRule( context,
+                                    ruleDescr );
+        }
     }
 }

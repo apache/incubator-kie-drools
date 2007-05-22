@@ -62,9 +62,7 @@ public class MVELEvalBuilder
         //            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         //        }
 
-        final DroolsMVELFactory factory = new DroolsMVELFactory();
-        factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
-        factory.setGlobalsMap( context.getPkg().getGlobals() );
+        final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
 
         final Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent() );
         final EvalCondition eval = new EvalCondition( declarations );

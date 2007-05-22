@@ -66,9 +66,7 @@ public class MVELFromBuilder
         try {
             //            JFDIParser parser = createParser( utils,
             //                                              accessor.toString() );
-            final DroolsMVELFactory factory = new DroolsMVELFactory();
-            factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
-            factory.setGlobalsMap( context.getPkg().getGlobals() );
+            final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
 
             //parser.setValueHandlerFactory( factory );
             final Serializable compiled = MVEL.compileExpression( accessor.toString() );

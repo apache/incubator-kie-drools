@@ -47,6 +47,7 @@ import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
@@ -125,7 +126,12 @@ public class PackageBuilder {
                                       new JavaDialect( pkg,
                                                        configuration,
                                                        getTypeResolver(),
-                                                       this.classFieldExtractorCache ) );            
+                                                       this.classFieldExtractorCache ) );    
+            this.dialects.addDialect( "mvel",
+                                      new MVELDialect( pkg,
+                                                       configuration,
+                                                       getTypeResolver(),
+                                                       this.classFieldExtractorCache ) );             
             this.dialect = this.dialects.getDialect( "java" ); // TODO this should from the package
             
         } else {
@@ -135,6 +141,11 @@ public class PackageBuilder {
                                                        configuration,
                                                        getTypeResolver(),
                                                        this.classFieldExtractorCache ) ); 
+            this.dialects.addDialect( "mvel",
+                                      new MVELDialect( pkg,
+                                                       configuration,
+                                                       getTypeResolver(),
+                                                       this.classFieldExtractorCache ) );             
             this.dialects.addDialect( "default", this.dialects.getDialect( configuration.getDialect() ) );     
             this.dialect = this.dialects.getDialect( configuration.getDialect() );
         }
