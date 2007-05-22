@@ -1,0 +1,18 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "Throw Eval Exception"
+	dialect "mvel"
+    when
+//        $c : Cheese(type == "stilton", (price == (new Integer(5) + 5)), price == (new Integer(5) + 5) )
+        $c : Cheese(type == "stilton" )
+        eval( $c.price == 10 )
+    then
+	long a = new java.math.BigInteger( 10 );
+    b = a + 10;
+	System.out.println("hello");
+	list.add( b + $c.price);
+end  

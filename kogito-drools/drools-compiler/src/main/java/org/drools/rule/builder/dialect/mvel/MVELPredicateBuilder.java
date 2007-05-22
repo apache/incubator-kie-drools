@@ -55,23 +55,21 @@ public class MVELPredicateBuilder
         //            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
         //        }
 
-        final DroolsMVELFactory factory = new DroolsMVELFactory();
+        //final DroolsMVELFactory factory = new DroolsMVELFactory();
 
-        Map map = new HashMap();
+        Map previousMap = new HashMap();
         for ( int i = 0, length = previousDeclarations.length; i < length; i++ ) {
-            map.put( previousDeclarations[i].getIdentifier(),
+            previousMap.put( previousDeclarations[i].getIdentifier(),
                      previousDeclarations[i] );
         }
-        factory.setPreviousDeclarationMap( map );
 
-        map = new HashMap();
+        Map localMap = new HashMap();
         for ( int i = 0, length = localDeclarations.length; i < length; i++ ) {
-            map.put( localDeclarations[i].getIdentifier(),
+            localMap.put( localDeclarations[i].getIdentifier(),
                      localDeclarations[i] );
         }
-        factory.setLocalDeclarationMap( map );
-
-        factory.setGlobalsMap( context.getPkg().getGlobals() );
+        
+        final DroolsMVELFactory factory = new DroolsMVELFactory(previousMap, localMap,  context.getPkg().getGlobals() );
 
         final Serializable expr = MVEL.compileExpression( (String) predicateDescr.getContent() );
         predicate.setPredicateExpression( new MVELPredicateExpression( expr,
