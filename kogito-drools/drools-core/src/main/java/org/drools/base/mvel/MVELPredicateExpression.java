@@ -31,6 +31,7 @@ public class MVELPredicateExpression
                             object,
                             workingMemory );
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
+                                                                 new Object(),
                                                            this.factory );
         return result.booleanValue();
     }

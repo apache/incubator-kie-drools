@@ -30,7 +30,8 @@ public class MVELEvalExpression
                             null,
                             workingMemory );
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
-                                                           this.factory );
+                                                                 new Object(),
+                                                                 this.factory );
         return result.booleanValue();
     }
 
