@@ -35,6 +35,7 @@ import org.drools.lang.descr.VariableRestrictionDescr;
  * It will work off the RuleModel object graph, primarily.
  * 
  * @author Edson Tirelli
+ * @deprecated Use BRDRLPersistence instead
  */
 public class BRXMLToDescrConverter {
 

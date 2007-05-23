@@ -71,6 +71,15 @@ public class BRDRLPersistenceTest extends TestCase {
         assertEquals( expected, drl );
 
     }
+    
+    
+    public void testFieldBindingWithNoConstraints() {
+        //to satisfy JBRULES-850
+        RuleModel m = getModelWithNoConstraints();
+        String s = BRDRLPersistence.getInstance().marshal( m );
+        System.out.println(s);
+        assertTrue(s.indexOf( "Person( f1 : age)" ) != -1);
+    }
 
     //
     //    public void testRoundTrip() {
@@ -101,6 +110,25 @@ public class BRDRLPersistenceTest extends TestCase {
     //
     //    }
     //
+    
+    private RuleModel getModelWithNoConstraints() {
+        final RuleModel m = new RuleModel();
+        m.name = "Complex Rule";
+        final FactPattern pat = new FactPattern();
+        pat.boundName = "p1";
+        pat.factType = "Person";
+        final Constraint con = new Constraint();
+        con.fieldBinding = "f1";
+        con.fieldName = "age";
+//        con.operator = "<";
+//        con.value = "42";
+        pat.addConstraint( con );
+
+        m.addLhsItem( pat );
+        
+        return m;
+    }
+    
     private RuleModel getComplexModel() {
         final RuleModel m = new RuleModel();
         m.name = "Complex Rule";
