@@ -1,0 +1,20 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "Cheese matches stilton"
+	salience 10
+    when
+        stilton : Cheese( type matches "[Ss]tilto[^0-9]" )
+    then
+		list.add( stilton );
+end   
+
+rule "Cheese not matches"
+    when
+        brie : Cheese( type not matches "(stil.*|mu\w*|brie\d)" )
+    then
+		list.add( brie );
+end   

@@ -72,12 +72,14 @@ public class ObjectFactory
             return ObjectContainsEvaluator.INSTANCE;
         } else if ( operator == Operator.EXCLUDES ) {
             return ObjectExcludesEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_CONTAINS) {
+            return ObjectExcludesEvaluator.INSTANCE; // 'not contains' and 'excludes' are synonyms
         } else if ( operator == Operator.MEMBEROF ) {
             return ObjectMemberOfEvaluator.INSTANCE;
         } else if ( operator == Operator.NOTMEMBEROF ) {
             return ObjectNotMemberOfEvaluator.INSTANCE;
         } else {
-            throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for ObjectEvaluator" );
         }
     }
 

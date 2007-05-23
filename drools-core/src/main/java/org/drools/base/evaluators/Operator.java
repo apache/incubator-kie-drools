@@ -17,8 +17,10 @@ public class Operator
     public static final Operator GREATER          = new Operator( ">" );
     public static final Operator GREATER_OR_EQUAL = new Operator( ">=" );
     public static final Operator CONTAINS         = new Operator( "contains" );
-    public static final Operator MATCHES          = new Operator( "matches" );
     public static final Operator EXCLUDES         = new Operator( "excludes" );
+    public static final Operator NOT_CONTAINS     = new Operator( "not contains" );
+    public static final Operator MATCHES          = new Operator( "matches" );
+    public static final Operator NOT_MATCHES      = new Operator( "not matches" );
     public static final Operator MEMBEROF         = new Operator( "memberOf" );
     public static final Operator NOTMEMBEROF      = new Operator( "not memberOf" );
 
@@ -47,8 +49,12 @@ public class Operator
             return Operator.GREATER_OR_EQUAL;
         } else if ( string.equals( "contains" ) ) {
             return Operator.CONTAINS;
+        } else if ( string.equals( "not contains" ) ) {
+            return Operator.NOT_CONTAINS;
         } else if ( string.equals( "matches" ) ) {
             return Operator.MATCHES;
+        } else if ( string.equals( "not matches" ) ) {
+            return Operator.NOT_MATCHES;
         } else if ( string.equals( "excludes" ) ) {
             return Operator.EXCLUDES;
         } else if ( string.equals( "memberOf" ) ) {

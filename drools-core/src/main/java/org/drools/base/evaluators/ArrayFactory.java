@@ -55,6 +55,8 @@ public class ArrayFactory
             return ArrayContainsEvaluator.INSTANCE;
         } else if ( operator == Operator.EXCLUDES ) {
             return ArrayExcludesEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_CONTAINS ) {
+            return ArrayExcludesEvaluator.INSTANCE; // 'not contains' and 'excludes' are synonyms
         } else if ( operator == Operator.MEMBEROF ) {
             return ArrayMemberOfEvaluator.INSTANCE;
         } else if ( operator == Operator.NOTMEMBEROF ) {
