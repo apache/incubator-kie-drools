@@ -1206,7 +1206,7 @@ public class CLPParser extends Parser {
             			fc = new FieldConstraintDescr(f.getText());
             			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
             			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
-            			pattern.addDescr( fc );			
+            			pattern.addConstraint( fc );			
             		
             pushFollow(FOLLOW_connected_constraint_in_field_constriant852);
             connected_constraint(fc,  pattern);
@@ -1443,7 +1443,7 @@ public class CLPParser extends Parser {
 
             	
             		    engine.addFunction( (FunctionCaller) fc );
-            			pattern.addDescr( new PredicateDescr( engine ) );
+            			pattern.addConstraint( new PredicateDescr( engine ) );
             		
 
             }
