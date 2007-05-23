@@ -26,6 +26,10 @@ public class DSLSentence
         return result;
     }
 
+    /**
+     * This is used by the GUI when adding a sentence to LHS or RHS.
+     * @return
+     */
     public DSLSentence copy() {
         final DSLSentence newOne = new DSLSentence();
         newOne.sentence = this.sentence;

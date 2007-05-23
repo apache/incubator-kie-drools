@@ -172,7 +172,7 @@ public class BRDRLPersistence
 
         public void visitDSLSentence(final DSLSentence sentence) {
             buf.append( "\t\t" );
-            buf.append( sentence.sentence );
+            buf.append( sentence.toString() );
             buf.append( "\n" );
         }
 
@@ -330,7 +330,7 @@ public class BRDRLPersistence
 
         public void visitDSLSentence(final DSLSentence sentence) {
             buf.append( "\t\t" );
-            buf.append( sentence.sentence );
+            buf.append( sentence.toString() );
             buf.append( "\n" );
         }
 

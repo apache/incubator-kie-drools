@@ -41,6 +41,19 @@ public class DefaultExpanderTest extends TestCase {
         final String result = this.expander.expand( rules );
     }
 
+    
+    public void testExpandParts() throws Exception {
+        DSLMappingFile file = new DSLMappingFile();
+        String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0,
+                      file.getErrors().size() );
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+        
+        System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
+    }
+    
     public void testExpandFailure() throws Exception {
 
         DSLMappingFile file = new DSLMappingFile();

@@ -63,7 +63,7 @@ public class BRDRLPersistenceTest extends TestCase {
                           "\t\t>p1.setStatus( \"rejected\" );\n"+
                           "\t\t>modify( p1 );\n"+
                           "\t\t>retract( p1 );\n"+
-                          "\t\tSend an email to {administrator}\n"+
+                          "\t\tSend an email to administrator\n"+
                           "end\n";
 
         final String drl = p.marshal( m );
