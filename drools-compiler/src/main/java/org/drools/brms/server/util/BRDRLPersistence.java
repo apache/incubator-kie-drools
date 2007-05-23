@@ -237,6 +237,10 @@ public class BRDRLPersistence
                                          final int type,
                                          final String operator,
                                          final String value) {
+            if (operator == null) {
+                return;
+            }
+            
             buf.append( " " );
             buf.append( operator );
             buf.append( " " );
