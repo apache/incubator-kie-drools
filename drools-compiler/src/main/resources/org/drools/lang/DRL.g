@@ -19,6 +19,7 @@ options {backtrack=true;}
 	private int lineOffset = 0;
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
+	private Location location = new Location( Location.LOCATION_UNKNOWN );
 	
 	// THE FOLLOWING LINES ARE DUMMY ATTRIBUTES TO WORK AROUND AN ANTLR BUG
 	private BaseDescr from = null;
@@ -162,6 +163,10 @@ options {backtrack=true;}
         		this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", offset(line) ) );
         	}
         }
+        
+        public Location getLocation() {
+                return this.location;
+        }
       
 }
 
@@ -174,6 +179,10 @@ opt_semicolon
 	;
 
 compilation_unit
+	@init {
+		// reset Location information
+		this.location = new Location( Location.LOCATION_UNKNOWN );
+	}
 	:	prolog 
 		( statement )+
 	;
@@ -412,6 +421,7 @@ rule returns [RuleDescr rule]
 	:
 		loc=RULE ruleName=name 
 		{ 
+			location.setType( Location.LOCATION_RULE_HEADER );
 			debug( "start rule: " + ruleName );
 			rule = new RuleDescr( ruleName, null ); 
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
@@ -420,6 +430,7 @@ rule returns [RuleDescr rule]
 		rule_attributes[rule]
 		(	loc=WHEN ':'?
 			{ 
+				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 				lhs = new AndDescr(); rule.setLhs( lhs ); 
 				lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 				lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );
@@ -742,6 +753,7 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 			ad.setStartCharacter( ((CommonToken)ident).getStartIndex() );
 			ad.setEndCharacter( ((CommonToken)ident).getStopIndex() );
 			ds = ad;
+			location.setProperty(Location.LOCATION_FROM_CONTENT, ident.getText());
 		}
 		(args=paren_chunk[from]
 		{
@@ -753,10 +765,16 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 				fc.setStartCharacter( ((CommonToken)ident).getStartIndex() );
 				fc.setEndCharacter( ((CommonToken)ident).getStopIndex() );
 				ad.addInvoker(fc);
+				location.setProperty(Location.LOCATION_FROM_CONTENT, args);
 			}
 		}
 		)?
 		expression_chain[from, ad]?
+		{
+			if( ad != null ) {
+				location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
+			}
+		}
 	;	
 	
 expression_chain[FromDescr from, AccessorDescr as]
@@ -805,22 +823,42 @@ accumulate_statement returns [AccumulateDescr d]
 		{ 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE );
 		}	
-		'(' pattern=lhs_pattern ',' 
+		LEFT_PAREN pattern=lhs_pattern COMMA? 
 		{
 		        d.setSourcePattern( (PatternDescr)pattern );
 		}
-		INIT text=paren_chunk[null] ',' 
+		INIT 
 		{
-		        d.setInitCode( text.substring(1, text.length()-1) );
+			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_INIT );
 		}
-		ACTION text=paren_chunk[null] ',' 
+		text=paren_chunk[null] COMMA?
 		{
-		        d.setActionCode( text.substring(1, text.length()-1) );
+			if( text != null ) {
+			        d.setInitCode( text.substring(1, text.length()-1) );
+				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, d.getInitCode());
+				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION );
+			}
 		}
-		RESULT text=paren_chunk[null] loc=')'
+		ACTION text=paren_chunk[null] COMMA?
 		{
-		        d.setResultCode( text.substring(1, text.length()-1) );
+			if( text != null ) {
+			        d.setActionCode( text.substring(1, text.length()-1) );
+	       			location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, d.getActionCode());
+				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
+			}
+		}
+		RESULT text=paren_chunk[null] 
+		{
+			if( text != null ) {
+			        d.setResultCode( text.substring(1, text.length()-1) );
+				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, d.getResultCode());
+			}
+		}
+		loc=RIGHT_PAREN
+		{
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
 		} 
 	; 		
@@ -834,11 +872,13 @@ collect_statement returns [CollectDescr d]
 		{ 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_FROM_COLLECT );
 		}	
-		'(' pattern=lhs_pattern loc=')'
+		LEFT_PAREN pattern=lhs_pattern loc=RIGHT_PAREN
 		{
 		        d.setSourcePattern( (PatternDescr)pattern );
 			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 		}
 	; 		
 
@@ -907,6 +947,9 @@ fact returns [BaseDescr d]
  		        pattern.setEndCharacter( -1 );
  		}
  		loc=LEFT_PAREN {
+		                location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
+            			location.setProperty( Location.LOCATION_PROPERTY_CLASS_NAME, id );
+ 				
  				pattern.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
  			        pattern.setLeftParentCharacter( ((CommonToken)loc).getStartIndex() );
  			} 
@@ -914,6 +957,7 @@ fact returns [BaseDescr d]
  		endLoc=RIGHT_PAREN
 		{
 		        if( endLoc.getType() == RIGHT_PAREN ) {
+				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 				pattern.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
 				pattern.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
  			        pattern.setRightParentCharacter( ((CommonToken)endLoc).getStartIndex() );
@@ -924,7 +968,9 @@ fact returns [BaseDescr d]
 	
 constraints[PatternDescr pattern]
 	:	constraint[pattern]
-		( ',' constraint[pattern] )* 
+		( ',' { location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START ); } 
+		  constraint[pattern] 
+		)* 
 	;
 	
 constraint[PatternDescr pattern]
@@ -943,7 +989,13 @@ or_constr[ConditionalElementDescr base]
 		OrDescr or = new OrDescr();
 	}
 	:
-		and_constr[or] ( t=DOUBLE_PIPE and_constr[or] )*
+		and_constr[or] 
+		( t=DOUBLE_PIPE 
+			{
+				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
+			}
+		and_constr[or] 
+		)*
 		{
 		        if( or.getDescrs().size() == 1 ) {
 		                base.addOrMerge( (BaseDescr) or.getDescrs().get(0) );
@@ -958,7 +1010,13 @@ and_constr[ConditionalElementDescr base]
 		AndDescr and = new AndDescr();
 	}
 	:
-		unary_constr[and] ( t=DOUBLE_AMPER unary_constr[and] )*
+		unary_constr[and] 
+		( t=DOUBLE_AMPER 
+			{
+				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
+			}
+		unary_constr[and] 
+		)*
 		{
 		        if( and.getDescrs().size() == 1) {
 		                base.addOrMerge( (BaseDescr) and.getDescrs().get(0) );
@@ -996,6 +1054,8 @@ field_constraint[ConditionalElementDescr base]
 		f=identifier	
 		{
 		    if( f != null ) {
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, f.getText());
 		    
 			if ( fbd != null ) {
 			    fbd.setFieldName( f.getText() );
@@ -1025,12 +1085,19 @@ field_constraint[ConditionalElementDescr base]
 		)?
 	;
 	
+
 or_restr_connective[ RestrictionConnectiveDescr base ]
 	@init {
 		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
 	}
 	:
-		and_restr_connective[or] ( DOUBLE_PIPE and_restr_connective[or] )*
+		and_restr_connective[or] 
+		( t=DOUBLE_PIPE 
+			{
+				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+			}
+		  and_restr_connective[or] 
+		)*
 		{
 		        if( or.getRestrictions().size() == 1 ) {
 		                base.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
@@ -1046,7 +1113,13 @@ and_restr_connective[ RestrictionConnectiveDescr base ]
 		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
 	}
 	:
-		constraint_expression[and] ( t=DOUBLE_AMPER constraint_expression[and] )*
+		constraint_expression[and] 
+		( t=DOUBLE_AMPER 
+			{
+				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+			}
+		constraint_expression[and] 
+		)*
 		{
 		        if( and.getRestrictions().size() == 1) {
 		                base.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
@@ -1060,7 +1133,12 @@ constraint_expression[RestrictionConnectiveDescr base]
         :	
 		( compound_operator[base]
 		| simple_operator[base]
-		| LEFT_PAREN or_restr_connective[base] RIGHT_PAREN
+		| LEFT_PAREN 
+		{
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+		}
+		or_restr_connective[base] 
+		RIGHT_PAREN
  		)
 	;	
 	
@@ -1082,6 +1160,8 @@ simple_operator[RestrictionConnectiveDescr base]
 		|	n=NOT t=MEMBEROF
 		)
 		{
+  		    location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+                    location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, t.getText());
 		    if( n != null ) {
 		        op = "not "+t.getText();
 		    } else {
@@ -1091,6 +1171,7 @@ simple_operator[RestrictionConnectiveDescr base]
 		rd=expression_value[op]
 		{
 			    if( rd != null ) {
+				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
 			        base.addRestriction( rd );
 			    } else if ( rd == null && op != null ) {
 			        base.addRestriction( new LiteralRestrictionDescr(op, null) );
@@ -1109,12 +1190,16 @@ compound_operator[RestrictionConnectiveDescr base]
 			  op = "==";
 			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
 			  base.addRestriction( group );
+  		    	  location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+                    	  location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, "in");
 			}
 		| NOT IN 
 			{
 			  op = "!=";
 			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
 			  base.addRestriction( group );
+  		    	  location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+                    	  location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, "in");
 			}	
 		)
 		LEFT_PAREN rd=expression_value[op]
@@ -1131,6 +1216,9 @@ compound_operator[RestrictionConnectiveDescr base]
 			}
 		)* 
 		RIGHT_PAREN 
+		{
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
+		}
 	;
 	
 expression_value[String op] returns [RestrictionDescr rd]
@@ -1154,6 +1242,9 @@ expression_value[String op] returns [RestrictionDescr rd]
 				rd = new ReturnValueRestrictionDescr(op, rvc);							
 			} 
 		)	
+		{
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
+		}
 	;	
 	
 literal_constraint returns [String text]
@@ -1209,7 +1300,6 @@ paren_chunk[BaseDescr descr] returns [String text]
 		loc=LEFT_PAREN 
 		{
 		    buf.append( loc.getText());
- 
 		} 
 		( 
 			~(LEFT_PAREN|RIGHT_PAREN)
@@ -1341,6 +1431,9 @@ lhs_or returns [BaseDescr d]
 	:	
 		left=lhs_and {d = left; }
 		( (OR|'||')
+			{
+				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
+			}
 			right=lhs_and 
 			{
 				if ( or == null ) {
@@ -1362,6 +1455,9 @@ lhs_and returns [BaseDescr d]
 	:
 		left=lhs_unary { d = left; }
 		( (AND|DOUBLE_AMPER)
+			{
+				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
+			}
 			right=lhs_unary
 			{
 				if ( and == null ) {
@@ -1383,10 +1479,15 @@ lhs_unary returns [BaseDescr d]
 		|	u=lhs_not
 		|	u=lhs_eval
 		|	u=lhs_pattern (
-		          FROM (
-		           ( ACCUMULATE ) => (ac=accumulate_statement {ac.setResultPattern((PatternDescr) u); u=ac;})
-		          |( COLLECT ) => (cs=collect_statement {cs.setResultPattern((PatternDescr) u); u=cs;}) 
-		          |( ~(ACCUMULATE|COLLECT) ) => (fm=from_statement {fm.setPattern((PatternDescr) u); u=fm;}) 
+		          FROM 
+		          {
+				location.setType(Location.LOCATION_LHS_FROM);
+				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
+		          }
+		          (
+		           ( ACCUMULATE ) => (ac=accumulate_statement {ac.setResultPattern((PatternDescr) u); u=ac; })
+		          |( COLLECT ) => (cs=collect_statement {cs.setResultPattern((PatternDescr) u); u=cs; }) 
+		          |( ~(ACCUMULATE|COLLECT) ) => (fm=from_statement {fm.setPattern((PatternDescr) u); u=fm; }) 
 		          )
 		        )?
 		|	u=lhs_forall  
@@ -1404,6 +1505,7 @@ lhs_exist returns [BaseDescr d]
 			d = new ExistsDescr( ); 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS );
 		}
 	        ( ( '(' pattern=lhs_or 
 	           	{ if ( pattern != null ) ((ExistsDescr)d).addDescr( pattern ); }
@@ -1429,6 +1531,7 @@ lhs_not	returns [NotDescr d]
 			d = new NotDescr( ); 
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
 		}
 		( ( '(' pattern=lhs_or  
 	           	{ if ( pattern != null ) d.addDescr( pattern ); }
@@ -1451,13 +1554,19 @@ lhs_eval returns [BaseDescr d]
 		d = new EvalDescr( );
 	}
 	:
-		loc=EVAL c=paren_chunk[d]
+		loc=EVAL 
+		{
+			location.setType( Location.LOCATION_LHS_INSIDE_EVAL );
+		}
+		c=paren_chunk[d]
 		{ 
 			if ( loc != null ) d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 		        if( c != null ) {
-		            String body = c.substring(1, c.length()-1);
+	  		    this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+		            String body = c.length() > 1 ? c.substring(1, c.length()-1) : "";
 			    checkTrailingSemicolon( body, offset(loc.getLine()) );
 			    ((EvalDescr) d).setContent( body );
+			    location.setProperty(Location.LOCATION_EVAL_CONTENT, body);
 			}
 		}
 	;
@@ -1536,6 +1645,9 @@ rhs_chunk[RuleDescr rule]
 		    buf = new StringBuffer();
 	        }
 		start=THEN
+		{
+			location.setType( Location.LOCATION_RHS );
+		}
 		( 
 			  ~END
 			  {
@@ -1564,6 +1676,7 @@ rhs_chunk[RuleDescr rule]
 		    rule.setConsequence( buf.substring( index ) );
      		    rule.setConsequenceLocation(offset(start.getLine()), start.getCharPositionInLine());
  		    rule.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+ 		    location.setProperty( Location.LOCATION_RHS_CONTENT, rule.getConsequence() );
                 }
 	;
 

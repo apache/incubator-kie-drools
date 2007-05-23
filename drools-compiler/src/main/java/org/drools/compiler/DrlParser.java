@@ -28,6 +28,7 @@ import org.antlr.runtime.RecognitionException;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.Expander;
+import org.drools.lang.Location;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 
@@ -38,6 +39,7 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
 public class DrlParser {
 
     private final List results = new ArrayList();
+    private Location location = null;
 
     public DrlParser() {
 
@@ -47,6 +49,7 @@ public class DrlParser {
     public PackageDescr parse(final String text) throws DroolsParserException {
         final DRLParser parser = getParser( text );
         compile( parser );
+        this.location = parser.getLocation();
         return parser.getPackageDescr();
 
     }
@@ -54,6 +57,7 @@ public class DrlParser {
     public PackageDescr parse(final Reader reader) throws DroolsParserException {
         final DRLParser parser = getParser( reader );
         compile( parser );
+        this.location = parser.getLocation();
         return parser.getPackageDescr();
 
     }
@@ -167,5 +171,9 @@ public class DrlParser {
             throw new RuntimeException( "Unable to parser Reader",
                                         e );
         }
+    }
+    
+    public Location getLocation() {
+        return this.location; 
     }
 }
