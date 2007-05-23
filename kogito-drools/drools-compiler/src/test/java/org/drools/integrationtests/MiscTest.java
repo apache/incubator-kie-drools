@@ -1346,7 +1346,10 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            12 );
-        final FactHandle brieHandle = workingMemory.assertObject( stilton );
+        workingMemory.assertObject( stilton );
+        final Cheese brie = new Cheese( "brie",
+                                           10 );
+        workingMemory.assertObject( brie );
 
         final Cheesery cheesery = new Cheesery();
         cheesery.getCheeses().add( stilton );
@@ -1354,11 +1357,13 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        assertEquals( 1,
+        assertEquals( 2,
                       list.size() );
 
         assertEquals( stilton,
                       list.get( 0 ) );
+        assertEquals( brie,
+                      list.get( 1 ) );
     }
 
     public void testStaticFieldReference() throws Exception {
@@ -2708,6 +2713,49 @@ public class MiscTest extends TestCase {
         assertEquals( oldChili1, results.get( 1 ) );
         assertEquals( youngChili1, results.get( 2 ) );
 
+    }
+
+    public void testMatchesNotMatchesCheese() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesNotMatches.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           12 );
+        final Cheese stilton2 = new Cheese( "stilton2",
+                                           12 );
+        final Cheese brie = new Cheese( "brie",
+                                        10 );
+        final Cheese brie2 = new Cheese( "brie2",
+                                        10 );
+        final Cheese muzzarella = new Cheese( "muzzarella",
+                                        10 );
+        final Cheese muzzarella2 = new Cheese( "muzzarella2",
+                                        10 );
+        workingMemory.assertObject( stilton );
+        workingMemory.assertObject( stilton2 );
+        workingMemory.assertObject( brie );
+        workingMemory.assertObject( brie2 );
+        workingMemory.assertObject( muzzarella );
+        workingMemory.assertObject( muzzarella2 );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertEquals( stilton,
+                      list.get( 0 ) );
+        assertEquals( brie,
+                      list.get( 1 ) );
     }
 
 }

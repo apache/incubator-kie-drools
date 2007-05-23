@@ -1154,8 +1154,10 @@ simple_operator[RestrictionConnectiveDescr base]
 		|	t='<='
 		|	t='!='
 		|	t=CONTAINS
-		|	t=MATCHES
+		|	n=NOT t=CONTAINS
 		|	t=EXCLUDES
+		|	t=MATCHES
+		|	n=NOT t=MATCHES
 		|	t=MEMBEROF
 		|	n=NOT t=MEMBEROF
 		)
@@ -1770,7 +1772,10 @@ HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 fragment
 EscapeSequence
-    :   '\\' ('b'|'B'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\'|'.'|'o'|'x'|'a'|'e'|'c'|'d'|'D'|'s'|'S'|'w'|'W'|'p'|'A'|'G'|'Z'|'z'|'Q'|'E')
+    :   '\\' ('b'|'B'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\'|'.'|'o'|
+              'x'|'a'|'e'|'c'|'d'|'D'|'s'|'S'|'w'|'W'|'p'|'A'|
+              'G'|'Z'|'z'|'Q'|'E'|'*'|'['|']'|'('|')'|'$'|'^'|
+              '{'|'}'|'?'|'+'|'-'|'&'|'|')
     |   UnicodeEscape
     |   OctalEscape
     ;

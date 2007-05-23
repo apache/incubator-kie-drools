@@ -2981,6 +2981,52 @@ public class RuleParserTest extends TestCase {
                       ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
     }
 
+    public void testNotContains() throws Exception {
+        final String text = "City( $city : city )\nCountry( cities not contains $city )\n";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( descrs.getLine() );
+        parser.normal_lhs_block( descrs );
+        assertFalse( parser.getErrorMessages().toString(), parser.hasErrors() );
+
+        assertEquals( 2,
+                      descrs.getDescrs().size() );
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 1 );
+        FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
+        VariableRestrictionDescr restr = (VariableRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
+
+        assertEquals( "not contains",
+                      restr.getEvaluator() );
+        assertEquals( "$city",
+                      restr.getIdentifier() );
+    }
+
+    public void testNotMatches() throws Exception {
+        final String text = "Message( text not matches '[abc]*' )\n";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( descrs.getLine() );
+        parser.normal_lhs_block( descrs );
+        assertFalse( parser.getErrorMessages().toString(), parser.hasErrors() );
+
+        assertEquals( 1,
+                      descrs.getDescrs().size() );
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 0 );
+        FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
+        LiteralRestrictionDescr restr = (LiteralRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
+
+        assertEquals( "not matches",
+                      restr.getEvaluator() );
+        assertEquals( "[abc]*",
+                      restr.getText() );
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;

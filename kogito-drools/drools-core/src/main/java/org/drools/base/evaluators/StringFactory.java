@@ -56,6 +56,8 @@ public class StringFactory
             return StringNotEqualEvaluator.INSTANCE;
         } else if ( operator == Operator.MATCHES ) {
             return StringMatchesEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_MATCHES ) {
+            return StringNotMatchesEvaluator.INSTANCE;
         } else if ( operator == Operator.MEMBEROF ) {
             return StringMemberOfEvaluator.INSTANCE;
         } else if ( operator == Operator.NOTMEMBEROF ) {
@@ -237,6 +239,64 @@ public class StringFactory
 
         public String toString() {
             return "String matches";
+        }
+    }
+    
+    static class StringNotMatchesEvaluator extends BaseEvaluator {
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 320;
+        public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
+
+        private StringNotMatchesEvaluator() {
+            super( ValueType.STRING_TYPE,
+                   Operator.NOT_MATCHES );
+        }
+
+        public boolean evaluate(final Extractor extractor,
+                                final Object object1,
+                                final FieldValue object2) {
+            final String value1 = (String) extractor.getValue( object1 );
+            final String value2 = (String) object2.getValue();
+            if ( value1 == null ) {
+                return false;
+            }
+            return ! value1.matches( value2 );
+        }
+
+        public boolean evaluateCachedRight(final VariableContextEntry context,
+                                           final Object left) {
+            final String value = (String) ((ObjectVariableContextEntry) context).right;
+            if ( value == null ) {
+                return false;
+            }
+            return ! value.matches( (String) context.declaration.getExtractor().getValue( left ) );
+        }
+
+        public boolean evaluateCachedLeft(final VariableContextEntry context,
+                                          final Object right) {
+            final String value = (String) context.extractor.getValue( right );
+            if ( value == null ) {
+                return false;
+            }
+            return ! value.matches( (String) ((ObjectVariableContextEntry) context).left );
+        }
+
+        public boolean evaluate(final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object value1 = extractor1.getValue( object1 );
+            final Object value2 = extractor2.getValue( object2 );
+            if ( value1 == null ) {
+                return false;
+            }
+            return ! ((String) value1).matches( (String) value2 );
+        }
+
+        public String toString() {
+            return "String not matches";
         }
     }
     
