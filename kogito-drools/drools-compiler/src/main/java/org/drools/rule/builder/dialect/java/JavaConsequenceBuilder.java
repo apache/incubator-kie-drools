@@ -38,14 +38,15 @@ public class JavaConsequenceBuilder extends AbstractJavaBuilder
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
-    public void build(final RuleBuildContext context,
-                      final RuleDescr ruleDescr) {
+    public void build(final RuleBuildContext context) {
 
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
         final String className = "consequence";
 
+        final RuleDescr ruleDescr = context.getRuleDescr();
+        
         final List[] usedIdentifiers = context.getDialect().getBlockIdentifiers( context,
                                                                                  ruleDescr,
                                                                                  (String) ruleDescr.getConsequence() );

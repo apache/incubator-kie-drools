@@ -67,8 +67,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         context.setDeclarationResolver( declarationResolver );
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        builder.build( context,
-                       ruleDescr );
+        builder.build( context );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();

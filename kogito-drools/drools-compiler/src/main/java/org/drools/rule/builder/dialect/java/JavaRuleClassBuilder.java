@@ -34,8 +34,7 @@ public class JavaRuleClassBuilder
     /* (non-Javadoc)
      * @see org.drools.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.rule.builder.BuildContext, org.drools.rule.builder.dialect.java.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
-    public void buildRule(final RuleBuildContext context,
-                          final RuleDescr ruleDescr) {
+    public void buildRule(final RuleBuildContext context) {
         final JavaDialect dialect = (JavaDialect) context.getDialect();
 
         // If there is no compiled code, return
@@ -56,6 +55,8 @@ public class JavaRuleClassBuilder
             buffer.append( "import static " + it.next() + ";" + lineSeparator );
         }
 
+        final RuleDescr ruleDescr = context.getRuleDescr();
+        
         buffer.append( "public class " + StringUtils.ucFirst( ruleDescr.getClassName() ) + " {" + lineSeparator );
         buffer.append( "    private static final long serialVersionUID  = 320L;" + lineSeparator );
 
