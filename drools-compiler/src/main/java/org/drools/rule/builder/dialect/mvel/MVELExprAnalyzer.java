@@ -1,4 +1,4 @@
-package org.drools.rule.builder.dialect.java;
+package org.drools.rule.builder.dialect.mvel;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -29,21 +29,15 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.rule.builder.dialect.java.parser.JavaParserLexer;
 import org.drools.rule.builder.dialect.java.parser.JavaParserParser;
+import org.mvel.ExpressionCompiler;
 
 /**
  * Expression analyzer.
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class JavaExprAnalyzer {
-    // ------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------
-
-    /**
-     * Construct.
-     */
-    public JavaExprAnalyzer() {
+public class MVELExprAnalyzer {
+    
+    public MVELExprAnalyzer() {
         // intentionally left blank.
     }
 
@@ -65,27 +59,10 @@ public class JavaExprAnalyzer {
      */
     public List[] analyzeExpression(final String expr,
                                     final Set[] availableIdentifiers) throws RecognitionException {
-        final CharStream charStream = new ANTLRStringStream( expr );
-        final JavaParserLexer lexer = new JavaParserLexer( charStream );
-        final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParserParser parser = new JavaParserParser( tokenStream );
+        ExpressionCompiler compiler = new ExpressionCompiler( expr);
+        compiler.compile();        
 
-        parser.logicalOrExpression();
-
-        return analyze( parser.getIdentifiers(),
-                        availableIdentifiers );
-    }
-
-    public List[] analyzeBlock(final String expr,
-                               final Set[] availableIdentifiers) throws RecognitionException {
-        final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
-        final JavaParserLexer lexer = new JavaParserLexer( charStream );
-        final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParserParser parser = new JavaParserParser( tokenStream );
-
-        parser.compoundStatement();
-
-        return analyze( parser.getIdentifiers(),
+        return analyze( compiler.getInputs(),
                         availableIdentifiers );
     }
 
@@ -122,6 +99,6 @@ public class JavaExprAnalyzer {
         }
         used[used.length - 1] = new ArrayList( notBound );
 
-        return used;    
+        return used;      
     }
 }

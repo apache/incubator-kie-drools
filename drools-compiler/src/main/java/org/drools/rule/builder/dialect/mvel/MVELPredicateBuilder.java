@@ -60,16 +60,18 @@ public class MVELPredicateBuilder
         Map previousMap = new HashMap();
         for ( int i = 0, length = previousDeclarations.length; i < length; i++ ) {
             previousMap.put( previousDeclarations[i].getIdentifier(),
-                     previousDeclarations[i] );
+                             previousDeclarations[i] );
         }
 
         Map localMap = new HashMap();
         for ( int i = 0, length = localDeclarations.length; i < length; i++ ) {
             localMap.put( localDeclarations[i].getIdentifier(),
-                     localDeclarations[i] );
+                          localDeclarations[i] );
         }
-        
-        final DroolsMVELFactory factory = new DroolsMVELFactory(previousMap, localMap,  context.getPkg().getGlobals() );
+
+        final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
+                                                                 localMap,
+                                                                 context.getPkg().getGlobals() );
 
         final Serializable expr = MVEL.compileExpression( (String) predicateDescr.getContent() );
         predicate.setPredicateExpression( new MVELPredicateExpression( expr,
