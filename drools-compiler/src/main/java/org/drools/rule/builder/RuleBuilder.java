@@ -62,13 +62,12 @@ public class RuleBuilder {
         if ( !(ruleDescr instanceof QueryDescr) ) {
             // do not build the consequence if we have a query
 
-            context.getDialect().getConsequenceBuilder().build( context,
-                                                                ruleDescr );
+            context.getDialect().getConsequenceBuilder().build( context );
         }
+
         RuleClassBuilder classBuilder = context.getDialect().getRuleClassBuilder();
         if ( classBuilder != null ) {
-            classBuilder.buildRule( context,
-                                    ruleDescr );
+            classBuilder.buildRule( context );
         }
     }
 }
