@@ -85,7 +85,7 @@ public class Declaration
     private final Extractor   extractor;
 
     private Pattern            pattern;
-
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -141,6 +141,14 @@ public class Declaration
 
     public void setPattern(final Pattern pattern) {
         this.pattern = pattern;
+    }
+    
+    /**
+     * Returns true if this declaration is a pattern declaration
+     * @return
+     */
+    public boolean isPatternDeclaration() {
+        return this.pattern.getDeclaration() == this;
     }
 
     /**

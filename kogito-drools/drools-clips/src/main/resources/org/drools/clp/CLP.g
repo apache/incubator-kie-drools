@@ -479,7 +479,7 @@ field_constriant[PatternDescr pattern]
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
-			pattern.addDescr( fc );			
+			pattern.addConstraint( fc );			
 		}	  
 		
 		connected_constraint[fc, pattern] 
@@ -507,7 +507,7 @@ restriction[FieldConstraintDescr fc, PatternDescr pattern]
 	  	|	return_value_restriction[op, fc]
 	  	|	variable_restriction[op, fc]
 	  	| 	lc=literal_restriction {
-     	    			fc.addRestriction( new LiteralRestrictionDescr(op, lc, true) );
+     	    			fc.addRestriction( new LiteralRestrictionDescr(op, lc) );
 		      		op = "==";
 		        } 	  	  	  
 		)		
@@ -521,7 +521,7 @@ predicate_constraint[String op, PatternDescr pattern]
 	:	COLON
 		fc=lisp_list[context, new LispForm(context)] {	
 		    engine.addFunction( (FunctionCaller) fc );
-			pattern.addDescr( new PredicateDescr( engine ) );
+			pattern.addConstraint( new PredicateDescr( engine ) );
 		}	
 		
 	;

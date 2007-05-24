@@ -22,6 +22,7 @@ import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -96,7 +97,7 @@ public class BRXMLToDescrConverter {
             final Constraint constr = factPattern.constraints[i];
             if ( constr.fieldBinding != null ) {
                 final FieldBindingDescr fieldDescr = new FieldBindingDescr( constr.fieldName,
-                                                                      constr.fieldBinding );
+                                                                            constr.fieldBinding );
                 pattern.addConstraint( fieldDescr );
             }
             if ( constr.constraintValueType == IConstraint.TYPE_PREDICATE ) {
@@ -141,20 +142,19 @@ public class BRXMLToDescrConverter {
         switch ( type ) {
             case IConstraint.TYPE_LITERAL :
                 final LiteralRestrictionDescr lit = new LiteralRestrictionDescr( operator,
-                                                                           value );
+                                                                                 value );
                 return lit;
             case IConstraint.TYPE_VARIABLE :
                 final VariableRestrictionDescr var = new VariableRestrictionDescr( operator,
-                                                                             value );
+                                                                                   value );
                 return var;
             case IConstraint.TYPE_ENUM :
-                final LiteralRestrictionDescr enu = new LiteralRestrictionDescr( operator,
-                                                                           value,
-                                                                           true );
+                final QualifiedIdentifierRestrictionDescr enu = new QualifiedIdentifierRestrictionDescr( operator,
+                                                                                                         value );
                 return enu;
             case IConstraint.TYPE_RET_VALUE :
                 final ReturnValueRestrictionDescr rvc = new ReturnValueRestrictionDescr( operator,
-                                                                                   value );
+                                                                                         value );
                 return rvc;
             default :
                 throw new RuntimeDroolsException( "Undefined constraint type in ROM: " + type );
@@ -166,7 +166,7 @@ public class BRXMLToDescrConverter {
         for ( int i = 0; i < attributes.length; i++ ) {
             final RuleAttribute at = attributes[i];
             final AttributeDescr attr = new AttributeDescr( at.attributeName,
-                                                      at.value == null ? "true" : at.value );
+                                                            at.value == null ? "true" : at.value );
             rule.addAttribute( attr );
         }
     }

@@ -39,6 +39,7 @@ import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -240,7 +241,7 @@ public class PatternBuilder {
                                                      fieldConstraintDescr,
                                                      fieldConstraintDescr.getRestriction(),
                                                      extractor );
-        
+
         if ( restriction == null ) {
             // @todo log error
             return;
@@ -410,23 +411,45 @@ public class PatternBuilder {
         // the following will create the implicit bindings
         for ( int i = 0, size = unboundIdentifiers.size(); i < size; i++ ) {
             final String identifier = (String) unboundIdentifiers.get( i );
-            final FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
-                                                                             identifier );
 
-            final FieldExtractor extractor = getFieldExtractor( context,
-                                                                implicitBinding,
-                                                                pattern.getObjectType(),
-                                                                implicitBinding.getFieldName(),
-                                                                false );
-            if ( extractor == null ) {
-                continue;
+            Declaration declaration = this.createDeclarationObject( context,
+                                                                    identifier,
+                                                                    pattern );
+
+            if ( declaration != null ) {
+                factDeclarations.add( declaration );
             }
-
-            final Declaration declaration = new Declaration( identifier,
-                                                             extractor,
-                                                             pattern );
-            factDeclarations.add( declaration );
         }
+    }
+
+    /**
+     * Creates a declaration object for the field identified by the given identifier
+     * on the give pattern object
+     * 
+     * @param context
+     * @param identifier
+     * @param pattern
+     * @return
+     */
+    private Declaration createDeclarationObject(final RuleBuildContext context,
+                                                final String identifier,
+                                                final Pattern pattern) {
+        final FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
+                                                                         identifier );
+
+        final FieldExtractor extractor = getFieldExtractor( context,
+                                                            implicitBinding,
+                                                            pattern.getObjectType(),
+                                                            implicitBinding.getFieldName(),
+                                                            false );
+        if ( extractor == null ) {
+            return null;
+        }
+
+        final Declaration declaration = new Declaration( identifier,
+                                                         extractor,
+                                                         pattern );
+        return declaration;
     }
 
     private Restriction buildRestriction(final RuleBuildContext context,
@@ -440,6 +463,11 @@ public class PatternBuilder {
                                             extractor,
                                             fieldConstraintDescr,
                                             (LiteralRestrictionDescr) restrictionDescr );
+        } else if ( restrictionDescr instanceof QualifiedIdentifierRestrictionDescr ) {
+            restriction = buildRestriction( context,
+                                            extractor,
+                                            fieldConstraintDescr,
+                                            (QualifiedIdentifierRestrictionDescr) restrictionDescr );
         } else if ( restrictionDescr instanceof VariableRestrictionDescr ) {
             restriction = buildRestriction( context,
                                             extractor,
@@ -502,43 +530,99 @@ public class PatternBuilder {
                                                 final FieldConstraintDescr fieldConstraintDescr,
                                                 final LiteralRestrictionDescr literalRestrictionDescr) {
         FieldValue field = null;
-        if ( literalRestrictionDescr.isStaticFieldValue() ) {
-            final int lastDot = literalRestrictionDescr.getText().lastIndexOf( '.' );
-            final String className = literalRestrictionDescr.getText().substring( 0,
-                                                                                  lastDot );
-            final String fieldName = literalRestrictionDescr.getText().substring( lastDot + 1 );
-            try {
-                final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
-                field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
-                                                    extractor.getValueType() );
-            } catch ( final ClassNotFoundException e ) {
-                context.getErrors().add( new RuleError( context.getRule(),
-                                                        literalRestrictionDescr,
-                                                        e,
-                                                        e.getMessage() ) );
-            } catch ( final Exception e ) {
-                context.getErrors().add( new RuleError( context.getRule(),
-                                                        literalRestrictionDescr,
-                                                        e,
-                                                        "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
-            }
+        try {
+            field = FieldFactory.getFieldValue( literalRestrictionDescr.getText(),
+                                                extractor.getValueType() );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    literalRestrictionDescr,
+                                                    e,
+                                                    "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
+        }
 
-        } else {
-            try {
-                field = FieldFactory.getFieldValue( literalRestrictionDescr.getText(),
-                                                    extractor.getValueType() );
-            } catch ( final Exception e ) {
-                context.getErrors().add( new RuleError( context.getRule(),
-                                                        literalRestrictionDescr,
-                                                        e,
-                                                        "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
-            }
+        if ( field == null ) {
+            return null;
         }
 
         final Evaluator evaluator = getEvaluator( context,
                                                   literalRestrictionDescr,
                                                   extractor.getValueType(),
                                                   literalRestrictionDescr.getEvaluator() );
+        if ( evaluator == null ) {
+            return null;
+        }
+
+        return new LiteralRestriction( field,
+                                       evaluator,
+                                       extractor );
+    }
+
+    private Restriction buildRestriction(final RuleBuildContext context,
+                                         final FieldExtractor extractor,
+                                         final FieldConstraintDescr fieldConstraintDescr,
+                                         final QualifiedIdentifierRestrictionDescr qiRestrictionDescr) {
+        FieldValue field = null;
+        final String[] parts = qiRestrictionDescr.getText().split( "\\." );
+
+        // if only 2 parts, it may be a composed direct property access
+        if ( parts.length == 2 ) {
+            final Declaration decl = context.getDeclarationResolver().getDeclaration( parts[0] );
+            // if a declaration exists, then it is a variable direct property access, not an enum
+            if ( decl != null ) {
+                if( decl.isPatternDeclaration() ) {
+                    final Declaration implicit = this.createDeclarationObject( context,
+                                                                               parts[1],
+                                                                               decl.getPattern() );
+
+                    final Evaluator evaluator = getEvaluator( context,
+                                                              qiRestrictionDescr,
+                                                              extractor.getValueType(),
+                                                              qiRestrictionDescr.getEvaluator() );
+                    if ( evaluator == null ) {
+                        return null;
+                    }
+
+                    return new VariableRestriction( extractor,
+                                                    implicit,
+                                                    evaluator );
+                } else {
+                    context.getErrors().add( new RuleError( context.getRule(),
+                                                            qiRestrictionDescr,
+                                                            "",
+                                                            "Not possible to directly access the property '"+parts[1]+"' of declaration '"+parts[0]+"' since it is not a pattern" ) );
+                    return null;
+                }
+            }
+        }
+
+        final int lastDot = qiRestrictionDescr.getText().lastIndexOf( '.' );
+        final String className = qiRestrictionDescr.getText().substring( 0,
+                                                                         lastDot );
+        final String fieldName = qiRestrictionDescr.getText().substring( lastDot + 1 );
+        try {
+            final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
+            field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
+                                                extractor.getValueType() );
+        } catch ( final ClassNotFoundException e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    qiRestrictionDescr,
+                                                    e,
+                                                    e.getMessage() ) );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    qiRestrictionDescr,
+                                                    e,
+                                                    "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + qiRestrictionDescr.getText() + "'" ) );
+        }
+        
+        if( field == null ) {
+            return null;
+        }
+
+        final Evaluator evaluator = getEvaluator( context,
+                                                  qiRestrictionDescr,
+                                                  extractor.getValueType(),
+                                                  qiRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
             return null;
         }
