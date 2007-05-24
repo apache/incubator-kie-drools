@@ -15,14 +15,13 @@ public class MVELConsequenceBuilder
     implements
     ConsequenceBuilder {
 
-    public void build(final RuleBuildContext context,
-                      final RuleDescr ruleDescr) {
+    public void build(final RuleBuildContext context) {
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
         final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
 
-        final Serializable expr = MVEL.compileExpression( (String) ruleDescr.getConsequence() );
+        final Serializable expr = MVEL.compileExpression( (String) context.getRuleDescr().getConsequence() );
 
         context.getRule().setConsequence( new MVELConsequence( expr,
                                                                factory ) );
