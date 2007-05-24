@@ -1229,13 +1229,11 @@ expression_value[String op] returns [RestrictionDescr rd]
 			{
 				rd = new VariableRestrictionDescr(op, bvc.getText());
 			}
-		|
-			lc=enum_constraint 
+		|	lc=enum_constraint 
 			{ 
-				rd  = new LiteralRestrictionDescr(op, lc, true);
+				rd  = new QualifiedIdentifierRestrictionDescr(op, lc);
 			}						
-		|
-			lc=literal_constraint 
+		|	lc=literal_constraint 
 			{ 
 				rd  = new LiteralRestrictionDescr(op, lc);
 			}

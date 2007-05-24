@@ -16,17 +16,10 @@ package org.drools.rule.builder;
  * limitations under the License.
  */
 
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.RuntimeDroolsException;
-import org.drools.base.evaluators.DateFactory;
-import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
-import org.drools.rule.Rule;
 
 /**
  * This builds the rule structure from an AST.

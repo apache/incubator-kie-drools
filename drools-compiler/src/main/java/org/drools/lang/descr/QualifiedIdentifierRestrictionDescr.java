@@ -17,11 +17,12 @@ package org.drools.lang.descr;
  */
 
 /**
- * This represents a literal node in the rule language. This is
- * a constraint on a single field of a pattern. 
+ * This represents a qualified identifier, like enums or subfield
+ * access in variables like "$p.name". This is a constraint on a single 
+ * field of a pattern. 
  * The "text" contains the content. 
  */
-public class LiteralRestrictionDescr extends RestrictionDescr {
+public class QualifiedIdentifierRestrictionDescr extends RestrictionDescr {
     /**
      * 
      */
@@ -29,7 +30,7 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
     private String            evaluator;
     private String            text;
 
-    public LiteralRestrictionDescr(final String evaluator,
+    public QualifiedIdentifierRestrictionDescr(final String evaluator,
                                    final String text) {
         this.text = text;
         this.evaluator = evaluator;

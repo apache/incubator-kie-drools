@@ -55,6 +55,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -433,8 +434,6 @@ public class RuleParserTest extends TestCase {
                       lit.getText() );
         assertEquals( "bar",
                       fld.getFieldName() );
-        assertEquals( false,
-                      lit.isStaticFieldValue() );
 
         pattern = (PatternDescr) lhs.getDescrs().get( 1 );
         assertEquals( 1,
@@ -2121,7 +2120,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       col.getConstraint().getDescrs().size() );
         final FieldConstraintDescr fld = (FieldConstraintDescr) col.getConstraint().getDescrs().get( 0 );
-        final LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        final QualifiedIdentifierRestrictionDescr lit = (QualifiedIdentifierRestrictionDescr) fld.getRestrictions().get( 0 );
 
         assertEquals( "bar",
                       fld.getFieldName() );
@@ -2129,7 +2128,6 @@ public class RuleParserTest extends TestCase {
                       lit.getEvaluator() );
         assertEquals( "Foo.BAR",
                       lit.getText() );
-        assertTrue( lit.isStaticFieldValue() );
 
         assertFalse( this.parser.hasErrors() );
     }
