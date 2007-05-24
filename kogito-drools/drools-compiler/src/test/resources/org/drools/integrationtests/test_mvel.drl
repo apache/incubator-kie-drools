@@ -10,8 +10,8 @@ rule "Throw Eval Exception"
         $c : Cheese(type == "stilton", price == (new Integer(5) + 5), eval(price == (new Integer(5) + 5)) )
         eval( $c.price == 10 && list == empty)
     then
-        a = new java.math.BigInteger( 10 );
-        b = new java.math.BigInteger( 10 );
+        a = new java.math.BigInteger( "10" );
+        b = new java.math.BigInteger( "10" );
         c = a + b;
         list.add( c + $c.price);
 end  
