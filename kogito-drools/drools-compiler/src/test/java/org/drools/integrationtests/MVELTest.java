@@ -3,7 +3,9 @@ package org.drools.integrationtests;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.drools.Cheese;
@@ -16,13 +18,13 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.mvel.MVEL;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class MVELTest extends TestCase {
-    public void testHelloWorld() throws Exception {
-
+    public void testHelloWorld() throws Exception {                 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_mvel.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -37,6 +39,11 @@ public class MVELTest extends TestCase {
         workingMemory.fireAllRules();
         assertEquals( new Integer(30), list.get(0));
     }
+    
+    public Object compiledExecute(String ex) {
+        Serializable compiled = MVEL.compileExpression(ex);
+        return MVEL.executeExpression(compiled, new Object(), new HashMap());
+    }    
 
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,

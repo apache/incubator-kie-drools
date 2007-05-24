@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -68,6 +70,8 @@ public class MVELDialect
     private final TypeResolver             typeResolver;
     private final ClassFieldExtractorCache classFieldExtractorCache;
 
+    private final MVELExprAnalyzer         analyzer;    
+    
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
         throw new UnsupportedOperationException( "MVEL does not support functions" );
@@ -88,6 +92,8 @@ public class MVELDialect
         this.typeResolver = typeResolver;
         this.classFieldExtractorCache = classFieldExtractorCache;
 
+        this.analyzer = new MVELExprAnalyzer();
+        
         if ( pkg != null ) {
             init( pkg );
         }
@@ -143,11 +149,37 @@ public class MVELDialect
 
     public void compileAll() {
     }
+    
+    public List[] getExpressionIdentifiers(RuleBuildContext context,
+                                           BaseDescr descr,
+                                           Object content) {
+        List[] usedIdentifiers = null;
+        try {
+            usedIdentifiers = this.analyzer.analyzeExpression( (String) content,
+                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    descr,
+                                                    null,
+                                                    "Unable to determine the used declarations" ) );
+        }
+        return usedIdentifiers;        
+    }    
 
     public List[] getBlockIdentifiers(RuleBuildContext context,
                                       BaseDescr descr,
                                       String text) {
-        return null;
+        List[] usedIdentifiers = null;
+        try {
+            usedIdentifiers = this.analyzer.analyzeExpression( text,
+                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    descr,
+                                                    null,
+                                                    "Unable to determine the used declarations" ) );
+        }
+        return usedIdentifiers;   
     }
 
     public Object getBuilder(final Class clazz) {
@@ -176,12 +208,6 @@ public class MVELDialect
 
     public ConditionalElementBuilder getEvalBuilder() {
         return this.eval;
-    }
-
-    public List[] getExpressionIdentifiers(RuleBuildContext context,
-                                           BaseDescr descr,
-                                           Object content) {
-        return null;
     }
 
     public FromBuilder getFromBuilder() {

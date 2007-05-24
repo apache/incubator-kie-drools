@@ -17,6 +17,9 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
 import org.drools.lang.descr.BaseDescr;
@@ -27,6 +30,7 @@ import org.drools.rule.EvalCondition;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
+import org.mvel.ExpressionCompiler;
 import org.mvel.MVEL;
 
 /**
@@ -52,7 +56,7 @@ public class MVELEvalBuilder
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;
 
-        final Declaration[] declarations = new Declaration[0];
+        //final Declaration[] declarations = new Declaration[0];
         //        final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
         //                                                                 evalDescr,
         //                                                                 evalDescr.getText() );
@@ -64,8 +68,18 @@ public class MVELEvalBuilder
 
         final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
 
-        final Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent() );
+        final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
+                                                                                      evalDescr,
+                                                                                      evalDescr.getContent() );
+
+        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+        }
+        
         final EvalCondition eval = new EvalCondition( declarations );
+        final Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent() );
+        
         eval.setEvalExpression( new MVELEvalExpression( expr,
                                                         factory ) );
 
