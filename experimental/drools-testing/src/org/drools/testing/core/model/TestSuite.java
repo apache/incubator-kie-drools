@@ -15,6 +15,7 @@ package org.drools.testing.core.model;
 public class TestSuite {
 
 	private Scenario[] scenarios;
+	private String name;
 	
 	public TestSuite () {}
 
@@ -24,5 +25,13 @@ public class TestSuite {
 
 	public void setScenarios(Scenario[] scenarios) {
 		this.scenarios = scenarios;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
