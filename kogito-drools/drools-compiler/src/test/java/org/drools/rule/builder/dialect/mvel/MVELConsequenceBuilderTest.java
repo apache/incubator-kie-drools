@@ -90,4 +90,30 @@ public class MVELConsequenceBuilderTest extends TestCase {
         assertEquals( 5,
                       cheddar.getPrice() );
     }
+    
+    /**
+     * Just like MVEL command line, we can allow expressions to span lines, with optional ";"
+     * seperating expressions. If its needed a ";" can be thrown in, but if not, a new line is fine.
+     * 
+     * However, when in the middle of unbalanced brackets, a new line means nothing.
+     * 
+     * @throws Exception
+     */
+    public void testLineSpanOptionalSemis() throws Exception {
+        
+        String simpleEx = "foo\nbar\nbaz";
+        MVELConsequenceBuilder cons = new MVELConsequenceBuilder();
+        assertEquals("foo;\nbar;\nbaz", cons.delimitExpressions(simpleEx));
+        
+        String ex = "foo (\n bar \n)\nbar;\nyeah;\nman\nbaby";
+        assertEquals("foo (\n bar \n);\nbar;\nyeah;\nman;\nbaby", cons.delimitExpressions(ex));
+
+        ex = "foo {\n bar \n}\nbar;   \nyeah;\nman\nbaby";
+        assertEquals("foo {\n bar \n};\nbar;   \nyeah;\nman;\nbaby", cons.delimitExpressions(ex));
+
+        ex = "foo [\n bar \n]\nbar;  x\nyeah();\nman[42]\nbaby;ca chiga;\nend";
+        assertEquals("foo [\n bar \n];\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend", cons.delimitExpressions(ex));
+
+        
+    }
 }
