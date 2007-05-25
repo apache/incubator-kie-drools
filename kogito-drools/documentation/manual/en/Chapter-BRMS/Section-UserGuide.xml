@@ -2,39 +2,6 @@
 <!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
 "http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <section>
-  <title>Introduction</title>
-
-  <para></para>
-
-
-  <figure>
-    <title>Overview</title>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="all.jpg" format="JPG" scalefit="1" />
-      </imageobject>
-    </mediaobject>
-  </figure>
-
-  <section>
-    <title>What is a BRMS?</title>
-    <section><title>When to use a BRMS</title></section>
-  </section>
-
-
-  <section>
-    <title>Features outline</title>
-    <itemizedlist>
-      <listitem>
-        <para>Textual/graphical rule editor</para>
-      </listitem>
-    </itemizedlist>
-  </section>
-
-  <section>
-    <title>Installation</title>	
-  </section>
 
   <section>
     <title>Quick guide and concepts</title>	
@@ -58,11 +25,6 @@
         <title>Rule authoring</title>
   </section>
 
-<!--
-  <section> 
-	<title>Syncronising with developers (SCM system integration)</title>
-  </section>
--->
 
   <section>
         <title>Integrating with your applications</title>

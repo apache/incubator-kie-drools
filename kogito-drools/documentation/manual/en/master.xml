@@ -78,7 +78,7 @@
     </chapter>
 
     <chapter>
-      <title>Installation and Setup</title>
+      <title>Installation and Setup (Core and IDE)</title>
 
       <xi:include href="Chapter-Install/Section-Install.xml" />
 
@@ -128,6 +128,12 @@
 
       <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
     </chapter>
+
+	<chapter>
+		<title>The BRMS (Business Rule Management System</title>
+		<xi:include href="Chapter-BRMS/Section-Introduction.xml" />
+	</chapter>
+
 
     <chapter>
       <title>The Java Rule Engine API</title>
