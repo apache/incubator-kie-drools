@@ -1,5 +1,8 @@
 package org.drools.testing.core.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * 
  * @author Matt
@@ -14,18 +17,10 @@ package org.drools.testing.core.model;
 
 public class TestSuite {
 
-	private Scenario[] scenarios;
+	private Collection scenarios = new ArrayList();
 	private String name;
 	
 	public TestSuite () {}
-
-	public Scenario[] getScenarios() {
-		return scenarios;
-	}
-
-	public void setScenarios(Scenario[] scenarios) {
-		this.scenarios = scenarios;
-	}
 
 	public String getName() {
 		return name;
@@ -33,5 +28,13 @@ public class TestSuite {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Collection getScenarios() {
+		return scenarios;
+	}
+
+	public void setScenarios(Collection scenarios) {
+		this.scenarios = scenarios;
 	}
 }

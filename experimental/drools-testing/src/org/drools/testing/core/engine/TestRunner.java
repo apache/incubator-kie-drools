@@ -2,6 +2,7 @@ package org.drools.testing.core.engine;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.drools.WorkingMemory;
@@ -67,8 +68,9 @@ public class TestRunner {
 	 */
 	private void parseTestSuite () throws RuleTestLanguageException {
 		
-		for (int i=0; i<testSuite.getScenarios().length; i++) 
-			parseScenario(testSuite.getScenarios()[i]);
+		Iterator i  = testSuite.getScenarios().iterator();
+		while (i.hasNext())
+			parseScenario( (Scenario) i.next());
 	}
 	
 	/**
@@ -96,11 +98,12 @@ public class TestRunner {
 	 * @param wm
 	 * @throws RuleTestLanguageException
 	 */
-	private void parseFacts (Fact[] facts, WorkingMemory wm) throws RuleTestLanguageException {
+	private void parseFacts (Collection facts, WorkingMemory wm) throws RuleTestLanguageException {
 	
 		// iterating over the facts
-		for (int i=0; i<facts.length; i++) {
-			Fact factDefn = facts[i];
+		Iterator i  = facts.iterator();
+		while (i.hasNext()) {
+			Fact factDefn = (Fact) i.next();
 			Class classDefn = ObjectUtils.getClassDefn(factDefn.getType(), pkg.getImports(),null);
 			Object fact;
 			try {
@@ -132,12 +135,14 @@ public class TestRunner {
 	 * @param wm
 	 * @throws RuleTestLanguageException
 	 */
-	private Collection specifyRulesToFire (Rule[] rules, WorkingMemory wm) throws RuleTestLanguageException {
+	private Collection specifyRulesToFire (Collection rules, WorkingMemory wm) throws RuleTestLanguageException {
 		
 		Collection items = new ArrayList();
-		for (int i=0; i<rules.length; i++) {
-			if (rules[i].isFire())
-				items.add(rules[i].getName());
+		Iterator i = rules.iterator();
+		while (i.hasNext()) {
+			Rule rule = (Rule) i.next();
+			if (rule.isFire())
+				items.add(rule.getName());
 		}
 		return items;
 	}
