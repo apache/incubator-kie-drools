@@ -1,5 +1,7 @@
 package org.drools.testing.core.model;
 
+import java.util.Collection;
+
 /**
  * 
  * @author Matt
@@ -8,28 +10,35 @@ package org.drools.testing.core.model;
  */
 public class Scenario {
 
-	public Fact[] facts;
-	public Outcome[] outcomes;
-	public Rule[] rules;
+	private Collection facts;
+	private Collection outcomes;
+	private Collection rules;
 	
 	public Scenario () {}
-	
-	public Fact[] getFacts() {
+
+	public Collection getFacts() {
 		return facts;
 	}
-	public void setFacts(Fact[] facts) {
+
+	public void setFacts(Collection facts) {
 		this.facts = facts;
 	}
-	public Outcome[] getOutcomes() {
+
+	public Collection getOutcomes() {
 		return outcomes;
 	}
-	public void setOutcomes(Outcome[] outcomes) {
+
+	public void setOutcomes(Collection outcomes) {
 		this.outcomes = outcomes;
 	}
-	public Rule[] getRules() {
+
+	public Collection getRules() {
 		return rules;
 	}
-	public void setRules(Rule[] rules) {
+
+	public void setRules(Collection rules) {
 		this.rules = rules;
 	}
+	
+	
 }
