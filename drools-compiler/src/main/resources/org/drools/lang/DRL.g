@@ -532,13 +532,22 @@ salience returns [AttributeDescr d ]
 		d = null;
 	}
 	:	
-		loc=SALIENCE i=INT   
+		loc=SALIENCE 
 		{
-			d = new AttributeDescr( "salience", i.getText() );
+			d = new AttributeDescr( "salience" );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+		}
+		( i=INT   
+		{
+			d.setValue( i.getText() );
 			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
 		}
+		| txt=paren_chunk[d]
+		{
+			d.setValue( txt );
+		}
+		)
 	;
 	
 no_loop returns [AttributeDescr d]
