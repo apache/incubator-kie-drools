@@ -21,9 +21,11 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.base.SalienceInteger;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Consequence;
 import org.drools.spi.Duration;
+import org.drools.spi.Salience;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
@@ -58,8 +60,9 @@ public class Rule
     private final String      name;
 
     /** Salience value. */
-    private int               salience;
+    private Salience               salience;
 
+    /** The Rule is dirty after patterns have been added */
     private boolean           dirty;
     private Map               declarations;
     private Declaration[]     declarationArray;
@@ -122,6 +125,7 @@ public class Rule
         this.lhsRoot = GroupElementFactory.newAndInstance();
         this.semanticallyValid = true;
         this.enabled = true;
+        this.salience = SalienceInteger.DEFAULT_SALIENCE;
     }
 
     /**
@@ -240,7 +244,7 @@ public class Rule
      * 
      * @return The salience.
      */
-    public int getSalience() {
+    public Salience getSalience() {
         return this.salience;
     }
 
@@ -249,7 +253,7 @@ public class Rule
      *
      *  @param salience The salience.
      */
-    public void setSalience(final int salience) {
+    public void setSalience(final Salience salience) {
         this.salience = salience;
     }
 
@@ -261,7 +265,7 @@ public class Rule
         this.agendaGroup = agendaGroup;
     }
 
-    public boolean getNoLoop() {
+    public boolean isNoLoop() {
         return this.noLoop;
     }
 
@@ -288,7 +292,6 @@ public class Rule
             }
 
         }
-
     }
 
     public void setNoLoop(final boolean noLoop) {
@@ -337,6 +340,11 @@ public class Rule
         return (Declaration) this.declarations.get( identifier );
     }
 
+    /** 
+     * This field is updated at runtime, when the first logical assertion is done. I'm currently not too happy about having this determine at runtime
+     * but its currently easier than trying to do this at compile time, although eventually this should be changed
+     * @return
+     */
     public boolean hasLogicalDependency() {
         return this.hasLogicalDependency;
     }
@@ -521,11 +529,24 @@ public class Rule
     public void setDateExpires(final Calendar expiresDate) {
         this.dateExpires = expiresDate;
     }
+        
+
+    public Calendar getDateEffective() {
+        return this.dateEffective;
+    }
+
+    public Calendar getDateExpires() {
+        return this.dateExpires;
+    }
 
     /**
      * A rule is enabled by default. This can explicitly disable it in which case it will never activate.
      */
     public void setEnabled(final boolean b) {
         this.enabled = b;
+    }
+    
+    public boolean isEnabled() {
+        return this.enabled;
     }
 }

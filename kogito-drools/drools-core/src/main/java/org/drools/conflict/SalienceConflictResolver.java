@@ -75,6 +75,6 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
      */
     public int compare(final Activation lhs,
                        final Activation rhs) {
-        return rhs.getRule().getSalience() - lhs.getRule().getSalience();
+        return rhs.getSalience() - lhs.getSalience();
     }
 }

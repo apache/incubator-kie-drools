@@ -27,8 +27,8 @@ public class DepthConflictResolver
 
     public int compare(final Activation lhs,
                        final Activation rhs) {
-        final int s1 = lhs.getRule().getSalience();
-        final int s2 = rhs.getRule().getSalience();
+        final int s1 = lhs.getSalience();
+        final int s2 = rhs.getSalience();
 
         if ( s1 != s2 ) {
             return s2 - s1;

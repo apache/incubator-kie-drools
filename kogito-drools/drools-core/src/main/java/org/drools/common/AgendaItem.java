@@ -53,6 +53,9 @@ public class AgendaItem
 
     /** The rule. */
     private final Rule               rule;
+    
+    /** The salience */
+    private final int                salience;
 
     /** The subrule */
     private final GroupElement       subrule;
@@ -92,14 +95,16 @@ public class AgendaItem
      */
     public AgendaItem(final long activationNumber,
                       final Tuple tuple,
+                      final int salience,
                       final PropagationContext context,
                       final Rule rule,
                       final GroupElement subrule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
+        this.salience = salience;
         this.subrule = subrule;
-        this.activationNumber = activationNumber;
+        this.activationNumber = activationNumber;        
     }
 
     // ------------------------------------------------------------
@@ -125,6 +130,10 @@ public class AgendaItem
      */
     public Tuple getTuple() {
         return this.tuple;
+    }
+    
+    public int getSalience() {
+        return this.salience;
     }
 
     /*

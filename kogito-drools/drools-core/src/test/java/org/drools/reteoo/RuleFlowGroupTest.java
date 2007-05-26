@@ -23,6 +23,7 @@ import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.base.SalienceInteger;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
@@ -101,7 +102,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final Rule rule2 = new Rule( "test-rule2" );
         rule2.setRuleFlowGroup( "rule-flow-group-2" );
         rule2.setConsequence( consequence );
-        rule2.setSalience( 10 );
+        rule2.setSalience( new SalienceInteger( 10 ) );
 
         final RuleTerminalNode node2 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 2 ),
@@ -343,7 +344,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final Rule rule2 = new Rule( "test-rule2" );
         rule2.setRuleFlowGroup( "rule-flow-group-2" );
         rule2.setConsequence( consequence );
-        rule2.setSalience( 10 );
+        rule2.setSalience( new SalienceInteger( 10 ) );
 
         final RuleTerminalNode node2 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 2 ),

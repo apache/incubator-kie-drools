@@ -43,6 +43,8 @@ public interface Activation
      * @return The rule.
      */
     Rule getRule();
+    
+    int getSalience();
 
     /**
      * Retrieve the subrule that was activated.
