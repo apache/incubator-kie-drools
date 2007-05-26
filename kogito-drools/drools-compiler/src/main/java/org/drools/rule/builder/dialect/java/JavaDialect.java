@@ -55,7 +55,9 @@ import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
+import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
+import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 
 public class JavaDialect
@@ -64,6 +66,7 @@ public class JavaDialect
 
     // builders
     private final PatternBuilder           pattern      = new PatternBuilder( this );
+    private final SalienceBuilder          salience     = new MVELSalienceBuilder();
     private final JavaAccumulateBuilder    accumulate   = new JavaAccumulateBuilder();
     private final JavaEvalBuilder          eval         = new JavaEvalBuilder();
     private final JavaPredicateBuilder     predicate    = new JavaPredicateBuilder();
@@ -122,7 +125,7 @@ public class JavaDialect
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
-        this.builders = new HashMap();
+        this.builders = new HashMap();        
 
         this.builders.put( CollectDescr.class,
                            new CollectBuilder() );
@@ -263,6 +266,10 @@ public class JavaDialect
     public PatternBuilder getPatternBuilder() {
         return this.pattern;
     }
+    
+    public SalienceBuilder getSalienceBuilder() {
+        return this.salience;
+    }    
 
     public AccumulateBuilder getAccumulateBuilder() {
         return this.accumulate;

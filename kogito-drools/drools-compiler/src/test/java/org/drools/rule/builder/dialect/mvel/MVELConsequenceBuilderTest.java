@@ -38,12 +38,12 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setConsequence( "cheese.setPrice( 5 );" );
 
-        DialectRegistry registry = new DialectRegistry(); 
+        DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "default",
-                                  new JavaDialect( pkg,
-                                                   new PackageBuilderConfiguration(),
-                                                   new ClassTypeResolver(),
-                                                   new ClassFieldExtractorCache() ) );           
+                             new MVELDialect( pkg,
+                                              new PackageBuilderConfiguration(),
+                                              new ClassTypeResolver(),
+                                              new ClassFieldExtractorCache() ) );
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                                ruleDescr,
                                                                                registry );
@@ -53,13 +53,13 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final ObjectType cheeseObjeectType = new ClassObjectType( Cheese.class );
 
         final Pattern pattern = new Pattern( 0,
-                                    cheeseObjeectType );
+                                             cheeseObjeectType );
 
         final PatternExtractor extractor = new PatternExtractor( cheeseObjeectType );
 
         final Declaration declaration = new Declaration( "cheese",
-                                                   extractor,
-                                                   pattern );
+                                                         extractor,
+                                                         pattern );
         final Map map = new HashMap();
         map.put( "cheese",
                  declaration );
@@ -73,24 +73,25 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final Cheese cheddar = new Cheese( "cheddar",
-                                     10 );
+                                           10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
         final ReteTuple tuple = new ReteTuple( f0 );
 
         final AgendaItem item = new AgendaItem( 0,
-                                          tuple,
-                                          null,
-                                          context.getRule(),
-                                          null );
+                                                tuple,
+                                                10,
+                                                null,
+                                                context.getRule(),
+                                                null );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( item,
-                                                                      wm );
+                                                                            wm );
         context.getRule().getConsequence().evaluate( kbHelper,
                                                      wm );
 
         assertEquals( 5,
                       cheddar.getPrice() );
     }
-    
+
     /**
      * Just like MVEL command line, we can allow expressions to span lines, with optional ";"
      * seperating expressions. If its needed a ";" can be thrown in, but if not, a new line is fine.
@@ -100,20 +101,23 @@ public class MVELConsequenceBuilderTest extends TestCase {
      * @throws Exception
      */
     public void testLineSpanOptionalSemis() throws Exception {
-        
+
         String simpleEx = "foo\nbar\nbaz";
         MVELConsequenceBuilder cons = new MVELConsequenceBuilder();
-        assertEquals("foo;\nbar;\nbaz", cons.delimitExpressions(simpleEx));
-        
+        assertEquals( "foo;\nbar;\nbaz",
+                      cons.delimitExpressions( simpleEx ) );
+
         String ex = "foo (\n bar \n)\nbar;\nyeah;\nman\nbaby";
-        assertEquals("foo (\n bar \n);\nbar;\nyeah;\nman;\nbaby", cons.delimitExpressions(ex));
+        assertEquals( "foo (\n bar \n);\nbar;\nyeah;\nman;\nbaby",
+                      cons.delimitExpressions( ex ) );
 
         ex = "foo {\n bar \n}\nbar;   \nyeah;\nman\nbaby";
-        assertEquals("foo {\n bar \n};\nbar;   \nyeah;\nman;\nbaby", cons.delimitExpressions(ex));
+        assertEquals( "foo {\n bar \n};\nbar;   \nyeah;\nman;\nbaby",
+                      cons.delimitExpressions( ex ) );
 
         ex = "foo [\n bar \n]\nbar;  x\nyeah();\nman[42]\nbaby;ca chiga;\nend";
-        assertEquals("foo [\n bar \n];\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend", cons.delimitExpressions(ex));
+        assertEquals( "foo [\n bar \n];\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend",
+                      cons.delimitExpressions( ex ) );
 
-        
     }
 }

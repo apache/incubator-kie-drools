@@ -162,6 +162,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final Tuple tuple = new MockTuple( new HashMap() );
         final Activation activation = new MockActivation( rule,
+                                                          0,
                                                           rule.getLhs(),
                                                           tuple );
 
@@ -240,6 +241,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final Tuple tuple = new MockTuple( new HashMap() );
         final Activation activation = new MockActivation( newRule,
+                                                          0,
                                                           newRule.getLhs(),
                                                           tuple );
 
@@ -1122,19 +1124,26 @@ public class PackageBuilderTest extends DroolsTestCase {
         implements
         Activation {
         private Rule               rule;
+        private int                salience;
         private final GroupElement subrule;
         private Tuple              tuple;
 
         public MockActivation(final Rule rule,
+                              int salience,
                               final GroupElement subrule,
                               final Tuple tuple) {
             this.rule = rule;
+            this.salience = salience;
             this.tuple = tuple;
             this.subrule = subrule;
         }
 
         public Rule getRule() {
             return this.rule;
+        }
+        
+        public int getSalience() {
+            return this.salience;
         }
 
         public Tuple getTuple() {

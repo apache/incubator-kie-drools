@@ -38,6 +38,7 @@ import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
+import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
 import org.drools.rule.builder.dialect.java.JavaAccumulateBuilder;
 import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;
@@ -55,9 +56,10 @@ public class MVELDialect
 
     private final PatternBuilder           pattern     = new PatternBuilder( this );
     //private final JavaAccumulateBuilder    accumulate   = new JavaAccumulateBuilder();
+    private final SalienceBuilder          salience    = new MVELSalienceBuilder();
     private final MVELEvalBuilder          eval        = new MVELEvalBuilder();
-    private final MVELPredicateBuilder     predicate    = new MVELPredicateBuilder();
-    private final MVELReturnValueBuilder   returnValue  = new MVELReturnValueBuilder();
+    private final MVELPredicateBuilder     predicate   = new MVELPredicateBuilder();
+    private final MVELReturnValueBuilder   returnValue = new MVELReturnValueBuilder();
     private final MVELConsequenceBuilder   consequence = new MVELConsequenceBuilder();
     //private final JavaRuleClassBuilder     rule         = new JavaRuleClassBuilder();
     private final MVELFromBuilder          from        = new MVELFromBuilder();
@@ -70,8 +72,8 @@ public class MVELDialect
     private final TypeResolver             typeResolver;
     private final ClassFieldExtractorCache classFieldExtractorCache;
 
-    private final MVELExprAnalyzer         analyzer;    
-    
+    private final MVELExprAnalyzer         analyzer;
+
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
         throw new UnsupportedOperationException( "MVEL does not support functions" );
@@ -93,7 +95,7 @@ public class MVELDialect
         this.classFieldExtractorCache = classFieldExtractorCache;
 
         this.analyzer = new MVELExprAnalyzer();
-        
+
         if ( pkg != null ) {
             init( pkg );
         }
@@ -127,8 +129,8 @@ public class MVELDialect
         this.builders.put( FromDescr.class,
                            getFromBuilder() );
 
-//        this.builders.put( AccumulateDescr.class,
-//                           getAccumulateBuilder() );
+        //        this.builders.put( AccumulateDescr.class,
+        //                           getAccumulateBuilder() );
 
         this.builders.put( EvalDescr.class,
                            getEvalBuilder() );
@@ -144,12 +146,12 @@ public class MVELDialect
     }
 
     public void addRule(RuleBuildContext context) {
-        
+
     }
 
     public void compileAll() {
     }
-    
+
     public List[] getExpressionIdentifiers(RuleBuildContext context,
                                            BaseDescr descr,
                                            Object content) {
@@ -163,8 +165,8 @@ public class MVELDialect
                                                     null,
                                                     "Unable to determine the used declarations" ) );
         }
-        return usedIdentifiers;        
-    }    
+        return usedIdentifiers;
+    }
 
     public List[] getBlockIdentifiers(RuleBuildContext context,
                                       BaseDescr descr,
@@ -179,7 +181,7 @@ public class MVELDialect
                                                     null,
                                                     "Unable to determine the used declarations" ) );
         }
-        return usedIdentifiers;   
+        return usedIdentifiers;
     }
 
     public Object getBuilder(final Class clazz) {
@@ -199,7 +201,7 @@ public class MVELDialect
     }
 
     public AccumulateBuilder getAccumulateBuilder() {
-        throw new UnsupportedOperationException("MVEL does not yet support accumuate");
+        throw new UnsupportedOperationException( "MVEL does not yet support accumuate" );
     }
 
     public ConsequenceBuilder getConsequenceBuilder() {
@@ -216,6 +218,10 @@ public class MVELDialect
 
     public PredicateBuilder getPredicateBuilder() {
         return this.predicate;
+    }
+
+    public SalienceBuilder getSalienceBuilder() {
+        return this.salience;
     }
 
     public List getResults() {

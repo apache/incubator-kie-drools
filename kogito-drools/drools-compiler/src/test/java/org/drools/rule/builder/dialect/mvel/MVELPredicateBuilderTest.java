@@ -43,7 +43,7 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         DialectRegistry registry = new DialectRegistry(); 
         registry.addDialect( "default",
-                                  new JavaDialect( pkg,
+                                  new MVELDialect( pkg,
                                                    new PackageBuilderConfiguration(),
                                                    new ClassTypeResolver(),
                                                    new ClassFieldExtractorCache() ) );           

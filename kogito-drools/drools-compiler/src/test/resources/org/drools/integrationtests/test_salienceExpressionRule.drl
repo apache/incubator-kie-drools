@@ -1,0 +1,35 @@
+package org.drools.test
+
+import org.drools.Person
+
+global java.util.List list
+
+# this rule shall never fire, since person will be retracted
+# by rule 2 that has a higher salience and will fire before rule 1
+rule "Salience rule 1" 
+    when
+        Person( )
+    then
+		list.add( "Rule 1" );
+end    
+
+# this rule shall fire second, since rule 3 has higher salience
+rule "Salience rule 2" 
+    salience (p.age * 2)
+    when
+        p : Person( name == "bob" )
+    then
+		list.add( "Rule 2" );
+		retract( p );
+end    
+
+# this rule shall fire first since it has the higher salience
+rule "Salience rule 3" 
+    salience (p.age * 2)
+    when
+        p : Person( name == "mic")
+    then
+		list.add( "Rule 3" );
+	    retract( p );
+end    
+

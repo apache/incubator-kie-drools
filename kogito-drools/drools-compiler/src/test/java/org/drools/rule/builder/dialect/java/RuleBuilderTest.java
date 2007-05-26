@@ -138,9 +138,9 @@ public class RuleBuilderTest extends TestCase {
         attributes.add( new AttributeDescr( "ruleflow-group",
                                             "mygroup" ) );
         
-        RuleBuildContext.setAttributes( rule, attributes );
+        RuleBuildContext.setAttributes( rule, null, attributes );
 
-        assertTrue( rule.getNoLoop() );
+        assertTrue( rule.isNoLoop() );
         assertFalse( rule.isEffective() );
         assertEquals( "mygroup",
                       rule.getRuleFlowGroup() );
@@ -153,7 +153,7 @@ public class RuleBuilderTest extends TestCase {
 
         rule = new Rule( "myrule" );
 
-        RuleBuildContext.setAttributes( rule, attributes );
+        RuleBuildContext.setAttributes( rule, null, attributes );
         
         final Field eff = rule.getClass().getDeclaredField( "dateEffective" );
         eff.setAccessible( true );

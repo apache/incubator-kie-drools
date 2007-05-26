@@ -45,12 +45,12 @@ public class MVELReturnValueBuilderTest extends TestCase {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
-        DialectRegistry registry = new DialectRegistry(); 
+        DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "default",
-                                  new JavaDialect( pkg,
-                                                   new PackageBuilderConfiguration(),
-                                                   new ClassTypeResolver(),
-                                                   new ClassFieldExtractorCache() ) );           
+                             new MVELDialect( pkg,
+                                              new PackageBuilderConfiguration(),
+                                              new ClassTypeResolver(),
+                                              new ClassFieldExtractorCache() ) );
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                                ruleDescr,
                                                                                registry );

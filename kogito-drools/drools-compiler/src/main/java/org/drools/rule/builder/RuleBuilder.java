@@ -17,9 +17,11 @@ package org.drools.rule.builder;
  */
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.SalienceInteger;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
+import org.drools.spi.Salience;
 
 /**
  * This builds the rule structure from an AST.
@@ -57,6 +59,19 @@ public class RuleBuilder {
 
             context.getDialect().getConsequenceBuilder().build( context );
         }
+        
+        String salienceText = context.getRuleDescr().getSalience();
+        
+        try {
+            // First see if its an Integer
+            if ( salienceText != null && !salienceText.equals( "" )) {
+                Salience salience = new SalienceInteger( Integer.parseInt( salienceText ) );
+                context.getRule().setSalience( salience );
+            }
+        } catch (Exception e) {
+            // It wasn't an integer, so build as an expression
+            context.getDialect().getSalienceBuilder().build( context );    
+        }              
 
         RuleClassBuilder classBuilder = context.getDialect().getRuleClassBuilder();
         if ( classBuilder != null ) {

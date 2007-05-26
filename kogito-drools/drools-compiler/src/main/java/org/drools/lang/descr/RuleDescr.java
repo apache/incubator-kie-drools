@@ -34,6 +34,7 @@ public class RuleDescr extends BaseDescr {
     private int               consequencePattern;
     private int               offset;
     private List              attributes       = Collections.EMPTY_LIST;
+    private String            salience;
 
     private String            className;
 
@@ -50,6 +51,14 @@ public class RuleDescr extends BaseDescr {
 
     public String getName() {
         return this.name;
+    }       
+
+    public String getSalience() {
+        return salience;
+    }
+
+    public void setSalience(String salience) {
+        this.salience = salience;
     }
 
     public String getClassName() {
