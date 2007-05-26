@@ -104,6 +104,10 @@ public class ScheduledAgendaItem extends TimerTask
     public PropagationContext getPropagationContext() {
         return this.context;
     }
+    
+    public int getSalience() {
+        throw new UnsupportedOperationException( "salience is now application to scheduled activations" );
+    }
 
     /**
      * Retrieve the rule.

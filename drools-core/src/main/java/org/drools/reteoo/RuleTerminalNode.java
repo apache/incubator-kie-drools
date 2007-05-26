@@ -146,10 +146,10 @@ public final class RuleTerminalNode extends BaseNode
 
         // if the current Rule is no-loop and the origin rule is the same and its the same set of facts (tuple) then return
         if ( context.getType() == PropagationContext.MODIFICATION ) {
-            if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getActivationOrigin().getTuple().equals( tuple ) ) {
+            if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getActivationOrigin().getTuple().equals( tuple ) ) {
                 return;
             }
-        } else if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
+        } else if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
         }
 
@@ -218,6 +218,7 @@ public final class RuleTerminalNode extends BaseNode
 
             final AgendaItem item = new AgendaItem( context.getPropagationNumber(),
                                                     cloned,
+                                                    rule.getSalience().getValue( tuple, workingMemory ),
                                                     context,
                                                     this.rule,
                                                     this.subrule );
