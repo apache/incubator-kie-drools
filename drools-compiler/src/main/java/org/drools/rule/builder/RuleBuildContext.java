@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.drools.base.SalienceInteger;
 import org.drools.base.evaluators.DateFactory;
 import org.drools.compiler.DialectRegistry;
 import org.drools.lang.descr.AttributeDescr;
@@ -33,6 +34,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.DeclarationScopeResolver;
+import org.drools.spi.Salience;
 
 /**
  * A context for the current build
@@ -77,7 +79,7 @@ public class RuleBuildContext {
 
     // a simple counter for generated names
     private int                      counter;
-    
+
     private Dialect                  dialect;
 
     /**
@@ -87,7 +89,7 @@ public class RuleBuildContext {
                             final RuleDescr ruleDescr,
                             final DialectRegistry registry) {
         this.pkg = pkg;
-        
+
         this.methods = new ArrayList();
         this.invokers = new HashMap();
         this.invokerLookups = new HashMap();
@@ -103,18 +105,18 @@ public class RuleBuildContext {
         } else {
             this.rule = new Rule( ruleDescr.getName() );
         }
-        
+
         // Assign attributes
         setAttributes( this.rule,
+                       ruleDescr,
                        ruleDescr.getAttributes() );
-        
-        
-        String dialectName = ( this.rule.getDialect() != null ) ? this.rule.getDialect() : "default"; 
+
+        String dialectName = (this.rule.getDialect() != null) ? this.rule.getDialect() : "default";
         this.dialect = registry.getDialect( dialectName );
-        
+
         this.dialect.init( ruleDescr );
     }
-    
+
     public Dialect getDialect() {
         return this.dialect;
     }
@@ -250,13 +252,18 @@ public class RuleBuildContext {
      * @param attributes
      */
     public static void setAttributes(final Rule rule,
-                              final List attributes) {
+                                     final RuleDescr ruleDescr,
+                                     final List attributes) {
 
         for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
             final AttributeDescr attributeDescr = (AttributeDescr) it.next();
             final String name = attributeDescr.getName();
             if ( name.equals( "salience" ) ) {
-                rule.setSalience( Integer.parseInt( attributeDescr.getValue() ) );
+                try {
+                    ruleDescr.setSalience( attributeDescr.getValue() );
+                } catch ( Exception e ) {
+
+                }
             } else if ( name.equals( "no-loop" ) ) {
                 if ( attributeDescr.getValue() == null ) {
                     rule.setNoLoop( true );

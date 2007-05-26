@@ -49,9 +49,9 @@ public class ExecutionFlowControlTest extends TestCase {
                                             config );
     }
 
-    public void testSalience() throws Exception {
+    public void testSalienceInteger() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "salience_rule_test.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceIntegerRule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -77,8 +77,43 @@ public class ExecutionFlowControlTest extends TestCase {
         Assert.assertEquals( "Rule 2 should have been fired second",
                              "Rule 2",
                              list.get( 1 ) );
-
     }
+    
+    public void testSalienceExpression() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceExpressionRule.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final PersonInterface person10 = new Person( "bob",
+                                                   "cheese",
+                                                   10);
+        workingMemory.assertObject( person10 );
+        
+        final PersonInterface person20 = new Person( "mic",
+                                                     "cheese",
+                                                     20);
+          workingMemory.assertObject( person20 );        
+
+        workingMemory.fireAllRules();
+
+        Assert.assertEquals( "Two rules should have been fired",
+                             2,
+                             list.size() );
+        Assert.assertEquals( "Rule 3 should have been fired first",
+                             "Rule 3",
+                             list.get( 0 ) );
+        Assert.assertEquals( "Rule 2 should have been fired second",
+                             "Rule 2",
+                             list.get( 1 ) );
+    }    
 
     public void testNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
