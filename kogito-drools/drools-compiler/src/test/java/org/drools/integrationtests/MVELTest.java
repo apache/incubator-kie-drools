@@ -24,9 +24,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class MVELTest extends TestCase {
-    public void testHelloWorld() throws Exception {    
-        System.out.println( System.getProperty("java.version").startsWith( "1.4" ) );
-        
+    public void testHelloWorld() throws Exception {                   
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_mvel.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -40,6 +38,7 @@ public class MVELTest extends TestCase {
         workingMemory.assertObject( new Cheese("stilton", 10) );
         workingMemory.fireAllRules();
         assertEquals( new Integer(30), list.get(0));
+        
     }
     
     public Object compiledExecute(String ex) {

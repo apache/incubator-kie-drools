@@ -28,11 +28,11 @@ public class MVELPredicateExpression
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory) throws Exception {
         this.factory.setContext( tuple,
-                            object,
-                            workingMemory );
+                                 object,
+                                 workingMemory );
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
-                                                                 new Object(),
-                                                           this.factory );
+                                                                 null,
+                                                                 this.factory );
         return result.booleanValue();
     }
 

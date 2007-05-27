@@ -3,12 +3,12 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/main/rules"/>
-	<classpathentry output="target/test-classes" kind="src" path="src/test/java"/>
-	<classpathentry output="target/test-classes" kind="src" path="src/test/resources"/>
-	<classpathentry kind="con" path="DROOLS/JBoss Rules"/>	
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry kind="con" path="DROOLS/JBoss Rules"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_10"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="lib" path="lib/foxtrot-2.0.jar"/>	
+	<classpathentry kind="lib" path="lib/foxtrot-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-forms-1.0.4.jar"/>
-	<classpathentry kind="output" path="target/classes"/>  
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
