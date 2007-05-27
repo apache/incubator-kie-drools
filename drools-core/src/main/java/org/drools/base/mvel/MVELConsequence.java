@@ -27,7 +27,7 @@ public class MVELConsequence
                                  null,
                                  workingMemory );
         MVEL.executeExpression( this.expr,
-                                new Object(),
+                                null,
                                 this.factory );
     }
 }

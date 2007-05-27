@@ -58,7 +58,7 @@ public class MVELReturnValueBuilder
         for ( int i = 0, length = localDeclarations.length; i < length; i++ ) {
             localMap.put( localDeclarations[i].getIdentifier(),
                      localDeclarations[i] );
-        }
+        }             
         
         final DroolsMVELFactory factory = new DroolsMVELFactory(previousMap, localMap,  context.getPkg().getGlobals() );
 

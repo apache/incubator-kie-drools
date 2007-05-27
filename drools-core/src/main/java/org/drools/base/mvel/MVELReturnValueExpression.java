@@ -29,10 +29,11 @@ public class MVELReturnValueExpression
                                final Declaration[] requiredDeclarations,
                                final WorkingMemory workingMemory) throws Exception {
         this.factory.setContext( tuple,
-                            object,
-                            workingMemory );
+                                 object,
+                                 workingMemory );
+
         return org.drools.base.FieldFactory.getFieldValue( MVEL.executeExpression( this.expr,
-                                                                                   new Object(),
+                                                                                   null,
                                                                                    this.factory ) );
     }
 
