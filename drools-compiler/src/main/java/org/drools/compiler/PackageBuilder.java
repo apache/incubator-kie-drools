@@ -288,11 +288,14 @@ public class PackageBuilder {
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             String importEntry = ((ImportDescr) it.next()).getTarget();
             pkg.addImport( importEntry );
+            this.dialects.addImport( importEntry );
             this.typeResolver.addImport( importEntry );
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
-            pkg.addStaticImport( ((FunctionImportDescr) it.next()).getTarget() );
+            String importEntry =  ((FunctionImportDescr) it.next()).getTarget();
+            this.dialects.addImport( importEntry );
+            pkg.addStaticImport( importEntry );
         }
         
         ((ClassTypeResolver)this.typeResolver).setClassLoader( pkg.getPackageCompilationData().getClassLoader() );

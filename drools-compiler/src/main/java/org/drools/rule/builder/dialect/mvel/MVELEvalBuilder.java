@@ -56,17 +56,8 @@ public class MVELEvalBuilder
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;
 
-        //final Declaration[] declarations = new Declaration[0];
-        //        final List[] usedIdentifiers = utils.getUsedIdentifiers( context,
-        //                                                                 evalDescr,
-        //                                                                 evalDescr.getText() );
-        //
-        //        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
-        //        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-        //            declarations[i] = (Declaration) context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
-        //        }
-
         final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
+        factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );        
 
         final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
                                                                                       evalDescr,

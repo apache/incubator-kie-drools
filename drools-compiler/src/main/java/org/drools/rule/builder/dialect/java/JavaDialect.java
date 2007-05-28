@@ -491,6 +491,14 @@ public class JavaDialect
             }
         }
     }
+    
+    public void addImport(String importEntry) {
+        // we don't need to do anything here
+    }
+    
+    public void addStaticImport(String staticImportEntry) {
+        // we don't need to do anything here
+    }    
 
     public List getResults() {
         return this.results;

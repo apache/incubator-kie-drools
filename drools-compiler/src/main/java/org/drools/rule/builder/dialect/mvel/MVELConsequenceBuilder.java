@@ -17,10 +17,12 @@ public class MVELConsequenceBuilder
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
+        //factory.setNextFactory( ((MVELDialect)context.getDialect()).getStaticMethodImportResolverFactory() );
+        
         final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
+        factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );
 
         final Serializable expr = MVEL.compileExpression( delimitExpressions( (String) context.getRuleDescr().getConsequence()) );
-        //final Serializable expr = MVEL.compileExpression( (String) ruleDescr.getConsequence() );
 
         context.getRule().setConsequence( new MVELConsequence( expr,
                                                                factory ) );

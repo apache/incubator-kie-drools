@@ -16,6 +16,8 @@ public class MVELSalienceBuilder implements SalienceBuilder {
         context.getBuildStack().push( context.getRule().getLhs() );
         
         final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null, context.getPkg().getGlobals());
+        factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );        
+        
 
         final Serializable expr = MVEL.compileExpression( (String) context.getRuleDescr().getSalience() );
 

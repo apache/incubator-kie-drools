@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
+import java.lang.reflect.Method;
 import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,30 +51,34 @@ import org.drools.rule.builder.dialect.java.JavaPredicateBuilder;
 import org.drools.rule.builder.dialect.java.JavaReturnValueBuilder;
 import org.drools.rule.builder.dialect.java.JavaRuleClassBuilder;
 import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
+import org.mvel.integration.impl.ClassImportResolverFactory;
+import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
 public class MVELDialect
     implements
     Dialect {
 
-    private final PatternBuilder           pattern     = new PatternBuilder( this );
+    private final PatternBuilder                    pattern     = new PatternBuilder( this );
     //private final JavaAccumulateBuilder    accumulate   = new JavaAccumulateBuilder();
-    private final SalienceBuilder          salience    = new MVELSalienceBuilder();
-    private final MVELEvalBuilder          eval        = new MVELEvalBuilder();
-    private final MVELPredicateBuilder     predicate   = new MVELPredicateBuilder();
-    private final MVELReturnValueBuilder   returnValue = new MVELReturnValueBuilder();
-    private final MVELConsequenceBuilder   consequence = new MVELConsequenceBuilder();
+    private final SalienceBuilder                   salience    = new MVELSalienceBuilder();
+    private final MVELEvalBuilder                   eval        = new MVELEvalBuilder();
+    private final MVELPredicateBuilder              predicate   = new MVELPredicateBuilder();
+    private final MVELReturnValueBuilder            returnValue = new MVELReturnValueBuilder();
+    private final MVELConsequenceBuilder            consequence = new MVELConsequenceBuilder();
     //private final JavaRuleClassBuilder     rule         = new JavaRuleClassBuilder();
-    private final MVELFromBuilder          from        = new MVELFromBuilder();
+    private final MVELFromBuilder                   from        = new MVELFromBuilder();
 
-    private List                           results;
+    private List                                    results;
     //private final JavaFunctionBuilder      function     = new JavaFunctionBuilder();
 
-    private Package                        pkg;
-    private PackageBuilderConfiguration    configuration;
-    private final TypeResolver             typeResolver;
-    private final ClassFieldExtractorCache classFieldExtractorCache;
+    private Package                                 pkg;
+    private PackageBuilderConfiguration             configuration;
+    private final TypeResolver                      typeResolver;
+    private final ClassFieldExtractorCache          classFieldExtractorCache;
+    private final MVELExprAnalyzer                  analyzer;
 
-    private final MVELExprAnalyzer         analyzer;
+    private final StaticMethodImportResolverFactory staticImportFactory;
+    private final ClassImportResolverFactory        importFactory;
 
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
@@ -89,7 +94,7 @@ public class MVELDialect
         this.configuration = builder.getPackageBuilderConfiguration();
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
-        
+
         this.analyzer = new MVELExprAnalyzer();
 
         if ( pkg != null ) {
@@ -97,6 +102,10 @@ public class MVELDialect
         }
 
         initBuilder();
+
+        this.importFactory = new ClassImportResolverFactory();
+        this.staticImportFactory = new StaticMethodImportResolverFactory();
+        this.importFactory.setNextFactory( this.staticImportFactory );
     }
 
     public void initBuilder() {
@@ -143,6 +152,44 @@ public class MVELDialect
 
     public void addRule(RuleBuildContext context) {
 
+    }
+
+    public void addImport(String importEntry) {
+        try {
+            Class cls = this.configuration.getClassLoader().loadClass( importEntry );
+            this.importFactory.addClass( cls );
+        } catch ( ClassNotFoundException e ) {
+            // @todo: add MVEL error
+            this.results.add( null );
+        }
+    }
+
+    public void addStaticImport(String staticImportEntry) {                
+        int index = staticImportEntry.lastIndexOf( '.' );
+        String className = staticImportEntry.substring( 0, index );
+        String methodName = staticImportEntry.substring( 0, index + 1 );
+        
+        try {
+            Class cls = this.configuration.getClassLoader().loadClass( className );
+            Method[] methods = cls.getDeclaredMethods();
+            for ( int i = 0; i < methods.length; i++ ) {
+                if ( methods[i].equals( "methodName" ) ) {
+                    this.staticImportFactory.createVariable( methodName, methods[i] );
+                    break;
+                }
+            }
+        } catch ( ClassNotFoundException e ) {
+            // @todo: add MVEL error
+            this.results.add( null );
+        }        
+    }
+    
+    public StaticMethodImportResolverFactory getStaticMethodImportResolverFactory() {
+        return this.staticImportFactory;
+    }
+    
+    public ClassImportResolverFactory getClassImportResolverFactory() {
+        return this.importFactory;
     }
 
     public void compileAll() {
