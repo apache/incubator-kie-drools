@@ -20,5 +20,7 @@ public interface TupleMemory {
     public int size();
 
     public Entry[] getTable();
+    
+    public Entry[] toArray();
 
 }

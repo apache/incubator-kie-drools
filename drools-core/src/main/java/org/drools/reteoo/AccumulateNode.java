@@ -28,6 +28,7 @@ import org.drools.rule.Accumulate;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ArrayUtils;
+import org.drools.util.Entry;
 import org.drools.util.Iterator;
 import org.drools.util.AbstractHashTable.FactEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -203,10 +204,13 @@ public class AccumulateNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
 
-        final Iterator it = memory.getTupleMemory().iterator();
         this.constraints.updateFromFactHandle( workingMemory,
                                                handle );
-        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+
+        // need to clone the tuples to avoid concurrent modification exceptions
+        Entry[] tuples = memory.getTupleMemory().toArray();
+        for ( int i = 0; i < tuples.length; i++ ) {
+            ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 this.retractTuple( tuple,
                                    context,
@@ -232,10 +236,12 @@ public class AccumulateNode extends BetaNode {
             return;
         }
 
-        final Iterator it = memory.getTupleMemory().iterator();
         this.constraints.updateFromFactHandle( workingMemory,
                                                handle );
-        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+        // need to clone the tuples to avoid concurrent modification exceptions
+        Entry[] tuples = memory.getTupleMemory().toArray();
+        for ( int i = 0; i < tuples.length; i++ ) {
+            ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 this.retractTuple( tuple,
                                    context,
