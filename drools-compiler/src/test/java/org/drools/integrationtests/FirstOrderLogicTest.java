@@ -475,6 +475,53 @@ public class FirstOrderLogicTest extends TestCase {
     }
     
 
+    public void testRemoveIdentitiesSubNetwork() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_removeIdentitiesSubNetwork.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        
+        final RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setRemoveIdentities( true );
+        final RuleBase ruleBase = getRuleBase(config);
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Person bob = new Person( "bob", "stilton" );
+        workingMemory.assertObject( bob );
+
+        final Person mark = new Person( "mark", "stilton" );
+        workingMemory.assertObject( mark );
+
+        final Cheese stilton1 = new Cheese( "stilton",
+                                           6 );
+        final FactHandle stilton1Handle = workingMemory.assertObject( stilton1 );
+        final Cheese stilton2 = new Cheese( "stilton",
+                                           7 );
+        final FactHandle stilton2Handle = workingMemory.assertObject( stilton2 );
+
+        workingMemory.fireAllRules();
+        assertEquals( 0,
+                      list.size() );
+        
+        workingMemory.retractObject( stilton1Handle );
+        
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( mark, list.get( 0 ));
+        
+        workingMemory.retractObject( stilton2Handle );
+        
+        workingMemory.fireAllRules();
+        assertEquals( 2,
+                      list.size() );
+        assertEquals( bob, list.get( 1 ));
+    }    
+    
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {

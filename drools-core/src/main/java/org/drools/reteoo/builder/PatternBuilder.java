@@ -19,7 +19,6 @@ package org.drools.reteoo.builder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.base.ClassObjectType;
 import org.drools.common.BetaConstraints;
@@ -27,9 +26,9 @@ import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
@@ -143,25 +142,16 @@ public class PatternBuilder
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            for ( final Iterator it = context.getObjectType().entrySet().iterator(); it.hasNext(); ) {
-                final Map.Entry entry = (Map.Entry) it.next();
-                final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
+            for ( final Iterator it = context.getObjectType().iterator(); it.hasNext(); ) {
+                final Pattern previousPattern = (Pattern) it.next();
+                final Class previousClass = ((ClassObjectType) previousPattern.getObjectType()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    patterns = (List) entry.getValue();
-                    for ( final Iterator patternIter = patterns.iterator(); patternIter.hasNext(); ) {
-                        betaConstraints.add( new InstanceNotEqualsConstraint( (Pattern) patternIter.next() ) );
-                    }
+                    betaConstraints.add( new InstanceNotEqualsConstraint( previousPattern ) );
                 }
             }
-            patterns = (List) context.getObjectType().get( pattern.getObjectType() );
-            if ( patterns == null ) {
-                patterns = new ArrayList();
-            }
-            patterns.add( pattern );
 
             // Must be added after the checking, otherwise it matches against itself
-            context.getObjectType().put( pattern.getObjectType(),
-                                         patterns );
+            context.getObjectType().add( pattern );
         }
     }
 
