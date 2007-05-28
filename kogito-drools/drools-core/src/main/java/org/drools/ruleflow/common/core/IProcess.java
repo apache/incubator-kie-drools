@@ -1,5 +1,7 @@
 package org.drools.ruleflow.common.core;
 
+import java.io.Serializable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,7 +27,7 @@ package org.drools.ruleflow.common.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface IProcess {
+public interface IProcess extends Serializable {
 
     /**
      * Sets the id of this process.

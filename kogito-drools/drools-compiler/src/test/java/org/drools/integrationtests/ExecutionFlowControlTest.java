@@ -586,6 +586,43 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( IProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
+    
+    public void testRuleFlowInPackage() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        workingMemory.fireAllRules();
+        assertEquals( 0,
+                      list.size() );
+
+        final IProcessInstance processInstance = workingMemory.startProcess( "0" );
+        assertEquals( IProcessInstance.STATE_ACTIVE,
+                      processInstance.getState() );
+        workingMemory.fireAllRules();
+        assertEquals( 4,
+                      list.size() );
+        assertEquals( "Rule1",
+                      list.get( 0 ) );
+        assertEquals( "Rule3",
+                      list.get( 1 ) );
+        assertEquals( "Rule2",
+                      list.get( 2 ) );
+        assertEquals( "Rule4",
+                      list.get( 3 ) );
+        assertEquals( IProcessInstance.STATE_COMPLETED,
+                      processInstance.getState() );
+        
+    }
 
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
