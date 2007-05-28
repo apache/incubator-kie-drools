@@ -64,9 +64,8 @@ public class MVELFromBuilder
         final AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
         DataProvider dataProvider = null;
         try {
-            //            JFDIParser parser = createParser( utils,
-            //                                              accessor.toString() );
             final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
+            factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );            
 
             //parser.setValueHandlerFactory( factory );
             final Serializable compiled = MVEL.compileExpression( accessor.toString() );

@@ -1,6 +1,7 @@
 package org.drools.compiler;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.rule.builder.Dialect;
@@ -22,4 +23,18 @@ public class DialectRegistry {
         return (Dialect) this.map.get( name );
     }
 
+    public void addImport(String importEntry) {
+        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
+            Dialect dialect = ( Dialect ) it.next();
+            dialect.addImport( importEntry );
+        }
+    }
+    
+    public void addStaticImport(String staticImportEntry) {
+        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
+            Dialect dialect = ( Dialect ) it.next();
+            dialect.addStaticImport( staticImportEntry );
+        }        
+    }
+    
 }

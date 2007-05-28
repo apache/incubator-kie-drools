@@ -1,5 +1,6 @@
 package org.drools.rule.builder;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,10 @@ public interface Dialect {
 
     void addFunction(final FunctionDescr functionDescr,
                      TypeResolver typeResolver);
+    
+    public void addImport(String importEntry);
+    
+    public void addStaticImport(String importEntry);
 
     List getResults();
 
