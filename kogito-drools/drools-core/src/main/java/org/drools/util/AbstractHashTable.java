@@ -96,6 +96,19 @@ public abstract class AbstractHashTable
         this.table = newTable;
         this.threshold = (int) (newCapacity * this.loadFactor);
     }
+    
+    public Entry[] toArray() {
+        Entry[] result = new Entry[this.size];
+        int index = 0;
+        for ( int i = 0; i < this.table.length; i++ ) {
+            Entry entry = this.table[i];
+            while ( entry != null ) {
+                result[index++] = entry;
+                entry = entry.getNext();
+            }
+        }
+        return result;
+    }
 
     //    public void add(Entry entry) {
     //        int index = indexOf( entry.hashCode(), table.length  );
