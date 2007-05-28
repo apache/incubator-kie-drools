@@ -7,7 +7,9 @@ import org.mvel.CompileException;
 import org.mvel.integration.VariableResolver;
 import org.mvel.integration.VariableResolverFactory;
 import org.mvel.integration.impl.BaseVariableResolverFactory;
+import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.MapVariableResolver;
+import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,7 +19,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
     /**
      * Holds the instance of the variables.
      */
-    private Map           variables;
+    //private Map           variables;
 
     //    public DroolsMVELFactory(Map variables) {
     //        this.variables = variables;
@@ -29,21 +31,16 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
     private Map           previousDeclarations;
     private Map           globals;
 
-    //private Map           resolvers;
-    //private
     private WorkingMemory workingMemory;
 
-    public DroolsMVELFactory() {
-        // this.resolvers = Collections.EMPTY_MAP;
-    }
 
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
-                             final Map globals) {
+                             final Map globals) { 
         this.previousDeclarations = previousDeclarations;
         this.localDeclarations = localDeclarations;
         this.globals = globals;
-        this.variables = new HashMap();
+        //this.variables = new HashMap();
     }
     
     public Object getObject() {
@@ -74,7 +71,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
             return vr;
         } else {
             addResolver( name,
-                         vr = new MapVariableResolver( variables,
+                         vr = new MapVariableResolver( variableResolvers,
                                                        name ) );
             vr.setValue( value );
             return vr;
@@ -89,7 +86,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
             throw new CompileException( "variable already defined within scope: " + vr.getType() + " " + name );
         } else {
             addResolver( name,
-                         vr = new MapVariableResolver( variables,
+                         vr = new MapVariableResolver( variableResolvers,
                                                        name,
                                                        type ) );
             vr.setValue( value );
@@ -113,9 +110,9 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
                                                      (Class) this.globals.get( name ),
                                                      this ) );
             return true;
-        } else if ( variables != null && variables.containsKey( name ) ) {
+        } else if ( variableResolvers != null && variableResolvers.containsKey( name ) ) {
             addResolver( name,
-                         new MapVariableResolver( variables,
+                         new MapVariableResolver( variableResolvers,
                                                   name ) );
             return true;
         } else if ( nextFactory != null ) {
@@ -126,13 +123,12 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
     }
 
     public void pack() {
-        if ( variables != null ) {
+        if ( variableResolvers != null ) {
             if ( variableResolvers == null ) variableResolvers = new HashMap();
-            for ( Iterator it = variables.keySet().iterator(); it.hasNext(); ) {
+            for ( Iterator it = variableResolvers.keySet().iterator(); it.hasNext(); ) {
                 String s = (String) it.next();
-                //for (String s : variables.keySet()) {
                 variableResolvers.put( s,
-                                       new MapVariableResolver( variables,
+                                       new MapVariableResolver( variableResolvers,
                                                                 s ) );
             }
         }
