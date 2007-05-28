@@ -100,6 +100,8 @@ public class MVELDialect
         if ( pkg != null ) {
             init( pkg );
         }
+        
+        this.results = new ArrayList();
 
         initBuilder();
 

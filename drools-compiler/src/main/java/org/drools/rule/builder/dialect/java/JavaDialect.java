@@ -117,6 +117,8 @@ public class JavaDialect
         }
 
         initBuilder();
+        
+        loadCompiler();
     }
 
     public void initBuilder() {
