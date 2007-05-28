@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccumulateDescr;
@@ -83,17 +84,12 @@ public class MVELDialect
     // a map of registered builders
     private Map builders;
 
-    public MVELDialect(final Package pkg,
-                       final PackageBuilderConfiguration configuration,
-                       final TypeResolver typeResolver,
-                       final ClassFieldExtractorCache classFieldExtractorCache) {
-        this.pkg = pkg;
-        this.configuration = configuration;
-        //loadCompiler();
-
-        this.typeResolver = typeResolver;
-        this.classFieldExtractorCache = classFieldExtractorCache;
-
+    public MVELDialect(final PackageBuilder builder) {
+        this.pkg = builder.getPackage();
+        this.configuration = builder.getPackageBuilderConfiguration();
+        this.typeResolver = builder.getTypeResolver();
+        this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
+        
         this.analyzer = new MVELExprAnalyzer();
 
         if ( pkg != null ) {

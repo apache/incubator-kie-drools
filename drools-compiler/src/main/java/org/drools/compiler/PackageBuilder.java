@@ -123,29 +123,17 @@ public class PackageBuilder {
             // make an automatic import for the current package
             this.typeResolver.addImport( this.pkg.getName() + ".*" );
             this.dialects.addDialect( "java",
-                                      new JavaDialect( pkg,
-                                                       configuration,
-                                                       getTypeResolver(),
-                                                       this.classFieldExtractorCache ) );    
+                                      new JavaDialect( this ) );    
             this.dialects.addDialect( "mvel",
-                                      new MVELDialect( pkg,
-                                                       configuration,
-                                                       getTypeResolver(),
-                                                       this.classFieldExtractorCache ) );             
+                                      new MVELDialect( this ) );             
             this.dialect = this.dialects.getDialect( "java" ); // TODO this should from the package
             
         } else {
             this.typeResolver = new ClassTypeResolver( new ArrayList(), configuration.getClassLoader() );
             this.dialects.addDialect( "java",
-                                      new JavaDialect( pkg,
-                                                       configuration,
-                                                       getTypeResolver(),
-                                                       this.classFieldExtractorCache ) ); 
+                                      new JavaDialect( this ) ); 
             this.dialects.addDialect( "mvel",
-                                      new MVELDialect( pkg,
-                                                       configuration,
-                                                       getTypeResolver(),
-                                                       this.classFieldExtractorCache ) );             
+                                      new MVELDialect( this ) );             
             this.dialects.addDialect( "default", this.dialects.getDialect( configuration.getDialect() ) );     
             this.dialect = this.dialects.getDialect( configuration.getDialect() );
         }
@@ -374,7 +362,7 @@ public class PackageBuilder {
      * @return a Type resolver, lazily. If one does not exist yet, it will be
      *         initialised.
      */
-    private TypeResolver getTypeResolver() {
+    public TypeResolver getTypeResolver() {
         return this.typeResolver;
     }
 
@@ -393,7 +381,15 @@ public class PackageBuilder {
         }
         return this.pkg;
     }
+    
+    public PackageBuilderConfiguration getPackageBuilderConfiguration() {
+        return this.configuration;
+    }
 
+    
+    public ClassFieldExtractorCache getClassFieldExtractorCache() {
+        return this.classFieldExtractorCache;
+    }
     /**
      * This will return true if there were errors in the package building and
      * compiling phase

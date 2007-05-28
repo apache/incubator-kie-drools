@@ -19,6 +19,7 @@ import org.apache.commons.jci.readers.ResourceReader;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
 import org.drools.compiler.PackageBuilder.ErrorHandler;
@@ -56,6 +57,7 @@ import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.rule.builder.dialect.mvel.MVELExprAnalyzer;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
@@ -100,16 +102,12 @@ public class JavaDialect
     // a map of registered builders
     private Map                            builders;
 
-    public JavaDialect(final Package pkg,
-                       final PackageBuilderConfiguration configuration,
-                       final TypeResolver typeResolver,
-                       final ClassFieldExtractorCache classFieldExtractorCache) {
-        this.pkg = pkg;
-        this.configuration = configuration;
-        loadCompiler();
-
-        this.typeResolver = typeResolver;
-        this.classFieldExtractorCache = classFieldExtractorCache;
+    public JavaDialect(final PackageBuilder builder) {
+        this.pkg = builder.getPackage();
+        this.configuration = builder.getPackageBuilderConfiguration();
+        this.typeResolver = builder.getTypeResolver();
+        this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
+        
         this.knowledgeHelperFixer = new KnowledgeHelperFixer();
         this.typeFixer = new DeclarationTypeFixer();
         this.analyzer = new JavaExprAnalyzer();
