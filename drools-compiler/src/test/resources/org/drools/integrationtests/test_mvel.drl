@@ -10,8 +10,11 @@ rule "Throw Eval Exception"
         $c : Cheese(type == "stilton", price == (new Integer( 5 ) + 5 ), eval(price == (new Integer( 5 ) + 5 ) ) )
         eval( $c.price == 10 && list == empty)
     then
-        a = new java.math.BigInteger( "10" );
-        b = new java.math.BigInteger( "10" );
-        c = a + b; //look ma, optional ';' - ooh ahh....
-        list.add( c + $c.price);
+    	#we have optional ";"
+        a = new java.math.BigInteger( "10" ) 
+        b = new java.math.BigInteger( "10" )
+
+		#use ";" to seperate on the one line        
+        c = a + b; list.add( c + $c.price)
+        
 end
