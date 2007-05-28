@@ -30,6 +30,7 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -86,10 +87,7 @@ public class RuleBuilderTest extends TestCase {
 
         final RuleBuilder builder = new RuleBuilder( );        
         
-        JavaDialect dialect =  new JavaDialect( pkg,
-                                                new PackageBuilderConfiguration(),
-                                                typeResolver,
-                                                new ClassFieldExtractorCache() ) ;  
+        JavaDialect dialect =  new JavaDialect( new PackageBuilder(pkg) ) ;  
         DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "java", dialect );
         

@@ -17,6 +17,7 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectRegistry;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -43,10 +44,7 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         DialectRegistry registry = new DialectRegistry(); 
         registry.addDialect( "default",
-                                  new MVELDialect( pkg,
-                                                   new PackageBuilderConfiguration(),
-                                                   new ClassTypeResolver(),
-                                                   new ClassFieldExtractorCache() ) );           
+                             new MVELDialect( new PackageBuilder( pkg ) ) );           
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                                ruleDescr,
                                                                                registry );
