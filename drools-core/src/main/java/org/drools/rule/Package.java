@@ -33,6 +33,8 @@ import java.util.Map;
 
 import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.ruleflow.common.core.IProcess;
+import org.drools.ruleflow.core.impl.RuleFlowProcess;
 import org.drools.util.StringUtils;
 
 /**
@@ -76,6 +78,8 @@ public class Package
 
     private Map                    factTemplates;
 
+    private Map                    ruleFlows;
+    
     // @todo: add attributes to Package
     //private Map                   attributes;
 
@@ -122,6 +126,7 @@ public class Package
         this.imports = new ArrayList( 1 );
         this.staticImports = Collections.EMPTY_LIST;
         this.rules = new LinkedHashMap();
+        this.ruleFlows = Collections.EMPTY_MAP;
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
         this.functions = Collections.EMPTY_LIST;
@@ -139,7 +144,8 @@ public class Package
         stream.writeObject( this.imports );
         stream.writeObject( this.staticImports );
         stream.writeObject( this.globals );
-
+        stream.writeObject( this.ruleFlows );
+        
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -162,7 +168,8 @@ public class Package
         this.imports = (List) stream.readObject();
         this.staticImports = (List) stream.readObject();
         this.globals = (Map) stream.readObject();
-
+        this.ruleFlows = (Map) stream.readObject();
+        
         // Return the rules stored as a byte[]
         final byte[] bytes = (byte[]) stream.readObject();
 
@@ -278,6 +285,36 @@ public class Package
                         rule );
         rule.setLoadOrder( this.rules.size() );
     }
+    
+    /**
+     * Add a rule flow to this package.
+     */
+    public void addRuleFlow(IProcess process) {
+        if (this.ruleFlows == Collections.EMPTY_MAP) {
+            this.ruleFlows = new HashMap();
+        }
+        this.ruleFlows.put(process.getId(), process );
+    }
+    
+    /**
+     * Get the rule flows for this package. The key is the ruleflow id.
+     * It will be Collections.EMPTY_MAP if none have been added.
+     */
+    public Map getRuleFlows() {
+        return this.ruleFlows;
+    }
+    
+    
+    /**
+     * Rule flows can be removed by ID. 
+     */
+    public void removeRuleFlow(String id) {
+        if (!this.ruleFlows.containsKey( id )) {
+            throw new IllegalArgumentException("The rule flow with id [" + id + "] is not part of this package.");
+        }
+        this.ruleFlows.remove( id );
+    }
+    
 
     public void removeRule(final Rule rule) {
         this.rules.remove( rule.getName() );

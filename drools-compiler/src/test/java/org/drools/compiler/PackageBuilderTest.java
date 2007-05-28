@@ -19,6 +19,7 @@ package org.drools.compiler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -73,6 +74,8 @@ import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.ruleflow.common.core.IProcess;
+import org.drools.ruleflow.core.impl.RuleFlowProcess;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
@@ -1118,6 +1121,109 @@ public class PackageBuilderTest extends DroolsTestCase {
                       rule.getName() );
 
         return rule;
+    }
+    
+    public void testRuleFlow() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        
+        InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow.rf" );
+        assertNotNull(in);
+        
+        builder.addPackage( new PackageDescr("ya") );
+        
+        builder.addRuleFlow( new InputStreamReader(in) );
+        Package pkg = builder.getPackage();
+        assertNotNull(pkg);
+        
+        Map flows = pkg.getRuleFlows();
+        assertNotNull(flows);
+        assertEquals(1, flows.size());
+        
+        assertTrue(flows.containsKey( "0" ));
+        
+        IProcess p = (IProcess) flows.get( "0" );
+        assertTrue( p instanceof RuleFlowProcess );
+        
+        
+        //now serialization
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(data);
+        out.writeObject( pkg );
+        
+        ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(data.toByteArray()));
+        Package pkg2 = (Package) objIn.readObject();
+        assertNotNull(pkg2);
+        
+        flows = pkg2.getRuleFlows();
+        assertNotNull(flows);
+        assertEquals(1, flows.size());
+        assertTrue(flows.containsKey( "0" ));
+        p = (IProcess) flows.get( "0" );
+        assertTrue( p instanceof RuleFlowProcess );
+        
+        
+        
+        
+        
+    }
+    
+    public void testPackageRuleFlows() throws Exception {
+        Package pkg = new Package("boo");
+        IProcess rf = new MockRuleFlow("1");
+        pkg.addRuleFlow( rf );
+        assertTrue(pkg.getRuleFlows().containsKey( "1" ));
+        assertSame(rf, pkg.getRuleFlows().get( "1" ));
+        
+        IProcess rf2 = new MockRuleFlow("2");
+        pkg.addRuleFlow( rf2 );
+        assertTrue(pkg.getRuleFlows().containsKey( "1" ));
+        assertSame(rf, pkg.getRuleFlows().get( "1" ));
+        assertTrue(pkg.getRuleFlows().containsKey( "2" ));
+        assertSame(rf2, pkg.getRuleFlows().get( "2" ));
+        
+        pkg.removeRuleFlow( "1" );
+        assertTrue(pkg.getRuleFlows().containsKey( "2" ));
+        assertSame(rf2, pkg.getRuleFlows().get( "2" ));
+        assertFalse(pkg.getRuleFlows().containsKey( "1" ));
+        
+    }
+    
+    class MockRuleFlow implements IProcess {
+
+        private String id;
+
+        MockRuleFlow(String id) {
+            this.id = id;
+        }
+        
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return null;
+        }
+
+        public String getType() {
+            return null;
+        }
+
+        public String getVersion() {
+            return null;
+        }
+
+        public void setId(String id) {
+        }
+
+        public void setName(String name) {
+        }
+
+        public void setType(String type) {
+        }
+
+        public void setVersion(String version) {
+        }
+        
     }
 
     class MockActivation

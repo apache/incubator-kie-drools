@@ -24,13 +24,14 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.Map.Entry;
 
 import org.drools.FactException;
 import org.drools.PackageIntegrationException;
@@ -293,6 +294,15 @@ abstract public class AbstractRuleBase
                 addRule( rules[i] );
             }
 
+            //and now the rule flows
+            if (newPkg.getRuleFlows() != Collections.EMPTY_MAP) { 
+                Map flows = newPkg.getRuleFlows();
+                for ( Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
+                    Entry flow = (Entry) iter.next();
+                    this.processes.put( flow.getKey(), flow.getValue() );
+                }
+            }
+            
             this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
 
         } finally {
