@@ -1,0 +1,21 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "multiple not's"
+when
+    $bob : Person( name == "bob", $likes : likes )
+    not Cheese( type == $likes )
+    not Cheese( type == $likes )
+then
+    results.add( $bob );
+end
+
+rule "subnetwork not's"
+when
+    $mark : Person( name == "mark", $likes : likes )
+    not ( Cheese( type == $likes ) and Cheese( type == $likes ) )
+then
+    results.add( $mark );
+end
+

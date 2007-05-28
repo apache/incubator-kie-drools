@@ -16,17 +16,14 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Map;
 
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.RuleConditionElement;
 
@@ -44,7 +41,7 @@ public class BuildContext {
     private ObjectSource              objectSource;
 
     // object type cache to check for cross products
-    private Map                       objectType;
+    private LinkedList                objectType;
 
     // offset of the pattern
     private int                       currentPatternOffset;
@@ -70,7 +67,7 @@ public class BuildContext {
         this.workingMemories = (InternalWorkingMemory[]) this.rulebase.getWorkingMemories();
         this.idGenerator = idGenerator;
 
-        this.objectType = new LinkedHashMap();
+        this.objectType = new LinkedList();
         this.buildstack = new LinkedList();
 
         this.tupleSource = null;
@@ -91,6 +88,13 @@ public class BuildContext {
      */
     public void setCurrentPatternOffset(final int currentPatternIndex) {
         this.currentPatternOffset = currentPatternIndex;
+        this.syncObjectTypesWithPatternOffset();
+    }
+    
+    public void syncObjectTypesWithPatternOffset() {
+        while( this.objectType.size() > this.currentPatternOffset ) {
+            this.objectType.removeLast();
+        }
     }
 
     /**
@@ -110,14 +114,14 @@ public class BuildContext {
     /**
      * @return the objectType
      */
-    public Map getObjectType() {
+    public LinkedList getObjectType() {
         return this.objectType;
     }
 
     /**
      * @param objectType the objectType to set
      */
-    public void setObjectType(final Map objectType) {
+    public void setObjectType(final LinkedList objectType) {
         this.objectType = objectType;
     }
 
@@ -141,6 +145,7 @@ public class BuildContext {
 
     public void decrementCurrentPatternOffset() {
         this.currentPatternOffset--;
+        this.syncObjectTypesWithPatternOffset();
     }
 
     /**
