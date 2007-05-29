@@ -269,10 +269,10 @@
 &lt;/application-policy&gt;</programlisting>
 
       <para>To use the above, you would put jaas-config-name="brms" in the
-      security:identity tag in the components.xml for the BRMS. </para>
+      security:identity tag in the components.xml for the BRMS.</para>
 
       <para>Similar configuration examples can be found for other directory
-      services. </para>
+      services.</para>
 
       <para>LDAP isn't the final word, you can use JDBC against a database of
       user name, or you can write your own login module to use any sort of
@@ -283,5 +283,56 @@
     </section>
   </section>
 
+  <section>
+    <title>Data management</title>
 
+    <section>
+      <title>Backups</title>
+
+      <para>How backups are performed is dependent on what persistence manager
+      scheme you are using. Using the default one - then its a matter of
+      backing up the repository directory (wherever you have it configured to
+      be). Restoring it is simply a matter of copying across the repository
+      directory.</para>
+
+      <para>Ideally you will either stop the BRMS application while a file
+      backup is being done, or ensure that no one is using it. </para>
+
+      <para>In the case of using an external database (eg Oracle, MySQL), then
+      the normal scheme can apply that you would use to backup those database
+      (you do back them up, right?). In this case, when restoring, it is also
+      a good idea to clear the indexes (delete the directory where the indexes
+      are) so they are created fresh from the data (and thus guaranteed to be
+      in sync). </para>
+    </section>
+
+    <section>
+      <title>Asset list customisation</title>
+
+      <para>In a few places in the BRMS there is an asset list: this list can
+      be customised by looking for the AssetListTable.properties file. You can
+      then set the header names and the "getter" methods that are used to
+      populate the columns. eg you could add in getCreator, or
+      getExternalSource as extra fields if you were using them.</para>
+    </section>
+
+    <section>
+      <title>Import and Export</title>
+
+      <para>A JCR standard export/import feature is available from the Admin
+      part of the web interface. </para>
+
+      <para>This will export the entire repository to an XML format as defined
+      by the JCR standard. </para>
+
+      <para>In the case of import, it will clear any existing content in the
+      database. </para>
+
+      <para>This is not a substitute for backup but can be useful when
+      migrating. It is important to note that version history is not exported
+      this way, only the current state. Hence it is still recommended that a
+      formal backup regime be used at all times on the repository database
+      itself.</para>
+    </section>
+  </section>
 </section>
