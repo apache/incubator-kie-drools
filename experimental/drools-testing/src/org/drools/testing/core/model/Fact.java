@@ -1,5 +1,8 @@
 package org.drools.testing.core.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * 
  * @author Matt
@@ -13,16 +16,10 @@ public class Fact {
 
 	private Integer id;
 	private String type;
-	private Field[] fields;
+	private Collection fields = new ArrayList();
 	
 	public Fact () {}
 	
-	public Field[] getFields() {
-		return fields;
-	}
-	public void setFields(Field[] fields) {
-		this.fields = fields;
-	}
 	public Integer getId() {
 		return id;
 	}
@@ -34,5 +31,13 @@ public class Fact {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Collection getFields() {
+		return fields;
+	}
+
+	public void setFields(Collection fields) {
+		this.fields = fields;
 	}
 }

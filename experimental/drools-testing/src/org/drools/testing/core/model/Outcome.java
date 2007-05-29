@@ -1,5 +1,8 @@
 package org.drools.testing.core.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * 
  * @author Matt
@@ -8,21 +11,26 @@ package org.drools.testing.core.model;
  */
 public class Outcome {
 
-	public Rule[] rules;
-	public Assertion[] assertions;
+	private Collection rules = new ArrayList();
+	public Collection assertions = new ArrayList();
 	
 	public Outcome () {}
-	
-	public Assertion[] getAssertions() {
+
+	public Collection getAssertions() {
 		return assertions;
 	}
-	public void setAssertions(Assertion[] assertions) {
+
+	public void setAssertions(Collection assertions) {
 		this.assertions = assertions;
 	}
-	public Rule[] getRules() {
+
+	public Collection getRules() {
 		return rules;
 	}
-	public void setRules(Rule[] rules) {
+
+	public void setRules(Collection rules) {
 		this.rules = rules;
 	}
+	
+	
 }

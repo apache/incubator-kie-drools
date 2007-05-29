@@ -6,27 +6,20 @@ import org.drools.semantics.java.ClassTypeResolver;
 
 public final class ObjectUtils {
 	
-	public static Object createObject(String className) {
+	public static Object createObject(String className) throws Exception {
 	      Object object = null;
-	      try {
-	    	  //Class classDefinition = Class.forName(className, false, ClassLoader.getSystemClassLoader());
+	        //Class classDefinition = Class.forName(className, false, ClassLoader.getSystemClassLoader());
 	    	  Class classDefinition = Class.forName(className);
 	          object = classDefinition.newInstance();
-	      } catch (Exception e) {
-	          System.out.println(e);
-	      }
+	      
 	      return object;
 	}
 	
-	public static Class getClassDefn (String className) {
+	public static Class getClassDefn (String className) throws ClassNotFoundException {
 		Class classDefinition = null;
-		try {
 			//classDefinition = Class.forName(className, false, ClassLoader.getSystemClassLoader());
-	        classDefinition = Class.forName(className);
-	      } catch (Exception e) {
-	          System.out.println(e);
-	      }
-	      return classDefinition;
+	    classDefinition = Class.forName(className);
+	    return classDefinition;
 	}
 	
 	public static Class getClassDefn (String className, List imports, ClassLoader classLoader) {
