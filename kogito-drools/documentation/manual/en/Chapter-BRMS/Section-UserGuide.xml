@@ -29,5 +29,36 @@
   <section>
         <title>Integrating with your applications</title>
   </section>
+  
+  <section>
+    <title>Data management</title>
+
+    <para>Various aspects of the system can be customised, either by editing
+    configuration files, or via the web interface directly.</para>
+
+    <section>
+      <title>Customising table views</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Categories</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Statuses</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Import and Export</title>
+
+      <para></para>
+    </section>
+  </section>  
     
 </section>
