@@ -13,6 +13,7 @@ import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
 import org.drools.testing.core.filters.MultipleRuleAgendaFilter;
 import org.drools.testing.core.model.Fact;
 import org.drools.testing.core.model.Field;
+import org.drools.testing.core.model.Outcome;
 import org.drools.testing.core.model.Rule;
 import org.drools.testing.core.model.Scenario;
 import org.drools.testing.core.utils.ObjectUtils;
@@ -169,5 +170,13 @@ public class TestRunner {
 	 */
 	private void setOutcomes (Scenario scenario, WorkingMemory wm) throws RuleTestLanguageException {
 		
+		// iterate over the outcomes and process each assertion
+		Iterator i = scenario.getOutcomes().iterator();
+		while (i.hasNext()) {
+			Outcome outcome = (Outcome) i.next();
+			
+		}
 	}
+	
+	
 }

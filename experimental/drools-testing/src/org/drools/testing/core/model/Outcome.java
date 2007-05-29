@@ -15,6 +15,8 @@ public class Outcome {
 	private String state;
 	private Collection rules = new ArrayList();
 	private Collection assertions = new ArrayList();
+	private Collection passedAssertions = new ArrayList();
+	private Collection failedAssertions = new ArrayList();
 	private static final String STATE_PASS = "PASS";
 	private static final String STATE_PARTIAL_PASS = "PARTIAL PASS";
 	private static final String STATE_FAIL = "FAIL";
@@ -51,6 +53,22 @@ public class Outcome {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public Collection getFailedAssertions() {
+		return failedAssertions;
+	}
+
+	public void setFailedAssertions(Collection failedAssertions) {
+		this.failedAssertions = failedAssertions;
+	}
+
+	public Collection getPassedAssertions() {
+		return passedAssertions;
+	}
+
+	public void setPassedAssertions(Collection passedAssertions) {
+		this.passedAssertions = passedAssertions;
 	}
 	
 	
