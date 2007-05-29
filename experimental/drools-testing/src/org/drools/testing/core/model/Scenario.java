@@ -12,34 +12,13 @@ import java.util.Collection;
 public class Scenario {
 
 	private Collection facts = new ArrayList();
-	private Collection outcomes = new ArrayList();
-	private Collection rules = new ArrayList();
+	private Collection assertions;
+	
+	private String[] ruleNamesToCheck;
 	
 	public Scenario () {}
 
-	public Collection getFacts() {
-		return facts;
-	}
 
-	public void setFacts(Collection facts) {
-		this.facts = facts;
-	}
-
-	public Collection getOutcomes() {
-		return outcomes;
-	}
-
-	public void setOutcomes(Collection outcomes) {
-		this.outcomes = outcomes;
-	}
-
-	public Collection getRules() {
-		return rules;
-	}
-
-	public void setRules(Collection rules) {
-		this.rules = rules;
-	}
 	
 	
 }
