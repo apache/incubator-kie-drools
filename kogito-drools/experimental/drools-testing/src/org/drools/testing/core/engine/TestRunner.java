@@ -11,6 +11,7 @@ import org.drools.WorkingMemory;
 import org.drools.testing.core.exception.RuleTestLanguageException;
 import org.drools.testing.core.exception.RuleTestServiceUnavailableException;
 import org.drools.testing.core.filters.MultipleRuleAgendaFilter;
+import org.drools.testing.core.model.Assertion;
 import org.drools.testing.core.model.Fact;
 import org.drools.testing.core.model.Field;
 import org.drools.testing.core.model.Outcome;
@@ -91,6 +92,8 @@ public class TestRunner {
 		Collection rules = specifyRulesToFire(scenario.getRules(), wm);
 		// fire the rules
 		wm.fireAllRules(new MultipleRuleAgendaFilter(rules));
+		setOutcomes(scenario, wm);
+		wm.dispose();
 	}
 	
 	/**
@@ -174,9 +177,34 @@ public class TestRunner {
 		Iterator i = scenario.getOutcomes().iterator();
 		while (i.hasNext()) {
 			Outcome outcome = (Outcome) i.next();
-			
+			Iterator j =  outcome.getAssertions().iterator();
+			while (j.hasNext()) {
+				Assertion assertion = (Assertion) j.next();
+				processAssertion (assertion, wm);
+			}
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * 
+	 * @param assertion
+	 * @param wm
+	 * @return
+	 * @throws RuleTestLanguageException
+	 */
+	private Assertion processAssertion (Assertion assertion, WorkingMemory wm) throws RuleTestLanguageException {
+		
+		Class classDefn; 
+		Object fact;
+		
+		try {
+			classDefn = ObjectUtils.getClassDefn(assertion.getBeanName());
+			fact = classDefn.newInstance(); 
+		}catch (Exception e) {
+			throw new RuleTestServiceUnavailableException("Exception ocurred",e);
+		}
+		
+		return assertion;
+	}
 }
