@@ -11,8 +11,13 @@ import java.util.Collection;
  */
 public class Outcome {
 
+	private String name;
+	private String state;
 	private Collection rules = new ArrayList();
-	public Collection assertions = new ArrayList();
+	private Collection assertions = new ArrayList();
+	private static final String STATE_PASS = "PASS";
+	private static final String STATE_PARTIAL_PASS = "PARTIAL PASS";
+	private static final String STATE_FAIL = "FAIL";
 	
 	public Outcome () {}
 
@@ -30,6 +35,22 @@ public class Outcome {
 
 	public void setRules(Collection rules) {
 		this.rules = rules;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 	
 	
