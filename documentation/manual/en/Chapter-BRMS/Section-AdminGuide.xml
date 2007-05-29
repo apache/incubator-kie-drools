@@ -2,15 +2,148 @@
 <!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
 "http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <section>
-  <title>Introduction</title>
+  <title>Administration guide</title>
 
-  <para></para>
+  <para>This chapter covers installation and administration issues of the
+  BRMS.</para>
 
- 
-
+  <para>The BRMS is a web application that can run in multiple environments,
+  and be configured to suit most situations. There is also some initial setup
+  of data, and export/import functions covered.</para>
 
   <section>
-        <title>Installation options</title>
+    <title>Installation</title>
+
+    <para>Installation for most people is very simple. The BRMS application is
+    deployed as a .war file, which can be deployed in application servers or
+    servlet containers with little or no configuration if you are happy with
+    the defaults.</para>
+
+    <para>When you have downloaded the BRMS distribution (which you can get
+    from http://labs.jboss.com/jbossrules/downloads), you will find the
+    drools-jbrms.war file in the zip file. Copy the WAR file into the
+    deployment directory of you app server, and then start your app server. If
+    you need to customise some settings, you can first "explode" (unzip) the
+    war file, and change any configuration settings, and then either zip it
+    up, or deploy it "exploded".</para>
+
+    <para>Once the drools-jbrms.war has been placed in the deployment
+    directory, and the application server started, you should navigate to
+    http://localhost/drools-jbrms and check that the BRMS appears. (Obviously
+    substitute the URL for what your application is configured to).</para>
+
+    <para>Once that shows up, you are deployed and ready to go !</para>
+
+    <section>
+      <title>Supported and recommended platforms</title>
+
+      <para>The BRMS is capable of running in any application server that
+      sypports Java SE5 (JEE 5 is not required) - this includes servlet
+      containers like tomcat.</para>
+
+      <para>It is actively tested on JBoss platforms, and these are
+      recommended if you are able to use them, or don't have any existing
+      infrastructure. However, it is possible to use any container/app server,
+      in some cases with minor configuration tweaks (consult the wiki for
+      specific tips).</para>
+
+      <para>The following are a list of recommended platforms (all freely
+      available), in all cases, you can substitute newer versions of the same
+      and it should work (as time may have passed since this was
+      written):</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>JBoss Application Server 4.0.5</para>
+
+          <para>This is recommended as a general application server solution,
+          if you need to run other applications alongside the BRMS.</para>
+        </listitem>
+
+        <listitem>
+          <para>JBoss Web 1.0.1</para>
+
+          <para>This is an ideal solution if you need a "lighter" server to
+          run just the BRMS (perhaps stand alone). </para>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can of course download these from www.jboss.com for every
+      operating system.</para>
+
+      <para>Deployment into JBoss platforms: If you are installing a new JBoss platform, the 
+      WAR can be copied to [app server directory]/server/default/deploy. You then start up the server by
+      running run.sh or run.bat in the [app server directory/bin] directory.</para>
+      
+    </section>
   </section>
+
+  <section>
+    <title>Database configuration</title>
+
+    <para>The BRMS uses the JCR standard for storing assets (such as rules). The default implementation
+     is Apache Jackrabbit. This includes an out of the box storage engine/database, which you can use as is, or configure to use an existing database if needed.</para>
+     
+     
+     <section>
+     	<title>Changing the location of the data store</title>
+     <para>When you run the BRMS for the first time (starting up the app server), it will create 
+     a database in the [app server directory]/bin/ directory (assuming you used on of the JBoss platforms). There is a repository.xml file, and a repository directory that are automatically created.</para>
+     
+     <para>The location of the data store should be a secure location, that is backed up.
+     The default location may not be suitable for this, so the easiest way is to take the generated repository.xml and repository directory (mentioned above) and move it to a suitable location.
+     </para> 	
+     	
+     </section> 
+     
+	<section>
+		<title>Configuring the BRMS to use an external RDBMS</title>
+		<para></para>
+	</section>
     
+    <section>
+    	<title>Persistence managers</title>
+    	<para></para>
+    </section>
+    
+  </section>
+
+  <section>
+    <title>Security</title>
+
+    <para>Security is configured by using the components.xml file in the war
+    file. To customise this, you will need to unzip the war file, and locate
+    the components.xml file which is in the WEB-INF directory.</para>
+  </section>
+
+  <section>
+    <title>Data management</title>
+
+    <para>Various aspects of the system can be customised, either by editing
+    configuration files, or via the web interface directly.</para>
+
+    <section>
+      <title>Customising table views</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Categories</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Statuses</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Import and Export</title>
+
+      <para></para>
+    </section>
+  </section>
 </section>

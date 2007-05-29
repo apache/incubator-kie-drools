@@ -130,8 +130,9 @@
     </chapter>
 
 	<chapter>
-		<title>The BRMS (Business Rule Management System</title>
+		<title>The BRMS (Business Rule Management System)</title>
 		<xi:include href="Chapter-BRMS/Section-Introduction.xml" />
+		<xi:include href="Chapter-BRMS/Section-AdminGuide.xml" />
 	</chapter>
 
 
