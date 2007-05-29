@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.jci.problems.CompilationProblem;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
@@ -48,6 +49,8 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.ruleflow.common.core.IProcess;
+import org.drools.ruleflow.core.impl.RuleFlowProcess;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
@@ -73,6 +76,8 @@ public class PackageBuilder {
     private Dialect                     dialect;
 
     private DialectRegistry             dialects;
+
+    private ProcessBuilder processBuilder;
 
     /**
      * Use this when package is starting from scratch.
@@ -195,6 +200,23 @@ public class PackageBuilder {
                                                dsl );
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
+    }
+    
+    /**
+     * Add a ruleflow (.rt) asset to this package.
+     */
+    public void addRuleFlow(Reader processSource) {
+        if (this.processBuilder == null) {
+            this.processBuilder = new ProcessBuilder(this);
+        }
+        try {
+            this.processBuilder.addProcessFromFile( processSource );
+        } catch ( Exception e ) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeDroolsException("Unable to load process.", e);
+        }
     }
 
     /**
@@ -378,10 +400,11 @@ public class PackageBuilder {
      * Compiled packages are serializable.
      */
     public Package getPackage() {
-
         if ( hasErrors() ) {
             this.pkg.setError( getErrors().toString() );
         }
+        addRuleFlowsToPackage(this.processBuilder, pkg);
+        
         return this.pkg;
     }
     
@@ -389,10 +412,20 @@ public class PackageBuilder {
         return this.configuration;
     }
 
+    private void addRuleFlowsToPackage(ProcessBuilder processBuilder, Package pkg) {
+        if ( processBuilder != null ) {
+            IProcess[] processes = processBuilder.getProcesses();
+            for ( int i = 0; i < processes.length; i++ ) {
+                pkg.addRuleFlow( processes[i] );
+            }
+        }
+    }
+
     
     public ClassFieldExtractorCache getClassFieldExtractorCache() {
         return this.classFieldExtractorCache;
     }
+
     /**
      * This will return true if there were errors in the package building and
      * compiling phase
