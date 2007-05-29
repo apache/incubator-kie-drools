@@ -80,14 +80,16 @@ public class RuleBuildContext {
     // a simple counter for generated names
     private int                      counter;
 
-    private Dialect                  dialect;
+    private DialectRegistry          dialectRegistry;
+
+    private String                   defaultDialectName;
 
     /**
      * Default constructor
      */
     public RuleBuildContext(final Package pkg,
                             final RuleDescr ruleDescr,
-                            final DialectRegistry registry) {
+                            final DialectRegistry dialectRegistry) {
         this.pkg = pkg;
 
         this.methods = new ArrayList();
@@ -112,13 +114,19 @@ public class RuleBuildContext {
                        ruleDescr.getAttributes() );
 
         String dialectName = (this.rule.getDialect() != null) ? this.rule.getDialect() : "default";
-        this.dialect = registry.getDialect( dialectName );
+        this.defaultDialectName = dialectName;
+        this.dialectRegistry = dialectRegistry;
+        
 
-        this.dialect.init( ruleDescr );
+        dialectRegistry.getDialect( this.defaultDialectName ).init( ruleDescr );
     }
 
     public Dialect getDialect() {
-        return this.dialect;
+        return this.dialectRegistry.getDialect( this.defaultDialectName );
+    }
+    
+    public Dialect getDialect(String dialectName) {
+        return (Dialect) this.dialectRegistry.getDialect( dialectName );
     }
 
     /**

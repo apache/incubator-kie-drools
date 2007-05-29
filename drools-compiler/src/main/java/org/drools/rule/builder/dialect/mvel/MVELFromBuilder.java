@@ -34,6 +34,7 @@ import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.spi.DataProvider;
 import org.mvel.MVEL;
+import org.mvel.integration.impl.ClassImportResolverFactory;
 
 /**
  * A builder for "from" conditional element
@@ -53,7 +54,7 @@ public class MVELFromBuilder
         final FromDescr fromDescr = (FromDescr) descr;
 
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
-        
+
         final Pattern pattern = patternBuilder.build( context,
                                                       fromDescr.getReturnedPattern() );
 
@@ -64,11 +65,17 @@ public class MVELFromBuilder
         final AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
         DataProvider dataProvider = null;
         try {
-            final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
-            factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );            
+            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
+                                                                     null,
+                                                                     context.getPkg().getGlobals() );
+
+            // This builder is re-usable in other dialects, so specify by name
+            final ClassImportResolverFactory classImportResolverFactory = ((MVELDialect) context.getDialect( "mvel" )).getClassImportResolverFactory();
+            factory.setNextFactory( classImportResolverFactory );
 
             //parser.setValueHandlerFactory( factory );
-            final Serializable compiled = MVEL.compileExpression( accessor.toString(), ((MVELDialect)context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+            final Serializable compiled = MVEL.compileExpression( accessor.toString(),
+                                                                  classImportResolverFactory.getImportedClasses() );
 
             dataProvider = new MVELDataProvider( compiled,
                                                  factory );

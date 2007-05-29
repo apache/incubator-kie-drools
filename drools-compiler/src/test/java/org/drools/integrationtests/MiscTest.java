@@ -787,8 +787,7 @@ public class MiscTest extends TestCase {
                       list.get( 3 ) );
     }
 
-    // @FIXME
-    public void FIXMEtestBasicFrom() throws Exception {
+    public void testBasicFrom() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -843,8 +842,7 @@ public class MiscTest extends TestCase {
                       list3.get( 0 ) );
     }
 
-    // @FIXME
-    public void FIXME_testFromWithParams() throws Exception {
+    public void testFromWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
         final Package pkg = builder.getPackage();

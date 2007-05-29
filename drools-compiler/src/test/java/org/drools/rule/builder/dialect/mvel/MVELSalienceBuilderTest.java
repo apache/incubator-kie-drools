@@ -35,14 +35,16 @@ import org.drools.spi.PatternExtractor;
 import org.mvel.MVEL;
 
 public class MVELSalienceBuilderTest extends TestCase {
-    public void test1() {        
+    public void testSimpleExpression() {        
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setSalience( "p.age + 20" );
         ruleDescr.setConsequence( "" );
 
-        DialectRegistry registry = new DialectRegistry(); 
+        DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "default",
+                             new MVELDialect( new PackageBuilder( pkg ) ) );        
+        registry.addDialect( "mvel",
                              new MVELDialect( new PackageBuilder( pkg ) ) );           
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                                ruleDescr,
