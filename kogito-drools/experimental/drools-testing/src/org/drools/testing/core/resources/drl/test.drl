@@ -5,7 +5,6 @@ import org.drools.testing.core.rules.model.Person;
 rule rule1
 	when 
 		$acc : Account (status == "active", balance == 0)
-		$person : Person ( age < 60 )
 	then
 		$acc.setBalance(new Integer(10));
 		modify($acc);

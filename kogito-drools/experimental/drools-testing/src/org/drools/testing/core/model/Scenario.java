@@ -1,5 +1,6 @@
 package org.drools.testing.core.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -10,9 +11,9 @@ import java.util.Collection;
  */
 public class Scenario {
 
-	private Collection facts;
-	private Collection outcomes;
-	private Collection rules;
+	private Collection facts = new ArrayList();
+	private Collection outcomes = new ArrayList();
+	private Collection rules = new ArrayList();
 	
 	public Scenario () {}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.drools.WorkingMemory;
 import org.drools.testing.core.exception.RuleTestLanguageException;
@@ -104,27 +105,33 @@ public class TestRunner {
 		Iterator i  = facts.iterator();
 		while (i.hasNext()) {
 			Fact factDefn = (Fact) i.next();
-			Class classDefn = ObjectUtils.getClassDefn(factDefn.getType(), pkg.getImports(),null);
+			Class classDefn; 
 			Object fact;
-			try {
-				fact = classDefn.newInstance(); 
-			}catch (Exception e) {
-				throw new RuleTestServiceUnavailableException("Exception ocurred",e);
-			}
-			
-			// get the fields to set from the fact definition
-			Field[] fields = factDefn.getFields();
-			for (int j=0; j<fields.length; j++) {
-				Field field = fields[j];
-				// set the property on our newly instantiated fact bean
+			if (factDefn != null) {
 				try {
-					PropertyUtils.setProperty(fact, field.getName(), field.getValue());
+					classDefn = ObjectUtils.getClassDefn(factDefn.getType());
+					fact = classDefn.newInstance(); 
 				}catch (Exception e) {
 					throw new RuleTestServiceUnavailableException("Exception ocurred",e);
 				}
+			
+			
+				// get the fields to set from the fact definition
+				Iterator j = factDefn.getFields().iterator();
+				while (j.hasNext()) {
+					Field field = (Field) j.next();
+					// set the property on our newly instantiated fact bean
+					try {
+						Object value = ConvertUtils.convert(field.getValue(), 
+								ObjectUtils.getClassDefn(field.getType()));
+						PropertyUtils.setProperty(fact, field.getName(), value);
+					}catch (Exception e) {
+						throw new RuleTestServiceUnavailableException("Exception ocurred",e);
+					}
+				}
+				// assert the fact into working memory
+				wm.assertObject(fact);
 			}
-			// assert the fact into working memory
-			wm.assertObject(fact);
 		}
 	}
 	
