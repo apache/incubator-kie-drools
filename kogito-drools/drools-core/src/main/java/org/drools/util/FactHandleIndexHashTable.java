@@ -6,6 +6,7 @@ package org.drools.util;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.util.TupleIndexHashTable.FieldIndexEntry;
 
 public class FactHandleIndexHashTable extends AbstractHashTable
     implements
@@ -114,6 +115,22 @@ public class FactHandleIndexHashTable extends AbstractHashTable
             this.entry = entry;
         }
     }
+    
+    public Entry[] toArray() {
+        Entry[] result = new Entry[this.size];
+        int index = 0;
+        for ( int i = 0; i < this.table.length; i++ ) {
+            FieldIndexEntry fieldIndexEntry = (FieldIndexEntry)this.table[i];
+            if ( fieldIndexEntry != null ) {
+                Entry entry = fieldIndexEntry.getFirst();
+                while ( entry != null ) {
+                    result[index++] = entry;
+                    entry = entry.getNext();
+                }
+            }
+        }
+        return result;
+    }    
 
     public boolean add(final InternalFactHandle handle) {
         final FieldIndexEntry entry = getOrCreate( handle.getObject() );

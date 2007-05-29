@@ -166,6 +166,22 @@ public class TupleIndexHashTable extends AbstractHashTable
             this.entry = null;
         }
     }
+    
+    public Entry[] toArray() {
+        Entry[] result = new Entry[this.size];
+        int index = 0;
+        for ( int i = 0; i < this.table.length; i++ ) {
+            FieldIndexEntry fieldIndexEntry = (FieldIndexEntry)this.table[i];
+            if ( fieldIndexEntry != null ) {
+                Entry entry = fieldIndexEntry.getFirst();
+                while ( entry != null ) {
+                    result[index++] = entry;
+                    entry = entry.getNext();
+                }
+            }
+        }
+        return result;
+    }       
 
     public void add(final ReteTuple tuple) {
         final FieldIndexEntry entry = getOrCreate( tuple );
