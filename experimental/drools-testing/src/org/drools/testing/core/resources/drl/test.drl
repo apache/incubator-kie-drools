@@ -8,6 +8,7 @@ rule rule1
 	then
 		$acc.setBalance(new Integer(10));
 		modify($acc);
+		System.out.println("Running test1.....");
 end
 
 rule rule2
