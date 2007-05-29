@@ -78,9 +78,8 @@ public class ExecutionFlowControlTest extends TestCase {
                              "Rule 2",
                              list.get( 1 ) );
     }
-    
-    // @FIXME    
-    public void FIXMEtestSalienceExpression() throws Exception {
+     
+    public void testSalienceExpression() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceExpressionRule.drl" ) ) );
         final Package pkg = builder.getPackage();
