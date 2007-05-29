@@ -64,48 +64,125 @@
           <para>JBoss Web 1.0.1</para>
 
           <para>This is an ideal solution if you need a "lighter" server to
-          run just the BRMS (perhaps stand alone). </para>
+          run just the BRMS (perhaps stand alone).</para>
         </listitem>
       </itemizedlist>
 
       <para>You can of course download these from www.jboss.com for every
       operating system.</para>
 
-      <para>Deployment into JBoss platforms: If you are installing a new JBoss platform, the 
-      WAR can be copied to [app server directory]/server/default/deploy. You then start up the server by
-      running run.sh or run.bat in the [app server directory/bin] directory.</para>
-      
+      <para>Deployment into JBoss platforms: If you are installing a new JBoss
+      platform, the WAR can be copied to [app server
+      directory]/server/default/deploy. You then start up the server by
+      running run.sh or run.bat in the [app server directory/bin]
+      directory.</para>
     </section>
   </section>
 
   <section>
     <title>Database configuration</title>
 
-    <para>The BRMS uses the JCR standard for storing assets (such as rules). The default implementation
-     is Apache Jackrabbit. This includes an out of the box storage engine/database, which you can use as is, or configure to use an existing database if needed.</para>
-     
-     
-     <section>
-     	<title>Changing the location of the data store</title>
-     <para>When you run the BRMS for the first time (starting up the app server), it will create 
-     a database in the [app server directory]/bin/ directory (assuming you used on of the JBoss platforms). There is a repository.xml file, and a repository directory that are automatically created.</para>
-     
-     <para>The location of the data store should be a secure location, that is backed up.
-     The default location may not be suitable for this, so the easiest way is to take the generated repository.xml and repository directory (mentioned above) and move it to a suitable location.
-     </para> 	
-     	
-     </section> 
-     
-	<section>
-		<title>Configuring the BRMS to use an external RDBMS</title>
-		<para></para>
-	</section>
-    
+    <para>The BRMS uses the JCR standard for storing assets (such as rules).
+    The default implementation is Apache Jackrabbit
+    (http://jackrabbit.apache.org/). This includes an out of the box storage
+    engine/database, which you can use as is, or configure to use an existing
+    RDBMS if needed.</para>
+
     <section>
-    	<title>Persistence managers</title>
-    	<para></para>
+      <title>Changing the location of the data store</title>
+
+      <para>When you run the BRMS for the first time (starting up the app
+      server), it will create a database in the [app server directory]/bin/
+      directory (assuming you used on of the JBoss platforms). There is a
+      repository.xml file, and a repository directory that are automatically
+      created.</para>
+
+      <para>The location of the data store should be a secure location, that
+      is backed up. The default location may not be suitable for this, so the
+      easiest way is to set a more suitable location. If you want to change
+      this, please make sure you have stopped the BRMS (ie stopped the app
+      server or undeployed the application).</para>
+
+      <para>To change the location, unzip the WAR file, and locate the
+      components.xml file in the WEB-INF directory. This is a JBoss Seam
+      configuration file (Seam is the framework used) which allows various
+      parts of the system to be customised. When you have located the
+      components.xml file, you should see something like the following:
+      <programlisting>&lt;component name="repositoryConfiguration"&gt;
+ &lt;!--
+  *** This is for configuring the "home" directory for the repo storage. the directory must exist. ***
+     &lt;property name="homeDirectory"&gt;/home/michael/RulesRepository_001&lt;/property&gt;
+   --&gt;  
+
+   ...
+&lt;/component&gt;
+</programlisting></para>
+
+      <para>Find the component with a name of "repositoryConfiguration" and
+      the property with the name of "homeDirectory".</para>
+
+      <para>If you un comment this (as in the example above it is commented
+      out), you can set whatever path you need for the repository data to be
+      stored in. You can also use this to move the repository around. In that
+      case, when you have set the location in the components.xml you can
+      simply move the repository.xml AND the repository directory to the new
+      location that you set in the components.xml.</para>
+
+      <para>If there is no repository at the location specified (or in the
+      default location) then the BRMS will create a new empty one.</para>
+
+      <para>There are many more options which can be configured in the
+      repository.xml, but for the most part, it is not recommended to change
+      the defaults.</para>
     </section>
-    
+
+    <section>
+      <title>Configuring the BRMS to use an external RDBMS</title>
+
+      <para>In some cases it may be a requirement that you use an external
+      RDBMS, such as Oracle, MySQL, or Microsoft SQL Server as the data store
+      - this is permitted. In this case, the easiest thing to do is to start
+      up the RDBMS with defaults (or with a suitable home directory as
+      specified above) to let it generate the default repository.xml
+      scaffolding.</para>
+
+      <para>Locate the repository.xml file that was generated, and open it -
+      it will be annotated with comments describing many of the different
+      options. From here on, you will need to know a little about Jackrabbit
+      Persistence managers:
+      http://jackrabbit.apache.org/doc/config.html</para>
+
+      <para>There are a few persistence managers, some are database specific
+      (eg Oracle). There is a SimpleDBPersistenceManager which works with any
+      database that supports JDBC - you also specify the database type, so it
+      uses the specific DDL to create the table structure (all major databases
+      are supported).</para>
+
+      <para>The BRMS will create the tables the first time it is started up if
+      it is running against a fresh (empty) RDBMS - so its important to note
+      that the user credentials supplied have permissions to create tables (at
+      least initially, on first run, after that they could be locked
+      down).</para>
+    </section>
+
+    <section>
+      <title>Searching and indexing, Version storage</title>
+
+      <para>Jackrabbit has a seperate storage area for version storage (as
+      over time, the number of old versions will increase, yet it should not
+      slow down the performance of the main data store). The version storage
+      also has its own persistence manage configuration in the repository.xml,
+      but for most purposes you can use the same database as the main storage
+      (just with a different schema object prefix - ie in your database, all
+      the version data will be prefixed with "version_" but otherwise in the
+      same tablespace). See the repository.xml for more details of
+      this.</para>
+
+      <para>Lucene is used to provide indexing across the semi structured
+      data, and across versions. This indexing is generally best stored on a
+      filesystem, local to the BRMS (as per the default in the repository.xml)
+      - in most cases the default is fine.</para>
+    </section>
   </section>
 
   <section>
@@ -114,36 +191,97 @@
     <para>Security is configured by using the components.xml file in the war
     file. To customise this, you will need to unzip the war file, and locate
     the components.xml file which is in the WEB-INF directory.</para>
+
+    <para>The JAAS standard is used as the underlying authentication and
+    authorization mechanism, the upshot of which means its very flexable and
+    able to integrate into most existing environments.</para>
+
+    <para>Out of the box, the BRMS shows a login screen, but no security
+    credentials are enforced - the user name is used, but no password check is
+    performed. To enforce authentication, you need to configure it to use an
+    appropriate user directory (you may have Active Directory or similar
+    already).</para>
+
+    <para>In the components.xml file, you should located a security
+    configuration section like the following:</para>
+
+    <programlisting>&lt;!-- SECURITY CONFIGURATION --&gt;
+    
+&lt;!-- default (will take any username, useful if you want to keep track of users but not authenticate --&gt;
+&lt;security:identity authenticate-method="#{defaultAuthenticator.authenticate}"/&gt;
+
+&lt;!-- NO authentication. This will bypass the login screen when you hit the app. Everyone is "guest" --&gt;
+&lt;!-- &lt;security:identity authenticate-method="#{nilAuthenticator.authenticate}"/&gt; --&gt;   </programlisting>
+
+    <para>As you can see from above, the 2 "out of the box" options are pass
+    through - which means any user is allowed in, or bypassed, in which case
+    there is no login screen (eg you may be securing access to the app via a
+    web server anyway).</para>
+
+    <section>
+      <title>Using your containers security and LDAP</title>
+
+      <para>Every application server supports advanced configurations which
+      can work with your existing security infrastructure. The case of JBoss
+      AS will be shown here as an example.</para>
+
+      <programlisting>&lt;security:identity authenticate-method="#{authenticator.authenticate}" 
+                      jaas-config-name="other"/&gt;</programlisting>
+
+      <para>This will use the "other" jaas config in JBoss AS. If you look in
+      [jboss install dir]/server/default/conf you will see a login-config.xml
+      file. This file contains various configs. If you use "other" like the
+      one above, then it will look for users.properties and roles.properties
+      in the conf directory for usernames and passwords to authenticate
+      against (this is fine for a fixed small number of users).</para>
+
+      <para>LDAP is perhaps the most popular choice for larger enterprises, so
+      following is an example that works with Active Directory. You can get
+      much more information on how to configure JBoss AS for all scenarios
+      with LDAP from http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapLoginModule
+      and http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapExtLoginModule.</para>
+
+      <programlisting>&lt;application-policy name="brms"&gt;
+    &lt;authentication&gt;
+        &lt;login-module code="org.jboss.security.auth.spi.LdapExtLoginModule" flag="required" &gt;
+            &lt;!--
+                Some AD configurations may require searching against
+                the Global Catalog on port 3268 instead of the usual
+                port 389.  This is most likely when the AD forest
+                includes multiple domains.
+            --&gt;
+            &lt;module-option name="java.naming.provider.url"&gt;ldap://ldap.jboss.org:389&lt;/module-option&gt;
+            &lt;module-option name="bindDN"&gt;JBOSS\someadmin&lt;/module-option&gt;
+            &lt;module-option name="bindCredential"&gt;password&lt;/module-option&gt;
+            &lt;module-option name="baseCtxDN"&gt;cn=Users,dc=jboss,dc=org&lt;/module-option&gt;
+            &lt;module-option name="baseFilter"&gt;(sAMAccountName={0})&lt;/module-option&gt;
+
+            &lt;module-option name="rolesCtxDN"&gt;cn=Users,dc=jboss,dc=org&lt;/module-option&gt;
+            &lt;module-option name="roleFilter"&gt;(sAMAccountName={0})&lt;/module-option&gt;
+            &lt;module-option name="roleAttributeID"&gt;memberOf&lt;/module-option&gt;
+            &lt;module-option name="roleAttributeIsDN"&gt;true&lt;/module-option&gt;
+            &lt;module-option name="roleNameAttributeID"&gt;cn&lt;/module-option&gt;
+
+            &lt;module-option name="roleRecursion"&gt;-1&lt;/module-option&gt;
+            &lt;module-option name="searchScope"&gt;ONELEVEL_SCOPE&lt;/module-option&gt;
+        &lt;/login-module&gt;
+    &lt;/authentication&gt;
+&lt;/application-policy&gt;</programlisting>
+
+      <para>To use the above, you would put jaas-config-name="brms" in the
+      security:identity tag in the components.xml for the BRMS. </para>
+
+      <para>Similar configuration examples can be found for other directory
+      services. </para>
+
+      <para>LDAP isn't the final word, you can use JDBC against a database of
+      user name, or you can write your own login module to use any sort of
+      wierd and wonderful authentication and authorisation systems that you
+      may have to deal with (that would be an extreme case, but its possible).
+      Refer to JBoss AS documentation (or documentation for your existing
+      application server).</para>
+    </section>
   </section>
 
-  <section>
-    <title>Data management</title>
 
-    <para>Various aspects of the system can be customised, either by editing
-    configuration files, or via the web interface directly.</para>
-
-    <section>
-      <title>Customising table views</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Categories</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Statuses</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Import and Export</title>
-
-      <para></para>
-    </section>
-  </section>
 </section>
