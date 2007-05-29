@@ -83,7 +83,7 @@ public class APITester extends TestCase {
 	private Assertion addAssertion () {
 		Assertion assertion = new Assertion();
 		assertion.setName("assertion1");
-		assertion.setBeanName("Account");
+		assertion.setBeanName("org.drools.testing.core.rules.model.Account");
 		assertion.setPropertyName("balance");
 		assertion.setExpectedValue("10");
 		return assertion;
