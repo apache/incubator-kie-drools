@@ -63,7 +63,7 @@ public class MVELReturnValueBuilder
         final DroolsMVELFactory factory = new DroolsMVELFactory(previousMap, localMap,  context.getPkg().getGlobals() );
         factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );
 
-        final Serializable expr = MVEL.compileExpression( (String) returnValueRestrictionDescr.getContent() );
+        final Serializable expr = MVEL.compileExpression( (String) returnValueRestrictionDescr.getContent(), ((MVELDialect)context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
         returnValueRestriction.setReturnValueExpression( new MVELReturnValueExpression( expr,
                                                                                         factory ) );
     }

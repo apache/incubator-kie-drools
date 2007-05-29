@@ -68,7 +68,7 @@ public class MVELFromBuilder
             factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );            
 
             //parser.setValueHandlerFactory( factory );
-            final Serializable compiled = MVEL.compileExpression( accessor.toString() );
+            final Serializable compiled = MVEL.compileExpression( accessor.toString(), ((MVELDialect)context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
 
             dataProvider = new MVELDataProvider( compiled,
                                                  factory );
@@ -76,7 +76,7 @@ public class MVELFromBuilder
             context.getErrors().add( new RuleError( context.getRule(),
                                                     fromDescr,
                                                     null,
-                                                    "Unable to build expression for 'from' node '" + accessor.toString() + "'" ) );
+                                                    "Unable to build expression for 'from' node '" + accessor + "'" ) );
             return null;
         }
 
