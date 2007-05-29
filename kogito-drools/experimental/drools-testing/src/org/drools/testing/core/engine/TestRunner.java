@@ -3,6 +3,7 @@ package org.drools.testing.core.engine;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -152,5 +153,21 @@ public class TestRunner {
 				items.add(rule.getName());
 		}
 		return items;
+	}
+	
+	/**
+	 * Grab the list of fact handles from working memory
+	 * Match the field values against the expected assertion field values
+	 * 
+	 * Set the outcome state to PASS if all assertions passed
+	 * Set the outcome state to FAIL if all assertions failed
+	 * Set the outcome state to PARTIAL PASS at least 1 assertion failed
+	 * 
+	 * @param scenario
+	 * @param wm
+	 * @throws RuleTestLanguageException
+	 */
+	private void setOutcomes (Scenario scenario, WorkingMemory wm) throws RuleTestLanguageException {
+		
 	}
 }
