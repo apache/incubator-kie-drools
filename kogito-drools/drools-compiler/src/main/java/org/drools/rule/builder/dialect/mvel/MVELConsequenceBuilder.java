@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELConsequence;
+import org.drools.compiler.RuleError;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -17,17 +18,25 @@ public class MVELConsequenceBuilder
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
-        //factory.setNextFactory( ((MVELDialect)context.getDialect()).getStaticMethodImportResolverFactory() );
-        
-        final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
-        factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );
+        try {
+            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
+                                                                     null,
+                                                                     context.getPkg().getGlobals() );
+            factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
 
-        final Serializable expr = MVEL.compileExpression( delimitExpressions( (String) context.getRuleDescr().getConsequence()) );
+            final Serializable expr = MVEL.compileExpression( delimitExpressions( (String) context.getRuleDescr().getConsequence() ),
+                                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
 
-        context.getRule().setConsequence( new MVELConsequence( expr,
-                                                               factory ) );
+            context.getRule().setConsequence( new MVELConsequence( expr,
+                                                                   factory ) );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    context.getRuleDescr(),
+                                                    null,
+                                                    "Unable to build expression for 'consequence' '" + context.getRuleDescr().getConsequence() + "'" ) );
+        }
     }
-    
+
     /**
      * Allows newlines to demarcate expressions, as per MVEL command line.
      * If expression spans multiple lines (ie inside an unbalanced bracket) then
@@ -63,21 +72,19 @@ public class MVELConsequenceBuilder
                     break;
                 case ']' :
                     sqre--;
-                    break;                    
+                    break;
                 default :
                     break;
-            }   
-            if ((brace == 0 && sqre == 0 && crly == 0) &&
-                    (c == '\n' || c == '\r')) {
-                if (lastNonWhite != ';') {
+            }
+            if ( (brace == 0 && sqre == 0 && crly == 0) && (c == '\n' || c == '\r') ) {
+                if ( lastNonWhite != ';' ) {
                     result.append( ';' );
                     lastNonWhite = ';';
                 }
-            } else if  (!Character.isWhitespace( c )) {
+            } else if ( !Character.isWhitespace( c ) ) {
                 lastNonWhite = c;
             }
             result.append( c );
-            
 
         }
         return result.toString();

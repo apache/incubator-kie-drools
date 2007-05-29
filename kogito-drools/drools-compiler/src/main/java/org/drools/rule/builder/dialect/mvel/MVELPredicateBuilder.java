@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELPredicateExpression;
+import org.drools.compiler.RuleError;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
@@ -55,15 +56,23 @@ public class MVELPredicateBuilder
             localMap.put( localDeclarations[i].getIdentifier(),
                           localDeclarations[i] );
         }
+        
+        try {
+            final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
+                                                                     localMap,
+                                                                     context.getPkg().getGlobals() );
+            factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
 
-        final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
-                                                                 localMap,
-                                                                 context.getPkg().getGlobals() );
-        factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );        
-
-        final Serializable expr = MVEL.compileExpression( (String) predicateDescr.getContent() );
-        predicate.setPredicateExpression( new MVELPredicateExpression( expr,
-                                                                       factory ) );
+            final Serializable expr = MVEL.compileExpression( (String) predicateDescr.getContent(),
+                                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+            predicate.setPredicateExpression( new MVELPredicateExpression( expr,
+                                                                           factory ) );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    predicateDescr,
+                                                    null,
+                                                    "Unable to build expression for 'predicate' node '" + predicateDescr.getContent() + "'" ) );
+        }
     }
 
 }

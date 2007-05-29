@@ -35,20 +35,7 @@ import org.drools.spi.PatternExtractor;
 import org.mvel.MVEL;
 
 public class MVELSalienceBuilderTest extends TestCase {
-    public void test1() {
-//        StatefulSession session = RuleBaseFactory.newRuleBase().newStatefulSession();
-//        
-//        InternalFactHandle handle = ( InternalFactHandle ) session.assertObject( new Person("mark", 31) );
-//        ReteTuple tuple = new ReteTuple(handle);
-//        
-//        final Serializable expr = MVEL.compileExpression( "p.age * 2" );
-//        
-//        final DroolsMVELFactory factory = new DroolsMVELFactory();
-//        factory.setPreviousDeclarationMap( context.getDeclarationResolver().getDeclarations() );
-//        factory.setGlobalsMap( context.getPkg().getGlobals() );
-//        
-//        new MVELExpressionSalience(expr);
-        
+    public void test1() {        
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setSalience( "p.age + 20" );

@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
+import org.drools.compiler.RuleError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.ConditionalElement;
@@ -56,25 +57,36 @@ public class MVELEvalBuilder
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;
 
-        final DroolsMVELFactory factory = new DroolsMVELFactory(context.getDeclarationResolver().getDeclarations(), null,  context.getPkg().getGlobals() );
-        factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );        
+        try {
+            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
+                                                                     null,
+                                                                     context.getPkg().getGlobals() );
+            factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
 
-        final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
-                                                                                      evalDescr,
-                                                                                      evalDescr.getContent() );
+            final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
+                                                                                          evalDescr,
+                                                                                          evalDescr.getContent() );
 
-        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
-        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+            for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+                declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            }
+
+            final EvalCondition eval = new EvalCondition( declarations );
+            final Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent(),
+                                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+
+            eval.setEvalExpression( new MVELEvalExpression( expr,
+                                                            factory ) );
+
+            return eval;
+        } catch ( final Exception e ) {
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    evalDescr,
+                                                    null,
+                                                    "Unable to build expression for 'predicate' node '" + evalDescr.getContent() + "'" ) );
+            return null;
         }
-        
-        final EvalCondition eval = new EvalCondition( declarations );
-        final Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent() );
-        
-        eval.setEvalExpression( new MVELEvalExpression( expr,
-                                                        factory ) );
-
-        return eval;
     }
 
 }
