@@ -14,18 +14,20 @@ import java.util.Collection;
  */
 public class Fact {
 
-	private Integer id;
+	private String name;
 	private String type;
 	private Collection fields = new ArrayList();
 	
 	public Fact () {}
 	
-	public Integer getId() {
-		return id;
+	public String getName() {
+		return name;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+
+	public void setName(String name) {
+		this.name = name;
 	}
+
 	public String getType() {
 		return type;
 	}
