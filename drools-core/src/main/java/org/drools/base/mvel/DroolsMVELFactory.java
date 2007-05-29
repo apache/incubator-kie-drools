@@ -32,6 +32,8 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
     private Map           globals;
 
     private WorkingMemory workingMemory;
+    
+    private Map           variables;
 
 
     public DroolsMVELFactory(final Map previousDeclarations,
@@ -70,8 +72,11 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
             vr.setValue( value );
             return vr;
         } else {
+            if ( this.variables == null ) {
+                this.variables = new HashMap();
+            }
             addResolver( name,
-                         vr = new MapVariableResolver( variableResolvers,
+                         vr = new MapVariableResolver( this.variables,
                                                        name ) );
             vr.setValue( value );
             return vr;
@@ -85,8 +90,11 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
         if ( vr != null && vr.getType() != null ) {
             throw new CompileException( "variable already defined within scope: " + vr.getType() + " " + name );
         } else {
+            if ( this.variables == null ) {
+                this.variables = new HashMap();
+            }            
             addResolver( name,
-                         vr = new MapVariableResolver( variableResolvers,
+                         vr = new MapVariableResolver( this.variables,
                                                        name,
                                                        type ) );
             vr.setValue( value );
@@ -95,7 +103,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
     }
 
     public boolean isResolveable(String name) {
-        if ( variableResolvers != null && variableResolvers.containsKey( name ) ) {
+        if ( this.variableResolvers != null && this.variableResolvers.containsKey( name ) ) {
             return true;
         } else if ( this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
             addResolver(name, new DroolsMVELPreviousDeclarationVariable( (Declaration) this.previousDeclarations.get( name ),
@@ -110,9 +118,9 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
                                                      (Class) this.globals.get( name ),
                                                      this ) );
             return true;
-        } else if ( variableResolvers != null && variableResolvers.containsKey( name ) ) {
+        } else if ( this.variableResolvers != null && this.variableResolvers.containsKey( name ) ) {
             addResolver( name,
-                         new MapVariableResolver( variableResolvers,
+                         new MapVariableResolver( this.variableResolvers,
                                                   name ) );
             return true;
         } else if ( nextFactory != null ) {
@@ -122,26 +130,20 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
         return false;
     }
 
-    public void pack() {
-        if ( variableResolvers != null ) {
-            if ( variableResolvers == null ) variableResolvers = new HashMap();
-            for ( Iterator it = variableResolvers.keySet().iterator(); it.hasNext(); ) {
-                String s = (String) it.next();
-                variableResolvers.put( s,
-                                       new MapVariableResolver( variableResolvers,
-                                                                s ) );
-            }
-        }
-    }
-
     private void addResolver(String name,
                              VariableResolver vr) {
-        if (variableResolvers == null) variableResolvers = new HashMap();
-        variableResolvers.put( name,
-                               vr );
+        if ( this.variableResolvers == null ) {
+            this.variableResolvers = new HashMap();
+        }
+        this.variableResolvers.put( name,
+                                    vr );
     }
 
     public boolean isTarget(String name) {
-        return variableResolvers.containsKey( name );
+        if ( this.variableResolvers != null ) {
+            return this.variableResolvers.containsKey( name );
+        } else {
+            return false;
+        }
     }
 }
