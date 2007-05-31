@@ -28,7 +28,7 @@ import org.drools.event.DefaultAgendaEventListener;
 import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.ruleflow.common.instance.IProcessInstance;
+import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -569,8 +569,8 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( 0,
                       list.size() );
 
-        final IProcessInstance processInstance = workingMemory.startProcess( "0" );
-        assertEquals( IProcessInstance.STATE_ACTIVE,
+        final ProcessInstance processInstance = workingMemory.startProcess( "0" );
+        assertEquals( ProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         workingMemory.fireAllRules();
         assertEquals( 4,
@@ -583,7 +583,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.get( 2 ) );
         assertEquals( "Rule4",
                       list.get( 3 ) );
-        assertEquals( IProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
     
@@ -605,8 +605,8 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( 0,
                       list.size() );
 
-        final IProcessInstance processInstance = workingMemory.startProcess( "0" );
-        assertEquals( IProcessInstance.STATE_ACTIVE,
+        final ProcessInstance processInstance = workingMemory.startProcess( "0" );
+        assertEquals( ProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         workingMemory.fireAllRules();
         assertEquals( 4,
@@ -619,7 +619,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.get( 2 ) );
         assertEquals( "Rule4",
                       list.get( 3 ) );
-        assertEquals( IProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
         
     }

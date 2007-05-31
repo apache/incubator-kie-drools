@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.ruleflow.common.core.IProcess;
-import org.drools.ruleflow.core.IConnection;
-import org.drools.ruleflow.core.INode;
-import org.drools.ruleflow.core.IRuleFlowProcess;
-import org.drools.ruleflow.core.ISplit;
-import org.drools.ruleflow.core.impl.RuleFlowProcess;
+import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.Node;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.ruleflow.core.Split;
+import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -47,11 +47,11 @@ public class ProcessBuilder {
 
     private final List processes = new ArrayList();
 
-    public IProcess[] getProcesses() {
-        return (IProcess[]) this.processes.toArray( new IProcess[this.processes.size()] );
+    public Process[] getProcesses() {
+        return (Process[]) this.processes.toArray( new Process[this.processes.size()] );
     }
 
-    public void addProcess(final IProcess process) {
+    public void addProcess(final Process process) {
         this.processes.add( process );
         // generate and add rule for process
         String rules = generateRules( process );
@@ -72,7 +72,7 @@ public class ProcessBuilder {
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
-            final IRuleFlowProcess process = (IRuleFlowProcess) stream.fromXML( reader );
+            final RuleFlowProcess process = (RuleFlowProcess) stream.fromXML( reader );
             addProcess( process );
         } catch ( final Exception t ) {
             t.printStackTrace();
@@ -83,17 +83,17 @@ public class ProcessBuilder {
         reader.close();
     }
     
-    private String generateRules(final IProcess process) {
+    private String generateRules(final Process process) {
     	String result = "";
-    	if (process instanceof RuleFlowProcess) {
-    		RuleFlowProcess ruleFlow = (RuleFlowProcess) process;
-    		INode[] nodes = ruleFlow.getNodes();
+    	if (process instanceof RuleFlowProcessImpl) {
+    		RuleFlowProcessImpl ruleFlow = (RuleFlowProcessImpl) process;
+    		Node[] nodes = ruleFlow.getNodes();
     		for (int i = 0; i < nodes.length; i++) {
-    			 if (nodes[i] instanceof ISplit) {
-    				 ISplit split = (ISplit) nodes[i];
-    				 if (split.getType() == ISplit.TYPE_XOR || split.getType() == ISplit.TYPE_OR) {
+    			 if (nodes[i] instanceof Split) {
+    				 Split split = (Split) nodes[i];
+    				 if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
     					 for (Iterator iterator = split.getOutgoingConnections().iterator(); iterator.hasNext(); ) {
-    						 IConnection connection = (IConnection) iterator.next();
+    						 Connection connection = (Connection) iterator.next();
     						 result += createSplitRule(process, connection, split.getConstraint(connection).getConstraint());
     					 }
     				 }
@@ -103,7 +103,7 @@ public class ProcessBuilder {
     	return result;
     }
     
-    private String createSplitRule(IProcess process, IConnection connection, String constraint) {
+    private String createSplitRule(Process process, Connection connection, String constraint) {
 		return 
     		"rule \"RuleFlow-" + process.getId() + "-"
     			+ connection.getFrom().getId() + "-" + connection.getTo().getId() + "\" \n" + 

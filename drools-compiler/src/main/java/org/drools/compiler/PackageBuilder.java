@@ -49,8 +49,8 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.ruleflow.common.core.IProcess;
-import org.drools.ruleflow.core.impl.RuleFlowProcess;
+import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
@@ -414,7 +414,7 @@ public class PackageBuilder {
 
     private void addRuleFlowsToPackage(ProcessBuilder processBuilder, Package pkg) {
         if ( processBuilder != null ) {
-            IProcess[] processes = processBuilder.getProcesses();
+            Process[] processes = processBuilder.getProcesses();
             for ( int i = 0; i < processes.length; i++ ) {
                 pkg.addRuleFlow( processes[i] );
             }
