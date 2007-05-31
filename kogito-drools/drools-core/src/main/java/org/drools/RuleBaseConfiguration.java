@@ -17,8 +17,10 @@
 package org.drools;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 import org.drools.concurrent.ExecutorService;
+import org.drools.util.ChainedProperties;
 
 /**
  * RuleBaseConfiguration
@@ -57,6 +59,8 @@ public class RuleBaseConfiguration
     Serializable {
     private static final long serialVersionUID = 320L;
 
+    private ChainedProperties chainedProperties;
+
     private boolean           immutable;
 
     private boolean           maintainTms;
@@ -72,42 +76,56 @@ public class RuleBaseConfiguration
     private LogicalOverride   logicalOverride;
     private ExecutorService   executorService;
 
+    public RuleBaseConfiguration(Properties properties) {
+        init(properties);
+    }
+    
     public RuleBaseConfiguration() {
+        init(null);
+    }
+    
+    private void init(Properties properties) {
         this.immutable = false;
 
-        setMaintainTms( Boolean.valueOf( System.getProperty( "drools.maintainTms",
-                                                             "true" ) ).booleanValue() );
+        this.chainedProperties = new ChainedProperties( "rulebase.conf" );
+        
+        if ( properties != null ) {
+            this.chainedProperties.addProperties( properties );
+        }
 
-        setRemoveIdentities( Boolean.valueOf( System.getProperty( "drools.removeIdentities",
-                                                                  "false" ) ).booleanValue() );
+        setMaintainTms( Boolean.valueOf( this.chainedProperties.getProperty( "drools.maintainTms",
+                                                                             "true" ) ).booleanValue() );
 
-        setAlphaMemory( Boolean.valueOf( System.getProperty( "drools.alphaMemory",
-                                                             "false" ) ).booleanValue() );
+        setRemoveIdentities( Boolean.valueOf( this.chainedProperties.getProperty( "drools.removeIdentities",
+                                                                                  "false" ) ).booleanValue() );
 
-        setShareAlphaNodes( Boolean.valueOf( System.getProperty( "drools.shareAlphaNodes",
-                                                                 "true" ) ).booleanValue() );
+        setAlphaMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.alphaMemory",
+                                                                             "false" ) ).booleanValue() );
 
-        setShareBetaNodes( Boolean.valueOf( System.getProperty( "drools.shareBetaNodes",
-                                                                "true" ) ).booleanValue() );
+        setShareAlphaNodes( Boolean.valueOf( this.chainedProperties.getProperty( "drools.shareAlphaNodes",
+                                                                                 "true" ) ).booleanValue() );
 
-        setAlphaNodeHashingThreshold( Integer.parseInt( System.getProperty( "drools.alphaNodeHashingThreshold",
-                                                                            "3" ) ) );
+        setShareBetaNodes( Boolean.valueOf( this.chainedProperties.getProperty( "drools.shareBetaNodes",
+                                                                                "true" ) ).booleanValue() );
 
-        setCompositeKeyDepth( Integer.parseInt( System.getProperty( "drools.compositeKeyDepth",
-                                                                    "3" ) ) );
+        setAlphaNodeHashingThreshold( Integer.parseInt( this.chainedProperties.getProperty( "drools.alphaNodeHashingThreshold",
+                                                                                            "3" ) ) );
 
-        setIndexLeftBetaMemory( Boolean.valueOf( System.getProperty( "drools.indexLeftBetaMemory",
-                                                                     "true" ) ).booleanValue() );
-        setIndexRightBetaMemory( Boolean.valueOf( System.getProperty( "drools.indexRightBetaMemory",
-                                                                      "true" ) ).booleanValue() );
+        setCompositeKeyDepth( Integer.parseInt( this.chainedProperties.getProperty( "drools.compositeKeyDepth",
+                                                                                    "3" ) ) );
 
-        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( System.getProperty( "drools.assertBehaviour",
-                                                                                          "IDENTITY" ) ) );
-        setLogicalOverride( LogicalOverride.determineLogicalOverride( System.getProperty( "drools.logicalOverride",
-                                                                                          "DISCARD" ) ) );
+        setIndexLeftBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.indexLeftBetaMemory",
+                                                                                     "true" ) ).booleanValue() );
+        setIndexRightBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.indexRightBetaMemory",
+                                                                                      "true" ) ).booleanValue() );
 
-        setExecutorService( RuleBaseConfiguration.determineExecutorService( System.getProperty( "drools.executorService",
-                                                                                                "org.drools.concurrent.DefaultExecutorService" ) ) );
+        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( "drools.assertBehaviour",
+                                                                                                          "IDENTITY" ) ) );
+        setLogicalOverride( LogicalOverride.determineLogicalOverride( this.chainedProperties.getProperty( "drools.logicalOverride",
+                                                                                                          "DISCARD" ) ) );
+
+        setExecutorService( RuleBaseConfiguration.determineExecutorService( this.chainedProperties.getProperty( "drools.executorService",
+                                                                                                                "org.drools.concurrent.DefaultExecutorService" ) ) );        
     }
 
     /**
