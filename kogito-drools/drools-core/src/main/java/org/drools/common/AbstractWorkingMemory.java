@@ -44,14 +44,16 @@ import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.ShadowProxy;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
+import org.drools.event.RuleFlowEventListener;
+import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.common.core.IProcess;
-import org.drools.ruleflow.common.instance.IProcessInstance;
-import org.drools.ruleflow.core.IRuleFlowProcess;
-import org.drools.ruleflow.instance.IRuleFlowProcessInstance;
-import org.drools.ruleflow.instance.impl.RuleFlowProcessInstance;
+import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -113,6 +115,8 @@ public abstract class AbstractWorkingMemory
     protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
 
     protected final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
+
+    protected final RuleFlowEventSupport      ruleFlowEventSupport                          = new RuleFlowEventSupport( this );
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalRuleBase      ruleBase;
@@ -236,6 +240,33 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             return this.agendaEventSupport.getEventListeners();
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    public void addEventListener(final RuleFlowEventListener listener) {
+        try {
+            this.lock.lock();
+            this.ruleFlowEventSupport.addEventListener( listener );
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    public void removeEventListener(final RuleFlowEventListener listener) {
+        try {
+            this.lock.lock();
+            this.ruleFlowEventSupport.removeEventListener( listener );
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    public List getRuleFlowEventListeners() {
+        try {
+            this.lock.lock();
+            return this.ruleFlowEventSupport.getEventListeners();
         } finally {
             this.lock.unlock();
         }
@@ -986,12 +1017,16 @@ public abstract class AbstractWorkingMemory
     }
 
     public void executeQueuedActions() {
-        for ( final Iterator it = this.actionQueue.iterator(); it.hasNext(); ) {
-            final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
-            it.remove();
-            action.execute( this );
-        }
-
+    	while (!actionQueue.isEmpty()) {
+    		final WorkingMemoryAction action = (WorkingMemoryAction) actionQueue.get(0);
+    		actionQueue.remove(0);
+    		action.execute( this );
+    	}
+//        for ( final Iterator it = this.actionQueue.iterator(); it.hasNext(); ) {
+//            final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
+//            it.remove();
+//            action.execute( this );
+//        }
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
@@ -1042,6 +1077,10 @@ public abstract class AbstractWorkingMemory
         return this.agendaEventSupport;
     }
 
+    public RuleFlowEventSupport getRuleFlowEventSupport() {
+        return this.ruleFlowEventSupport;
+    }
+
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
      * Scheduler used for duration rules.
@@ -1086,16 +1125,19 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public IProcessInstance startProcess(final String processId) {
-        final IProcess process = getRuleBase().getProcess( processId );
+    public ProcessInstance startProcess(final String processId) {
+        final Process process = getRuleBase().getProcess( processId );
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        if ( process instanceof IRuleFlowProcess ) {
-            final IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-            processInstance.setAgenda( this.agenda );
+        if ( process instanceof RuleFlowProcess ) {
+            final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
+            processInstance.setWorkingMemory( this );
             processInstance.setProcess( process );
             processInstance.start();
+            
+            getRuleFlowEventSupport().fireRuleFlowProcessStarted(processInstance);
+            
             return processInstance;
         } else {
             throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );

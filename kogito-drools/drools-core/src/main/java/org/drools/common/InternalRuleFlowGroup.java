@@ -1,7 +1,6 @@
 package org.drools.common;
 
-import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
-import org.drools.ruleflow.instance.IRuleFlowProcessInstance;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.RuleFlowGroup;
 
@@ -9,9 +8,13 @@ public interface InternalRuleFlowGroup
     extends
     RuleFlowGroup {
 
+	void setWorkingMemory(InternalWorkingMemory workingMemory);
+	
+	InternalWorkingMemory getWorkingMemory();
+	
     void addActivation(Activation activation);
 
-    void removeActivation(final Activation activation, InternalWorkingMemory workingMemory);
+    void removeActivation(final Activation activation);
 
     /**
      * Activates or deactivates this <code>RuleFlowGroup</code>.
@@ -30,6 +33,6 @@ public interface InternalRuleFlowGroup
 
     void triggerCompleted();
     
-    IRuleFlowProcessInstance getProcessInstance();
+    RuleFlowProcessInstance getProcessInstance();
     
 }

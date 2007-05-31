@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.ruleflow.common.datatype.IDataType;
+import org.drools.ruleflow.common.datatype.DataType;
 
 /**
  * Representation of a list datatype.
@@ -30,18 +30,18 @@ import org.drools.ruleflow.common.datatype.IDataType;
  */
 public class ListDataType
     implements
-    IDataType,
+    DataType,
     Serializable {
 
     private static final long serialVersionUID = 3689069551774415161L;
 
-    private IDataType         dataType;
+    private DataType         dataType;
 
-    public void setDataType(final IDataType dataType) {
+    public void setDataType(final DataType dataType) {
         this.dataType = dataType;
     }
 
-    public IDataType getDataType() {
+    public DataType getDataType() {
         return this.dataType;
     }
 

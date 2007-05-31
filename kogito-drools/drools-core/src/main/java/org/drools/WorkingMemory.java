@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.event.AgendaEventListener;
+import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.ruleflow.common.instance.IProcessInstance;
+import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -79,6 +80,22 @@ public interface WorkingMemory
      *            The listener to remove.
      */
     public void removeEventListener(AgendaEventListener listener);
+
+    /**
+     * Add an event listener.
+     * 
+     * @param listener
+     *            The listener to add.
+     */
+    public void addEventListener(RuleFlowEventListener listener);
+
+    /**
+     * Remove an event listener.
+     * 
+     * @param listener
+     *            The listener to remove.
+     */
+    public void removeEventListener(RuleFlowEventListener listener);
 
     /**
      * Returns all event listeners.
@@ -284,5 +301,5 @@ public interface WorkingMemory
     /**
      * Starts a new process instance for the process with the given id. 
      */
-    IProcessInstance startProcess(String processId);
+    ProcessInstance startProcess(String processId);
 }

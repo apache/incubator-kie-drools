@@ -1276,6 +1276,51 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );
     }
+    
+    /**
+     * Test auto-deactivation of empty ruleflow group. 
+     */
+    public void testRuleFlowGroup5() {
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        // create rule0
+        final Consequence consequence0 = new Consequence() {
+            private static final long serialVersionUID = -2596133893109870505L;
+
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory w) {
+                // do nothing
+            }
+        };
+
+        final Rule rule0 = new Rule( "test-rule0" );
+        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setConsequence( consequence0 );
+
+        final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
+        assertTrue( ruleFlowGroup0.isAutoDeactivate() );
+
+        // RuleFlowGroup should be empty, as well as the agenda
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        // Activate the RuleFlowGroup, the activations stay in the group, but 
+        // should now also be in the Agenda
+        agenda.activateRuleFlowGroup( "rule-flow-group-0" );
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );
+        workingMemory.executeQueuedActions();
+
+        assertFalse( ruleFlowGroup0.isActive() );
+    }
 
     public void testRuleFlowGroupLockOnActive() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -1307,6 +1352,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
         rule.setLockOnActive( true );
+        ruleFlowGroup.setAutoDeactivate( false );
         ruleFlowGroup.setActive( true );
         node.assertTuple( tuple,
                           context,

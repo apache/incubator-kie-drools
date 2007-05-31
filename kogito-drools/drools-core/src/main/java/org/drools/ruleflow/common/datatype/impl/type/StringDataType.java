@@ -16,7 +16,7 @@ package org.drools.ruleflow.common.datatype.impl.type;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.common.datatype.IDataType;
+import org.drools.ruleflow.common.datatype.DataType;
 
 /**
  * Representation of a string datatype.
@@ -25,7 +25,7 @@ import org.drools.ruleflow.common.datatype.IDataType;
  */
 public class StringDataType
     implements
-    IDataType {
+    DataType {
 
     private static final long serialVersionUID = 3258416135924758834L;
 

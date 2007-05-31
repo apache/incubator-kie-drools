@@ -279,6 +279,8 @@ public class DefaultAgenda
         RuleFlowGroup ruleFlowGroup = (RuleFlowGroup) this.ruleFlowGroups.get( name );
         if ( ruleFlowGroup == null ) {
             ruleFlowGroup = new RuleFlowGroupImpl( name );
+            ((InternalRuleFlowGroup) ruleFlowGroup).setWorkingMemory(
+            		(InternalWorkingMemory) getWorkingMemory() );
             this.ruleFlowGroups.put( name,
                                      ruleFlowGroup );
         }
@@ -286,7 +288,7 @@ public class DefaultAgenda
     }
 
     public void activateRuleFlowGroup(final String name) {
-        ((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( true );
+    	((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( true );
     }
 
     public void deactivateRuleFlowGroup(final String name) {
@@ -392,7 +394,7 @@ public class DefaultAgenda
 
             if ( item.getRuleFlowGroupNode() != null ) {
                 final InternalRuleFlowGroup ruleFlowGroup = item.getRuleFlowGroupNode().getRuleFlowGroup();
-                ruleFlowGroup.removeActivation( item, this.workingMemory );
+                ruleFlowGroup.removeActivation( item );
             }
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
@@ -428,7 +430,7 @@ public class DefaultAgenda
 
                 if ( activation.getRuleFlowGroupNode() != null ) {
                     final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-                    ruleFlowGroup.removeActivation( activation, this.workingMemory );
+                    ruleFlowGroup.removeActivation( activation );
                 }
 
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
@@ -504,7 +506,7 @@ public class DefaultAgenda
 
         if ( activation.getRuleFlowGroupNode() != null ) {
             final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-            ruleFlowGroup.removeActivation( activation, this.workingMemory );
+            ruleFlowGroup.removeActivation( activation );
         }
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );

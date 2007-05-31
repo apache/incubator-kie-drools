@@ -39,6 +39,7 @@ public class ActivationLogEvent extends LogEvent {
     private String activationId;
     private String rule;
     private String declarations;
+    private String ruleFlowGroup;
 
     /**
      * Create a new activation log event.
@@ -53,11 +54,13 @@ public class ActivationLogEvent extends LogEvent {
     public ActivationLogEvent(final int type,
                               final String activationId,
                               final String rule,
-                              final String declarations) {
+                              final String declarations,
+                              final String ruleFlowGroup) {
         super( type );
         this.activationId = activationId;
         this.rule = rule;
         this.declarations = declarations;
+        this.ruleFlowGroup = ruleFlowGroup;
     }
 
     /**
@@ -87,6 +90,10 @@ public class ActivationLogEvent extends LogEvent {
     public String getDeclarations() {
         return this.declarations;
     }
+    
+    public String getRuleFlowGroup() {
+    	return ruleFlowGroup;
+    }
 
     public String toString() {
 
@@ -106,6 +113,6 @@ public class ActivationLogEvent extends LogEvent {
                 msg = "BEFORE ACTIVATION FIRED";
                 break;
         }
-        return msg + " rule:" + this.rule + " activationId:" + this.activationId + " declarations: " + this.declarations;
+        return msg + " rule:" + this.rule + " activationId:" + this.activationId + " declarations: " + this.declarations + (ruleFlowGroup == null ? "" : " ruleflow-group: " + ruleFlowGroup);
     }
 }
