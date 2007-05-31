@@ -22,6 +22,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
@@ -181,7 +182,7 @@ public final class RuleTerminalNode extends BaseNode
             memory.getTupleMemory().add( tuple );
 
             item.setActivated( true );
-            workingMemory.getAgendaEventSupport().fireActivationCreated( item,
+            ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                          workingMemory );
         } else {
             // -----------------
@@ -310,7 +311,7 @@ public final class RuleTerminalNode extends BaseNode
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
             if ( fireActivationCreated ) {
-                workingMemory.getAgendaEventSupport().fireActivationCreated( item,
+            	((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                              workingMemory );
             }
         }
@@ -371,11 +372,10 @@ public final class RuleTerminalNode extends BaseNode
 
             if ( activation.getRuleFlowGroupNode() != null ) {
                 final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-                ruleFlowGroup.removeActivation( activation,
-                                                workingMemory );
+                ruleFlowGroup.removeActivation( activation );
             }
 
-            workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
+            ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                            workingMemory );
             ((InternalAgenda) workingMemory.getAgenda()).decreaseActiveActivations();
         } else {
@@ -427,7 +427,7 @@ public final class RuleTerminalNode extends BaseNode
 
                 if ( activation.isActivated() ) {
                     activation.remove();
-                    workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
+                    ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                    workingMemory );
                 }
 

@@ -44,7 +44,7 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.common.core.IProcess;
+import org.drools.ruleflow.common.core.Process;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
 
@@ -219,8 +219,8 @@ abstract public class AbstractRuleBase
         return this.factHandleFactory.newInstance();
     }
 
-    public IProcess[] getProcesses() {
-        return (IProcess[]) this.processes.values().toArray( new IProcess[this.processes.size()] );
+    public Process[] getProcesses() {
+        return (Process[]) this.processes.values().toArray( new Process[this.processes.size()] );
     }
 
     public Package[] getPackages() {
@@ -463,7 +463,7 @@ abstract public class AbstractRuleBase
 
     protected abstract void removeRule(Rule rule);
 
-    public synchronized void addProcess(final IProcess process) {
+    public synchronized void addProcess(final Process process) {
         this.processes.put( process.getId(),
                             process );
     }
@@ -472,8 +472,8 @@ abstract public class AbstractRuleBase
         this.processes.remove( id );
     }
 
-    public IProcess getProcess(final String id) {
-        return (IProcess) this.processes.get( id );
+    public Process getProcess(final String id) {
+        return (Process) this.processes.get( id );
     }
 
     protected synchronized void addStatefulSession(final StatefulSession statefulSession) {

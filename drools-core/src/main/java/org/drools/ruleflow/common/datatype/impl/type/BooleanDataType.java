@@ -16,7 +16,7 @@ package org.drools.ruleflow.common.datatype.impl.type;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.common.datatype.IDataType;
+import org.drools.ruleflow.common.datatype.DataType;
 
 /**
  * Representation of a boolean datatype.
@@ -25,7 +25,7 @@ import org.drools.ruleflow.common.datatype.IDataType;
  */
 public final class BooleanDataType
     implements
-    IDataType {
+    DataType {
 
     private static final long serialVersionUID = 3617855257384989752L;
 

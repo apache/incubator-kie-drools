@@ -3,7 +3,6 @@ package org.drools.common;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.event.AgendaEventSupport;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -23,8 +22,6 @@ public interface InternalWorkingMemory
     public long getNextPropagationIdCounter();
 
     public ObjectHashMap getFactHandleMap();
-
-    public AgendaEventSupport getAgendaEventSupport();
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem();
 

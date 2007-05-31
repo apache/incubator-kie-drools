@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import org.drools.rule.Package;
-import org.drools.ruleflow.common.core.IProcess;
+import org.drools.ruleflow.common.core.Process;
 
 /**
  * Active collection of <code>Rule</code>s.
@@ -127,11 +127,11 @@ public interface RuleBase
 
     void removePackage(String packageName);
 
-    void addProcess(IProcess process);
+    void addProcess(Process process);
 
     void removeProcess(String id);
 
-    IProcess getProcess(String id);
+    Process getProcess(String id);
 
     void removeRule(String packageName,
                     String ruleName);

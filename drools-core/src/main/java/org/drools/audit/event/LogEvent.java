@@ -24,23 +24,26 @@ package org.drools.audit.event;
  */
 public class LogEvent {
 
-    public static final int OBJECT_ASSERTED        = 1;
-    public static final int OBJECT_MODIFIED        = 2;
-    public static final int OBJECT_RETRACTED       = 3;
+    public static final int OBJECT_ASSERTED            = 1;
+    public static final int OBJECT_MODIFIED            = 2;
+    public static final int OBJECT_RETRACTED           = 3;
 
-    public static final int ACTIVATION_CREATED     = 4;
-    public static final int ACTIVATION_CANCELLED   = 5;
-    public static final int BEFORE_ACTIVATION_FIRE = 6;
-    public static final int AFTER_ACTIVATION_FIRE  = 7;
+    public static final int ACTIVATION_CREATED         = 4;
+    public static final int ACTIVATION_CANCELLED       = 5;
+    public static final int BEFORE_ACTIVATION_FIRE     = 6;
+    public static final int AFTER_ACTIVATION_FIRE      = 7;
+
+    public static final int RULEFLOW_CREATED           = 8;
+    public static final int RULEFLOW_COMPLETED         = 9;
+    public static final int RULEFLOW_GROUP_ACTIVATED   = 10;
+    public static final int RULEFLOW_GROUP_DEACTIVATED = 11;
 
     private int             type;
 
     /**
      * Creates a new log event.
      * 
-     * @param type The type of the log event.  This can be OBJECT_ASSERTED,
-     * OBJECT_MODIFIED, OBJECT_RETRACTED, ACTIVATION_CREATED, ACTIVATION_CANCELLED,
-     * BEFORE_ACTIVATION_FIRE or AFTER_ACTIVATION_FIRE.
+     * @param type The type of the log event.
      */
     public LogEvent(final int type) {
         this.type = type;

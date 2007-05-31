@@ -16,8 +16,8 @@ package org.drools.ruleflow.common.datatype.impl;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.common.datatype.IDataType;
-import org.drools.ruleflow.common.datatype.IDataTypeFactory;
+import org.drools.ruleflow.common.datatype.DataType;
+import org.drools.ruleflow.common.datatype.DataTypeFactory;
 
 /**
  * A data type factory that always returns the same instance of a given class.
@@ -26,19 +26,19 @@ import org.drools.ruleflow.common.datatype.IDataTypeFactory;
  */
 public class InstanceDataTypeFactory
     implements
-    IDataTypeFactory {
+    DataTypeFactory {
 
     private Class     dataTypeClass;
-    private IDataType instance;
+    private DataType instance;
 
     public InstanceDataTypeFactory(final Class dataTypeClass) {
         this.dataTypeClass = dataTypeClass;
     }
 
-    public IDataType createDataType() {
+    public DataType createDataType() {
         if ( this.instance == null ) {
             try {
-                this.instance = (IDataType) this.dataTypeClass.newInstance();
+                this.instance = (DataType) this.dataTypeClass.newInstance();
             } catch ( final IllegalAccessException e ) {
                 throw new RuntimeException( "Could not create data type for class " + this.dataTypeClass,
                                             e );

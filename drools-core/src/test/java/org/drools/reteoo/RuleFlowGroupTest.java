@@ -29,25 +29,24 @@ import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.common.instance.IProcessInstance;
-import org.drools.ruleflow.core.IConnection;
-import org.drools.ruleflow.core.IConstraint;
-import org.drools.ruleflow.core.IEndNode;
-import org.drools.ruleflow.core.IJoin;
-import org.drools.ruleflow.core.IRuleFlowProcess;
-import org.drools.ruleflow.core.IRuleSetNode;
-import org.drools.ruleflow.core.ISplit;
-import org.drools.ruleflow.core.IStartNode;
-import org.drools.ruleflow.core.impl.Connection;
-import org.drools.ruleflow.core.impl.Constraint;
-import org.drools.ruleflow.core.impl.EndNode;
-import org.drools.ruleflow.core.impl.Join;
-import org.drools.ruleflow.core.impl.RuleFlowProcess;
-import org.drools.ruleflow.core.impl.RuleSetNode;
-import org.drools.ruleflow.core.impl.Split;
-import org.drools.ruleflow.core.impl.StartNode;
-import org.drools.ruleflow.instance.IRuleFlowProcessInstance;
-import org.drools.ruleflow.instance.impl.RuleFlowProcessInstance;
+import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.Constraint;
+import org.drools.ruleflow.core.EndNode;
+import org.drools.ruleflow.core.Join;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.ruleflow.core.RuleSetNode;
+import org.drools.ruleflow.core.Split;
+import org.drools.ruleflow.core.StartNode;
+import org.drools.ruleflow.core.impl.ConnectionImpl;
+import org.drools.ruleflow.core.impl.EndNodeImpl;
+import org.drools.ruleflow.core.impl.JoinImpl;
+import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
+import org.drools.ruleflow.core.impl.RuleSetNodeImpl;
+import org.drools.ruleflow.core.impl.SplitImpl;
+import org.drools.ruleflow.core.impl.StartNodeImpl;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
@@ -124,48 +123,48 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                                         null );
 
         // nodes
-        final IStartNode start = new StartNode();
-        final IRuleSetNode ruleSet0 = new RuleSetNode();
+        final StartNode start = new StartNodeImpl();
+        final RuleSetNode ruleSet0 = new RuleSetNodeImpl();
         ruleSet0.setRuleFlowGroup( "rule-flow-group-0" );
-        final IRuleSetNode ruleSet1 = new RuleSetNode();
+        final RuleSetNode ruleSet1 = new RuleSetNodeImpl();
         ruleSet1.setRuleFlowGroup( "rule-flow-group-1" );
-        final IRuleSetNode ruleSet2 = new RuleSetNode();
+        final RuleSetNode ruleSet2 = new RuleSetNodeImpl();
         ruleSet2.setRuleFlowGroup( "rule-flow-group-2" );
-        final IRuleSetNode ruleSet3 = new RuleSetNode();
+        final RuleSetNode ruleSet3 = new RuleSetNodeImpl();
         ruleSet3.setRuleFlowGroup( "rule-flow-group-3" );
-        final ISplit split = new Split();
-        split.setType( ISplit.TYPE_AND );
-        final IJoin join = new Join();
-        join.setType( IJoin.TYPE_AND );
-        final IEndNode end = new EndNode();
+        final Split split = new SplitImpl();
+        split.setType( Split.TYPE_AND );
+        final Join join = new JoinImpl();
+        join.setType( Join.TYPE_AND );
+        final EndNode end = new EndNodeImpl();
         // connections
-        new Connection( start,
+        new ConnectionImpl( start,
                         ruleSet0,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet0,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet0,
                         split,
-                        IConnection.TYPE_NORMAL );
-        new Connection( split,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( split,
                         ruleSet1,
-                        IConnection.TYPE_NORMAL );
-        new Connection( split,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( split,
                         ruleSet2,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet1,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet1,
                         join,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet2,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet2,
                         join,
-                        IConnection.TYPE_NORMAL );
-        new Connection( join,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( join,
                         ruleSet3,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet3,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet3,
                         end,
-                        IConnection.TYPE_NORMAL );
+                        Connection.TYPE_NORMAL );
 
         // process
-        final IRuleFlowProcess process = new RuleFlowProcess();
+        final RuleFlowProcess process = new RuleFlowProcessImpl();
         process.addNode( start );
         process.addNode( ruleSet0 );
         process.addNode( ruleSet1 );
@@ -176,10 +175,10 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         process.addNode( end );
 
         // proces instance
-        final IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setAgenda( agenda );
+        final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
+        processInstance.setWorkingMemory( workingMemory );
         processInstance.setProcess( process );
-        assertEquals( IProcessInstance.STATE_PENDING,
+        assertEquals( ProcessInstance.STATE_PENDING,
                       processInstance.getState() );
 
         final RuleFlowGroupImpl ruleFlowGroup0 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
@@ -232,7 +231,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // Activate process instance, the activations stay in the group,
         // but should now also be in the Agenda
         processInstance.start();
-        assertEquals( IProcessInstance.STATE_ACTIVE,
+        assertEquals( ProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
@@ -295,7 +294,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                       ruleFlowGroup3.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
-        assertEquals( IProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
     
@@ -366,54 +365,54 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                                         null );
 
         // nodes
-        final IStartNode start = new StartNode();
-        final IRuleSetNode ruleSet0 = new RuleSetNode();
+        final StartNode start = new StartNodeImpl();
+        final RuleSetNode ruleSet0 = new RuleSetNodeImpl();
         ruleSet0.setRuleFlowGroup( "rule-flow-group-0" );
-        final IRuleSetNode ruleSet1 = new RuleSetNode();
+        final RuleSetNode ruleSet1 = new RuleSetNodeImpl();
         ruleSet1.setRuleFlowGroup( "rule-flow-group-1" );
-        final IRuleSetNode ruleSet2 = new RuleSetNode();
+        final RuleSetNode ruleSet2 = new RuleSetNodeImpl();
         ruleSet2.setRuleFlowGroup( "rule-flow-group-2" );
-        final IRuleSetNode ruleSet3 = new RuleSetNode();
+        final RuleSetNode ruleSet3 = new RuleSetNodeImpl();
         ruleSet3.setRuleFlowGroup( "rule-flow-group-3" );
-        final ISplit split = new Split();
-        split.setType( ISplit.TYPE_XOR );
-        final IJoin join = new Join();
-        join.setType( IJoin.TYPE_XOR );
-        final IEndNode end = new EndNode();
+        final Split split = new SplitImpl();
+        split.setType( Split.TYPE_XOR );
+        final Join join = new JoinImpl();
+        join.setType( Join.TYPE_XOR );
+        final EndNode end = new EndNodeImpl();
         // connections
-        new Connection( start,
+        new ConnectionImpl( start,
                         ruleSet0,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet0,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet0,
                         split,
-                        IConnection.TYPE_NORMAL );
-        Connection out1 = new Connection( split,
+                        Connection.TYPE_NORMAL );
+        Connection out1 = new ConnectionImpl( split,
                         ruleSet1,
-                        IConnection.TYPE_NORMAL );
-        Connection out2 = new Connection( split,
+                        Connection.TYPE_NORMAL );
+        Connection out2 = new ConnectionImpl( split,
                         ruleSet2,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet1,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet1,
                         join,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet2,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet2,
                         join,
-                        IConnection.TYPE_NORMAL );
-        new Connection( join,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( join,
                         ruleSet3,
-                        IConnection.TYPE_NORMAL );
-        new Connection( ruleSet3,
+                        Connection.TYPE_NORMAL );
+        new ConnectionImpl( ruleSet3,
                         end,
-                        IConnection.TYPE_NORMAL );
-        IConstraint constraint1 = new Constraint();
+                        Connection.TYPE_NORMAL );
+        Constraint constraint1 = new org.drools.ruleflow.core.impl.ConstraintImpl();
         constraint1.setPriority(1);
         split.setConstraint(out1, constraint1);
-        IConstraint constraint2 = new Constraint();
+        Constraint constraint2 = new org.drools.ruleflow.core.impl.ConstraintImpl();
         constraint2.setPriority(2);
         split.setConstraint(out2, constraint2);
 
         // process
-        final IRuleFlowProcess process = new RuleFlowProcess();
+        final RuleFlowProcess process = new RuleFlowProcessImpl();
         process.setId( "1" );
         process.addNode( start );
         process.addNode( ruleSet0 );
@@ -444,10 +443,10 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                              	  splitRule2.getLhs() );
 
         // proces instance
-        final IRuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setAgenda( agenda );
+        final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
+        processInstance.setWorkingMemory( workingMemory );
         processInstance.setProcess( process );
-        assertEquals( IProcessInstance.STATE_PENDING,
+        assertEquals( ProcessInstance.STATE_PENDING,
                       processInstance.getState() );
 
         final RuleFlowGroupImpl ruleFlowGroup0 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
@@ -493,7 +492,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         final ReteTuple splitTuple2 = new ReteTuple( new DefaultFactHandle( 1,
 		   															        "cheese" ) );
-    	splitNode1.assertTuple( splitTuple2,
+    	splitNode2.assertTuple( splitTuple2,
     							context0,
 								workingMemory );
 
@@ -518,7 +517,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // Activate process instance, the activations stay in the group,
         // but should now also be in the Agenda
         processInstance.start();
-        assertEquals( IProcessInstance.STATE_ACTIVE,
+        assertEquals( ProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
@@ -569,7 +568,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                       ruleFlowGroup3.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
-        assertEquals( IProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
 }

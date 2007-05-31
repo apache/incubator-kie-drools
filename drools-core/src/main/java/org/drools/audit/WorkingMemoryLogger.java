@@ -26,6 +26,8 @@ import org.drools.audit.event.ActivationLogEvent;
 import org.drools.audit.event.ILogEventFilter;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.ObjectLogEvent;
+import org.drools.audit.event.RuleFlowGroupLogEvent;
+import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.common.InternalFactHandle;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -37,6 +39,11 @@ import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.ObjectAssertedEvent;
 import org.drools.event.ObjectModifiedEvent;
 import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.RuleFlowCompletedEvent;
+import org.drools.event.RuleFlowEventListener;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.RuleFlowStartedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
@@ -59,7 +66,8 @@ import org.drools.spi.Tuple;
 public abstract class WorkingMemoryLogger
     implements
     WorkingMemoryEventListener,
-    AgendaEventListener {
+    AgendaEventListener,
+    RuleFlowEventListener {
 
     private final List    filters = new ArrayList();
     private WorkingMemory workingMemory;
@@ -73,6 +81,7 @@ public abstract class WorkingMemoryLogger
         this.workingMemory = workingMemory;
         workingMemory.addEventListener( (WorkingMemoryEventListener) this );
         workingMemory.addEventListener( (AgendaEventListener) this );
+        workingMemory.addEventListener( (RuleFlowEventListener) this );
     }
 
     /**
@@ -171,8 +180,9 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CREATED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ) ) );
-    }
+                                                extractDeclarations( event.getActivation() ),
+    											event.getActivation().getRule().getRuleFlowGroup() ) );
+	}
 
     /**
      * @see org.drools.event.AgendaEventListener
@@ -182,7 +192,8 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ) ) );
+                                                extractDeclarations( event.getActivation() ),
+    											event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -193,7 +204,8 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ) ) );
+                                                extractDeclarations( event.getActivation() ),
+    											event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -204,7 +216,8 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ) ) );
+                                                extractDeclarations( event.getActivation() ),
+    											event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -284,4 +297,33 @@ public abstract class WorkingMemoryLogger
                                   final WorkingMemory workingMemory) {
         // we don't audit this yet        
     }
+    
+    public void ruleFlowStarted(RuleFlowStartedEvent event,
+            					WorkingMemory workingMemory) {
+        filterLogEvent( new RuleFlowLogEvent( LogEvent.RULEFLOW_CREATED,
+        		event.getRuleFlowProcessInstance().getProcess().getId(),
+                event.getRuleFlowProcessInstance().getProcess().getName() ) );
+    }
+
+    public void ruleFlowCompleted(RuleFlowCompletedEvent event,
+              					  WorkingMemory workingMemory) {
+        filterLogEvent( new RuleFlowLogEvent( LogEvent.RULEFLOW_COMPLETED,
+        		event.getRuleFlowProcessInstance().getProcess().getId(),
+                event.getRuleFlowProcessInstance().getProcess().getName() ) );
+    }
+    
+    public void ruleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+           							   WorkingMemory workingMemory) {
+        filterLogEvent( new RuleFlowGroupLogEvent( LogEvent.RULEFLOW_GROUP_ACTIVATED,
+        		event.getRuleFlowGroup().getName(),
+                event.getRuleFlowGroup().size() ) );
+    }
+
+    public void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                     					 WorkingMemory workingMemory) {
+        filterLogEvent( new RuleFlowGroupLogEvent( LogEvent.RULEFLOW_GROUP_DEACTIVATED,
+        		event.getRuleFlowGroup().getName(),
+                event.getRuleFlowGroup().size() ) );
+    }
+
 }

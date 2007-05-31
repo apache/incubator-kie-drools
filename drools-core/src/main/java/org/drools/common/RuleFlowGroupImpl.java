@@ -16,10 +16,9 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.instance.IRuleFlowNodeInstance;
-import org.drools.ruleflow.instance.impl.RuleFlowSequenceNodeInstance;
+import org.drools.ruleflow.instance.RuleFlowNodeInstance;
+import org.drools.ruleflow.instance.impl.RuleFlowSequenceNodeInstanceImpl;
 import org.drools.spi.Activation;
-import org.drools.spi.RuleFlowGroup;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedList.LinkedListIterator;
 
@@ -37,16 +36,17 @@ import org.drools.util.LinkedList.LinkedListIterator;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  *
  */
-public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
+public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
     implements
     InternalRuleFlowGroup {
 
     private static final long serialVersionUID = 320L;
 
-    private final String      name;
-    private boolean           active           = false;
-    private final LinkedList  list;
-    private boolean           autoDeactivate   = true;
+    private InternalWorkingMemory 	workingMemory;
+    private final String      		name;
+    private boolean           		active           = false;
+    private final LinkedList  		list;
+    private boolean           		autoDeactivate   = true;
 
     /**
      * Construct a <code>RuleFlowGroupImpl</code> with the given name.
@@ -62,6 +62,14 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
     public String getName() {
         return this.name;
     }
+    
+    public void setWorkingMemory(InternalWorkingMemory workingMemory) {
+    	this.workingMemory = workingMemory;
+    }
+    
+    public InternalWorkingMemory getWorkingMemory() {
+    	return this.workingMemory;
+    }
 
     public void setActive(final boolean active) {
         if ( this.active == active ) {
@@ -69,7 +77,18 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
         }
         this.active = active;
         if ( active ) {
-            triggerActivations();
+            if ( this.list.isEmpty() ) {
+            	if ( this.autoDeactivate ) {
+                	// if the list of activations is empty and
+            		// auto-deactivate is on, deactivate this group
+    				WorkingMemoryAction action = new DeactivateCallback( this );
+    				this.workingMemory.queueWorkingMemoryAction( action );
+            	}
+            } else {
+            	triggerActivations();
+            }
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
+    			.fireRuleFlowGroupActivated(this);
         } else {
             final LinkedListIterator it = this.list.iterator();
             for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
@@ -79,6 +98,8 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
                 }
             }
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
+				.fireRuleFlowGroupDeactivated(this);
         }
     }
 
@@ -128,15 +149,15 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
         }
     }
 
-    public void removeActivation(final Activation activation, InternalWorkingMemory workingMemory) {
+    public void removeActivation(final Activation activation) {
         final RuleFlowGroupNode node = activation.getRuleFlowGroupNode();
         this.list.remove( node );
         activation.setActivationGroupNode( null );
         if ( this.autoDeactivate ) {
             if ( this.list.isEmpty() ) {
-                // deactivate callback
-                WorkingMemoryAction action = new DeactivateCallback( this );
-                workingMemory.queueWorkingMemoryAction( action );
+            	// deactivate callback
+            	WorkingMemoryAction action = new DeactivateCallback( this );
+            	this.workingMemory.queueWorkingMemoryAction( action );
             }
         }
     }
@@ -169,7 +190,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
         return this.name.hashCode();
     }
 
-    public void trigger(final IRuleFlowNodeInstance parent) {
+    public void trigger(final RuleFlowNodeInstance parent) {
         setActive( true );
     }
 
@@ -181,7 +202,9 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstance
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
+        	// check whether ruleflow group is still empty first
             if ( this.ruleFlowGroup.isEmpty() ) {
+            	// deactivate ruleflow group
                 this.ruleFlowGroup.setActive( false );
                 // only trigger next node if this RuleFlowGroup was
                 // triggered from inside a process instance

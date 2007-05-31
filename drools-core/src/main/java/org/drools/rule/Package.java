@@ -33,8 +33,8 @@ import java.util.Map;
 
 import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.ruleflow.common.core.IProcess;
-import org.drools.ruleflow.core.impl.RuleFlowProcess;
+import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.util.StringUtils;
 
 /**
@@ -289,7 +289,7 @@ public class Package
     /**
      * Add a rule flow to this package.
      */
-    public void addRuleFlow(IProcess process) {
+    public void addRuleFlow(Process process) {
         if (this.ruleFlows == Collections.EMPTY_MAP) {
             this.ruleFlows = new HashMap();
         }
