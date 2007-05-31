@@ -28,19 +28,18 @@ public class ChainedProperties {
         this.defaultProps = new ArrayList();
         
         // Properties added in precedence order
-        //this.chainedProperties = new ChainedProperties();
 
         // System defined properties always get precedence
         addProperties( System.getProperties() );
 
         // System property defined properties file
-        loadProperties( System.getProperty( "drools.packagebuilder.conf" ), this.props );
+        loadProperties( System.getProperty( "drools." + confFileName), this.props );
 
         // User home properties file
-        loadProperties( System.getProperty( "user.home" ) + "/drools.packagebuilder.conf", this.props );
+        loadProperties( System.getProperty( "user.home" ) + "/drools." + confFileName, this.props );
 
         // Working directory properties file
-        loadProperties( "drools.packagebuilder.conf", this.props );
+        loadProperties( "drools." + confFileName, this.props );
 
         // check META-INF directories for all known ClassLoaders
         ClassLoader confClassLoader = classLoader;
@@ -87,7 +86,7 @@ public class ChainedProperties {
         if ( defaultURL == null ) {
             confClassLoader = ClassLoader.getSystemClassLoader();
             if ( confClassLoader != null && confClassLoader != classLoader ) {
-                defaultURL = confClassLoader.getResource( "META-INF/drools.default.packagebuilder.conf" );
+                defaultURL = confClassLoader.getResource( "META-INF/drools.default." + confFileName );
             }
         }
 
@@ -162,7 +161,7 @@ public class ChainedProperties {
                 try {
                     loadProperties( file.toURL(), chain );
                 } catch ( MalformedURLException e ) {
-                    throw new IllegalArgumentException( "file.toURL failed for drools.packagebuilder.conf properties value '" + file + "'" );
+                    throw new IllegalArgumentException( "file.toURL() failed for drools.packagebuilder.conf properties value '" + file + "'" );
                 }
             } else {
                 //throw new IllegalArgumentException( "drools.packagebuilder.conf is specified but cannot be found '" + file + "'" );
