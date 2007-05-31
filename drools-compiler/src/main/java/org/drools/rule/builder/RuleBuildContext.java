@@ -113,12 +113,12 @@ public class RuleBuildContext {
                        ruleDescr,
                        ruleDescr.getAttributes() );
 
-        String dialectName = (this.rule.getDialect() != null) ? this.rule.getDialect() : "default";
+        String dialectName = this.rule.getDialect();
         this.defaultDialectName = dialectName;
         this.dialectRegistry = dialectRegistry;
         
 
-        dialectRegistry.getDialect( this.defaultDialectName ).init( ruleDescr );
+        getDialect().init( ruleDescr );
     }
 
     public Dialect getDialect() {

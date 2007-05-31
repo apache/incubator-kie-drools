@@ -33,6 +33,7 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
@@ -47,8 +48,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.xml.XmlPackageReader;
@@ -69,7 +68,7 @@ public class PackageBuilder {
 
     private TypeResolver                typeResolver;
 
-    private ClassFieldExtractorCache    classFieldExtractorCache;   
+    private ClassFieldExtractorCache    classFieldExtractorCache;
 
     private RuleBuilder                 builder;
 
@@ -77,7 +76,7 @@ public class PackageBuilder {
 
     private DialectRegistry             dialects;
 
-    private ProcessBuilder processBuilder;
+    private ProcessBuilder              processBuilder;
 
     /**
      * Use this when package is starting from scratch.
@@ -119,28 +118,18 @@ public class PackageBuilder {
         this.results = new ArrayList();
         this.pkg = pkg;
         this.classFieldExtractorCache = new ClassFieldExtractorCache();
-        
-        this.dialects = new DialectRegistry();           
+
+        this.dialects = configuration.buildDialectRegistry( this );
+        this.dialect = this.dialects.getDialect( configuration.getDefaultDialect() );
         
         if ( this.pkg != null ) {
             this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
                                                        this.pkg.getPackageCompilationData().getClassLoader() );
             // make an automatic import for the current package
-            this.typeResolver.addImport( this.pkg.getName() + ".*" );
-            this.dialects.addDialect( "java",
-                                      new JavaDialect( this ) );    
-            this.dialects.addDialect( "mvel",
-                                      new MVELDialect( this ) );             
-            this.dialect = this.dialects.getDialect( "java" ); // TODO this should from the package
-            
+            this.typeResolver.addImport( this.pkg.getName() + ".*" );            
         } else {
-            this.typeResolver = new ClassTypeResolver( new ArrayList(), configuration.getClassLoader() );
-            this.dialects.addDialect( "java",
-                                      new JavaDialect( this ) ); 
-            this.dialects.addDialect( "mvel",
-                                      new MVELDialect( this ) );             
-            this.dialects.addDialect( "default", this.dialects.getDialect( configuration.getDialect() ) );     
-            this.dialect = this.dialects.getDialect( configuration.getDialect() );
+            this.typeResolver = new ClassTypeResolver( new ArrayList(),
+                                                       configuration.getClassLoader() );
         }
 
         //this.dialect = this.dialects.getDialect( "java" );
@@ -201,21 +190,22 @@ public class PackageBuilder {
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
     }
-    
+
     /**
      * Add a ruleflow (.rt) asset to this package.
      */
     public void addRuleFlow(Reader processSource) {
-        if (this.processBuilder == null) {
-            this.processBuilder = new ProcessBuilder(this);
+        if ( this.processBuilder == null ) {
+            this.processBuilder = new ProcessBuilder( this );
         }
         try {
             this.processBuilder.addProcessFromFile( processSource );
         } catch ( Exception e ) {
-            if (e instanceof RuntimeException) {
+            if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             }
-            throw new RuntimeDroolsException("Unable to load process.", e);
+            throw new RuntimeDroolsException( "Unable to load process.",
+                                              e );
         }
     }
 
@@ -223,10 +213,28 @@ public class PackageBuilder {
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.
      */
-    public void addPackage(final PackageDescr packageDescr) {
-
+    public void addPackage(final PackageDescr packageDescr) {        
         validatePackageName( packageDescr );
         validateUniqueRuleNames( packageDescr );
+        
+
+        String dialectName = null;        
+        for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
+            String value = ( String ) it.next();
+            if ( "dialect".equals( value )) {   
+                dialectName = value;
+                break;
+            }
+        }
+        
+        // The Package does not have a default dialect, so set it
+        if ( dialectName == null ) {
+            dialectName = configuration.getDefaultDialect();
+            packageDescr.addAttribute( new AttributeDescr("dialect",
+                                                          dialectName ) );
+        }
+        
+        this.dialect = this.dialects.getDialect( dialectName );        
 
         if ( this.pkg != null ) {
             // mergePackage( packageDescr ) ;
@@ -236,7 +244,7 @@ public class PackageBuilder {
             this.pkg = newPackage( packageDescr );
         }
 
-        this.builder = new RuleBuilder( );
+        this.builder = new RuleBuilder();
 
         // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
@@ -255,9 +263,8 @@ public class PackageBuilder {
             }
         }
 
-        this.dialect.compileAll();
-
-        this.results.addAll( this.dialect.getResults() );
+        this.dialects.compileAll();
+        this.results = this.dialects.addResults( this.results );
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
@@ -286,9 +293,7 @@ public class PackageBuilder {
 
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
-                                         this.configuration.getClassLoader() );
-        
-        this.dialect = this.dialects.getDialect( "java" ); // TODO this should from the package
+                                         this.configuration.getClassLoader() );       
 
         this.dialect.init( pkg );
 
@@ -305,7 +310,7 @@ public class PackageBuilder {
         if ( this.typeResolver.getImports().isEmpty() ) {
             this.typeResolver.addImport( pkg.getName() + ".*" );
         }
-        
+
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             String importEntry = ((ImportDescr) it.next()).getTarget();
@@ -315,12 +320,12 @@ public class PackageBuilder {
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
-            String importEntry =  ((FunctionImportDescr) it.next()).getTarget();
+            String importEntry = ((FunctionImportDescr) it.next()).getTarget();
             this.dialects.addImport( importEntry );
             pkg.addStaticImport( importEntry );
         }
-        
-        ((ClassTypeResolver)this.typeResolver).setClassLoader( pkg.getPackageCompilationData().getClassLoader() );
+
+        ((ClassTypeResolver) this.typeResolver).setClassLoader( pkg.getPackageCompilationData().getClassLoader() );
 
         final List globals = packageDescr.getGlobals();
         for ( final Iterator it = globals.iterator(); it.hasNext(); ) {
@@ -370,13 +375,13 @@ public class PackageBuilder {
 
     private void addRule(final RuleDescr ruleDescr) {
         //this.dialect.init( ruleDescr );
-        
+
         RuleBuildContext context = new RuleBuildContext( pkg,
                                                          ruleDescr,
-                                                         this.dialects );        
+                                                         this.dialects );
         this.builder.build( context );
-                
-        this.results.addAll( context.getErrors() );       
+
+        this.results.addAll( context.getErrors() );
 
         context.getDialect().addRule( context );
 
@@ -403,16 +408,18 @@ public class PackageBuilder {
         if ( hasErrors() ) {
             this.pkg.setError( getErrors().toString() );
         }
-        addRuleFlowsToPackage(this.processBuilder, pkg);
-        
+        addRuleFlowsToPackage( this.processBuilder,
+                               pkg );
+
         return this.pkg;
     }
-    
+
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
         return this.configuration;
     }
 
-    private void addRuleFlowsToPackage(ProcessBuilder processBuilder, Package pkg) {
+    private void addRuleFlowsToPackage(ProcessBuilder processBuilder,
+                                       Package pkg) {
         if ( processBuilder != null ) {
             Process[] processes = processBuilder.getProcesses();
             for ( int i = 0; i < processes.length; i++ ) {
@@ -421,7 +428,6 @@ public class PackageBuilder {
         }
     }
 
-    
     public ClassFieldExtractorCache getClassFieldExtractorCache() {
         return this.classFieldExtractorCache;
     }
@@ -526,7 +532,7 @@ public class PackageBuilder {
             this.message = message;
         }
 
-        public DroolsError getError() {               
+        public DroolsError getError() {
             return new RuleError( this.rule,
                                   this.descr,
                                   collectCompilerProblems(),

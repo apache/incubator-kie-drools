@@ -16,9 +16,26 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.rule.builder.Dialect;
+import org.drools.util.ChainedProperties;
+
+import sun.security.action.GetLongAction;
 
 /**
  * This class configures the package compiler. 
@@ -34,31 +51,79 @@ import org.drools.RuntimeDroolsException;
  * system property "drools.compiler.lnglevel". Valid values are 1.4, 1.5 and 1.6.
  */
 public class PackageBuilderConfiguration {
-    public static final int      ECLIPSE                   = 0;
-    public static final int      JANINO                    = 1;
+    public static final int      ECLIPSE         = 0;
+    public static final int      JANINO          = 1;
 
-    public static final String[] LANGUAGE_LEVELS           = new String[]{"1.4", "1.5", "1.6"};
-    public static final String   DEFAULT_LANGUAGE_LEVEL    = "1.4";
+    public static final String[] LANGUAGE_LEVELS = new String[]{"1.4", "1.5", "1.6"};
 
-    /** These will be only setup once. It tries to look for a system property */
-    private static final int     CONFIGURED_COMPILER       = getDefaultCompiler();
-    private static final String  CONFIGURED_LANGUAGE_LEVEL = getDefaultLanguageLevel();
+    private Map                  dialects;
 
-    public static final String[] DIALECTS                  = new String[]{"java", "mvel"};
-    private String               dialect                   = getDefaultDialect();
+    private String               defaultDialect;
 
-    private int                  compiler                  = PackageBuilderConfiguration.CONFIGURED_COMPILER;
+    private int                  compiler;
 
     private ClassLoader          classLoader;
 
-    private String               languageLevel             = PackageBuilderConfiguration.CONFIGURED_LANGUAGE_LEVEL;
+    private String               languageLevel;
+
+    private ChainedProperties    chainedProperties;
+
+    /**
+     * Programmatic properties file, added with lease precedence
+     * @param properties
+     */
+    public PackageBuilderConfiguration(Properties properties) {
+        init( null,
+              properties );
+    }
+
+    /**
+     * Programmatic properties file, added with lease precedence
+     * @param classLoader
+     * @param properties
+     */
+    public PackageBuilderConfiguration(ClassLoader classLoader,
+                                       Properties properties) {
+        init( classLoader,
+              properties );
+    }
 
     public PackageBuilderConfiguration() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        init( null,
+              null );
+    }
+
+    public PackageBuilderConfiguration(ClassLoader classLoader) {
+        init( classLoader,
+              null );
+    }
+
+    private void init(ClassLoader classLoader,
+                      Properties properties) {
         if ( classLoader == null ) {
-            classLoader = this.getClass().getClassLoader();
+            classLoader = Thread.currentThread().getContextClassLoader();
+            if ( classLoader == null ) {
+                classLoader = this.getClass().getClassLoader();
+            }
+            setClassLoader( classLoader );
         }
-        this.classLoader = classLoader;
+        setClassLoader( classLoader );
+
+        this.chainedProperties = new ChainedProperties( this.classLoader,
+                                                        "packagebuilder.conf" );
+
+        if ( properties != null ) {
+            this.chainedProperties.addProperties( properties );
+        }
+
+        setJavaLanguageLevel( getDefaultLanguageLevel() );
+
+        setCompiler( getDefaultCompiler() );
+
+        this.dialects = new HashMap();
+        this.chainedProperties.mapStartsWith( this.dialects,
+                                              "drools.dialect" );
+        setDefaultDialect( (String) this.dialects.remove( "drools.dialect.default" ) );
     }
 
     public int getCompiler() {
@@ -66,11 +131,6 @@ public class PackageBuilderConfiguration {
     }
 
     public String getJavaLanguageLevel() {
-        if ( this.languageLevel != null ) {
-            return this.languageLevel;
-        }
-        setJavaLanguageLevel( System.getProperty( "drools.compiler.lnglevel",
-                                                  DEFAULT_LANGUAGE_LEVEL ) );
         return this.languageLevel;
     }
 
@@ -78,20 +138,39 @@ public class PackageBuilderConfiguration {
      * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
      * @param level
      */
-    public void setJavaLanguageLevel(final String level) {
+    public void setJavaLanguageLevel(final String languageLevel) {
         if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  this.languageLevel ) < 0 ) {
-            throw new RuntimeDroolsException( "value '" + this.languageLevel + "' is not a valid language level" );
+                                  languageLevel ) < 0 ) {
+            throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
         }
-        this.languageLevel = level;
+        this.languageLevel = languageLevel;
     }
 
-    public String getDialect() {
-        return this.dialect;
+    public DialectRegistry buildDialectRegistry(PackageBuilder packageBuilder) {
+        DialectRegistry registry = new DialectRegistry();
+        for ( Iterator it = this.dialects.entrySet().iterator(); it.hasNext(); ) {
+            Entry entry = (Entry) it.next();
+            String str = (String) entry.getKey();
+            String dialectName = str.substring( str.lastIndexOf( "." ) + 1 );
+            String dialectClass = (String) entry.getValue();
+            try {
+                Class cls = this.classLoader.loadClass( dialectClass );
+                Constructor cons = cls.getConstructor( new Class[] { PackageBuilder.class } );
+                registry.addDialect( dialectName,
+                                     (Dialect) cons.newInstance( new Object[] { packageBuilder } ) );
+            } catch ( Exception e ) {
+                throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'" );
+            }
+        }
+        return registry;
     }
 
-    public void setDialect(String dialect) {
-        this.dialect = dialect;
+    public String getDefaultDialect() {
+        return this.defaultDialect;
+    }
+
+    public void setDefaultDialect(String defaultDialect) {
+        this.defaultDialect = defaultDialect;
     }
 
     /** 
@@ -122,26 +201,15 @@ public class PackageBuilderConfiguration {
         }
     }
 
-    static String getDefaultDialect() {
-        String dialect = System.getProperty( "drools.dialect",
-                                             "java" );
-
-        if ( Arrays.binarySearch( DIALECTS,
-                                  dialect ) < 0 ) {
-            throw new RuntimeDroolsException( " dialect is not a valid registered dialect" );
-        }
-        return dialect;
-    }
-
     /**
      * This will attempt to read the System property to work out what default to set.
      * This should only be done once when the class is loaded. After that point, you will have
      * to programmatically override it.
      */
-    static int getDefaultCompiler() {
+    private int getDefaultCompiler() {
         try {
-            final String prop = System.getProperty( "drools.compiler",
-                                                    "ECLIPSE" );
+            final String prop = this.chainedProperties.getProperty( "drools.compiler",
+                                                                    "ECLIPSE" );
             if ( prop.equals( "ECLIPSE".intern() ) ) {
                 return PackageBuilderConfiguration.ECLIPSE;
             } else if ( prop.equals( "JANINO" ) ) {
@@ -156,20 +224,29 @@ public class PackageBuilderConfiguration {
         }
     }
 
-    static String getDefaultLanguageLevel() {
-        try {
-            final String languageLevel = System.getProperty( "drools.compiler.languagelevel",
-                                                             DEFAULT_LANGUAGE_LEVEL );
+    private String getDefaultLanguageLevel() {
+        String level = this.chainedProperties.getProperty( "drools.compiler.lnglevel",
+                                                           null );
 
-            if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                      languageLevel ) < 0 ) {
-                throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
+        if ( level == null ) {
+            String version = System.getProperty( "java.version" );
+            if ( version.startsWith( "1.4" ) ) {
+                level = "1.4";
+            } else if ( version.startsWith( "1.5" ) ) {
+                level = "1.5";
+            } else if ( version.startsWith( "1.6" ) ) {
+                level = "1.6";
+            } else {
+                level = "1.4";
             }
-
-            return languageLevel;
-        } catch ( final Exception e ) {
-            System.err.println( "Drools config: unable to read the drools.compiler.lnglevel property. Using default." );
-            return DEFAULT_LANGUAGE_LEVEL;
         }
+
+        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
+                                  level ) < 0 ) {
+            throw new RuntimeDroolsException( "value '" + level + "' is not a valid language level" );
+        }
+
+        return level;
     }
+
 }
