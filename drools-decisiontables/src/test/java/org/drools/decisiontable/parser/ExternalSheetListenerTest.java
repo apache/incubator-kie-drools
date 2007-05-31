@@ -21,8 +21,9 @@ import org.drools.StatelessSession;
 import org.drools.WorkingMemory;
 import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
+import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.ruleflow.common.instance.IProcessInstance;
+import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -112,6 +113,10 @@ public class ExternalSheetListenerTest extends TestCase {
 				}
 
 				public void addEventListener(AgendaEventListener arg0) {
+
+				}
+
+				public void addEventListener(RuleFlowEventListener arg0) {
 
 				}
 
@@ -207,6 +212,10 @@ public class ExternalSheetListenerTest extends TestCase {
 
 				}
 
+				public void removeEventListener(RuleFlowEventListener arg0) {
+
+				}
+
 				public void retractObject(FactHandle arg0) throws FactException {
 
 				}
@@ -231,7 +240,7 @@ public class ExternalSheetListenerTest extends TestCase {
 					
 				}
 
-				public IProcessInstance startProcess(String processId) {
+				public ProcessInstance startProcess(String processId) {
 					return null;
 				}
 
