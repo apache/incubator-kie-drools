@@ -74,8 +74,8 @@ import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.common.core.IProcess;
-import org.drools.ruleflow.core.impl.RuleFlowProcess;
+import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
@@ -1141,8 +1141,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         
         assertTrue(flows.containsKey( "0" ));
         
-        IProcess p = (IProcess) flows.get( "0" );
-        assertTrue( p instanceof RuleFlowProcess );
+        Process p = (Process) flows.get( "0" );
+        assertTrue( p instanceof RuleFlowProcessImpl );
         
         
         //now serialization
@@ -1158,8 +1158,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertNotNull(flows);
         assertEquals(1, flows.size());
         assertTrue(flows.containsKey( "0" ));
-        p = (IProcess) flows.get( "0" );
-        assertTrue( p instanceof RuleFlowProcess );
+        p = (Process) flows.get( "0" );
+        assertTrue( p instanceof RuleFlowProcessImpl );
         
         
         
@@ -1169,12 +1169,12 @@ public class PackageBuilderTest extends DroolsTestCase {
     
     public void testPackageRuleFlows() throws Exception {
         Package pkg = new Package("boo");
-        IProcess rf = new MockRuleFlow("1");
+        Process rf = new MockRuleFlow("1");
         pkg.addRuleFlow( rf );
         assertTrue(pkg.getRuleFlows().containsKey( "1" ));
         assertSame(rf, pkg.getRuleFlows().get( "1" ));
         
-        IProcess rf2 = new MockRuleFlow("2");
+        Process rf2 = new MockRuleFlow("2");
         pkg.addRuleFlow( rf2 );
         assertTrue(pkg.getRuleFlows().containsKey( "1" ));
         assertSame(rf, pkg.getRuleFlows().get( "1" ));
@@ -1188,7 +1188,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         
     }
     
-    class MockRuleFlow implements IProcess {
+    class MockRuleFlow implements Process {
 
         private String id;
 
