@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
+import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
@@ -59,17 +60,17 @@ public class MVELDialect
     Dialect {
 
     private final PatternBuilder                    pattern     = new PatternBuilder( this );
-    //private final JavaAccumulateBuilder    accumulate   = new JavaAccumulateBuilder();
+    //private final JavaAccumulateBuilder           accumulate  = new JavaAccumulateBuilder();
     private final SalienceBuilder                   salience    = new MVELSalienceBuilder();
     private final MVELEvalBuilder                   eval        = new MVELEvalBuilder();
     private final MVELPredicateBuilder              predicate   = new MVELPredicateBuilder();
     private final MVELReturnValueBuilder            returnValue = new MVELReturnValueBuilder();
     private final MVELConsequenceBuilder            consequence = new MVELConsequenceBuilder();
-    //private final JavaRuleClassBuilder     rule         = new JavaRuleClassBuilder();
+    //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
     private final MVELFromBuilder                   from        = new MVELFromBuilder();
 
     private List                                    results;
-    //private final JavaFunctionBuilder      function     = new JavaFunctionBuilder();
+    //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
 
     private Package                                 pkg;
     private PackageBuilderConfiguration             configuration;
@@ -157,16 +158,22 @@ public class MVELDialect
     }
 
     public void addImport(String importEntry) {
-        try {
-            Class cls = this.configuration.getClassLoader().loadClass( importEntry );
+        if ( importEntry.endsWith( "*" ) ) {
+            return;
+        }
+        try {            
+            Class cls = this.typeResolver.resolveType( importEntry );
             this.importFactory.addClass( cls );
         } catch ( ClassNotFoundException e ) {
-            // @todo: add MVEL error
-            this.results.add( null );
+            this.results.add( new ImportError( importEntry ) );
         }
     }
 
-    public void addStaticImport(String staticImportEntry) {                
+    public void addStaticImport(String staticImportEntry) {     
+        if ( staticImportEntry.endsWith( "*" ) ) {
+            return;
+        }
+        
         int index = staticImportEntry.lastIndexOf( '.' );
         String className = staticImportEntry.substring( 0, index );
         String methodName = staticImportEntry.substring( 0, index + 1 );
@@ -181,8 +188,7 @@ public class MVELDialect
                 }
             }
         } catch ( ClassNotFoundException e ) {
-            // @todo: add MVEL error
-            this.results.add( null );
+            this.results.add( new ImportError( staticImportEntry ) );
         }        
     }
     
@@ -270,7 +276,7 @@ public class MVELDialect
     }
 
     public List getResults() {
-        return null;
+        return results;
     }
 
     public ReturnValueBuilder getReturnValueBuilder() {

@@ -2,7 +2,6 @@ package HelloWorld
  
 import org.drools.integrationtests.helloworld.Message
 import org.drools.Cheese;
-import java.lang.*
 
 global java.util.List list;
 

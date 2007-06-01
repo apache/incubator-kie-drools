@@ -46,12 +46,15 @@ public class MVELReturnValueBuilderTest extends TestCase {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
+        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
         DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "default",
-                             new MVELDialect( new PackageBuilder( pkg ) ));
+                             mvelDialect );
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                                ruleDescr,
-                                                                               registry );
+                                                                               registry,
+                                                                               mvelDialect );
+        
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "price" );

@@ -118,9 +118,6 @@ public class PackageBuilder {
         this.results = new ArrayList();
         this.pkg = pkg;
         this.classFieldExtractorCache = new ClassFieldExtractorCache();
-
-        this.dialects = configuration.buildDialectRegistry( this );
-        this.dialect = this.dialects.getDialect( configuration.getDefaultDialect() );
         
         if ( this.pkg != null ) {
             this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
@@ -132,7 +129,8 @@ public class PackageBuilder {
                                                        configuration.getClassLoader() );
         }
 
-        //this.dialect = this.dialects.getDialect( "java" );
+        this.dialects = configuration.buildDialectRegistry( this );
+        this.dialect = this.dialects.getDialect( configuration.getDefaultDialect() );
     }
 
     /**
@@ -228,13 +226,18 @@ public class PackageBuilder {
         }
         
         // The Package does not have a default dialect, so set it
-        if ( dialectName == null ) {
-            dialectName = configuration.getDefaultDialect();
-            packageDescr.addAttribute( new AttributeDescr("dialect",
-                                                          dialectName ) );
+        if ( dialectName == null && this.dialect == null ) {
+                dialectName = configuration.getDefaultDialect();
+                this.dialect = this.dialects.getDialect( dialectName );     
+        } 
+            
+        if ( dialectName != null ) {
+            this.dialect = this.dialects.getDialect( dialectName );
+        } else if ( this.dialect == null ) {
+            this.dialect = this.dialects.getDialect( configuration.getDefaultDialect() );               
         }
         
-        this.dialect = this.dialects.getDialect( dialectName );        
+           
 
         if ( this.pkg != null ) {
             // mergePackage( packageDescr ) ;
@@ -315,13 +318,13 @@ public class PackageBuilder {
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             String importEntry = ((ImportDescr) it.next()).getTarget();
             pkg.addImport( importEntry );
+            this.typeResolver.addImport( importEntry );            
             this.dialects.addImport( importEntry );
-            this.typeResolver.addImport( importEntry );
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
             String importEntry = ((FunctionImportDescr) it.next()).getTarget();
-            this.dialects.addImport( importEntry );
+            this.dialects.addStaticImport( importEntry );
             pkg.addStaticImport( importEntry );
         }
 
@@ -378,7 +381,8 @@ public class PackageBuilder {
 
         RuleBuildContext context = new RuleBuildContext( pkg,
                                                          ruleDescr,
-                                                         this.dialects );
+                                                         this.dialects,
+                                                         this.dialect );
         this.builder.build( context );
 
         this.results.addAll( context.getErrors() );
