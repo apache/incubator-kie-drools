@@ -5,6 +5,7 @@ package org.drools.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class ChainedProperties {
+public class ChainedProperties implements Serializable {
     private final List props;
     private final List defaultProps;
     

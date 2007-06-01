@@ -79,9 +79,6 @@ public class Package
     private Map                    factTemplates;
 
     private Map                    ruleFlows;
-    
-    // @todo: add attributes to Package
-    //private Map                   attributes;
 
     private PackageCompilationData packageCompilationData;
 
