@@ -2133,18 +2133,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    // FIXME
-    public void FIXME_testExpanderBad() throws Exception {
-        final DRLParser parser = parseResource( "bad_expander.drl" );
-        try {
-            parser.compilation_unit();
-            fail( "Should have thrown a wobbly." );
-        } catch ( final IllegalArgumentException e ) {
-            assertNotNull( e.getMessage() );
-        }
 
-        assertFalse( parser.hasErrors() );
-    }
 
     public void testInvalidSyntax_Catches() throws Exception {
         parseResource( "invalid_syntax.drl" ).compilation_unit();

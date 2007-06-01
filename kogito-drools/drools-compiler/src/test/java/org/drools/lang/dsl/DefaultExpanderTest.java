@@ -100,21 +100,24 @@ public class DefaultExpanderTest extends TestCase {
 
     }
 
-    // FIXME
-    public void FIXME_testLineNumberError() throws Exception {
+
+    public void testLineNumberError() throws Exception {
         DSLMappingFile file = new DSLMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
         file.parseAndLoad( new StringReader( dsl ) );
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping( file.getMapping() );
-        String source = "rule 'q'\nagenda-group 'x'\nwhen\n    __  \nthen\n    bar 42\nend";
+        String source = "rule 'q'\nagenda-group 'x'\nwhen\n    __  \nthen\n    bar 42\n\tgoober\nend";
         ex.expand( source );
         assertTrue( ex.hasErrors() );
-        assertEquals( 1,
+        assertEquals( 2,
                       ex.getErrors().size() );
         ExpanderException err = (ExpanderException) ex.getErrors().get( 0 );
         assertEquals( 4,
+                      err.getLine() );
+        err = (ExpanderException) ex.getErrors().get( 1 );
+        assertEquals( 7,
                       err.getLine() );
 
     }
