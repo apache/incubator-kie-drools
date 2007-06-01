@@ -411,6 +411,9 @@ public class DefaultRuleSheetListener
             } else if (actionType.type == ActionType.ACTION) {
                 actionType.setSourceBuilder( new RhsBuilder(null) );
                 this.sourceBuilders.add( actionType.getSourceBuilder() );
+            } else if (actionType.type == ActionType.PRIORITY) {
+                actionType.setSourceBuilder( new LhsBuilder(null) );
+                this.sourceBuilders.add( actionType.getSourceBuilder() );
             }
         }
         if ( value.trim().equals( "" ) && (actionType.type == ActionType.ACTION || actionType.type == ActionType.CONDITION) ) {
