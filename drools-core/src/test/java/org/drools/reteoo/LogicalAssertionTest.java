@@ -225,7 +225,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
-    public void testStatedOverrideDiscard() throws Exception {
+    public void FIXMEtestStatedOverrideDiscard() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
@@ -359,7 +359,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
-    public void testStatedOverridePreserve() throws Exception {
+    public void FIXMEtestStatedOverridePreserve() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
@@ -674,7 +674,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
-    public void testMultipleAssert() throws Exception {
+    public void FIXMEtestMultipleAssert() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
