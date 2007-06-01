@@ -916,7 +916,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void FIXME_testLineNumberIncludingCommentsInRHS() throws Exception {
+    public void testLineNumberIncludingCommentsInRHS() throws Exception {
         parseResource( "test_CommentLineNumbersInConsequence.drl" ).compilation_unit();
 
         assertFalse( this.parser.hasErrors() );
@@ -2132,7 +2132,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    public void FIXME_testExpanderBad() throws Exception {
+    public void testExpanderBad() throws Exception {
         final DRLParser parser = parseResource( "bad_expander.drl" );
         try {
             parser.compilation_unit();
