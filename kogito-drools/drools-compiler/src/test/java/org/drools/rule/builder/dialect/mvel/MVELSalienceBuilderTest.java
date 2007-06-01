@@ -41,14 +41,14 @@ public class MVELSalienceBuilderTest extends TestCase {
         ruleDescr.setSalience( "p.age + 20" );
         ruleDescr.setConsequence( "" );
 
+        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
         DialectRegistry registry = new DialectRegistry();
-        registry.addDialect( "default",
-                             new MVELDialect( new PackageBuilder( pkg ) ) );        
         registry.addDialect( "mvel",
-                             new MVELDialect( new PackageBuilder( pkg ) ) );           
+                             mvelDialect );
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                                ruleDescr,
-                                                                               registry );
+                                                                               registry,
+                                                                               mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
 

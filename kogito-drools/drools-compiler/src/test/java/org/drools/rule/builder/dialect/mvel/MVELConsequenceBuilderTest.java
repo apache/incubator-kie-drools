@@ -39,12 +39,14 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setConsequence( "cheese.setPrice( 5 );" );
 
+        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
         DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "default",
-                             new MVELDialect( new PackageBuilder( pkg ) ) );
+                             mvelDialect );
         final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
                                                                                ruleDescr,
-                                                                               registry );
+                                                                               registry,
+                                                                               mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
 

@@ -20,5 +20,4 @@ rule "maturity, object based enum"
        	p : Cheesery(status == Cheesery.MAKING_CHEESE, maturity == Maturity.YOUNG)
     then
     	list.add( p );
-
 end  
