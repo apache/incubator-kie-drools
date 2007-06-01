@@ -468,9 +468,6 @@ public class JavaDialect
     private void loadCompiler() {
         switch ( this.configuration.getCompiler() ) {
             case PackageBuilderConfiguration.JANINO : {
-                if ( !"1.4".equals( this.configuration.getJavaLanguageLevel() ) ) {
-                    throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
-                }
                 this.compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
                 break;
             }
