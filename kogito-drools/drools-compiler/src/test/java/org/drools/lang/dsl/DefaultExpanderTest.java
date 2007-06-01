@@ -100,7 +100,7 @@ public class DefaultExpanderTest extends TestCase {
 
     }
 
-    public void FIXME_testLineNumberError() throws Exception {
+    public void testLineNumberError() throws Exception {
         DSLMappingFile file = new DSLMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
         file.parseAndLoad( new StringReader( dsl ) );

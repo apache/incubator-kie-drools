@@ -935,7 +935,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
-    public void FIXME_testCompilerConfiguration() throws Exception {
+    public void testCompilerConfiguration() throws Exception {
         // test default is eclipse jdt core
         PackageBuilder builder = new PackageBuilder();;
         final Field compilerField = builder.getClass().getDeclaredField( "compiler" );

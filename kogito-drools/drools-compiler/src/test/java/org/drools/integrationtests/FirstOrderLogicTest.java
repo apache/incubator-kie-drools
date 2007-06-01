@@ -40,8 +40,7 @@ public class FirstOrderLogicTest extends TestCase {
                                             config );
     }
 
-    // @FIXME: needs MVEL new version
-    public void FIXME_testAccumulateModify() throws Exception {
+    public void testAccumulateModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -437,8 +436,7 @@ public class FirstOrderLogicTest extends TestCase {
                       list.size() );
     }
     
-    // @FIXME: needs MVEL new version
-    public void FIXME_testAccumulate() throws Exception {
+    public void testAccumulate() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
