@@ -124,22 +124,30 @@ public class DefaultExpander
     private StringBuffer expandConstructions(final String drl) {
         // parse and expand specific areas
         final Matcher m = finder.matcher( drl );
+        
+        
+        
         final StringBuffer buf = new StringBuffer();
         while ( m.find() ) {
             final StringBuffer expanded = new StringBuffer();
             final String constr = m.group( 1 ).trim();
             if ( constr.startsWith( "rule" ) ) {
                 // match rule
-                expanded.append( m.group( 2 ) ); // adding rule header and attributes
-                expanded.append( this.expandLHS( m.group( 3 ) ) ); // adding expanded LHS
-                expanded.append( m.group( 4 ) ); // adding "then" header
-                expanded.append( this.expandRHS( m.group( 5 ) ) ); // adding expanded RHS
+                String headerFragment = m.group( 2 );
+                expanded.append( headerFragment ); // adding rule header and attributes
+                String lhsFragment = m.group( 3 );
+                expanded.append( this.expandLHS( lhsFragment, countNewlines( headerFragment ) + 1 ) ); // adding expanded LHS
+                String thenFragment = m.group( 4 ); 
+                
+                expanded.append( thenFragment ); // adding "then" header
+                expanded.append( this.expandRHS( m.group( 5 ), countNewlines( headerFragment + lhsFragment + thenFragment ) + 1 ) ); // adding expanded RHS
                 expanded.append( m.group( 6 ) ); // adding rule trailer
                 expanded.append( "\n" );
             } else if ( constr.startsWith( "query" ) ) {
                 // match query
-                expanded.append( m.group( 7 ) ); // adding query header and attributes
-                expanded.append( this.expandLHS( m.group( 8 ) ) ); // adding expanded LHS
+                String fragment = m.group( 7 );
+                expanded.append( fragment ); // adding query header and attributes
+                expanded.append( this.expandLHS( m.group( 8 ), countNewlines( fragment ) + 1 ) ); // adding expanded LHS
                 expanded.append( m.group( 9 ) ); // adding query trailer
                 expanded.append( "\n" );
             } else {
@@ -153,6 +161,15 @@ public class DefaultExpander
         }
         m.appendTail( buf );
         return buf;
+    }
+
+    private int countNewlines(final String drl) {
+        char[] cs = drl.toCharArray();
+        int count = 0;
+        for ( int i = 0; i < cs.length; i++ ) {
+            { if (cs[i] == '\n') count++; }
+        }
+        return count;
     }
 
     /**
@@ -188,9 +205,10 @@ public class DefaultExpander
     /**
      * Expand LHS for a construction
      * @param lhs
+     * @param lineOffset 
      * @return
      */
-    private String expandLHS(final String lhs) {
+    private String expandLHS(final String lhs, int lineOffset) {
         final StringBuffer buf = new StringBuffer();
         final String[] lines = lhs.split( "\n" ); // since we assembled the string, we know line breaks are \n
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
@@ -217,7 +235,7 @@ public class DefaultExpander
                 if ( lines[i].equals( expanded[lastExpanded] ) ) {
                     // report error
                     this.addError( new ExpanderException( "Unable to expand: [" + lines[i] + "]",
-                                                          i ) );
+                                                          i + lineOffset ) );
                 }
                 // but if the original starts with a "-", it means we need to add it
                 // as a constraint to the previous pattern
@@ -241,7 +259,7 @@ public class DefaultExpander
                         // error, pattern not found to add constraint to
                         // TODO: can we report character position?
                         this.addError( new ExpanderException( "No pattern was found to add the constraint to: " + lines[i],
-                                                              i ) );
+                                                              i + lineOffset ) );
                     }
                     lastExpanded--;
                 } else {
@@ -263,7 +281,7 @@ public class DefaultExpander
      * @param lhs
      * @return
      */
-    private String expandRHS(final String lhs) {
+    private String expandRHS(final String lhs, int lineOffset) {
         final StringBuffer buf = new StringBuffer();
         final String[] lines = lhs.split( "\n" ); // since we assembled the string, we know line breaks are \n
         for ( int i = 0; i < lines.length; i++ ) {
@@ -285,7 +303,7 @@ public class DefaultExpander
                 if ( lines[i].equals( expanded ) ) {
                     // report error
                     this.addError( new ExpanderException( "Unable to expand: " + lines[i],
-                                                          i ) );
+                                                          i + lineOffset ) );
                 }
             }
             buf.append( "\n" );
