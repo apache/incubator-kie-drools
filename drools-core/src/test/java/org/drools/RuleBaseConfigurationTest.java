@@ -18,6 +18,8 @@ public class RuleBaseConfigurationTest extends TestCase {
         cfg = new RuleBaseConfiguration();
         assertEquals( AssertBehaviour.EQUALITY,
                       cfg.getAssertBehaviour() );
+        
+        System.getProperties().remove( "drools.assertBehaviour" );        
     }
 
     public void testProgrammaticPropertiesFile() {
@@ -32,6 +34,8 @@ public class RuleBaseConfigurationTest extends TestCase {
 
         assertEquals( false,
                       cfg.isIndexLeftBetaMemory() );
+        
+        System.getProperties().remove( "drools.indexLeftBetaMemory" );        
     }
 
 }
