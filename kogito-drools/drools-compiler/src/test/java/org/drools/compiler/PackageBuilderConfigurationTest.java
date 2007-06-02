@@ -39,6 +39,8 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
         assertEquals( cfg.getCompiler(),
                       cfg3.getCompiler() );
+        
+        System.getProperties().remove( "drools.compiler" );
 
     }
 
@@ -77,5 +79,6 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
         assertEquals( cfg.getDefaultDialect(),
                       cfg4.getDefaultDialect() );
+        
     }
 }
