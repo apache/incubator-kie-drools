@@ -16,7 +16,7 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-public class Query extends Rule {
+public class Query extends Rule {    
 
     /**
      * 
@@ -25,7 +25,7 @@ public class Query extends Rule {
 
     public Query(final String name) {
         super( name );
-    }
+    }    
 
     /** 
      * Override this as Queries will NEVER have a consequence, and it should

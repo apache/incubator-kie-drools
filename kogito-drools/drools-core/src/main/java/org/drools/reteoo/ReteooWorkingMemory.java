@@ -81,12 +81,16 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     }
 
     public QueryResults getQueryResults(final String query) {
-        final FactHandle handle = assertObject( new DroolsQuery( query ) );
+        return getQueryResults( query, null );
+    }
+    public QueryResults getQueryResults(final String query, final Object[] arguments) {
+        final FactHandle handle = assertObject( new DroolsQuery( query, arguments ) );
         final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         Query queryObj = null;
         List list = null;
 
         if ( node == null ) {
+            // There are no results, first check the query object actually exists and then retract the DroolsQuery object
             final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
             for ( int i = 0; i < pkgs.length; i++ ) {
                 final Rule rule = pkgs[i].getRule( query );
