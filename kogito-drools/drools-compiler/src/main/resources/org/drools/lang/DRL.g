@@ -347,6 +347,7 @@ query returns [QueryDescr query]
 	@init {
 		query = null;
 		AndDescr lhs = null;
+		List params = null;
 	}
 	:
 		loc=QUERY queryName=name
@@ -357,6 +358,18 @@ query returns [QueryDescr query]
 			lhs = new AndDescr(); query.setLhs( lhs ); 
 			lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
+		(
+			LEFT_PAREN
+			(
+				{ params = new ArrayList(); }
+				
+				paramName=ID { params.add( paramName.getText() ); }				
+				(',' paramName=ID { params.add( paramName.getText() ); } )*
+								
+				{ query.setParameters( (String[]) params.toArray( new String[params.size()] ) ); }
+		    )?
+	    	RIGHT_PAREN
+	    )?
 		(
 			normal_lhs_block[lhs]
 		)

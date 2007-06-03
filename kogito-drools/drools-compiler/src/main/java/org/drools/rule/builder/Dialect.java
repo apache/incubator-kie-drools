@@ -23,6 +23,8 @@ public interface Dialect {
     
     PatternBuilder getPatternBuilder();    
     
+    QueryBuilder getQueryBuilder();
+    
     ConditionalElementBuilder getEvalBuilder();
 
     AccumulateBuilder getAccumulateBuilder();

@@ -33,11 +33,14 @@ public class ForallBuilder
     implements
     ConditionalElementBuilder {
 
-    /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
-     */
     public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
+        return build(context, descr, null);
+    }
+    
+    public ConditionalElement build(final RuleBuildContext context,
+                                    final BaseDescr descr,
+                                    final Pattern prefixPattern) {
         final ForallDescr forallDescr = (ForallDescr) descr;
 
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );

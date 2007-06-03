@@ -21,6 +21,7 @@ import org.drools.base.SalienceInteger;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
+import org.drools.rule.Pattern;
 import org.drools.spi.Salience;
 
 /**
@@ -45,8 +46,14 @@ public class RuleBuilder {
 
         final ConditionalElementBuilder builder = (ConditionalElementBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
+            Pattern prefixPattern = null;
+            if ( context.getRuleDescr() instanceof QueryDescr ) {
+                prefixPattern = context.getDialect().getQueryBuilder().build( context, ( QueryDescr ) context.getRuleDescr() );
+            }
             final GroupElement ce = (GroupElement) builder.build( context,
-                                                                  ruleDescr.getLhs() );
+                                                                  ruleDescr.getLhs(),
+                                                                  prefixPattern );
+            
             context.getRule().setLhs( ce );
         } else {
             throw new RuntimeDroolsException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );

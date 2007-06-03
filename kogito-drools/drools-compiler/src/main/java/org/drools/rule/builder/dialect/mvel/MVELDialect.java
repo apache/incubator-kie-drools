@@ -26,6 +26,7 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
@@ -38,6 +39,7 @@ import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
@@ -60,6 +62,7 @@ public class MVELDialect
     Dialect {
 
     private final PatternBuilder                    pattern     = new PatternBuilder( this );
+    private final QueryBuilder             query        = new QueryBuilder();    
     //private final JavaAccumulateBuilder           accumulate  = new JavaAccumulateBuilder();
     private final SalienceBuilder                   salience    = new MVELSalienceBuilder();
     private final MVELEvalBuilder                   eval        = new MVELEvalBuilder();
@@ -136,6 +139,9 @@ public class MVELDialect
 
         this.builders.put( FromDescr.class,
                            getFromBuilder() );
+        
+        this.builders.put( QueryDescr.class,
+                           getQueryBuilder() );        
 
         //        this.builders.put( AccumulateDescr.class,
         //                           getAccumulateBuilder() );
@@ -250,6 +256,10 @@ public class MVELDialect
     public PatternBuilder getPatternBuilder() {
         return this.pattern;
     }
+    
+    public QueryBuilder getQueryBuilder() {
+        return this.query;
+    }    
 
     public AccumulateBuilder getAccumulateBuilder() {
         throw new UnsupportedOperationException( "MVEL does not yet support accumuate" );

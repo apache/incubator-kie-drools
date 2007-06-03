@@ -17,19 +17,46 @@ package org.drools.lang.descr;
  */
 
 public class QueryDescr extends RuleDescr {
+    private String[] params;
+    
+    private static final String[] EMPTY_PARAMS = new String[0];
     /**
      * 
      */
-    private static final long serialVersionUID = -7193800196930051812L;
+    private static final long serialVersionUID = 400L;
 
     public QueryDescr(final String name) {
         this( name,
               "" );
+        this.params = EMPTY_PARAMS;        
     }
+    
+    public QueryDescr(final String name, final String[] params) {
+        this( name,
+              "" );
+        this.params = params;        
+    }    
 
     public QueryDescr(final String ruleName,
                       final String documentation) {
         super( ruleName,
                documentation );
+        this.params = EMPTY_PARAMS;         
+    }
+    
+    public QueryDescr(final String ruleName,
+                      final String documentation, 
+                      final String[] params) {
+        super( ruleName,
+               documentation );
+        this.params = params;         
+    }
+    
+    public void setParameters(String[] params) {
+        this.params = params;
+    }
+    
+    public String[] getParameters() {
+        return this.params;
     }
 }

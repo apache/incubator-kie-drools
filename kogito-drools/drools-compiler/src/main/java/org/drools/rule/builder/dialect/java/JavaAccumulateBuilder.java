@@ -42,14 +42,14 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
     ConditionalElementBuilder,
     AccumulateBuilder {
 
-    /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
-     */
-    /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.AccumulateBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
-     */
     public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
+        return build(context, descr, null);
+    }
+    
+    public ConditionalElement build(final RuleBuildContext context,
+                                    final BaseDescr descr,
+                                    final Pattern prefixPattern) {
 
         final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 

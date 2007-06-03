@@ -38,8 +38,11 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
+import org.drools.QueryResult;
+import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.InternalFactHandle;
@@ -62,8 +65,10 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
@@ -840,6 +845,49 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
     }
+    
+    public void testQuery() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+
+        final PackageDescr packageDescr = new PackageDescr( "p1" );
+        final QueryDescr queryDescr = new QueryDescr( "query1", new String[] { "$type" } );
+        
+        packageDescr.addRule( queryDescr );
+
+        final AndDescr lhs = new AndDescr();
+        queryDescr.setLhs( lhs );        
+
+        final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
+                                                       "stilton" );
+        lhs.addDescr( pattern );
+
+        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
+                                                                   "$type" ) );
+
+        pattern.addConstraint( literalDescr );
+
+        queryDescr.setConsequence( "modify(stilton);" );
+
+        builder.addPackage( packageDescr );
+
+        assertLength( 0,
+                      builder.getErrors().getErrors() );
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        
+        StatefulSession session = ruleBase.newStatefulSession();
+        
+        session.assertObject( new Cheese( "stilton", 15) );
+        
+        QueryResults results = session.getQueryResults( "query1", new Object[] { "stilton" } );
+        assertEquals( 1, results.size() );
+        Object object = results.get( 0 ).get( 0 );
+        assertEquals( new Cheese( "stilton", 15),  object);
+        
+        results = session.getQueryResults( "query1", new Object[] { "cheddar" } );                       
+    }    
 
     public void testDuplicateRuleNames() throws Exception {
 
