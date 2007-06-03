@@ -299,6 +299,12 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     return null;
                 }
+
+                public QueryResults getQueryResults(String query,
+                                                    Object[] arguments) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}
