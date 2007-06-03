@@ -1,0 +1,18 @@
+package org.drools.integrationtests;
+
+import org.drools.AssertedObject;
+
+rule rule1
+  when
+  then
+    assert( new AssertedObject( "value1") );
+    assert( new AssertedObject( "value2") );
+end
+
+query "assertedobjquery" ( $value )
+    assertedobj : AssertedObject( value == $value )
+end 
+
+query "assertedobjquery2" ( $value1, $value2 )
+    assertedobj : AssertedObject( value == $value2 )
+end 

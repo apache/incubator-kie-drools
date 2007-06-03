@@ -28,6 +28,7 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
+import org.drools.rule.Pattern;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
@@ -42,6 +43,11 @@ public class MVELEvalBuilder
     implements
     ConditionalElementBuilder {
 
+    public ConditionalElement build(final RuleBuildContext context,
+                                    final BaseDescr descr) {
+        return build(context, descr, null);
+    }    
+    
     /**
      * Builds and returns an Eval Conditional Element
      * 
@@ -53,7 +59,8 @@ public class MVELEvalBuilder
      * @return the Eval Conditional Element
      */
     public ConditionalElement build(final RuleBuildContext context,
-                                    final BaseDescr descr) {
+                                    final BaseDescr descr,
+                                    final Pattern prefixPattern) {
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;
 

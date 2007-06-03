@@ -42,6 +42,7 @@ import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -378,6 +379,10 @@ public class PackageBuilder {
 
     private void addRule(final RuleDescr ruleDescr) {
         //this.dialect.init( ruleDescr );
+        
+        if ( ruleDescr instanceof QueryDescr ) {
+            //ruleDescr.getLhs().insertDescr( 0, baseDescr );
+        }
 
         RuleBuildContext context = new RuleBuildContext( pkg,
                                                          ruleDescr,

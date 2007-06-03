@@ -26,7 +26,7 @@ public class AndDescr extends BaseDescr
     /**
      * 
      */
-    private static final long serialVersionUID = 8225023304408452585L;
+    private static final long serialVersionUID = 400L;
     private List              descrs           = new ArrayList();
 
     public AndDescr() {
@@ -34,6 +34,10 @@ public class AndDescr extends BaseDescr
 
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
+    }
+    
+    public void insertDescr(int index, final BaseDescr baseDescr) {
+        this.descrs.add( index, baseDescr );
     }
 
     public List getDescrs() {

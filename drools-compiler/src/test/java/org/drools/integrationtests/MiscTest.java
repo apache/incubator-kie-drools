@@ -1652,24 +1652,36 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
 
         final QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
-
-        if ( results == null || !results.iterator().hasNext() ) {
-            Assert.fail( "The stated query should return a result" );
-        } else {
-            int counter = 0;
-            for ( final Iterator it = results.iterator(); it.hasNext(); ) {
-                final QueryResult result = (QueryResult) it.next();;
-                final AssertedObject assertedObject = (AssertedObject) result.get( "assertedobj" );
-                Assert.assertNotNull( "Query result is not expected to be null",
-                                      assertedObject );
-                counter++;
-            }
-            Assert.assertEquals( "Expecting a single result from the query",
-                                 1,
-                                 counter );
-        }
+        assertEquals( 1, results.size() );
+        assertEquals( new AssertedObject( "value1"), results.get( 0 ).get( 0 ) );        
     }
 
+    public void testQueryWithParams() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QueryWithParams.drl" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        workingMemory.fireAllRules();
+
+        QueryResults results = workingMemory.getQueryResults( "assertedobjquery", new String[] { "value1" } );
+        assertEquals( 1, results.size() );
+        assertEquals( new AssertedObject( "value1"), results.get( 0 ).get( 0 ) );
+        
+        results = workingMemory.getQueryResults( "assertedobjquery", new String[] { "value3" } );
+        assertEquals( 0, results.size() );       
+        
+        results = workingMemory.getQueryResults( "assertedobjquery2", new String[] { null, "value2" } );
+        assertEquals( 1, results.size() );
+        assertEquals( new AssertedObject( "value2"), results.get( 0 ).get( 0 ) );
+        
+        results = workingMemory.getQueryResults( "assertedobjquery2", new String[] { "value3", "value2" } );
+        assertEquals( 1, results.size() );
+        assertEquals( new AssertedObject( "value2"), results.get( 0 ).get( 0 ) );        
+    }    
+    
     public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
@@ -1898,7 +1910,7 @@ public class MiscTest extends TestCase {
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
                       queryResults.size() );
-    }
+    }    
 
     public void testFunctionWithPrimitives() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

@@ -26,6 +26,7 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.rule.Pattern;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.GroupElement;
@@ -38,16 +39,23 @@ import org.drools.rule.GroupElementFactory;
 public class GroupElementBuilder
     implements
     ConditionalElementBuilder {
-
-    /* (non-Javadoc)
-     * @see org.drools.semantics.java.builder.ConditionalElementBuilder#build(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.semantics.java.builder.PatternBuilder, org.drools.lang.descr.BaseDescr)
-     */
+    
     public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
+        return build(context, descr, null);
+    }
+    
+    public ConditionalElement build(final RuleBuildContext context,
+                                    final BaseDescr descr,
+                                    final Pattern prefixPattern) {
         final ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
 
-        final GroupElement ge = this.newGroupElementFor( cedescr.getClass() );
-        context.getBuildStack().push( ge );
+        final GroupElement ge = newGroupElementFor( cedescr.getClass() );
+        context.getBuildStack().push( ge );        
+        
+        if ( prefixPattern != null ) {
+            ge.addChild( prefixPattern );
+        }
 
         // iterate over child descriptors
         for ( final Iterator it = cedescr.getDescrs().iterator(); it.hasNext(); ) {
