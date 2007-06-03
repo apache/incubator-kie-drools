@@ -17,15 +17,33 @@ package org.drools.base;
  */
 
 public class DroolsQuery {
-    private String name;
+    private final String name;
+    private final Object[] args;
+    
+    private static final Object[] EMPTY_PARAMS = new Object[0];
 
     public DroolsQuery(final String name) {
         super();
         this.name = name;
+        this.args = EMPTY_PARAMS;
     }
+    
+    public DroolsQuery(final String name, final Object[] params) {
+        super();
+        this.name = name;
+        if ( params != null ) {
+            this.args = params;
+        } else {
+            this.args = EMPTY_PARAMS;
+        }
+    }    
 
     public String getName() {
         return this.name;
+    }
+    
+    public Object[] getArguments() {
+        return this.args;
     }
 
     public int hashCode() {

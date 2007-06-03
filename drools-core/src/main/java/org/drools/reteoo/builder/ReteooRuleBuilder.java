@@ -120,14 +120,6 @@ public class ReteooRuleBuilder {
     private TerminalNode addSubRule(final BuildContext context,
                                     final GroupElement subrule,
                                     final Rule rule) throws InvalidPatternException {
-
-        // if it is a query, needs to add the query pattern
-        if ( rule instanceof Query ) {
-            this.addQueryPattern( context,
-                                 subrule,
-                                 (Query) rule );
-        }
-
         // gets the appropriate builder
         final ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
 
@@ -135,8 +127,8 @@ public class ReteooRuleBuilder {
         if ( builder.requiresLeftActivation( this.utils,
                                              subrule ) ) {
             this.addInitialFactPattern( context,
-                                       subrule,
-                                       rule );
+                                        subrule,
+                                        rule );
         }
 
         // builds and attach
@@ -181,47 +173,13 @@ public class ReteooRuleBuilder {
      * @param subrule
      * @param query
      */
-    private void addQueryPattern(final BuildContext context,
-                                final GroupElement subrule,
-                                final Query query) {
-
-        // creates a pattern for initial fact
-        final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( DroolsQuery.class ) );
-
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
-                                                                       "name" );
-
-        final FieldValue field = FieldFactory.getFieldValue( query.getName(),
-                                                             ValueType.STRING_TYPE );
-
-        final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
-                                                                    field );
-
-        // adds appropriate constraint to the pattern
-        pattern.addConstraint( constraint );
-
-        // adds the pattern as the first child of the given AND group element
-        subrule.addChild( 0,
-                          pattern );
-
-    }
-
-    /**
-     * Adds a query pattern to the given subrule
-     * 
-     * @param context
-     * @param subrule
-     * @param query
-     */
     private void addInitialFactPattern(final BuildContext context,
-                                      final GroupElement subrule,
-                                      final Rule rule) {
+                                       final GroupElement subrule,
+                                       final Rule rule) {
 
         // creates a pattern for initial fact
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( InitialFact.class ) );
+                                             new ClassObjectType( InitialFact.class ) );
 
         // adds the pattern as the first child of the given AND group element
         subrule.addChild( 0,

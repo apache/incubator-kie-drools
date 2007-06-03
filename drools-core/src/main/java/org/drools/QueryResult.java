@@ -2,6 +2,8 @@ package org.drools;
 
 import java.util.Map;
 
+import org.drools.base.ShadowProxy;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 
@@ -25,15 +27,15 @@ public class QueryResult {
 
     public Object get(final int i) {
         //adjust for the DroolsQuery object
-        return this.tuple.get( i + 1 ).getObject();
+        return getObject( this.tuple.get( i + 1 ));
     }
 
-    public Object get(final String declaration) {
-        return get( (Declaration) this.queryResults.getDeclarations().get( declaration ) );
+    public Object get(final String identifier) {
+        return get( (Declaration) this.queryResults.getDeclarations().get( identifier ) );
     }
 
     public Object get(final Declaration declaration) {
-        return declaration.getValue( this.tuple.get( declaration ).getObject() );
+        return declaration.getValue( getObject( this.tuple.get( declaration ) ) );
     }
 
     public FactHandle[] getFactHandles() {
@@ -51,5 +53,13 @@ public class QueryResult {
     public int size() {
         // Adjust for the DroolsQuery object
         return this.tuple.getFactHandles().length - 1;
+    }
+    
+    private Object getObject(InternalFactHandle handle) {
+        if ( handle.isShadowFact() ) {
+            return ((ShadowProxy) handle.getObject()).getShadowedObject();
+        } else {
+            return handle.getObject();
+        }
     }
 }

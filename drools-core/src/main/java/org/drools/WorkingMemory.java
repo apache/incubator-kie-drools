@@ -234,6 +234,8 @@ public interface WorkingMemory
      *         if no query named "query" is found in the rulebase         
      */
     public QueryResults getQueryResults(String query);
+    
+    public QueryResults getQueryResults(String query, Object[] arguments);
 
     /**
      * Assert a fact registering JavaBean <code>PropertyChangeListeners</code>
