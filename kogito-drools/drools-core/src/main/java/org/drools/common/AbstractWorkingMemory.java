@@ -128,7 +128,7 @@ public abstract class AbstractWorkingMemory
     /** Rule-firing agenda. */
     protected DefaultAgenda                   agenda;
 
-    protected final List                      actionQueue                                     = new ArrayList();
+    protected final List                      actionQueue                                   = new ArrayList();
 
     protected final ReentrantLock             lock                                          = new ReentrantLock();
 
@@ -319,11 +319,11 @@ public abstract class AbstractWorkingMemory
 
     public void setGlobalResolver(final GlobalResolver globalResolver) {
         try {
-            this.lock.lock();        
+            this.lock.lock();
             this.globalResolver = globalResolver;
         } finally {
             this.lock.unlock();
-        }            
+        }
     }
 
     public long getId() {
@@ -414,7 +414,7 @@ public abstract class AbstractWorkingMemory
 
             }
         }
-    }    
+    }
 
     /**
      * This does the "otherwise" phase of processing.
@@ -509,7 +509,7 @@ public abstract class AbstractWorkingMemory
             this.lock.unlock();
         }
     }
-    
+
     /** 
      * This is an internal method, used to avoid java.util.Iterator adaptors
      */
@@ -523,16 +523,19 @@ public abstract class AbstractWorkingMemory
     public Iterator iterateObjects() {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
-        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.OBJECT );
+        return new JavaIteratorAdapter( iterator,
+                                        JavaIteratorAdapter.OBJECT );
     }
-    
+
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
-     */  
+     */
     public Iterator iterateObjects(ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
-        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.OBJECT, filter );
+        return new JavaIteratorAdapter( iterator,
+                                        JavaIteratorAdapter.OBJECT,
+                                        filter );
     }
 
     /**
@@ -541,17 +544,20 @@ public abstract class AbstractWorkingMemory
     public Iterator iterateFactHandles() {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
-        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.FACT_HANDLE );
+        return new JavaIteratorAdapter( iterator,
+                                        JavaIteratorAdapter.FACT_HANDLE );
     }
-    
+
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
-     */  
+     */
     public Iterator iterateFactHandles(ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
-        return new JavaIteratorAdapter( iterator, JavaIteratorAdapter.FACT_HANDLE, filter );
-    }       
+        return new JavaIteratorAdapter( iterator,
+                                        JavaIteratorAdapter.FACT_HANDLE,
+                                        filter );
+    }
 
     public abstract QueryResults getQueryResults(String query);
 
@@ -692,15 +698,15 @@ public abstract class AbstractWorkingMemory
                             // existing handle
                             key.setStatus( EqualityKey.STATED );
                             handle = key.getFactHandle();
-                            
+
                             if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
                                 // as assertMap may be using an "identity" equality comparator,
                                 // we need to remove the handle from the map, before replacing the object
                                 // and then re-add the handle. Otherwise we may end up with a leak.
                                 this.assertMap.remove( handle );
                                 handle.setObject( object );
-                                this.assertMap.put( handle, 
-                                                    handle, 
+                                this.assertMap.put( handle,
+                                                    handle,
                                                     false );
                             } else {
                                 handle.setObject( object );
@@ -838,7 +844,6 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-
     public void retractObject(final FactHandle handle) throws FactException {
         retractObject( handle,
                        true,
@@ -915,6 +920,99 @@ public abstract class AbstractWorkingMemory
         }
     }
 
+    public void modifyRetract(final FactHandle factHandle,
+                              final Rule rule,
+                              final Activation activation) {
+        this.lock.lock();
+        // only needed if we maintain tms, but either way we must get it before we do the retract
+        int status = -1;
+        if ( this.maintainTms ) {
+            status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
+        }
+        final InternalFactHandle handle = (InternalFactHandle) factHandle;
+        //final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+
+        if ( handle.getId() == -1 ) {
+            // the handle is invalid, most likely already  retracted, so return
+            return;
+        }
+
+        // Nowretract any trace  of the original fact
+        final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                  PropagationContext.MODIFICATION,
+                                                                                  rule,
+                                                                                  activation,
+                                                                                  this.agenda.getActiveActivations(),
+                                                                                  this.agenda.getDormantActivations() );
+        doRetract( handle,
+                   propagationContext );
+
+        if ( this.maintainTms ) {
+
+            // the hashCode and equality has changed, so we must update the EqualityKey
+            EqualityKey key = handle.getEqualityKey();
+            key.removeFactHandle( handle );
+
+            // If the equality key is now empty, then remove it
+            if ( key.isEmpty() ) {
+                this.tms.remove( key );
+            }
+        }
+    }
+
+    public void modifyAssert(final FactHandle factHandle,
+                             final Object object,
+                             final Rule rule,
+                             final Activation activation) {
+        try {
+            final InternalFactHandle handle = (InternalFactHandle) factHandle;
+            final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+
+            if ( this.maintainTms ) {
+                EqualityKey key = handle.getEqualityKey();
+
+                // now use an  existing  EqualityKey, if it exists, else create a new one
+                key = this.tms.get( object );
+                if ( key == null ) {
+                    key = new EqualityKey( handle,
+                                           0 );
+                    this.tms.put( key );
+                } else {
+                    key.addFactHandle( handle );
+                }
+
+                handle.setEqualityKey( key );
+            }
+
+            this.handleFactory.increaseFactHandleRecency( handle );
+
+            // Nowretract any trace  of the original fact
+            final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                      PropagationContext.MODIFICATION,
+                                                                                      rule,
+                                                                                      activation,
+                                                                                      this.agenda.getActiveActivations(),
+                                                                                      this.agenda.getDormantActivations() );
+
+            doAssertObject( handle,
+                            object,
+                            propagationContext );
+
+            this.workingMemoryEventSupport.fireObjectModified( propagationContext,
+                                                               factHandle,
+                                                               originalObject,
+                                                               object );
+
+            propagationContext.clearRetractedTuples();
+
+            if ( !this.actionQueue.isEmpty() ) {
+                executeQueuedActions();
+            }
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
     public void modifyObject(final FactHandle handle,
                              final Object object) throws FactException {
         modifyObject( handle,
@@ -959,17 +1057,17 @@ public abstract class AbstractWorkingMemory
             doRetract( handle,
                        propagationContext );
 
-            if(( originalObject != object ) || ( this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY )) {
+            if ( (originalObject != object) || (this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY) ) {
                 // as assertMap may be using an "identity" equality comparator,
                 // we need to remove the handle from the map, before replacing the object
                 // and then re-add the handle. Otherwise we may end up with a leak.
                 this.assertMap.remove( handle );
                 // set anyway, so that it updates the hashCodes
                 handle.setObject( object );
-                this.assertMap.put( handle, 
-                                    handle, 
+                this.assertMap.put( handle,
+                                    handle,
                                     false );
-            }  
+            }
 
             if ( this.maintainTms ) {
 
@@ -1017,16 +1115,16 @@ public abstract class AbstractWorkingMemory
     }
 
     public void executeQueuedActions() {
-    	while (!actionQueue.isEmpty()) {
-    		final WorkingMemoryAction action = (WorkingMemoryAction) actionQueue.get(0);
-    		actionQueue.remove(0);
-    		action.execute( this );
-    	}
-//        for ( final Iterator it = this.actionQueue.iterator(); it.hasNext(); ) {
-//            final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
-//            it.remove();
-//            action.execute( this );
-//        }
+        while ( !actionQueue.isEmpty() ) {
+            final WorkingMemoryAction action = (WorkingMemoryAction) actionQueue.get( 0 );
+            actionQueue.remove( 0 );
+            action.execute( this );
+        }
+        //        for ( final Iterator it = this.actionQueue.iterator(); it.hasNext(); ) {
+        //            final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
+        //            it.remove();
+        //            action.execute( this );
+        //        }
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
@@ -1135,22 +1233,22 @@ public abstract class AbstractWorkingMemory
             processInstance.setWorkingMemory( this );
             processInstance.setProcess( process );
             processInstance.start();
-            
-            getRuleFlowEventSupport().fireRuleFlowProcessStarted(processInstance);
-            
+
+            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance );
+
             return processInstance;
         } else {
             throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );
         }
     }
-    
+
     public List iterateObjectsToList() {
-    	List result = new ArrayList();
-    	Iterator iterator = iterateObjects();
-    	for ( ; iterator.hasNext(); ) {
-    		result.add(iterator.next());
-    	}
-    	return result;
+        List result = new ArrayList();
+        Iterator iterator = iterateObjects();
+        for ( ; iterator.hasNext(); ) {
+            result.add( iterator.next() );
+        }
+        return result;
     }
 
 }
