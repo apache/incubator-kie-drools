@@ -1,5 +1,5 @@
 grammar DRL; 
-options {backtrack=true;}
+//options {backtrack=true;}
 
 @parser::header {
 	package org.drools.lang;
@@ -63,9 +63,8 @@ options {backtrack=true;}
 	 	this.lineOffset = i;
 	}
 	
-	private String getString(Token token) {
-		String orig = token.getText();
-		return orig.substring( 1, orig.length() -1 );
+	private String getString(String token) {
+		return token.substring( 1, token.length() -1 );
 	}
 	
 	public void reportError(RecognitionException ex) {
@@ -184,57 +183,59 @@ compilation_unit
 		this.location = new Location( Location.LOCATION_UNKNOWN );
 	}
 	:	prolog 
-		( statement )+
+		statement+
 	;
 	
 prolog
 	@init {
 		String packageName = "";
 	}
-	:	( n=package_statement { packageName = n; } )?
+	:	( pkgstmt=package_statement { packageName = $pkgstmt.packageName; } )?
 		{ 
 			this.packageDescr = factory.createPackage( packageName ); 
 		}
-			(ATTRIBUTES ':')?
-			(	','? a=rule_attribute
-				{
-					this.packageDescr.addAttribute( a );
-				}
-			)*		
+		(ATTRIBUTES ':')?
+		(	a=rule_attribute
+ 	  		{
+ 	  	        	this.packageDescr.addAttribute( a );
+	                }
+ 	  	(       ','? a=rule_attribute
+ 	  		{
+ 	  	        	this.packageDescr.addAttribute( a );
+	                }
+ 	  	)* )?	
 	;
 	
-statement
-	:
-	(	function_import_statement 
-	|	import_statement 
-	|	global 
-	|	function 
-	|       t=template {this.packageDescr.addFactTemplate( t ); }
-	|	r=rule { if( r != null ) this.packageDescr.addRule( r ); }			
-	|	q=query	{ if( q != null ) this.packageDescr.addRule( q ); }
-	) 
-	;
-
 package_statement returns [String packageName]
 	@init{
-		packageName = null;
+		$packageName = null;
 	}
 	:	
 		PACKAGE n=dotted_name[null] opt_semicolon
 		{
-			packageName = n;
+			$packageName = $n.name;
 		}
 	;
+statement
+	:	function_import_statement 
+	|	import_statement 
+	|	global 
+	|	function 
+	|       t=template { this.packageDescr.addFactTemplate( $t.template ); }
+	|	r=rule { this.packageDescr.addRule( $r.rule ); }			
+	|	q=query	{ this.packageDescr.addRule( $q.query ); }
+	;
+
 	
 
 import_statement
         @init {
         	ImportDescr importDecl = null;
         }
-	:	imp=IMPORT 
+	:	IMPORT 
 	        {
 	            importDecl = factory.createImport( );
-	            importDecl.setStartCharacter( ((CommonToken)imp).getStartIndex() );
+	            importDecl.setStartCharacter( ((CommonToken)$IMPORT).getStartIndex() );
 		    if (packageDescr != null) {
 			packageDescr.addImport( importDecl );
 		    }
@@ -246,10 +247,10 @@ function_import_statement
         @init {
         	FunctionImportDescr importDecl = null;
         }
-	:	imp=IMPORT FUNCTION 
+	:	IMPORT FUNCTION 
 	        {
 	            importDecl = factory.createFunctionImport();
-	            importDecl.setStartCharacter( ((CommonToken)imp).getStartIndex() );
+	            importDecl.setStartCharacter( ((CommonToken)$IMPORT).getStartIndex() );
 		    if (packageDescr != null) {
 			packageDescr.addFunctionImport( importDecl );
 		    }
@@ -260,27 +261,27 @@ function_import_statement
 
 import_name[ImportDescr importDecl] returns [String name]
 	@init {
-		name = null;
+		$name = null;
 	}
 	:	
-		id=identifier 
+		ID 
 		{ 
-		    name=id.getText(); 
-		    importDecl.setTarget( name );
-		    importDecl.setEndCharacter( ((CommonToken)id).getStopIndex() );
+		    $name=$ID.text; 
+		    $importDecl.setTarget( name );
+		    $importDecl.setEndCharacter( ((CommonToken)$ID).getStopIndex() );
 		} 
-		( '.' id=identifier 
+		( DOT id=identifier 
 		    { 
-		        name = name + "." + id.getText(); 
-			importDecl.setTarget( name );
-		        importDecl.setEndCharacter( ((CommonToken)id).getStopIndex() );
+		        $name = $name + $DOT.text + $id.text; 
+			$importDecl.setTarget( $name );
+		        $importDecl.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
 		    } 
 		)* 
 		( star='.*' 
 		    { 
-		        name = name + star.getText(); 
-			importDecl.setTarget( name );
-		        importDecl.setEndCharacter( ((CommonToken)star).getStopIndex() );
+		        $name = $name + $star.text; 
+			$importDecl.setTarget( $name );
+		        $importDecl.setEndCharacter( ((CommonToken)$star).getStopIndex() );
 		    }
 		)?
 	;
@@ -291,20 +292,20 @@ global
 	    GlobalDescr global = null;
 	}
 	:
-		loc=GLOBAL 
+		GLOBAL 
 		{
 		    global = factory.createGlobal();
-	            global.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+	            global.setStartCharacter( ((CommonToken)$GLOBAL).getStartIndex() );
 		    packageDescr.addGlobal( global );
 		}
 		type=dotted_name[null] 
 		{
-		    global.setType( type );
+		    global.setType( $type.name );
 		}
 		id=identifier opt_semicolon
 		{
-		    global.setIdentifier( id.getText() );
-		    global.setEndCharacter( ((CommonToken)id).getStopIndex() );
+		    global.setIdentifier( $id.text );
+		    global.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
 		}
 	;
 	
@@ -314,484 +315,630 @@ function
 		FunctionDescr f = null;
 	}
 	:
-		loc=FUNCTION (retType=dotted_name[null])? n=identifier
+		FUNCTION retType=dotted_name[null]? id=identifier
 		{
 			//System.err.println( "function :: " + n.getText() );
-			f = factory.createFunction( n.getText(), retType );
-			f.setLocation(offset(loc.getLine()), loc.getCharPositionInLine());
-	        	f.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			f = factory.createFunction( $id.text, $retType.name );
+			f.setLocation(offset($FUNCTION.line), $FUNCTION.pos);
+	        	f.setStartCharacter( ((CommonToken)$FUNCTION).getStartIndex() );
 			packageDescr.addFunction( f );
 		} 
-		'('
-			(	(paramType=dotted_name[null])? paramName=argument
+		LEFT_PAREN
+			(	paramType=dotted_name[null]? paramName=argument
 				{
-					f.addParameter( paramType, paramName );
+					f.addParameter( $paramType.name, $paramName.name );
 				}
-				(	',' (paramType=dotted_name[null])? paramName=argument
+				(	COMMA paramType=dotted_name[null]? paramName=argument
 					{
-						f.addParameter( paramType, paramName );
+						f.addParameter( $paramType.name, $paramName.name );
 					}
 				)*
 			)?
-		')'
+		RIGHT_PAREN
 		body=curly_chunk[f]
 		{
 			//strip out '{','}'
-			f.setText( body.substring( 1, body.length()-1 ) );
+			f.setText( $body.text.substring( 1, $body.text.length()-1 ) );
 		}
 	;
 
+argument returns [String name]
+	@init {
+		$name = null;
+	}
+	:	id=identifier { $name=$id.text; } ( '[' ']' { $name += "[]";})*
+	;
+	
 
 
 query returns [QueryDescr query]
 	@init {
-		query = null;
+		$query = null;
 		AndDescr lhs = null;
 		List params = null;
 	}
 	:
-		loc=QUERY queryName=name
+		QUERY queryName=name
 		{ 
-			query = factory.createQuery( queryName ); 
-			query.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			query.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			lhs = new AndDescr(); query.setLhs( lhs ); 
-			lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			$query = factory.createQuery( $queryName.name ); 
+			$query.setLocation( offset($QUERY.line), $QUERY.pos );
+			$query.setStartCharacter( ((CommonToken)$QUERY).getStartIndex() );
+			lhs = new AndDescr(); $query.setLhs( lhs ); 
+			lhs.setLocation( offset($QUERY.line), $QUERY.pos );
 		}
-		(
-			LEFT_PAREN
-			(
-				{ params = new ArrayList(); }
-				
-				paramName=ID { params.add( paramName.getText() ); }				
-				(',' paramName=ID { params.add( paramName.getText() ); } )*
-								
-				{ query.setParameters( (String[]) params.toArray( new String[params.size()] ) ); }
-		    )?
-	    	RIGHT_PAREN
-	    )?
-		(
-			normal_lhs_block[lhs]
-		)
-					
-		loc=END
+		( LEFT_PAREN
+		        ( { params = new ArrayList(); }
+		            paramName=ID { params.add( $paramName.text ); }                             
+	        	    (',' paramName=ID { params.add( $paramName.text ); } )*
+		            { $query.setParameters( (String[]) params.toArray( new String[params.size()] ) ); }
+		         )?
+	          RIGHT_PAREN
+	        )?		
+		normal_lhs_block[lhs]
+		END
 		{
-			query.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+			$query.setEndCharacter( ((CommonToken)$END).getStopIndex() );
 		}
 	;
 
 
 template returns [FactTemplateDescr template]
 	@init {
-		template = null;		
+		$template = null;		
 	}
 	:
-		loc=TEMPLATE templateName=identifier opt_semicolon
+		TEMPLATE templateName=identifier opt_semicolon
 		{
-			template = new FactTemplateDescr(templateName.getText());
-			template.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );			
-			template.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			$template = new FactTemplateDescr($templateName.text);
+			$template.setLocation( offset($TEMPLATE.line), $TEMPLATE.pos );			
+			$template.setStartCharacter( ((CommonToken)$TEMPLATE).getStartIndex() );
 		}
 		(
 			slot=template_slot 
 			{
-				template.addFieldTemplate(slot);
+				template.addFieldTemplate( $slot.field );
 			}
 		)+
-		loc=END opt_semicolon 
+		END opt_semicolon 
 		{
-			template.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+			template.setEndCharacter( ((CommonToken)$END).getStopIndex() );
 		}		
 	;
 	
 template_slot returns [FieldTemplateDescr field]
 	@init {
-		field = null;
+		$field = null;
 	}
 	:
 	         {
-			field = factory.createFieldTemplate();
+			$field = factory.createFieldTemplate();
 	         }
-		 fieldType=dotted_name[field] 
+		 fieldType=qualified_id[$field] 
 		 {
-		        field.setClassType( fieldType );
+		        $field.setClassType( $fieldType.name );
 		 }
 		 
-		 n=identifier opt_semicolon
+		 id=identifier opt_semicolon
 		 {
-		        field.setName( n.getText() );
-			field.setLocation( offset(n.getLine()), n.getCharPositionInLine() );
-			field.setEndCharacter( ((CommonToken)n).getStopIndex() );
+		        $field.setName( $id.text );
+			$field.setLocation( offset($id.start.getLine()), $id.start.getCharPositionInLine() );
+			$field.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
 		 } 
 	;	
 	
 rule returns [RuleDescr rule]
 	@init {
-		rule = null;
-		String consequence = "";
+		$rule = null;
 		AndDescr lhs = null;
 	}
 	:
-		loc=RULE ruleName=name 
+		RULE ruleName=name 
 		{ 
 			location.setType( Location.LOCATION_RULE_HEADER );
-			debug( "start rule: " + ruleName );
-			rule = new RuleDescr( ruleName, null ); 
-			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			rule.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			debug( "start rule: " + $ruleName.name );
+			$rule = new RuleDescr( $ruleName.name, null ); 
+			$rule.setLocation( offset($RULE.line), $RULE.pos );
+			$rule.setStartCharacter( ((CommonToken)$RULE).getStartIndex() );
 		}
-		rule_attributes[rule]
-		(	loc=WHEN ':'?
+		rule_attributes[$rule]?
+		(	
+			WHEN ':'?
 			{ 
 				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-				lhs = new AndDescr(); rule.setLhs( lhs ); 
-				lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+				lhs = new AndDescr(); $rule.setLhs( lhs ); 
+				lhs.setLocation( offset($WHEN.line), $WHEN.pos );
+				lhs.setStartCharacter( ((CommonToken)$WHEN).getStartIndex() );
 			}
-			(
-//				{ expander != null }? expander_lhs_block[lhs] |
-				normal_lhs_block[lhs]
-			)
-					
+			normal_lhs_block[lhs]
 		)?
-		rhs_chunk[rule]
+		rhs_chunk[$rule]
 	;
 	
 
 
 rule_attributes[RuleDescr rule]
 	: 
-			(ATTRIBUTES ':')?
-			(	','? a=rule_attribute
-				{
-					rule.addAttribute( a );
-				}
-			)*
+	( ATTRIBUTES ':' )?
+	attr=rule_attribute { $rule.addAttribute( $attr.attr ); }
+	( ','? attr=rule_attribute { $rule.addAttribute( $attr.attr ); } )*
 	;
 
 
 	
-rule_attribute returns [AttributeDescr d]
+rule_attribute returns [AttributeDescr attr]
 	@init {
-		d = null;
+		$attr = null;
 	}
-	:
-			a=salience { d = a; }
-		|	a=no_loop  { d = a; }
-		|	a=agenda_group  { d = a; }		
-		|	a=duration  { d = a; }			
-		|	a=activation_group { d = a; }	
-		|	a=auto_focus { d = a; }	
-		|	a=date_effective {d = a; }
-		|	a=date_expires {d = a; }
-		|	a=enabled {d=a;}
-		|	a=ruleflow_group { d = a; }
-		|	a=lock_on_active{ d = a; }
-		|	a=dialect {d = a; }
-		
+	@after {
+		$attr = $a.descr;
+	}
+	:	a=salience 
+	|	a=no_loop  
+	|	a=agenda_group  
+	|	a=duration  
+	|	a=activation_group 
+	|	a=auto_focus 
+	|	a=date_effective 
+	|	a=date_expires 
+	|	a=enabled 
+	|	a=ruleflow_group 
+	|	a=lock_on_active
+	|	a=dialect 
 	;
 	
-date_effective returns [AttributeDescr d]
+date_effective returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}	
 	:
-		loc=DATE_EFFECTIVE val=STRING  
+		DATE_EFFECTIVE STRING  
 		{
-			d = new AttributeDescr( "date-effective", getString( val ) );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)val).getStopIndex() );
+			$descr = new AttributeDescr( "date-effective", getString( $STRING.text ) );
+			$descr.setLocation( offset( $DATE_EFFECTIVE.line ), $DATE_EFFECTIVE.pos );
+			$descr.setStartCharacter( ((CommonToken)$DATE_EFFECTIVE).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
 		}
 
 	;
 
-date_expires returns [AttributeDescr d]
+date_expires returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}	
-	:
-		loc=DATE_EXPIRES val=STRING  
+	:	DATE_EXPIRES STRING  
 		{
-			d = new AttributeDescr( "date-expires", getString( val ) );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)val).getStopIndex() );
+			$descr = new AttributeDescr( "date-expires", getString( $STRING.text ) );
+			$descr.setLocation( offset($DATE_EXPIRES.line), $DATE_EXPIRES.pos );
+			$descr.setStartCharacter( ((CommonToken)$DATE_EXPIRES).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
 		}
-
 	;
-
 	
-enabled returns [AttributeDescr d]
+enabled returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-			loc=ENABLED t=BOOL   
+	:		ENABLED BOOL   
 			{
-				d = new AttributeDescr( "enabled", t.getText() );
-				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
+				$descr = new AttributeDescr( "enabled", $BOOL.text );
+				$descr.setLocation( offset($ENABLED.line), $ENABLED.pos );
+				$descr.setStartCharacter( ((CommonToken)$ENABLED).getStartIndex() );
+				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
 			}
-		
-		
 	;	
-	
-	
 
-salience returns [AttributeDescr d ]
+salience returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
 	:	
-		loc=SALIENCE 
+		SALIENCE 
 		{
-			d = new AttributeDescr( "salience" );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			$descr = new AttributeDescr( "salience" );
+			$descr.setLocation( offset($SALIENCE.line), $SALIENCE.pos );
+			$descr.setStartCharacter( ((CommonToken)$SALIENCE).getStartIndex() );
 		}
-		( i=INT   
+		( INT   
 		{
-			d.setValue( i.getText() );
-			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
+			$descr.setValue( $INT.text );
+			$descr.setEndCharacter( ((CommonToken)$INT).getStopIndex() );
 		}
-		| txt=paren_chunk[d]
+		| txt=paren_chunk[$descr]
 		{
-			d.setValue( txt );
+			$descr.setValue( $txt.text );
 		}
 		)
 	;
 	
-no_loop returns [AttributeDescr d]
+no_loop returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		(
-			loc=NO_LOOP   
+	:	NO_LOOP   
+		{
+			$descr = new AttributeDescr( "no-loop", "true" );
+			$descr.setLocation( offset($NO_LOOP.line), $NO_LOOP.pos );
+			$descr.setStartCharacter( ((CommonToken)$NO_LOOP).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$NO_LOOP).getStopIndex() );
+		}
+		( BOOL   
 			{
-				d = new AttributeDescr( "no-loop", "true" );
-				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-				d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+				$descr.setValue( $BOOL.text );
+				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
 			}
-		) 
-		|
-		(
-			loc=NO_LOOP t=BOOL   
-			{
-				d = new AttributeDescr( "no-loop", t.getText() );
-				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
-			}
-		
-		)
-		
+		)?
 	;
 	
-auto_focus returns [AttributeDescr d]
+auto_focus returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		(
-			loc=AUTO_FOCUS   
+	:	AUTO_FOCUS   
+		{
+			$descr = new AttributeDescr( "auto-focus", "true" );
+			$descr.setLocation( offset($AUTO_FOCUS.line), $AUTO_FOCUS.pos );
+			$descr.setStartCharacter( ((CommonToken)$AUTO_FOCUS).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$AUTO_FOCUS).getStopIndex() );
+		}
+		( BOOL   
 			{
-				d = new AttributeDescr( "auto-focus", "true" );
-				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-				d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+				$descr.setValue( $BOOL.text );
+				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
 			}
-		) 
-		|
-		(
-			loc=AUTO_FOCUS t=BOOL   
-			{
-				d = new AttributeDescr( "auto-focus", t.getText() );
-				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
-			}
-		
-		)
-		
+		)?
 	;	
 	
-activation_group returns [AttributeDescr d]
+activation_group returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		loc=ACTIVATION_GROUP n=STRING   
+	:	ACTIVATION_GROUP STRING   
 		{
-			d = new AttributeDescr( "activation-group", getString( n ) );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
+			$descr = new AttributeDescr( "activation-group", getString( $STRING.text ) );
+			$descr.setLocation( offset($ACTIVATION_GROUP.line), $ACTIVATION_GROUP.pos );
+			$descr.setStartCharacter( ((CommonToken)$ACTIVATION_GROUP).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
 		}
 	;
 
-ruleflow_group returns [AttributeDescr d]
+ruleflow_group returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		loc=RULEFLOW_GROUP n=STRING   
+	:	RULEFLOW_GROUP STRING   
 		{
-			d = new AttributeDescr( "ruleflow-group", getString( n ) );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
+			$descr = new AttributeDescr( "ruleflow-group", getString( $STRING.text ) );
+			$descr.setLocation( offset($RULEFLOW_GROUP.line), $RULEFLOW_GROUP.pos );
+			$descr.setStartCharacter( ((CommonToken)$RULEFLOW_GROUP).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
 		}
 	;
 
-agenda_group returns [AttributeDescr d]
+agenda_group returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		loc=AGENDA_GROUP n=STRING   
+	:	AGENDA_GROUP STRING   
 		{
-			d = new AttributeDescr( "agenda-group", getString( n ) );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
+			$descr = new AttributeDescr( "agenda-group", getString( $STRING.text ) );
+			$descr.setLocation( offset($AGENDA_GROUP.line), $AGENDA_GROUP.pos );
+			$descr.setStartCharacter( ((CommonToken)$AGENDA_GROUP).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
 		}
 	;
-	
 
-duration returns [AttributeDescr d]
+duration returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		loc=DURATION i=INT 
+	:	DURATION INT 
 		{
-			d = new AttributeDescr( "duration", i.getText() );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)i).getStopIndex() );
+			$descr = new AttributeDescr( "duration", $INT.text );
+			$descr.setLocation( offset($DURATION.line), $DURATION.pos );
+			$descr.setStartCharacter( ((CommonToken)$DURATION).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$INT).getStopIndex() );
 		}
 	;	
 	
-dialect returns [AttributeDescr d]
+dialect returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		loc=DIALECT n=STRING   
+	:	DIALECT STRING   
 		{
-			d = new AttributeDescr( "dialect", getString( n ) );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			d.setEndCharacter( ((CommonToken)n).getStopIndex() );
+			$descr = new AttributeDescr( "dialect", getString( $STRING.text ) );
+			$descr.setLocation( offset($DIALECT.line), $DIALECT.pos );
+			$descr.setStartCharacter( ((CommonToken)$DIALECT).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
 		}
 	;			
-
-
 	
-	
-	
-	
-lock_on_active returns [AttributeDescr d]
+lock_on_active returns [AttributeDescr descr]
 	@init {
-		d = null;
+		$descr = null;
 	}
-	:
-		(
-			loc=LOCK_ON_ACTIVE   
+	:	LOCK_ON_ACTIVE   
+		{
+			$descr = new AttributeDescr( "lock-on-active", "true" );
+			$descr.setLocation( offset($LOCK_ON_ACTIVE.line), $LOCK_ON_ACTIVE.pos );
+			$descr.setStartCharacter( ((CommonToken)$LOCK_ON_ACTIVE).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$LOCK_ON_ACTIVE).getStopIndex() );
+		}
+		( BOOL   
 			{
-				d = new AttributeDescr( "lock-on-active", "true" );
-				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-				d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+				$descr.setValue( $BOOL.text );
+				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
 			}
-		) 
-		|
-		(
-			loc=LOCK_ON_ACTIVE t=BOOL   
-			{
-				d = new AttributeDescr( "lock-on-active", t.getText() );
-				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-				d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-				d.setEndCharacter( ((CommonToken)t).getStopIndex() );
-			}
-		
-		)
-		
+		)?
 	;		
 
 normal_lhs_block[AndDescr descr]
 	:
-		(	d=lhs[descr]
-			{ if(d != null) descr.addDescr( d ); }
+		(	d=lhs[$descr]
+			{ if( $d.d != null) $descr.addDescr( $d.d ); }
 		)*
 	;
 
 	
 lhs[ConditionalElementDescr ce] returns [BaseDescr d]
 	@init {
-		d=null;
+		$d=null;
 	}
-	:	l=lhs_or { d = l; } 
+	:	l=lhs_or { $d = $l.d; } 
 	;
 
 	
+lhs_or returns [BaseDescr d]
+	@init{
+		$d = null;
+		OrDescr or = null;
+	}
+	:	LEFT_PAREN OR 
+		{
+			or = new OrDescr();
+			$d = or;
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
+		}
+		lhsand=lhs_and+ 
+		{
+			or.addDescr( $lhsand.d );
+		}
+		RIGHT_PAREN // PREFIX
+	|	
+	        left=lhs_and { $d = $left.d; }
+		( (OR|DOUBLE_PIPE)
+			{
+				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
+			}
+			right=lhs_and
+			{
+				if ( or == null ) {
+					or = new OrDescr();
+					or.addDescr( $left.d );
+					$d = or;
+				}
+				
+				or.addDescr( $right.d );
+			}
+		)*
+	;
+	
+lhs_and returns [BaseDescr d]
+	@init{
+		$d = null;
+		AndDescr and = null;
+	}
+	:	LEFT_PAREN AND 
+		{
+			and = new AndDescr();
+			$d = and;
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
+		}
+		lhsunary=lhs_unary+ 
+		{
+			and.addDescr( $lhsunary.d );
+		}
+		RIGHT_PAREN 
+	|	
+	        left=lhs_unary { $d = $left.d; }
+		( (AND|DOUBLE_AMPER)
+			{
+				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
+			}
+			right=lhs_unary
+			{
+				if ( and == null ) {
+					and = new AndDescr();
+					and.addDescr( $left.d );
+					$d = and;
+				}
+				
+				and.addDescr( $right.d );
+			}
+		)* 
+	;
+	
+lhs_unary returns [BaseDescr d]
+	@init {
+		$d = null;
+	}
+	:	(	u=lhs_exist { $d = $u.d; }
+		|	u=lhs_not { $d = $u.d; }
+		|	u=lhs_eval { $d = $u.d; }
+		|	u=lhs_pattern { $d = $u.d; } (
+		          FROM 
+		          {
+				location.setType(Location.LOCATION_LHS_FROM);
+				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
+		          }
+		          ( options { k=1; } :
+		            ( ac=accumulate_statement { $ac.d.setResultPattern((PatternDescr) $u.d); $d=$ac.d; })
+		          | ( cs=collect_statement { $cs.d.setResultPattern((PatternDescr) $u.d); $d=$cs.d; }) 
+		          | ( fm=from_statement {$fm.d.setPattern((PatternDescr) $u.d); $d=$fm.d; }) 
+		          )
+		        )?
+		|	u=lhs_forall  { $d = $u.d; }
+		|	LEFT_PAREN u=lhs_or RIGHT_PAREN { $d = $u.d; }
+		) 
+		opt_semicolon
+	;
+	
+lhs_exist returns [BaseDescr d]
+	@init {
+		$d = null;
+	}
+	:	EXISTS 
+		{
+			$d = new ExistsDescr( ); 
+			$d.setLocation( offset($EXISTS.line), $EXISTS.pos );
+			$d.setStartCharacter( ((CommonToken)$EXISTS).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS );
+		}
+	        ( ( LEFT_PAREN pattern=lhs_or 
+	           	{ if ( $pattern.d != null ) ((ExistsDescr)$d).addDescr( $pattern.d ); }
+	           RIGHT_PAREN 
+	                { $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() ); }
+	        )    
+	        | pattern=lhs_pattern
+	                {
+	                	if ( $pattern.d != null ) {
+	                		((ExistsDescr)$d).addDescr( $pattern.d );
+	                		$d.setEndCharacter( $pattern.d.getEndCharacter() );
+	                	}
+	                }
+	        )
+	;
+	
+lhs_not	returns [NotDescr d]
+	@init {
+		$d = null;
+	}
+	:	NOT 
+		{
+			$d = new NotDescr( ); 
+			$d.setLocation( offset($NOT.line), $NOT.pos );
+			$d.setStartCharacter( ((CommonToken)$NOT).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
+		}
+		( ( LEFT_PAREN pattern=lhs_or  
+	           	{ if ( $pattern.d != null ) $d.addDescr( $pattern.d ); }
+	           RIGHT_PAREN 
+	                { $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() ); }
+		  )
+		| 
+		pattern=lhs_pattern
+	                {
+	                	if ( $pattern.d != null ) {
+	                		$d.addDescr( $pattern.d );
+	                		$d.setEndCharacter( $pattern.d.getEndCharacter() );
+	                	}
+	                }
+		)
+	;
+
+lhs_eval returns [BaseDescr d]
+	@init {
+		$d = new EvalDescr( );
+	}
+	:
+		EVAL 
+		{
+			location.setType( Location.LOCATION_LHS_INSIDE_EVAL );
+		}
+		c=paren_chunk[$d]
+		{ 
+			$d.setStartCharacter( ((CommonToken)$EVAL).getStartIndex() );
+		        if( $c.text != null ) {
+	  		    this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+		            String body = $c.text.length() > 1 ? $c.text.substring(1, $c.text.length()-1) : "";
+			    checkTrailingSemicolon( body, offset($EVAL.line) );
+			    ((EvalDescr) $d).setContent( body );
+			    location.setProperty(Location.LOCATION_EVAL_CONTENT, body);
+			}
+		}
+	;
+	
+lhs_forall returns [ForallDescr d]
+	@init {
+		$d = factory.createForall();
+	}
+	:	FORALL LEFT_PAREN base=lhs_pattern   
+		{
+			$d.setStartCharacter( ((CommonToken)$FORALL).getStartIndex() );
+		        // adding the base pattern
+		        $d.addDescr( $base.d );
+			$d.setLocation( offset($FORALL.line), $FORALL.pos );
+		}
+		( (COMMA)? pattern=lhs_pattern
+		{
+		        // adding additional patterns
+			$d.addDescr( $pattern.d );
+		}
+		)+
+		RIGHT_PAREN
+		{
+		        $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
+		}
+	;
+
 lhs_pattern returns [BaseDescr d]
 	@init {
-		d=null;
+		$d=null;
 	}
-	:	f=fact_binding	{ d = f; }
-	|	f=fact		{ d = f; }
+	@after {
+		$d=$f.d;
+	}
+	:	f=fact_binding	
+	|	f=fact[null]		
 	;
 
 from_statement returns [FromDescr d]
 	@init {
-		d=factory.createFrom();
+		$d=factory.createFrom();
 	}
 	:
-	ds=from_source[d]
-		{
-			d.setDataSource(ds);
-		
-		}
-		
-		
-		
+	ds=from_source[$d]
+	{
+		$d.setDataSource( $ds.ds );
+	}
 	;
 	
 from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 	@init {
-		ds = null;
+		$ds = null;
 		AccessorDescr ad = null;
 	}
-	:	
-		ident=identifier
+	:	ident=identifier
 		{
-			ad = new AccessorDescr(ident.getText());	
-			ad.setLocation( offset(ident.getLine()), ident.getCharPositionInLine() );
-			ad.setStartCharacter( ((CommonToken)ident).getStartIndex() );
-			ad.setEndCharacter( ((CommonToken)ident).getStopIndex() );
-			ds = ad;
-			location.setProperty(Location.LOCATION_FROM_CONTENT, ident.getText());
+			ad = new AccessorDescr(ident.start.getText());	
+			ad.setLocation( offset(ident.start.getLine()), ident.start.getCharPositionInLine() );
+			ad.setStartCharacter( ((CommonToken)ident.start).getStartIndex() );
+			ad.setEndCharacter( ((CommonToken)ident.start).getStopIndex() );
+			$ds = ad;
+			location.setProperty(Location.LOCATION_FROM_CONTENT, ident.start.getText());
 		}
-		(args=paren_chunk[from]
+		(	/* WARNING: $o : O() from x(y) could be also $o : O() from x followed
+			   by (y).  Resolve by always forcing (...) to be paren_chunk if
+			   after a from.  Setting k=1 will force this to happen.  No backtracking
+			   but you'll get a warning from ANTLR.  ANTLR resolves by choosing first
+			   alternative to win, which is the paren_chunk case not the loop exit.
+			*/
+			options {k=1;}
+		:	args=paren_chunk[$from]
 		{
-			if( args != null ) {
+			if( $args.text != null ) {
 				ad.setVariableName( null );
-				FunctionCallDescr fc = new FunctionCallDescr(ident.getText());
-				fc.setLocation( offset(ident.getLine()), ident.getCharPositionInLine() );			
-				fc.setArguments(args);
-				fc.setStartCharacter( ((CommonToken)ident).getStartIndex() );
-				fc.setEndCharacter( ((CommonToken)ident).getStopIndex() );
+				FunctionCallDescr fc = new FunctionCallDescr($ident.start.getText());
+				fc.setLocation( offset($ident.start.getLine()), $ident.start.getCharPositionInLine() );			
+				fc.setArguments($args.text);
+				fc.setStartCharacter( ((CommonToken)$ident.start).getStartIndex() );
+				fc.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
 				ad.addInvoker(fc);
-				location.setProperty(Location.LOCATION_FROM_CONTENT, args);
+				location.setProperty(Location.LOCATION_FROM_CONTENT, $args.text);
 			}
 		}
 		)?
-		expression_chain[from, ad]?
+		expression_chain[$from, ad]?
 		{
 			if( ad != null ) {
 				location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
@@ -805,31 +952,31 @@ expression_chain[FromDescr from, AccessorDescr as]
 	    	MethodAccessDescr ma = null;	
 	}
 	:
-	( '.' field=identifier  
+	( DOT field=identifier  
 	    {
-	        fa = new FieldAccessDescr(field.getText());	
-		fa.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
-		fa.setStartCharacter( ((CommonToken)field).getStartIndex() );
-		fa.setEndCharacter( ((CommonToken)field).getStopIndex() );
+	        fa = new FieldAccessDescr($field.start.getText());	
+		fa.setLocation( offset($field.start.getLine()), $field.start.getCharPositionInLine() );
+		fa.setStartCharacter( ((CommonToken)$field.start).getStartIndex() );
+		fa.setEndCharacter( ((CommonToken)$field.start).getStopIndex() );
 	    }
 	  (
-	    ( LEFT_SQUARE ) => sqarg=square_chunk[from]
+	    ( LEFT_SQUARE ) => sqarg=square_chunk[$from]
 	      {
-	          fa.setArgument( sqarg );	
+	          fa.setArgument( $sqarg.text );	
 	      }
 	    |
-	    ( LEFT_PAREN ) => paarg=paren_chunk[from]
+	    ( LEFT_PAREN ) => paarg=paren_chunk[$from]
 		{
-	    	  ma = new MethodAccessDescr( field.getText(), paarg );	
-		  ma.setLocation( offset(field.getLine()), field.getCharPositionInLine() );
-		  ma.setStartCharacter( ((CommonToken)field).getStartIndex() );
+	    	  ma = new MethodAccessDescr( $field.start.getText(), $paarg.text );	
+		  ma.setLocation( offset($field.start.getLine()), $field.start.getCharPositionInLine() );
+		  ma.setStartCharacter( ((CommonToken)$field.start).getStartIndex() );
 		}
 	  )?
 	  {
 	      if( ma != null ) {
-	          as.addInvoker( ma );
+	          $as.addInvoker( ma );
 	      } else {
-	          as.addInvoker( fa );
+	          $as.addInvoker( fa );
 	      }
 	  }
 	  expression_chain[from, as]?
@@ -838,18 +985,18 @@ expression_chain[FromDescr from, AccessorDescr as]
 	
 accumulate_statement returns [AccumulateDescr d]
 	@init {
-		d = factory.createAccumulate();
+		$d = factory.createAccumulate();
 	}
 	:
-	        loc=ACCUMULATE 
+	        ACCUMULATE 
 		{ 
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			$d.setLocation( offset($ACCUMULATE.line), $ACCUMULATE.pos );
+			$d.setStartCharacter( ((CommonToken)$ACCUMULATE).getStartIndex() );
 			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE );
 		}	
 		LEFT_PAREN pattern=lhs_pattern COMMA? 
 		{
-		        d.setSourcePattern( (PatternDescr)pattern );
+		        $d.setSourcePattern( (PatternDescr) $pattern.d );
 		}
 		INIT 
 		{
@@ -857,141 +1004,138 @@ accumulate_statement returns [AccumulateDescr d]
 		}
 		text=paren_chunk[null] COMMA?
 		{
-			if( text != null ) {
-			        d.setInitCode( text.substring(1, text.length()-1) );
-				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, d.getInitCode());
+			if( $text.text != null ) {
+			        $d.setInitCode( $text.text.substring(1, $text.text.length()-1) );
+				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, $d.getInitCode());
 				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION );
 			}
 		}
 		ACTION text=paren_chunk[null] COMMA?
 		{
-			if( text != null ) {
-			        d.setActionCode( text.substring(1, text.length()-1) );
-	       			location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, d.getActionCode());
+			if( $text.text != null ) {
+			        $d.setActionCode( $text.text.substring(1, $text.text.length()-1) );
+	       			location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, $d.getActionCode());
 				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
 			}
 		}
 		RESULT text=paren_chunk[null] 
 		{
-			if( text != null ) {
-			        d.setResultCode( text.substring(1, text.length()-1) );
-				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, d.getResultCode());
+			if( $text.text != null ) {
+			        $d.setResultCode( $text.text.substring(1, $text.text.length()-1) );
+				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, $d.getResultCode());
 			}
 		}
-		loc=RIGHT_PAREN
+		RIGHT_PAREN
 		{
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+			d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
 		} 
 	; 		
  		
 collect_statement returns [CollectDescr d]
 	@init {
-		d = factory.createCollect();
+		$d = factory.createCollect();
 	}
 	:
-	        loc=COLLECT 
+	        COLLECT 
 		{ 
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+			$d.setLocation( offset($COLLECT.line), $COLLECT.pos );
+			$d.setStartCharacter( ((CommonToken)$COLLECT).getStartIndex() );
 			location.setType( Location.LOCATION_LHS_FROM_COLLECT );
 		}	
-		LEFT_PAREN pattern=lhs_pattern loc=RIGHT_PAREN
+		LEFT_PAREN pattern=lhs_pattern RIGHT_PAREN
 		{
-		        d.setSourcePattern( (PatternDescr)pattern );
-			d.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		        $d.setSourcePattern( (PatternDescr)$pattern.d );
+			$d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 		}
 	; 		
 
 fact_binding returns [BaseDescr d]
 	@init {
-		d=null;
-		boolean multi=false;
+		$d=null;
+		OrDescr or = null;
 	}
  	:
- 		id=ID ':' 
+ 		ID ':' 
  		{
  		        // handling incomplete parsing
- 		        d = new PatternDescr( );
- 		        ((PatternDescr) d).setIdentifier( id.getText() );
+ 		        $d = new PatternDescr( );
+ 		        ((PatternDescr) $d).setIdentifier( $ID.text );
  		}
- 		fe=fact_expression[id.getText()]
+		( fe=fact[$ID.text]
  		{
  		        // override previously instantiated pattern
- 			d=fe;
- 			if( d != null ) {
-   			    d.setStartCharacter( ((CommonToken)id).getStartIndex() );
+ 			$d=$fe.d;
+ 			if( $d != null ) {
+   			    $d.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
    			}
  		}
-	;
- 
- fact_expression[String id] returns [BaseDescr pd]
- 	@init {
- 		pd = null;
- 		boolean multi = false;
- 	}
- 	:	LEFT_PAREN fe=fact_expression[id] RIGHT_PAREN { pd=fe; }
- 	| 	f=fact
+ 		|
+ 		LEFT_PAREN left=fact[$ID.text]
  		{
- 			((PatternDescr)f).setIdentifier( id );
- 			pd = f;
+ 		        // override previously instantiated pattern
+ 			$d=$left.d;
+ 			if( $d != null ) {
+   			    $d.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
+   			}
  		}
  		( (OR|DOUBLE_PIPE)
- 			{	if ( ! multi ) {
- 					BaseDescr first = pd;
- 					pd = new OrDescr();
- 					((OrDescr)pd).addDescr( first );
- 					multi=true;
- 				}
- 			}
- 			f=fact
+ 			right=fact[$ID.text]
  			{
- 				((PatternDescr)f).setIdentifier( id );
- 				((OrDescr)pd).addDescr( f );
+				if ( or == null ) {
+					or = new OrDescr();
+					or.addDescr( $left.d );
+					$d = or;
+				}
+				or.addDescr( $right.d );
  			}
- 		)*	
+ 		)*
+ 		RIGHT_PAREN
+ 		)
 	;
-
-fact returns [BaseDescr d] 
+ 
+fact[String ident] returns [BaseDescr d] 
 	@init {
-		d=null;
+		$d=null;
 		PatternDescr pattern = null;
 	}
  	:	
  	        {
  			pattern = new PatternDescr( );
- 			d = pattern; 
+ 			if( $ident != null ) {
+ 				pattern.setIdentifier( $ident );
+ 			}
+ 			$d = pattern; 
  	        }
- 	        id=dotted_name[d] 
+ 	        id=qualified_id[$d] 
  		{ 
- 		        pattern.setObjectType( id );
+ 		        pattern.setObjectType( $id.name );
  		        pattern.setEndCharacter( -1 );
  		}
- 		loc=LEFT_PAREN {
-		                location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
-            			location.setProperty( Location.LOCATION_PROPERTY_CLASS_NAME, id );
+ 		LEFT_PAREN 
+ 		{
+		        location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
+            		location.setProperty( Location.LOCATION_PROPERTY_CLASS_NAME, $id.name );
  				
- 				pattern.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
- 			        pattern.setLeftParentCharacter( ((CommonToken)loc).getStartIndex() );
- 			} 
+ 			pattern.setLocation( offset($LEFT_PAREN.line), $LEFT_PAREN.pos );
+ 			pattern.setLeftParentCharacter( ((CommonToken)$LEFT_PAREN).getStartIndex() );
+ 		} 
  		( constraints[pattern]  )? 
- 		endLoc=RIGHT_PAREN
+ 		RIGHT_PAREN
 		{
-		        if( endLoc.getType() == RIGHT_PAREN ) {
-				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-				pattern.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
-				pattern.setEndCharacter( ((CommonToken)endLoc).getStopIndex() );
- 			        pattern.setRightParentCharacter( ((CommonToken)endLoc).getStartIndex() );
-			}
+			this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+			pattern.setEndLocation( offset($RIGHT_PAREN.line), $RIGHT_PAREN.pos );	
+			pattern.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
+		        pattern.setRightParentCharacter( ((CommonToken)$RIGHT_PAREN).getStartIndex() );
  		}
  	;
 	
 	
 constraints[PatternDescr pattern]
-	:	constraint[pattern]
-		( ',' { location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START ); } 
-		  constraint[pattern] 
+	:	constraint[$pattern]
+		( COMMA { location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START ); } 
+		  constraint[$pattern] 
 		)* 
 	;
 	
@@ -1001,7 +1145,7 @@ constraint[PatternDescr pattern]
 	}
 	:
 		{
-			top = pattern.getConstraint();
+			top = $pattern.getConstraint();
 		}
 		or_constr[top]
 	;	
@@ -1012,17 +1156,17 @@ or_constr[ConditionalElementDescr base]
 	}
 	:
 		and_constr[or] 
-		( t=DOUBLE_PIPE 
-			{
-				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
-			}
+		( DOUBLE_PIPE 
+		{
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
+		}
 		and_constr[or] 
 		)*
 		{
 		        if( or.getDescrs().size() == 1 ) {
-		                base.addOrMerge( (BaseDescr) or.getDescrs().get(0) );
+		                $base.addOrMerge( (BaseDescr) or.getDescrs().get(0) );
 		        } else if ( or.getDescrs().size() > 1 ) {
-		        	base.addDescr( or );
+		        	$base.addDescr( or );
 		        }
 		}
 	;
@@ -1033,26 +1177,26 @@ and_constr[ConditionalElementDescr base]
 	}
 	:
 		unary_constr[and] 
-		( t=DOUBLE_AMPER 
-			{
-				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
-			}
+		( DOUBLE_AMPER 
+		{
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
+		}
 		unary_constr[and] 
 		)*
 		{
 		        if( and.getDescrs().size() == 1) {
-		                base.addOrMerge( (BaseDescr) and.getDescrs().get(0) );
+		                $base.addOrMerge( (BaseDescr) and.getDescrs().get(0) );
 		        } else if( and.getDescrs().size() > 1) {
-		        	base.addDescr( and );
+		        	$base.addDescr( and );
 		        }
 		}
 	;
 	
 unary_constr[ConditionalElementDescr base]
 	:
-		( field_constraint[base] 
-		| LEFT_PAREN or_constr[base] RIGHT_PAREN
-		| EVAL predicate[base]
+		( field_constraint[$base] 
+		| LEFT_PAREN or_constr[$base] RIGHT_PAREN
+		| EVAL predicate[$base]
 		)
 	;	
 		
@@ -1063,34 +1207,36 @@ field_constraint[ConditionalElementDescr base]
 		RestrictionConnectiveDescr top = null;
 	}
 	:
-		( fb=ID ':' 
+		( ID ':' 
 		    { 
 			fbd = new FieldBindingDescr();
-			fbd.setIdentifier( fb.getText() );
-			fbd.setLocation( offset(fb.getLine()), fb.getCharPositionInLine() );
-			fbd.setStartCharacter( ((CommonToken)fb).getStartIndex() );
-			base.addDescr( fbd );
+			fbd.setIdentifier( $ID.text );
+			fbd.setLocation( offset($ID.line), $ID.pos );
+			fbd.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
+			$base.addDescr( fbd );
 
 		    }
 		)? 
 		f=identifier	
 		{
-		    if( f != null ) {
+		    // use $f.start to get token matched in identifier
+		    // or use $f.text to get text.
+		    if( $f.text != null ) {
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, f.getText());
+			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.text);
 		    
 			if ( fbd != null ) {
-			    fbd.setFieldName( f.getText() );
- 			    fbd.setEndCharacter( ((CommonToken)f).getStopIndex() );
+			    fbd.setFieldName( $f.text );
+ 			    fbd.setEndCharacter( ((CommonToken)$f.start).getStopIndex() );
 			} 
-			fc = new FieldConstraintDescr(f.getText());
-			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
+			fc = new FieldConstraintDescr($f.text);
+			fc.setLocation( offset($f.start.getLine()), $f.start.getCharPositionInLine() );
+			fc.setStartCharacter( ((CommonToken)$f.start).getStartIndex() );
 			top = fc.getRestriction();
 			
 			// it must be a field constraint, as it is not a binding
-			if( fb == null ) {
-			    base.addDescr( fc );
+			if( $ID == null ) {
+			    $base.addDescr( fc );
 			}
 		    }
 		}
@@ -1098,12 +1244,12 @@ field_constraint[ConditionalElementDescr base]
 			or_restr_connective[top]
 			{
 				// we must add now as we didn't before
-				if( fb != null) {
-				    base.addDescr( fc );
+				if( $ID != null) {
+				    $base.addDescr( fc );
 				}
 			}
 		|
-			'->' predicate[base] 
+			'->' predicate[$base] 
 		)?
 	;
 	
@@ -1114,7 +1260,8 @@ or_restr_connective[ RestrictionConnectiveDescr base ]
 	}
 	:
 		and_restr_connective[or] 
-		( t=DOUBLE_PIPE 
+		(	options {backtrack=true;}
+		:	DOUBLE_PIPE 
 			{
 				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			}
@@ -1122,44 +1269,44 @@ or_restr_connective[ RestrictionConnectiveDescr base ]
 		)*
 		{
 		        if( or.getRestrictions().size() == 1 ) {
-		                base.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
+		                $base.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
 		        } else if ( or.getRestrictions().size() > 1 ) {
-		        	base.addRestriction( or );
+		        	$base.addRestriction( or );
 		        }
 		}
 	;	
 
-	
 and_restr_connective[ RestrictionConnectiveDescr base ]
 	@init {
 		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
 	}
 	:
 		constraint_expression[and] 
-		( t=DOUBLE_AMPER 
+		(	options {backtrack=true;}
+		:	t=DOUBLE_AMPER 
 			{
 				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			}
-		constraint_expression[and] 
+			constraint_expression[and] 
 		)*
 		{
 		        if( and.getRestrictions().size() == 1) {
-		                base.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
+		                $base.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
 		        } else if ( and.getRestrictions().size() > 1 ) {
-		        	base.addRestriction( and );
+		        	$base.addRestriction( and );
 		        }
 		}
 	;
-
+	
 constraint_expression[RestrictionConnectiveDescr base]
         :	
-		( compound_operator[base]
-		| simple_operator[base]
+		( compound_operator[$base]
+		| simple_operator[$base]
 		| LEFT_PAREN 
 		{
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 		}
-		or_restr_connective[base] 
+		or_restr_connective[$base] 
 		RIGHT_PAREN
  		)
 	;	
@@ -1185,22 +1332,22 @@ simple_operator[RestrictionConnectiveDescr base]
 		)
 		{
   		    location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
-                    location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, t.getText());
-		    if( n != null ) {
-		        op = "not "+t.getText();
+                    location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, $t.text);
+		    if( $n != null ) {
+		        op = "not "+$t.text;
 		    } else {
-		        op = t.getText();
+		        op = $t.text;
 		    }
 		}
-		rd=expression_value[op]
-		{
-			    if( rd != null ) {
+		rd=expression_value[$base, op]
+/*		{
+			if( $rd.rd != null ) {
 				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
-			        base.addRestriction( rd );
-			    } else if ( rd == null && op != null ) {
-			        base.addRestriction( new LiteralRestrictionDescr(op, null) );
-			    }
-		}
+				$base.addRestriction( $rd.rd );
+			} else if ( $rd.rd == null && op != null ) {
+			        $base.addRestriction( new LiteralRestrictionDescr(op, null) );
+			}
+		}*/
 	;	
 	
 compound_operator[RestrictionConnectiveDescr base]
@@ -1213,7 +1360,7 @@ compound_operator[RestrictionConnectiveDescr base]
 			{
 			  op = "==";
 			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
-			  base.addRestriction( group );
+			  $base.addRestriction( group );
   		    	  location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
                     	  location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, "in");
 			}
@@ -1221,72 +1368,67 @@ compound_operator[RestrictionConnectiveDescr base]
 			{
 			  op = "!=";
 			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
-			  base.addRestriction( group );
+			  $base.addRestriction( group );
   		    	  location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
                     	  location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, "in");
 			}	
 		)
-		LEFT_PAREN rd=expression_value[op]
-			{
-			    if( rd != null ) {
-			        group.addRestriction( rd );
-			    }
-			}
-		( COMMA rd=expression_value[op]
-			{
-			    if( rd != null ) {
-		        	group.addRestriction( rd );
-			    }
-			}
-		)* 
+		LEFT_PAREN rd=expression_value[group, op]
+		( COMMA rd=expression_value[group, op]	)* 
 		RIGHT_PAREN 
 		{
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
 		}
 	;
 	
-expression_value[String op] returns [RestrictionDescr rd]
+expression_value[RestrictionConnectiveDescr base, String op]
+	@init {
+		RestrictionDescr rd = null;
+	}
 	:
-		(	bvc=ID
+		(	ID
 			{
-				rd = new VariableRestrictionDescr(op, bvc.getText());
+				rd = new VariableRestrictionDescr($op, $ID.text);
 			}
 		|	lc=enum_constraint 
 			{ 
-				rd  = new QualifiedIdentifierRestrictionDescr(op, lc);
+				rd  = new QualifiedIdentifierRestrictionDescr($op, $lc.text);
 			}						
 		|	lc=literal_constraint 
 			{ 
-				rd  = new LiteralRestrictionDescr(op, lc);
+				rd  = new LiteralRestrictionDescr($op, $lc.text);
 			}
 		|	rvc=retval_constraint 
 			{ 
-				rd = new ReturnValueRestrictionDescr(op, rvc);							
+				rd = new ReturnValueRestrictionDescr($op, $rvc.text);							
 			} 
 		)	
 		{
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
+			if( rd != null ) {
+				$base.addRestriction( rd );
+			}
 		}
 	;	
 	
 literal_constraint returns [String text]
 	@init {
-		text = null;
+		$text = null;
 	}
-	:	(	t=STRING { text = getString( t ); } 
-		|	t=INT    { text = t.getText(); }
-		|	t=FLOAT	 { text = t.getText(); }
-		|	t=BOOL 	 { text = t.getText(); }
-		|	t=NULL   { text = null; }
+	:	(	t=STRING { $text = getString( $t.text ); } 
+		|	t=INT    { $text = $t.text; }
+		|	t=FLOAT	 { $text = $t.text; }
+		|	t=BOOL 	 { $text = $t.text; }
+		|	t=NULL   { $text = null; }
 		)
 	;
 	
 enum_constraint returns [String text]
 	@init {
-		text = null;
+		$text = null;
 	}
 	:	
-		id=ID { text=id.getText(); } ( '.' ident=identifier { text += "." + ident.getText(); } )+ 
+		ID { text=$ID.text; } ( '.' ident=identifier { text += "." + $ident.start.getText(); } )+ 
 	;	
 	
 
@@ -1300,56 +1442,14 @@ predicate[ConditionalElementDescr base]
 		}
 		text=paren_chunk[d]
 		{
-		        if( text != null ) {
-			        String body = text.substring(1, text.length()-1);
+		        if( $text.text != null ) {
+			        String body = $text.text.substring(1, $text.text.length()-1);
 			        d.setContent( body );
-				base.addDescr( d );
+				$base.addDescr( d );
 		        }
 		}
 	;
 
-paren_chunk[BaseDescr descr] returns [String text]
-        @init {
-           StringBuffer buf = null;
-           Integer channel = null;
-        }
-	:
-	        {
-	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
-		    buf = new StringBuffer();
-	        }
-		loc=LEFT_PAREN 
-		{
-		    buf.append( loc.getText());
-		} 
-		( 
-			~(LEFT_PAREN|RIGHT_PAREN)
-			  {
-			    buf.append( input.LT(-1).getText() );
-			  }
-			|
-			chunk=paren_chunk[null]
-			  {
-			    buf.append( chunk );
-			  }
-		)*
-		{
-		    if( channel != null ) {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
-		    } else {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
-		    }
-		}
-                loc=RIGHT_PAREN
-                {
-                    buf.append( loc.getText() );
-		    text = buf.toString();
-		    if( descr != null ) {
-		        descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
-		    }
-                }
-	;
 
 curly_chunk[BaseDescr descr] returns [String text]
         @init {
@@ -1392,6 +1492,49 @@ curly_chunk[BaseDescr descr] returns [String text]
 		    }
                 }
 	;
+paren_chunk[BaseDescr descr] returns [String text]
+        @init {
+           StringBuffer buf = null;
+           Integer channel = null;
+        }
+	:
+	        {
+	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
+		    buf = new StringBuffer();
+	        }
+		loc=LEFT_PAREN 
+		{
+		    buf.append( $loc.text );
+		} 
+		( 
+			~(LEFT_PAREN|RIGHT_PAREN)
+			  {
+			    buf.append( input.LT(-1).getText() );
+			  }
+			|
+			chunk=paren_chunk[null]
+			  {
+			    buf.append( $chunk.text );
+			  }
+		)*
+		{
+		    if( channel != null ) {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
+		    } else {
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+		    }
+		}
+                end=RIGHT_PAREN
+                {
+                    buf.append( $end.text );
+		    $text = buf.toString();
+		    if( $descr != null ) {
+		        $descr.setEndCharacter( ((CommonToken)$end).getStopIndex() );
+		    }
+                }
+	;
+
 
 square_chunk[BaseDescr descr]  returns [String text]
         @init {
@@ -1406,7 +1549,7 @@ square_chunk[BaseDescr descr]  returns [String text]
 	        }
 		loc=LEFT_SQUARE 
 		{
-		    buf.append( loc.getText());
+		    buf.append( $loc.text);
  
 		} 
 		( 
@@ -1417,7 +1560,7 @@ square_chunk[BaseDescr descr]  returns [String text]
 			|
 			chunk=square_chunk[null]
 			  {
-			    buf.append( chunk );
+			    buf.append( $chunk.text );
 			  }
 		)*
 		{
@@ -1429,232 +1572,84 @@ square_chunk[BaseDescr descr]  returns [String text]
 		}
                 loc=RIGHT_SQUARE
                 {
-                    buf.append( loc.getText() );
-		    text = buf.toString();
-		    if( descr != null ) {
-		        descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+                    buf.append( $loc.text );
+		    $text = buf.toString();
+		    if( $descr != null ) {
+		        $descr.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
 		    }
                 }
 	;
 	
 retval_constraint returns [String text]
 	@init {
-		text = null;
+		$text = null;
 	}
 	:	
-		c=paren_chunk[null] { text = c.substring(1, c.length()-1); }
+		c=paren_chunk[null] { $text = $c.text.substring(1, $c.text.length()-1); }
 	;
 
-lhs_or returns [BaseDescr d]
-	@init{
-		d = null;
-		OrDescr or = null;
+qualified_id[BaseDescr descr] returns [String name]
+	@init {
+		$name = null;
 	}
 	:	
-		left=lhs_and {d = left; }
-		( (OR|'||')
-			{
-				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
-			}
-			right=lhs_and 
-			{
-				if ( or == null ) {
-					or = new OrDescr();
-					or.addDescr( left );
-					d = or;
-				}
-				
-				or.addDescr( right );
-			}
-		)*
-	;
-	
-lhs_and returns [BaseDescr d]
-	@init{
-		d = null;
-		AndDescr and = null;
-	}
-	:
-		left=lhs_unary { d = left; }
-		( (AND|DOUBLE_AMPER)
-			{
-				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
-			}
-			right=lhs_unary
-			{
-				if ( and == null ) {
-					and = new AndDescr();
-					and.addDescr( left );
-					d = and;
-				}
-				
-				and.addDescr( right );
-			}
-		)* 
-	;
-	
-lhs_unary returns [BaseDescr d]
-	@init {
-		d = null;
-	}
-	:	(	u=lhs_exist
-		|	u=lhs_not
-		|	u=lhs_eval
-		|	u=lhs_pattern (
-		          FROM 
-		          {
-				location.setType(Location.LOCATION_LHS_FROM);
-				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
-		          }
-		          (
-		           ( ACCUMULATE ) => (ac=accumulate_statement {ac.setResultPattern((PatternDescr) u); u=ac; })
-		          |( COLLECT ) => (cs=collect_statement {cs.setResultPattern((PatternDescr) u); u=cs; }) 
-		          |( ~(ACCUMULATE|COLLECT) ) => (fm=from_statement {fm.setPattern((PatternDescr) u); u=fm; }) 
-		          )
-		        )?
-		|	u=lhs_forall  
-		|	'(' u=lhs_or ')'
-		) { d = u; }
-		opt_semicolon
-	;
-	
-lhs_exist returns [BaseDescr d]
-	@init {
-		d = null;
-	}
-	:	loc=EXISTS 
-		{
-			d = new ExistsDescr( ); 
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS );
-		}
-	        ( ( '(' pattern=lhs_or 
-	           	{ if ( pattern != null ) ((ExistsDescr)d).addDescr( pattern ); }
-	           end=')' 
-	                { if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() ); }
-	        )    
-	        | pattern=lhs_pattern
-	                {
-	                	if ( pattern != null ) {
-	                		((ExistsDescr)d).addDescr( pattern );
-	                		d.setEndCharacter( pattern.getEndCharacter() );
-	                	}
-	                }
-	        )
-	;
-	
-lhs_not	returns [NotDescr d]
-	@init {
-		d = null;
-	}
-	:	loc=NOT 
-		{
-			d = new NotDescr( ); 
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
-		}
-		( ( '(' pattern=lhs_or  
-	           	{ if ( pattern != null ) d.addDescr( pattern ); }
-	           end=')' 
-	                { if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() ); }
-		  )
-		| 
-		pattern=lhs_pattern
-	                {
-	                	if ( pattern != null ) {
-	                		d.addDescr( pattern );
-	                		d.setEndCharacter( pattern.getEndCharacter() );
-	                	}
-	                }
-		)
-	;
-
-lhs_eval returns [BaseDescr d]
-	@init {
-		d = new EvalDescr( );
-	}
-	:
-		loc=EVAL 
-		{
-			location.setType( Location.LOCATION_LHS_INSIDE_EVAL );
-		}
-		c=paren_chunk[d]
+		ID
 		{ 
-			if ( loc != null ) d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-		        if( c != null ) {
-	  		    this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-		            String body = c.length() > 1 ? c.substring(1, c.length()-1) : "";
-			    checkTrailingSemicolon( body, offset(loc.getLine()) );
-			    ((EvalDescr) d).setContent( body );
-			    location.setProperty(Location.LOCATION_EVAL_CONTENT, body);
-			}
-		}
-	;
-	
-lhs_forall returns [ForallDescr d]
-	@init {
-		d = factory.createForall();
-	}
-	:	loc=FORALL '(' base=lhs_pattern   
-		{
-			if ( loc != null ) d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-		        // adding the base pattern
-		        d.addDescr( base );
-			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-		}
-		( (',')? pattern=lhs_pattern
-		{
-		        // adding additional patterns
-			d.addDescr( pattern );
-		}
-		)+
-		end=')'
-		{
-		        if ( end != null ) d.setEndCharacter( ((CommonToken)end).getStopIndex() );
-		}
-	;
-
-dotted_name[BaseDescr descr] returns [String name]
-	@init {
-		name = null;
-	}
-	:	
-		id=ID 
-		{ 
-		    name=id.getText(); 
-		    if( descr != null ) {
-			descr.setStartCharacter( ((CommonToken)id).getStartIndex() );
-			descr.setEndCharacter( ((CommonToken)id).getStopIndex() );
+		    $name=$ID.text; 
+		    if( $descr != null ) {
+			$descr.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$ID).getStopIndex() );
 		    }
 		} 
 		( '.' ident=identifier 
 		    { 
-		        name = name + "." + ident.getText(); 
-    		        if( descr != null ) {
-			    descr.setEndCharacter( ((CommonToken)ident).getStopIndex() );
+		        $name += "." + ident.start.getText(); 
+    		        if( $descr != null ) {
+			    $descr.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
 		        }
 		    } 
 		)* 
 		( '[' loc=']'
 		    { 
-		        name = name + "[]";
-    		        if( descr != null ) {
-			    descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
+		        $name += "[]";
+    		        if( $descr != null ) {
+			    $descr.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
 		        }
 		    }
 		)*
 	;
 	
-argument returns [String name]
+dotted_name[BaseDescr descr] returns [String name]
 	@init {
-		name = null;
+		$name = null;
 	}
-	:
-		id=identifier { name=id.getText(); } ( '[' ']' { name = name + "[]";})*
+	:	
+		id=identifier
+		{ 
+		    name=$id.text; 
+		    if( $descr != null ) {
+			$descr.setStartCharacter( ((CommonToken)$id.start).getStartIndex() );
+			$descr.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
+		    }
+		} 
+		( '.' ident=identifier 
+		    { 
+		        $name += "." + $ident.text; 
+    		        if( $descr != null ) {
+			    $descr.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
+		        }
+		    } 
+		)* 
+		( '[' loc=']'
+		    { 
+		        $name += "[]";
+    		        if( $descr != null ) {
+			    $descr.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
+		        }
+		    }
+		)*
 	;
-
+	
 rhs_chunk[RuleDescr rule]
         @init {
            StringBuffer buf = null;
@@ -1666,7 +1661,7 @@ rhs_chunk[RuleDescr rule]
 		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
 		    buf = new StringBuffer();
 	        }
-		start=THEN
+		THEN
 		{
 			location.setType( Location.LOCATION_RHS );
 		}
@@ -1683,7 +1678,7 @@ rhs_chunk[RuleDescr rule]
 			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
 		    }
 		}
-                loc=END
+                loc=END opt_semicolon
                 {
                     // ignoring first line in the consequence
                     int index = 0;
@@ -1695,74 +1690,53 @@ rhs_chunk[RuleDescr rule]
                     if( (index < buf.length() ) && ( buf.charAt( index ) == '\n' ) )
                         index++;
                     
-		    rule.setConsequence( buf.substring( index ) );
-     		    rule.setConsequenceLocation(offset(start.getLine()), start.getCharPositionInLine());
- 		    rule.setEndCharacter( ((CommonToken)loc).getStopIndex() );
- 		    location.setProperty( Location.LOCATION_RHS_CONTENT, rule.getConsequence() );
+		    $rule.setConsequence( buf.substring( index ) );
+     		    $rule.setConsequenceLocation(offset($THEN.line), $THEN.pos);
+ 		    $rule.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
+ 		    location.setProperty( Location.LOCATION_RHS_CONTENT, $rule.getConsequence() );
                 }
 	;
 
-name returns [String s]
-	:
-	( 
-	    tok=ID
-	    {
-	        s = tok.getText();
-	    }
-	|
-	    str=STRING
-	    {
-	       s = getString( str );
-	    }
-	)
+name returns [String name]
+	: 	ID { $name = $ID.text; }
+	| 	STRING { $name = getString( $STRING.text ); }
 	;
 	
-identifier returns [Token tok]
-	:	
-	(       t=ID      
-	|	t=PACKAGE
-	|	t=FUNCTION
-	|	t=GLOBAL
-	|	t=IMPORT  
-	|	t=RULE
-	|	t=QUERY 
-        |       t=TEMPLATE        
-        |       t=ATTRIBUTES      
-        |       t=ENABLED         
-        |       t=SALIENCE 	
-        |       t=DURATION 	
-        |       t=FROM	        
-        |       t=ACCUMULATE 	
-        |       t=INIT	        
-        |       t=ACTION	        
-        |       t=RESULT	        
-        |       t=COLLECT         
-        |       t=OR	        
-        |       t=AND	        
-        |       t=CONTAINS 	
-        |       t=EXCLUDES 	
-        |       t=MEMBEROF
-        |       t=MATCHES         
-        |       t=NULL	        
-        |       t=EXISTS	        
-        |       t=NOT	        
-        |       t=EVAL	        
-        |       t=FORALL	            					
-        |       t=WHEN            
-        |       t=THEN	        
-        |       t=END     
-        |	t=IN        
-	) 
-	{
-	    tok = t;
-	}
+identifier
+	:       ID      
+	|	PACKAGE
+	|	FUNCTION
+	|	GLOBAL
+	|	IMPORT  
+	|	RULE
+	|	QUERY 
+        |       TEMPLATE        
+        |       ATTRIBUTES      
+        |       ENABLED         
+        |       SALIENCE 	
+        |       DURATION 	
+        |       FROM	        
+       // |       ACCUMULATE 	
+        |       INIT	        
+        |       ACTION	        
+        |       RESULT	        
+       // |       COLLECT         
+        |       CONTAINS 	
+        |       EXCLUDES 	
+        |       MEMBEROF
+        |       MATCHES         
+        |       NULL	        
+        |       WHEN            
+        |       THEN	        
+        |       END     
+        |	IN        
 	;
 	
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
                 |	EOL
-                )
+                )+
                 { $channel=HIDDEN; }
         ;
 
@@ -1942,6 +1916,9 @@ RIGHT_CURLY
         
 COMMA	:	','
 	;
+	
+DOT	:	'.'
+	;	
 	
 DOUBLE_AMPER
 	:	'&&'

@@ -1,8 +1,8 @@
 package test.rule.when.end.package.mine;
 
-global java.lang.String accumulate;
+global java.lang.String rule;
 
-function boolean eval() {
+function boolean test() {
     return true;
 }
 

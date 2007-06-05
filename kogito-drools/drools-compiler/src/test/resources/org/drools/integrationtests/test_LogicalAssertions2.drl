@@ -16,7 +16,7 @@ end
 rule "Problem detected" 
     salience 10
     when
-        sensor : Sensor( temperature > 100 ) or Sensor( pressure > 150 )
+        sensor : ( Sensor( temperature > 100 ) or Sensor( pressure > 150 ) )
     then
         events.add( "Problem detected: "+sensor.toString() );
         assertLogical( new Alarm( "Call emergency team" ) );
