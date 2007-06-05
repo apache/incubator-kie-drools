@@ -127,11 +127,10 @@ public class RuleParserTest extends TestCase {
         assertNull( rule.getLhs() );
         assertNotNull( rule.getConsequence() );
 
-        assertFalse( this.parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
     }
 
     public void testKeywordCollisions() throws Exception {
-        //MN: this really needs the multiphase parser for it to work properly
         final DRLParser parser = parseResource( "eol_funny_business.drl" );
 
         parser.compilation_unit();
@@ -2154,10 +2153,7 @@ public class RuleParserTest extends TestCase {
 
     public void testPackageAttributes() throws Exception {
         parseResource( "package_attributes.drl" ).compilation_unit();
-        if ( this.parser.hasErrors() ) {
-            System.err.println( this.parser.getErrorMessages() );
-        }
-        assertFalse( this.parser.hasErrors() );
+        assertFalse( this.parser.getErrorMessages().toString(), this.parser.hasErrors() );
 
         PackageDescr pkg = this.parser.getPackageDescr();
         AttributeDescr at = (AttributeDescr) pkg.getAttributes().get( 0 );
@@ -2724,7 +2720,7 @@ public class RuleParserTest extends TestCase {
         final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
-        PatternDescr pattern = (PatternDescr) parser.fact();
+        PatternDescr pattern = (PatternDescr) parser.fact(null);
         assertFalse( parser.getErrorMessages().toString(),
                      parser.hasErrors() );
 
@@ -2745,7 +2741,7 @@ public class RuleParserTest extends TestCase {
         final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
-        PatternDescr pattern = (PatternDescr) parser.fact();
+        PatternDescr pattern = (PatternDescr) parser.fact(null);
         assertFalse( parser.getErrorMessages().toString(),
                      parser.hasErrors() );
 
@@ -2769,7 +2765,7 @@ public class RuleParserTest extends TestCase {
         final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
-        PatternDescr pattern = (PatternDescr) parser.fact();
+        PatternDescr pattern = (PatternDescr) parser.fact(null);
         assertFalse( parser.getErrorMessages().toString(),
                      parser.hasErrors() );
 
@@ -2832,7 +2828,7 @@ public class RuleParserTest extends TestCase {
         final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
-        PatternDescr pattern = (PatternDescr) parser.fact();
+        PatternDescr pattern = (PatternDescr) parser.fact(null);
         assertFalse( parser.getErrorMessages().toString(),
                      parser.hasErrors() );
 
@@ -2896,7 +2892,7 @@ public class RuleParserTest extends TestCase {
         final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
-        PatternDescr pattern = (PatternDescr) parser.fact();
+        PatternDescr pattern = (PatternDescr) parser.fact(null);
         assertFalse( parser.getErrorMessages().toString(),
                      parser.hasErrors() );
 

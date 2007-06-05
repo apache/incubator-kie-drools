@@ -6,5 +6,4 @@ package test
 rule simple_rule 
   when
     foo3 : Bar(
-#I think the problem is it is not building the pattern due to not knowing when to finish looking
-#at the lhs.
+
