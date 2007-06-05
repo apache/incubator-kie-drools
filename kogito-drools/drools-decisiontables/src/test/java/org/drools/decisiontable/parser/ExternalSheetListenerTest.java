@@ -23,7 +23,9 @@ import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.rule.Rule;
 import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -304,6 +306,21 @@ public class ExternalSheetListenerTest extends TestCase {
                                                     Object[] arguments) {
                     // TODO Auto-generated method stub
                     return null;
+                }
+
+                public void modifyAssert(FactHandle factHandle,
+                                         Object object,
+                                         Rule rule,
+                                         Activation activation) {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                public void modifyRetract(FactHandle factHandle,
+                                          Rule rule,
+                                          Activation activation) {
+                    // TODO Auto-generated method stub
+                    
                 }
 			};
 		}
