@@ -37,7 +37,9 @@ public class MVELTest extends TestCase {
 
         workingMemory.assertObject( new Cheese("stilton", 10) );
         workingMemory.fireAllRules();
+        assertEquals( 2, list.size() );
         assertEquals( new Integer(30), list.get(0));
+        assertEquals( new Integer(22), list.get(1));
         
     }
     

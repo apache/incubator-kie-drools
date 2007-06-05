@@ -79,7 +79,7 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    private List[] analyze(final List identifiers,
+    private List[] analyze(final Set identifiers,
                            final Set[] availableIdentifiers) throws RecognitionException {
         final Set notBound = new HashSet( identifiers );
         final List[] used = new List[availableIdentifiers.length + 1];
