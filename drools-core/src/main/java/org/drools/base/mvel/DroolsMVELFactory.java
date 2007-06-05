@@ -1,5 +1,6 @@
 package org.drools.base.mvel;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
@@ -47,6 +48,10 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory {
     
     public Object getObject() {
         return this.object;
+    }
+    
+    public WorkingMemory getWorkingMemory() {
+        return this.workingMemory;
     }
 
     public void setContext(final Tuple tuple,

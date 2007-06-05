@@ -26,7 +26,7 @@ public class DroolsMVELPreviousDeclarationVariable
 
     public Object getValue() {
         return this.declaration.getValue( this.factory.getValue( this.declaration ) );
-    }
+    }    
 
     public void setValue(final Object value) {
         throw new UnsupportedOperationException( "External Variable identifer='" + getName() + "' type='" + getKnownType() + "' is final, it cannot be set" );

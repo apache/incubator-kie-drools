@@ -24,7 +24,9 @@ import java.util.Map;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.rule.Rule;
 import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -280,6 +282,15 @@ public interface WorkingMemory
      */
     void modifyObject(FactHandle handle,
                       Object object) throws FactException;
+    
+    public void modifyRetract(final FactHandle factHandle,
+                              final Rule rule,
+                              final Activation activation);
+    
+    public void modifyAssert(final FactHandle factHandle,
+                             final Object object,
+                             final Rule rule,
+                             final Activation activation);    
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
