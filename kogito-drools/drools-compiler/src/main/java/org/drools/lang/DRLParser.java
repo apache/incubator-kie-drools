@@ -1,4 +1,4 @@
-// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-06-06 11:49:17
+// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-06-06 17:02:06
 
 	package org.drools.lang;
 	import java.util.List;
@@ -6722,6 +6722,9 @@ public class DRLParser extends Parser {
 
               	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
               		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
+              		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, Token.DEFAULT_CHANNEL );
+              		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, Token.DEFAULT_CHANNEL );
+              		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, Token.DEFAULT_CHANNEL );
               		    buf = new StringBuffer();
               	        
             }
@@ -6732,7 +6735,7 @@ public class DRLParser extends Parser {
               			location.setType( Location.LOCATION_RHS );
               		
             }
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1668:3: (~ END )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1671:3: (~ END )*
             loop79:
             do {
                 int alt79=2;
@@ -6745,7 +6748,7 @@ public class DRLParser extends Parser {
 
                 switch (alt79) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1669:6: ~ END
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1672:6: ~ END
             	    {
             	    if ( (input.LA(1)>=ATTRIBUTES && input.LA(1)<=QUERY)||(input.LA(1)>=TEMPLATE && input.LA(1)<=79) ) {
             	        input.consume();
@@ -6776,8 +6779,14 @@ public class DRLParser extends Parser {
 
               		    if( channel != null ) {
               			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
+              			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, channel.intValue() );
+              			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, channel.intValue() );
+              			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, channel.intValue() );
               		    } else {
               			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+              			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, Token.HIDDEN_CHANNEL );
+              			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, Token.HIDDEN_CHANNEL );
+              			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, Token.HIDDEN_CHANNEL );
               		    }
               		
             }
@@ -6821,7 +6830,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start name
-    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1700:1: name returns [String name] : ( ID | STRING );
+    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1709:1: name returns [String name] : ( ID | STRING );
     public final String name() throws RecognitionException {
         String name = null;
 
@@ -6829,7 +6838,7 @@ public class DRLParser extends Parser {
         Token STRING57=null;
 
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:5: ( ID | STRING )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:5: ( ID | STRING )
             int alt80=2;
             int LA80_0 = input.LA(1);
 
@@ -6842,13 +6851,13 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return name;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1700:1: name returns [String name] : ( ID | STRING );", 80, 0, input);
+                    new NoViableAltException("1709:1: name returns [String name] : ( ID | STRING );", 80, 0, input);
 
                 throw nvae;
             }
             switch (alt80) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1701:5: ID
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1710:5: ID
                     {
                     ID56=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_name4901); if (failed) return name;
@@ -6859,7 +6868,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1702:5: STRING
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1711:5: STRING
                     {
                     STRING57=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_name4909); if (failed) return name;
@@ -6886,13 +6895,13 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start identifier
-    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1705:1: identifier : ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | FROM | INIT | ACTION | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | NULL | WHEN | THEN | END | IN );
+    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1714:1: identifier : ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | FROM | INIT | ACTION | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | NULL | WHEN | THEN | END | IN );
     public final identifier_return identifier() throws RecognitionException {
         identifier_return retval = new identifier_return();
         retval.start = input.LT(1);
 
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1706:10: ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | FROM | INIT | ACTION | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | NULL | WHEN | THEN | END | IN )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1715:10: ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | FROM | INIT | ACTION | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | NULL | WHEN | THEN | END | IN )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:
             {
             if ( (input.LA(1)>=ATTRIBUTES && input.LA(1)<=ID)||input.LA(1)==GLOBAL||(input.LA(1)>=QUERY && input.LA(1)<=WHEN)||input.LA(1)==ENABLED||input.LA(1)==SALIENCE||input.LA(1)==DURATION||input.LA(1)==FROM||(input.LA(1)>=INIT && input.LA(1)<=RESULT)||(input.LA(1)>=CONTAINS && input.LA(1)<=IN)||input.LA(1)==NULL||input.LA(1)==THEN ) {
