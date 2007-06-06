@@ -915,14 +915,13 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    // FIXME
-    public void FIXME_testLineNumberIncludingCommentsInRHS() throws Exception {
+    public void testLineNumberIncludingCommentsInRHS() throws Exception {
         parseResource( "test_CommentLineNumbersInConsequence.drl" ).compilation_unit();
 
         assertFalse( this.parser.hasErrors() );
         final String rhs = (String) ((RuleDescr) this.parser.getPackageDescr().getRules().get( 0 )).getConsequence();
-        //System.out.println(rhs);
-        assertEquals( "\n first\n\n\n\n\n\n\n second",
+        String expected = "  \t//woot\n  \tfirst\n  \t\n  \t//\n  \t\n  \t/* lala\n  \t\n  \t*/\n  \tsecond  \n"; 
+        assertEquals( expected,
                       rhs );
     }
 

@@ -1659,6 +1659,9 @@ rhs_chunk[RuleDescr rule]
 	        {
 	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
 		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, Token.DEFAULT_CHANNEL );
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, Token.DEFAULT_CHANNEL );
+		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, Token.DEFAULT_CHANNEL );
 		    buf = new StringBuffer();
 	        }
 		THEN
@@ -1674,8 +1677,14 @@ rhs_chunk[RuleDescr rule]
 		{
 		    if( channel != null ) {
 			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, channel.intValue() );
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, channel.intValue() );
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, channel.intValue() );
 		    } else {
 			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, Token.HIDDEN_CHANNEL );
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, Token.HIDDEN_CHANNEL );
+			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, Token.HIDDEN_CHANNEL );
 		    }
 		}
                 loc=END opt_semicolon
@@ -1930,7 +1939,7 @@ DOUBLE_PIPE
 	
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
-                { $channel=HIDDEN; }
+                { $channel=HIDDEN; setText("//"+getText().substring(1));}
 	;
         
         
