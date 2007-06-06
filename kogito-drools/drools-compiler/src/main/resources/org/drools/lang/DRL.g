@@ -906,6 +906,7 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 	@init {
 		$ds = null;
 		AccessorDescr ad = null;
+		FunctionCallDescr fc = null;
 	}
 	:	ident=identifier
 		{
@@ -927,12 +928,11 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 		{
 			if( $args.text != null ) {
 				ad.setVariableName( null );
-				FunctionCallDescr fc = new FunctionCallDescr($ident.start.getText());
+				fc = new FunctionCallDescr($ident.start.getText());
 				fc.setLocation( offset($ident.start.getLine()), $ident.start.getCharPositionInLine() );			
 				fc.setArguments($args.text);
 				fc.setStartCharacter( ((CommonToken)$ident.start).getStartIndex() );
 				fc.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
-				ad.addInvoker(fc);
 				location.setProperty(Location.LOCATION_FROM_CONTENT, $args.text);
 			}
 		}
@@ -941,6 +941,9 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 	;	
 	finally {
 		if( ad != null ) {
+			if( fc != null ) {
+				ad.addFirstInvoker( fc );
+			}
 			location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
 		}
 	}
