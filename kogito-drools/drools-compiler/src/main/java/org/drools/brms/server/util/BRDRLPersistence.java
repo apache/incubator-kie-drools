@@ -8,12 +8,14 @@ import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.brxml.Constraint;
+import org.drools.brms.client.modeldriven.brxml.FieldConstraint;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.IAction;
-import org.drools.brms.client.modeldriven.brxml.IConstraint;
+import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.util.ReflectiveVisitor;
@@ -186,47 +188,77 @@ public class BRDRLPersistence
             }
             buf.append( "( " );
 
-            for ( int i = 0; i < pattern.constraints.length; i++ ) {
+            //top level constraints
+            if (pattern.constraintList != null) {
+                generateConstraints( pattern );
+            }
+            buf.append( ")" );
+        }
+
+        private void generateConstraints(FactPattern pattern) {
+            for ( int i = 0; i < pattern.constraintList.constraints.length; i++ ) {
                 if ( i > 0 ) {
                     buf.append( ", " );
                 }
-                final Constraint constr = pattern.constraints[i];
-                if ( constr.constraintValueType == IConstraint.TYPE_PREDICATE ) {
-                    buf.append( "( " );
-                    buf.append( constr.value );
-                    buf.append( " )" );
-                } else {
-                    if ( constr.fieldBinding != null ) {
-                        buf.append( constr.fieldBinding );
-                        buf.append( " : " );
+                generateConstraint( pattern.constraintList.constraints[i], false );
+            }
+        }
+
+        /**
+         * Recursively process the nested constraints.
+         * It will only put brackets in for the ones that aren't at top level.
+         * This makes for more readable DRL in the most common cases.
+         */
+        private void generateConstraint(FieldConstraint con, boolean nested) {
+            if (con instanceof CompositeFieldConstraint) {                
+                CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
+                if (nested) buf.append( "( " );
+                FieldConstraint[] nestedConstraints = cfc.constraints;
+                for ( int i = 0; i < nestedConstraints.length; i++ ) {
+                    generateConstraint( nestedConstraints[i] , true);
+                    if (i < (nestedConstraints.length - 1)) {
+                        //buf.append(" ) ");
+                        buf.append( cfc.compositeJunctionType + " ");
+                        //buf.append(" ( ");
                     }
+                }
+                if (nested) buf.append( ")" );
+            } else {
+                generateSingleFieldConstraint( (SingleFieldConstraint) con );
+            }
+        }
+        
+        private void generateSingleFieldConstraint(final SingleFieldConstraint constr) {
+            if ( constr.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE ) {
+                buf.append( "( " );
+                buf.append( constr.value );
+                buf.append( " )" );
+            } else {
+                if ( constr.fieldBinding != null ) {
+                    buf.append( constr.fieldBinding );
+                    buf.append( " : " );
+                }
+                if ((constr.operator != null && constr.value != null)
+                        || constr.fieldBinding != null) {
                     buf.append( constr.fieldName );
+                }
 
-                    addFieldRestriction( buf,
-                                         constr.constraintValueType,
-                                         constr.operator,
-                                         constr.value );
+                addFieldRestriction( buf,
+                                     constr.constraintValueType,
+                                     constr.operator,
+                                     constr.value );
 
-                    if ( constr.connectives != null ) {
-                        for ( int j = 0; j < constr.connectives.length; j++ ) {
-                            final ConnectiveConstraint conn = constr.connectives[j];
-                            if ( conn.isANDConnective() ) {
-                                buf.append( "&" );
-                            } else if ( conn.isORConnective() ) {
-                                buf.append( "|" );
-                            } else {
-                                throw new IllegalStateException( "Unknown connective type/operator: [" + conn.operator + "]" );
-                            }
-
-                            addFieldRestriction( buf,
-                                                 conn.constraintValueType,
-                                                 conn.operator,
-                                                 conn.value );
-                        }
+                //and now do the connectives.
+                if ( constr.connectives != null ) {
+                    for ( int j = 0; j < constr.connectives.length; j++ ) {
+                        final ConnectiveConstraint conn = constr.connectives[j];
+                        addFieldRestriction( buf,
+                                             conn.constraintValueType,
+                                             conn.operator,
+                                             conn.value );
                     }
                 }
             }
-            buf.append( ")" );
         }
 
         /**
@@ -245,10 +277,15 @@ public class BRDRLPersistence
             buf.append( operator );
             buf.append( " " );
             switch ( type ) {
-                case IConstraint.TYPE_RET_VALUE :
+                case ISingleFieldConstraint.TYPE_RET_VALUE :
                     buf.append( "( " );
                     buf.append( operator );
                     buf.append( " )" );
+                    break;
+                case ISingleFieldConstraint.TYPE_LITERAL :
+                    buf.append( '"' );
+                    buf.append( value );
+                    buf.append( '"' );
                     break;
                 default :
                     buf.append( value );

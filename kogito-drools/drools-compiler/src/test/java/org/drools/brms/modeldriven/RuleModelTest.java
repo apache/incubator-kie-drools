@@ -7,11 +7,12 @@ import junit.framework.TestCase;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.brxml.Constraint;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.IAction;
-import org.drools.brms.client.modeldriven.brxml.IConstraint;
+import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
@@ -91,22 +92,24 @@ public class RuleModelTest extends TestCase {
         final FactPattern y = new FactPattern( "Car" );
         model.lhs[1] = y;
         y.boundName = "y";
-        final Constraint[] cons = new Constraint[2];
-        y.constraints = cons;
-        cons[0] = new Constraint( "age" );
-        cons[1] = new Constraint( "make" );
+        final SingleFieldConstraint[] cons = new SingleFieldConstraint[2];
+        y.constraintList = new CompositeFieldConstraint();
+        y.constraintList.constraints = cons;
+        cons[0] = new SingleFieldConstraint( "age" );
+        cons[1] = new SingleFieldConstraint( "make" );
         cons[0].fieldBinding = "qbc";
         cons[0].connectives = new ConnectiveConstraint[1];
         cons[0].connectives[0] = new ConnectiveConstraint( "&",
                                                            "x" );
-        cons[0].connectives[0].constraintValueType = IConstraint.TYPE_LITERAL;
+        cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 
         final FactPattern other = new FactPattern( "House" );
         model.lhs[2] = other;
         other.boundName = "q";
-        final Constraint[] cons2 = new Constraint[1];
-        cons2[0] = new Constraint();
-        other.constraints = cons2;
+        final SingleFieldConstraint[] cons2 = new SingleFieldConstraint[1];
+        cons2[0] = new SingleFieldConstraint();
+        other.constraintList = new CompositeFieldConstraint();
+        other.constraintList.constraints = cons2;
 
         //check the results for correct scope
         List vars = model.getBoundVariablesInScope( cons[0] );
@@ -145,6 +148,26 @@ public class RuleModelTest extends TestCase {
         assertEquals( "y",
                       vars.get( 2 ) );
     }
+    
+    public void testScopedVariablesWithCompositeFact() {
+        RuleModel m = new RuleModel();
+        FactPattern p = new FactPattern();
+        CompositeFieldConstraint cf = new CompositeFieldConstraint();
+        cf.addConstraint( new SingleFieldConstraint("x") );
+        p.addConstraint( cf );
+        SingleFieldConstraint sf = new SingleFieldConstraint("q");
+        sf.fieldBinding = "abc";
+
+        p.addConstraint( sf );
+        SingleFieldConstraint sf2 = new SingleFieldConstraint("q");
+        sf2.fieldBinding = "qed";
+        cf.addConstraint( sf2 );
+        m.addLhsItem( p );
+
+        List vars = m.getAllVariables();
+        assertEquals(1, vars.size());
+        assertEquals("abc", vars.get( 0 ));
+    }
 
     public void testBindingList() {
         final RuleModel model = new RuleModel();
@@ -178,11 +201,15 @@ public class RuleModelTest extends TestCase {
         final FactPattern x = new FactPattern( "Car" );
         model.lhs[0] = x;
         x.boundName = "boundFact";        
-        x.constraints = new Constraint[2];
-        x.constraints[0] = new Constraint("q");
-        x.constraints[0].fieldBinding = "field1";
-        x.constraints[1] = new Constraint("w");
-        x.constraints[1].fieldBinding = "field2";
+        
+        SingleFieldConstraint sfc = new SingleFieldConstraint("q"); 
+        x.addConstraint( sfc );
+        sfc.fieldBinding = "field1";
+        
+        SingleFieldConstraint sfc2 = new SingleFieldConstraint("q"); 
+        x.addConstraint( sfc2 );
+        sfc2.fieldBinding = "field2";
+        
         
         model.lhs[1] = new CompositeFactPattern();
      

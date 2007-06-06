@@ -11,49 +11,29 @@ public class FactPattern
     implements
     IPattern {
 
-    public Constraint[] constraints;
+    public CompositeFieldConstraint constraintList;
     public String       factType;
     public String       boundName;
 
     public FactPattern() {
-        this.constraints = new Constraint[0];
+        //this.constraints = new CompositeFieldConstraint();
     }
 
     public FactPattern(final String factType) {
         this.factType = factType;
-        this.constraints = new Constraint[0];
+        //this.constraints = new CompositeFieldConstraint();
     }
 
-    public void addConstraint(final Constraint constraint) {
-        if ( this.constraints == null ) {
-            this.constraints = new Constraint[1];
-            this.constraints[0] = constraint;
-        } else {
-            final Constraint[] newList = new Constraint[this.constraints.length + 1];
-            for ( int i = 0; i < this.constraints.length; i++ ) {
-                newList[i] = this.constraints[i];
-            }
-            newList[this.constraints.length] = constraint;
-            this.constraints = newList;
-        }
+    /**
+     * This will add a top level constraint.  
+     */
+    public void addConstraint(final FieldConstraint constraint) {
+        if (constraintList == null) constraintList = new CompositeFieldConstraint();
+        this.constraintList.addConstraint( constraint );
     }
 
     public void removeConstraint(final int idx) {
-        //Unfortunately, this is kinda duplicate code with other methods, 
-        //but with typed arrays, and GWT, its not really possible to do anything "better" 
-        //at this point in time. 
-        final Constraint[] newList = new Constraint[this.constraints.length - 1];
-        int newIdx = 0;
-        for ( int i = 0; i < this.constraints.length; i++ ) {
-
-            if ( i != idx ) {
-                newList[newIdx] = this.constraints[i];
-                newIdx++;
-            }
-
-        }
-        this.constraints = newList;
-
+        this.constraintList.removeConstraint( idx );
     }
 
     /**
@@ -64,6 +44,21 @@ public class FactPattern
             return true;
         } else {
             return false;
+        }
+    }
+    
+    /**
+     * This will return the list of field constraints that are in the root
+     * CompositeFieldConstraint object.
+     * If there is no root, then an empty array will be returned.
+     * 
+     * @return an empty array, or the list of constraints (which may be composites).
+     */
+    public FieldConstraint[] getFieldConstraints() {
+        if (this.constraintList == null) {
+            return new FieldConstraint[0];
+        } else {
+            return this.constraintList.constraints;
         }
     }
 

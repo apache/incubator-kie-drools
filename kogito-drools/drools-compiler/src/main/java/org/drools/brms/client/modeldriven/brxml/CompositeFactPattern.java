@@ -16,8 +16,13 @@ public class CompositeFactPattern
      * this will one of: [Not, Exist, Or]
      */
     public String              type;
+    
+    /**
+     * The patterns.
+     */
     public FactPattern[]       patterns;
 
+    
     /**
      * This type should be from the contants in this class of course.
      */

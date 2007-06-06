@@ -5,7 +5,7 @@ package org.drools.brms.client.modeldriven.brxml;
  * @author Michael Neale
  *
  */
-public class IConstraint
+public class ISingleFieldConstraint
     implements
     PortableObject {
 

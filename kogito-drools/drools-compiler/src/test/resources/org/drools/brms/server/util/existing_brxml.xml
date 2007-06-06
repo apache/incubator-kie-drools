@@ -8,15 +8,17 @@
   </attributes>
   <lhs>
     <fact>
+     <constraintList>
       <constraints>
-        <constraint>
+        <fieldConstraint>
           <fieldBinding>f1</fieldBinding>
           <fieldName>age</fieldName>
           <operator>&lt;</operator>
           <value>42</value>
           <constraintValueType>0</constraintValueType>
-        </constraint>
+        </fieldConstraint>
       </constraints>
+     </constraintList>
       <factType>Person</factType>
       <boundName>p1</boundName>
     </fact>
@@ -24,7 +26,6 @@
       <type>not</type>
       <patterns>
         <fact>
-          <constraints/>
           <factType>Cancel</factType>
         </fact>
       </patterns>
