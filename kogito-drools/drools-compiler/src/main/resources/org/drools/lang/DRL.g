@@ -1,5 +1,4 @@
 grammar DRL; 
-//options {backtrack=true;}
 
 @parser::header {
 	package org.drools.lang;
@@ -939,14 +938,14 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 		}
 		)?
 		expression_chain[$from, ad]?
-		{
-			if( ad != null ) {
-				location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
-			}
-		}
 	;	
+	finally {
+		if( ad != null ) {
+			location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
+		}
+	}
 	
-expression_chain[FromDescr from, AccessorDescr as]
+expression_chain[FromDescr from, AccessorDescr as] 
 	@init {
   		FieldAccessDescr fa = null;
 	    	MethodAccessDescr ma = null;	
@@ -972,16 +971,17 @@ expression_chain[FromDescr from, AccessorDescr as]
 		  ma.setStartCharacter( ((CommonToken)$field.start).getStartIndex() );
 		}
 	  )?
-	  {
-	      if( ma != null ) {
-	          $as.addInvoker( ma );
-	      } else {
-	          $as.addInvoker( fa );
-	      }
-	  }
 	  expression_chain[from, as]?
 	)  
 	;	
+	finally {
+		// must be added to the start, since it is a recursive rule
+		if( ma != null ) {
+			$as.addFirstInvoker( ma );
+		} else {
+			$as.addFirstInvoker( fa );
+		}
+	}
 	
 accumulate_statement returns [AccumulateDescr d]
 	@init {
@@ -1267,14 +1267,14 @@ or_restr_connective[ RestrictionConnectiveDescr base ]
 			}
 		  and_restr_connective[or] 
 		)*
-		{
-		        if( or.getRestrictions().size() == 1 ) {
-		                $base.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
-		        } else if ( or.getRestrictions().size() > 1 ) {
-		        	$base.addRestriction( or );
-		        }
-		}
-	;	
+	;
+	finally {
+	        if( or.getRestrictions().size() == 1 ) {
+	                $base.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
+	        } else if ( or.getRestrictions().size() > 1 ) {
+	        	$base.addRestriction( or );
+	        }
+	}
 
 and_restr_connective[ RestrictionConnectiveDescr base ]
 	@init {
@@ -1289,14 +1289,14 @@ and_restr_connective[ RestrictionConnectiveDescr base ]
 			}
 			constraint_expression[and] 
 		)*
-		{
-		        if( and.getRestrictions().size() == 1) {
-		                $base.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
-		        } else if ( and.getRestrictions().size() > 1 ) {
-		        	$base.addRestriction( and );
-		        }
-		}
 	;
+	finally {
+	        if( and.getRestrictions().size() == 1) {
+	                $base.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
+	        } else if ( and.getRestrictions().size() > 1 ) {
+	        	$base.addRestriction( and );
+	        }
+	}
 	
 constraint_expression[RestrictionConnectiveDescr base]
         :	
@@ -1340,15 +1340,12 @@ simple_operator[RestrictionConnectiveDescr base]
 		    }
 		}
 		rd=expression_value[$base, op]
-/*		{
-			if( $rd.rd != null ) {
-				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
-				$base.addRestriction( $rd.rd );
-			} else if ( $rd.rd == null && op != null ) {
-			        $base.addRestriction( new LiteralRestrictionDescr(op, null) );
-			}
-		}*/
 	;	
+	finally {
+		if ( $rd.rd == null && op != null ) {
+		        $base.addRestriction( new LiteralRestrictionDescr(op, null) );
+		}
+	}
 	
 compound_operator[RestrictionConnectiveDescr base]
 	@init {
@@ -1381,33 +1378,33 @@ compound_operator[RestrictionConnectiveDescr base]
 		}
 	;
 	
-expression_value[RestrictionConnectiveDescr base, String op]
+expression_value[RestrictionConnectiveDescr base, String op] returns [RestrictionDescr rd]
 	@init {
-		RestrictionDescr rd = null;
+		$rd = null;
 	}
 	:
 		(	ID
 			{
-				rd = new VariableRestrictionDescr($op, $ID.text);
+				$rd = new VariableRestrictionDescr($op, $ID.text);
 			}
 		|	lc=enum_constraint 
 			{ 
-				rd  = new QualifiedIdentifierRestrictionDescr($op, $lc.text);
+				$rd  = new QualifiedIdentifierRestrictionDescr($op, $lc.text);
 			}						
 		|	lc=literal_constraint 
 			{ 
-				rd  = new LiteralRestrictionDescr($op, $lc.text);
+				$rd  = new LiteralRestrictionDescr($op, $lc.text);
 			}
 		|	rvc=retval_constraint 
 			{ 
-				rd = new ReturnValueRestrictionDescr($op, $rvc.text);							
+				$rd = new ReturnValueRestrictionDescr($op, $rvc.text);							
 			} 
 		)	
 		{
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
-			if( rd != null ) {
-				$base.addRestriction( rd );
+			if( $rd != null ) {
+				$base.addRestriction( $rd );
 			}
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
 		}
 	;	
 	
