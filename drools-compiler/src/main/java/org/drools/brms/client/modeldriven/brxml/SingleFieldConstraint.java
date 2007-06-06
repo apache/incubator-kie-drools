@@ -1,12 +1,13 @@
 package org.drools.brms.client.modeldriven.brxml;
 
+
 /**
- * This represents a contraint on a fact.
+ * This represents a contraint on a fact - involving a SINGLE FIELD.
+ * 
  * Can also include optional "connective constraints" that extend the options for matches.
  * @author Michael Neale
- *
  */
-public class Constraint extends IConstraint {
+public class SingleFieldConstraint extends ISingleFieldConstraint implements FieldConstraint {
 
     public String                 fieldBinding;
     public String                 fieldName;
@@ -14,11 +15,11 @@ public class Constraint extends IConstraint {
 
     public ConnectiveConstraint[] connectives;
 
-    public Constraint(final String field) {
+    public SingleFieldConstraint(final String field) {
         this.fieldName = field;
     }
 
-    public Constraint() {
+    public SingleFieldConstraint() {
     }
 
     /**

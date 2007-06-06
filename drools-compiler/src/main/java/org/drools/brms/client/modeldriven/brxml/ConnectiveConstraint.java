@@ -4,7 +4,7 @@ package org.drools.brms.client.modeldriven.brxml;
  * This is for a connective constraint that adds more options to a field constraint. 
  * @author Michael Neale
  */
-public class ConnectiveConstraint extends IConstraint {
+public class ConnectiveConstraint extends ISingleFieldConstraint {
 
     public ConnectiveConstraint() {
     }
@@ -16,13 +16,5 @@ public class ConnectiveConstraint extends IConstraint {
     }
 
     public String operator;
-
-    public boolean isORConnective() {
-        return this.operator.startsWith( "|" );
-    }
-
-    public boolean isANDConnective() {
-        return this.operator.startsWith( "&" );
-    }
 
 }

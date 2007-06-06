@@ -2,12 +2,12 @@ package org.drools.brms.modeldriven;
 
 import junit.framework.TestCase;
 
-import org.drools.brms.client.modeldriven.brxml.Constraint;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 
 public class ConstraintTest extends TestCase {
 
     public void testAdd() {
-        final Constraint con = new Constraint();
+        final SingleFieldConstraint con = new SingleFieldConstraint();
         con.addNewConnective();
 
         assertEquals( 1,

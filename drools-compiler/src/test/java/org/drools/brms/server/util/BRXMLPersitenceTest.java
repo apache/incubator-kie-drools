@@ -14,7 +14,10 @@ import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brxml.Constraint;
+import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
+import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
+import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
@@ -90,6 +93,89 @@ public class BRXMLPersitenceTest extends TestCase {
                       newXML );
 
     }
+    
+    public void testCompositeConstraintsRoundTrip() throws Exception {
+        RuleModel m = new RuleModel();
+        m.name = "with composite";
+    
+        FactPattern p1 = new FactPattern("Person");
+        p1.boundName = "p1";
+        m.addLhsItem( p1 );
+        
+        FactPattern p = new FactPattern("Goober");
+        m.addLhsItem( p );
+        CompositeFieldConstraint comp = new CompositeFieldConstraint();
+        comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_OR;
+        p.addConstraint( comp );
+        
+        final SingleFieldConstraint X = new SingleFieldConstraint();
+        X.fieldName = "goo";
+        X.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
+        X.value = "foo";
+        X.operator = "==";
+        X.connectives = new ConnectiveConstraint[1];
+        X.connectives[0] = new ConnectiveConstraint();
+        X.connectives[0].constraintValueType = ConnectiveConstraint.TYPE_LITERAL;
+        X.connectives[0].operator = "|| ==";
+        X.connectives[0].value = "bar";
+        comp.addConstraint( X );
+        
+        final SingleFieldConstraint Y = new SingleFieldConstraint();
+        Y.fieldName = "goo2";
+        Y.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
+        Y.value = "foo";
+        Y.operator = "==";
+        comp.addConstraint( Y );
+
+        CompositeFieldConstraint comp2 = new CompositeFieldConstraint();
+        comp2.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_AND;
+        final SingleFieldConstraint Q1 = new SingleFieldConstraint();
+        Q1.fieldName = "goo";
+        Q1.operator = "==";
+        Q1.value = "whee";
+        Q1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        
+        comp2.addConstraint( Q1 );
+        
+        final SingleFieldConstraint Q2 = new SingleFieldConstraint();
+        Q2.fieldName = "gabba";
+        Q2.operator = "==";
+        Q2.value = "whee";
+        Q2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        
+        comp2.addConstraint( Q2 );
+        
+        //now nest it
+        comp.addConstraint( comp2 );
+        
+        
+        
+        final SingleFieldConstraint Z = new SingleFieldConstraint();
+        Z.fieldName = "goo3";
+        Z.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
+        Z.value = "foo";
+        Z.operator = "==";
+        
+        p.addConstraint( Z );
+        
+        ActionAssertFact ass = new ActionAssertFact("Whee");
+        m.addRhsItem( ass );
+
+        
+        String xml = BRXMLPersistence.getInstance().marshal( m );
+        //System.err.println(xml);
+        
+        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml );
+        assertNotNull(m2);
+        assertEquals("with composite", m2.name);
+        
+        assertEquals(m2.lhs.length, m.lhs.length);
+        assertEquals(m2.rhs.length, m.rhs.length);
+        
+        
+        
+        
+    }
 
     /**
      * This will verify that we can load an old BRXML change. If this fails,
@@ -133,7 +219,7 @@ public class BRXMLPersitenceTest extends TestCase {
         final FactPattern pat = new FactPattern();
         pat.boundName = "p1";
         pat.factType = "Person";
-        final Constraint con = new Constraint();
+        final SingleFieldConstraint con = new SingleFieldConstraint();
         con.fieldBinding = "f1";
         con.fieldName = "age";
         con.operator = "<";

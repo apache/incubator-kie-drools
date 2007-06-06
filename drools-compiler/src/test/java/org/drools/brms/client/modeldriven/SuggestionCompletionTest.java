@@ -111,7 +111,7 @@ public class SuggestionCompletionTest extends TestCase {
                                                   "make" );
         assertEquals( 5,
                       c.length );
-        assertEquals( "| ==",
+        assertEquals( "|| ==",
                       c[0] );
 
         c = com.getGlobalVariables();

@@ -191,29 +191,34 @@ public class RuleModel
      * what bound variables are in scope for a given constraint (including connectives).
      * Does not take into account globals.
      */
-    public List getBoundVariablesInScope(final IConstraint con) {
+    public List getBoundVariablesInScope(final ISingleFieldConstraint con) {
         final List result = new ArrayList();
         for ( int i = 0; i < this.lhs.length; i++ ) {
             final IPattern pat = this.lhs[i];
             if ( pat instanceof FactPattern ) {
                 final FactPattern fact = (FactPattern) pat;
 
-                if ( fact.constraints != null ) {
-                    final Constraint[] cons = fact.constraints;
-                    for ( int k = 0; k < cons.length; k++ ) {
-                        final Constraint c = cons[k];
-                        if ( c == con ) {
-                            return result;
-                        }
-                        if ( c.connectives != null ) {
-                            for ( int j = 0; j < c.connectives.length; j++ ) {
-                                if ( con == c.connectives[j] ) {
+                if ( fact.constraintList != null ) {
+                    final FieldConstraint[] cons = fact.constraintList.constraints;
+                    if (cons != null) {
+                        for ( int k = 0; k < cons.length; k++ ) {
+                            FieldConstraint fc = cons[k];
+                            if (fc instanceof SingleFieldConstraint) {
+                                final SingleFieldConstraint c = (SingleFieldConstraint) fc;
+                                if ( c == con ) {
                                     return result;
                                 }
+                                if ( c.connectives != null ) {
+                                    for ( int j = 0; j < c.connectives.length; j++ ) {
+                                        if ( con == c.connectives[j] ) {
+                                            return result;
+                                        }
+                                    }
+                                }
+                                if ( c.isBound() ) {
+                                    result.add( c.fieldBinding );
+                                }
                             }
-                        }
-                        if ( c.isBound() ) {
-                            result.add( c.fieldBinding );
                         }
                     }
                     if ( fact.isBound() ) {
@@ -242,10 +247,13 @@ public class RuleModel
                 if (fact.isBound()) {
                     result.add( fact.boundName );
                 }
-                for ( int j = 0; j < fact.constraints.length; j++ ) {
-                    Constraint con = fact.constraints[j];
-                    if (con.isBound()) {
-                        result.add( con.fieldBinding );
+                for ( int j = 0; j < fact.constraintList.constraints.length; j++ ) {
+                    FieldConstraint fc = fact.constraintList.constraints[j];
+                    if (fc instanceof SingleFieldConstraint) {
+                        SingleFieldConstraint con = (SingleFieldConstraint) fc;
+                        if (con.isBound()) {
+                            result.add( con.fieldBinding );
+                        }
                     }
                 }
             } 

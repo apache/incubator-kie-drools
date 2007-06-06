@@ -11,6 +11,10 @@ public class ActionFieldValue
 
     public String field;
     public String value;
+    
+    /**
+     * This is the datatype.
+     */
     public String type;
 
     public ActionFieldValue(final String field,
