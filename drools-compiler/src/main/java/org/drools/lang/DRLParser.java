@@ -1,4 +1,4 @@
-// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-06-07 11:24:52
+// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-06-07 11:34:29
 
 	package org.drools.lang;
 	import java.util.List;
@@ -1382,13 +1382,13 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start template
-    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:384:1: template returns [FactTemplateDescr template] : TEMPLATE templateName= identifier opt_semicolon (slot= template_slot )+ END opt_semicolon ;
+    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:384:1: template returns [FactTemplateDescr template] : TEMPLATE templateName= name opt_semicolon (slot= template_slot )+ END opt_semicolon ;
     public final FactTemplateDescr template() throws RecognitionException {
         FactTemplateDescr template = null;
 
         Token TEMPLATE9=null;
         Token END10=null;
-        identifier_return templateName = null;
+        String templateName = null;
 
         FieldTemplateDescr slot = null;
 
@@ -1397,13 +1397,13 @@ public class DRLParser extends Parser {
         		template = null;		
         	
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:389:3: ( TEMPLATE templateName= identifier opt_semicolon (slot= template_slot )+ END opt_semicolon )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:389:3: TEMPLATE templateName= identifier opt_semicolon (slot= template_slot )+ END opt_semicolon
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:389:3: ( TEMPLATE templateName= name opt_semicolon (slot= template_slot )+ END opt_semicolon )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:389:3: TEMPLATE templateName= name opt_semicolon (slot= template_slot )+ END opt_semicolon
             {
             TEMPLATE9=(Token)input.LT(1);
             match(input,TEMPLATE,FOLLOW_TEMPLATE_in_template867); if (failed) return template;
-            pushFollow(FOLLOW_identifier_in_template871);
-            templateName=identifier();
+            pushFollow(FOLLOW_name_in_template871);
+            templateName=name();
             _fsp--;
             if (failed) return template;
             pushFollow(FOLLOW_opt_semicolon_in_template873);
@@ -1412,7 +1412,7 @@ public class DRLParser extends Parser {
             if (failed) return template;
             if ( backtracking==0 ) {
 
-              			template = new FactTemplateDescr(input.toString(templateName.start,templateName.stop));
+              			template = new FactTemplateDescr(templateName);
               			template.setLocation( offset(TEMPLATE9.getLine()), TEMPLATE9.getCharPositionInLine() );			
               			template.setStartCharacter( ((CommonToken)TEMPLATE9).getStartIndex() );
               		
@@ -8807,8 +8807,8 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_normal_lhs_block_in_query832 = new BitSet(new long[]{0x0000000000008000L});
     public static final BitSet FOLLOW_END_in_query837 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000040L});
     public static final BitSet FOLLOW_opt_semicolon_in_query839 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_TEMPLATE_in_template867 = new BitSet(new long[]{0x085F70408147C5F0L});
-    public static final BitSet FOLLOW_identifier_in_template871 = new BitSet(new long[]{0x0000000000000100L,0x0000000000000040L});
+    public static final BitSet FOLLOW_TEMPLATE_in_template867 = new BitSet(new long[]{0x0000000000100100L});
+    public static final BitSet FOLLOW_name_in_template871 = new BitSet(new long[]{0x0000000000000100L,0x0000000000000040L});
     public static final BitSet FOLLOW_opt_semicolon_in_template873 = new BitSet(new long[]{0x0000000000000100L});
     public static final BitSet FOLLOW_template_slot_in_template888 = new BitSet(new long[]{0x0000000000008100L});
     public static final BitSet FOLLOW_END_in_template903 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000040L});

@@ -386,9 +386,9 @@ template returns [FactTemplateDescr template]
 		$template = null;		
 	}
 	:
-		TEMPLATE templateName=identifier opt_semicolon
+		TEMPLATE templateName=name opt_semicolon
 		{
-			$template = new FactTemplateDescr($templateName.text);
+			$template = new FactTemplateDescr($templateName.name);
 			$template.setLocation( offset($TEMPLATE.line), $TEMPLATE.pos );			
 			$template.setStartCharacter( ((CommonToken)$TEMPLATE).getStartIndex() );
 		}
@@ -1725,11 +1725,9 @@ identifier
         |       SALIENCE 	
         |       DURATION 	
         |       FROM	        
-       // |       ACCUMULATE 	
         |       INIT	        
         |       ACTION	        
         |       RESULT	        
-       // |       COLLECT         
         |       CONTAINS 	
         |       EXCLUDES 	
         |       MEMBEROF
