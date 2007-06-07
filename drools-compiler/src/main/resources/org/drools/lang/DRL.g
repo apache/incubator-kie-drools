@@ -374,7 +374,7 @@ query returns [QueryDescr query]
 	          RIGHT_PAREN
 	        )?		
 		normal_lhs_block[lhs]
-		END
+		END opt_semicolon
 		{
 			$query.setEndCharacter( ((CommonToken)$END).getStopIndex() );
 		}

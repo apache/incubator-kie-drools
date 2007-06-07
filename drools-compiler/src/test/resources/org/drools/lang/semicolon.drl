@@ -1,0 +1,26 @@
+package org.drools;
+
+global java.util.List list;
+
+rule "rule1"
+when
+    Pattern1();
+    Pattern2() from x.y.z;
+then
+    System.out.println("Test");
+end;
+
+query "query1"
+	Pattern5();
+	Pattern6();
+	Pattern7();
+end;
+
+rule "rule2"
+when
+    Pattern3();
+    Pattern4() from collect( Pattern5() );
+then
+    System.out.println("Test");
+end;
+
