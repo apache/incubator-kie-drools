@@ -3010,6 +3010,36 @@ public class RuleParserTest extends TestCase {
         assertEquals( "[abc]*",
                       restr.getText() );
     }
+    
+    public void testSemicolon() throws Exception {
+        parseResource( "semicolon.drl" );
+
+        this.parser.compilation_unit();
+
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
+
+        final PackageDescr pkg = this.parser.getPackageDescr();
+        assertEquals( "org.drools",
+                      pkg.getName() );
+        assertEquals( 1, 
+                      pkg.getGlobals().size() );
+        assertEquals( 3,
+                      pkg.getRules().size() );
+        
+        final RuleDescr rule1 = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 2,
+                      rule1.getLhs().getDescrs().size() );
+
+        final RuleDescr query1 = (RuleDescr) pkg.getRules().get( 1 );
+        assertEquals( 3,
+                      query1.getLhs().getDescrs().size() );
+
+        final RuleDescr rule2 = (RuleDescr) pkg.getRules().get( 2 );
+        assertEquals( 2,
+                      rule2.getLhs().getDescrs().size() );
+    }
+
 
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
