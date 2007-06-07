@@ -222,6 +222,22 @@ public class RuleModelTest extends TestCase {
         assertTrue(model.isVariableNameUsed( "field2" ));
         
     }
+    
+    public void testGetVariableNameForRHS() {
+        RuleModel m = new RuleModel();
+        m.name = "blah";
+        
+        FactPattern pat = new FactPattern();
+        pat.boundName = "pat";
+        pat.factType = "Person";
+        
+        m.addLhsItem( pat );
+        
+        List l = m.getAllVariables();
+        assertEquals( 1, l.size() );
+        assertEquals("pat", l.get( 0 ));
+        
+    }
 
     public void testRemoveItemLhs() {
         final RuleModel model = new RuleModel();

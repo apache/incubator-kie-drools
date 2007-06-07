@@ -13,7 +13,7 @@ public class ActionFieldValue
     public String value;
     
     /**
-     * This is the datatype.
+     * This is the datatype archectype (eg String, Numeric etc).
      */
     public String type;
 

@@ -247,8 +247,9 @@ public class RuleModel
                 if (fact.isBound()) {
                     result.add( fact.boundName );
                 }
-                for ( int j = 0; j < fact.constraintList.constraints.length; j++ ) {
-                    FieldConstraint fc = fact.constraintList.constraints[j];
+                
+                for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
+                    FieldConstraint fc = fact.getFieldConstraints()[j];
                     if (fc instanceof SingleFieldConstraint) {
                         SingleFieldConstraint con = (SingleFieldConstraint) fc;
                         if (con.isBound()) {

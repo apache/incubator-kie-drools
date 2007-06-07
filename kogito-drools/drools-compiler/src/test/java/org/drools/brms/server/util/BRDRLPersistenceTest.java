@@ -344,6 +344,35 @@ public class BRDRLPersistenceTest extends TestCase {
                       cleanActual );
     }
     
+    public void testReturnValueConstraint() {
+        RuleModel m = new RuleModel();
+        m.name = "yeah";
+        
+        FactPattern p = new FactPattern();
+        
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.constraintValueType = SingleFieldConstraint.TYPE_RET_VALUE;
+        con.value = "someFunc(x)";
+        con.operator = "==";
+        con.fieldName = "goo";
+        p.factType = "Goober";
+        
+        p.addConstraint( con );
+        m.addLhsItem( p );
+        
+        String actual = BRDRLPersistence.getInstance().marshal( m );
+        System.err.println(actual);
+        
+        
+        String expected = "rule \"yeah\" " +
+                            " when " + 
+                                    "Goober( goo == ( someFunc(x) ) )" + 
+                            " then " + 
+                            "end";
+        assertEqualsIgnoreWhitespace( expected, actual);
+    }
+    
+    
     public void testConnective() {
         
         RuleModel m = new RuleModel();
