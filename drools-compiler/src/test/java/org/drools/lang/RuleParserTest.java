@@ -3040,6 +3040,24 @@ public class RuleParserTest extends TestCase {
                       rule2.getLhs().getDescrs().size() );
     }
 
+    public void testEval() throws Exception {
+        parseResource( "eval_parsing.drl" );
+
+        this.parser.compilation_unit();
+
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
+
+        final PackageDescr pkg = this.parser.getPackageDescr();
+        assertEquals( "org.drools",
+                      pkg.getName() );
+        assertEquals( 1,
+                      pkg.getRules().size() );
+        
+        final RuleDescr rule1 = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      rule1.getLhs().getDescrs().size() );
+    }
 
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );

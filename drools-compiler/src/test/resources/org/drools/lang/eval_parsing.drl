@@ -1,0 +1,9 @@
+package org.drools
+
+rule "Test Parse"
+
+when
+    eval( 3==3 )
+then
+    System.out.println("OK");
+end 
