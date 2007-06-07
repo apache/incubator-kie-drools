@@ -5,7 +5,7 @@ template Cheese
 	Integer age
 end
 
-template Wine
+template "Wine"
 	String 		name
 	String 		year
 	String[] 	accolades
