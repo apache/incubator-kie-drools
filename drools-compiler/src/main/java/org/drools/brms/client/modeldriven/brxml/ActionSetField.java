@@ -14,7 +14,8 @@ public class ActionSetField extends ActionFieldList {
     }
 
     /**
-     * This is used mainly for display purposes. 
+     * This is used mainly for display purposes.
+     * It indicates that it is a "set". 
      */
     public String getType() {
         return "set";

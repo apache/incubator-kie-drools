@@ -143,6 +143,8 @@ public class SuggestionCompletionTest extends TestCase {
                                         "wankle" );
         assertEquals( 2,
                       c.length );
+        
+        assertEquals("Numeric", com.getFieldType( "Person", "age" ));
 
     }
 

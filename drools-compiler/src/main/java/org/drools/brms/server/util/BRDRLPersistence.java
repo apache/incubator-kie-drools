@@ -196,7 +196,7 @@ public class BRDRLPersistence
         }
 
         private void generateConstraints(FactPattern pattern) {
-            for ( int i = 0; i < pattern.constraintList.constraints.length; i++ ) {
+            for ( int i = 0; i < pattern.getFieldConstraints().length; i++ ) {
                 if ( i > 0 ) {
                     buf.append( ", " );
                 }
@@ -279,7 +279,7 @@ public class BRDRLPersistence
             switch ( type ) {
                 case ISingleFieldConstraint.TYPE_RET_VALUE :
                     buf.append( "( " );
-                    buf.append( operator );
+                    buf.append( value );
                     buf.append( " )" );
                     break;
                 case ISingleFieldConstraint.TYPE_LITERAL :
