@@ -17,11 +17,5 @@ public class ActionModifyField extends ActionSetField {
         super();
     }
 
-    /**
-     * This is used mainly for display purposes. 
-     */
-    public String getType() {
-        return "modify";
-    }
 
 }

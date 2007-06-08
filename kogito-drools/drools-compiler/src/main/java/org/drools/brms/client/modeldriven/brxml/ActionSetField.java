@@ -13,13 +13,6 @@ public class ActionSetField extends ActionFieldList {
         this.variable = var;
     }
 
-    /**
-     * This is used mainly for display purposes.
-     * It indicates that it is a "set". 
-     */
-    public String getType() {
-        return "set";
-    }
 
     public ActionSetField() {
     }
