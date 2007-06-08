@@ -225,11 +225,22 @@ public class PatternBuilder {
                        final Pattern pattern,
                        final FieldConstraintDescr fieldConstraintDescr,
                        final AbstractCompositeConstraint container) {
+        String fieldName = fieldConstraintDescr.getFieldName();
+        
+        if( fieldName.indexOf( '.' ) > -1 ) {
+            // we have a composite field name
+            String[] identifiers = fieldName.split( "\\." );
+            if( identifiers.length == 2 && pattern.getDeclaration() != null &&
+                identifiers[0].equals( pattern.getDeclaration().getIdentifier() )) {
+                // we have a self reference, so, it is fine to do direct access
+                fieldName = identifiers[1];
+            }
+        }
 
         final FieldExtractor extractor = getFieldExtractor( context,
                                                             fieldConstraintDescr,
                                                             pattern.getObjectType(),
-                                                            fieldConstraintDescr.getFieldName(),
+                                                            fieldName,
                                                             true );
         if ( extractor == null ) {
             // @todo log error
