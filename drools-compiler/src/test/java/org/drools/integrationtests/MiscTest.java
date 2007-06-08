@@ -2806,4 +2806,32 @@ public class MiscTest extends TestCase {
         assertNotNull( pkg.getErrorSummary() );
     }
     
+    public void testQualifiedFieldReference() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QualifiedFieldReference.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Person bob = new Person("bob", "stilton");
+        final Cheese stilton = new Cheese( "stilton",
+                                           12 );
+        workingMemory.assertObject( bob );
+        workingMemory.assertObject( stilton );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+
+        assertEquals( bob,
+                      list.get( 0 ) );
+    }
+    
 }

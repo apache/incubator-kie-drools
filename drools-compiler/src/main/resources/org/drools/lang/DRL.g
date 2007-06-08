@@ -312,12 +312,14 @@ global
 function
 	@init {
 		FunctionDescr f = null;
+		String type = null;
 	}
 	:
 		FUNCTION retType=dotted_name[null]? id=identifier
 		{
 			//System.err.println( "function :: " + n.getText() );
-			f = factory.createFunction( $id.text, $retType.name );
+			type = retType != null ? $retType.name : null;
+			f = factory.createFunction( $id.text, type );
 			f.setLocation(offset($FUNCTION.line), $FUNCTION.pos);
 	        	f.setStartCharacter( ((CommonToken)$FUNCTION).getStartIndex() );
 			packageDescr.addFunction( f );
@@ -325,11 +327,13 @@ function
 		LEFT_PAREN
 			(	paramType=dotted_name[null]? paramName=argument
 				{
-					f.addParameter( $paramType.name, $paramName.name );
+					type = paramType != null ? $paramType.name : null;
+					f.addParameter( type, $paramName.name );
 				}
 				(	COMMA paramType=dotted_name[null]? paramName=argument
 					{
-						f.addParameter( $paramType.name, $paramName.name );
+						type = paramType != null ? $paramType.name : null;
+						f.addParameter( type, $paramName.name );
 					}
 				)*
 			)?
@@ -1220,19 +1224,20 @@ field_constraint[ConditionalElementDescr base]
 
 		    }
 		)? 
-		f=identifier	
+		f=dotted_name[fbd]	
 		{
 		    // use $f.start to get token matched in identifier
 		    // or use $f.text to get text.
-		    if( $f.text != null ) {
+		    if( $f.name != null ) {
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.text);
+			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.name);
 		    
 			if ( fbd != null ) {
-			    fbd.setFieldName( $f.text );
- 			    fbd.setEndCharacter( ((CommonToken)$f.start).getStopIndex() );
+			    fbd.setFieldName( $f.name );
+			    // may have been overwritten
+			    fbd.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
 			} 
-			fc = new FieldConstraintDescr($f.text);
+			fc = new FieldConstraintDescr($f.name);
 			fc.setLocation( offset($f.start.getLine()), $f.start.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)$f.start).getStartIndex() );
 			top = fc.getRestriction();
@@ -1626,7 +1631,7 @@ dotted_name[BaseDescr descr] returns [String name]
 	:	
 		id=identifier
 		{ 
-		    name=$id.text; 
+		    $name=$id.text; 
 		    if( $descr != null ) {
 			$descr.setStartCharacter( ((CommonToken)$id.start).getStartIndex() );
 			$descr.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
