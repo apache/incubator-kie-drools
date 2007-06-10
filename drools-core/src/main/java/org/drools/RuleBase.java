@@ -44,7 +44,6 @@ public interface RuleBase
     Serializable {
 
     public static final int RETEOO = 1;
-    public static final int LEAPS  = 2;
     
     StatelessSession newStatelessSession();
 
