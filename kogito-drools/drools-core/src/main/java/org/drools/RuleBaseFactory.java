@@ -52,9 +52,6 @@ public class RuleBaseFactory {
             case RuleBase.RETEOO :
                 return new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
                                                              config );
-            case RuleBase.LEAPS :
-                //@todo this needs to be reflection based  now, as we do  not know the  module is  in the classpath
-                //return new org.drools.leaps.LeapsRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString() );
             default :
                 throw new IllegalArgumentException( "Unknown engine type: " + type );
 
