@@ -1,0 +1,10 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "eval rewrite"
+	when
+		$o : OrderItem( order.number == 10 )
+	then
+	    results.add( $o );
+end
