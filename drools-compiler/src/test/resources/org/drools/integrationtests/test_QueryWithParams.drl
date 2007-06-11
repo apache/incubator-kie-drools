@@ -13,6 +13,6 @@ query "assertedobjquery" ( $value )
     assertedobj : AssertedObject( value == $value )
 end 
 
-query "assertedobjquery2" ( $value1, $value2 )
+query "assertedobjquery2" ( $value1, String $value2 )
     assertedobj : AssertedObject( value == $value2 )
 end 

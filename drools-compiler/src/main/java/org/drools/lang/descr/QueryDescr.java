@@ -18,6 +18,7 @@ package org.drools.lang.descr;
 
 public class QueryDescr extends RuleDescr {
     private String[] params;
+    private String[] types;
     
     private static final String[] EMPTY_PARAMS = new String[0];
     /**
@@ -29,13 +30,7 @@ public class QueryDescr extends RuleDescr {
         this( name,
               "" );
         this.params = EMPTY_PARAMS;        
-    }
-    
-    public QueryDescr(final String name, final String[] params) {
-        this( name,
-              "" );
-        this.params = params;        
-    }    
+    }      
 
     public QueryDescr(final String ruleName,
                       final String documentation) {
@@ -59,4 +54,12 @@ public class QueryDescr extends RuleDescr {
     public String[] getParameters() {
         return this.params;
     }
+    
+    public void setParameterTypes(String[] types) {
+        this.types = types;
+    }
+    
+    public String[] getParameterTypes() {
+        return this.types;
+    }    
 }
