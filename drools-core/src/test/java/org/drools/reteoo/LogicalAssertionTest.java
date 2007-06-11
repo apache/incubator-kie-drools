@@ -25,9 +25,12 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
@@ -140,7 +143,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // MockObjectSink so w can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
 
-        final Rete rete = new Rete();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final Rete rete = new Rete( (InternalRuleBase) ruleBase);
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
@@ -154,7 +158,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1,
                                                             rule1.getLhs() );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -229,7 +233,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        final Rete rete = new Rete();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final Rete rete = new Rete( (InternalRuleBase) ruleBase);
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
@@ -241,7 +246,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule1,
                                                             rule1.getLhs() );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -363,7 +368,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        final Rete rete = new Rete();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setLogicalOverride( LogicalOverride.PRESERVE );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+        final Rete rete = new Rete( (InternalRuleBase) ruleBase);
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
@@ -375,10 +383,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule1,
                                                             rule1.getLhs() );
-        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setLogicalOverride( RuleBaseConfiguration.LogicalOverride.PRESERVE );
-
-        final RuleBase ruleBase = new ReteooRuleBase( conf );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -453,7 +457,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        final Rete rete = new Rete();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final Rete rete = new Rete( (InternalRuleBase)ruleBase);
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
@@ -465,7 +470,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule1,
                                                             rule1.getLhs() );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Consequence consequence = new Consequence() {
@@ -678,7 +683,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        final Rete rete = new Rete();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final Rete rete = new Rete( (InternalRuleBase)ruleBase);
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
@@ -690,7 +696,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule1,
                                                             rule1.getLhs() );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -777,7 +783,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        final Rete rete = new Rete();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final Rete rete = new Rete( (InternalRuleBase)ruleBase);
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
@@ -789,7 +796,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule1,
                                                             rule1.getLhs() );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -845,4 +851,11 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       workingMemory.getTruthMaintenanceSystem().getAssertMap().size() );
     }
 
+    private Object unwrapShadow(Object object) {
+        if ( object instanceof ShadowProxy ) {
+            return ((ShadowProxy) object).getShadowedObject();
+        } else {
+            return object;
+        }
+    }
 }

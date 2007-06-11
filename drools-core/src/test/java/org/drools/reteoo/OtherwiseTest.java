@@ -117,8 +117,7 @@ public class OtherwiseTest extends TestCase {
     private Rule getOtherwise(final String name) {
         final Rule rule = new Rule( name );
         final Pattern pat = new Pattern( 0,
-                                       new ClassObjectType( Otherwise.class,
-                                                            ShadowProxyFactory.getProxy( Otherwise.class ) ) );
+                                       new ClassObjectType( Otherwise.class) );
         rule.addPattern( pat );
         rule.setConsequence( new MockConsequence() );
         return rule;
@@ -128,8 +127,7 @@ public class OtherwiseTest extends TestCase {
         final Rule rule = new Rule( name );
 
         final Pattern pat = new Pattern( 0,
-                                       new ClassObjectType( TestBean.class,
-                                                            ShadowProxyFactory.getProxy( TestBean.class ) ) );
+                                       new ClassObjectType( TestBean.class ) );
 
         rule.addPattern( pat );
         rule.setConsequence( new MockConsequence() );

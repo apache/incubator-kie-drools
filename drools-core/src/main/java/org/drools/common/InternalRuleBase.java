@@ -24,6 +24,9 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.rule.CompositePackageClassLoader;
+import org.drools.rule.MapBackedClassLoader;
+import org.drools.rule.Package;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -41,6 +44,8 @@ public interface InternalRuleBase
     public Map getGlobals();
 
     public RuleBaseConfiguration getConfiguration();
+    
+    public Package getPackage(String name);
 
     void disposeStatefulSession(StatefulSession statefulSession);
 
@@ -76,4 +81,10 @@ public interface InternalRuleBase
     public void retractObject(FactHandle handle,
                               PropagationContext context,
                               ReteooWorkingMemory workingMemory) throws FactException;
+    
+    public void addClass(String className, byte[] bytes);
+    
+    public CompositePackageClassLoader getCompositePackageClassLoader();
+    
+    public MapBackedClassLoader getMapBackedClassLoader();
 }

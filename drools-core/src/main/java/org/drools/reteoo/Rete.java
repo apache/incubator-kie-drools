@@ -17,22 +17,32 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ShadowProxy;
+import org.drools.base.ShadowProxyFactory;
+import org.drools.base.ShadowProxyHelper;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactImpl;
+import org.drools.rule.Package;
 import org.drools.spi.PropagationContext;
+import org.drools.util.ClassUtils;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
 
 /**
  * The Rete-OO network.
@@ -68,14 +78,21 @@ public class Rete extends ObjectSource
     private static final long   serialVersionUID = 320L;
     /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
     private final ObjectHashMap objectTypeNodes;
+    
+    private transient InternalRuleBase ruleBase;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
-    public Rete() {
+    public Rete(InternalRuleBase ruleBase) {
         super( 0 );
         this.objectTypeNodes = new ObjectHashMap();
+        this.ruleBase = ruleBase;
+    }
+    
+    public void setRuleBase(InternalRuleBase ruleBase) {
+        this.ruleBase = ruleBase;
     }
 
     // ------------------------------------------------------------
@@ -101,21 +118,44 @@ public class Rete extends ObjectSource
 
         final Object object = handle.getObject();
 
-        Object key = null;
-
+        ObjectTypeConf ojectTypeConf;
         if ( object instanceof FactImpl ) {
-            key = ((Fact) object).getFactTemplate().getName();
+            String key = ((Fact) object).getFactTemplate().getName();
+            ojectTypeConf = (ObjectTypeConf) memory.get( key );
+            if ( ojectTypeConf == null ) {
+                ojectTypeConf = new ObjectTypeConf( null, this);            
+                memory.put( key,
+                            ojectTypeConf,
+                            false );
+            }            
         } else {
-            key = object.getClass();
+            Class cls = object.getClass();
+            if ( object instanceof ShadowProxy ) {
+                cls = cls.getSuperclass();                                   
+            }
+            
+            ojectTypeConf = (ObjectTypeConf) memory.get( cls );
+            if ( ojectTypeConf == null ) {
+                ojectTypeConf = new ObjectTypeConf( cls, this);            
+                memory.put( cls,
+                            ojectTypeConf,
+                            false );
+            }            
+            
+            // checks if shadow is enabled
+            if ( ojectTypeConf.isShadowEnabled() ) {
+                // need to improve this
+                if ( !(handle.getObject() instanceof ShadowProxy) ) {
+                    // replaces the actual object by its shadow before propagating
+                    handle.setObject( ojectTypeConf.getShadow( handle.getObject() ) );
+                    handle.setShadowFact( true );
+                } else {
+                    ((ShadowProxy) handle.getObject()).updateProxy();
+                }
+            }               
         }
-
-        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( key );
-        if ( cachedNodes == null ) {
-            cachedNodes = getMatchingNodes( object );
-            memory.put( key,
-                        cachedNodes,
-                        false );
-        }
+        
+        ObjectTypeNode[] cachedNodes = ojectTypeConf.getObjectTypeNodes( object );             
 
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].assertObject( handle,
@@ -140,27 +180,29 @@ public class Rete extends ObjectSource
 
         final Object object = handle.getObject();
 
-        ObjectTypeNode[] cachedNodes;
+        ObjectTypeConf objectTypeConf;
         if ( object instanceof ShadowProxy ) {
-            cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass().getSuperclass() );
+            objectTypeConf = (ObjectTypeConf) memory.get( object.getClass().getSuperclass() );
         } else {
-            cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
+            objectTypeConf = (ObjectTypeConf) memory.get( object.getClass() );
         }
+        
+        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes( object );
 
-        // cached might have been cleared, so recalculate matching nodes
-        if ( cachedNodes == null ) {
-            cachedNodes = getMatchingNodes( object );
-            Object key = null;
-
-            if ( object instanceof FactImpl ) {
-                key = ((Fact) object).getFactTemplate().getName();
-            } else {
-                key = object.getClass();
-            }
-            memory.put( key,
-                        cachedNodes,
-                        false );
-        }
+//        // cached might have been cleared, so recalculate matching nodes
+//        if ( cachedNodes == null ) {
+//            cachedNodes = getMatchingNodes( object );
+//            Object key = null;
+//
+//            if ( object instanceof FactImpl ) {
+//                key = ((Fact) object).getFactTemplate().getName();
+//            } else {
+//                key = object.getClass();
+//            }
+//            memory.put( key,
+//                        cachedNodes,
+//                        false );
+//        }
 
         if ( cachedNodes == null ) {
             // it is  possible that there are no ObjectTypeNodes for an  object being retracted
@@ -174,19 +216,7 @@ public class Rete extends ObjectSource
         }
     }
 
-    private ObjectTypeNode[] getMatchingNodes(final Object object) throws FactException {
-        final List cache = new ArrayList();
 
-        final Iterator it = this.objectTypeNodes.iterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
-            if ( node.matches( object ) ) {
-                cache.add( node );
-            }
-        }
-
-        return (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
-    }
 
     /**
      * Adds the <code>TupleSink</code> so that it may receive
@@ -230,6 +260,10 @@ public class Rete extends ObjectSource
         return new ObjectHashMap();
     }
 
+    public InternalRuleBase getRuleBase() {
+        return this.ruleBase;
+    }
+    
     public int hashCode() {
         return this.objectTypeNodes.hashCode();
     }
@@ -250,13 +284,15 @@ public class Rete extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        // JBRULES-612: the cache MUST be invalidated when a new
-        // node type is added to the network
+        // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
-        memory.clear();
+        Iterator it = memory.iterator();
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            (( ObjectTypeConf) entry.getValue() ).resetCache();
+        }
 
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-        final Iterator it = workingMemory.getFactHandleMap().iterator();
+        it = workingMemory.getFactHandleMap().iterator();
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             final InternalFactHandle handle = (InternalFactHandle) entry.getValue();
             if ( node.matches( handle.getObject() ) ) {
@@ -265,6 +301,134 @@ public class Rete extends ObjectSource
                                    workingMemory );
             }
         }
+    }
+    
+    public static class ObjectTypeConf implements Serializable  {
+        // Objenesis instance without cache (false) 
+        private static final Objenesis         OBJENESIS        = new ObjenesisStd( false );
+        
+        private final Class cls;
+        private final Rete rete;        
+        private ObjectTypeNode[] objectTypeNodes;
+        
+        protected boolean                      shadowEnabled;
+        protected Class                        shadowClass;
+        protected transient ObjectInstantiator instantiator;
+        protected transient Field              delegate;        
+        //private final InternalRuleBase ruleBase;
+        
+        public ObjectTypeConf(Class cls, Rete rete) {
+            this.cls = cls;
+            this.rete = rete;      
+            
+            if ( cls == null ) {
+                return;
+            }
+            
+            String pkgName =  cls.getPackage().getName();
+            if ( "org.drools.reteoo".equals( pkgName ) || "org.drools.base".equals( pkgName )) {
+                // We don't shadow internal classes
+                this.shadowEnabled = false;
+                return;
+            }
+            
+            Class shadowClass = null;
+            final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( this.cls );
+            try {
+                // if already loaded
+                shadowClass =  this.rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
+            } catch ( final ClassNotFoundException cnfe ) {
+                // otherwise, create and load
+                final byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( cls );
+                if ( proxyBytes != null ) {
+                    this.rete.getRuleBase().getMapBackedClassLoader().addClass( shadowProxyName,
+                                                                              proxyBytes );
+                    try {
+                        shadowClass =  this.rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
+                    } catch ( ClassNotFoundException e ) {
+                        throw new RuntimeException( "Unable to find or generate the ShadowProxy implementation for '" + this.cls.getName() + "'" );
+                    }
+                }
+
+            }            
+            
+            if ( shadowClass != null ) {
+                this.shadowClass = shadowClass;
+                this.shadowEnabled = true;
+                setInstantiator();
+                setDelegateFieldObject();
+            }             
+        }
+        
+        /**
+         * 
+         */
+        private void setInstantiator() {
+            this.instantiator = OBJENESIS.getInstantiatorOf( this.shadowClass );
+        }
+
+        /**
+         * 
+         */
+        private void setDelegateFieldObject() {
+            try {
+                this.delegate = this.shadowClass.getDeclaredField( ShadowProxyFactory.DELEGATE_FIELD_NAME );
+                this.delegate.setAccessible( true );
+            } catch ( final Exception e ) {
+                throw new RuntimeDroolsException( "Error retriving delegate field for shadow proxy class: " + this.shadowClass.getName(),
+                                                  e );
+            }
+        }        
+        
+        public Object getShadow(final Object fact) throws RuntimeDroolsException {
+            ShadowProxy proxy = null;
+            if ( isShadowEnabled() ) {
+                try {
+                    if ( this.delegate == null ) {
+                        this.setDelegateFieldObject();
+                    }
+                    if ( this.instantiator == null ) {
+                        this.setInstantiator();
+                    }
+                    proxy = (ShadowProxy) this.instantiator.newInstance();
+                    this.delegate.set( proxy,
+                                  fact );
+                } catch ( final Exception e ) {
+                    throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,
+                                                      e );
+                }
+            }
+            return proxy;
+        }    
+        
+        public boolean isShadowEnabled() {
+            return this.shadowEnabled;
+        }        
+        
+        public void resetCache() {
+            this.objectTypeNodes = null;
+        }
+        
+        public ObjectTypeNode[] getObjectTypeNodes(final Object object) {
+            if ( this.objectTypeNodes == null ) {
+                buildCache( object );
+            }
+            return this.objectTypeNodes;
+        }
+        
+        private void buildCache(final Object object) throws FactException {
+            final List cache = new ArrayList();
+
+            final Iterator it = this.rete.getObjectTypeNodes().iterator();
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
+                if ( node.matches( object ) ) {
+                    cache.add( node );
+                }
+            }
+
+            this.objectTypeNodes =  ( ObjectTypeNode[] ) cache.toArray( new ObjectTypeNode[cache.size()] );
+        }        
     }
 
 }

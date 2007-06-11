@@ -43,21 +43,4 @@ public interface ObjectType
     boolean matches(Object object);
 
     ValueType getValueType();
-
-    /**
-     * If shadow facts are enabled, returns the shadow fact,
-     * otherwise returns null
-     * 
-     * @param fact the fact to be shadowed
-     * 
-     * @return the shadow fact for the given fact or null
-     * if shadow facts are disabled
-     */
-    Object getShadow(Object fact);
-
-    /**
-     * Returns true in case shadow facts are enabled
-     * @return true if shadow facts are enabled, false otherwise
-     */
-    boolean isShadowEnabled();
 }

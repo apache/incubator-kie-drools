@@ -39,6 +39,11 @@ public class RuleBaseFactory {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             null );
     }
+    
+    public static RuleBase newRuleBase(final RuleBaseConfiguration config) {
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
+                                            config );
+    }    
 
     public static RuleBase newRuleBase(final int type) {
         return RuleBaseFactory.newRuleBase( type,

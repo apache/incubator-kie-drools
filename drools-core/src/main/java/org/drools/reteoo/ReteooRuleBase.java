@@ -134,7 +134,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this.globals = new HashMap();
         this.statefulSessions = new ObjectHashSet();
 
-        this.rete = new Rete();
+        this.rete = new Rete(this);
         this.reteooBuilder = new ReteooBuilder( this );
     }
 
@@ -162,6 +162,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                         objects );
 
         this.rete = (Rete) objects[0];
+        this.rete.setRuleBase( this );
         this.reteooBuilder = (ReteooBuilder) objects[1];
 
         this.reteooBuilder.setRuleBase( this );
