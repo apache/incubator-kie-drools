@@ -8,6 +8,11 @@ public class SalienceInteger
     implements
     Salience {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3079388298026708336L;
+
     public static final Salience DEFAULT_SALIENCE = new SalienceInteger( 0 );
     
     private final int value;
