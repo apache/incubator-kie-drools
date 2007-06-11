@@ -20,5 +20,9 @@ public class SalienceInteger
                         final WorkingMemory workingMemory) {
         return this.value;
     }
+    
+    public String toString() {
+        return String.valueOf( this.value );
+    }
 
 }

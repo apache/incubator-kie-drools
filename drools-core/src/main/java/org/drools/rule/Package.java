@@ -34,7 +34,6 @@ import java.util.Map;
 import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.util.StringUtils;
 
 /**
