@@ -26,11 +26,13 @@ import junit.framework.TestCase;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.SwitchingCommonTokenStream;
+import org.drools.lang.DRLParser.paren_chunk_return;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -469,7 +471,9 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithoutParens() throws Exception {
-        final String chunk = parse( "( foo )" ).paren_chunk( null );
+        String input = "( foo )";
+        paren_chunk_return ret = parse( input ).paren_chunk( );
+        final String chunk = input.substring( ((CommonToken)ret.start).getStartIndex(), ((CommonToken)ret.stop).getStopIndex()+1 );
 
         assertEquals( "( foo )",
                       chunk );
@@ -478,7 +482,9 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithParens() throws Exception {
-        final String chunk = parse( "(fnord())" ).paren_chunk( null );
+        String input = "(fnord())";
+        paren_chunk_return ret = parse( input ).paren_chunk( );
+        final String chunk = input.substring( ((CommonToken)ret.start).getStartIndex(), ((CommonToken)ret.stop).getStopIndex()+1 );
 
         assertEqualsIgnoreWhitespace( "(fnord())",
                                       chunk );
@@ -487,7 +493,9 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithParensAndQuotedString() throws Exception {
-        final String chunk = parse( "( fnord( \"cheese\" ) )" ).paren_chunk( null );
+        String input = "( fnord( \"cheese\" ) )";
+        paren_chunk_return ret = parse( input ).paren_chunk( );
+        final String chunk = input.substring( ((CommonToken)ret.start).getStartIndex(), ((CommonToken)ret.stop).getStopIndex()+1 );
 
         assertEqualsIgnoreWhitespace( "( fnord( \"cheese\" ) )",
                                       chunk );
@@ -496,7 +504,9 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testChunkWithRandomCharac5ters() throws Exception {
-        final String chunk = parse( "( %*9dkj)" ).paren_chunk( null );
+        String input = "( %*9dkj)";
+        paren_chunk_return ret = parse( input ).paren_chunk( );
+        final String chunk = input.substring( ((CommonToken)ret.start).getStartIndex(), ((CommonToken)ret.stop).getStopIndex()+1 );
 
         assertEqualsIgnoreWhitespace( "( %*9dkj)",
                                       chunk );

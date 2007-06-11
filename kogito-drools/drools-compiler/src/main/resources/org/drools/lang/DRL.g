@@ -359,11 +359,12 @@ query returns [QueryDescr query]
 		$query = null;
 		AndDescr lhs = null;
 		List params = null;
+		List types = null;		
+ 
 	}
 	:
 		QUERY queryName=name
 		{ 
-			location.setType( Location.LOCATION_RULE_HEADER );
 			$query = factory.createQuery( $queryName.name ); 
 			$query.setLocation( offset($QUERY.line), $QUERY.pos );
 			$query.setStartCharacter( ((CommonToken)$QUERY).getStartIndex() );
@@ -371,10 +372,14 @@ query returns [QueryDescr query]
 			lhs.setLocation( offset($QUERY.line), $QUERY.pos );
 		}
 		( LEFT_PAREN
-		        ( { params = new ArrayList(); }
-		            paramName=ID { params.add( $paramName.text ); }                             
-	        	    (',' paramName=ID { params.add( $paramName.text ); } )*
-		            { $query.setParameters( (String[]) params.toArray( new String[params.size()] ) ); }
+		        ( { params = new ArrayList(); types = new ArrayList();}
+ 
+		            (paramType=qualified_id[null]? paramName=ID { params.add( $paramName.text ); String type = (paramType != null) ? $paramType.text : "Object"; types.add( type ); } )
+		            (COMMA paramType=qualified_id[null]? paramName=ID { params.add( $paramName.text );  String type = (paramType != null) ? $paramType.text : "Object"; types.add( type );  } )*
+ 
+		            {	$query.setParameters( (String[]) params.toArray( new String[params.size()] ) ); 
+		            	$query.setParameterTypes( (String[]) types.toArray( new String[types.size()] ) ); 
+		            }
 		         )?
 	          RIGHT_PAREN
 	        )?		
@@ -384,8 +389,7 @@ query returns [QueryDescr query]
 			$query.setEndCharacter( ((CommonToken)$END).getStopIndex() );
 		}
 	;
-
-
+	
 template returns [FactTemplateDescr template]
 	@init {
 		$template = null;		
@@ -547,9 +551,10 @@ salience returns [AttributeDescr descr]
 			$descr.setValue( $INT.text );
 			$descr.setEndCharacter( ((CommonToken)$INT).getStopIndex() );
 		}
-		| txt=paren_chunk[$descr]
+		| txt=paren_chunk
 		{
 			$descr.setValue( $txt.text );
+			$descr.setEndCharacter( ((CommonToken)$txt.stop).getStopIndex() );
 		}
 		)
 	;
@@ -852,7 +857,7 @@ lhs_eval returns [BaseDescr d]
 		{
 			location.setType( Location.LOCATION_LHS_INSIDE_EVAL );
 		}
-		c=paren_chunk[$d]
+		c=paren_chunk
 		{ 
 			$d.setStartCharacter( ((CommonToken)$EVAL).getStartIndex() );
 		        if( $c.text != null ) {
@@ -862,6 +867,7 @@ lhs_eval returns [BaseDescr d]
 			    ((EvalDescr) $d).setContent( body );
 			    location.setProperty(Location.LOCATION_EVAL_CONTENT, body);
 			}
+			$d.setEndCharacter( ((CommonToken)$c.stop).getStopIndex() );
 		}
 	;
 	
@@ -932,7 +938,7 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 			   alternative to win, which is the paren_chunk case not the loop exit.
 			*/
 			options {k=1;}
-		:	args=paren_chunk[$from]
+		:	args=paren_chunk
 		{
 			if( $args.text != null ) {
 				ad.setVariableName( null );
@@ -942,6 +948,7 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 				fc.setStartCharacter( ((CommonToken)$ident.start).getStartIndex() );
 				fc.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
 				location.setProperty(Location.LOCATION_FROM_CONTENT, $args.text);
+				$from.setEndCharacter( ((CommonToken)$args.stop).getStopIndex() );
 			}
 		}
 		)?
@@ -975,11 +982,12 @@ expression_chain[FromDescr from, AccessorDescr as]
 	          fa.setArgument( $sqarg.text );	
 	      }
 	    |
-	    ( LEFT_PAREN ) => paarg=paren_chunk[$from]
+	    ( LEFT_PAREN ) => paarg=paren_chunk
 		{
 	    	  ma = new MethodAccessDescr( $field.start.getText(), $paarg.text );	
 		  ma.setLocation( offset($field.start.getLine()), $field.start.getCharPositionInLine() );
 		  ma.setStartCharacter( ((CommonToken)$field.start).getStartIndex() );
+		  $from.setEndCharacter( ((CommonToken)$paarg.stop).getStopIndex() );
 		}
 	  )?
 	  expression_chain[from, as]?
@@ -1013,7 +1021,7 @@ accumulate_statement returns [AccumulateDescr d]
 		{
 			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_INIT );
 		}
-		text=paren_chunk[null] COMMA?
+		text=paren_chunk COMMA?
 		{
 			if( $text.text != null ) {
 			        $d.setInitCode( $text.text.substring(1, $text.text.length()-1) );
@@ -1021,7 +1029,7 @@ accumulate_statement returns [AccumulateDescr d]
 				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION );
 			}
 		}
-		ACTION text=paren_chunk[null] COMMA?
+		ACTION text=paren_chunk COMMA?
 		{
 			if( $text.text != null ) {
 			        $d.setActionCode( $text.text.substring(1, $text.text.length()-1) );
@@ -1029,7 +1037,7 @@ accumulate_statement returns [AccumulateDescr d]
 				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
 			}
 		}
-		RESULT text=paren_chunk[null] 
+		RESULT text=paren_chunk 
 		{
 			if( $text.text != null ) {
 			        $d.setResultCode( $text.text.substring(1, $text.text.length()-1) );
@@ -1228,20 +1236,20 @@ field_constraint[ConditionalElementDescr base]
 
 		    }
 		)? 
-		f=dotted_name[fbd]	
+		f=accessor_path	
 		{
 		    // use $f.start to get token matched in identifier
 		    // or use $f.text to get text.
-		    if( $f.name != null ) {
+		    if( $f.text != null ) {
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.name);
+			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.text);
 		    
 			if ( fbd != null ) {
-			    fbd.setFieldName( $f.name );
+			    fbd.setFieldName( $f.text );
 			    // may have been overwritten
 			    fbd.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
 			} 
-			fc = new FieldConstraintDescr($f.name);
+			fc = new FieldConstraintDescr($f.text);
 			fc.setLocation( offset($f.start.getLine()), $f.start.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)$f.start).getStartIndex() );
 			top = fc.getRestriction();
@@ -1395,13 +1403,13 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 		$rd = null;
 	}
 	:
-		(	ID
-			{
-				$rd = new VariableRestrictionDescr($op, $ID.text);
-			}
-		|	lc=enum_constraint 
+		(	ap=accessor_path 
 			{ 
-				$rd  = new QualifiedIdentifierRestrictionDescr($op, $lc.text);
+			        if( $ap.text.indexOf( '.' ) > -1 ) {
+					$rd = new QualifiedIdentifierRestrictionDescr($op, $ap.text);
+				} else {
+					$rd = new VariableRestrictionDescr($op, $ap.text);
+				}
 			}						
 		|	lc=literal_constraint 
 			{ 
@@ -1449,12 +1457,13 @@ predicate[ConditionalElementDescr base]
 		{
 			d = new PredicateDescr( );
 		}
-		text=paren_chunk[d]
+		text=paren_chunk
 		{
 		        if( $text.text != null ) {
 			        String body = $text.text.substring(1, $text.text.length()-1);
 			        d.setContent( body );
 				$base.addDescr( d );
+				d.setEndCharacter( ((CommonToken)$text.stop).getStopIndex() );
 		        }
 		}
 	;
@@ -1501,47 +1510,16 @@ curly_chunk[BaseDescr descr] returns [String text]
 		    }
                 }
 	;
-paren_chunk[BaseDescr descr] returns [String text]
-        @init {
-           StringBuffer buf = null;
-           Integer channel = null;
-        }
+	
+paren_chunk
 	:
-	        {
-	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
-		    buf = new StringBuffer();
-	        }
-		loc=LEFT_PAREN 
-		{
-		    buf.append( $loc.text );
-		} 
+		LEFT_PAREN 
 		( 
 			~(LEFT_PAREN|RIGHT_PAREN)
-			  {
-			    buf.append( input.LT(-1).getText() );
-			  }
 			|
-			chunk=paren_chunk[null]
-			  {
-			    buf.append( $chunk.text );
-			  }
+			paren_chunk
 		)*
-		{
-		    if( channel != null ) {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
-		    } else {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
-		    }
-		}
-                end=RIGHT_PAREN
-                {
-                    buf.append( $end.text );
-		    $text = buf.toString();
-		    if( $descr != null ) {
-		        $descr.setEndCharacter( ((CommonToken)$end).getStopIndex() );
-		    }
-                }
+                RIGHT_PAREN
 	;
 
 
@@ -1594,7 +1572,7 @@ retval_constraint returns [String text]
 		$text = null;
 	}
 	:	
-		c=paren_chunk[null] { $text = $c.text.substring(1, $c.text.length()-1); }
+		c=paren_chunk { $text = $c.text.substring(1, $c.text.length()-1); }
 	;
 
 qualified_id[BaseDescr descr] returns [String name]
@@ -1658,6 +1636,15 @@ dotted_name[BaseDescr descr] returns [String name]
 		    }
 		)*
 	;
+	
+accessor_path 
+	:	accessor_element ( DOT accessor_element )* 
+	;
+	
+accessor_element
+	:
+		identifier ( square_chunk[null] )*
+	;	
 	
 rhs_chunk[RuleDescr rule]
         @init {
@@ -1741,7 +1728,7 @@ identifier
         |       EXCLUDES 	
         |       MEMBEROF
         |       MATCHES         
-        |       NULL	        
+//        |       NULL	        
         |       WHEN            
         |       THEN	        
         |       END     
