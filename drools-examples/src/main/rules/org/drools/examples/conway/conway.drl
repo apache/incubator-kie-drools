@@ -98,6 +98,8 @@ rule "kill"
 	no-loop
 when
 	theCell: Cell(phase == Phase.KILL)
+	
+	Person(age == a.b[0].[key])
 then
 	theCell.setCellState(CellState.DEAD);
 	theCell.setPhase(Phase.DONE);	
