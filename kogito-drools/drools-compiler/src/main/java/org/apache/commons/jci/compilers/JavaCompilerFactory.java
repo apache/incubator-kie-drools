@@ -19,7 +19,7 @@ package org.apache.commons.jci.compilers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.jci.utils.ClassUtils;
+import org.drools.util.ClassUtils;
 
 public final class JavaCompilerFactory {
 

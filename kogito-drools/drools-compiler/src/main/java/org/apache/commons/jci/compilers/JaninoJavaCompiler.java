@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.ResourceStore;
-import org.apache.commons.jci.utils.ClassUtils;
 import org.codehaus.janino.ClassLoaderIClassLoader;
 import org.codehaus.janino.CompileException;
 import org.codehaus.janino.DebuggingInformation;
@@ -45,6 +44,7 @@ import org.codehaus.janino.WarningHandler;
 import org.codehaus.janino.Scanner.LocatedException;
 import org.codehaus.janino.UnitCompiler.ErrorHandler;
 import org.codehaus.janino.util.ClassFile;
+import org.drools.util.ClassUtils;
 
 /**
  * @author art@gramlich-net.com

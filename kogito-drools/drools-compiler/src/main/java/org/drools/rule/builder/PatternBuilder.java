@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.jci.utils.ClassUtils;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
@@ -66,6 +65,7 @@ import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ObjectType;
 import org.drools.spi.Restriction;
+import org.drools.util.ClassUtils;
 
 /**
  * A builder for patterns
@@ -109,23 +109,7 @@ public class PatternBuilder {
         } else {
             try {
                 final Class userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
-                final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( userProvidedClass );
-                Class shadowClass = null;
-                try {
-                    // if already loaded
-                    shadowClass = context.getPkg().getPackageCompilationData().getClassLoader().loadClass( shadowProxyName );
-                } catch ( final ClassNotFoundException cnfe ) {
-                    // otherwise, create and load
-                    final byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( userProvidedClass );
-                    if ( proxyBytes != null ) {
-                        context.getPkg().getPackageCompilationData().write( ClassUtils.convertClassToResourcePath( shadowProxyName ),
-                                                                            proxyBytes );
-                        shadowClass = context.getPkg().getPackageCompilationData().getClassLoader().loadClass( shadowProxyName );
-                    }
-
-                }
-                objectType = new ClassObjectType( userProvidedClass,
-                                                  shadowClass );
+                objectType = new ClassObjectType( userProvidedClass );
             } catch ( final ClassNotFoundException e ) {
                 context.getErrors().add( new RuleError( context.getRule(),
                                                         patternDescr,
