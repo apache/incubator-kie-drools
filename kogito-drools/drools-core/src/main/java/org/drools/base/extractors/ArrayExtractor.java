@@ -8,14 +8,16 @@ import org.drools.spi.Extractor;
 public class ArrayExtractor implements Extractor {
     private final Extractor arrayExtractor;    
     private final int index;
+    private final Class type;
     
-    public ArrayExtractor(Extractor arrayExtractor, int index) {
+    public ArrayExtractor(Extractor arrayExtractor, int index, Class type) {
         this.arrayExtractor = arrayExtractor;
         this.index = index;
+        this.type = type;
     }
     
     public Class getExtractToClass() {
-        return Object.class;
+        return type;        
     }
     
     public boolean getBooleanValue(Object object) {
