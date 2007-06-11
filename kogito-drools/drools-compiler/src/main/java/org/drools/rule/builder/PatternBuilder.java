@@ -23,13 +23,13 @@ import java.util.List;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -65,7 +65,6 @@ import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ObjectType;
 import org.drools.spi.Restriction;
-import org.drools.util.ClassUtils;
 
 /**
  * A builder for patterns
@@ -74,10 +73,13 @@ import org.drools.util.ClassUtils;
  */
 public class PatternBuilder {
 
-    private Dialect dialect;
+    //private Dialect dialect;
 
-    public PatternBuilder(final Dialect dialect) {
-        this.dialect = dialect;
+//    public PatternBuilder(final Dialect dialect) {
+//        this.dialect = dialect;
+//    }
+    
+    public PatternBuilder() {
     }
 
     /**
@@ -218,9 +220,31 @@ public class PatternBuilder {
                 identifiers[0].equals( pattern.getDeclaration().getIdentifier() )) {
                 // we have a self reference, so, it is fine to do direct access
                 fieldName = identifiers[1];
+            } else {
+                // it is a complex expression, so we need to turn it into an MVEL predicate
+                Dialect dialect = context.getDialect();
+                // switch to MVEL dialect
+                context.setDialect( context.getDialect( "mvel" ) );
+                
+                PredicateDescr predicateDescr = new PredicateDescr();
+                DrlDumper dumper = new DrlDumper();
+                dumper.visitFieldConstraintDescr( fieldConstraintDescr );
+                predicateDescr.setContent( dumper.getTemplate() );
+                
+                this.build( context, 
+                            pattern, 
+                            predicateDescr, 
+                            container );
+                
+                // fall back to original dialect
+                context.setDialect( dialect );
+                
+                // after building the predicate, we are done, so return
+                return;
             }
         }
 
+        // if it is not a complex expression, just build a simple field constraint
         final FieldExtractor extractor = getFieldExtractor( context,
                                                             fieldConstraintDescr,
                                                             pattern.getObjectType(),
@@ -349,6 +373,11 @@ public class PatternBuilder {
         final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
                                                                                       predicateDescr,
                                                                                       predicateDescr.getContent() );
+        if( usedIdentifiers == null ) {
+            // something bad happened
+            return;
+        }
+        
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -380,7 +409,7 @@ public class PatternBuilder {
             container.addConstraint( predicateConstraint );
         }
 
-        final PredicateBuilder builder = this.dialect.getPredicateBuilder();
+        final PredicateBuilder builder = context.getDialect().getPredicateBuilder();
 
         builder.build( context,
                        usedIdentifiers,
@@ -670,7 +699,7 @@ public class PatternBuilder {
                                                                                           requiredGlobals,
                                                                                           evaluator );
 
-        final ReturnValueBuilder builder = this.dialect.getReturnValueBuilder();
+        final ReturnValueBuilder builder = context.getDialect().getReturnValueBuilder();
 
         builder.build( context,
                        usedIdentifiers,

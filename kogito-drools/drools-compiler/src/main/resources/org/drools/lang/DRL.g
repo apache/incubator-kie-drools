@@ -8,7 +8,6 @@ grammar DRL;
 	import java.util.HashMap;	
 	import java.util.StringTokenizer;
 	import org.drools.lang.descr.*;
-	import org.drools.compiler.SwitchingCommonTokenStream;
 }
 
 @parser::members {
@@ -338,7 +337,7 @@ function
 				)*
 			)?
 		RIGHT_PAREN
-		body=curly_chunk[f]
+		body=curly_chunk
 		{
 			//strip out '{','}'
 			f.setText( $body.text.substring( 1, $body.text.length()-1 ) );
@@ -374,8 +373,8 @@ query returns [QueryDescr query]
 		( LEFT_PAREN
 		        ( { params = new ArrayList(); types = new ArrayList();}
  
-		            (paramType=qualified_id[null]? paramName=ID { params.add( $paramName.text ); String type = (paramType != null) ? $paramType.text : "Object"; types.add( type ); } )
-		            (COMMA paramType=qualified_id[null]? paramName=ID { params.add( $paramName.text );  String type = (paramType != null) ? $paramType.text : "Object"; types.add( type );  } )*
+		            (paramType=qualified_id? paramName=ID { params.add( $paramName.text ); String type = (paramType != null) ? $paramType.text : "Object"; types.add( type ); } )
+		            (COMMA paramType=qualified_id? paramName=ID { params.add( $paramName.text );  String type = (paramType != null) ? $paramType.text : "Object"; types.add( type );  } )*
  
 		            {	$query.setParameters( (String[]) params.toArray( new String[params.size()] ) ); 
 		            	$query.setParameterTypes( (String[]) types.toArray( new String[types.size()] ) ); 
@@ -421,9 +420,11 @@ template_slot returns [FieldTemplateDescr field]
 	         {
 			$field = factory.createFieldTemplate();
 	         }
-		 fieldType=qualified_id[$field] 
+		 fieldType=qualified_id
 		 {
-		        $field.setClassType( $fieldType.name );
+		        $field.setClassType( $fieldType.text );
+			$field.setStartCharacter( ((CommonToken)$fieldType.start).getStartIndex() );
+			$field.setEndCharacter( ((CommonToken)$fieldType.stop).getStopIndex() );
 		 }
 		 
 		 id=identifier opt_semicolon
@@ -977,9 +978,10 @@ expression_chain[FromDescr from, AccessorDescr as]
 		fa.setEndCharacter( ((CommonToken)$field.start).getStopIndex() );
 	    }
 	  (
-	    ( LEFT_SQUARE ) => sqarg=square_chunk[$from]
+	    ( LEFT_SQUARE ) => sqarg=square_chunk
 	      {
 	          fa.setArgument( $sqarg.text );	
+		  $from.setEndCharacter( ((CommonToken)$sqarg.stop).getStopIndex() );
 	      }
 	    |
 	    ( LEFT_PAREN ) => paarg=paren_chunk
@@ -1127,15 +1129,21 @@ fact[String ident] returns [BaseDescr d]
  			}
  			$d = pattern; 
  	        }
- 	        id=qualified_id[$d] 
+ 	        id=qualified_id
  		{ 
- 		        pattern.setObjectType( $id.name );
- 		        pattern.setEndCharacter( -1 );
+ 			if( id != null ) {
+	 		        pattern.setObjectType( $id.text );
+ 			        pattern.setEndCharacter( -1 );
+				pattern.setStartCharacter( ((CommonToken)$id.start).getStartIndex() );
+				if( $id.stop != null ) {
+					pattern.setEndCharacter( ((CommonToken)$id.stop).getStopIndex() );
+				}
+ 			}
  		}
  		LEFT_PAREN 
  		{
 		        location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
-            		location.setProperty( Location.LOCATION_PROPERTY_CLASS_NAME, $id.name );
+            		location.setProperty( Location.LOCATION_PROPERTY_CLASS_NAME, $id.text );
  				
  			pattern.setLocation( offset($LEFT_PAREN.line), $LEFT_PAREN.pos );
  			pattern.setLeftParentCharacter( ((CommonToken)$LEFT_PAREN).getStartIndex() );
@@ -1405,7 +1413,7 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 	:
 		(	ap=accessor_path 
 			{ 
-			        if( $ap.text.indexOf( '.' ) > -1 ) {
+			        if( $ap.text.indexOf( '.' ) > -1 || $ap.text.indexOf( '[' ) > -1) {
 					$rd = new QualifiedIdentifierRestrictionDescr($op, $ap.text);
 				} else {
 					$rd = new VariableRestrictionDescr($op, $ap.text);
@@ -1440,15 +1448,6 @@ literal_constraint returns [String text]
 		)
 	;
 	
-enum_constraint returns [String text]
-	@init {
-		$text = null;
-	}
-	:	
-		ID { text=$ID.text; } ( '.' ident=identifier { text += "." + $ident.start.getText(); } )+ 
-	;	
-	
-
 predicate[ConditionalElementDescr base]
         @init {
 		PredicateDescr d = null;
@@ -1469,102 +1468,19 @@ predicate[ConditionalElementDescr base]
 	;
 
 
-curly_chunk[BaseDescr descr] returns [String text]
-        @init {
-           StringBuffer buf = null;
-           Integer channel = null;
-        }
+curly_chunk
 	:
-		loc=LEFT_CURLY 
-		{
-	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
-		    buf = new StringBuffer();
-		    
-		    buf.append( loc.getText() );
-		} 
-		( 
-			~(LEFT_CURLY|RIGHT_CURLY)
-			  {
-			    buf.append( input.LT(-1).getText() );
-			  }
-			|
-			chunk=curly_chunk[descr]
-			  {
-			    buf.append( chunk );
-			  }
-		)*
-		{
-		    if( channel != null ) {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
-		    } else {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
-		    }
-		}
-                loc=RIGHT_CURLY
-                {
-                    buf.append( loc.getText() );
-		    text = buf.toString();
-		    if( descr != null ) {
-		        descr.setEndCharacter( ((CommonToken)loc).getStopIndex() );
-		    }
-                }
+		LEFT_CURLY ( ~(LEFT_CURLY|RIGHT_CURLY) | curly_chunk )* RIGHT_CURLY
 	;
 	
 paren_chunk
 	:
-		LEFT_PAREN 
-		( 
-			~(LEFT_PAREN|RIGHT_PAREN)
-			|
-			paren_chunk
-		)*
-                RIGHT_PAREN
+		LEFT_PAREN ( ~(LEFT_PAREN|RIGHT_PAREN) | paren_chunk )* RIGHT_PAREN
 	;
 
-
-square_chunk[BaseDescr descr]  returns [String text]
-        @init {
-           StringBuffer buf = null;
-           Integer channel = null;
-        }
+square_chunk
 	:
-	        {
-	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
-		    buf = new StringBuffer();
-	        }
-		loc=LEFT_SQUARE 
-		{
-		    buf.append( $loc.text);
- 
-		} 
-		( 
-			~(LEFT_SQUARE|RIGHT_SQUARE)
-			  {
-			    buf.append( input.LT(-1).getText() );
-			  }
-			|
-			chunk=square_chunk[null]
-			  {
-			    buf.append( $chunk.text );
-			  }
-		)*
-		{
-		    if( channel != null ) {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
-		    } else {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
-		    }
-		}
-                loc=RIGHT_SQUARE
-                {
-                    buf.append( $loc.text );
-		    $text = buf.toString();
-		    if( $descr != null ) {
-		        $descr.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
-		    }
-                }
+		LEFT_SQUARE ( ~(LEFT_SQUARE|RIGHT_SQUARE) | square_chunk )* RIGHT_SQUARE
 	;
 	
 retval_constraint returns [String text]
@@ -1575,35 +1491,8 @@ retval_constraint returns [String text]
 		c=paren_chunk { $text = $c.text.substring(1, $c.text.length()-1); }
 	;
 
-qualified_id[BaseDescr descr] returns [String name]
-	@init {
-		$name = null;
-	}
-	:	
-		ID
-		{ 
-		    $name=$ID.text; 
-		    if( $descr != null ) {
-			$descr.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$ID).getStopIndex() );
-		    }
-		} 
-		( '.' ident=identifier 
-		    { 
-		        $name += "." + ident.start.getText(); 
-    		        if( $descr != null ) {
-			    $descr.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
-		        }
-		    } 
-		)* 
-		( '[' loc=']'
-		    { 
-		        $name += "[]";
-    		        if( $descr != null ) {
-			    $descr.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
-		        }
-		    }
-		)*
+qualified_id
+	: 	ID ( DOT identifier )* ( LEFT_SQUARE RIGHT_SQUARE )*
 	;
 	
 dotted_name[BaseDescr descr] returns [String name]
@@ -1643,59 +1532,28 @@ accessor_path
 	
 accessor_element
 	:
-		identifier ( square_chunk[null] )*
+		identifier square_chunk*
 	;	
 	
 rhs_chunk[RuleDescr rule]
-        @init {
-           StringBuffer buf = null;
-           Integer channel = null;
-        }
 	:
-	        {
-	            channel = ((SwitchingCommonTokenStream)input).getTokenTypeChannel( WS ); 
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( WS, Token.DEFAULT_CHANNEL );
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, Token.DEFAULT_CHANNEL );
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, Token.DEFAULT_CHANNEL );
-		    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, Token.DEFAULT_CHANNEL );
-		    buf = new StringBuffer();
-	        }
 		THEN
 		{
 			location.setType( Location.LOCATION_RHS );
 		}
-		( 
-			  ~END
-			  {
-			    buf.append( input.LT(-1).getText() );
-			  }
-		)*
-		{
-		    if( channel != null ) {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, channel.intValue());
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, channel.intValue() );
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, channel.intValue() );
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, channel.intValue() );
-		    } else {
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel(WS, Token.HIDDEN_CHANNEL);
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( SH_STYLE_SINGLE_LINE_COMMENT, Token.HIDDEN_CHANNEL );
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( C_STYLE_SINGLE_LINE_COMMENT, Token.HIDDEN_CHANNEL );
-			    ((SwitchingCommonTokenStream)input).setTokenTypeChannel( MULTI_LINE_COMMENT, Token.HIDDEN_CHANNEL );
-		    }
-		}
+		( ~END )*
                 loc=END opt_semicolon
                 {
                     // ignoring first line in the consequence
-                    int index = 0;
-                    while( (index < buf.length() ) && Character.isWhitespace( buf.charAt( index ) ) &&
-                           (buf.charAt( index ) != 10 ) && (buf.charAt( index ) != 13 ))
-                               index++;
-                    if( (index < buf.length() ) && ( buf.charAt( index ) == '\r' ) )
-                        index++;
-                    if( (index < buf.length() ) && ( buf.charAt( index ) == '\n' ) )
-                        index++;
-                    
-		    $rule.setConsequence( buf.substring( index ) );
+                    String buf = input.toString( $THEN, $loc );
+                    // removing final END keyword
+                    buf = buf.substring( 0, buf.length()-3 );
+                    if( buf.indexOf( '\n' ) > -1 ) {
+                        buf = buf.substring( buf.indexOf( '\n' ) + 1 );
+                    } else if ( buf.indexOf( '\r' ) > -1 ) {
+                        buf = buf.substring( buf.indexOf( '\r' ) + 1 );
+                    }
+		    $rule.setConsequence( buf );
      		    $rule.setConsequenceLocation(offset($THEN.line), $THEN.pos);
  		    $rule.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
  		    location.setProperty( Location.LOCATION_RHS_CONTENT, $rule.getConsequence() );

@@ -53,11 +53,17 @@ public class DrlDumper extends ReflectiveVisitor
 
     private StringBuffer        drlDump;
     private static final String eol = System.getProperty( "line.separator" );
+    private String template;
+    private boolean needsBracket = false;
 
     public synchronized String dump(final PackageDescr packageDescr) {
         this.drlDump = new StringBuffer();
         visitPackageDescr( packageDescr );
         return this.drlDump.toString();
+    }
+    
+    public String getTemplate() {
+        return this.template;
     }
 
     public void visitAndDescr(final AndDescr descr) {
@@ -214,9 +220,6 @@ public class DrlDumper extends ReflectiveVisitor
         this.template = new String();
         this.template = "<query name=\"" + descr.getName() + "\">" + "<lhs>" + processDescrList( descr.getLhs().getDescrs() ) + "</lhs>" + "</query>";
     }
-
-    private String template;
-    private boolean needsBracket = false;
 
     private String processRules(final List rules) {
         String ruleList = "";

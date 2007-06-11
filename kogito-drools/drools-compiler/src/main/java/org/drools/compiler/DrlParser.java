@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
@@ -161,12 +162,12 @@ public class DrlParser {
      * @return An instance of a RuleParser should you need one (most folks will not).
      */
     private DRLParser getParser(final String text) {
-        return new DRLParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRStringStream( text ) ) ) );
+        return new DRLParser( new CommonTokenStream( new DRLLexer( new ANTLRStringStream( text ) ) ) );
     }
 
     private DRLParser getParser(final Reader reader) {
         try {
-            return new DRLParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
+            return new DRLParser( new CommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
         } catch ( final Exception e ) {
             throw new RuntimeException( "Unable to parser Reader",
                                         e );

@@ -1,6 +1,5 @@
 package org.drools.rule.builder;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -10,9 +9,13 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
-import org.drools.rule.Rule;
 
 public interface Dialect {
+    // this is needed because some dialects use other dialects
+    // to build complex expressions. Example: java dialect uses MVEL
+    // to execute complex expressions 
+    String getExpressionDialectName();
+
     Map getBuilders();
 
     TypeResolver getTypeResolver();
@@ -30,7 +33,7 @@ public interface Dialect {
     AccumulateBuilder getAccumulateBuilder();
 
     PredicateBuilder getPredicateBuilder();
-
+    
     ReturnValueBuilder getReturnValueBuilder();
 
     ConsequenceBuilder getConsequenceBuilder();
