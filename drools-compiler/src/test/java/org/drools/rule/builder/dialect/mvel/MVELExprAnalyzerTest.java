@@ -19,6 +19,10 @@ public class MVELExprAnalyzerTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
+    
+    public void testDummy() {
+        // Added this so test does prooduce warning in eclipse
+    }
 
     public void FIXME_testGetExpressionIdentifiers() {
         try {

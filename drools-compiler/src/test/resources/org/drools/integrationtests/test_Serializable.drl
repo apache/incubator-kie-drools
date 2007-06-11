@@ -22,7 +22,7 @@ rule "match Person 2"
        Cheesery( cheeses contains $person )                
        Person( age < ( $age1 ) )
        Person( $age2 : age -> ( $age1 == $age2 ) )      
-        eval( $age1 == $age2 )
+       eval( $age1 == $age2 )
     then
 		list.add( $person );
         $person.setStatus("match Person ok");		
