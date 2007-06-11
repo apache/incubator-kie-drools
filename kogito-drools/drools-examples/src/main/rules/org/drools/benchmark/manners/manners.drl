@@ -26,7 +26,7 @@ end
 rule findSeating
    when 
        context : Context( state == Context.ASSIGN_SEATS )
-       Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
+       $s:Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
        Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
        Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
 
@@ -55,6 +55,8 @@ rule findSeating
 
        context.setState( Context.MAKE_PATH );
        modify( context );
+       
+       retract ( $s );
 end
 
 rule makePath
