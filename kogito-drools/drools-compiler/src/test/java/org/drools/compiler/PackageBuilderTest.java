@@ -850,7 +850,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
-        final QueryDescr queryDescr = new QueryDescr( "query1", new String[] { "$type" } );
+        final QueryDescr queryDescr = new QueryDescr( "query1" );
+        queryDescr.setParameters( new String[] { "$type" } );
+        queryDescr.setParameterTypes( new String[] { "String" } );
         
         packageDescr.addRule( queryDescr );
 
