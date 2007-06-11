@@ -151,8 +151,8 @@ public class MVELConsequenceBuilder
         Interceptor {
         public int doBefore(ASTNode node,
                             VariableResolverFactory factory) {
-            Object object = ((WithNode) node).getContext().getValue( null,
-                                                                     factory );
+            Object object = ((WithNode) node). getNestedStatement().getValue( null,
+                                                                              factory );
             FactHandle handle = ((DroolsMVELFactory) factory).getWorkingMemory().getFactHandle( object );
             ((DroolsMVELFactory) factory).getWorkingMemory().modifyRetract( handle, null, null );
             return 0;
