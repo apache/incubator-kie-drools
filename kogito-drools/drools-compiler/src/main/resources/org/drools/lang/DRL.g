@@ -363,6 +363,7 @@ query returns [QueryDescr query]
 	:
 		QUERY queryName=name
 		{ 
+			location.setType( Location.LOCATION_RULE_HEADER );
 			$query = factory.createQuery( $queryName.name ); 
 			$query.setLocation( offset($QUERY.line), $QUERY.pos );
 			$query.setStartCharacter( ((CommonToken)$QUERY).getStartIndex() );
@@ -676,6 +677,9 @@ lock_on_active returns [AttributeDescr descr]
 	;		
 
 normal_lhs_block[AndDescr descr]
+	@init {
+		location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+	}
 	:
 		(	d=lhs[$descr]
 			{ if( $d.d != null) $descr.addDescr( $d.d ); }
