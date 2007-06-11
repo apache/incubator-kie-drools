@@ -42,20 +42,6 @@ public class MemoryVisitor extends ReflectiveVisitor {
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             visit( entry.getValue() );
         }
-
-        //            this.rootVertex = (ReteNodeVertex) this.visitedNodes.get( dotId( rete ) );
-        //            if ( this.rootVertex == null ) {
-        //                this.rootVertex = new ReteNodeVertex( rete );
-        //                this.visitedNodes.put( dotId( rete ),
-        //                                       this.rootVertex );
-        //            }
-        //
-        //            this.graph.addVertex( this.rootVertex );
-        //            this.parentVertex = this.rootVertex;
-        //            for ( final Iterator i = rete.objectTypeNodeIterator(); i.hasNext(); ) {
-        //                final Object nextNode = i.next();
-        //                visitNode( nextNode );
-        //            }
     }
 
     public void visitObjectTypeNode(final ObjectTypeNode node) {

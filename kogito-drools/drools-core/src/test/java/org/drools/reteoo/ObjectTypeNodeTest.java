@@ -23,12 +23,14 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.Person;
+import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -38,7 +40,8 @@ import org.drools.util.ObjectHashMap;
 public class ObjectTypeNodeTest extends DroolsTestCase {
 
     public void testAttach() throws Exception {
-        final Rete source = new Rete();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final Rete source = new Rete( (InternalRuleBase)ruleBase);        
 
         final ObjectType objectType = new ClassObjectType( String.class );
 
@@ -110,12 +113,14 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();  
+        
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+                                                                           (ReteooRuleBase) ruleBase );
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
-                                                                  new Rete(),
+                                                                  new Rete( (InternalRuleBase) ruleBase),
                                                                   3 );
 
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
@@ -124,8 +129,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testMatches() {
-
-        final Rete source = new Rete();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase(); 
+        final Rete source = new Rete((InternalRuleBase) ruleBase);
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
@@ -148,15 +153,16 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testRetractObject() throws Exception {
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();         
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+                                                                           (ReteooRuleBase) ruleBase );
 
-        final Rete source = new Rete();
+        final Rete source = new Rete((InternalRuleBase) ruleBase);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
@@ -204,11 +210,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
-
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();     
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+                                                                           (ReteooRuleBase) ruleBase );
 
-        final Rete source = new Rete();
+        final Rete source = new Rete( (InternalRuleBase)ruleBase);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
@@ -282,8 +288,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Class shadowClass = ShadowProxyFactory.getProxy( Cheese.class );
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                                  new ClassObjectType( Cheese.class,
-                                                                                       shadowClass ),
+                                                                  new ClassObjectType( Cheese.class  ),
                                                                   source,
                                                                   3 );
 
@@ -329,8 +334,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Class shadowClass = ShadowProxyFactory.getProxy( Person.class );
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                                  new ClassObjectType( Person.class,
-                                                                                       shadowClass ),
+                                                                  new ClassObjectType( Person.class ),
                                                                   source,
                                                                   3 );
 

@@ -286,7 +286,7 @@ public class PackageCompilationData
      * @author mproctor
      *
      */
-    public class PackageClassLoader extends ClassLoader {
+    public class PackageClassLoader extends ClassLoader implements DroolsClassLoader {
 
         public PackageClassLoader(final ClassLoader parentClassLoader) {
             super( parentClassLoader );

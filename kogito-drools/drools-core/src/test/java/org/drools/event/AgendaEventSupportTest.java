@@ -28,6 +28,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
+import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.rule.Pattern;
@@ -129,7 +130,7 @@ public class AgendaEventSupportTest extends TestCase {
                       agendaList.size() );
         ActivationCreatedEvent createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
         assertSame( cheddar,
-                    createdEvent.getActivation().getTuple().get( 0 ).getObject() );
+                    unwrapShadow( createdEvent.getActivation().getTuple().get( 0 ).getObject() ) );
         agendaList.clear();
 
         // modify results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable        
@@ -140,10 +141,10 @@ public class AgendaEventSupportTest extends TestCase {
                       agendaList.size() );
         ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
         assertSame( cheddar,
-                    cancelledEvent.getActivation().getTuple().get( 0 ).getObject() );
+                    unwrapShadow( cancelledEvent.getActivation().getTuple().get( 0 ).getObject() ) );
         createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );
         assertSame( cheddar,
-                    createdEvent.getActivation().getTuple().get( 0 ).getObject() );
+                    unwrapShadow( createdEvent.getActivation().getTuple().get( 0 ).getObject() ) );
         agendaList.clear();
 
         // retract results in a ActivationCancelledEvent, noe the object is not resolveable now as it no longer exists
@@ -173,12 +174,20 @@ public class AgendaEventSupportTest extends TestCase {
                       agendaList.size() );
         final BeforeActivationFiredEvent beforeEvent = (BeforeActivationFiredEvent) agendaList.get( 0 );
         assertSame( cheddar,
-                    beforeEvent.getActivation().getTuple().get( 0 ).getObject() );
+                    unwrapShadow( beforeEvent.getActivation().getTuple().get( 0 ).getObject() ) );
         final AfterActivationFiredEvent afterEvent = (AfterActivationFiredEvent) agendaList.get( 1 );
         assertSame( cheddar,
-                    afterEvent.getActivation().getTuple().get( 0 ).getObject() );
+                    unwrapShadow( afterEvent.getActivation().getTuple().get( 0 ).getObject() ) );
         final AgendaGroupPoppedEvent poppedEvent = (AgendaGroupPoppedEvent) agendaList.get( 2 );
         assertEquals( "test group",
                       poppedEvent.getAgendaGroup().getName() );
+    }
+    
+    private Object unwrapShadow(Object object) {
+        if ( object instanceof ShadowProxy ) {
+            return ((ShadowProxy) object).getShadowedObject();
+        } else {
+            return object;
+        }
     }
 }

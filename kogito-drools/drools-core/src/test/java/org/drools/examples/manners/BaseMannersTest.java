@@ -90,33 +90,26 @@ public abstract class BaseMannersTest extends TestCase {
     //private Evaluator       booleanNotEqualEvaluator;
 
     protected void setUp() throws Exception {
-        Class shadow = ShadowProxyFactory.getProxy( Context.class );
-        this.contextType = new ClassObjectType( Context.class,
-                                                shadow );
+        //Class shadow = ShadowProxyFactory.getProxy( Context.class );
+        this.contextType = new ClassObjectType( Context.class );
 
-        shadow = ShadowProxyFactory.getProxy( Guest.class );
-        this.guestType = new ClassObjectType( Guest.class,
-                                              shadow );
+        //shadow = ShadowProxyFactory.getProxy( Guest.class );
+        this.guestType = new ClassObjectType( Guest.class );
 
-        shadow = ShadowProxyFactory.getProxy( Seating.class );
-        this.seatingType = new ClassObjectType( Seating.class,
-                                                shadow );
+        //shadow = ShadowProxyFactory.getProxy( Seating.class );
+        this.seatingType = new ClassObjectType( Seating.class );
 
-        shadow = ShadowProxyFactory.getProxy( LastSeat.class );
-        this.lastSeatType = new ClassObjectType( LastSeat.class,
-                                                 shadow );
+        //shadow = ShadowProxyFactory.getProxy( LastSeat.class );
+        this.lastSeatType = new ClassObjectType( LastSeat.class );
 
-        shadow = ShadowProxyFactory.getProxy( Count.class );
-        this.countType = new ClassObjectType( Count.class,
-                                              shadow );
+        //shadow = ShadowProxyFactory.getProxy( Count.class );
+        this.countType = new ClassObjectType( Count.class );
 
-        shadow = ShadowProxyFactory.getProxy( Path.class );
-        this.pathType = new ClassObjectType( Path.class,
-                                             shadow );
+        //shadow = ShadowProxyFactory.getProxy( Path.class );
+        this.pathType = new ClassObjectType( Path.class  );
 
-        shadow = ShadowProxyFactory.getProxy( Chosen.class );
-        this.chosenType = new ClassObjectType( Chosen.class,
-                                               shadow );
+        //shadow = ShadowProxyFactory.getProxy( Chosen.class );
+        this.chosenType = new ClassObjectType( Chosen.class );
 
         this.integerEqualEvaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
         //this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
@@ -125,7 +118,7 @@ public abstract class BaseMannersTest extends TestCase {
         this.booleanEqualEvaluator = ValueType.PBOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
         //this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );
 
-        this.pkg = new Package( "Miss Manners" );
+        this.pkg = new Package( "org.drools.examples.manners" );
         this.pkg.addRule( getAssignFirstSeatRule() );
         this.pkg.addRule( getFindSeating() );
         this.pkg.addRule( getPathDone() );

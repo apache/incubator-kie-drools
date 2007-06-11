@@ -29,7 +29,7 @@ public class CompositePackageClassLoader extends ClassLoader {
 
     private Class compositeFastFindClass(final String name) {
         for ( final Iterator it = this.classLoaders.iterator(); it.hasNext(); ) {
-            final PackageClassLoader classLoader = (PackageClassLoader) it.next();
+            final DroolsClassLoader classLoader = (DroolsClassLoader) it.next();
             final Class clazz = classLoader.fastFindClass( name );
             if ( clazz != null ) {
                 return clazz;

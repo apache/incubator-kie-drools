@@ -27,6 +27,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
+import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
@@ -374,14 +375,17 @@ public class FieldConstraintTest extends TestCase {
                                           workingMemory ) );
 
         cheddar.setPrice( 5 );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
         
         cheddar.setType( "stilton" );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
         
         cheddar.setPrice( 15 );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
     }
@@ -439,14 +443,17 @@ public class FieldConstraintTest extends TestCase {
                                           workingMemory ) );
 
         cheddar.setPrice( 5 );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
         
         cheddar.setType( "stilton" );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
         
         cheddar.setPrice( 15 );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
     }
@@ -532,14 +539,17 @@ public class FieldConstraintTest extends TestCase {
                                           workingMemory ) );
 
         cheddar.setPrice( 5 );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
         
         cheddar.setType( "stilton" );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
         
         cheddar.setPrice( 15 );
+        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
     }

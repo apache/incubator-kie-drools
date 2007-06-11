@@ -324,6 +324,10 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for AssertBehaviour" );
             }
         }
+        
+        public String toString() {
+            return "AssertBehaviour : " + ( ( this.value == 0) ? "identity" : "equality" );
+        }
     }
 
     public static class LogicalOverride
@@ -360,6 +364,10 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for LogicalOverride" );
             }
         }
+        
+        public String toString() {
+            return "LogicalOverride : " + ( ( this.value == 0) ? "preserve" : "discard" );
+        }        
     }
 
 }

@@ -41,6 +41,7 @@ import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
@@ -74,6 +75,8 @@ abstract public class AbstractRuleBase
     protected Map                                   processes;
 
     protected transient CompositePackageClassLoader packageClassLoader;
+    
+    protected transient MapBackedClassLoader        classLoader;
 
     /** The fact handle factory. */
     protected FactHandleFactory                     factHandleFactory;
@@ -84,7 +87,7 @@ abstract public class AbstractRuleBase
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
-    protected transient ObjectHashSet               statefulSessions;
+    protected transient ObjectHashSet               statefulSessions;    
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it 
@@ -113,6 +116,8 @@ abstract public class AbstractRuleBase
         this.factHandleFactory = factHandleFactory;
 
         this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
+        this.classLoader = new MapBackedClassLoader( Thread.currentThread().getContextClassLoader() );
+        this.packageClassLoader.addClassLoader( this.classLoader );
         this.pkgs = new HashMap();
         this.processes = new HashMap();
         this.globals = new HashMap();
@@ -164,6 +169,9 @@ abstract public class AbstractRuleBase
         for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
             this.packageClassLoader.addClassLoader( ((Package) it.next()).getPackageCompilationData().getClassLoader() );
         }
+        
+        this.classLoader = new MapBackedClassLoader( Thread.currentThread().getContextClassLoader() );
+        this.packageClassLoader.addClassLoader( this.classLoader );        
 
         // Return the rules stored as a byte[]
         final byte[] bytes = (byte[]) stream.readObject();
@@ -479,6 +487,10 @@ abstract public class AbstractRuleBase
     protected synchronized void addStatefulSession(final StatefulSession statefulSession) {
         this.statefulSessions.add( statefulSession );
     }
+    
+    public Package getPackage(String name) {
+        return ( Package ) this.pkgs.get( name );
+    }
 
     public StatefulSession[] getStatefulSessions() {
         return (StatefulSession[]) this.statefulSessions.toArray( new StatefulSession[ this.statefulSessions.size() ] );
@@ -509,5 +521,17 @@ abstract public class AbstractRuleBase
         workingMemory.setRuleBase( this );
 
         return (StatefulSession) workingMemory;
+    }
+    
+    public void addClass(String className, byte[] bytes) {
+        this.classLoader.addClass( className, bytes );
+    }
+    
+    public CompositePackageClassLoader getCompositePackageClassLoader() {
+        return this.packageClassLoader;
+    }
+    
+    public MapBackedClassLoader getMapBackedClassLoader() {
+        return this.classLoader;
     }
 }

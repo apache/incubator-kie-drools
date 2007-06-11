@@ -35,9 +35,6 @@ public class ClassObjectType
     implements
     ObjectType {
 
-    // Objenesis instance without cache (false) 
-    private static final Objenesis         OBJENESIS        = new ObjenesisStd( false );
-
     /**
      * 
      */
@@ -48,13 +45,7 @@ public class ClassObjectType
 
     protected ValueType                    valueType;
 
-    protected boolean                      shadowEnabled;
 
-    protected Class                        shadowClass;
-
-    protected transient ObjectInstantiator instantiator;
-
-    protected transient Field              delegate;
 
     // ------------------------------------------------------------
     // Constructors
@@ -67,51 +58,9 @@ public class ClassObjectType
      *            Java object class.
      */
     public ClassObjectType(final Class objectTypeClass) {
-        this( objectTypeClass,
-              null );
-    }
-
-    /**
-     * Creates a new class object type with the given class
-     * as its shadow class.
-     * 
-     * @param objectTypeClass
-     *            Java object class.
-     * @param shadowClass
-     *            The shadow class for the given objectTypeClass
-     */
-    public ClassObjectType(final Class objectTypeClass,
-                           final Class shadowClass) {
         this.objectTypeClass = objectTypeClass;
         this.valueType = ValueType.determineValueType( objectTypeClass );
-        if ( shadowClass != null ) {
-            this.shadowClass = shadowClass;
-            this.shadowEnabled = true;
-            setInstantiator();
-            setDelegateFieldObject();
-        }
     }
-
-    /**
-     * 
-     */
-    private void setInstantiator() {
-        this.instantiator = OBJENESIS.getInstantiatorOf( this.shadowClass );
-    }
-
-    /**
-     * 
-     */
-    private void setDelegateFieldObject() {
-        try {
-            this.delegate = this.shadowClass.getDeclaredField( ShadowProxyFactory.DELEGATE_FIELD_NAME );
-            this.delegate.setAccessible( true );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "Error retriving delegate field for shadow proxy class: " + this.shadowClass.getName(),
-                                              e );
-        }
-    }
-
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -145,31 +94,6 @@ public class ClassObjectType
 
     public ValueType getValueType() {
         return this.valueType;
-    }
-
-    public Object getShadow(final Object fact) throws RuntimeDroolsException {
-        ShadowProxy proxy = null;
-        if ( isShadowEnabled() ) {
-            try {
-                if ( this.delegate == null ) {
-                    this.setDelegateFieldObject();
-                }
-                if ( this.instantiator == null ) {
-                    this.setInstantiator();
-                }
-                proxy = (ShadowProxy) this.instantiator.newInstance();
-                this.delegate.set( proxy,
-                              fact );
-            } catch ( final Exception e ) {
-                throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,
-                                                  e );
-            }
-        }
-        return proxy;
-    }
-
-    public boolean isShadowEnabled() {
-        return this.shadowEnabled;
     }
 
     public String toString() {

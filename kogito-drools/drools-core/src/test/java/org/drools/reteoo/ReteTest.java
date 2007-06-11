@@ -26,8 +26,10 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.Rete.ObjectTypeConf;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 
@@ -127,11 +129,13 @@ public class ReteTest extends DroolsTestCase {
                            workingMemory );
 
         final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( rete );
+        ObjectTypeConf conf = ( ObjectTypeConf ) map.get( ArrayList.class );
         assertLength( 3,
-                      (ObjectTypeNode[]) map.get( ArrayList.class ) );
+                      conf.getObjectTypeNodes( new ArrayList() ) );
 
+        conf = ( ObjectTypeConf ) map.get( LinkedList.class );
         assertLength( 2,
-                      (ObjectTypeNode[]) map.get( LinkedList.class ) );
+                      conf.getObjectTypeNodes( new LinkedList() ) );
 
     }
 
@@ -186,7 +190,7 @@ public class ReteTest extends DroolsTestCase {
 
         final Object[] results = (Object[]) asserted.get( 0 );
         assertSame( list,
-                    ((DefaultFactHandle) results[0]).getObject() );
+                    unwrapShadow( ((DefaultFactHandle) results[0]).getObject()) );
     }
 
     /**
@@ -245,7 +249,14 @@ public class ReteTest extends DroolsTestCase {
 
         final Object[] results = (Object[]) retracted.get( 0 );
         assertSame( list,
-                    ((DefaultFactHandle) results[0]).getObject() );
+                    unwrapShadow( ((DefaultFactHandle) results[0]).getObject() ) );
     }
 
+    private Object unwrapShadow(Object object) {
+        if ( object instanceof ShadowProxy ) {
+            return ((ShadowProxy) object).getShadowedObject();
+        } else {
+            return object;
+        }
+    }
 }

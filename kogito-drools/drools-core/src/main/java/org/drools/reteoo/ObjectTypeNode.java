@@ -145,33 +145,6 @@ public class ObjectTypeNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
 
-        // checks if shadow is enabled
-        if ( this.objectType.isShadowEnabled() ) {
-            // need to improve this
-            if ( !(handle.getObject() instanceof ShadowProxy) ) {
-                // replaces the actual object by its shadow before propagating
-                handle.setObject( this.objectType.getShadow( handle.getObject() ) );
-                handle.setShadowFact( true );
-            } else {
-                // we need to check if the shadow proxy matches the current object type
-                // because in a class hirarchy it may happen that the shadow proxy does not
-                // match a class down the hirarchy. See: JBRULES-696.
-                if ( this.objectType.matches( handle.getObject() ) ) {
-                    ((ShadowProxy) handle.getObject()).updateProxy();
-                } else {
-                    // replaces the old shadow proxy for a more specialized version of it
-                    final ShadowProxy old = (ShadowProxy) handle.getObject();
-                    handle.setObject( this.objectType.getShadow( old.getShadowedObject() ) );
-                    handle.setShadowFact( true );
-
-                    // we MUST copy state from one proxy to the other as we are in a dynamic rules engine
-                    // and new rules with different object types may be added at any moment
-                    ShadowProxyHelper.copyState( old,
-                                                 (ShadowProxy) handle.getObject() );
-                }
-            }
-        }
-
         if ( context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             // we do this after the shadowproxy update, just so that its up to date for the future
             return;

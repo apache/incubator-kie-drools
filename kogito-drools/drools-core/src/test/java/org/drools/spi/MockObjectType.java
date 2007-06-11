@@ -79,12 +79,4 @@ public class MockObjectType
         return ValueType.OBJECT_TYPE;
     }
 
-    public Object getShadow(final Object fact) {
-        return null;
-    }
-
-    public boolean isShadowEnabled() {
-        return false;
-    }
-
 }
