@@ -27,11 +27,11 @@ import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
-import org.drools.compiler.SwitchingCommonTokenStream;
 import org.drools.lang.DRLParser.paren_chunk_return;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
@@ -395,7 +395,7 @@ public class RuleParserTest extends TestCase {
         final AndDescr descrs = new AndDescr();
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( descrs.getLine() );
         parser.normal_lhs_block( descrs );
@@ -2516,7 +2516,7 @@ public class RuleParserTest extends TestCase {
         final AndDescr descrs = new AndDescr();
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( descrs.getLine() );
         parser.normal_lhs_block( descrs );
@@ -2542,7 +2542,7 @@ public class RuleParserTest extends TestCase {
         final AndDescr descrs = new AndDescr();
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( descrs.getLine() );
         parser.normal_lhs_block( descrs );
@@ -2726,7 +2726,7 @@ public class RuleParserTest extends TestCase {
         final String text = "Person( age < 42 && location==\"atlanta\")";
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
         PatternDescr pattern = (PatternDescr) parser.fact(null);
@@ -2747,7 +2747,7 @@ public class RuleParserTest extends TestCase {
         final String text = "Person( age < 42 || location==\"atlanta\")";
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
         PatternDescr pattern = (PatternDescr) parser.fact(null);
@@ -2771,7 +2771,7 @@ public class RuleParserTest extends TestCase {
         final String text = "Person( age < 42 && location==\"atlanta\" || age > 20 && location==\"Seatle\" || location == \"Chicago\")";
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
         PatternDescr pattern = (PatternDescr) parser.fact(null);
@@ -2834,7 +2834,7 @@ public class RuleParserTest extends TestCase {
         final String text = "Person( age < 42 && ( location==\"atlanta\" || age > 20 && location==\"Seatle\") || location == \"Chicago\")";
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
         PatternDescr pattern = (PatternDescr) parser.fact(null);
@@ -2898,7 +2898,7 @@ public class RuleParserTest extends TestCase {
         final String text = "Person( ( age == 70 && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ) )";
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
 
         PatternDescr pattern = (PatternDescr) parser.fact(null);
@@ -2980,7 +2980,7 @@ public class RuleParserTest extends TestCase {
         final AndDescr descrs = new AndDescr();
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( descrs.getLine() );
         parser.normal_lhs_block( descrs );
@@ -3003,7 +3003,7 @@ public class RuleParserTest extends TestCase {
         final AndDescr descrs = new AndDescr();
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
-        final TokenStream tokenStream = new SwitchingCommonTokenStream( lexer );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( descrs.getLine() );
         parser.normal_lhs_block( descrs );
@@ -3116,7 +3116,7 @@ public class RuleParserTest extends TestCase {
     }
 
     private TokenStream newTokenStream(final Lexer lexer) {
-        return new SwitchingCommonTokenStream( lexer );
+        return new CommonTokenStream( lexer );
     }
 
     private DRLParser newParser(final TokenStream tokenStream) {

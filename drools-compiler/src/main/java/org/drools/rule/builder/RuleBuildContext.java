@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.drools.base.SalienceInteger;
 import org.drools.base.evaluators.DateFactory;
 import org.drools.compiler.DialectRegistry;
 import org.drools.lang.descr.AttributeDescr;
@@ -34,7 +33,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.DeclarationScopeResolver;
-import org.drools.spi.Salience;
 
 /**
  * A context for the current build
@@ -122,6 +120,13 @@ public class RuleBuildContext {
 
     public Dialect getDialect() {
         return dialect;
+    }
+    
+    /**
+     * Allows the change of the current dialect in the context
+     */
+    public void setDialect( Dialect dialect ) {
+        this.dialect = dialect;
     }
     
     public Dialect getDialect(String dialectName) {

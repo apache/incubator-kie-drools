@@ -1,7 +1,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.lang.reflect.Method;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,13 +13,10 @@ import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
-import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -30,11 +26,9 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.Dialect;
-import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PatternBuilder;
@@ -44,16 +38,6 @@ import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.SalienceBuilder;
-import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
-import org.drools.rule.builder.dialect.java.JavaAccumulateBuilder;
-import org.drools.rule.builder.dialect.java.JavaConsequenceBuilder;
-import org.drools.rule.builder.dialect.java.JavaEvalBuilder;
-import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
-import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
-import org.drools.rule.builder.dialect.java.JavaPredicateBuilder;
-import org.drools.rule.builder.dialect.java.JavaReturnValueBuilder;
-import org.drools.rule.builder.dialect.java.JavaRuleClassBuilder;
-import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
@@ -61,16 +45,18 @@ public class MVELDialect
     implements
     Dialect {
 
-    private final PatternBuilder                    pattern     = new PatternBuilder( this );
-    private final QueryBuilder             query        = new QueryBuilder();    
+    private final static String                     EXPRESSION_DIALECT_NAME = "MVEL";
+
+    private final PatternBuilder                    pattern                 = new PatternBuilder();
+    private final QueryBuilder                      query                   = new QueryBuilder();
     //private final JavaAccumulateBuilder           accumulate  = new JavaAccumulateBuilder();
-    private final SalienceBuilder                   salience    = new MVELSalienceBuilder();
-    private final MVELEvalBuilder                   eval        = new MVELEvalBuilder();
-    private final MVELPredicateBuilder              predicate   = new MVELPredicateBuilder();
-    private final MVELReturnValueBuilder            returnValue = new MVELReturnValueBuilder();
-    private final MVELConsequenceBuilder            consequence = new MVELConsequenceBuilder();
+    private final SalienceBuilder                   salience                = new MVELSalienceBuilder();
+    private final MVELEvalBuilder                   eval                    = new MVELEvalBuilder();
+    private final MVELPredicateBuilder              predicate               = new MVELPredicateBuilder();
+    private final MVELReturnValueBuilder            returnValue             = new MVELReturnValueBuilder();
+    private final MVELConsequenceBuilder            consequence             = new MVELConsequenceBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
-    private final MVELFromBuilder                   from        = new MVELFromBuilder();
+    private final MVELFromBuilder                   from                    = new MVELFromBuilder();
 
     private List                                    results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
@@ -104,7 +90,7 @@ public class MVELDialect
         if ( pkg != null ) {
             init( pkg );
         }
-        
+
         this.results = new ArrayList();
 
         initBuilder();
@@ -139,9 +125,9 @@ public class MVELDialect
 
         this.builders.put( FromDescr.class,
                            getFromBuilder() );
-        
+
         this.builders.put( QueryDescr.class,
-                           getQueryBuilder() );        
+                           getQueryBuilder() );
 
         //        this.builders.put( AccumulateDescr.class,
         //                           getAccumulateBuilder() );
@@ -159,6 +145,10 @@ public class MVELDialect
     public void init(RuleDescr ruleDescr) {
     }
 
+    public String getExpressionDialectName() {
+        return EXPRESSION_DIALECT_NAME;
+    }
+
     public void addRule(RuleBuildContext context) {
 
     }
@@ -167,7 +157,7 @@ public class MVELDialect
         if ( importEntry.endsWith( "*" ) ) {
             return;
         }
-        try {            
+        try {
             Class cls = this.typeResolver.resolveType( importEntry );
             this.importFactory.addClass( cls );
         } catch ( ClassNotFoundException e ) {
@@ -175,33 +165,36 @@ public class MVELDialect
         }
     }
 
-    public void addStaticImport(String staticImportEntry) {     
+    public void addStaticImport(String staticImportEntry) {
         if ( staticImportEntry.endsWith( "*" ) ) {
             return;
         }
-        
+
         int index = staticImportEntry.lastIndexOf( '.' );
-        String className = staticImportEntry.substring( 0, index );
-        String methodName = staticImportEntry.substring( 0, index + 1 );
-        
+        String className = staticImportEntry.substring( 0,
+                                                        index );
+        String methodName = staticImportEntry.substring( 0,
+                                                         index + 1 );
+
         try {
             Class cls = this.configuration.getClassLoader().loadClass( className );
             Method[] methods = cls.getDeclaredMethods();
             for ( int i = 0; i < methods.length; i++ ) {
                 if ( methods[i].equals( "methodName" ) ) {
-                    this.staticImportFactory.createVariable( methodName, methods[i] );
+                    this.staticImportFactory.createVariable( methodName,
+                                                             methods[i] );
                     break;
                 }
             }
         } catch ( ClassNotFoundException e ) {
             this.results.add( new ImportError( staticImportEntry ) );
-        }        
+        }
     }
-    
+
     public StaticMethodImportResolverFactory getStaticMethodImportResolverFactory() {
         return this.staticImportFactory;
     }
-    
+
     public ClassImportResolverFactory getClassImportResolverFactory() {
         return this.importFactory;
     }
@@ -256,10 +249,10 @@ public class MVELDialect
     public PatternBuilder getPatternBuilder() {
         return this.pattern;
     }
-    
+
     public QueryBuilder getQueryBuilder() {
         return this.query;
-    }    
+    }
 
     public AccumulateBuilder getAccumulateBuilder() {
         throw new UnsupportedOperationException( "MVEL does not yet support accumuate" );
@@ -278,6 +271,10 @@ public class MVELDialect
     }
 
     public PredicateBuilder getPredicateBuilder() {
+        return this.predicate;
+    }
+
+    public PredicateBuilder getExpressionPredicateBuilder() {
         return this.predicate;
     }
 

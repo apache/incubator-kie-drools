@@ -16,7 +16,6 @@ import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.PackageBuilder;
@@ -59,7 +58,6 @@ import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.SalienceBuilder;
-import org.drools.rule.builder.dialect.mvel.MVELExprAnalyzer;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
@@ -68,8 +66,9 @@ public class JavaDialect
     implements
     Dialect {
 
+    private final static String            EXPRESSION_DIALECT_NAME = "MVEL";
     // builders
-    private final PatternBuilder           pattern      = new PatternBuilder( this );
+    private final PatternBuilder           pattern      = new PatternBuilder();
     private final QueryBuilder             query        = new QueryBuilder();
     private final SalienceBuilder          salience     = new MVELSalienceBuilder();
     private final JavaAccumulateBuilder    accumulate   = new JavaAccumulateBuilder();
@@ -200,6 +199,10 @@ public class JavaDialect
 
     public void setRuleClass(final String ruleClass) {
         this.ruleClass = ruleClass;
+    }
+    
+    public String getExpressionDialectName() {
+        return EXPRESSION_DIALECT_NAME;
     }
 
     public List[] getExpressionIdentifiers(final RuleBuildContext context,

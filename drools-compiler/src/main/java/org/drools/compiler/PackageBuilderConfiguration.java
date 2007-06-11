@@ -16,26 +16,17 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.rule.builder.Dialect;
 import org.drools.util.ChainedProperties;
-
-import sun.security.action.GetLongAction;
 
 /**
  * This class configures the package compiler. 
@@ -46,7 +37,7 @@ import sun.security.action.GetLongAction;
  * 
  * You can also use the system property "drools.compiler" to set the desired compiler.
  * The valid values are "ECLIPSE" and "JANINO" only. 
- * 
+ * s
  * The default Java language level is 1.4 but it can be configured using the 
  * system property "drools.compiler.lnglevel". Valid values are 1.4, 1.5 and 1.6.
  */
