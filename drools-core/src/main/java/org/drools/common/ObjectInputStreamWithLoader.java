@@ -42,6 +42,10 @@ public class ObjectInputStreamWithLoader extends ObjectInputStream {
         this.classLoader = classLoader;
         enableResolveObject( true );
     }
+    
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
 
     protected Class resolveClass(final ObjectStreamClass desc) throws IOException,
                                                               ClassNotFoundException {

@@ -13,25 +13,43 @@ import java.util.Map;
  *
  */
 public class ClassFieldExtractorCache {
-    private Map cache;
+    private static ClassFieldExtractorCache instance = new ClassFieldExtractorCache();
+    private static Map                      cache;
 
-    public ClassFieldExtractorCache() {
-        this.cache = new HashMap();
+    public static ClassFieldExtractorCache getInstance() {
+        return instance;
     }
 
-    public ClassFieldExtractor getExtractor(final Class clazz,
-                                            final String fieldName,
-                                            ClassLoader classLoader) {
+    private ClassFieldExtractorCache() {
+
+    }
+
+    public static ClassFieldExtractor getExtractor(final Class clazz,
+                                                   final String fieldName) {
+        return getExtractor( clazz,
+                             fieldName,
+                             null );
+    }
+
+    public static ClassFieldExtractor getExtractor(final Class clazz,
+                                                   final String fieldName,
+                                                   ClassLoader classLoader) {
+        if ( cache == null ) {
+            cache = new HashMap();
+        }
+
         final String key = clazz.getName() + "|" + fieldName;
-        if ( this.cache.containsKey( key ) ) {
-            return (ClassFieldExtractor) this.cache.get( key );
+
+        if ( cache.containsKey( key ) ) {
+            return (ClassFieldExtractor) cache.get( key );
         } else {
             final ClassFieldExtractor ex = new ClassFieldExtractor( clazz,
                                                                     fieldName,
                                                                     classLoader );
-            this.cache.put( key,
-                            ex );
+            cache.put( key,
+                       ex );
             return ex;
         }
     }
+
 }

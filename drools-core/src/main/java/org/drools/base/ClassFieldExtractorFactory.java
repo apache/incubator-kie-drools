@@ -60,6 +60,8 @@ public class ClassFieldExtractorFactory {
     private static final ProtectionDomain PROTECTION_DOMAIN;
 
     private static final Map              inspectors           = new HashMap();
+    
+    private static ByteArrayClassLoader   byteArrayClassLoader;
 
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
@@ -79,6 +81,9 @@ public class ClassFieldExtractorFactory {
     public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
                                                                  final String fieldName,
                                                                  final ClassLoader classLoader) {
+        if ( byteArrayClassLoader == null ) {
+            byteArrayClassLoader = new ByteArrayClassLoader( (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader() );            
+        }
         try {
             // if it is a self reference
             if ( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
@@ -108,7 +113,7 @@ public class ClassFieldExtractorFactory {
                                            fieldType,
                                            clazz.isInterface() );
                 // use bytes to get a class 
-                final ByteArrayClassLoader byteArrayClassLoader = new ByteArrayClassLoader( (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader() );
+
                 final Class newClass = byteArrayClassLoader.defineClass( className.replace( '/',
                                                                                             '.' ),
                                                                          bytes,
@@ -120,6 +125,7 @@ public class ClassFieldExtractorFactory {
                 return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
             }
         } catch ( final Exception e ) {
+            System.out.println( e );
             throw new RuntimeDroolsException( e );
         }
     }
