@@ -46,7 +46,7 @@ public class RuleNameEndsWithAgendaFilter
         if ( activation.getRule().getName().endsWith( this.suffix ) ) {
             return this.accept;
         } else {
-            return false;
+            return !this.accept;
         }
     }
 }
