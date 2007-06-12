@@ -30,8 +30,10 @@ public class DepthConflictResolver
         final int s1 = lhs.getSalience();
         final int s2 = rhs.getSalience();
 
-        if ( s1 != s2 ) {
-            return s2 - s1;
+        if ( s1 > s2 ) {                        
+            return -1;
+        } else if ( s1 < s2 ) {
+            return 1;
         }
 
         final long p1 = lhs.getPropagationContext().getPropagationNumber();
