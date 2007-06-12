@@ -1,5 +1,8 @@
 package org.drools;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Person {
 
     private String name;
@@ -9,11 +12,14 @@ public class Person {
     private String city;
     private String state;
     private String country;
+    
+    private Map addresses;
 
     public Person(final String name,
                   final int age) {
         this.name = name;
         this.age = age;
+        this.addresses = new HashMap();
     }
 
     /**
@@ -74,6 +80,14 @@ public class Person {
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public Map getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Map addresses) {
+        this.addresses = addresses;
     }
 
 }

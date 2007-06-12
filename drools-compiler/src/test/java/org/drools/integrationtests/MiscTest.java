@@ -2848,23 +2848,75 @@ public class MiscTest extends TestCase {
         final Order order1 = new Order( 10 );
         final OrderItem item11 = new OrderItem( order1, 1 );
         final OrderItem item12 = new OrderItem( order1, 2 );
+        order1.addItem( item11 );
+        order1.addItem( item12 );
         final Order order2 = new Order( 11 );
         final OrderItem item21 = new OrderItem( order2, 1 );
         final OrderItem item22 = new OrderItem( order2, 2 );
+        order2.addItem( item21 );
+        order2.addItem( item22 );
+        final Order order3 = new Order( 12 );
+        final OrderItem item31 = new OrderItem( order3, 1 );
+        final OrderItem item32 = new OrderItem( order3, 2 );
+        order3.addItem( item31 );
+        order3.addItem( item32 );
+        final Order order4 = new Order( 13 );
+        final OrderItem item41 = new OrderItem( order4, 1 );
+        final OrderItem item42 = new OrderItem( order4, 2 );
+        order4.addItem( item41 );
+        order4.addItem( item42 );
         workingMemory.assertObject( order1 );
         workingMemory.assertObject( item11 );
         workingMemory.assertObject( item12 );
         workingMemory.assertObject( order2 );
         workingMemory.assertObject( item21 );
         workingMemory.assertObject( item22 );
+        workingMemory.assertObject( order3 );
+        workingMemory.assertObject( item31 );
+        workingMemory.assertObject( item32 );
+        workingMemory.assertObject( order4 );
+        workingMemory.assertObject( item41 );
+        workingMemory.assertObject( item42 );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 2,
+        assertEquals( 5,
                       list.size() );
         assertTrue( list.contains( item11 ) );
         assertTrue( list.contains( item12 ) );
+        assertTrue( list.contains( item22 ) );
+        assertTrue( list.contains( order3 ) );
+        assertTrue( list.contains( order4 ) );
         
+    }
+    
+    
+    public void testMapAccess() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        Map map = new HashMap();
+        map.put( "name", "Edson" );
+        map.put( "surname", "Tirelli" );
+        map.put( "age", "28" );
+        
+        workingMemory.assertObject( map );
+        
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( map ) );
+       
     }
     
     

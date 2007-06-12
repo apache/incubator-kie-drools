@@ -38,6 +38,7 @@ import org.drools.base.extractors.BaseIntClassFieldExtractor;
 import org.drools.base.extractors.BaseLongClassFieldExtractors;
 import org.drools.base.extractors.BaseObjectClassFieldExtractor;
 import org.drools.base.extractors.BaseShortClassFieldExtractor;
+import org.drools.base.extractors.MVELClassFieldExtractor;
 import org.drools.base.extractors.SelfReferenceClassFieldExtractor;
 import org.drools.util.asm.ClassFieldInspector;
 
@@ -84,6 +85,10 @@ public class ClassFieldExtractorFactory {
                 // then just create an instance of the special class field extractor
                 return new SelfReferenceClassFieldExtractor( clazz,
                                                              fieldName );
+            } else if( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 ) {
+                // we need MVEL extractor for expressions
+                return new MVELClassFieldExtractor( clazz,
+                                                    fieldName );
             } else {
                 // otherwise, bytecode generate a specific extractor
                 ClassFieldInspector inspector = (ClassFieldInspector) inspectors.get( clazz );

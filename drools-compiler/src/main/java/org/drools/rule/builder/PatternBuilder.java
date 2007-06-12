@@ -73,12 +73,6 @@ import org.drools.spi.Restriction;
  */
 public class PatternBuilder {
 
-    //private Dialect dialect;
-
-//    public PatternBuilder(final Dialect dialect) {
-//        this.dialect = dialect;
-//    }
-    
     public PatternBuilder() {
     }
 
@@ -213,6 +207,16 @@ public class PatternBuilder {
                        final AbstractCompositeConstraint container) {
         String fieldName = fieldConstraintDescr.getFieldName();
         
+        if( fieldName.indexOf( '[' ) > -1 ) {
+            rewriteToEval( context,
+                           pattern,
+                           fieldConstraintDescr,
+                           container );
+            
+            // after building the predicate, we are done, so return
+            return;
+        }
+        
         if( fieldName.indexOf( '.' ) > -1 ) {
             // we have a composite field name
             String[] identifiers = fieldName.split( "\\." );
@@ -221,23 +225,10 @@ public class PatternBuilder {
                 // we have a self reference, so, it is fine to do direct access
                 fieldName = identifiers[1];
             } else {
-                // it is a complex expression, so we need to turn it into an MVEL predicate
-                Dialect dialect = context.getDialect();
-                // switch to MVEL dialect
-                context.setDialect( context.getDialect( "mvel" ) );
-                
-                PredicateDescr predicateDescr = new PredicateDescr();
-                DrlDumper dumper = new DrlDumper();
-                dumper.visitFieldConstraintDescr( fieldConstraintDescr );
-                predicateDescr.setContent( dumper.getTemplate() );
-                
-                this.build( context, 
-                            pattern, 
-                            predicateDescr, 
-                            container );
-                
-                // fall back to original dialect
-                context.setDialect( dialect );
+                rewriteToEval( context,
+                               pattern,
+                               fieldConstraintDescr,
+                               container );
                 
                 // after building the predicate, we are done, so return
                 return;
@@ -289,6 +280,29 @@ public class PatternBuilder {
         } else {
             container.addConstraint( constraint );
         }
+    }
+
+    private void rewriteToEval(final RuleBuildContext context,
+                               final Pattern pattern,
+                               final FieldConstraintDescr fieldConstraintDescr,
+                               final AbstractCompositeConstraint container) {
+        // it is a complex expression, so we need to turn it into an MVEL predicate
+        Dialect dialect = context.getDialect();
+        // switch to MVEL dialect
+        context.setDialect( context.getDialect( "mvel" ) );
+        
+        PredicateDescr predicateDescr = new PredicateDescr();
+        DrlDumper dumper = new DrlDumper();
+        dumper.visitFieldConstraintDescr( fieldConstraintDescr );
+        predicateDescr.setContent( dumper.getTemplate() );
+        
+        this.build( context, 
+                    pattern, 
+                    predicateDescr, 
+                    container );
+        
+        // fall back to original dialect
+        context.setDialect( dialect );
     }
 
     private Restriction createRestriction(final RuleBuildContext context,

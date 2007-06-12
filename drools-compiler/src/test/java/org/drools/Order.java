@@ -16,6 +16,9 @@
 
 package org.drools;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author etirelli
  *
@@ -23,6 +26,8 @@ package org.drools;
 public class Order {
 
     private int number;
+    
+    private Map items;
 
     public Order() {
         this( 0 );
@@ -30,6 +35,7 @@ public class Order {
 
     public Order(final int number) {
         this.number = number;
+        this.items = new HashMap();
     }
 
     /**
@@ -44,6 +50,14 @@ public class Order {
      */
     public void setNumber(final int number) {
         this.number = number;
+    }
+    
+    public Map getItems() {
+        return this.items;
+    }
+    
+    public void addItem( OrderItem item ) {
+        this.items.put( new Integer( item.getSeq() ), item );
     }
 
     /* (non-Javadoc)
