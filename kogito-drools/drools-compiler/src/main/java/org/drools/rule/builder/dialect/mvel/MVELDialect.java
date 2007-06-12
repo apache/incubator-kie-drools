@@ -177,7 +177,7 @@ public class MVELDialect
                                                          index + 1 );
 
         try {
-            Class cls = this.configuration.getClassLoader().loadClass( className );
+            Class cls = Thread.currentThread().getContextClassLoader().loadClass( className );
             Method[] methods = cls.getDeclaredMethods();
             for ( int i = 0; i < methods.length; i++ ) {
                 if ( methods[i].equals( "methodName" ) ) {

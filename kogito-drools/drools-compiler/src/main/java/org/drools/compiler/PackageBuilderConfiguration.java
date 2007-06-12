@@ -53,7 +53,7 @@ public class PackageBuilderConfiguration {
 
     private int                  compiler;
 
-    private ClassLoader          classLoader;
+//    private ClassLoader          classLoader;
 
     private String               languageLevel;
 
@@ -96,11 +96,11 @@ public class PackageBuilderConfiguration {
             if ( classLoader == null ) {
                 classLoader = this.getClass().getClassLoader();
             }
-            setClassLoader( classLoader );
+            //setClassLoader( classLoader );
         }
-        setClassLoader( classLoader );
+        //setClassLoader( classLoader );
 
-        this.chainedProperties = new ChainedProperties( this.classLoader,
+        this.chainedProperties = new ChainedProperties( Thread.currentThread().getContextClassLoader(),
                                                         "packagebuilder.conf" );
 
         if ( properties != null ) {
@@ -139,13 +139,14 @@ public class PackageBuilderConfiguration {
 
     public DialectRegistry buildDialectRegistry(PackageBuilder packageBuilder) {
         DialectRegistry registry = new DialectRegistry();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         for ( Iterator it = this.dialects.entrySet().iterator(); it.hasNext(); ) {
             Entry entry = (Entry) it.next();
             String str = (String) entry.getKey();
             String dialectName = str.substring( str.lastIndexOf( "." ) + 1 );
             String dialectClass = (String) entry.getValue();
             try {
-                Class cls = this.classLoader.loadClass( dialectClass );
+                Class cls = classLoader.loadClass( dialectClass );
                 Constructor cons = cls.getConstructor( new Class[] { PackageBuilder.class } );
                 registry.addDialect( dialectName,
                                      (Dialect) cons.newInstance( new Object[] { packageBuilder } ) );
@@ -181,16 +182,16 @@ public class PackageBuilderConfiguration {
         }
     }
 
-    public ClassLoader getClassLoader() {
-        return this.classLoader;
-    }
-
-    /** Use this to override the classloader that will be used for the rules. */
-    public void setClassLoader(final ClassLoader classLoader) {
-        if ( classLoader != null ) {
-            this.classLoader = classLoader;
-        }
-    }
+//    public ClassLoader getClassLoader() {
+//        return this.classLoader;
+//    }
+//
+//    /** Use this to override the classloader that will be used for the rules. */
+//    public void setClassLoader(final ClassLoader classLoader) {
+//        if ( classLoader != null ) {
+//            this.classLoader = classLoader;
+//        }
+//    }
 
     /**
      * This will attempt to read the System property to work out what default to set.

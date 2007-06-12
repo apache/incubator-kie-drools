@@ -116,7 +116,7 @@ public class PackageBuilder {
         this.configuration = configuration;
         this.results = new ArrayList();
         this.pkg = pkg;
-        this.classFieldExtractorCache = new ClassFieldExtractorCache();
+        this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();
         
         if ( this.pkg != null ) {
             this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
@@ -125,7 +125,7 @@ public class PackageBuilder {
             this.typeResolver.addImport( this.pkg.getName() + ".*" );            
         } else {
             this.typeResolver = new ClassTypeResolver( new ArrayList(),
-                                                       configuration.getClassLoader() );
+                                                       Thread.currentThread().getContextClassLoader() );
         }
 
         this.dialects = configuration.buildDialectRegistry( this );
@@ -295,7 +295,7 @@ public class PackageBuilder {
 
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
-                                         this.configuration.getClassLoader() );       
+                                         Thread.currentThread().getContextClassLoader() );       
 
         this.dialect.init( pkg );
 
