@@ -46,7 +46,7 @@ public class RuleNameEqualsAgendaFilter
         if ( activation.getRule().getName().equals( this.name ) ) {
             return this.accept;
         } else {
-            return false;
+            return !this.accept;
         }
     }
 }

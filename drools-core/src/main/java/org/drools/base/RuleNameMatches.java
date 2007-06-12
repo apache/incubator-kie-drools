@@ -16,34 +16,37 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 
 /**
- * Filters activations based on a specified rule name prefix.
+ * Filters activations based on a specified regular expression.
  * 
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-public class RuleNameStartsWithAgendaFilter
+public class RuleNameMatches
     implements
     AgendaFilter {
-    private final String  prefix;
+    private final Pattern pattern;
 
     private final boolean accept;
 
-    public RuleNameStartsWithAgendaFilter(final String prefix) {
-        this( prefix,
+    public RuleNameMatches(final String regexp) {
+        this( regexp,
               true );
     }
 
-    public RuleNameStartsWithAgendaFilter(final String prefix,
-                                          final boolean accept) {
-        this.prefix = prefix;
+    public RuleNameMatches(final String regexp,
+                                 final boolean accept) {
+        this.pattern = Pattern.compile( regexp );
         this.accept = accept;
     }
 
     public boolean accept(final Activation activation) {
-        if ( activation.getRule().getName().startsWith( this.prefix ) ) {
+        Matcher matcher = pattern.matcher( activation.getRule().getName() );
+        if ( matcher.matches() ) {
             return this.accept;
         } else {
             return !this.accept;
