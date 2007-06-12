@@ -19,6 +19,7 @@ package org.drools.common;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.ConflictResolver;
 import org.drools.util.BinaryHeapQueue;
 import org.drools.util.Queueable;
 
@@ -53,10 +54,12 @@ public class AgendaGroupImpl
      * @param name
      *      The <AgendaGroup> name.
      */
-    public AgendaGroupImpl(final String name) {
+    
+    
+    public AgendaGroupImpl(final String name, final ConflictResolver conflictResolver) {
         this.name = name;
-        this.queue = new BinaryHeapQueue( DepthConflictResolver.getInstance() );
-    }
+        this.queue = new BinaryHeapQueue( conflictResolver );
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.spi.AgendaGroup#getName()

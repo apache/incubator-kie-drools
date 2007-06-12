@@ -202,13 +202,6 @@ public final class RuleTerminalNode extends BaseNode
                     agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( this.rule.getAgendaGroup() );
                 }
 
-                if ( agendaGroup == null ) {
-                    // The AgendaGroup is defined but not yet added to the
-                    // Agenda, so create the AgendaGroup and add to the Agenda.
-                    agendaGroup = new AgendaGroupImpl( this.rule.getAgendaGroup() );
-                    agenda.addAgendaGroup( agendaGroup );
-                }
-
                 memory.setAgendaGroup( agendaGroup );
             }
 
