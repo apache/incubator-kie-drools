@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.spi.FieldExtractor;
 
 /**
@@ -61,8 +62,15 @@ public class ClassFieldExtractor
                                                        Exception {
         //always perform the default de-serialization first
         is.defaultReadObject();
-        init(null);
+        
+        // do not create the extractor yet, readResolver will do this, as it stops duplicate bytecode generation.
     }
+    
+    
+    private Object readResolve() {
+        // always return the value from the cache
+        return ClassFieldExtractorCache.getExtractor( this.clazz, this.fieldName );
+    }    
 
     public void init(final ClassLoader classLoader) {
         try {
