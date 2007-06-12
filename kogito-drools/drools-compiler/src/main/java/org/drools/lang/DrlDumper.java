@@ -35,6 +35,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PackageDescrDumper;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -148,7 +149,7 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
-        this.template = new String();
+        this.template = "";
         String text = descr.getText();
         if ( text == null ) {
             text = "null";
@@ -160,6 +161,10 @@ public class DrlDumper extends ReflectiveVisitor
             }
         }
         this.template = descr.getEvaluator() + " " + text;
+    }
+
+    public void visitQualifiedIdentifierRestrictionDescr(final QualifiedIdentifierRestrictionDescr descr) {
+        this.template = descr.getEvaluator() + " " + descr.getText();
     }
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {

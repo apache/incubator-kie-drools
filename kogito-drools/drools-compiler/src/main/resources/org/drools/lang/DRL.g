@@ -209,9 +209,9 @@ package_statement returns [String packageName]
 		$packageName = null;
 	}
 	:	
-		PACKAGE n=dotted_name[null] opt_semicolon
+		PACKAGE n=dotted_name opt_semicolon
 		{
-			$packageName = $n.name;
+			$packageName = $n.text;
 		}
 	;
 statement
@@ -296,9 +296,9 @@ global
 	            global.setStartCharacter( ((CommonToken)$GLOBAL).getStartIndex() );
 		    packageDescr.addGlobal( global );
 		}
-		type=dotted_name[null] 
+		type=dotted_name 
 		{
-		    global.setType( $type.name );
+		    global.setType( $type.text );
 		}
 		id=identifier opt_semicolon
 		{
@@ -314,24 +314,24 @@ function
 		String type = null;
 	}
 	:
-		FUNCTION retType=dotted_name[null]? id=identifier
+		FUNCTION retType=dotted_name? id=identifier
 		{
 			//System.err.println( "function :: " + n.getText() );
-			type = retType != null ? $retType.name : null;
+			type = retType != null ? $retType.text : null;
 			f = factory.createFunction( $id.text, type );
 			f.setLocation(offset($FUNCTION.line), $FUNCTION.pos);
 	        	f.setStartCharacter( ((CommonToken)$FUNCTION).getStartIndex() );
 			packageDescr.addFunction( f );
 		} 
 		LEFT_PAREN
-			(	paramType=dotted_name[null]? paramName=argument
+			(	paramType=dotted_name? paramName=argument
 				{
-					type = paramType != null ? $paramType.name : null;
+					type = paramType != null ? $paramType.text : null;
 					f.addParameter( type, $paramName.name );
 				}
-				(	COMMA paramType=dotted_name[null]? paramName=argument
+				(	COMMA paramType=dotted_name? paramName=argument
 					{
-						type = paramType != null ? $paramType.name : null;
+						type = paramType != null ? $paramType.text : null;
 						f.addParameter( type, $paramName.name );
 					}
 				)*
@@ -1423,9 +1423,9 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 			{ 
 				$rd  = new LiteralRestrictionDescr($op, $lc.text);
 			}
-		|	rvc=retval_constraint 
+		|	rvc=paren_chunk 
 			{ 
-				$rd = new ReturnValueRestrictionDescr($op, $rvc.text);							
+				$rd = new ReturnValueRestrictionDescr($op, $rvc.text.substring(1, $rcv.text.length()-1) );							
 			} 
 		)	
 		{
@@ -1453,16 +1453,13 @@ predicate[ConditionalElementDescr base]
 		PredicateDescr d = null;
         }
 	:
-		{
-			d = new PredicateDescr( );
-		}
 		text=paren_chunk
 		{
 		        if( $text.text != null ) {
-			        String body = $text.text.substring(1, $text.text.length()-1);
-			        d.setContent( body );
-				$base.addDescr( d );
+				d = new PredicateDescr( );
+			        d.setContent( $text.text.substring(1, $text.text.length()-1) );
 				d.setEndCharacter( ((CommonToken)$text.stop).getStopIndex() );
+				$base.addDescr( d );
 		        }
 		}
 	;
@@ -1483,47 +1480,12 @@ square_chunk
 		LEFT_SQUARE ( ~(LEFT_SQUARE|RIGHT_SQUARE) | square_chunk )* RIGHT_SQUARE
 	;
 	
-retval_constraint returns [String text]
-	@init {
-		$text = null;
-	}
-	:	
-		c=paren_chunk { $text = $c.text.substring(1, $c.text.length()-1); }
-	;
-
 qualified_id
 	: 	ID ( DOT identifier )* ( LEFT_SQUARE RIGHT_SQUARE )*
 	;
 	
-dotted_name[BaseDescr descr] returns [String name]
-	@init {
-		$name = null;
-	}
-	:	
-		id=identifier
-		{ 
-		    $name=$id.text; 
-		    if( $descr != null ) {
-			$descr.setStartCharacter( ((CommonToken)$id.start).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
-		    }
-		} 
-		( '.' ident=identifier 
-		    { 
-		        $name += "." + $ident.text; 
-    		        if( $descr != null ) {
-			    $descr.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
-		        }
-		    } 
-		)* 
-		( '[' loc=']'
-		    { 
-		        $name += "[]";
-    		        if( $descr != null ) {
-			    $descr.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
-		        }
-		    }
-		)*
+dotted_name
+	:	identifier ( DOT identifier )* ( LEFT_SQUARE RIGHT_SQUARE )*
 	;
 	
 accessor_path 
@@ -1537,10 +1499,7 @@ accessor_element
 	
 rhs_chunk[RuleDescr rule]
 	:
-		THEN
-		{
-			location.setType( Location.LOCATION_RHS );
-		}
+		THEN { location.setType( Location.LOCATION_RHS ); }
 		( ~END )*
                 loc=END opt_semicolon
                 {
