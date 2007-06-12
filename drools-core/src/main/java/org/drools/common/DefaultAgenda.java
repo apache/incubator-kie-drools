@@ -31,6 +31,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.LinkedListNode;
@@ -64,31 +65,32 @@ public class DefaultAgenda
     /**
      * 
      */
-    private static final long          serialVersionUID = 320L;
+    private static final long           serialVersionUID = 320L;
 
     /** Working memory of this Agenda. */
     private final InternalWorkingMemory workingMemory;
 
-    private org.drools.util.LinkedList scheduledActivations;
+    private org.drools.util.LinkedList  scheduledActivations;
 
     /** Items time-delayed. */
 
-    private final Map                  agendaGroups;
+    private final Map                   agendaGroups;
 
-    private final Map                  activationGroups;
+    private final Map                   activationGroups;
 
-    private final Map                  ruleFlowGroups;
+    private final Map                   ruleFlowGroups;
 
-    private final LinkedList           focusStack;
+    private final LinkedList            focusStack;
 
-    private AgendaGroupImpl            currentModule;
+    private AgendaGroupImpl             currentModule;
 
-    private AgendaGroup                main;
+    private final AgendaGroup           main;
 
-    private DefaultKnowledgeHelper     knowledgeHelper;
+    private DefaultKnowledgeHelper      knowledgeHelper;
 
-    public int                         activeActivations;
-    public int                         dormantActivations;
+    public int                          activeActivations;
+
+    public int                          dormantActivations;
 
     // ------------------------------------------------------------
     // Constructors
@@ -111,7 +113,8 @@ public class DefaultAgenda
         this.focusStack = new LinkedList();
 
         // MAIN should always be the first AgendaGroup and can never be removed
-        this.main = new AgendaGroupImpl( AgendaGroup.MAIN );
+        this.main = new AgendaGroupImpl( AgendaGroup.MAIN,
+                                         ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getConflictResolver() );
 
         this.agendaGroups.put( AgendaGroup.MAIN,
                                this.main );
@@ -181,13 +184,7 @@ public class DefaultAgenda
      * @see org.drools.common.AgendaI#setFocus(java.lang.String)
      */
     public void setFocus(final String name) {
-        AgendaGroup agendaGroup = (AgendaGroup) this.agendaGroups.get( name );
-
-        // Agenda may not have been created yet, if not create it.
-        if ( agendaGroup == null ) {
-            agendaGroup = new AgendaGroupImpl( name );
-            ((DefaultAgenda) this.workingMemory.getAgenda()).addAgendaGroup( agendaGroup );
-        }
+        AgendaGroup agendaGroup = getAgendaGroup( name );
         setFocus( agendaGroup );
     }
 
@@ -245,7 +242,15 @@ public class DefaultAgenda
      * @see org.drools.common.AgendaI#getAgendaGroup(java.lang.String)
      */
     public AgendaGroup getAgendaGroup(final String name) {
-        return (AgendaGroup) this.agendaGroups.get( name );
+        AgendaGroup agendaGroup = (AgendaGroup) this.agendaGroups.get( name );
+        if ( agendaGroup == null ) {
+            // The AgendaGroup is defined but not yet added to the
+            // Agenda, so create the AgendaGroup and add to the Agenda.
+            agendaGroup = new AgendaGroupImpl( name,
+                                               ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getConflictResolver() );
+            addAgendaGroup( agendaGroup );
+        }
+        return agendaGroup;
     }
 
     /* (non-Javadoc)
@@ -279,8 +284,7 @@ public class DefaultAgenda
         RuleFlowGroup ruleFlowGroup = (RuleFlowGroup) this.ruleFlowGroups.get( name );
         if ( ruleFlowGroup == null ) {
             ruleFlowGroup = new RuleFlowGroupImpl( name );
-            ((InternalRuleFlowGroup) ruleFlowGroup).setWorkingMemory(
-            		(InternalWorkingMemory) getWorkingMemory() );
+            ((InternalRuleFlowGroup) ruleFlowGroup).setWorkingMemory( (InternalWorkingMemory) getWorkingMemory() );
             this.ruleFlowGroups.put( name,
                                      ruleFlowGroup );
         }
@@ -288,7 +292,7 @@ public class DefaultAgenda
     }
 
     public void activateRuleFlowGroup(final String name) {
-    	((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( true );
+        ((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( true );
     }
 
     public void deactivateRuleFlowGroup(final String name) {

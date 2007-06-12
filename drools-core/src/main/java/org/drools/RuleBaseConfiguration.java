@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import org.drools.concurrent.ExecutorService;
+import org.drools.spi.ConflictResolver;
 import org.drools.util.ChainedProperties;
 
 /**
@@ -76,6 +77,8 @@ public class RuleBaseConfiguration
     private LogicalOverride   logicalOverride;
     private ExecutorService   executorService;
 
+    private ConflictResolver conflictResolver;
+
     public RuleBaseConfiguration(Properties properties) {
         init(properties);
     }
@@ -125,7 +128,10 @@ public class RuleBaseConfiguration
                                                                                                           "DISCARD" ) ) );
 
         setExecutorService( RuleBaseConfiguration.determineExecutorService( this.chainedProperties.getProperty( "drools.executorService",
-                                                                                                                "org.drools.concurrent.DefaultExecutorService" ) ) );        
+                                                                                                                "org.drools.concurrent.DefaultExecutorService" ) ) );
+        
+        setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
+                                                                                                                 "org.drools.conflict.DepthConflictResolver" ) ) );
     }
 
     /**
@@ -368,6 +374,39 @@ public class RuleBaseConfiguration
         public String toString() {
             return "LogicalOverride : " + ( ( this.value == 0) ? "preserve" : "discard" );
         }        
+    }
+    
+    public static ConflictResolver determineConflictResolver(String className) {
+        Class clazz = null;
+        try {
+            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                return (ConflictResolver) clazz.getMethod( "getInstance", null ).invoke( null, null );
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to Conflict Resolver '" + className + "'" );
+            }
+        } else {
+            throw new IllegalArgumentException( "conflict Resolver '" + className + "' not found" );
+        }
+    }    
+    
+    public void setConflictResolver(ConflictResolver conflictResolver) {
+        this.conflictResolver = conflictResolver;
+    }
+
+    public ConflictResolver getConflictResolver() {
+        return this.conflictResolver;
     }
 
 }

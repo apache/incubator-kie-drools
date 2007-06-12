@@ -32,6 +32,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
+import org.drools.conflict.DepthConflictResolver;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -202,15 +203,15 @@ public class AgendaTest extends DroolsTestCase {
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         //       // create the AgendaGroups
-        final AgendaGroupImpl agendaGroup1 = new AgendaGroupImpl( "agendaGroup1" );
+        final AgendaGroupImpl agendaGroup1 = new AgendaGroupImpl( "agendaGroup1", DepthConflictResolver.getInstance() );
         agenda.addAgendaGroup( agendaGroup1 );
         //        ActivationQueue queue1 = agendaGroup1.getActivationQueue( 0 );
 
-        final AgendaGroupImpl agendaGroup2 = new AgendaGroupImpl( "agendaGroup2" );
+        final AgendaGroupImpl agendaGroup2 = new AgendaGroupImpl( "agendaGroup2", DepthConflictResolver.getInstance() );
         agenda.addAgendaGroup( agendaGroup2 );
         //        ActivationQueue queue2 = agendaGroup2.getActivationQueue( 0 );
 
-        final AgendaGroupImpl agendaGroup3 = new AgendaGroupImpl( "agendaGroup3" );
+        final AgendaGroupImpl agendaGroup3 = new AgendaGroupImpl( "agendaGroup3", DepthConflictResolver.getInstance() );
         agenda.addAgendaGroup( agendaGroup3 );
         //        ActivationQueue queue3 = agendaGroup3.getActivationQueue( 0 );
 
@@ -426,7 +427,7 @@ public class AgendaTest extends DroolsTestCase {
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the agendaGroup
-        final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
+        final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup", DepthConflictResolver.getInstance() );
         agenda.addAgendaGroup( agendaGroup );
 
         // create the consequence
@@ -503,7 +504,7 @@ public class AgendaTest extends DroolsTestCase {
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the agendaGroup
-        final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
+        final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup", DepthConflictResolver.getInstance() );
         agenda.addAgendaGroup( agendaGroup );
 
         final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
