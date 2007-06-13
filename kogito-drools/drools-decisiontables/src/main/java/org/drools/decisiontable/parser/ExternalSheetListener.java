@@ -82,7 +82,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 
 	public void finishSheet() {
 		if (currentRow != null) {
-			session.assertObject(currentRow);
+			session.insert(currentRow);
 		}
 		session.fireAllRules();
 		session.dispose();
@@ -100,7 +100,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 			//currentRow.addCell(cell);
 			Cell cell = currentRow.getCell(columnIndex);
 			cell.setValue(value);
-			session.assertObject(cell);
+			session.insert(cell);
 
 		}
 	}
@@ -112,7 +112,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 				tableFinished = true;
 			} else {
 				if (currentRow != null)
-					session.assertObject(currentRow);
+					session.insert(currentRow);
 				currentRow = new Row(rowNumber, columns);
 			}
 		}

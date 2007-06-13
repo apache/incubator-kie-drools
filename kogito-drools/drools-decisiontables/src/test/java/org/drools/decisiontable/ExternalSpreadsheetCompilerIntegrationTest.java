@@ -59,9 +59,9 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         final WorkingMemory wm = rb.newStatefulSession();
 
         //ASSERT AND FIRE
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      42 ) );
-        wm.assertObject( new Person( "michael",
+        wm.insert( new Person( "michael",
                                      "stilton",
                                      42 ) );
         final List list = new ArrayList();
@@ -108,8 +108,8 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         Driver driver = new Driver();
         Policy policy = new Policy();
         
-        wm.assertObject(driver);
-        wm.assertObject(policy);
+        wm.insert(driver);
+        wm.insert(policy);
         
         wm.fireAllRules();
         
