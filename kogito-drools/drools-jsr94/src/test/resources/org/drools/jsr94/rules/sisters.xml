@@ -20,7 +20,7 @@
 		
 	    <rhs>
         	System.out.println($person1.getName() + " and " + $person2.getName() +" are sisters");
-        	assert( $person1.getName() + " and " + $person2.getName() +" are sisters");	    
+        	insert( $person1.getName() + " and " + $person2.getName() +" are sisters");	    
 		</rhs>
 	</rule>
 </package>
