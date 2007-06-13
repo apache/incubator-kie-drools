@@ -11,5 +11,5 @@ rule FindSisters
         eval( $person1.hasSister($person2) )
     then
     	vector.add($person1.getName() + " and " + $person2.getName() +" are sisters");
-    	assert( $person1.getName() + " and " + $person2.getName() +" are sisters");
+    	insert( $person1.getName() + " and " + $person2.getName() +" are sisters");
 end

@@ -159,7 +159,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public Handle addObject(final Object object) throws InvalidRuleSessionException {
         checkRuleSessionValidity();
-        return (Handle) this.session.assertObject( object );
+        return (Handle) this.session.insert( object );
     }
 
     /**
@@ -210,7 +210,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
         checkRuleSessionValidity();
 
         if ( objectHandle instanceof FactHandle ) {
-            this.session.modifyObject( (FactHandle) objectHandle,
+            this.session.update( (FactHandle) objectHandle,
                                              newObject );
         } else {
             throw new InvalidHandleException( "invalid handle" );
@@ -235,7 +235,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
         checkRuleSessionValidity();
 
         if ( handleObject instanceof FactHandle ) {
-            this.session.retractObject( (FactHandle) handleObject );
+            this.session.retract( (FactHandle) handleObject );
         } else {
             throw new InvalidHandleException( "invalid handle" );
         }
