@@ -1,6 +1,5 @@
 package org.drools.rule.builder;
 
-import org.drools.Cheese;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
