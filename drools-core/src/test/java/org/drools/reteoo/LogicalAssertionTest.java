@@ -75,7 +75,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         rule1.setConsequence( consequence );
 
-        final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.assertObject( "o1" );
+        final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.insert( "o1" );
         final ReteTuple tuple1 = new ReteTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
@@ -89,7 +89,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                           workingMemory );
 
         final String logicalString = new String( "logical" );
-        FactHandle logicalHandle = workingMemory.assertObject( logicalString,
+        FactHandle logicalHandle = workingMemory.insert( logicalString,
                                                                false,
                                                                true,
                                                                rule1,
@@ -115,7 +115,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         node.assertTuple( tuple1,
                           context1,
                           workingMemory );
-        logicalHandle = workingMemory.assertObject( logicalString,
+        logicalHandle = workingMemory.insert( logicalString,
                                                     false,
                                                     true,
                                                     rule1,
@@ -191,14 +191,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
                           workingMemory );
 
         final String logicalString1 = new String( "logical" );
-        FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
+        FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
                                                                 false,
                                                                 true,
                                                                 rule1,
                                                                 tuple1.getActivation() );
 
         final String logicalString2 = new String( "logical" );
-        FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2,
+        FactHandle logicalHandle2 = workingMemory.insert( logicalString2,
                                                                 false,
                                                                 true,
                                                                 rule1,
@@ -208,8 +208,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                     logicalHandle2 );
 
         // little sanity check using normal assert
-        logicalHandle1 = workingMemory.assertObject( logicalString1 );
-        logicalHandle2 = workingMemory.assertObject( logicalString2 );
+        logicalHandle1 = workingMemory.insert( logicalString1 );
+        logicalHandle2 = workingMemory.insert( logicalString2 );
 
         // If assert behavior in working memory is IDENTITY, 
         // returned handles must not be the same 
@@ -279,7 +279,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                           workingMemory );
 
         String logicalString1 = new String( "logical" );
-        FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
+        FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
                                                                 false,
                                                                 true,
                                                                 rule1,
@@ -288,7 +288,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // This assertion is stated and should override any previous justified
         // "equals" objects.
         String logicalString2 = new String( "logical" );
-        FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2 );
+        FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
 
         node.retractTuple( tuple1,
                            context1,
@@ -314,12 +314,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
                           workingMemory );
 
         logicalString2 = new String( "logical" );
-        logicalHandle2 = workingMemory.assertObject( logicalString2 );
+        logicalHandle2 = workingMemory.insert( logicalString2 );
 
         // This logical assertion will be ignored as there is already
         // an equals STATED assertion.
         logicalString1 = new String( "logical" );
-        logicalHandle1 = workingMemory.assertObject( logicalString1,
+        logicalHandle1 = workingMemory.insert( logicalString1,
                                                      false,
                                                      true,
                                                      rule1,
@@ -328,7 +328,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertNull( logicalHandle1 );
 
         // Already identify same so return previously assigned handle
-        logicalHandle1 = workingMemory.assertObject( logicalString2,
+        logicalHandle1 = workingMemory.insert( logicalString2,
                                                      false,
                                                      false,
                                                      rule1,
@@ -415,7 +415,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                           workingMemory );
 
         final String logicalString1 = new String( "logical" );
-        final FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
+        final FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
                                                                       false,
                                                                       true,
                                                                       rule1,
@@ -424,7 +424,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // This assertion is stated and should override any previous justified
         // "equals" objects.
         String logicalString2 = new String( "logical" );
-        FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2 );
+        FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
 
         node.retractTuple( tuple1,
                            context1,
@@ -450,7 +450,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                           workingMemory );
 
         logicalString2 = new String( "logical" );
-        logicalHandle2 = workingMemory.assertObject( logicalString2 );
+        logicalHandle2 = workingMemory.insert( logicalString2 );
     }
 
     public void testRetract() throws Exception {
@@ -503,7 +503,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Assert the logical "logical" fact
         final String logicalString1 = new String( "logical" );
-        final FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
+        final FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
                                                                       false,
                                                                       true,
                                                                       rule1,
@@ -531,7 +531,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Assert the logical "logical" fact
         final String logicalString2 = new String( "logical" );
-        final FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2,
+        final FactHandle logicalHandle2 = workingMemory.insert( logicalString2,
                                                                       false,
                                                                       true,
                                                                       rule2,
@@ -542,7 +542,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
 
         // retract the logical object
-        workingMemory.retractObject( logicalHandle2 );
+        workingMemory.retract( logicalHandle2 );
 
         // The logical object should never appear
         assertLength( 0,
@@ -624,7 +624,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Create the first justifieable relationship
         final String logicalString1 = new String( "logical" );
-        final FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
+        final FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
                                                                       false,
                                                                       true,
                                                                       rule1,
@@ -632,7 +632,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Create the second justifieable relationship
         final String logicalString2 = new String( "logical" );
-        final FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2,
+        final FactHandle logicalHandle2 = workingMemory.insert( logicalString2,
                                                                       false,
                                                                       true,
                                                                       rule2,
@@ -729,14 +729,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
                           workingMemory );
 
         final String statedString1 = new String( "logical" );
-        final FactHandle statedHandle1 = workingMemory.assertObject( statedString1 );
+        final FactHandle statedHandle1 = workingMemory.insert( statedString1 );
 
         final String statedString2 = new String( "logical" );
-        final FactHandle statedHandle2 = workingMemory.assertObject( statedString2 );
+        final FactHandle statedHandle2 = workingMemory.insert( statedString2 );
 
         // This assertion is logical should fail as there is previous stated objects
         final String logicalString3 = new String( "logical" );
-        FactHandle logicalHandle3 = workingMemory.assertObject( logicalString3,
+        FactHandle logicalHandle3 = workingMemory.insert( logicalString3,
                                                                 false,
                                                                 true,
                                                                 rule1,
@@ -750,9 +750,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // succesfully logically assert a new fact
         if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY == ((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() ) {
 
-            workingMemory.retractObject( statedHandle2 );
+            workingMemory.retract( statedHandle2 );
 
-            logicalHandle3 = workingMemory.assertObject( logicalString3,
+            logicalHandle3 = workingMemory.insert( logicalString3,
                                                          false,
                                                          true,
                                                          rule1,
@@ -762,9 +762,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
             assertNull( logicalHandle3 );
         }
 
-        workingMemory.retractObject( statedHandle1 );
+        workingMemory.retract( statedHandle1 );
 
-        logicalHandle3 = workingMemory.assertObject( logicalString3,
+        logicalHandle3 = workingMemory.insert( logicalString3,
                                                      false,
                                                      true,
                                                      rule1,
@@ -829,7 +829,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Cheese cheese = new Cheese( "brie",
                                           10 );
-        final FactHandle cheeseHandle = workingMemory.assertObject( cheese,
+        final FactHandle cheeseHandle = workingMemory.insert( cheese,
                                                                     false,
                                                                     true,
                                                                     rule1,
@@ -843,7 +843,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertEquals( 1,
                       workingMemory.getTruthMaintenanceSystem().getAssertMap().size() );
 
-        workingMemory.retractObject( cheeseHandle );
+        workingMemory.retract( cheeseHandle );
 
         assertEquals( 0,
                       workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );

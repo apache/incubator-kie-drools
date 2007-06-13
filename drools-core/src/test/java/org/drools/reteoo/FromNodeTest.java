@@ -13,6 +13,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
@@ -43,8 +44,8 @@ public class FromNodeTest extends TestCase {
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -70,7 +71,7 @@ public class FromNodeTest extends TestCase {
 
         final Person person1 = new Person( "xxx1",
                                            30 );
-        final FactHandle person1Handle = workingMemory.assertObject( person1 );
+        final FactHandle person1Handle = workingMemory.insert( person1 );
         final ReteTuple tuple1 = new ReteTuple( (DefaultFactHandle) person1Handle );
         from.assertTuple( tuple1,
                           context,
@@ -84,7 +85,7 @@ public class FromNodeTest extends TestCase {
         cheese1.setType( "stilton" );
         final Person person2 = new Person( "xxx2",
                                            30 );
-        final FactHandle person2Handle = workingMemory.assertObject( person2 );
+        final FactHandle person2Handle = workingMemory.insert( person2 );
         final ReteTuple tuple2 = new ReteTuple( (DefaultFactHandle) person2Handle );
         from.assertTuple( tuple2,
                           context,
@@ -102,7 +103,7 @@ public class FromNodeTest extends TestCase {
         cheese2.setType( "stilton" );
         final Person person3 = new Person( "xxx2",
                                            30 );
-        final FactHandle person3Handle = workingMemory.assertObject( person3 );
+        final FactHandle person3Handle = workingMemory.insert( person3 );
         final ReteTuple tuple3 = new ReteTuple( (DefaultFactHandle) person3Handle );
         from.assertTuple( tuple3,
                           context,
@@ -134,14 +135,14 @@ public class FromNodeTest extends TestCase {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
-        final ClassFieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                            "price" );
+        final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                          "price" );
 
-        final ClassFieldExtractor ageExtractor = new ClassFieldExtractor( Person.class,
-                                                                          "age" );
+        final ClassFieldExtractor ageExtractor = ClassFieldExtractorCache.getExtractor( Person.class,
+                                                                                        "age" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Person.class ) );
+                                             new ClassObjectType( Person.class ) );
 
         final Declaration declaration = new Declaration( "age",
                                                          ageExtractor,
@@ -175,7 +176,7 @@ public class FromNodeTest extends TestCase {
 
         final Person person1 = new Person( "xxx1",
                                            30 );
-        final FactHandle person1Handle = workingMemory.assertObject( person1 );
+        final FactHandle person1Handle = workingMemory.insert( person1 );
         final ReteTuple tuple1 = new ReteTuple( (DefaultFactHandle) person1Handle );
         from.assertTuple( tuple1,
                           context,
@@ -189,7 +190,7 @@ public class FromNodeTest extends TestCase {
         cheese1.setPrice( 30 );
         final Person person2 = new Person( "xxx2",
                                            30 );
-        final FactHandle person2Handle = workingMemory.assertObject( person2 );
+        final FactHandle person2Handle = workingMemory.insert( person2 );
         final ReteTuple tuple2 = new ReteTuple( (DefaultFactHandle) person2Handle );
         from.assertTuple( tuple2,
                           context,
@@ -207,7 +208,7 @@ public class FromNodeTest extends TestCase {
         cheese2.setPrice( 30 );
         final Person person3 = new Person( "xxx2",
                                            30 );
-        final FactHandle person3Handle = workingMemory.assertObject( person3 );
+        final FactHandle person3Handle = workingMemory.insert( person3 );
         final ReteTuple tuple3 = new ReteTuple( (DefaultFactHandle) person3Handle );
         from.assertTuple( tuple3,
                           context,
@@ -237,8 +238,8 @@ public class FromNodeTest extends TestCase {
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -266,7 +267,7 @@ public class FromNodeTest extends TestCase {
 
         final Person person1 = new Person( "xxx2",
                                            30 );
-        final FactHandle person1Handle = workingMemory.assertObject( person1 );
+        final FactHandle person1Handle = workingMemory.insert( person1 );
         final ReteTuple tuple = new ReteTuple( (DefaultFactHandle) person1Handle );
         from.assertTuple( tuple,
                           context,

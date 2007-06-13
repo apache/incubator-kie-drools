@@ -43,11 +43,11 @@ public class WorkingMemoryEventSupportTest extends TestCase {
         final List wmList = new ArrayList();
         final WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
 
-            public void objectAsserted(ObjectAssertedEvent event) {
+            public void objectInserted(ObjectInsertedEvent event) {
                 wmList.add( event );
             }
 
-            public void objectModified(ObjectModifiedEvent event) {
+            public void objectUpdated(ObjectUpdatedEvent event) {
                 wmList.add( event );
             }
 
@@ -64,23 +64,23 @@ public class WorkingMemoryEventSupportTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                      17 );
 
-        final FactHandle stiltonHandle = wm.assertObject( stilton );
+        final FactHandle stiltonHandle = wm.insert( stilton );
 
-        final ObjectAssertedEvent oae = (ObjectAssertedEvent) wmList.get( 0 );
+        final ObjectInsertedEvent oae = (ObjectInsertedEvent) wmList.get( 0 );
         assertSame( stiltonHandle,
                     oae.getFactHandle() );
 
-        wm.modifyObject( stiltonHandle,
+        wm.update( stiltonHandle,
                          stilton );
-        final ObjectModifiedEvent ome = (ObjectModifiedEvent) wmList.get( 1 );
+        final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
         assertSame( stiltonHandle,
                     ome.getFactHandle() );
 
-        wm.retractObject( stiltonHandle );
+        wm.retract( stiltonHandle );
         final ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
         assertSame( stiltonHandle,
                     ore.getFactHandle() );
 
-        wm.assertObject( cheddar );
+        wm.insert( cheddar );
     }
 }

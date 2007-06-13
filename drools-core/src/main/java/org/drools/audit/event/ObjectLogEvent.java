@@ -67,14 +67,14 @@ public class ObjectLogEvent extends LogEvent {
     public String toString() {
         String msg = null;
         switch ( this.getType() ) {
-            case OBJECT_ASSERTED :
+            case INSERTED :
                 msg = "OBJECT ASSERTED";
                 break;
-            case OBJECT_MODIFIED :
+            case UPDATED :
                 msg = "OBJECT MODIFIED";
                 break;
 
-            case OBJECT_RETRACTED :
+            case RETRACTED :
                 msg = "OBJECT RETRACTED";
                 break;
         }

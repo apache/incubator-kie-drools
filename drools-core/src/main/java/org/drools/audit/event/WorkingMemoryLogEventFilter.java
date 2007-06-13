@@ -28,15 +28,15 @@ public class WorkingMemoryLogEventFilter
     implements
     ILogEventFilter {
 
-    private boolean allowAssertEvents  = true;
-    private boolean allowModifyEvents  = true;
+    private boolean allowInsertEvents  = true;
+    private boolean allowUpdateEvents  = true;
     private boolean allowRetractEvents = true;
 
     public WorkingMemoryLogEventFilter(final boolean allowAssertEvents,
                                        final boolean allowModifyEvents,
                                        final boolean allowRetractEvents) {
-        setAllowAssertEvents( allowAssertEvents );
-        setAllowModifyEvents( allowModifyEvents );
+        setAllowInsertEvents( allowAssertEvents );
+        setAllowUpdateEvents( allowModifyEvents );
         setAllowRetractEvents( allowRetractEvents );
     }
 
@@ -45,23 +45,23 @@ public class WorkingMemoryLogEventFilter
      */
     public boolean acceptEvent(final LogEvent event) {
         switch ( event.getType() ) {
-            case LogEvent.OBJECT_ASSERTED :
-                return this.allowAssertEvents;
-            case LogEvent.OBJECT_MODIFIED :
-                return this.allowModifyEvents;
-            case LogEvent.OBJECT_RETRACTED :
+            case LogEvent.INSERTED :
+                return this.allowInsertEvents;
+            case LogEvent.UPDATED :
+                return this.allowUpdateEvents;
+            case LogEvent.RETRACTED :
                 return this.allowRetractEvents;
             default :
                 return true;
         }
     }
 
-    public void setAllowAssertEvents(final boolean allowAssertEvents) {
-        this.allowAssertEvents = allowAssertEvents;
+    public void setAllowInsertEvents(final boolean allowInsertEvents) {
+        this.allowInsertEvents = allowInsertEvents;
     }
 
-    public void setAllowModifyEvents(final boolean allowModifyEvents) {
-        this.allowModifyEvents = allowModifyEvents;
+    public void setAllowUpdateEvents(final boolean allowUpdateEvents) {
+        this.allowUpdateEvents = allowUpdateEvents;
     }
 
     public void setAllowRetractEvents(final boolean allowRetractEvents) {

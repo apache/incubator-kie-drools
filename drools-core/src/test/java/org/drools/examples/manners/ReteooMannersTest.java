@@ -69,10 +69,10 @@ public class ReteooMannersTest extends BaseMannersTest {
         final List list = getInputObjects( is );
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object object = it.next();
-            workingMemory.assertObject( object );
+            workingMemory.insert( object );
         }
 
-        workingMemory.assertObject( new Count( 1 ) );
+        workingMemory.insert( new Count( 1 ) );
 
         final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();

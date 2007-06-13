@@ -36,8 +36,8 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.ObjectAssertedEvent;
-import org.drools.event.ObjectModifiedEvent;
+import org.drools.event.ObjectInsertedEvent;
+import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowEventListener;
@@ -148,8 +148,8 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.WorkingMemoryEventListener
      */
-    public void objectAsserted(final ObjectAssertedEvent event) {
-        filterLogEvent( new ObjectLogEvent( LogEvent.OBJECT_ASSERTED,
+    public void objectInserted(final ObjectInsertedEvent event) {
+        filterLogEvent( new ObjectLogEvent( LogEvent.INSERTED,
                                             ((InternalFactHandle) event.getFactHandle()).getId(),
                                             event.getObject().toString() ) );
     }
@@ -157,8 +157,8 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.WorkingMemoryEventListener
      */
-    public void objectModified(final ObjectModifiedEvent event) {
-        filterLogEvent( new ObjectLogEvent( LogEvent.OBJECT_MODIFIED,
+    public void objectUpdated(final ObjectUpdatedEvent event) {
+        filterLogEvent( new ObjectLogEvent( LogEvent.UPDATED,
                                             ((InternalFactHandle) event.getFactHandle()).getId(),
                                             event.getObject().toString() ) );
     }
@@ -167,7 +167,7 @@ public abstract class WorkingMemoryLogger
      * @see org.drools.event.WorkingMemoryEventListener
      */
     public void objectRetracted(final ObjectRetractedEvent event) {
-        filterLogEvent( new ObjectLogEvent( LogEvent.OBJECT_RETRACTED,
+        filterLogEvent( new ObjectLogEvent( LogEvent.RETRACTED,
                                             ((InternalFactHandle) event.getFactHandle()).getId(),
                                             event.getOldObject().toString() ) );
     }
@@ -267,7 +267,7 @@ public abstract class WorkingMemoryLogger
     /**
      * Returns a String that can be used as unique identifier for an
      * activation.  Since the activationId is the same for all assertions
-     * that are created during a single assert, modify or retract, the
+     * that are created during a single insert, update or retract, the
      * key of the tuple of the activation is added too (which is a set
      * of fact handle ids). 
      * 

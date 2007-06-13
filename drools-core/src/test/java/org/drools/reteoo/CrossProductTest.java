@@ -86,10 +86,10 @@ public class CrossProductTest extends TestCase {
         ruleBase.addPackage( this.pkg );
 
         this.workingMemory = ruleBase.newStatefulSession();
-        this.workingMemory.assertObject( "F1" );
-        this.workingMemory.assertObject( "F2" );
-        this.workingMemory.assertObject( "F3" );
-        this.workingMemory.assertObject( "F4" );
+        this.workingMemory.insert( "F1" );
+        this.workingMemory.insert( "F2" );
+        this.workingMemory.insert( "F3" );
+        this.workingMemory.insert( "F4" );
 
         this.workingMemory.fireAllRules();
 
@@ -105,10 +105,10 @@ public class CrossProductTest extends TestCase {
         ruleBase.addPackage( this.pkg );
 
         this.workingMemory = ruleBase.newStatefulSession();
-        this.workingMemory.assertObject( "F1" );
-        this.workingMemory.assertObject( "F2" );
-        this.workingMemory.assertObject( "F3" );
-        this.workingMemory.assertObject( "F4" );
+        this.workingMemory.insert( "F1" );
+        this.workingMemory.insert( "F2" );
+        this.workingMemory.insert( "F3" );
+        this.workingMemory.insert( "F4" );
 
         this.workingMemory.fireAllRules();
 

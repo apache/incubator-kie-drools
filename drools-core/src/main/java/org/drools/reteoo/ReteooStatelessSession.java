@@ -54,20 +54,20 @@ public class ReteooStatelessSession implements StatelessSession {
     }
 
     public void execute(Object object) {
-        this.workingMemory.assertObject( object );
+        this.workingMemory.insert( object );
         this.workingMemory.fireAllRules( this.agendaFilter );
     }
 
     public void execute(Object[] list) {
         for ( int i = 0, length = list.length; i < length; i++ ) {
-            this.workingMemory.assertObject( list[i] );
+            this.workingMemory.insert( list[i] );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );
     }
 
     public void execute(List list) {
         for( Iterator it = list.iterator(); it.hasNext(); ) {
-            this.workingMemory.assertObject( it.next() );
+            this.workingMemory.insert( it.next() );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );
     }
@@ -91,14 +91,14 @@ public class ReteooStatelessSession implements StatelessSession {
     }         
     
     public StatelessSessionResult executeWithResults(Object object) {
-        this.workingMemory.assertObject( object );
+        this.workingMemory.insert( object );
         this.workingMemory.fireAllRules( this.agendaFilter );
         return new ReteStatelessSessionResult( this.workingMemory );
     }
 
     public StatelessSessionResult executeWithResults(Object[] list) {
         for ( int i = 0, length = list.length; i < length; i++ ) {
-            this.workingMemory.assertObject( list[i] );
+            this.workingMemory.insert( list[i] );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );
         return new ReteStatelessSessionResult( this.workingMemory );
@@ -106,7 +106,7 @@ public class ReteooStatelessSession implements StatelessSession {
 
     public StatelessSessionResult executeWithResults(List list) {
         for( Iterator it = list.iterator(); it.hasNext(); ) {
-            this.workingMemory.assertObject( it.next() );
+            this.workingMemory.insert( it.next() );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );
         return new ReteStatelessSessionResult( this.workingMemory );

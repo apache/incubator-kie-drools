@@ -35,7 +35,7 @@ public interface InternalWorkingMemory
                                           final PropagationContext context,
                                           final Rule rule) throws FactException;
     
-    void retractObject(final FactHandle factHandle,
+    void retract(final FactHandle factHandle,
                        final boolean removeLogical,
                        final boolean updateEqualsMap,
                        final Rule rule,

@@ -2,13 +2,14 @@ package org.drools.base.extractors;
 
 import junit.framework.Assert;
 
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
 public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
-    Extractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                             "booleanAttr" );
+    Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
+                                                                 "booleanAttr" );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {

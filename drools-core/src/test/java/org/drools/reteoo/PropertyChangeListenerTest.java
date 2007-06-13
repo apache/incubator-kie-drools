@@ -27,7 +27,7 @@ public class PropertyChangeListenerTest extends TestCase {
         objectTypeNode.addObjectSink( sink );
 
         final State a = new State( "go" );
-        workingMemory.assertObject( a,
+        workingMemory.insert( a,
                                     true );
 
         assertEquals( 1,

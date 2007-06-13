@@ -10,7 +10,7 @@ import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.FireAllRules;
 import org.drools.concurrent.Future;
-import org.drools.concurrent.ModifyObject;
+import org.drools.concurrent.UpdateObject;
 import org.drools.concurrent.RetractObject;
 import org.drools.spi.AgendaFilter;
 
@@ -27,29 +27,29 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this.executor = executorService;
     }
 
-    public Future asyncAssertObject(final Object object) {
+    public Future asyncInsert(final Object object) {
         final AssertObject assertObject = new AssertObject( object );
         this.executor.submit( assertObject );
         return assertObject;
     }
 
-    public Future asyncRetractObject(final FactHandle factHandle) {
+    public Future asyncRetract(final FactHandle factHandle) {
         return this.executor.submit( new RetractObject( factHandle ) );
     }
 
-    public Future asyncModifyObject(final FactHandle factHandle,
+    public Future asyncUpdate(final FactHandle factHandle,
                                     final Object object) {
-        return this.executor.submit( new ModifyObject( factHandle,
+        return this.executor.submit( new UpdateObject( factHandle,
                                                        object ) );
     }
 
-    public Future asyncAssertObjects(final Object[] list) {
+    public Future asyncInsert(final Object[] list) {
         final AssertObjects assertObjects = new AssertObjects( list );
         this.executor.submit( assertObjects );
         return assertObjects;
     }
 
-    public Future asyncAssertObjects(final List list) {
+    public Future asyncInsert(final List list) {
         final AssertObjects assertObjects = new AssertObjects( list );
         this.executor.submit( assertObjects );
         return assertObjects;

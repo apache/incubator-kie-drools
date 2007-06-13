@@ -86,7 +86,7 @@ public class ExistsNodeTest extends DroolsTestCase {
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.assertObject( cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
 
         final ReteTuple tuple1 = new ReteTuple( f0 );
 
@@ -104,7 +104,7 @@ public class ExistsNodeTest extends DroolsTestCase {
         // assert will match, so should propagate
         final Cheese brie = new Cheese( "brie",
                                         10 );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.assertObject( brie );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( brie );
 
         this.node.assertObject( f1,
                                 this.context,
@@ -121,7 +121,7 @@ public class ExistsNodeTest extends DroolsTestCase {
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
         // assert tuple, will have matches, so propagate
-        final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.assertObject( new Cheese( "gouda",
+        final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
                                                                                                       10 ) );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
@@ -165,7 +165,7 @@ public class ExistsNodeTest extends DroolsTestCase {
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.assertObject( cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
 
         final ReteTuple tuple1 = new ReteTuple( f0 );
 
@@ -183,7 +183,7 @@ public class ExistsNodeTest extends DroolsTestCase {
         // assert will not match, so activation should stay propagated
         final Cheese brie = new Cheese( "brie",
                                         10 );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.assertObject( brie );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( brie );
 
         this.node.assertObject( f1,
                                 this.context,
@@ -197,7 +197,7 @@ public class ExistsNodeTest extends DroolsTestCase {
                       this.sink.getRetracted() );
 
         // assert tuple, will have matches, so do assert propagation
-        final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.assertObject( new Cheese( "gouda",
+        final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
                                                                                                       10 ) );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
@@ -212,7 +212,7 @@ public class ExistsNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Tests memory consistency after assert/modify/retract calls
+     * Tests memory consistency after insert/update/retract calls
      * 
      * @throws AssertionException
      */
@@ -221,7 +221,7 @@ public class ExistsNodeTest extends DroolsTestCase {
             // assert tuple
             final Cheese cheddar = new Cheese( "cheddar",
                                                10 );
-            final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.assertObject( cheddar );
+            final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
             final ReteTuple tuple1 = new ReteTuple( f0 );
 
             this.node.assertTuple( tuple1,
@@ -231,7 +231,7 @@ public class ExistsNodeTest extends DroolsTestCase {
             // assert will match, so should propagate
             final Cheese brie = new Cheese( "brie",
                                             10 );
-            final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.assertObject( brie );
+            final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( brie );
 
             // Initially, no objects in right memory
             assertEquals( 0,

@@ -29,7 +29,7 @@ import org.drools.util.LinkedList;
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
  * As an <code>Activation</code>. Each <code>Activation</code> is assigned a number, this 
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
- * from a single assert, modify, retract are assgigned the same Activation number.
+ * from a single insert, update, retract are assgigned the same Activation number.
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>

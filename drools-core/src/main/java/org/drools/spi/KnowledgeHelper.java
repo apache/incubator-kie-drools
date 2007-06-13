@@ -31,7 +31,7 @@ import org.drools.rule.Rule;
  * instrumented at compile time and instances passed at runtime. It provides
  * convenience methods for users to interact with the WorkingMemory.
  * <p>
- * Of particular interest is the modifyObject method as it allows an object to
+ * Of particular interest is the update method as it allows an object to
  * be modified without having to specify the facthandle, because they are not
  * passed to the consequence at runtime. To achieve this the implementation will
  * need to lookup the fact handle of the object form the WorkingMemory.
@@ -51,7 +51,7 @@ public interface KnowledgeHelper
      *             Exceptions can be thrown by conditions which are wrapped and
      *             returned as a FactException
      */
-    void assertObject(Object object) throws FactException;
+    void insert(Object object) throws FactException;
 
     /**
      * Asserts an object specifying that it implement the onPropertyChange
@@ -65,22 +65,22 @@ public interface KnowledgeHelper
      *             Exceptions can be thrown by conditions which are wrapped and
      *             returned as a FactException
      */
-    void assertObject(Object object,
+    void insert(Object object,
                       boolean dynamic) throws FactException;
 
-    public void assertLogicalObject(Object object) throws FactException;
+    public void insertLogical(Object object) throws FactException;
 
-    public void assertLogicalObject(Object object,
+    public void insertLogical(Object object,
                                     boolean dynamic) throws FactException;
 
-    void modifyObject(FactHandle handle,
+    void update(FactHandle handle,
                       Object newObject) throws FactException;
 
-    void modifyObject( Object newObject ) throws FactException;
+    void update( Object newObject ) throws FactException;
 
-    void retractObject(FactHandle handle) throws FactException;
+    void retract(FactHandle handle) throws FactException;
 
-    void retractObject(Object object) throws FactException;
+    void retract(Object object) throws FactException;
     
     public Object get(Declaration declaration);
 
@@ -95,34 +95,34 @@ public interface KnowledgeHelper
 
     WorkingMemory getWorkingMemory();
 
-    /** @return - A List of the objects in the WorkingMemory */
-    List getObjects();
-
-    /**
-     * Retruns a List of Objects that match the given Class in the paremeter.
-     * 
-     * @param objectClass -
-     *            The Class to filter by
-     * @return - All the Objects in the WorkingMemory that match the given Class
-     *         filter
-     */
-    List getObjects(Class objectClass);
-
-    QueryResults getQueryResults(String query);
-
-    /**
-     * Clears the agenda causing all existing Activations to fire
-     * ActivationCancelled events. <br>
-     */
-    void clearAgenda();
-
-    void clearAgendaGroup(String group);
-
-    public AgendaGroup getFocus();
-
+//    /** @return - A List of the objects in the WorkingMemory */
+//    List getObjects();
+//
+//    /**
+//     * Retruns a List of Objects that match the given Class in the paremeter.
+//     * 
+//     * @param objectClass -
+//     *            The Class to filter by
+//     * @return - All the Objects in the WorkingMemory that match the given Class
+//     *         filter
+//     */
+//    List getObjects(Class objectClass);
+//
+//    QueryResults getQueryResults(String query);
+//
+//    /**
+//     * Clears the agenda causing all existing Activations to fire
+//     * ActivationCancelled events. <br>
+//     */
+//    void clearAgenda();
+//
+//    void clearAgendaGroup(String group);
+//
+//    public AgendaGroup getFocus();
+//
     void setFocus(String focus);
-
-    void setFocus(AgendaGroup focus);
+//
+//    void setFocus(AgendaGroup focus);
 
     public Declaration getDeclaration(String identifier);
 

@@ -34,7 +34,7 @@ public class OtherwiseTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        workingMemory.assertObject( new TestBean() );
+        workingMemory.insert( new TestBean() );
         workingMemory.fireAllRules();
 
         assertTrue( ((MockConsequence) rule1.getConsequence()).fired );
@@ -57,7 +57,7 @@ public class OtherwiseTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        workingMemory.assertObject( new TestBean() );
+        workingMemory.insert( new TestBean() );
         workingMemory.fireAllRules();
 
         assertFalse( ((MockConsequence) ruleOtherwise.getConsequence()).fired );

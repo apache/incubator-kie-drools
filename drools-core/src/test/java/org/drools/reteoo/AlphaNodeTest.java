@@ -23,6 +23,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
@@ -62,8 +63,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( 15 );
 
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -84,7 +85,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( cheddar );
 
         // check sink is empty
         assertLength( 0,
@@ -143,8 +144,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( 15 );
 
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                      "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -165,7 +166,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( cheddar );
 
         // check sink is empty
         assertLength( 0,
@@ -229,8 +230,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( 15 );
 
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -248,7 +249,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( cheddar );
 
         assertLength( 0,
                       sink.getAsserted() );
@@ -290,8 +291,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( 15 );
 
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -368,8 +369,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( 15 );
 
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                 "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -451,8 +452,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( 1 );
 
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -518,8 +519,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( 1 );
 
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor(Cheese.class,
+                                                                               "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 

@@ -20,7 +20,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
         final TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
         final String string = "test";
-        FactHandle fd = workingMemory.assertObject( string );
+        FactHandle fd = workingMemory.insert( string );
 
         assertEquals( 1,
                       tms.getAssertMap().size() );
@@ -29,7 +29,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
                     key.getFactHandle() );
         assertNull( key.getOtherFactHandle() );
 
-        workingMemory.modifyObject( fd,
+        workingMemory.update( fd,
                                     string );
 
         assertEquals( 1,
@@ -39,14 +39,14 @@ public class ReteooWorkingMemoryTest extends TestCase {
                     key.getFactHandle() );
         assertNull( key.getOtherFactHandle() );
 
-        workingMemory.retractObject( fd );
+        workingMemory.retract( fd );
 
         assertEquals( 0,
                       tms.getAssertMap().size() );
         key = tms.get( string );
         assertNull( key );
 
-        fd = workingMemory.assertObject( string );
+        fd = workingMemory.insert( string );
 
         assertEquals( 1,
                       tms.getAssertMap().size() );

@@ -2,13 +2,14 @@ package org.drools.base.extractors;
 
 import junit.framework.Assert;
 
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
 public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
-    Extractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                             "charAttr" );
+    Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
+                                                                 "charAttr" );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {

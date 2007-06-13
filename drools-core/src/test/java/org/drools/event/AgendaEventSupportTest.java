@@ -26,6 +26,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxy;
@@ -61,8 +62,8 @@ public class AgendaEventSupportTest extends TestCase {
         final Pattern pattern = new Pattern( 0,
                                     cheeseObjectType );
 
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -123,7 +124,7 @@ public class AgendaEventSupportTest extends TestCase {
         // assert the cheese fact
         final Cheese cheddar = new Cheese( "cheddar",
                                      15 );
-        FactHandle cheddarHandle = wm.assertObject( cheddar );
+        FactHandle cheddarHandle = wm.insert( cheddar );
 
         // should be one ActivationCreatedEvent
         assertEquals( 1,
@@ -133,9 +134,9 @@ public class AgendaEventSupportTest extends TestCase {
                     unwrapShadow( createdEvent.getActivation().getTuple().get( 0 ).getObject() ) );
         agendaList.clear();
 
-        // modify results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable        
+        // update results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable        
         cheddar.setPrice( 14 );
-        wm.modifyObject( cheddarHandle,
+        wm.update( cheddarHandle,
                          cheddar );
         assertEquals( 2,
                       agendaList.size() );
@@ -148,14 +149,14 @@ public class AgendaEventSupportTest extends TestCase {
         agendaList.clear();
 
         // retract results in a ActivationCancelledEvent, noe the object is not resolveable now as it no longer exists
-        wm.retractObject( cheddarHandle );
+        wm.retract( cheddarHandle );
         assertEquals( 1,
                       agendaList.size() );
         cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
         assertNull( cancelledEvent.getActivation().getTuple().get( 0 ).getObject() );
 
         // re-assert the fact so we can test the agenda group events
-        cheddarHandle = wm.assertObject( cheddar );
+        cheddarHandle = wm.insert( cheddar );
         agendaList.clear();
 
         // setFocus results in an AgendaGroupPushedEvent

@@ -21,9 +21,9 @@ import java.util.EventListener;
 public interface WorkingMemoryEventListener
     extends
     EventListener {
-    void objectAsserted(ObjectAssertedEvent event);
+    void objectInserted(ObjectInsertedEvent event);
 
-    void objectModified(ObjectModifiedEvent event);
+    void objectUpdated(ObjectUpdatedEvent event);
 
     void objectRetracted(ObjectRetractedEvent event);
 

@@ -29,6 +29,7 @@ import org.drools.QueryResults;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
@@ -52,8 +53,8 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                        3 );
         queryObjectTypeNode.attach();
 
-        ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
-                                                                 "name" );
+        ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( DroolsQuery.class,
+                                                                               "name" );
 
         FieldValue field = FieldFactory.getFieldValue( "query-1" );
 
@@ -78,8 +79,8 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                         3 );
         cheeseObjectTypeNode.attach();
 
-        extractor = new ClassFieldExtractor( Cheese.class,
-                                             "type" );
+        extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                           "type" );
 
         field = FieldFactory.getFieldValue( "stilton" );
 
@@ -127,7 +128,7 @@ public class QueryTerminalNodeTest extends TestCase {
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             100 );
-        final FactHandle handle1 = workingMemory.assertObject( stilton1 );
+        final FactHandle handle1 = workingMemory.insert( stilton1 );
 
         results = workingMemory.getQueryResults( "query-1" );
 
@@ -136,7 +137,7 @@ public class QueryTerminalNodeTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            55 );
-        workingMemory.assertObject( cheddar );
+        workingMemory.insert( cheddar );
 
         results = workingMemory.getQueryResults( "query-1" );
 
@@ -146,7 +147,7 @@ public class QueryTerminalNodeTest extends TestCase {
         final Cheese stilton2 = new Cheese( "stilton",
                                             5 );
 
-        final FactHandle handle2 = workingMemory.assertObject( stilton2 );
+        final FactHandle handle2 = workingMemory.insert( stilton2 );
 
         results = workingMemory.getQueryResults( "query-1" );
 
@@ -180,13 +181,13 @@ public class QueryTerminalNodeTest extends TestCase {
             i++;
         }
 
-        workingMemory.retractObject( handle1 );
+        workingMemory.retract( handle1 );
         results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 1,
                       results.size() );
 
-        workingMemory.retractObject( handle2 );
+        workingMemory.retract( handle2 );
         results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 0,

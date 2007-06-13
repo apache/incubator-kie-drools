@@ -23,11 +23,11 @@ public class DebugWorkingMemoryEventListener
         // intentionally left blank
     }
 
-    public void objectAsserted(final ObjectAssertedEvent event) {
+    public void objectInserted(final ObjectInsertedEvent event) {
         System.err.println( event );
     }
 
-    public void objectModified(final ObjectModifiedEvent event) {
+    public void objectUpdated(final ObjectUpdatedEvent event) {
         System.err.println( event );
     }
 

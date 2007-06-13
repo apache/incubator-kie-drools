@@ -5,13 +5,15 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
-    Extractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                             "listAttr" );
+
+    Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
+                                                                 "listAttr" );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {
@@ -99,13 +101,13 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
             fail( "Should not throw an exception" );
         }
     }
-    
+
     public void testIsNullValue() {
         try {
             Assert.assertFalse( this.extractor.isNullValue( this.bean ) );
-            
-            Extractor nullExtractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                                         "nullAttr" );
+
+            Extractor nullExtractor = ClassFieldExtractorCache.getExtractor(  TestBean.class,
+                                                                              "nullAttr" );
             Assert.assertTrue( nullExtractor.isNullValue( this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );

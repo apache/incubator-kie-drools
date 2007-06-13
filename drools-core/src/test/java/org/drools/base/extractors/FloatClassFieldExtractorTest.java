@@ -2,6 +2,7 @@ package org.drools.base.extractors;
 
 import junit.framework.Assert;
 
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
@@ -9,8 +10,8 @@ import org.drools.spi.Extractor;
 public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final float VALUE     = 6;
 
-    Extractor                  extractor = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                                              "floatAttr" );
+    Extractor                  extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
+                                                                                  "floatAttr" );
     TestBean                   bean      = new TestBean();
 
     protected void setUp() throws Exception {

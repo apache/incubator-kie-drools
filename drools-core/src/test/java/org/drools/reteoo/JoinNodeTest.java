@@ -173,7 +173,7 @@ public class JoinNodeTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testAssertObject() throws Exception {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.assertObject( "test0" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
 
         // assert object, should add one to right memory
         this.node.assertObject( f0,
@@ -185,7 +185,7 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.memory.getFactHandleMemory().size() );
 
         // check new objects/handles still assert
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.assertObject( "test1" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( "test1" );
         this.node.assertObject( f1,
                                 this.context,
                                 this.workingMemory );
@@ -210,7 +210,7 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void testAssertPropagations() throws Exception {
         // assert first right object
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.assertObject( "test0" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
         this.node.assertObject( f0,
                                 this.context,
                                 this.workingMemory );
@@ -243,7 +243,7 @@ public class JoinNodeTest extends DroolsTestCase {
                                      f0 ),
                       ((Object[]) this.sink.getAsserted().get( 1 ))[0] );
 
-        final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory.assertObject( "test2" );
+        final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory.insert( "test2" );
         this.node.assertObject( f3,
                                 this.context,
                                 this.workingMemory );
@@ -269,29 +269,29 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void testRetractTuple() throws Exception {
         // setup 2 tuples 3 fact handles
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.assertObject( "test0" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
         this.node.assertObject( f0,
                                 this.context,
                                 this.workingMemory );
 
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.assertObject( "test1" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( "test1" );
         final ReteTuple tuple1 = new ReteTuple( f1 );
         this.node.assertTuple( tuple1,
                                this.context,
                                this.workingMemory );
 
-        final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.assertObject( "test2" );
+        final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( "test2" );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,
                                this.workingMemory );
 
-        final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory.assertObject( "test3" );
+        final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory.insert( "test3" );
         this.node.assertObject( f3,
                                 this.context,
                                 this.workingMemory );
 
-        final DefaultFactHandle f4 = (DefaultFactHandle) this.workingMemory.assertObject( "test4" );
+        final DefaultFactHandle f4 = (DefaultFactHandle) this.workingMemory.insert( "test4" );
         this.node.assertObject( f4,
                                 this.context,
                                 this.workingMemory );
@@ -341,7 +341,7 @@ public class JoinNodeTest extends DroolsTestCase {
     public void testConstraintPropagations() throws Exception {
         this.constraint.isAllowed = false;
         // assert first right object
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.assertObject( "test0" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( "test0" );
         this.node.assertObject( f0,
                                 this.context,
                                 this.workingMemory );

@@ -41,16 +41,16 @@ public class ReteConcurrentStatelessSession implements ConcurrentStatelessSessio
                 try {
                     Object object = this.queue.take();
                     if ( object instanceof Object[] ) {
-                        this.workingMemory.assertObject( object );
+                        this.workingMemory.insert( object );
                     } else if ( object instanceof List ) {
                         List list = ( List ) object;
                         for ( Iterator it = list.iterator(); it.hasNext(); ) {
-                            this.workingMemory.assertObject( it.next() );
+                            this.workingMemory.insert( it.next() );
                         }
                     } else {
                         Object[] objects = ( Object[] ) object;
                         for ( int i = 0, length = objects.length; i < length; i++ ) {
-                            this.workingMemory.assertObject( objects[i] );
+                            this.workingMemory.insert( objects[i] );
                         }
                     }
                     Thread.sleep( 100 );

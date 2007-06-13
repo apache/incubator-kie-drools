@@ -17,7 +17,7 @@ package org.drools;
  */
 
 /**
- * Indicates an attempt to retract, modify or retrieve a fact object that is no
+ * Indicates an attempt to retract, update or retrieve a fact object that is no
  * longer present.
  * 
  * @see FactHandle

@@ -5,6 +5,7 @@ package org.drools.common;
 
 import org.drools.Person;
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.Operator;
@@ -48,12 +49,12 @@ public class QuadroupleBetaConstraintsTest extends TestCase {
 
     private BetaNodeFieldConstraint getConstraint(String fieldName,
                                                   Class clazz) {
-        FieldExtractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( clazz,
-                                                                                      fieldName );
+        FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
+                                                                          fieldName );
         Declaration declaration = new Declaration( fieldName,
                                                    extractor,
                                                    new Pattern( 0,
-                                                               new ClassObjectType( clazz ) ) );
+                                                                new ClassObjectType( clazz ) ) );
         Evaluator evaluator = StringFactory.getInstance().getEvaluator( Operator.EQUAL );
         return new VariableConstraint( extractor,
                                        declaration,
@@ -74,8 +75,8 @@ public class QuadroupleBetaConstraintsTest extends TestCase {
         try {
             QuadroupleBetaConstraints qbc = new QuadroupleBetaConstraints( constraints,
                                                                            conf );
-        } catch (Exception e) {
-            fail( "Should not raise any exception: "+e.getMessage());
+        } catch ( Exception e ) {
+            fail( "Should not raise any exception: " + e.getMessage() );
         }
 
     }

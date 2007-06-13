@@ -221,7 +221,7 @@ public interface WorkingMemory
      * @throws FactException
      *             If an error occurs.
      */
-    FactHandle assertObject(Object object) throws FactException;
+    FactHandle insert(Object object) throws FactException;
 
     /**
      * Retrieve the QueryResults of the specified query.
@@ -241,7 +241,7 @@ public interface WorkingMemory
 
     /**
      * Assert a fact registering JavaBean <code>PropertyChangeListeners</code>
-     * on the Object to automatically trigger <code>modifyObject</code> calls
+     * on the Object to automatically trigger <code>update</code> calls
      * if <code>dynamic</code> is <code>true</code>.
      * 
      * @param object
@@ -255,7 +255,7 @@ public interface WorkingMemory
      * @throws FactException
      *             If an error occurs.
      */
-    FactHandle assertObject(Object object,
+    FactHandle insert(Object object,
                             boolean dynamic) throws FactException;
 
     /**
@@ -267,7 +267,7 @@ public interface WorkingMemory
      * @throws FactException
      *             If an error occurs.
      */
-    void retractObject(FactHandle handle) throws FactException;
+    void retract(FactHandle handle) throws FactException;
 
     /**
      * Modify a fact.
@@ -280,14 +280,14 @@ public interface WorkingMemory
      * @throws FactException
      *             If an error occurs.
      */
-    void modifyObject(FactHandle handle,
+    void update(FactHandle handle,
                       Object object) throws FactException;
     
     public void modifyRetract(final FactHandle factHandle,
                               final Rule rule,
                               final Activation activation);
     
-    public void modifyAssert(final FactHandle factHandle,
+    public void modifyInsert(final FactHandle factHandle,
                              final Object object,
                              final Rule rule,
                              final Activation activation);    
