@@ -13,6 +13,6 @@ rule "r"
     	if (l.size() < 10)
     	{
     		l.add(new Integer(0));
-    		assertLogical( a );
+    		insertLogical( a );
     	}
 end

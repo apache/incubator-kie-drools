@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.AssertedObject;
+import org.drools.InsertedObject;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -77,8 +77,8 @@ import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.DefaultWorkingMemoryEventListener;
-import org.drools.event.ObjectAssertedEvent;
-import org.drools.event.ObjectModifiedEvent;
+import org.drools.event.ObjectInsertedEvent;
+import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
@@ -125,7 +125,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -160,7 +160,7 @@ public class MiscTest extends TestCase {
 
         final TestParam tp1 = new TestParam();
         tp1.setValue2( "boo" );
-        wm.assertObject( tp1 );
+        wm.insert( tp1 );
 
         wm.fireAllRules();
 
@@ -181,7 +181,7 @@ public class MiscTest extends TestCase {
 
         final List events = new ArrayList();
         final WorkingMemoryEventListener listener = new DefaultWorkingMemoryEventListener() {
-            public void objectModified(ObjectModifiedEvent event) {
+            public void objectUpdated(ObjectUpdatedEvent event) {
                 events.add( event );
             }
         };
@@ -193,11 +193,11 @@ public class MiscTest extends TestCase {
                                            15 );
         bigCheese.setCheese( cheddar );
 
-        final FactHandle bigCheeseHandle = workingMemory.assertObject( bigCheese );
-        final FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+        final FactHandle bigCheeseHandle = workingMemory.insert( bigCheese );
+        final FactHandle cheddarHandle = workingMemory.insert( cheddar );
         workingMemory.fireAllRules();
 
-        ObjectModifiedEvent event = (ObjectModifiedEvent) events.get( 0 );
+        ObjectUpdatedEvent event = (ObjectUpdatedEvent) events.get( 0 );
         assertSame( cheddarHandle,
                     event.getFactHandle() );
         assertSame( cheddar,
@@ -205,7 +205,7 @@ public class MiscTest extends TestCase {
         assertSame( cheddar,
                     event.getObject() );
 
-        event = (ObjectModifiedEvent) events.get( 1 );
+        event = (ObjectUpdatedEvent) events.get( 1 );
         assertSame( bigCheeseHandle,
                     event.getFactHandle() );
         assertSame( bigCheese,
@@ -230,17 +230,17 @@ public class MiscTest extends TestCase {
                                  list );
         final Cheese nullCheese = new Cheese( null,
                                               2 );
-        workingMemory.assertObject( nullCheese );
+        workingMemory.insert( nullCheese );
 
         final Person notNullPerson = new Person( "shoes butt back" );
         notNullPerson.setBigDecimal( new BigDecimal( "42.42" ) );
 
-        workingMemory.assertObject( notNullPerson );
+        workingMemory.insert( notNullPerson );
 
         final Person nullPerson = new Person( "whee" );
         nullPerson.setBigDecimal( null );
 
-        workingMemory.assertObject( nullPerson );
+        workingMemory.insert( nullPerson );
 
         workingMemory.fireAllRules();
         System.out.println( list.get( 0 ) );
@@ -267,7 +267,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -303,13 +303,13 @@ public class MiscTest extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-        workingMemory.assertObject( new Message( "hola" ) );
+        workingMemory.insert( new Message( "hola" ) );
 
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.assertObject( new Cheese( "brie",
+        workingMemory.insert( new Cheese( "brie",
                                                 33 ) );
 
         workingMemory.fireAllRules();
@@ -334,8 +334,8 @@ public class MiscTest extends TestCase {
         message.addToList( "hello" );
         message.setNumber( 42 );
 
-        workingMemory.assertObject( message );
-        workingMemory.assertObject( "boo" );
+        workingMemory.insert( message );
+        workingMemory.insert( "boo" );
         workingMemory.fireAllRules();
         assertTrue( message.isFired() );
         assertEquals( message,
@@ -358,7 +358,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -383,7 +383,7 @@ public class MiscTest extends TestCase {
                                                  null,
                                                  12 );
         bill.setAlive( true );
-        workingMemory.assertObject( bill );
+        workingMemory.insert( bill );
         workingMemory.fireAllRules();
 
         assertEquals( bill,
@@ -409,7 +409,7 @@ public class MiscTest extends TestCase {
                                "stilton" );
         stilton.setFieldValue( "price",
                                new Integer( 100 ) );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -438,7 +438,7 @@ public class MiscTest extends TestCase {
                                  list );
 
         final State state = new State( "initial" );
-        workingMemory.assertObject( state,
+        workingMemory.insert( state,
                                     true );
         workingMemory.fireAllRules();
 
@@ -484,8 +484,8 @@ public class MiscTest extends TestCase {
                                                 13 );
         ben.setBigDecimal( new BigDecimal( "43" ) );
 
-        workingMemory.assertObject( bill );
-        workingMemory.assertObject( ben );
+        workingMemory.insert( bill );
+        workingMemory.insert( ben );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -503,8 +503,8 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( builder.getPackage() );
 
         final WorkingMemory memory = ruleBase.newStatefulSession();
-        memory.assertObject( cell1 );
-        memory.assertObject( cell );
+        memory.insert( cell1 );
+        memory.insert( cell );
         memory.fireAllRules();
         assertEquals( 9,
                       cell.getValue() );
@@ -524,7 +524,7 @@ public class MiscTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        final FactHandle h = workingMemory.assertObject( cheddar );
+        final FactHandle h = workingMemory.insert( cheddar );
 
         workingMemory.fireAllRules();
 
@@ -534,14 +534,14 @@ public class MiscTest extends TestCase {
         assertEquals( 1,
                       list.size() );
 
-        workingMemory.retractObject( h );
+        workingMemory.retract( h );
         workingMemory.fireAllRules();
 
         // still just one
         assertEquals( 1,
                       list.size() );
 
-        workingMemory.assertObject( new Cheese( "stilton",
+        workingMemory.insert( new Cheese( "stilton",
                                                 5 ) );
         workingMemory.fireAllRules();
 
@@ -562,7 +562,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
         final QueryResults results = workingMemory.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
@@ -586,7 +586,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
@@ -613,7 +613,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
@@ -634,7 +634,7 @@ public class MiscTest extends TestCase {
                                  list );
 
         final Person foo = new Person( "foo" );
-        workingMemory.assertObject( foo );
+        workingMemory.insert( foo );
         workingMemory.fireAllRules();
 
         assertEquals( foo,
@@ -660,11 +660,11 @@ public class MiscTest extends TestCase {
         final PersonInterface peter = new Person( "peter",
                                                   null,
                                                   12 );
-        workingMemory.assertObject( peter );
+        workingMemory.insert( peter );
         final PersonInterface jane = new Person( "jane",
                                                  null,
                                                  10 );
-        workingMemory.assertObject( jane );
+        workingMemory.insert( jane );
 
         workingMemory.fireAllRules();
 
@@ -693,11 +693,11 @@ public class MiscTest extends TestCase {
         final PersonInterface peter = new Person( "peter",
                                                   null,
                                                   12 );
-        workingMemory.assertObject( peter );
+        workingMemory.insert( peter );
         final PersonInterface jane = new Person( "jane",
                                                  null,
                                                  10 );
-        workingMemory.assertObject( jane );
+        workingMemory.insert( jane );
 
         workingMemory.fireAllRules();
 
@@ -722,8 +722,8 @@ public class MiscTest extends TestCase {
         final PersonInterface p2 = new Person( null,
                                                "drink",
                                                30 );
-        workingMemory.assertObject( p1 );
-        workingMemory.assertObject( p2 );
+        workingMemory.insert( p1 );
+        workingMemory.insert( p2 );
 
         workingMemory.fireAllRules();
 
@@ -747,8 +747,8 @@ public class MiscTest extends TestCase {
         final Primitives p2 = new Primitives();
         p2.setArrayAttribute( null );
 
-        workingMemory.assertObject( p1 );
-        workingMemory.assertObject( p2 );
+        workingMemory.insert( p1 );
+        workingMemory.insert( p2 );
 
         workingMemory.fireAllRules();
         assertEquals( 2,
@@ -766,7 +766,7 @@ public class MiscTest extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Cheese cheese = new Cheese( "stilton",
                                           15 );
-        workingMemory.assertObject( cheese );
+        workingMemory.insert( cheese );
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -813,7 +813,7 @@ public class MiscTest extends TestCase {
         cheesery.addCheese( cheddar );
         workingMemory.setGlobal( "cheesery",
                                  cheesery );
-        workingMemory.assertObject( cheesery );
+        workingMemory.insert( cheesery );
 
         workingMemory.fireAllRules();
 
@@ -859,7 +859,7 @@ public class MiscTest extends TestCase {
                                  globalObject );
 
         final Person bob = new Person( "bob" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         workingMemory.fireAllRules();
 
@@ -996,7 +996,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -1021,7 +1021,7 @@ public class MiscTest extends TestCase {
         final PersonInterface person = new Person( "michael",
                                                    "cheese" );
         person.setStatus( "start" );
-        workingMemory.assertObject( person );
+        workingMemory.insert( person );
         workingMemory.fireAllRules();
 
         assertEquals( 5,
@@ -1045,10 +1045,10 @@ public class MiscTest extends TestCase {
 
         final Cheese mussarela = new Cheese( "Mussarela",
                                              35 );
-        workingMemory.assertObject( mussarela );
+        workingMemory.insert( mussarela );
         final Cheese provolone = new Cheese( "Provolone",
                                              20 );
-        workingMemory.assertObject( provolone );
+        workingMemory.insert( provolone );
 
         workingMemory.fireAllRules();
 
@@ -1071,7 +1071,7 @@ public class MiscTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         try {
             workingMemory.fireAllRules();
@@ -1093,7 +1093,7 @@ public class MiscTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         try {
             workingMemory.fireAllRules();
@@ -1117,7 +1117,7 @@ public class MiscTest extends TestCase {
                                         12 );
 
         try {
-            workingMemory.assertObject( brie );
+            workingMemory.insert( brie );
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Eval" );
         } catch ( final Exception e ) {
@@ -1139,7 +1139,7 @@ public class MiscTest extends TestCase {
                                         12 );
 
         try {
-            workingMemory.assertObject( brie );
+            workingMemory.insert( brie );
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Predicate" );
         } catch ( final Exception e ) {
@@ -1161,7 +1161,7 @@ public class MiscTest extends TestCase {
                                         12 );
 
         try {
-            workingMemory.assertObject( brie );
+            workingMemory.insert( brie );
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the ReturnValue" );
         } catch ( final Exception e ) {
@@ -1214,12 +1214,12 @@ public class MiscTest extends TestCase {
         oldChili2.setAge( 48 );
         oldChili2.setHair( "blue" );
 
-        workingMemory.assertObject( youngChili1 );
-        workingMemory.assertObject( youngChili2 );
-        workingMemory.assertObject( chili1 );
-        workingMemory.assertObject( chili2 );
-        workingMemory.assertObject( oldChili1 );
-        workingMemory.assertObject( oldChili2 );
+        workingMemory.insert( youngChili1 );
+        workingMemory.insert( youngChili2 );
+        workingMemory.insert( chili1 );
+        workingMemory.insert( chili2 );
+        workingMemory.insert( oldChili1 );
+        workingMemory.insert( oldChili2 );
 
         workingMemory.fireAllRules();
 
@@ -1260,7 +1260,7 @@ public class MiscTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -1286,7 +1286,7 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -1315,7 +1315,7 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -1344,14 +1344,14 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            12 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
         final Cheese brie = new Cheese( "brie",
                                            10 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         final Cheesery cheesery = new Cheesery();
         cheesery.getCheeses().add( stilton );
-        workingMemory.assertObject( cheesery );
+        workingMemory.insert( cheesery );
 
         workingMemory.fireAllRules();
 
@@ -1380,12 +1380,12 @@ public class MiscTest extends TestCase {
         final Cheesery cheesery1 = new Cheesery();
         cheesery1.setStatus( Cheesery.SELLING_CHEESE );
         cheesery1.setMaturity( Maturity.OLD );
-        workingMemory.assertObject( cheesery1 );
+        workingMemory.insert( cheesery1 );
 
         final Cheesery cheesery2 = new Cheesery();
         cheesery2.setStatus( Cheesery.MAKING_CHEESE );
         cheesery2.setMaturity( Maturity.YOUNG );
-        workingMemory.assertObject( cheesery2 );
+        workingMemory.insert( cheesery2 );
 
         workingMemory.fireAllRules();
 
@@ -1432,8 +1432,8 @@ public class MiscTest extends TestCase {
         final PersonInterface pete = new Person( null,
                                                  null );
         bob.setStatus( "P2" );
-        workingMemory.assertObject( bob );
-        workingMemory.assertObject( pete );
+        workingMemory.insert( bob );
+        workingMemory.insert( pete );
 
         workingMemory.fireAllRules();
 
@@ -1482,7 +1482,7 @@ public class MiscTest extends TestCase {
                                  new ArrayList() );
 
         final Person bob = new Person( "bob" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         final byte[] wm = serializeOut( workingMemory );
 
@@ -1565,13 +1565,13 @@ public class MiscTest extends TestCase {
                                  list );
 
         final Person hola = new Person( "hola" );
-        workingMemory.assertObject( hola );
+        workingMemory.insert( hola );
 
         workingMemory.fireAllRules();
 
         assertEquals( 0,
                       list.size() );
-        workingMemory.assertObject( new State( "x" ) );
+        workingMemory.insert( new State( "x" ) );
 
         workingMemory.fireAllRules();
 
@@ -1624,7 +1624,7 @@ public class MiscTest extends TestCase {
         for ( int i = 1; i <= MAX; i++ ) {
             final IndexedNumber n = new IndexedNumber( i,
                                                        MAX - i + 1 );
-            workingMemory.assertObject( n );
+            workingMemory.insert( n );
         }
         workingMemory.fireAllRules();
 
@@ -1651,7 +1651,7 @@ public class MiscTest extends TestCase {
 
         final QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
         assertEquals( 1, results.size() );
-        assertEquals( new AssertedObject( "value1"), results.get( 0 ).get( 0 ) );        
+        assertEquals( new InsertedObject( "value1"), results.get( 0 ).get( 0 ) );        
     }
 
     public void testQueryWithParams() throws Exception {
@@ -1666,18 +1666,18 @@ public class MiscTest extends TestCase {
 
         QueryResults results = workingMemory.getQueryResults( "assertedobjquery", new String[] { "value1" } );
         assertEquals( 1, results.size() );
-        assertEquals( new AssertedObject( "value1"), results.get( 0 ).get( 0 ) );
+        assertEquals( new InsertedObject( "value1"), results.get( 0 ).get( 0 ) );
         
         results = workingMemory.getQueryResults( "assertedobjquery", new String[] { "value3" } );
         assertEquals( 0, results.size() );       
         
         results = workingMemory.getQueryResults( "assertedobjquery2", new String[] { null, "value2" } );
         assertEquals( 1, results.size() );
-        assertEquals( new AssertedObject( "value2"), results.get( 0 ).get( 0 ) );
+        assertEquals( new InsertedObject( "value2"), results.get( 0 ).get( 0 ) );
         
         results = workingMemory.getQueryResults( "assertedobjquery2", new String[] { "value3", "value2" } );
         assertEquals( 1, results.size() );
-        assertEquals( new AssertedObject( "value2"), results.get( 0 ).get( 0 ) );        
+        assertEquals( new InsertedObject( "value2"), results.get( 0 ).get( 0 ) );        
     }    
     
     public void testTwoQuerries() throws Exception {
@@ -1694,7 +1694,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
         final Person per1 = new Person( "stinker",
                                         "smelly feet",
                                         70 );
@@ -1702,8 +1702,8 @@ public class MiscTest extends TestCase {
                                         "smelly armpits",
                                         40 );
 
-        workingMemory.assertObject( per1 );
-        workingMemory.assertObject( per2 );
+        workingMemory.insert( per1 );
+        workingMemory.insert( per2 );
 
         QueryResults results = workingMemory.getQueryResults( "find stinky cheeses" );
         assertEquals( 1,
@@ -1723,8 +1723,8 @@ public class MiscTest extends TestCase {
         final Driver driver = new Driver();
         final Policy policy = new Policy();
 
-        wm.assertObject( driver );
-        wm.assertObject( policy );
+        wm.insert( driver );
+        wm.insert( policy );
 
         wm.fireAllRules();
 
@@ -1748,7 +1748,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.8666667f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -1757,7 +1757,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.8666667f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         wm.fireAllRules();
 
@@ -1769,7 +1769,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.9f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -1778,7 +1778,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.9f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         wm.fireAllRules();
 
@@ -1790,7 +1790,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.9333333f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -1799,7 +1799,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.9333333f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         wm.fireAllRules();
 
@@ -1811,7 +1811,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 145.0f ) );
         tgt.setSpeed( new Float( 12.0f ) );
         tgt.setTime( new Float( 1.9666667f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         tgt = new org.drools.Target();
         tgt.setLabel( "Santa-Maria" );
@@ -1820,7 +1820,7 @@ public class MiscTest extends TestCase {
         tgt.setCourse( new Float( 325.0f ) );
         tgt.setSpeed( new Float( 8.0f ) );
         tgt.setTime( new Float( 1.9666667f ) );
-        wm.assertObject( tgt );
+        wm.insert( tgt );
 
         wm.fireAllRules();
     }
@@ -1838,17 +1838,17 @@ public class MiscTest extends TestCase {
                                       "stilton",
                                       20 );
         p1.setStatus( "europe" );
-        final FactHandle c1FactHandle = workingMemory.assertObject( p1 );
+        final FactHandle c1FactHandle = workingMemory.insert( p1 );
         final Person p2 = new Person( "p2",
                                       "stilton",
                                       30 );
         p2.setStatus( "europe" );
-        final FactHandle c2FactHandle = workingMemory.assertObject( p2 );
+        final FactHandle c2FactHandle = workingMemory.insert( p2 );
         final Person p3 = new Person( "p3",
                                       "stilton",
                                       40 );
         p3.setStatus( "europe" );
-        final FactHandle c3FactHandle = workingMemory.assertObject( p3 );
+        final FactHandle c3FactHandle = workingMemory.insert( p3 );
         workingMemory.fireAllRules();
 
         QueryResults queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -1857,7 +1857,7 @@ public class MiscTest extends TestCase {
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
-        workingMemory.modifyObject( c3FactHandle,
+        workingMemory.update( c3FactHandle,
                                     p3 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -1866,7 +1866,7 @@ public class MiscTest extends TestCase {
 
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
-        workingMemory.modifyObject( c2FactHandle,
+        workingMemory.update( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -1875,7 +1875,7 @@ public class MiscTest extends TestCase {
 
         // europe=[ ], america=[ 1, 2, 3 ]
         p1.setStatus( "america" );
-        workingMemory.modifyObject( c1FactHandle,
+        workingMemory.update( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -1884,7 +1884,7 @@ public class MiscTest extends TestCase {
 
         // europe=[ 2 ], america=[ 1, 3 ]
         p2.setStatus( "europe" );
-        workingMemory.modifyObject( c2FactHandle,
+        workingMemory.update( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -1893,7 +1893,7 @@ public class MiscTest extends TestCase {
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p1.setStatus( "europe" );
-        workingMemory.modifyObject( c1FactHandle,
+        workingMemory.update( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -1902,7 +1902,7 @@ public class MiscTest extends TestCase {
 
         // europe=[ 1, 2, 3 ], america=[ ]
         p3.setStatus( "europe" );
-        workingMemory.modifyObject( c3FactHandle,
+        workingMemory.update( c3FactHandle,
                                     p3 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
@@ -1925,7 +1925,7 @@ public class MiscTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -1960,9 +1960,9 @@ public class MiscTest extends TestCase {
                                             7 );
         final Cheese brie = new Cheese( "brie",
                                         4 );
-        workingMemory.assertObject( stilton1 );
-        workingMemory.assertObject( stilton2 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( stilton1 );
+        workingMemory.insert( stilton2 );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -1991,14 +1991,14 @@ public class MiscTest extends TestCase {
 
         final Sensor sensor1 = new Sensor( 100,
                                            150 );
-        workingMemory.assertObject( sensor1 );
+        workingMemory.insert( sensor1 );
         workingMemory.fireAllRules();
         assertEquals( 0,
                       sensors.size() );
 
         final Sensor sensor2 = new Sensor( 200,
                                            150 );
-        workingMemory.assertObject( sensor2 );
+        workingMemory.insert( sensor2 );
         workingMemory.fireAllRules();
         assertEquals( 3,
                       sensors.size() );
@@ -2037,19 +2037,19 @@ public class MiscTest extends TestCase {
                                  list );
 
         final State state = new State( "SP" );
-        workingMemory.assertObject( state );
+        workingMemory.insert( state );
 
         final Person bob = new Person( "Bob" );
         bob.setStatus( state.getState() );
         bob.setLikes( "stilton" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         workingMemory.fireAllRules();
 
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.assertObject( new Cheese( bob.getLikes(),
+        workingMemory.insert( new Cheese( bob.getLikes(),
                                                 10 ) );
         workingMemory.fireAllRules();
 
@@ -2086,17 +2086,17 @@ public class MiscTest extends TestCase {
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
-        wm.assertObject( new Cheese( "a",
+        wm.insert( new Cheese( "a",
                                      10 ) );
-        wm.assertObject( new Cheese( "b",
+        wm.insert( new Cheese( "b",
                                      10 ) );
-        wm.assertObject( new Cheese( "c",
+        wm.insert( new Cheese( "c",
                                      10 ) );
-        wm.assertObject( new Cheese( "d",
+        wm.insert( new Cheese( "d",
                                      10 ) );
         final Cheese e = new Cheese( "e",
                                      10 );
-        wm.assertObject( e );
+        wm.insert( e );
 
         wm.fireAllRules();
 
@@ -2130,7 +2130,7 @@ public class MiscTest extends TestCase {
         p1.setPrimitiveArrayAttribute( new int[]{1, 2, 3} );
         p1.setArrayAttribute( new String[]{"a", "b"} );
 
-        workingMemory.assertObject( p1 );
+        workingMemory.insert( p1 );
 
         workingMemory.fireAllRules();
         assertEquals( 3,
@@ -2160,8 +2160,8 @@ public class MiscTest extends TestCase {
         final Cheese cheese = new Cheese( "brie",
                                           10 );
 
-        workingMemory.assertObject( person );
-        workingMemory.assertObject( cheese );
+        workingMemory.insert( person );
+        workingMemory.insert( cheese );
 
         workingMemory.fireAllRules();
         assertEquals( 4,
@@ -2185,8 +2185,8 @@ public class MiscTest extends TestCase {
         final Cheese brie = new Cheese( "brie",
                                         10 );
 
-        workingMemory.assertObject( stilton );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( stilton );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
         assertEquals( 5,
@@ -2204,7 +2204,7 @@ public class MiscTest extends TestCase {
         assertEquals( stilton.getPrice(),
                       ((Integer) result.get( "test3" + stilton.getType() )).intValue() );
 
-        workingMemory.assertObject( new Person( "bob",
+        workingMemory.insert( new Person( "bob",
                                                 brie.getType() ) );
         workingMemory.fireAllRules();
 
@@ -2234,7 +2234,7 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-        workingMemory.assertObject( new Child( "gp" ) );
+        workingMemory.insert( new Child( "gp" ) );
 
         workingMemory.fireAllRules();
     }
@@ -2261,11 +2261,11 @@ public class MiscTest extends TestCase {
                                                       3 );
         final OrderItem anotherItem2 = new OrderItem( null,
                                                       4 );
-        workingMemory.assertObject( order );
-        workingMemory.assertObject( item1 );
-        workingMemory.assertObject( item2 );
-        workingMemory.assertObject( anotherItem1 );
-        workingMemory.assertObject( anotherItem2 );
+        workingMemory.insert( order );
+        workingMemory.insert( item1 );
+        workingMemory.insert( item2 );
+        workingMemory.insert( anotherItem1 );
+        workingMemory.insert( anotherItem2 );
 
         workingMemory.fireAllRules();
 
@@ -2291,12 +2291,12 @@ public class MiscTest extends TestCase {
         // asserting the sensor object
         final RandomNumber rn = new RandomNumber();
         rn.setValue( 10 );
-        workingMemory.assertObject( rn );
+        workingMemory.insert( rn );
 
         final Guess guess = new Guess();
         guess.setValue( new Integer( 5 ) );
 
-        final FactHandle handle = workingMemory.assertObject( guess );
+        final FactHandle handle = workingMemory.insert( guess );
 
         workingMemory.fireAllRules();
 
@@ -2307,7 +2307,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
 
         guess.setValue( new Integer( 15 ) );
-        workingMemory.modifyObject( handle,
+        workingMemory.update( handle,
                                     guess );
 
         workingMemory.fireAllRules();
@@ -2319,7 +2319,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
 
         guess.setValue( new Integer( 10 ) );
-        workingMemory.modifyObject( handle,
+        workingMemory.update( handle,
                                     guess );
 
         workingMemory.fireAllRules();
@@ -2347,14 +2347,14 @@ public class MiscTest extends TestCase {
 
         final Cheese cheese = new Cheese( "brie",
                                           10 );
-        final FactHandle handle = workingMemory.assertObject( cheese );
+        final FactHandle handle = workingMemory.insert( cheese );
 
         final Person bob = new Person( "bob",
                                        "stilton" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         cheese.setType( "stilton" );
-        workingMemory.modifyObject( handle,
+        workingMemory.update( handle,
                                     cheese );
         workingMemory.fireAllRules();
         assertEquals( 2,
@@ -2409,11 +2409,11 @@ public class MiscTest extends TestCase {
         final List wmList = new ArrayList();
         final WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
 
-            public void objectAsserted(ObjectAssertedEvent event) {
+            public void objectInserted(ObjectInsertedEvent event) {
                 wmList.add( event );
             }
 
-            public void objectModified(ObjectModifiedEvent event) {
+            public void objectUpdated(ObjectUpdatedEvent event) {
                 wmList.add( event );
             }
 
@@ -2430,24 +2430,24 @@ public class MiscTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            17 );
 
-        final FactHandle stiltonHandle = wm.assertObject( stilton );
+        final FactHandle stiltonHandle = wm.insert( stilton );
 
-        final ObjectAssertedEvent oae = (ObjectAssertedEvent) wmList.get( 0 );
+        final ObjectInsertedEvent oae = (ObjectInsertedEvent) wmList.get( 0 );
         assertSame( stiltonHandle,
                     oae.getFactHandle() );
 
-        wm.modifyObject( stiltonHandle,
+        wm.update( stiltonHandle,
                          stilton );
-        final ObjectModifiedEvent ome = (ObjectModifiedEvent) wmList.get( 1 );
+        final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
         assertSame( stiltonHandle,
                     ome.getFactHandle() );
 
-        wm.retractObject( stiltonHandle );
+        wm.retract( stiltonHandle );
         final ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
         assertSame( stiltonHandle,
                     ore.getFactHandle() );
 
-        wm.assertObject( cheddar );
+        wm.insert( cheddar );
     }
 
     public void testImplicitDeclarations() throws Exception {
@@ -2467,7 +2467,7 @@ public class MiscTest extends TestCase {
 
         final Cheese cheese = new Cheese( "stilton",
                                           10 );
-        workingMemory.assertObject( cheese );
+        workingMemory.insert( cheese );
 
         workingMemory.fireAllRules();
         assertEquals( 1,
@@ -2508,13 +2508,13 @@ public class MiscTest extends TestCase {
                                              10 );
         final Cheese brie = new Cheese( "brie",
                                         15 );
-        workingMemory.assertObject( stilton );
-        workingMemory.assertObject( muzzarela );
+        workingMemory.insert( stilton );
+        workingMemory.insert( muzzarela );
 
         final Cheesery cheesery = new Cheesery();
         cheesery.getCheeses().add( stilton.getType() );
         cheesery.getCheeses().add( brie.getType() );
-        workingMemory.assertObject( cheesery );
+        workingMemory.insert( cheesery );
 
         workingMemory.fireAllRules();
 
@@ -2542,7 +2542,7 @@ public class MiscTest extends TestCase {
 
         final Primitives p = new Primitives();
         p.setStringArray( new String[]{"test1", "test3"} );
-        workingMemory.assertObject( p );
+        workingMemory.insert( p );
 
         workingMemory.fireAllRules();
 
@@ -2568,9 +2568,9 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        workingMemory.assertObject( new Cheese( "stilton",
+        workingMemory.insert( new Cheese( "stilton",
                                                 10 ) );
-        workingMemory.assertObject( new Cheese( "brie",
+        workingMemory.insert( new Cheese( "brie",
                                                 15 ) );
 
         workingMemory.fireAllRules();
@@ -2603,7 +2603,7 @@ public class MiscTest extends TestCase {
         assertEquals( "rule1",
                       list.get( 0 ) );
 
-        workingMemory.assertObject( new Cheese( "stilton",
+        workingMemory.insert( new Cheese( "stilton",
                                                 10 ) );
         workingMemory.fireAllRules();
 
@@ -2628,8 +2628,8 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        workingMemory.assertObject( new Person( "bob" ) );
-        workingMemory.assertObject( new Person( null ) );
+        workingMemory.insert( new Person( "bob" ) );
+        workingMemory.insert( new Person( null ) );
 
         workingMemory.fireAllRules();
 
@@ -2655,8 +2655,8 @@ public class MiscTest extends TestCase {
         final Cheese muzzarella = new Cheese( "muzzarella",
                                               9 );
         final int sum = stilton.getPrice() + muzzarella.getPrice();
-        final FactHandle stiltonHandle = workingMemory.assertObject( stilton );
-        final FactHandle muzzarellaHandle = workingMemory.assertObject( muzzarella );
+        final FactHandle stiltonHandle = workingMemory.insert( stilton );
+        final FactHandle muzzarellaHandle = workingMemory.insert( muzzarella );
 
         workingMemory.fireAllRules();
 
@@ -2708,12 +2708,12 @@ public class MiscTest extends TestCase {
         oldChili2.setAge( 48 );
         oldChili2.setHair( "blue" );
 
-        workingMemory.assertObject( youngChili1 );
-        workingMemory.assertObject( youngChili2 );
-        workingMemory.assertObject( chili1 );
-        workingMemory.assertObject( chili2 );
-        workingMemory.assertObject( oldChili1 );
-        workingMemory.assertObject( oldChili2 );
+        workingMemory.insert( youngChili1 );
+        workingMemory.insert( youngChili2 );
+        workingMemory.insert( chili1 );
+        workingMemory.insert( chili2 );
+        workingMemory.insert( oldChili1 );
+        workingMemory.insert( oldChili2 );
 
         workingMemory.fireAllRules();
 
@@ -2750,12 +2750,12 @@ public class MiscTest extends TestCase {
                                         10 );
         final Cheese muzzarella2 = new Cheese( "muzzarella2",
                                         10 );
-        workingMemory.assertObject( stilton );
-        workingMemory.assertObject( stilton2 );
-        workingMemory.assertObject( brie );
-        workingMemory.assertObject( brie2 );
-        workingMemory.assertObject( muzzarella );
-        workingMemory.assertObject( muzzarella2 );
+        workingMemory.insert( stilton );
+        workingMemory.insert( stilton2 );
+        workingMemory.insert( brie );
+        workingMemory.insert( brie2 );
+        workingMemory.insert( muzzarella );
+        workingMemory.insert( muzzarella2 );
 
         workingMemory.fireAllRules();
 
@@ -2784,8 +2784,8 @@ public class MiscTest extends TestCase {
         final Person bob = new Person("bob", "stilton");
         final Cheese stilton = new Cheese( "stilton",
                                            12 );
-        workingMemory.assertObject( bob );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( bob );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -2820,8 +2820,8 @@ public class MiscTest extends TestCase {
         final Person bob = new Person("bob", "stilton");
         final Cheese stilton = new Cheese( "stilton",
                                            12 );
-        workingMemory.assertObject( bob );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( bob );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -2865,18 +2865,18 @@ public class MiscTest extends TestCase {
         final OrderItem item42 = new OrderItem( order4, 2 );
         order4.addItem( item41 );
         order4.addItem( item42 );
-        workingMemory.assertObject( order1 );
-        workingMemory.assertObject( item11 );
-        workingMemory.assertObject( item12 );
-        workingMemory.assertObject( order2 );
-        workingMemory.assertObject( item21 );
-        workingMemory.assertObject( item22 );
-        workingMemory.assertObject( order3 );
-        workingMemory.assertObject( item31 );
-        workingMemory.assertObject( item32 );
-        workingMemory.assertObject( order4 );
-        workingMemory.assertObject( item41 );
-        workingMemory.assertObject( item42 );
+        workingMemory.insert( order1 );
+        workingMemory.insert( item11 );
+        workingMemory.insert( item12 );
+        workingMemory.insert( order2 );
+        workingMemory.insert( item21 );
+        workingMemory.insert( item22 );
+        workingMemory.insert( order3 );
+        workingMemory.insert( item31 );
+        workingMemory.insert( item32 );
+        workingMemory.insert( order4 );
+        workingMemory.insert( item41 );
+        workingMemory.insert( item42 );
 
         workingMemory.fireAllRules();
 
@@ -2909,7 +2909,7 @@ public class MiscTest extends TestCase {
         map.put( "surname", "Tirelli" );
         map.put( "age", "28" );
         
-        workingMemory.assertObject( map );
+        workingMemory.insert( map );
         
         workingMemory.fireAllRules();
 

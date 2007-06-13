@@ -11,7 +11,7 @@ rule "first"
     then
     	list.add("first");
     	p.setStatus("next");
-	   	modify(p);
+	   	update(p);
 end    
 
 rule "second"	
@@ -20,7 +20,7 @@ rule "second"
 	then
 		list.add("second");
 		p.setStatus("final");
-		modify(p);
+		update(p);
 end
 
 rule "third"
@@ -36,7 +36,7 @@ rule "fourth"
 		not Person()
 	then
 		list.add("fourth");
-		assert(new Cheese("stilton", 42));
+		insert(new Cheese("stilton", 42));
 end
 
 rule "fifth"

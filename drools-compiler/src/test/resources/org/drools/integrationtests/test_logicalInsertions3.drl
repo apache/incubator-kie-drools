@@ -7,7 +7,7 @@ when
     $s : Sensor( temperature > 100 )
 then
     events.add( "It is hot: " + $s );
-    assertLogical(new Alarm("FIRE"));
+    insertLogical(new Alarm("FIRE"));
 end
 
 rule "#2: print out"

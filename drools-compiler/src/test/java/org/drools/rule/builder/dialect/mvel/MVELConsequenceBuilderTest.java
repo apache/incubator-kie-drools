@@ -74,7 +74,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         final ReteTuple tuple = new ReteTuple( f0 );
 
         final AgendaItem item = new AgendaItem( 0,
@@ -83,8 +83,8 @@ public class MVELConsequenceBuilderTest extends TestCase {
                                                 null,
                                                 context.getRule(),
                                                 null );
-        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( item,
-                                                                            wm );
+        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
+        kbHelper.setActivation( item );
         context.getRule().getConsequence().evaluate( kbHelper,
                                                      wm );
 

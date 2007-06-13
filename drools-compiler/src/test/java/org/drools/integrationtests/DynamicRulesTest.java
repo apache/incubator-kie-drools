@@ -57,15 +57,15 @@ public class DynamicRulesTest extends TestCase {
         final PersonInterface bob = new Person( "bob",
                                                 "stilton" );
         bob.setStatus( "Not evaluated" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        workingMemory.assertObject( cheddar );
+        workingMemory.insert( cheddar );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -156,23 +156,23 @@ public class DynamicRulesTest extends TestCase {
         final PersonInterface bob = new Person( "bob",
                                                 "stilton" );
         bob.setStatus( "Not evaluated" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             5 );
-        workingMemory.assertObject( stilton1 );
+        workingMemory.insert( stilton1 );
 
         final Cheese stilton2 = new Cheese( "stilton",
                                             3 );
-        workingMemory.assertObject( stilton2 );
+        workingMemory.insert( stilton2 );
 
         final Cheese stilton3 = new Cheese( "stilton",
                                             1 );
-        workingMemory.assertObject( stilton3 );
+        workingMemory.insert( stilton3 );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        workingMemory.assertObject( cheddar );
+        workingMemory.insert( cheddar );
 
         assertEquals( 11,
                       workingMemory.getAgenda().getActivations().length );
@@ -187,7 +187,7 @@ public class DynamicRulesTest extends TestCase {
 
         final Cheese muzzarela = new Cheese( "muzzarela",
                                              5 );
-        workingMemory.assertObject( muzzarela );
+        workingMemory.insert( muzzarela );
 
         assertEquals( 4,
                       workingMemory.getAgenda().getActivations().length );
@@ -278,7 +278,7 @@ public class DynamicRulesTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
 
@@ -291,7 +291,7 @@ public class DynamicRulesTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        workingMemory.assertObject( cheddar );
+        workingMemory.insert( cheddar );
 
         try {
             workingMemory.fireAllRules();
@@ -307,7 +307,7 @@ public class DynamicRulesTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -321,7 +321,7 @@ public class DynamicRulesTest extends TestCase {
 
         final Cheese feta = new Cheese( "feta",
                                         5 );
-        workingMemory.assertObject( feta );
+        workingMemory.insert( feta );
 
         workingMemory.fireAllRules();
 
@@ -339,7 +339,7 @@ public class DynamicRulesTest extends TestCase {
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-        workingMemory.assertObject( new Precondition( "genericcode",
+        workingMemory.insert( new Precondition( "genericcode",
                                                       "genericvalue" ) );
         workingMemory.fireAllRules();
 
@@ -366,9 +366,9 @@ public class DynamicRulesTest extends TestCase {
                                      15 );
         final Cheese c = new Cheese( "stilton",
                                      20 );
-        workingMemory.assertObject( a );
-        workingMemory.assertObject( b );
-        workingMemory.assertObject( c );
+        workingMemory.insert( a );
+        workingMemory.insert( b );
+        workingMemory.insert( c );
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules.drl" ) ) );
@@ -389,8 +389,8 @@ public class DynamicRulesTest extends TestCase {
         final FactB b = new FactB( "hello",
                                    new Integer( 2 ),
                                    new Float( 6.28 ) );
-        workingMemory.assertObject( a );
-        workingMemory.assertObject( b );
+        workingMemory.insert( a );
+        workingMemory.insert( b );
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules2.drl" ) ) );

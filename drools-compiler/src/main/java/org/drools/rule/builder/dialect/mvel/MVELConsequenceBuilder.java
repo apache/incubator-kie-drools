@@ -141,7 +141,7 @@ public class MVELConsequenceBuilder
         public int doAfter(Object value,
                            ASTNode node,
                            VariableResolverFactory factory) {
-            ((DroolsMVELFactory) factory).getWorkingMemory().assertObject( value );
+            ((DroolsMVELFactory) factory).getWorkingMemory().insert( value );
             return 0;
         }
     }
@@ -162,7 +162,7 @@ public class MVELConsequenceBuilder
                            ASTNode node,
                            VariableResolverFactory factory) {
             FactHandle handle = ((DroolsMVELFactory) factory).getWorkingMemory().getFactHandle( value );            
-            ((DroolsMVELFactory) factory).getWorkingMemory().modifyAssert( handle, value, null, null );
+            ((DroolsMVELFactory) factory).getWorkingMemory().modifyInsert( handle, value, null, null );
             return 0;
         }
     }

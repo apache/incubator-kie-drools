@@ -8,6 +8,6 @@ rule "simple rule"
     when
         $person : Person( name == "big cheese", $cheese : cheese )
     then
-       	modify( $cheese );
-    	modify( $person );
+       	update( $cheese );
+    	update( $person );
 end 

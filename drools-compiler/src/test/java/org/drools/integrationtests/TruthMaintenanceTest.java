@@ -21,8 +21,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
 import org.drools.event.DefaultWorkingMemoryEventListener;
-import org.drools.event.ObjectAssertedEvent;
-import org.drools.event.ObjectModifiedEvent;
+import org.drools.event.ObjectInsertedEvent;
+import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.rule.Package;
@@ -41,9 +41,9 @@ public class TruthMaintenanceTest extends TestCase {
                                             config );
     }
     
-    public void testLogicalAssertions() throws Exception {
+    public void testLogicalInsertions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertions.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -56,11 +56,11 @@ public class TruthMaintenanceTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.assertObject( brie );
+        final FactHandle brieHandle = workingMemory.insert( brie );
 
         final Cheese provolone = new Cheese( "provolone",
                                              12 );
-        final FactHandle provoloneHandle = workingMemory.assertObject( provolone );
+        final FactHandle provoloneHandle = workingMemory.insert( provolone );
 
         workingMemory.fireAllRules();
 
@@ -70,20 +70,20 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals( 3,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
-        workingMemory.retractObject( brieHandle );
+        workingMemory.retract( brieHandle );
 
         assertEquals( 2,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
-        workingMemory.retractObject( provoloneHandle );
+        workingMemory.retract( provoloneHandle );
 
         assertEquals( 0,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
     }
 
-    public void testLogicalAssertionsBacking() throws Exception {
+    public void testLogicalInsertionsBacking() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsBacking.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsBacking.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -96,7 +96,7 @@ public class TruthMaintenanceTest extends TestCase {
                                            1 );
         List list;
 
-        final FactHandle h1 = workingMemory.assertObject( cheese1 );
+        final FactHandle h1 = workingMemory.insert( cheese1 );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( cheese1.getType().getClass() ) ) );
         assertEquals( 1,
@@ -106,7 +106,7 @@ public class TruthMaintenanceTest extends TestCase {
                       list.get( 0 ) );
         // FactHandle ht = workingMemory.getFactHandle(c1.getType());
 
-        final FactHandle h2 = workingMemory.assertObject( cheese2 );
+        final FactHandle h2 = workingMemory.insert( cheese2 );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( cheese1.getType().getClass() ) ) );
         assertEquals( 1,
@@ -116,7 +116,7 @@ public class TruthMaintenanceTest extends TestCase {
         
         assertEquals( 3, IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
-        workingMemory.retractObject( h1 );
+        workingMemory.retract( h1 );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( cheese1.getType().getClass() ) ) );
         assertEquals( "cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.",
@@ -126,7 +126,7 @@ public class TruthMaintenanceTest extends TestCase {
                       cheese1.getType(),
                       list.get( 0 ) );
 
-        workingMemory.retractObject( h2 );
+        workingMemory.retract( h2 );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( cheese1.getType().getClass() ) ) );
         assertEquals( "cheese-type " + cheese1.getType() + " was not retracted, but should have. Neither  cheese1 => type nor cheese2 => type is true.",
@@ -134,9 +134,9 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
     }
 
-    public void testLogicalAssertionsSelfreferencing() throws Exception {
+    public void testLogicalInsertionsSelfreferencing() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsSelfreferencing.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsSelfreferencing.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -151,7 +151,7 @@ public class TruthMaintenanceTest extends TestCase {
         workingMemory.setGlobal( "b",
                                  b );
 
-        FactHandle h1 = workingMemory.assertObject( a );
+        FactHandle h1 = workingMemory.insert( a );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( a.getClass() ) ) );
         assertEquals( 2,
@@ -159,7 +159,7 @@ public class TruthMaintenanceTest extends TestCase {
         assertTrue( list.contains( a ) );
         assertTrue( list.contains( b ) );
 
-        workingMemory.retractObject( h1 );
+        workingMemory.retract( h1 );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( a.getClass() ) ) );
         assertEquals( "b was retracted, but it should not have. Is backed by b => b being true.",
@@ -170,16 +170,16 @@ public class TruthMaintenanceTest extends TestCase {
                       list.get( 0 ) );
 
         h1 = workingMemory.getFactHandle( b );
-        workingMemory.retractObject( h1 );
+        workingMemory.retract( h1 );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( a.getClass() ) ) );
         assertEquals( 0,
                       list.size() );
     }
 
-    public void testLogicalAssertionsLoop() throws Exception {
+    public void testLogicalInsertionsLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsLoop.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsLoop.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -205,9 +205,9 @@ public class TruthMaintenanceTest extends TestCase {
                       l.size() );
     }
 
-    public void testLogicalAssertionsNoLoop() throws Exception {
+    public void testLogicalInsertionsNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNoLoop.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsNoLoop.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -233,9 +233,9 @@ public class TruthMaintenanceTest extends TestCase {
                       l.size() );
     }
 
-    public void testLogicalAssertionsWithModify() throws Exception {
+    public void testLogicalInsertionsWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsWithModify.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsWithUpdate.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -243,7 +243,7 @@ public class TruthMaintenanceTest extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         
         final WorkingMemoryEventListener l2 = new DefaultWorkingMemoryEventListener() {
-            public void objectAsserted(ObjectAssertedEvent event) {
+            public void objectInserted(ObjectInsertedEvent event) {
                 System.out.println( event );
             }
 
@@ -251,7 +251,7 @@ public class TruthMaintenanceTest extends TestCase {
                 System.out.println( event );
             }
 
-            public void objectModified(ObjectModifiedEvent event) {
+            public void objectUpdated(ObjectUpdatedEvent event) {
                 System.out.println( event );
             }
         };
@@ -261,7 +261,7 @@ public class TruthMaintenanceTest extends TestCase {
         List l;
         final Person p = new Person( "person" );
         p.setAge( 2 );
-        final FactHandle h = workingMemory.assertObject( p );
+        final FactHandle h = workingMemory.insert( p );
         assertEquals( 1,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -275,7 +275,7 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals( 2,
                       ((CheeseEqual) l.get( 0 )).getPrice() );
 
-        workingMemory.retractObject( h );
+        workingMemory.retract( h );
         assertEquals( 0,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -290,9 +290,9 @@ public class TruthMaintenanceTest extends TestCase {
                       m.size() );
     }
 
-    public void testLogicalAssertions2() throws Exception {
+    public void testLogicalInsertions2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions2.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertions2.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -309,7 +309,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         final Sensor sensor = new Sensor( 80,
                                           80 );
-        final FactHandle handle = workingMemory.assertObject( sensor );
+        final FactHandle handle = workingMemory.insert( sensor );
 
         // everything should be normal
         workingMemory.fireAllRules();
@@ -326,7 +326,7 @@ public class TruthMaintenanceTest extends TestCase {
         // problems should be detected
         sensor.setPressure( 200 );
         sensor.setTemperature( 200 );
-        workingMemory.modifyObject( handle,
+        workingMemory.update( handle,
                                     sensor );
 
         workingMemory.fireAllRules();
@@ -340,9 +340,9 @@ public class TruthMaintenanceTest extends TestCase {
                       events.size() );
     }
 
-    public void testLogicalAssertionsNot() throws Exception {
+    public void testLogicalInsertionsNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNot.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsNot.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -366,7 +366,7 @@ public class TruthMaintenanceTest extends TestCase {
                       cheese,
                       list.get( 0 ) );
 
-        final FactHandle h = workingMemory.assertObject( a );
+        final FactHandle h = workingMemory.insert( a );
         // no need to fire rules, assertion alone removes justification for i,
         // so it should be retracted.
         // workingMemory.fireAllRules();
@@ -386,7 +386,7 @@ public class TruthMaintenanceTest extends TestCase {
                       0,
                       workingMemory.getAgenda().agendaSize() );
 
-        workingMemory.retractObject( h );
+        workingMemory.retract( h );
         workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects() );
         assertEquals( "i was not asserted by not a => i.",
@@ -397,9 +397,9 @@ public class TruthMaintenanceTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void testLogicalAssertionsNotPingPong() throws Exception {
+    public void testLogicalInsertionsNotPingPong() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNotPingPong.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsNotPingPong.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -430,9 +430,9 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
     }
 
-    public void testLogicalAssertionsDynamicRule() throws Exception {
+    public void testLogicalInsertionsDynamicRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsDynamicRule.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsDynamicRule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
@@ -460,12 +460,12 @@ public class TruthMaintenanceTest extends TestCase {
                                       3 );
         List list;
 
-        workingMemory.assertObject( c1 );
-        final FactHandle h = workingMemory.assertObject( c2 );
-        workingMemory.assertObject( c3 );
+        workingMemory.insert( c1 );
+        final FactHandle h = workingMemory.insert( c2 );
+        workingMemory.insert( c3 );
         workingMemory.fireAllRules();
 
-        // Check logical assertions where made for c2 and c3
+        // Check logical Insertions where made for c2 and c3
         list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Person.class) ) );
         assertEquals( 2,
                       list.size() );
@@ -474,7 +474,7 @@ public class TruthMaintenanceTest extends TestCase {
         assertTrue( list.contains( new Person( c3.getType() ) ) );
 
         // this rule will make a logical assertion for c1 too
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsDynamicRule2.drl" ) );
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsDynamicRule2.drl" ) );
         builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
         final Package pkg2 = builder.getPackage();
@@ -531,7 +531,7 @@ public class TruthMaintenanceTest extends TestCase {
                      list.contains( new Person( c3.getType() ) ) );
 
         c2.setPrice( 3 );
-        workingMemory.modifyObject( h,
+        workingMemory.update( h,
                                     c2 );
         list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Person.class) ) );
         assertEquals( "c2 now has a higher price, its logical assertion should  be cancelled",
@@ -558,9 +558,9 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
     }
 
-    public void testLogicalAssertionsModifyEqual() throws Exception {
+    public void testLogicalInsertionsUpdateEqual() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsModifyEqual.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsUpdateEqual.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -570,7 +570,7 @@ public class TruthMaintenanceTest extends TestCase {
         List l;
         final Person p = new Person( "person" );
         p.setAge( 2 );
-        final FactHandle h = workingMemory.assertObject( p );
+        final FactHandle h = workingMemory.insert( p );
         assertEquals( 1,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -583,7 +583,7 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals( 3,
                       ((CheeseEqual) l.get( 0 )).getPrice() );
 
-        workingMemory.retractObject( h );
+        workingMemory.retract( h );
         assertEquals( 0,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -598,9 +598,9 @@ public class TruthMaintenanceTest extends TestCase {
                       m.size() );
     }
 
-    public void testLogicalAssertionsWithExists() throws Exception {
+    public void testLogicalInsertionsWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionWithExists.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -611,17 +611,17 @@ public class TruthMaintenanceTest extends TestCase {
                                       "stilton",
                                       20 );
         p1.setStatus( "europe" );
-        final FactHandle c1FactHandle = workingMemory.assertObject( p1 );
+        final FactHandle c1FactHandle = workingMemory.insert( p1 );
         final Person p2 = new Person( "p2",
                                       "stilton",
                                       30 );
         p2.setStatus( "europe" );
-        final FactHandle c2FactHandle = workingMemory.assertObject( p2 );
+        final FactHandle c2FactHandle = workingMemory.insert( p2 );
         final Person p3 = new Person( "p3",
                                       "stilton",
                                       40 );
         p3.setStatus( "europe" );
-        final FactHandle c3FactHandle = workingMemory.assertObject( p3 );
+        final FactHandle c3FactHandle = workingMemory.insert( p3 );
         workingMemory.fireAllRules();
 
         // all 3 in europe, so, 2 cheese
@@ -631,7 +631,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
-        workingMemory.modifyObject( c3FactHandle,
+        workingMemory.update( c3FactHandle,
                                     p3 );
         workingMemory.fireAllRules();
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( Cheese.class) ) );
@@ -640,7 +640,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
-        workingMemory.modifyObject( c2FactHandle,
+        workingMemory.update( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( Cheese.class) ) );
@@ -649,7 +649,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // europe=[ ], america=[ 1, 2, 3 ]
         p1.setStatus( "america" );
-        workingMemory.modifyObject( c1FactHandle,
+        workingMemory.update( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( Cheese.class) ) );
@@ -658,7 +658,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // europe=[ 2 ], america=[ 1, 3 ]
         p2.setStatus( "europe" );
-        workingMemory.modifyObject( c2FactHandle,
+        workingMemory.update( c2FactHandle,
                                     p2 );
         workingMemory.fireAllRules();
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( Cheese.class) ) );
@@ -667,7 +667,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p1.setStatus( "europe" );
-        workingMemory.modifyObject( c1FactHandle,
+        workingMemory.update( c1FactHandle,
                                     p1 );
         workingMemory.fireAllRules();
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( Cheese.class) ) );
@@ -676,7 +676,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // europe=[ 1, 2, 3 ], america=[ ]
         p3.setStatus( "europe" );
-        workingMemory.modifyObject( c3FactHandle,
+        workingMemory.update( c3FactHandle,
                                     p3 );
         workingMemory.fireAllRules();
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( Cheese.class) ) );
@@ -684,9 +684,9 @@ public class TruthMaintenanceTest extends TestCase {
                       cheeseList.size() );
     }
     
-    public void testLogicalAssertions3() throws Exception {
+    public void testLogicalInsertions3() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_logicalAssertions3.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_logicalInsertions3.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -700,7 +700,7 @@ public class TruthMaintenanceTest extends TestCase {
         // asserting the sensor object
         final Sensor sensor = new Sensor( 150,
                                           100 );
-        final FactHandle sensorHandle = workingMemory.assertObject( sensor );
+        final FactHandle sensorHandle = workingMemory.insert( sensor );
 
         workingMemory.fireAllRules();
 
@@ -712,7 +712,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // modifying sensor
         sensor.setTemperature( 125 );
-        workingMemory.modifyObject( sensorHandle,
+        workingMemory.update( sensorHandle,
                                     sensor );
         workingMemory.fireAllRules();
 
@@ -724,7 +724,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // modifying sensor
         sensor.setTemperature( 80 );
-        workingMemory.modifyObject( sensorHandle,
+        workingMemory.update( sensorHandle,
                                     sensor );
         workingMemory.fireAllRules();
 
@@ -735,10 +735,10 @@ public class TruthMaintenanceTest extends TestCase {
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
     }
     
-    public void testLogicalAssertionsAccumulatorPattern() throws Exception {
+    public void testLogicalInsertionsAccumulatorPattern() throws Exception {
         // JBRULES-449
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsAccumulatorPattern.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsAccumulatorPattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -752,7 +752,7 @@ public class TruthMaintenanceTest extends TestCase {
         workingMemory.fireAllRules();
 
         List l;
-        final FactHandle h = workingMemory.assertObject( new Integer( 6 ) );
+        final FactHandle h = workingMemory.insert( new Integer( 6 ) );
         assertEquals( 1,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -761,7 +761,7 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals( "There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated", 2, l.size() );
         assertEquals( 6, IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
-        workingMemory.retractObject( h );
+        workingMemory.retract( h );
         l = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( CheeseEqual.class) ) );
         assertEquals( "There should be only 1 CheeseEqual in Working Memory, 1 stated (the justified should have been retracted). Check TruthMaintenanceSystem justifiedMap", 1, l.size() );
         l = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( Short.class) ) );

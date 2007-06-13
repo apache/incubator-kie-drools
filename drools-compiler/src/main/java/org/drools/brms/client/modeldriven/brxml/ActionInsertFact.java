@@ -5,16 +5,16 @@ package org.drools.brms.client.modeldriven.brxml;
  * @author Michael Neale
  *
  */
-public class ActionAssertFact extends ActionFieldList {
+public class ActionInsertFact extends ActionFieldList {
 
 
     public String factType;
 
-    public ActionAssertFact(final String type) {
+    public ActionInsertFact(final String type) {
         this.factType = type;
     }
 
-    public ActionAssertFact() {
+    public ActionInsertFact() {
     }
 
 }

@@ -72,7 +72,7 @@ public class MVELSalienceBuilderTest extends TestCase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final Person p = new Person("mark", "", 31);
-        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( p );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( p );
         final ReteTuple tuple = new ReteTuple( f0 );
 
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();

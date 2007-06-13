@@ -6,7 +6,7 @@ no-loop true
         a: FactA(s:field1, i:field2, f:field3)
         not FactC(f1==s)
     then
-        assert(s != null ? new FactC(s, i, f) :
+        insert(s != null ? new FactC(s, i, f) :
                                   new FactC());
 end
 
@@ -18,5 +18,5 @@ rule "factBWithRetract"
     then
         c.setF3(f);
         retract(b);
-        modify(c);
+        update(c);
 end

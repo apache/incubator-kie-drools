@@ -11,5 +11,5 @@ rule "test eval"
 	then
 		System.out.println("setting value to " + (value2 + 1));
 		cell2.setValue(value2 + 1);
-		modify(cell2);
+		update(cell2);
 end

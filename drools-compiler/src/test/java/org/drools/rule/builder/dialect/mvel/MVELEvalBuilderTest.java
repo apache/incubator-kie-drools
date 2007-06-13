@@ -75,14 +75,14 @@ public class MVELEvalBuilderTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         final ReteTuple tuple = new ReteTuple( f0 );
 
         assertTrue( eval.isAllowed( tuple,
                                     wm ) );
 
         cheddar.setPrice( 9 );
-        wm.modifyObject( f0,
+        wm.update( f0,
                          cheddar );
         assertFalse( eval.isAllowed( tuple,
                                      wm ) );

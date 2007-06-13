@@ -16,5 +16,5 @@ rule "r"
     	{
     	    throw new Exception( "this should not loop" );
     	}
-   		assertLogical( a );
+   		insertLogical( a );
 end

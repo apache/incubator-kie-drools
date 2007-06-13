@@ -14,7 +14,7 @@ rule "not person then cheese"
     then
     	if (list.size() < 10) {
     		list.add(new Integer(0));
-	   		assertLogical( cheese );
+	   		insertLogical( cheese );
 	   	}
 end
 rule "if cheese then person"
@@ -23,6 +23,6 @@ rule "if cheese then person"
 	then
     	if (list.size() < 10) {
 	   		list.add(new Integer(0));
-			assertLogical( person );
+			insertLogical( person );
 	   	}
 end

@@ -113,10 +113,10 @@ public class MVELReturnValueBuilderTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         ReteTuple tuple = new ReteTuple( f0 );
 
-        final InternalFactHandle f1 = (InternalFactHandle) wm.assertObject( stilton );
+        final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
         tuple = new ReteTuple( tuple,
                                f1 );
 

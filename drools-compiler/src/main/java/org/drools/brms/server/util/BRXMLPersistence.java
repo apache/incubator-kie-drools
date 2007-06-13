@@ -1,9 +1,9 @@
 package org.drools.brms.server.util;
 
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -40,9 +40,9 @@ public class BRXMLPersistence implements BRLPersistence {
         this.xt.alias( "retract",
                   ActionRetractFact.class );
         this.xt.alias( "assert",
-                  ActionAssertFact.class );
+                  ActionInsertFact.class );
         this.xt.alias( "modify",
-                  ActionModifyField.class );
+                  ActionUpdateField.class );
         this.xt.alias( "setField",
                   ActionSetField.class );
         this.xt.alias( "dslSentence",
@@ -63,7 +63,7 @@ public class BRXMLPersistence implements BRLPersistence {
                        CompositeFieldConstraint.class );
         
         this.xt.alias( "assertLogical",
-                  ActionAssertLogicalFact.class );
+                  ActionInsertLogicalFact.class );
 
     }
 

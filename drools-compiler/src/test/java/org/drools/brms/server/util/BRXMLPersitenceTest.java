@@ -9,9 +9,9 @@ import java.io.StringWriter;
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
@@ -44,7 +44,7 @@ public class BRXMLPersitenceTest extends TestCase {
         m.addAttribute( new RuleAttribute( "no-loop",
                                            "true" ) );
 
-        m.addRhsItem( new ActionAssertFact( "Report" ) );
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
         final String xml = p.marshal( m );
         //System.out.println(xml);
@@ -158,7 +158,7 @@ public class BRXMLPersitenceTest extends TestCase {
         
         p.addConstraint( Z );
         
-        ActionAssertFact ass = new ActionAssertFact("Whee");
+        ActionInsertFact ass = new ActionInsertFact("Whee");
         m.addRhsItem( ass );
 
         
@@ -232,7 +232,7 @@ public class BRXMLPersitenceTest extends TestCase {
         comp.addFactPattern( new FactPattern( "Cancel" ) );
         m.addLhsItem( comp );
 
-        final ActionModifyField set = new ActionModifyField();
+        final ActionUpdateField set = new ActionUpdateField();
         set.variable = "p1";
         set.addFieldValue( new ActionFieldValue( "status",
                                                  "rejected",

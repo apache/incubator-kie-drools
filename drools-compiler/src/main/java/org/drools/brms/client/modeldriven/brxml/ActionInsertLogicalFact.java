@@ -5,13 +5,13 @@ package org.drools.brms.client.modeldriven.brxml;
  * 
  * @author Michael Neale
  */
-public class ActionAssertLogicalFact extends ActionAssertFact {
+public class ActionInsertLogicalFact extends ActionInsertFact {
 
-    public ActionAssertLogicalFact(final String fact) {
+    public ActionInsertLogicalFact(final String fact) {
         super( fact );
     }
 
-    public ActionAssertLogicalFact() {
+    public ActionInsertLogicalFact() {
         super();
     }
 

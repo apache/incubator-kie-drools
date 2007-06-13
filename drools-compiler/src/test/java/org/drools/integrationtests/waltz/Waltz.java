@@ -68,7 +68,7 @@ public abstract class Waltz extends TestCase {
             final long start = System.currentTimeMillis();
 
             final Stage stage = new Stage( Stage.DUPLICATE );
-            workingMemory.assertObject( stage );
+            workingMemory.insert( stage );
             workingMemory.fireAllRules();
 
             final long end = System.currentTimeMillis();
@@ -113,7 +113,7 @@ public abstract class Waltz extends TestCase {
             if ( m.matches() ) {
                 final Line l = new Line( Integer.parseInt( m.group( 1 ) ),
                                          Integer.parseInt( m.group( 2 ) ) );
-                wm.assertObject( l );
+                wm.insert( l );
             }
             line = reader.readLine();
         }

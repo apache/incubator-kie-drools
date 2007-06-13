@@ -9,5 +9,5 @@ rule "Person => b"
     when
         s : Person()
     then
-		assertLogical( b );
+		insertLogical( b );
 end
