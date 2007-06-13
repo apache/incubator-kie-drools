@@ -369,6 +369,7 @@ query returns [QueryDescr query]
 			$query.setStartCharacter( ((CommonToken)$QUERY).getStartIndex() );
 			lhs = new AndDescr(); $query.setLhs( lhs ); 
 			lhs.setLocation( offset($QUERY.line), $QUERY.pos );
+                        location.setType( Location.LOCATION_RULE_HEADER );
 		}
 		( LEFT_PAREN
 		        ( { params = new ArrayList(); types = new ArrayList();}
@@ -382,6 +383,9 @@ query returns [QueryDescr query]
 		         )?
 	          RIGHT_PAREN
 	        )?		
+	        {
+                        location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+	        }
 		normal_lhs_block[lhs]
 		END opt_semicolon
 		{
@@ -868,7 +872,9 @@ lhs_eval returns [BaseDescr d]
 			    ((EvalDescr) $d).setContent( body );
 			    location.setProperty(Location.LOCATION_EVAL_CONTENT, body);
 			}
-			$d.setEndCharacter( ((CommonToken)$c.stop).getStopIndex() );
+			if( $c.stop != null ) {
+			    $d.setEndCharacter( ((CommonToken)$c.stop).getStopIndex() );
+			}
 		}
 	;
 	
@@ -1135,9 +1141,6 @@ fact[String ident] returns [BaseDescr d]
 	 		        pattern.setObjectType( $id.text );
  			        pattern.setEndCharacter( -1 );
 				pattern.setStartCharacter( ((CommonToken)$id.start).getStartIndex() );
-				if( $id.stop != null ) {
-					pattern.setEndCharacter( ((CommonToken)$id.stop).getStopIndex() );
-				}
  			}
  		}
  		LEFT_PAREN 
@@ -1425,7 +1428,7 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 			}
 		|	rvc=paren_chunk 
 			{ 
-				$rd = new ReturnValueRestrictionDescr($op, $rvc.text.substring(1, $rcv.text.length()-1) );							
+				$rd = new ReturnValueRestrictionDescr($op, $rvc.text.substring(1, $rvc.text.length()-1) );							
 			} 
 		)	
 		{
