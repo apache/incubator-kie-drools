@@ -25,6 +25,7 @@ import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxy;
@@ -66,8 +67,8 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -80,7 +81,7 @@ public class FieldConstraintTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
@@ -89,7 +90,7 @@ public class FieldConstraintTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
 
-        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.assertObject( stilton );
+        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle.getObject(),
@@ -111,8 +112,8 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "price" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "price" );
 
         final FieldValue field = FieldFactory.getFieldValue( 5 );
 
@@ -125,7 +126,7 @@ public class FieldConstraintTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
@@ -134,7 +135,7 @@ public class FieldConstraintTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            10 );
 
-        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.assertObject( stilton );
+        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle.getObject(),
@@ -157,8 +158,8 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "price" );
+        final FieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "price" );
 
         Pattern pattern = new Pattern( 0,
                                        new ClassObjectType( Cheese.class ) );
@@ -205,12 +206,12 @@ public class FieldConstraintTest extends TestCase {
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
-        final FactHandle f0 = workingMemory.assertObject( cheddar0 );
+        final FactHandle f0 = workingMemory.insert( cheddar0 );
         InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
-        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
+        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
 
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
@@ -239,8 +240,8 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "price" );
+        final FieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "price" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -290,13 +291,13 @@ public class FieldConstraintTest extends TestCase {
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
-        final FactHandle f0 = workingMemory.assertObject( cheddar0 );
+        final FactHandle f0 = workingMemory.insert( cheddar0 );
 
         InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
-        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
+        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
@@ -315,7 +316,7 @@ public class FieldConstraintTest extends TestCase {
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             11 );
 
-        final InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
+        final InternalFactHandle f2 = (InternalFactHandle) workingMemory.insert( cheddar2 );
 
         assertTrue( constraint2.isAllowedCachedLeft( context2,
                                                      f2.getObject() ) );
@@ -339,8 +340,8 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -350,8 +351,8 @@ public class FieldConstraintTest extends TestCase {
                                                                      evaluator,
                                                                      field );
 
-        final ClassFieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                            "price" );
+        final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                          "price" );
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
@@ -368,7 +369,7 @@ public class FieldConstraintTest extends TestCase {
         constraint.addAlphaConstraint( constraint1 );
         constraint.addAlphaConstraint( constraint2 );
 
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
@@ -378,12 +379,12 @@ public class FieldConstraintTest extends TestCase {
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
-        
+
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
-        
+
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
@@ -407,8 +408,8 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -418,8 +419,8 @@ public class FieldConstraintTest extends TestCase {
                                                                      evaluator,
                                                                      field );
 
-        final ClassFieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                            "price" );
+        final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                          "price" );
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
@@ -436,7 +437,7 @@ public class FieldConstraintTest extends TestCase {
         constraint.addAlphaConstraint( constraint1 );
         constraint.addAlphaConstraint( constraint2 );
 
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
@@ -445,19 +446,19 @@ public class FieldConstraintTest extends TestCase {
         cheddar.setPrice( 5 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
-                                           workingMemory ) );
-        
+                                          workingMemory ) );
+
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
-        
+
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
-                                           workingMemory ) );
+                                          workingMemory ) );
     }
-    
+
     /**
      * <pre>
      *        
@@ -475,8 +476,8 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor typeExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor typeExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                         "type" );
 
         final FieldValue cheddarField = FieldFactory.getFieldValue( "cheddar" );
 
@@ -487,8 +488,8 @@ public class FieldConstraintTest extends TestCase {
                                                                      stringEqual,
                                                                      cheddarField );
 
-        final ClassFieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                            "price" );
+        final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                          "price" );
 
         final FieldValue field10 = FieldFactory.getFieldValue( 10 );
 
@@ -504,7 +505,6 @@ public class FieldConstraintTest extends TestCase {
         and1.addAlphaConstraint( constraint1 );
         and1.addAlphaConstraint( constraint2 );
 
-        
         final FieldValue stiltonField = FieldFactory.getFieldValue( "stilton" );
         // type == 'stilton'
         final LiteralConstraint constraint3 = new LiteralConstraint( typeExtractor,
@@ -518,7 +518,6 @@ public class FieldConstraintTest extends TestCase {
                                                                      integerLess,
                                                                      field10 );
 
-
         // type == 'stilton' && price < 10
         final AndConstraint and2 = new AndConstraint();
         and2.addAlphaConstraint( constraint3 );
@@ -531,8 +530,8 @@ public class FieldConstraintTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            15 );
-        
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
@@ -542,16 +541,16 @@ public class FieldConstraintTest extends TestCase {
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
-        
+
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
-                                           workingMemory ) );
-        
+                                          workingMemory ) );
+
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
                                            workingMemory ) );
     }
-    
+
 }

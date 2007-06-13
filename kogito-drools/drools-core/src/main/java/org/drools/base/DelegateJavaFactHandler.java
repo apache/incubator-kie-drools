@@ -38,7 +38,7 @@ public class DelegateJavaFactHandler
             position = this.entries.length;
         }
 
-        final FactHandle handle = workingMemory.assertObject( this );
+        final FactHandle handle = workingMemory.insert( this );
 
         newEntries[position] = new JavaFactRegistryEntry( workingMemory,
                                                           handle );
@@ -51,7 +51,7 @@ public class DelegateJavaFactHandler
         for ( int i = 0, length = this.entries.length; i < length; i++ ) {
             final WorkingMemory workingMemory = this.entries[i].getWorkingMemory();
             final FactHandle handle = this.entries[i].getFactHandle();
-            workingMemory.retractObject( handle );
+            workingMemory.retract( handle );
         }
 
     }

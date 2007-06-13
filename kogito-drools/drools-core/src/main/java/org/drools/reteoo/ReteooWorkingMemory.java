@@ -64,7 +64,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         this.agenda = new DefaultAgenda( this );
     }
 
-    public void doAssertObject(final InternalFactHandle handle,
+    public void doInsert(final InternalFactHandle handle,
                                final Object object,
                                final PropagationContext propagationContext) throws FactException {
         this.ruleBase.assertObject( handle,
@@ -84,7 +84,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         return getQueryResults( query, null );
     }
     public QueryResults getQueryResults(final String query, final Object[] arguments) {
-        final FactHandle handle = assertObject( new DroolsQuery( query, arguments ) );
+        final FactHandle handle = insert( new DroolsQuery( query, arguments ) );
         final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         Query queryObj = null;
         List list = null;
@@ -99,7 +99,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     break;
                 }
             }
-            retractObject( handle );
+            retract( handle );
             if ( queryObj == null ) {
                 throw new IllegalArgumentException( "Query '" + query + "' does not exist" );
             }
@@ -107,7 +107,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         } else {
             list = (List) this.nodeMemories.remove( node.getId() );
 
-            retractObject( handle );
+            retract( handle );
             if ( list == null ) {
                 list = Collections.EMPTY_LIST;
             }

@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.ObjectFactory;
 import org.drools.base.evaluators.Operator;
@@ -26,11 +27,11 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
 public class FieldIndexHashTableTest extends TestCase {
 
     public void testSingleEntry() throws Exception {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
@@ -74,11 +75,11 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntries() throws Exception {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
@@ -130,11 +131,11 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testTwoEqualEntries() throws Exception {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
@@ -186,11 +187,11 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntriesSameHashCode() throws Exception {
-        final FieldExtractor extractor = new ClassFieldExtractor( TestClass.class,
-                                                                  "object" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor(  TestClass.class,
+                                                                                 "object" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( TestClass.class ) );
+                                             new ClassObjectType( TestClass.class ) );
 
         final Declaration declaration = new Declaration( "theObject",
                                                          extractor,
@@ -232,11 +233,11 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testRemove() throws Exception {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
@@ -298,11 +299,11 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testResize() throws Exception {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
@@ -514,11 +515,11 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testEmptyIterator() {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,

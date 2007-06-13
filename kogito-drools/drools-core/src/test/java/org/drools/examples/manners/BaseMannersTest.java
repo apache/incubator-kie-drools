@@ -34,6 +34,7 @@ import junit.framework.TestCase;
 
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
@@ -106,7 +107,7 @@ public abstract class BaseMannersTest extends TestCase {
         this.countType = new ClassObjectType( Count.class );
 
         //shadow = ShadowProxyFactory.getProxy( Path.class );
-        this.pathType = new ClassObjectType( Path.class  );
+        this.pathType = new ClassObjectType( Path.class );
 
         //shadow = ShadowProxyFactory.getProxy( Chosen.class );
         this.chosenType = new ClassObjectType( Chosen.class );
@@ -165,13 +166,13 @@ public abstract class BaseMannersTest extends TestCase {
         // context : Context( state == Context.START_UP )
         // -----------
         final Pattern contextPattern = new Pattern( 0,
-                                                 this.contextType,
-                                                 "context" );
+                                                    this.contextType,
+                                                    "context" );
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
-                                                           "state",
-                                                           Context.START_UP,
-                                                           this.integerEqualEvaluator ) );
+                                                            "state",
+                                                            Context.START_UP,
+                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextPattern );
 
@@ -181,8 +182,8 @@ public abstract class BaseMannersTest extends TestCase {
         // guest: Guest()
         // -----------
         final Pattern guestPattern = new Pattern( 1,
-                                               this.guestType,
-                                               "guest" );
+                                                  this.guestType,
+                                                  "guest" );
 
         rule.addPattern( guestPattern );
 
@@ -192,8 +193,8 @@ public abstract class BaseMannersTest extends TestCase {
         // count : Count()
         // ------------
         final Pattern countPattern = new Pattern( 2,
-                                               this.countType,
-                                               "count" );
+                                                  this.countType,
+                                                  "count" );
 
         rule.addPattern( countPattern );
 
@@ -221,21 +222,21 @@ public abstract class BaseMannersTest extends TestCase {
                                                    1,
                                                    guestName );
 
-                    drools.assertObject( seating );
+                    drools.insert( seating );
 
                     Path path = new Path( count.getValue(),
                                           1,
                                           guestName );
 
-                    drools.assertObject( path );
+                    drools.insert( path );
 
                     count.setValue( count.getValue() );
-                    drools.modifyObject( tuple.get( countDeclaration ),
-                                         count );
+                    drools.update( tuple.get( countDeclaration ),
+                                   count );
 
                     context.setState( Context.ASSIGN_SEATS );
-                    drools.modifyObject( tuple.get( contextDeclaration ),
-                                         context );
+                    drools.update( tuple.get( contextDeclaration ),
+                                   context );
                     System.err.println( "assign first seat :  " + seating + " : " + path );
 
                 } catch ( Exception e ) {
@@ -298,13 +299,13 @@ public abstract class BaseMannersTest extends TestCase {
         // context : Context( state == Context.ASSIGN_SEATS )
         // ---------------
         final Pattern contextPattern = new Pattern( 0,
-                                                 this.contextType,
-                                                 "context" );
+                                                    this.contextType,
+                                                    "context" );
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
-                                                           "state",
-                                                           Context.ASSIGN_SEATS,
-                                                           this.integerEqualEvaluator ) );
+                                                            "state",
+                                                            Context.ASSIGN_SEATS,
+                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextPattern );
 
@@ -315,7 +316,7 @@ public abstract class BaseMannersTest extends TestCase {
         // seatingRightSeat:rightSeat seatingRightGuestName:rightGuestName )
         // -------------------------------
         final Pattern seatingPattern = new Pattern( 1,
-                                                 this.seatingType );
+                                                    this.seatingType );
 
         setFieldDeclaration( seatingPattern,
                              "id",
@@ -326,9 +327,9 @@ public abstract class BaseMannersTest extends TestCase {
                              "seatingPid" );
 
         seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
-                                                           "pathDone",
-                                                           true,
-                                                           this.booleanEqualEvaluator ) );
+                                                            "pathDone",
+                                                            true,
+                                                            this.booleanEqualEvaluator ) );
 
         setFieldDeclaration( seatingPattern,
                              "rightSeat",
@@ -349,12 +350,12 @@ public abstract class BaseMannersTest extends TestCase {
         // rightGuestHobby:hobby )
         // ---------------
         final Pattern rightGuestPattern = new Pattern( 2,
-                                                    this.guestType );
+                                                       this.guestType );
 
         rightGuestPattern.addConstraint( getBoundVariableConstraint( rightGuestPattern,
-                                                                    "name",
-                                                                    seatingRightGuestNameDeclaration,
-                                                                    this.objectEqualEvaluator ) );
+                                                                     "name",
+                                                                     seatingRightGuestNameDeclaration,
+                                                                     this.objectEqualEvaluator ) );
 
         setFieldDeclaration( rightGuestPattern,
                              "sex",
@@ -374,21 +375,21 @@ public abstract class BaseMannersTest extends TestCase {
         // rightGuestHobby )
         // ----------------
         final Pattern leftGuestPattern = new Pattern( 3,
-                                                   this.guestType );
+                                                      this.guestType );
 
         setFieldDeclaration( leftGuestPattern,
                              "name",
                              "leftGuestName" );
 
         leftGuestPattern.addConstraint( getBoundVariableConstraint( rightGuestPattern,
-                                                                   "hobby",
-                                                                   rightGuestHobbyDeclaration,
-                                                                   this.objectEqualEvaluator ) );
+                                                                    "hobby",
+                                                                    rightGuestHobbyDeclaration,
+                                                                    this.objectEqualEvaluator ) );
 
         leftGuestPattern.addConstraint( getBoundVariableConstraint( leftGuestPattern,
-                                                                   "sex",
-                                                                   rightGuestSexDeclaration,
-                                                                   this.objectNotEqualEvaluator ) );
+                                                                    "sex",
+                                                                    rightGuestSexDeclaration,
+                                                                    this.objectNotEqualEvaluator ) );
 
         rule.addPattern( leftGuestPattern );
         final Declaration leftGuestNameDeclaration = rule.getDeclaration( "leftGuestName" );
@@ -397,8 +398,8 @@ public abstract class BaseMannersTest extends TestCase {
         // count : Count()
         // ---------------
         final Pattern count = new Pattern( 4,
-                                         this.countType,
-                                         "count" );
+                                           this.countType,
+                                           "count" );
 
         rule.addPattern( count );
 
@@ -408,17 +409,17 @@ public abstract class BaseMannersTest extends TestCase {
         // not ( Path( id == seatingId, guestName == leftGuestName) )
         // --------------
         final Pattern notPathPattern = new Pattern( 5,
-                                                 this.pathType );
+                                                    this.pathType );
 
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
-                                                                 "id",
-                                                                 seatingIdDeclaration,
-                                                                 this.integerEqualEvaluator ) );
+                                                                  "id",
+                                                                  seatingIdDeclaration,
+                                                                  this.integerEqualEvaluator ) );
 
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
-                                                                 "guestName",
-                                                                 leftGuestNameDeclaration,
-                                                                 this.objectEqualEvaluator ) );
+                                                                  "guestName",
+                                                                  leftGuestNameDeclaration,
+                                                                  this.objectEqualEvaluator ) );
         final GroupElement notPath = GroupElementFactory.newNotInstance();
         notPath.addChild( notPathPattern );
         rule.addPattern( notPath );
@@ -427,22 +428,22 @@ public abstract class BaseMannersTest extends TestCase {
         // rightGuestHobby ) )
         // ------------
         final Pattern notChosenPattern = new Pattern( 6,
-                                                   this.chosenType );
+                                                      this.chosenType );
 
         notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
-                                                                   "id",
-                                                                   seatingIdDeclaration,
-                                                                   this.integerEqualEvaluator ) );
+                                                                    "id",
+                                                                    seatingIdDeclaration,
+                                                                    this.integerEqualEvaluator ) );
 
         notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
-                                                                   "guestName",
-                                                                   leftGuestNameDeclaration,
-                                                                   this.objectEqualEvaluator ) );
+                                                                    "guestName",
+                                                                    leftGuestNameDeclaration,
+                                                                    this.objectEqualEvaluator ) );
 
         notChosenPattern.addConstraint( getBoundVariableConstraint( notChosenPattern,
-                                                                   "hobby",
-                                                                   rightGuestHobbyDeclaration,
-                                                                   this.objectEqualEvaluator ) );
+                                                                    "hobby",
+                                                                    rightGuestHobbyDeclaration,
+                                                                    this.objectEqualEvaluator ) );
 
         final GroupElement notChosen = GroupElementFactory.newNotInstance();
         notChosen.addChild( notChosenPattern );
@@ -489,34 +490,34 @@ public abstract class BaseMannersTest extends TestCase {
                                                    rightGuestName,
                                                    seatingRightSeat + 1,
                                                    leftGuestName );
-                    drools.assertObject( seating );
+                    drools.insert( seating );
 
                     Path path = new Path( count.getValue(),
                                           seatingRightSeat + 1,
                                           leftGuestName );
 
-                    drools.assertObject( path );
+                    drools.insert( path );
 
                     Chosen chosen = new Chosen( seatId,
                                                 leftGuestName,
                                                 rightGuestHobby );
 
-                    drools.assertObject( chosen );
+                    drools.insert( chosen );
                     count.setValue( count.getValue() + 1 );
 
                     //                    if ( count.getValue() == 5 ) {
                     //                        drools.retractObject( tuple.getFactHandleForDeclaration( countDeclaration ) );
                     //                    } else {
-                    //                        drools.modifyObject( tuple.getFactHandleForDeclaration( countDeclaration ),
+                    //                        drools.update( tuple.getFactHandleForDeclaration( countDeclaration ),
                     //                                             count );                        
                     //                    }
 
-                    drools.modifyObject( tuple.get( countDeclaration ),
-                                         count );
+                    drools.update( tuple.get( countDeclaration ),
+                                   count );
 
                     context.setState( Context.MAKE_PATH );
-                    drools.modifyObject( tuple.get( contextDeclaration ),
-                                         context );
+                    drools.update( tuple.get( contextDeclaration ),
+                                   context );
 
                     System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
 
@@ -563,12 +564,12 @@ public abstract class BaseMannersTest extends TestCase {
         // context : Context( state == Context.MAKE_PATH )
         // -----------
         final Pattern contextPattern = new Pattern( 0,
-                                                 this.contextType );
+                                                    this.contextType );
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
-                                                           "state",
-                                                           Context.MAKE_PATH,
-                                                           this.integerEqualEvaluator ) );
+                                                            "state",
+                                                            Context.MAKE_PATH,
+                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextPattern );
 
@@ -576,7 +577,7 @@ public abstract class BaseMannersTest extends TestCase {
         // Seating( seatingId:id, seatingPid:pid, pathDone == false )
         // ---------------
         final Pattern seatingPattern = new Pattern( 1,
-                                                 this.seatingType );
+                                                    this.seatingType );
 
         setFieldDeclaration( seatingPattern,
                              "id",
@@ -587,9 +588,9 @@ public abstract class BaseMannersTest extends TestCase {
                              "seatingPid" );
 
         seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
-                                                           "pathDone",
-                                                           false,
-                                                           this.booleanEqualEvaluator ) );
+                                                            "pathDone",
+                                                            false,
+                                                            this.booleanEqualEvaluator ) );
 
         rule.addPattern( seatingPattern );
 
@@ -600,12 +601,12 @@ public abstract class BaseMannersTest extends TestCase {
         // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         // -----------
         final Pattern pathPattern = new Pattern( 2,
-                                              this.pathType );
+                                                 this.pathType );
 
         pathPattern.addConstraint( getBoundVariableConstraint( pathPattern,
-                                                              "id",
-                                                              seatingPidDeclaration,
-                                                              this.integerEqualEvaluator ) );
+                                                               "id",
+                                                               seatingPidDeclaration,
+                                                               this.integerEqualEvaluator ) );
 
         setFieldDeclaration( pathPattern,
                              "guestName",
@@ -623,16 +624,16 @@ public abstract class BaseMannersTest extends TestCase {
         // (not Path( id == seatingId, guestName == pathGuestName )
         // -------------
         final Pattern notPathPattern = new Pattern( 3,
-                                                 this.pathType );
+                                                    this.pathType );
 
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
-                                                                 "id",
-                                                                 seatingIdDeclaration,
-                                                                 this.integerEqualEvaluator ) );
+                                                                  "id",
+                                                                  seatingIdDeclaration,
+                                                                  this.integerEqualEvaluator ) );
         notPathPattern.addConstraint( getBoundVariableConstraint( notPathPattern,
-                                                                 "guestName",
-                                                                 pathGuestNameDeclaration,
-                                                                 this.objectEqualEvaluator ) );
+                                                                  "guestName",
+                                                                  pathGuestNameDeclaration,
+                                                                  this.objectEqualEvaluator ) );
 
         final GroupElement not = GroupElementFactory.newNotInstance();
 
@@ -659,7 +660,7 @@ public abstract class BaseMannersTest extends TestCase {
                                           seat,
                                           guestName );
 
-                    drools.assertObject( path );
+                    drools.insert( path );
 
                     //System.err.println( "make path : " + path );
                 } catch ( Exception e ) {
@@ -702,13 +703,13 @@ public abstract class BaseMannersTest extends TestCase {
         // context : Context( state == Context.MAKE_PATH )
         // -----------
         final Pattern contextPattern = new Pattern( 0,
-                                                 this.contextType,
-                                                 "context" );
+                                                    this.contextType,
+                                                    "context" );
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
-                                                           "state",
-                                                           Context.MAKE_PATH,
-                                                           this.integerEqualEvaluator ) );
+                                                            "state",
+                                                            Context.MAKE_PATH,
+                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -717,13 +718,13 @@ public abstract class BaseMannersTest extends TestCase {
         // seating : Seating( pathDone == false )
         // ---------------
         final Pattern seatingPattern = new Pattern( 1,
-                                                 this.seatingType,
-                                                 "seating" );
+                                                    this.seatingType,
+                                                    "seating" );
 
         seatingPattern.addConstraint( getLiteralConstraint( seatingPattern,
-                                                           "pathDone",
-                                                           false,
-                                                           this.booleanEqualEvaluator ) );
+                                                            "pathDone",
+                                                            false,
+                                                            this.booleanEqualEvaluator ) );
 
         rule.addPattern( seatingPattern );
 
@@ -749,12 +750,12 @@ public abstract class BaseMannersTest extends TestCase {
                     //                    if ( seating.getId() == 6 ) {
                     //                        System.err.println( "pause" );
                     //                    }
-                    drools.modifyObject( tuple.get( seatingDeclaration ),
-                                         seating );
+                    drools.update( tuple.get( seatingDeclaration ),
+                                   seating );
 
                     context.setState( Context.CHECK_DONE );
-                    drools.modifyObject( tuple.get( contextDeclaration ),
-                                         context );
+                    drools.update( tuple.get( contextDeclaration ),
+                                   context );
                     //System.err.println( "path done" + seating );
                 } catch ( Exception e ) {
                     e.printStackTrace();
@@ -795,13 +796,13 @@ public abstract class BaseMannersTest extends TestCase {
         // context : Context( state == Context.CHECK_DONE )
         // -----------
         final Pattern contextPattern = new Pattern( 0,
-                                                 this.contextType,
-                                                 "context" );
+                                                    this.contextType,
+                                                    "context" );
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
-                                                           "state",
-                                                           Context.CHECK_DONE,
-                                                           this.integerEqualEvaluator ) );
+                                                            "state",
+                                                            Context.CHECK_DONE,
+                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -810,7 +811,7 @@ public abstract class BaseMannersTest extends TestCase {
         // LastSeat( lastSeat: seat )
         // ---------------
         final Pattern lastSeatPattern = new Pattern( 1,
-                                                  this.lastSeatType );
+                                                     this.lastSeatType );
 
         setFieldDeclaration( lastSeatPattern,
                              "seat",
@@ -822,13 +823,13 @@ public abstract class BaseMannersTest extends TestCase {
         // Seating( rightSeat == lastSeat )
         // -------------
         final Pattern seatingPattern = new Pattern( 2,
-                                                 this.seatingType,
-                                                 null );
+                                                    this.seatingType,
+                                                    null );
 
         seatingPattern.addConstraint( getBoundVariableConstraint( seatingPattern,
-                                                                 "rightSeat",
-                                                                 lastSeatDeclaration,
-                                                                 this.integerEqualEvaluator ) );
+                                                                  "rightSeat",
+                                                                  lastSeatDeclaration,
+                                                                  this.integerEqualEvaluator ) );
 
         rule.addPattern( seatingPattern );
 
@@ -846,8 +847,8 @@ public abstract class BaseMannersTest extends TestCase {
                     Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.PRINT_RESULTS );
 
-                    drools.modifyObject( tuple.get( contextDeclaration ),
-                                         context );
+                    drools.update( tuple.get( contextDeclaration ),
+                                   context );
 
                     System.err.println( "We Are Done!!!" );
                 } catch ( Exception e ) {
@@ -885,13 +886,13 @@ public abstract class BaseMannersTest extends TestCase {
         // context : Context( state == Context.CHECK_DONE )
         // -----------
         final Pattern contextPattern = new Pattern( 0,
-                                                 this.contextType,
-                                                 "context" );
+                                                    this.contextType,
+                                                    "context" );
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
-                                                           "state",
-                                                           Context.CHECK_DONE,
-                                                           this.integerEqualEvaluator ) );
+                                                            "state",
+                                                            Context.CHECK_DONE,
+                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -910,8 +911,8 @@ public abstract class BaseMannersTest extends TestCase {
                     Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.ASSIGN_SEATS );
 
-                    drools.modifyObject( tuple.get( contextDeclaration ),
-                                         context );
+                    drools.update( tuple.get( contextDeclaration ),
+                                   context );
 
                     //System.err.println( "continue processing" );
                 } catch ( Exception e ) {
@@ -950,12 +951,12 @@ public abstract class BaseMannersTest extends TestCase {
         // context : Context( state == Context.PRINT_RESULTS )
         // -----------
         final Pattern contextPattern = new Pattern( 0,
-                                                 this.contextType );
+                                                    this.contextType );
 
         contextPattern.addConstraint( getLiteralConstraint( contextPattern,
-                                                           "state",
-                                                           Context.PRINT_RESULTS,
-                                                           this.integerEqualEvaluator ) );
+                                                            "state",
+                                                            Context.PRINT_RESULTS,
+                                                            this.integerEqualEvaluator ) );
 
         rule.addPattern( contextPattern );
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
@@ -1107,8 +1108,8 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                                  fieldName );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
+                                                                                fieldName );
 
         final FieldValue field = new LongFieldImpl( fieldValue );
 
@@ -1123,8 +1124,8 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                                  fieldName );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
+                                                                                fieldName );
 
         final FieldValue field = new BooleanFieldImpl( fieldValue );
 
@@ -1138,11 +1139,11 @@ public abstract class BaseMannersTest extends TestCase {
                                      final String identifier) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                                  fieldName );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
+                                                                                fieldName );
 
         pattern.addDeclaration( identifier,
-                               extractor );
+                                extractor );
     }
 
     private BetaNodeFieldConstraint getBoundVariableConstraint(final Pattern pattern,
@@ -1151,8 +1152,8 @@ public abstract class BaseMannersTest extends TestCase {
                                                                final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                                  fieldName );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
+                                                                                fieldName );
 
         return new VariableConstraint( extractor,
                                        declaration,

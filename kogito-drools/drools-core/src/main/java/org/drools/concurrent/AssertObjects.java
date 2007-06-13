@@ -22,18 +22,18 @@ public class AssertObjects
 
     public void execute(final WorkingMemory workingMemory) {
         if ( this.object instanceof Object[] ) {
-            workingMemory.assertObject( this.object );
+            workingMemory.insert( this.object );
         } else if ( this.object instanceof List ) {
             final List list = (List) this.object;
             this.results = new ArrayList( list.size() );
             for ( final Iterator it = list.iterator(); it.hasNext(); ) {
-                this.results.add( workingMemory.assertObject( it.next() ) );
+                this.results.add( workingMemory.insert( it.next() ) );
             }
         } else {
             final Object[] objects = (Object[]) this.object;
             this.results = new ArrayList( objects.length );
             for ( int i = 0, length = objects.length; i < length; i++ ) {
-                this.results.add( workingMemory.assertObject( objects[i] ) );
+                this.results.add( workingMemory.insert( objects[i] ) );
             }
         }
     }

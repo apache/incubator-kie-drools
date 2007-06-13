@@ -46,7 +46,7 @@ import org.drools.util.Queueable;
  * </p>
  * 
  * <p>
- * While processing a scheduled action, it may modify or retract objects in
+ * While processing a scheduled action, it may update or retract objects in
  * other scheduled actions, which must then be removed from the agenda.
  * Non-invalidated actions are left on the agenda, and are executed in turn.
  * </p>

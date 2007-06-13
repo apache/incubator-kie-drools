@@ -64,24 +64,24 @@ public class WorkingMemoryEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireObjectAsserted(final PropagationContext propagationContext,
+    public void fireObjectInserted(final PropagationContext propagationContext,
                                    final FactHandle handle,
                                    final Object object) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final ObjectAssertedEvent event = new ObjectAssertedEvent( this.workingMemory,
+        final ObjectInsertedEvent event = new ObjectInsertedEvent( this.workingMemory,
                                                                    propagationContext,
                                                                    handle,
                                                                    object );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((WorkingMemoryEventListener) this.listeners.get( i )).objectAsserted( event );
+            ((WorkingMemoryEventListener) this.listeners.get( i )).objectInserted( event );
         }
     }
 
-    public void fireObjectModified(final PropagationContext propagationContext,
+    public void fireObjectUpdated(final PropagationContext propagationContext,
                                    final FactHandle handle,
                                    final Object oldObject,
                                    final Object object) {
@@ -89,14 +89,14 @@ public class WorkingMemoryEventSupport
             return;
         }
 
-        final ObjectModifiedEvent event = new ObjectModifiedEvent( this.workingMemory,
+        final ObjectUpdatedEvent event = new ObjectUpdatedEvent( this.workingMemory,
                                                                    propagationContext,
                                                                    handle,
                                                                    oldObject,
                                                                    object );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((WorkingMemoryEventListener) this.listeners.get( i )).objectModified( event );
+            ((WorkingMemoryEventListener) this.listeners.get( i )).objectUpdated( event );
         }
     }
 

@@ -422,7 +422,7 @@ public abstract class AbstractWorkingMemory
      * fact and allow any rules to fire to handle "otherwise" cases.
      */
     private void doOtherwise(final AgendaFilter agendaFilter) {
-        final FactHandle handle = this.assertObject( new Otherwise() );
+        final FactHandle handle = this.insert( new Otherwise() );
         if ( !this.actionQueue.isEmpty() ) {
             executeQueuedActions();
         }
@@ -431,7 +431,7 @@ public abstract class AbstractWorkingMemory
             ;
         }
 
-        this.retractObject( handle );
+        this.retract( handle );
     }
 
     //
@@ -580,8 +580,8 @@ public abstract class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    public FactHandle assertObject(final Object object) throws FactException {
-        return assertObject( object, /* Not-Dynamic */
+    public FactHandle insert(final Object object) throws FactException {
+        return insert( object, /* Not-Dynamic */
                              false,
                              false,
                              null,
@@ -591,33 +591,33 @@ public abstract class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    public FactHandle assertLogicalObject(final Object object) throws FactException {
-        return assertObject( object, /* Not-Dynamic */
+    public FactHandle insertLogical(final Object object) throws FactException {
+        return insert( object, /* Not-Dynamic */
                              false,
                              true,
                              null,
                              null );
     }
 
-    public FactHandle assertObject(final Object object,
+    public FactHandle insert(final Object object,
                                    final boolean dynamic) throws FactException {
-        return assertObject( object,
+        return insert( object,
                              dynamic,
                              false,
                              null,
                              null );
     }
 
-    public FactHandle assertLogicalObject(final Object object,
+    public FactHandle insertLogical(final Object object,
                                           final boolean dynamic) throws FactException {
-        return assertObject( object,
+        return insert( object,
                              dynamic,
                              true,
                              null,
                              null );
     }
 
-    public FactHandle assertObject(final Object object,
+    public FactHandle insert(final Object object,
                                    final boolean dynamic,
                                    boolean logical,
                                    final Rule rule,
@@ -769,11 +769,11 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations() );
 
-            doAssertObject( handle,
+            doInsert( handle,
                             object,
                             propagationContext );
 
-            this.workingMemoryEventSupport.fireObjectAsserted( propagationContext,
+            this.workingMemoryEventSupport.fireObjectInserted( propagationContext,
                                                                handle,
                                                                object );
 
@@ -809,7 +809,7 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public abstract void doAssertObject(InternalFactHandle factHandle,
+    public abstract void doInsert(InternalFactHandle factHandle,
                                         Object object,
                                         PropagationContext propagationContext) throws FactException;
 
@@ -844,8 +844,8 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public void retractObject(final FactHandle handle) throws FactException {
-        retractObject( handle,
+    public void retract(final FactHandle handle) throws FactException {
+        retract( handle,
                        true,
                        true,
                        null,
@@ -858,7 +858,7 @@ public abstract class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    public void retractObject(final FactHandle factHandle,
+    public void retract(final FactHandle factHandle,
                               final boolean removeLogical,
                               final boolean updateEqualsMap,
                               final Rule rule,
@@ -960,7 +960,7 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public void modifyAssert(final FactHandle factHandle,
+    public void modifyInsert(final FactHandle factHandle,
                              final Object object,
                              final Rule rule,
                              final Activation activation) {
@@ -994,11 +994,11 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations() );
 
-            doAssertObject( handle,
+            doInsert( handle,
                             object,
                             propagationContext );
 
-            this.workingMemoryEventSupport.fireObjectModified( propagationContext,
+            this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
                                                                factHandle,
                                                                originalObject,
                                                                object );
@@ -1013,9 +1013,9 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public void modifyObject(final FactHandle handle,
+    public void update(final FactHandle handle,
                              final Object object) throws FactException {
-        modifyObject( handle,
+        update( handle,
                       object,
                       null,
                       null );
@@ -1027,7 +1027,7 @@ public abstract class AbstractWorkingMemory
      * 
      * @see WorkingMemory
      */
-    public void modifyObject(final FactHandle factHandle,
+    public void update(final FactHandle factHandle,
                              final Object object,
                              final Rule rule,
                              final Activation activation) throws FactException {
@@ -1095,11 +1095,11 @@ public abstract class AbstractWorkingMemory
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
-            doAssertObject( handle,
+            doInsert( handle,
                             object,
                             propagationContext );
 
-            this.workingMemoryEventSupport.fireObjectModified( propagationContext,
+            this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
                                                                factHandle,
                                                                originalObject,
                                                                object );
@@ -1199,7 +1199,7 @@ public abstract class AbstractWorkingMemory
         final Object object = event.getSource();
 
         try {
-            modifyObject( getFactHandle( object ),
+            update( getFactHandle( object ),
                           object );
         } catch ( final NoSuchFactHandleException e ) {
             // Not a fact so unable to process the chnage event

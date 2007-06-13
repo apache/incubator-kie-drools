@@ -23,11 +23,11 @@ public class DefaultWorkingMemoryEventListener
         // intentionally left blank
     }
 
-    public void objectAsserted(final ObjectAssertedEvent event) {
+    public void objectInserted(final ObjectInsertedEvent event) {
         // intentionally left blank
     }
 
-    public void objectModified(final ObjectModifiedEvent event) {
+    public void objectUpdated(final ObjectUpdatedEvent event) {
         // intentionally left blank
     }
 

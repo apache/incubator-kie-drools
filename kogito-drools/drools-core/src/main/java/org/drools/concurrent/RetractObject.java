@@ -18,7 +18,7 @@ public class RetractObject
     }
 
     public void execute(final WorkingMemory workingMemory) {
-        workingMemory.retractObject( this.factHandle );
+        workingMemory.retract( this.factHandle );
         this.done = true;
 
     }

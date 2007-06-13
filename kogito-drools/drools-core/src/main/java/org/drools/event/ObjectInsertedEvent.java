@@ -20,27 +20,23 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.PropagationContext;
 
-public class ObjectModifiedEvent extends WorkingMemoryEvent {
+public class ObjectInsertedEvent extends WorkingMemoryEvent {
     /**
      * 
      */
-    private static final long serialVersionUID = -1114244534479330055L;
+    private static final long serialVersionUID = -4034827684101547060L;
 
     private final FactHandle  handle;
 
-    private final Object      oldObject;
-
     private final Object      object;
 
-    public ObjectModifiedEvent(final WorkingMemory workingMemory,
+    public ObjectInsertedEvent(final WorkingMemory workingMemory,
                                final PropagationContext propagationContext,
                                final FactHandle handle,
-                               final Object oldObject,
                                final Object object) {
         super( workingMemory,
                propagationContext );
         this.handle = handle;
-        this.oldObject = oldObject;
         this.object = object;
     }
 
@@ -48,15 +44,11 @@ public class ObjectModifiedEvent extends WorkingMemoryEvent {
         return this.handle;
     }
 
-    public Object getOldObject() {
-        return this.oldObject;
-    }
-
     public Object getObject() {
         return this.object;
     }
 
     public String toString() {
-        return "[ObjectModified: handle=" + this.handle + "; old_object=" + this.oldObject + "; new_object=" + this.object + "]";
+        return "[ObjectInserted: handle=" + this.handle + "; object=" + this.object + "]";
     }
 }

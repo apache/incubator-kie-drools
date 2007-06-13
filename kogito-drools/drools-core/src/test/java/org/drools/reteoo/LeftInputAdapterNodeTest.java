@@ -94,7 +94,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final Object string1 = "cheese";
 
         // assert object
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( string1 );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( string1 );
         liaNode.assertObject( f0,
                               context,
                               workingMemory );
@@ -137,7 +137,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final Object string1 = "cheese";
 
         // assert object
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( string1 );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( string1 );
         liaNode.assertObject( f0,
                               context,
                               workingMemory );
@@ -156,7 +156,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertTrue( table.contains( f0 ) );
 
         // check memory works with multiple handles
-        final DefaultFactHandle f1 = (DefaultFactHandle) workingMemory.assertObject( "test1" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) workingMemory.insert( "test1" );
         liaNode.assertObject( f1,
                               context,
                               workingMemory );
@@ -196,7 +196,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final MockTupleSink sink = new MockTupleSink();
         liaNode.addTupleSink( sink );
 
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( "f1" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( "f1" );
 
         // assert object 
         liaNode.assertObject( f0,
@@ -238,7 +238,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final MockTupleSink sink = new MockTupleSink();
         liaNode.addTupleSink( sink );
 
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( "f1" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( "f1" );
 
         // assert object
         liaNode.assertObject( f0,

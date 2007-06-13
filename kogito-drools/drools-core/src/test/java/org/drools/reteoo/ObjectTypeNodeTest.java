@@ -91,7 +91,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Object string1 = "cheese";
 
-        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.assertObject( string1 );
+        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.insert( string1 );
 
         // should assert as ObjectType matches
         objectTypeNode.assertObject( handle1,
@@ -298,7 +298,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final Object cheese = new Cheese( "muzzarela",
                                           5 );
 
-        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.assertObject( cheese );
+        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.insert( cheese );
 
         // should assert as ObjectType matches
         objectTypeNode.assertObject( handle1,
@@ -344,7 +344,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final Object person = new Person( "bob",
                                           25 );
 
-        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.assertObject( person );
+        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.insert( person );
 
         // should assert as ObjectType matches
         objectTypeNode.assertObject( handle1,

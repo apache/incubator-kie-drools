@@ -5,13 +5,14 @@ import junit.framework.TestCase;
 
 import org.drools.Address;
 import org.drools.Person;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.spi.Extractor;
 
 public class MVELClassFieldExtractorTest extends TestCase {
 
-    Extractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( Person.class,
-                                                                             "addresses['home'].street" );
+    Extractor extractor = ClassFieldExtractorCache.getExtractor( Person.class,
+                                                                 "addresses['home'].street" );
     Person  person      = null;
 
     protected void setUp() throws Exception {
@@ -109,8 +110,8 @@ public class MVELClassFieldExtractorTest extends TestCase {
         try {
             Assert.assertFalse( this.extractor.isNullValue( this.person ) );
 
-            Extractor nullExtractor = ClassFieldExtractorFactory.getClassFieldExtractor( Person.class,
-                                                                                         "addresses['business'].phone" );
+            Extractor nullExtractor = ClassFieldExtractorCache.getExtractor( Person.class,
+                                                                             "addresses['business'].phone" );
             Assert.assertTrue( nullExtractor.isNullValue( this.person ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );

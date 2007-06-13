@@ -24,9 +24,9 @@ package org.drools.audit.event;
  */
 public class LogEvent {
 
-    public static final int OBJECT_ASSERTED            = 1;
-    public static final int OBJECT_MODIFIED            = 2;
-    public static final int OBJECT_RETRACTED           = 3;
+    public static final int INSERTED            = 1;
+    public static final int UPDATED            = 2;
+    public static final int RETRACTED           = 3;
 
     public static final int ACTIVATION_CREATED         = 4;
     public static final int ACTIVATION_CANCELLED       = 5;

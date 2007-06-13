@@ -21,8 +21,8 @@ import java.io.Serializable;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.ObjectAssertedEvent;
-import org.drools.event.ObjectModifiedEvent;
+import org.drools.event.ObjectInsertedEvent;
+import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 
@@ -47,11 +47,11 @@ public class TestWorkingMemoryEventListener
         // intentionally left blank
     }
 
-    public void objectAsserted(final ObjectAssertedEvent event) {
+    public void objectInserted(final ObjectInsertedEvent event) {
         this.asserted++;
     }
 
-    public void objectModified(final ObjectModifiedEvent event) {
+    public void objectUpdated(final ObjectUpdatedEvent event) {
         this.modified++;
     }
 

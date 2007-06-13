@@ -17,7 +17,7 @@ public class AssertObject
     }
 
     public void execute(final WorkingMemory workingMemory) {
-        this.result = workingMemory.assertObject( this.object );
+        this.result = workingMemory.insert( this.object );
     }
 
     public Object getObject() {

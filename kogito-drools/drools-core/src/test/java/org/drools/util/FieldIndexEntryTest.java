@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.StringFactory;
 import org.drools.common.DefaultFactHandle;
@@ -16,8 +17,8 @@ import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 public class FieldIndexEntryTest extends TestCase {
 
     public void testSingleEntry() {
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
@@ -59,8 +60,8 @@ public class FieldIndexEntryTest extends TestCase {
     }
 
     public void testTwoEntries() {
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor(  Cheese.class,
+                                                                                      "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
@@ -110,8 +111,8 @@ public class FieldIndexEntryTest extends TestCase {
     }
 
     public void testThreeEntries() {
-        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                       "type" );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );

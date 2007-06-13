@@ -147,7 +147,7 @@ public class TruthMaintenanceSystem
                     this.tms.getJustifiedMap().remove( handle.getId() );
                     // this needs to be scheduled so we don't upset the current
                     // working memory operation
-                    workingMemory.retractObject( this.handle,
+                    workingMemory.retract( this.handle,
                                                  false,
                                                  true,
                                                  context.getRuleOrigin(),
@@ -200,7 +200,7 @@ public class TruthMaintenanceSystem
         Set set = (Set) this.justifiedMap.get( handle.getId() );
         if ( set == null ) {
             if ( context.getType() == PropagationContext.MODIFICATION ) {
-                // if this was a  modify, chances  are its trying  to retract a logical assertion
+                // if this was a  update, chances  are its trying  to retract a logical assertion
             }
             set = new HashSet();
             this.justifiedMap.put( handle.getId(),

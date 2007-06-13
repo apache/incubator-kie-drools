@@ -24,14 +24,15 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.spi.FieldExtractor;
 
 public class DeclarationTest extends TestCase {
 
     public void testDeclaration() throws IntrospectionException {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 5,
                                           new ClassObjectType( Cheese.class ) );
@@ -57,8 +58,8 @@ public class DeclarationTest extends TestCase {
     }
 
     public void testGetFieldValue() throws IntrospectionException {
-        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                "type" );
 
         final Pattern pattern = new Pattern( 5,
                                           new ClassObjectType( Cheese.class ) );

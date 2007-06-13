@@ -13,12 +13,12 @@ public interface StatefulSession extends WorkingMemory {
      */
     void dispose();    
     
-    Future asyncAssertObject(Object object);    
-    Future asyncRetractObject(FactHandle factHandle);   
-    Future asyncModifyObject(FactHandle factHandle, Object object);
+    Future asyncInsert(Object object);    
+    Future asyncRetract(FactHandle factHandle);   
+    Future asyncUpdate(FactHandle factHandle, Object object);
 
-    Future asyncAssertObjects(Object[] list);
-    Future asyncAssertObjects(List list);
+    Future asyncInsert(Object[] list);
+    Future asyncInsert(List list);
     
     Future asyncFireAllRules();
     Future asyncFireAllRules(AgendaFilter agendaFilter); 
