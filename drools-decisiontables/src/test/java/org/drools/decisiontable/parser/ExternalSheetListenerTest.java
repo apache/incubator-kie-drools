@@ -122,7 +122,7 @@ public class ExternalSheetListenerTest extends TestCase {
 
 				}
 
-				public FactHandle assertObject(Object fact)
+				public FactHandle insert(Object fact)
 						throws FactException {
 					if (fact instanceof Row) {
 						assertedRows.put(fact, currentRow);
@@ -133,7 +133,7 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 
-				public FactHandle assertObject(Object arg0, boolean arg1)
+				public FactHandle insert(Object arg0, boolean arg1)
 						throws FactException {
 					return null;
 				}
@@ -201,7 +201,7 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 
-				public void modifyObject(FactHandle arg0, Object arg1)
+				public void update(FactHandle arg0, Object arg1)
 						throws FactException {
 
 				}
@@ -218,7 +218,7 @@ public class ExternalSheetListenerTest extends TestCase {
 
 				}
 
-				public void retractObject(FactHandle arg0) throws FactException {
+				public void retract(FactHandle arg0) throws FactException {
 
 				}
 
@@ -266,17 +266,17 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
-                public Future asyncAssertObject(Object object) {
+                public Future asyncInsert(Object object) {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Future asyncAssertObjects(Object[] list) {
+                public Future asyncInsert(Object[] list) {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Future asyncAssertObjects(List list) {
+                public Future asyncInsert(List list) {
                     // TODO Auto-generated method stub
                     return null;
                 }
@@ -291,13 +291,13 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
-                public Future asyncModifyObject(FactHandle factHandle,
+                public Future asyncUpdate(FactHandle factHandle,
                                                 Object object) {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Future asyncRetractObject(FactHandle factHandle) {
+                public Future asyncRetract(FactHandle factHandle) {
                     // TODO Auto-generated method stub
                     return null;
                 }
@@ -308,7 +308,7 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
-                public void modifyAssert(FactHandle factHandle,
+                public void modifyInsert(FactHandle factHandle,
                                          Object object,
                                          Rule rule,
                                          Activation activation) {
