@@ -38,7 +38,7 @@ public class BRDRLPersistenceTest extends TestCase {
 
     public void testBasics() {
         String expected = "rule \"my rule\"\n\tno-loop true\n\twhen\n\t\tPerson( )\n" + 
-                          "\t\tAccident( )\n\tthen\n\t\tassert( new Report() );\nend\n";
+                          "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         m.addLhsItem( new FactPattern( "Person" ) );
         m.addLhsItem( new FactPattern( "Accident" ) );
@@ -64,7 +64,7 @@ public class BRDRLPersistenceTest extends TestCase {
                           "\t\t>not Cancel( )\n"+
                           "\tthen\n"+
                           "\t\t>p1.setStatus( \"rejected\" );\n"+
-                          "\t\t>modify( p1 );\n"+
+                          "\t\t>update( p1 );\n"+
                           "\t\t>retract( p1 );\n"+
                           "\t\tSend an email to administrator\n"+
                           "end\n";
@@ -80,7 +80,7 @@ public class BRDRLPersistenceTest extends TestCase {
         //to satisfy JBRULES-850
         RuleModel m = getModelWithNoConstraints();
         String s = BRDRLPersistence.getInstance().marshal( m );
-        System.out.println(s);
+        //System.out.println(s);
         assertTrue(s.indexOf( "Person( f1 : age)" ) != -1);
     }
 
@@ -257,7 +257,7 @@ public class BRDRLPersistenceTest extends TestCase {
                 "p1 : Person( ) " + 
                 "Goober( goo == \"foo\"  || == \"bar\" || goo2 == \"foo\" || ( goo == \"whee\" && gabba == \"whee\" ), goo3 == \"foo\" )" +
             " then " +
-                "assert( new Whee() );" +
+                "insert( new Whee() );" +
         "end";
         assertEqualsIgnoreWhitespace( expected, actual );
         
@@ -361,7 +361,7 @@ public class BRDRLPersistenceTest extends TestCase {
         m.addLhsItem( p );
         
         String actual = BRDRLPersistence.getInstance().marshal( m );
-        System.err.println(actual);
+        //System.err.println(actual);
         
         
         String expected = "rule \"yeah\" " +

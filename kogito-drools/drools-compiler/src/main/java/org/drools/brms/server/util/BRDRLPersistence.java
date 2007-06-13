@@ -305,24 +305,24 @@ public class BRDRLPersistence
             buf = b;
         }
 
-        public void visitActionAssertFact(final ActionInsertFact action) {
-            this.generateAssertCall( action,
+        public void visitActionInsertFact(final ActionInsertFact action) {
+            this.generateInsertCall( action,
                                      false );
         }
 
-        public void visitActionAssertLogicalFact(final ActionInsertLogicalFact action) {
-            this.generateAssertCall( action,
+        public void visitActionInsertLogicalFact(final ActionInsertLogicalFact action) {
+            this.generateInsertCall( action,
                                      false );
         }
 
-        private void generateAssertCall(final ActionInsertFact action,
+        private void generateInsertCall(final ActionInsertFact action,
                                         final boolean isLogic) {
             buf.append( "\t\t" );
             if( isDSLEnhanced ) {
                 buf.append( ">" );
             }
             if ( action.fieldValues.length == 0 ) {
-                buf.append( "assert( new " );
+                buf.append( "insert( new " );
                 buf.append( action.factType );
                 buf.append( "() );\n" );
             } else {
@@ -335,22 +335,22 @@ public class BRDRLPersistence
                 generateSetMethodCalls( "fact" + idx,
                                         action.fieldValues );
                 if ( isLogic ) {
-                    buf.append( "\t\tassertLogical( fact" );
+                    buf.append( "\t\tinsertLogical( fact" );
                 } else {
-                    buf.append( "\t\tassert( fact" );
+                    buf.append( "\t\tinsert( fact" );
                 }
                 buf.append( idx++ );
                 buf.append( " );\n" );
             }
         }
 
-        public void visitActionModifyField(final ActionUpdateField action) {
+        public void visitActionUpdateField(final ActionUpdateField action) {
             this.visitActionSetField( action );
             buf.append( "\t\t" );
             if( isDSLEnhanced ) {
                 buf.append( ">" );
             }
-            buf.append( "modify( " );
+            buf.append( "update( " );
             buf.append( action.variable );
             buf.append( " );\n" );
         }
