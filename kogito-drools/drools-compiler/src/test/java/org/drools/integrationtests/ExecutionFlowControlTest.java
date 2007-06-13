@@ -64,7 +64,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final PersonInterface person = new Person( "Edson",
                                                    "cheese" );
-        workingMemory.assertObject( person );
+        workingMemory.insert( person );
 
         workingMemory.fireAllRules();
 
@@ -95,12 +95,12 @@ public class ExecutionFlowControlTest extends TestCase {
         final PersonInterface person10 = new Person( "bob",
                                                    "cheese",
                                                    10);
-        workingMemory.assertObject( person10 );
+        workingMemory.insert( person10 );
         
         final PersonInterface person20 = new Person( "mic",
                                                      "cheese",
                                                      20);
-          workingMemory.assertObject( person20 );        
+          workingMemory.insert( person20 );        
 
         workingMemory.fireAllRules();
 
@@ -130,7 +130,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -156,7 +156,7 @@ public class ExecutionFlowControlTest extends TestCase {
         // AgendaGroup "group1" is not active, so should receive activation
         final Cheese brie12 = new Cheese( "brie",
                                           12 );
-        workingMemory.assertObject( brie12 );
+        workingMemory.insert( brie12 );
         final AgendaGroup group1 = workingMemory.getAgenda().getAgendaGroup( "group1" );
         assertEquals( 1,
                       group1.size() );
@@ -165,13 +165,13 @@ public class ExecutionFlowControlTest extends TestCase {
         // AgendaqGroup "group1" is now active, so should not receive activations
         final Cheese brie10 = new Cheese( "brie",
                                           10 );
-        workingMemory.assertObject( brie10 );
+        workingMemory.insert( brie10 );
         assertEquals( 1,
                       group1.size() );
 
         final Cheese cheddar20 = new Cheese( "cheddar",
                                              20 );
-        workingMemory.assertObject( cheddar20 );
+        workingMemory.insert( cheddar20 );
         final AgendaGroup group2 = workingMemory.getAgenda().getAgendaGroup( "group1" );
         assertEquals( 1,
                       group2.size() );
@@ -180,14 +180,14 @@ public class ExecutionFlowControlTest extends TestCase {
         rfg.setActive( true );
         final Cheese cheddar17 = new Cheese( "cheddar",
                                              17 );
-        workingMemory.assertObject( cheddar17 );
+        workingMemory.insert( cheddar17 );
         assertEquals( 1,
                       group2.size() );
     }
 
     public void testLockOnActiveWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithModify.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithUpdate.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -210,10 +210,10 @@ public class ExecutionFlowControlTest extends TestCase {
         final Person mark = new Person( "mark" );
         mark.setCheese( brie );
 
-        final FactHandle brieHandle = wm.assertObject( brie );
-        wm.assertObject( bob );
-        wm.assertObject( mic );
-        wm.assertObject( mark );
+        final FactHandle brieHandle = wm.insert( brie );
+        wm.insert( bob );
+        wm.insert( mic );
+        wm.insert( mark );
 
         final DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
@@ -223,7 +223,7 @@ public class ExecutionFlowControlTest extends TestCase {
         agenda.fireNextItem( null );
         assertEquals( 2,
                       group1.size() );
-        wm.modifyObject( brieHandle,
+        wm.update( brieHandle,
                          brie );
         assertEquals( 2,
                       group1.size() );
@@ -239,7 +239,7 @@ public class ExecutionFlowControlTest extends TestCase {
         agenda.fireNextItem( null );
         assertEquals( 2,
                       rfg.size() );
-        wm.modifyObject( brieHandle,
+        wm.update( brieHandle,
                          brie );
         assertEquals( 2,
                       group2.size() );
@@ -260,7 +260,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -306,7 +306,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        workingMemory.assertObject( brie );
+        workingMemory.insert( brie );
 
         final ActivationGroup activationGroup0 = workingMemory.getAgenda().getActivationGroup( "activation-group-0" );
         assertEquals( 2,
@@ -359,7 +359,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.assertObject( brie );
+        final FactHandle brieHandle = workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -376,13 +376,13 @@ public class ExecutionFlowControlTest extends TestCase {
 
     }
 
-    public void testAssertRetractNoloop() throws Exception {
+    public void testInsertRetractNoloop() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Assert_Retract_Noloop.drl" ) );
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Insert_Retract_Noloop.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      15 ) );
 
         wm.fireAllRules();
@@ -403,7 +403,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.assertObject( brie );
+        final FactHandle brieHandle = workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -434,7 +434,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.assertObject( brie );
+        final FactHandle brieHandle = workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
@@ -453,21 +453,21 @@ public class ExecutionFlowControlTest extends TestCase {
 
     }
 
-    public void testModifyNoLoop() throws Exception {
+    public void testUpdateNoLoop() throws Exception {
         // JBRULES-780, throws a NullPointer or infinite loop if there is an issue
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ModifyNoloop.drl" ) );
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateNoloop.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      15 ) );
 
         wm.fireAllRules();
     }
 
-    public void testModifyActivationCreationNoLoop() throws Exception {
-        // JBRULES-787, no-loop blocks all dependant tuples for modify 
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ModifyActivationCreationNoLoop.drl" ) );
+    public void testUpdateActivationCreationNoLoop() throws Exception {
+        // JBRULES-787, no-loop blocks all dependant tuples for update 
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateActivationCreationNoLoop.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
         final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase.newStatefulSession();
@@ -490,19 +490,19 @@ public class ExecutionFlowControlTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            15 );
-        final FactHandle stiltonHandle = wm.assertObject( stilton );
+        final FactHandle stiltonHandle = wm.insert( stilton );
 
         final Person p1 = new Person( "p1" );
         p1.setCheese( stilton );
-        wm.assertObject( p1 );
+        wm.insert( p1 );
 
         final Person p2 = new Person( "p2" );
         p2.setCheese( stilton );
-        wm.assertObject( p2 );
+        wm.insert( p2 );
 
         final Person p3 = new Person( "p3" );
         p3.setCheese( stilton );
-        wm.assertObject( p3 );
+        wm.insert( p3 );
 
         assertEquals( 3,
                       created.size() );
@@ -512,7 +512,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final Activation item = ((ActivationCreatedEvent) created.get( 2 )).getActivation();
 
         // simulate a modify inside a consequence
-        wm.modifyObject( stiltonHandle,
+        wm.update( stiltonHandle,
                          stilton,
                          item.getRule(),
                          item );
@@ -537,7 +537,7 @@ public class ExecutionFlowControlTest extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        workingMemory.assertObject( "Test" );
+        workingMemory.insert( "Test" );
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
@@ -657,7 +657,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
         // go !
         final Message message = new Message( "hola" );
-        workingMemory.assertObject( message );
+        workingMemory.insert( message );
         workingMemory.fireAllRules();
         assertFalse( message.isFired() );
 

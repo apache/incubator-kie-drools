@@ -44,6 +44,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
@@ -123,7 +124,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         pattern.addConstraint( returnValue );
 
         // There is no m this should produce errors.
-        ruleDescr.setConsequence( "modify(m);" );
+        ruleDescr.setConsequence( "update(m);" );
 
         builder.addPackage( packageDescr );
 
@@ -175,8 +176,9 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                           rule.getLhs(),
                                                           tuple );
 
-        KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
-                                                                                      workingMemory );
+        DefaultKnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
+        knowledgeHelper.setActivation( activation );
+        
         rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 1 ),
@@ -193,8 +195,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         rule = pkg.getRule( "rule-1" );
 
-        knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
-                                                                      workingMemory );
+        knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
+        knowledgeHelper.setActivation( activation );
+        
         rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 2 ),
@@ -254,8 +257,9 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                           newRule.getLhs(),
                                                           tuple );
 
-        final KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
-                                                                                            workingMemory );
+        final DefaultKnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
+        knowledgeHelper.setActivation( activation );
+        
         newRule.getConsequence().evaluate( knowledgeHelper,
                                            workingMemory );
         assertEquals( new Integer( 1 ),
@@ -363,7 +367,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                "stilton" );
         stilton.setFieldValue( "price",
                                new Integer( 200 ) );
-        workingMemory.assertObject( stilton );
+        workingMemory.insert( stilton );
         workingMemory.fireAllRules();
 
     }
@@ -388,7 +392,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         pattern.addConstraint( literalDescr );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( "update(stilton);" );
 
         builder.addPackage( packageDescr );
 
@@ -426,7 +430,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         pattern.addConstraint( returnValue );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( "update(stilton);" );
 
         builder.addPackage( packageDescr );
 
@@ -494,7 +498,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PredicateDescr predicate = new PredicateDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
         pattern.addConstraint( predicate );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( "update(stilton);" );
 
         builder.addPackage( packageDescr );
 
@@ -560,7 +564,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final EvalDescr evalDescr = new EvalDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
         lhs.addDescr( evalDescr );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( "update(stilton);" );
 
         builder.addPackage( packageDescr );
 
@@ -606,7 +610,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder = new PackageBuilder();
         final Rule rule = createRule( new OrDescr(),
                                       builder,
-                                      "modify(stilton);" );
+                                      "update(stilton);" );
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
@@ -626,7 +630,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder = new PackageBuilder();
         final Rule rule = createRule( new AndDescr(),
                                       builder,
-                                      "modify(stilton);" );
+                                      "update(stilton);" );
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
@@ -648,7 +652,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         // Make sure we can't accessa  variable bound inside the not node
         Rule rule = createRule( new NotDescr(),
                                 builder,
-                                "modify(stilton);" );
+                                "update(stilton);" );
         assertEquals( 1,
                       builder.getErrors().getErrors().length );
 
@@ -677,7 +681,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         // Make sure we can't accessa  variable bound inside the not node
         Rule rule = createRule( new ExistsDescr(),
                                 builder,
-                                "modify(stilton);" );
+                                "update(stilton);" );
         assertEquals( 1,
                       builder.getErrors().getErrors().length );
 
@@ -869,7 +873,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         pattern.addConstraint( literalDescr );
 
-        queryDescr.setConsequence( "modify(stilton);" );
+        queryDescr.setConsequence( "update(stilton);" );
 
         builder.addPackage( packageDescr );
 
@@ -881,7 +885,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         
         StatefulSession session = ruleBase.newStatefulSession();
         
-        session.assertObject( new Cheese( "stilton", 15) );
+        session.insert( new Cheese( "stilton", 15) );
         
         QueryResults results = session.getQueryResults( "query1", new Object[] { "stilton" } );
         assertEquals( 1, results.size() );
@@ -978,7 +982,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         lhs.addDescr( pattern2 );
         pattern2.addConstraint( fieldBindingDescr );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( "update(stilton);" );
 
         builder.addPackage( packageDescr );
 
@@ -1046,7 +1050,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         pattern.addConstraint( returnValue );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( "update(stilton);" );
     }
 
     private void createPredicateRule(final PackageDescr packageDescr,
@@ -1075,7 +1079,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PredicateDescr predicate = new PredicateDescr( expression );
         pattern.addConstraint( predicate );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( "update(stilton);" );
     }
 
     private void createEvalRule(final PackageDescr packageDescr,
@@ -1191,11 +1195,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertTrue(flows.containsKey( "0" ));
         p = (Process) flows.get( "0" );
         assertTrue( p instanceof RuleFlowProcessImpl );
-        
-        
-        
-        
-        
     }
     
     public void testPackageRuleFlows() throws Exception {

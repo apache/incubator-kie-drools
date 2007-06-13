@@ -1,10 +1,10 @@
 package org.drools.brms.server.util;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -305,17 +305,17 @@ public class BRDRLPersistence
             buf = b;
         }
 
-        public void visitActionAssertFact(final ActionAssertFact action) {
+        public void visitActionAssertFact(final ActionInsertFact action) {
             this.generateAssertCall( action,
                                      false );
         }
 
-        public void visitActionAssertLogicalFact(final ActionAssertLogicalFact action) {
+        public void visitActionAssertLogicalFact(final ActionInsertLogicalFact action) {
             this.generateAssertCall( action,
                                      false );
         }
 
-        private void generateAssertCall(final ActionAssertFact action,
+        private void generateAssertCall(final ActionInsertFact action,
                                         final boolean isLogic) {
             buf.append( "\t\t" );
             if( isDSLEnhanced ) {
@@ -344,7 +344,7 @@ public class BRDRLPersistence
             }
         }
 
-        public void visitActionModifyField(final ActionModifyField action) {
+        public void visitActionModifyField(final ActionUpdateField action) {
             this.visitActionSetField( action );
             buf.append( "\t\t" );
             if( isDSLEnhanced ) {

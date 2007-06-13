@@ -1,18 +1,18 @@
 package org.drools.integrationtests;
 
-import org.drools.AssertedObject;
+import org.drools.InsertedObject;
 
 rule rule1
   when
   then
-    assert( new AssertedObject( "value1") );
-    assert( new AssertedObject( "value2") );
+    insert( new InsertedObject( "value1") );
+    insert( new InsertedObject( "value2") );
 end
 
 query "assertedobjquery" ( $value )
-    assertedobj : AssertedObject( value == $value )
+    assertedobj : InsertedObject( value == $value )
 end 
 
 query "assertedobjquery2" ( $value1, String $value2 )
-    assertedobj : AssertedObject( value == $value2 )
+    assertedobj : InsertedObject( value == $value2 )
 end 

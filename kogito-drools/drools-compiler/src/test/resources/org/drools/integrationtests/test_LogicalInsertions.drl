@@ -9,7 +9,7 @@ rule justifier1
     when
         cheese : Cheese( type == "brie" )
     then
-		assertLogical( new  Person( "jane" ) );
+	    insertLogical( new  Person( "jane" ) );
 		list.add( cheese );
 end   
 
@@ -17,7 +17,7 @@ rule justifier2
     when
         cheese : Cheese( type == "provolone" )
     then
-		assertLogical( new  Person( "jane" ) );
+		insertLogical( new  Person( "jane" ) );
 		list.add( cheese );
 end   
 

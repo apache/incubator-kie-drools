@@ -10,7 +10,7 @@ rule delayed
         cheese : Cheese( $type:type == "brie" )
     then
 		list.add( cheese );
-		assert(new Cheese("stilton", 42));
+		insert(new Cheese("stilton", 42));
 		retract(cheese);
 end
 

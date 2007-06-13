@@ -9,6 +9,6 @@ no-loop true
     then
         c.setPrice( 30 );
         retract(a);
-        modify(c);
+        update(c);
 end
 

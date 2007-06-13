@@ -9,7 +9,7 @@ rule "test1"
         cheese : Cheese();
     then
     	retract(cheese);
-		assert(cheese);
+		insert(cheese);
 end
 
 

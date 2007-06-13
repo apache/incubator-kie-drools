@@ -8,7 +8,7 @@ rule "assert"
 	when
 		p : Person( name == "person" )
 	then
-		assertLogical( new CheeseEqual( p.getName(), p.getAge() ) );
+		insertLogical( new CheeseEqual( p.getName(), p.getAge() ) );
 end
 
 rule "modify"
@@ -17,5 +17,5 @@ rule "modify"
 		p : Person( name == "person" )	
 		c : CheeseEqual(price == 2)
 	then
-		modify( p );
+		update( p );
 end

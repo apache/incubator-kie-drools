@@ -3,9 +3,9 @@ package org.drools.brms.server.util;
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
@@ -45,7 +45,7 @@ public class BRDRLPersistenceTest extends TestCase {
         m.addAttribute( new RuleAttribute( "no-loop",
                                            "true" ) );
 
-        m.addRhsItem( new ActionAssertFact( "Report" ) );
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
         final String drl = p.marshal( m );
@@ -159,7 +159,7 @@ public class BRDRLPersistenceTest extends TestCase {
         comp.addFactPattern( new FactPattern( "Cancel" ) );
         m.addLhsItem( comp );
 
-        final ActionModifyField set = new ActionModifyField();
+        final ActionUpdateField set = new ActionUpdateField();
         set.variable = "p1";
         set.addFieldValue( new ActionFieldValue( "status",
                                                  "rejected",
@@ -248,7 +248,7 @@ public class BRDRLPersistenceTest extends TestCase {
         
         p.addConstraint( Z );
         
-        ActionAssertFact ass = new ActionAssertFact("Whee");
+        ActionInsertFact ass = new ActionInsertFact("Whee");
         m.addRhsItem( ass );
         
         String actual = BRDRLPersistence.getInstance().marshal( m );

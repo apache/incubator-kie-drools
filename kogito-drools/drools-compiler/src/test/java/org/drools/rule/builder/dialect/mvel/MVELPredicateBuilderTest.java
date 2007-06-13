@@ -105,7 +105,7 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.assertObject( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         final ReteTuple tuple = new ReteTuple( f0 );
 
         final PredicateContextEntry predicateContext = new PredicateContextEntry();
@@ -115,7 +115,7 @@ public class MVELPredicateBuilderTest extends TestCase {
                                                    stilton ) );
 
         cheddar.setPrice( 9 );
-        wm.modifyObject( f0,
+        wm.update( f0,
                          cheddar );
 
         assertFalse( predicate.isAllowedCachedLeft( predicateContext,

@@ -63,9 +63,9 @@ public class FirstOrderLogicTest extends TestCase {
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
-            cheeseHandles[i] = wm.assertObject( cheese[i] );
+            cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final FactHandle bobHandle = wm.assertObject( bob );
+        final FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -76,7 +76,7 @@ public class FirstOrderLogicTest extends TestCase {
         // ---------------- 2nd scenario
         final int index = 1;
         cheese[index].setPrice( 9 );
-        wm.modifyObject( cheeseHandles[index],
+        wm.update( cheeseHandles[index],
                          cheese[index] );
         wm.fireAllRules();
 
@@ -88,7 +88,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );
-        wm.modifyObject( bobHandle,
+        wm.update( bobHandle,
                          bob );
         wm.fireAllRules();
 
@@ -99,7 +99,7 @@ public class FirstOrderLogicTest extends TestCase {
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
-        wm.retractObject( cheeseHandles[3] );
+        wm.retract( cheeseHandles[3] );
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -120,21 +120,21 @@ public class FirstOrderLogicTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      10 ) );
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      7 ) );
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      8 ) );
-        wm.assertObject( new Cheese( "brie",
+        wm.insert( new Cheese( "brie",
                                      5 ) );
-        wm.assertObject( new Cheese( "provolone",
+        wm.insert( new Cheese( "provolone",
                                      150 ) );
-        wm.assertObject( new Cheese( "provolone",
+        wm.insert( new Cheese( "provolone",
                                      20 ) );
-        wm.assertObject( new Person( "Bob",
+        wm.insert( new Person( "Bob",
                                      "stilton" ) );
-        wm.assertObject( new Person( "Mark",
+        wm.insert( new Person( "Mark",
                                      "provolone" ) );
 
         wm.fireAllRules();
@@ -170,9 +170,9 @@ public class FirstOrderLogicTest extends TestCase {
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
-            cheeseHandles[i] = wm.assertObject( cheese[i] );
+            cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final FactHandle bobHandle = wm.assertObject( bob );
+        final FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         int fireCount = 0;
@@ -187,7 +187,7 @@ public class FirstOrderLogicTest extends TestCase {
         // ---------------- 2nd scenario
         final int index = 1;
         cheese[index].setPrice( 9 );
-        wm.modifyObject( cheeseHandles[index],
+        wm.update( cheeseHandles[index],
                          cheese[index] );
         wm.fireAllRules();
 
@@ -200,7 +200,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );
-        wm.modifyObject( bobHandle,
+        wm.update( bobHandle,
                          bob );
         wm.fireAllRules();
 
@@ -208,7 +208,7 @@ public class FirstOrderLogicTest extends TestCase {
                              results.size() );
 
         // ---------------- 4th scenario
-        wm.retractObject( cheeseHandles[3] );
+        wm.retract( cheeseHandles[3] );
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -233,8 +233,8 @@ public class FirstOrderLogicTest extends TestCase {
                                      10 );
         final Person p = new Person( "Mark",
                                      "stilton" );
-        workingMemory.assertObject( c );
-        workingMemory.assertObject( p );
+        workingMemory.insert( c );
+        workingMemory.insert( p );
         workingMemory.fireAllRules();
 
         assertTrue( list.contains( c.getType() ) );
@@ -257,16 +257,16 @@ public class FirstOrderLogicTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        final FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+        final FactHandle stiltonHandle = workingMemory.insert( stilton );
         final Cheese cheddar = new Cheese( "cheddar",
                                            7 );
-        final FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+        final FactHandle cheddarHandle = workingMemory.insert( cheddar );
         workingMemory.fireAllRules();
 
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.retractObject( stiltonHandle );
+        workingMemory.retract( stiltonHandle );
 
         workingMemory.fireAllRules();
 
@@ -298,21 +298,21 @@ public class FirstOrderLogicTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        final FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+        final FactHandle stiltonHandle = workingMemory.insert( stilton );
         final Cheese cheddar = new Cheese( "cheddar",
                                            7 );
-        final FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+        final FactHandle cheddarHandle = workingMemory.insert( cheddar );
 
         final PersonInterface paul = new Person( "paul",
                                                  "stilton",
                                                  12 );
-        workingMemory.assertObject( paul );
+        workingMemory.insert( paul );
         workingMemory.fireAllRules();
 
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.retractObject( stiltonHandle );
+        workingMemory.retract( stiltonHandle );
 
         workingMemory.fireAllRules();
 
@@ -335,7 +335,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            7 );
-        final FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+        final FactHandle cheddarHandle = workingMemory.insert( cheddar );
         workingMemory.fireAllRules();
 
         assertEquals( 0,
@@ -343,7 +343,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        final FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+        final FactHandle stiltonHandle = workingMemory.insert( stilton );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -351,7 +351,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
-        final FactHandle brieHandle = workingMemory.assertObject( brie );
+        final FactHandle brieHandle = workingMemory.insert( brie );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -380,22 +380,22 @@ public class FirstOrderLogicTest extends TestCase {
         final Person bob = new Person( "Bob",
                                        "muzzarela" );
 
-        workingMemory.assertObject( cheddar );
+        workingMemory.insert( cheddar );
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.assertObject( provolone );
+        workingMemory.insert( provolone );
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.assertObject( edson );
+        workingMemory.insert( edson );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
 
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -416,19 +416,19 @@ public class FirstOrderLogicTest extends TestCase {
                                  list );
 
         final State state = new State( "SP" );
-        workingMemory.assertObject( state );
+        workingMemory.insert( state );
 
         final Person bob = new Person( "Bob" );
         bob.setStatus( state.getState() );
         bob.setLikes( "stilton" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         workingMemory.fireAllRules();
 
         assertEquals( 0,
                       list.size() );
 
-        workingMemory.assertObject( new Cheese( bob.getLikes(),
+        workingMemory.insert( new Cheese( bob.getLikes(),
                                                 10 ) );
         workingMemory.fireAllRules();
 
@@ -448,16 +448,16 @@ public class FirstOrderLogicTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      10 ) );
-        wm.assertObject( new Cheese( "brie",
+        wm.insert( new Cheese( "brie",
                                      5 ) );
-        wm.assertObject( new Cheese( "provolone",
+        wm.insert( new Cheese( "provolone",
                                      150 ) );
-        wm.assertObject( new Person( "Bob",
+        wm.insert( new Person( "Bob",
                                      "stilton",
                                      20 ) );
-        wm.assertObject( new Person( "Mark",
+        wm.insert( new Person( "Mark",
                                      "provolone" ) );
 
         wm.fireAllRules();
@@ -491,30 +491,30 @@ public class FirstOrderLogicTest extends TestCase {
                                  list );
 
         final Person bob = new Person( "bob", "stilton" );
-        workingMemory.assertObject( bob );
+        workingMemory.insert( bob );
 
         final Person mark = new Person( "mark", "stilton" );
-        workingMemory.assertObject( mark );
+        workingMemory.insert( mark );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                            6 );
-        final FactHandle stilton1Handle = workingMemory.assertObject( stilton1 );
+        final FactHandle stilton1Handle = workingMemory.insert( stilton1 );
         final Cheese stilton2 = new Cheese( "stilton",
                                            7 );
-        final FactHandle stilton2Handle = workingMemory.assertObject( stilton2 );
+        final FactHandle stilton2Handle = workingMemory.insert( stilton2 );
 
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
         
-        workingMemory.retractObject( stilton1Handle );
+        workingMemory.retract( stilton1Handle );
         
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertEquals( mark, list.get( 0 ));
         
-        workingMemory.retractObject( stilton2Handle );
+        workingMemory.retract( stilton2Handle );
         
         workingMemory.fireAllRules();
         assertEquals( 2,

@@ -54,9 +54,9 @@ public class DslTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
-        wm.assertObject( new Person( "Bob",
+        wm.insert( new Person( "Bob",
                                      "http://foo.bar" ) );
-        wm.assertObject( new Cheese( "stilton",
+        wm.insert( new Cheese( "stilton",
                                      42 ) );
 
         final List messages = new ArrayList();
@@ -93,8 +93,8 @@ public class DslTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
-        wm.assertObject( new Person( "rage" ) );
-        wm.assertObject( new Cheese( "cheddar",
+        wm.insert( new Person( "rage" ) );
+        wm.insert( new Cheese( "cheddar",
                                      15 ) );
 
         final List messages = new ArrayList();
@@ -106,14 +106,14 @@ public class DslTest extends TestCase {
         assertEquals( 0,
                       messages.size() );
 
-        wm.assertObject( new Person( "fire" ) );
+        wm.insert( new Person( "fire" ) );
         wm.fireAllRules();
 
         // still no firings
         assertEquals( 0,
                       messages.size() );
 
-        wm.assertObject( new Cheese( "brie",
+        wm.insert( new Cheese( "brie",
                                      15 ) );
 
         wm.fireAllRules();

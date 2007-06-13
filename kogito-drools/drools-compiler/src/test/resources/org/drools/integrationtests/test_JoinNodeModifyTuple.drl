@@ -28,7 +28,7 @@ rule "Close Assert"
         cl.time = $time;
         cl.distance = new Float( distance );
         cl.bearing = new Float( 144.9 );
-        assert( cl );
+        insert( cl );
       }
 end
 
@@ -56,7 +56,7 @@ rule "Approach Begin"
       a.time2 = $time2;
       a.bearing = $bearing;
       a.bearing2 = $bearing2;
-      assert( a );
+      insert( a );
       retract( $cls1 );
 end
 
@@ -69,7 +69,7 @@ rule "Approach Continue"
       $app.distance2 = $distance3;
       $app.bearing2 = $bearing3;
       $app.time2 = $time3;
-      modify( $app );
+      update( $app );
 end
 
 rule "Danger Distance Warning"

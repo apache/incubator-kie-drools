@@ -1,6 +1,6 @@
 package org.drools;
 
-public class AssertedObject {
+public class InsertedObject {
     private String value;
 
     public String getValue() {
@@ -11,11 +11,11 @@ public class AssertedObject {
         this.value = value;
     }
 
-    public AssertedObject(final String value) {
+    public InsertedObject(final String value) {
         this.value = value;
     }
 
-    public AssertedObject() {
+    public InsertedObject() {
     }
 
     public int hashCode() {
@@ -29,7 +29,7 @@ public class AssertedObject {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        final AssertedObject other = (AssertedObject) obj;
+        final InsertedObject other = (InsertedObject) obj;
         if ( value == null ) {
             if ( other.value != null ) return false;
         } else if ( !value.equals( other.value ) ) return false;

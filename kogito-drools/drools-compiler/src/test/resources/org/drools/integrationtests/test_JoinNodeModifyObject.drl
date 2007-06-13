@@ -31,8 +31,8 @@ salience 200
 		    errors.add("{2} Shouldn't fire for: " + n1 + " " + n2);
         }
 		swap(n1, n2);
-		modify(n1);
-		modify(n2);
+		update(n1);
+		update(n2);
 end		
 
 rule "Debug"

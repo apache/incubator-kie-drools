@@ -8,7 +8,7 @@ rule "test1"
 	when
         cheese : Cheese( price == 15 )
     then
-    	modify(cheese);
+    	update(cheese);
 end
 
 
@@ -19,7 +19,7 @@ rule "test2"
         cheese : Cheese( price == 15 )
     then
     	cheese.setPrice( 14 );
-		modify(cheese);
+		update(cheese);
 end
 
 

@@ -43,6 +43,6 @@ rule "match Integer"
     when
 		Person( name ==  "bob" )
     then
-        assertLogical ( new Person( "help" ) );
+        insertLogical ( new Person( "help" ) );
         list.add( new Integer( 4 ) );
 end 

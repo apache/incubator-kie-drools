@@ -15,14 +15,14 @@ rule "assert-item"
 	when
 		i : Integer()
 	then
-		assertLogical(new Double(2.0));
+		insertLogical(new Double(2.0));
 end
 
 rule "kickstart-accumulation"
 	when
 		i : Integer()
 	then
-		assertLogical(new Float(1.0));
+		insertLogical(new Float(1.0));
 end
 
 rule "item qualifies"
@@ -31,8 +31,8 @@ rule "item qualifies"
     	f : Float()
     then
     	//assert(new Short((short)3));
-    	assert(gs);
-   		assertLogical(new CheeseEqual(ga, 4));
+    	insert(gs);
+   		insertLogical(new CheeseEqual(ga, 4));
 end
 
 rule "accumulate item"
@@ -42,8 +42,8 @@ rule "accumulate item"
 		c : CheeseEqual(type == (ga), price == 4)
 		not CheeseEqual(type == (gb), price == 5)
 	then
-		modify(f);
-		assert(new CheeseEqual(gb, 5));
+		update(f);
+		insert(new CheeseEqual(gb, 5));
 end
 
 rule "clean-up-1"

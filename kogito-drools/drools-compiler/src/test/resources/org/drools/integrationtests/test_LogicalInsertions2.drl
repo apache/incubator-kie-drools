@@ -19,7 +19,7 @@ rule "Problem detected"
         sensor : ( Sensor( temperature > 100 ) or Sensor( pressure > 150 ) )
     then
         events.add( "Problem detected: "+sensor.toString() );
-        assertLogical( new Alarm( "Call emergency team" ) );
+        insertLogical( new Alarm( "Call emergency team" ) );
 end 
 
 rule "Call Emergency Team"
@@ -27,7 +27,7 @@ rule "Call Emergency Team"
         Alarm ( )
     then
         events.add( "Calling Emergency Team" );
-        assertLogical( new EmergencyTeam() );
+        insertLogical( new EmergencyTeam() );
 end
 
 rule "Emergency Team solves temperature" 
@@ -38,7 +38,7 @@ rule "Emergency Team solves temperature"
     then
         events.add( "Solving temperature problem" );
         sensor.setTemperature(80);
-        modify(sensor);
+        update(sensor);
 end
 
 rule "Emergency Team solves pressure" 
@@ -49,5 +49,5 @@ rule "Emergency Team solves pressure"
     then
         events.add( "Solving pressure problem" );
         sensor.setPressure(80);
-        modify(sensor);
+        update(sensor);
 end

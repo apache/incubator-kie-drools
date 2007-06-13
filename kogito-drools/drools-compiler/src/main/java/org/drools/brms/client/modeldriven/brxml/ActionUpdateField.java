@@ -7,13 +7,13 @@ package org.drools.brms.client.modeldriven.brxml;
  * 
  * @author Michael Neale
  */
-public class ActionModifyField extends ActionSetField {
+public class ActionUpdateField extends ActionSetField {
 
-    public ActionModifyField(final String itemText) {
+    public ActionUpdateField(final String itemText) {
         super( itemText );
     }
 
-    public ActionModifyField() {
+    public ActionUpdateField() {
         super();
     }
 

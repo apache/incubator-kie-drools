@@ -13,5 +13,5 @@ rule "Do  not loop  forever"
     	if ( list.size() > 2 ) {
     	    throw new Exception( "this should not loop" );
     	}
-		modify( cheese );
+		update( cheese );
 end  
