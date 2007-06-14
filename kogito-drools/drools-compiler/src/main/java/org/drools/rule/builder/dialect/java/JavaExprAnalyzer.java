@@ -27,8 +27,8 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
-import org.drools.rule.builder.dialect.java.parser.JavaParserLexer;
-import org.drools.rule.builder.dialect.java.parser.JavaParserParser;
+import org.drools.rule.builder.dialect.java.parser.JavaLexer;
+import org.drools.rule.builder.dialect.java.parser.JavaParser;
 
 /**
  * Expression analyzer.
@@ -66,11 +66,11 @@ public class JavaExprAnalyzer {
     public List[] analyzeExpression(final String expr,
                                     final Set[] availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( expr );
-        final JavaParserLexer lexer = new JavaParserLexer( charStream );
+        final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParserParser parser = new JavaParserParser( tokenStream );
+        final JavaParser parser = new JavaParser( tokenStream );
 
-        parser.logicalOrExpression();
+        parser.conditionalOrExpression();
 
         return analyze( parser.getIdentifiers(),
                         availableIdentifiers );
@@ -79,11 +79,11 @@ public class JavaExprAnalyzer {
     public List[] analyzeBlock(final String expr,
                                final Set[] availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
-        final JavaParserLexer lexer = new JavaParserLexer( charStream );
+        final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParserParser parser = new JavaParserParser( tokenStream );
+        final JavaParser parser = new JavaParser( tokenStream );
 
-        parser.compoundStatement();
+        parser.block();
 
         return analyze( parser.getIdentifiers(),
                         availableIdentifiers );
