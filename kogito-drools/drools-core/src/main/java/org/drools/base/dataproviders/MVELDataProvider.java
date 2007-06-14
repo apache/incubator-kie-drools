@@ -16,7 +16,7 @@ import org.mvel.MVEL;
 public class MVELDataProvider
     implements
     DataProvider {
-    //private final Expr              expression;
+
     private final Serializable      expression;
     private final DroolsMVELFactory factory;
 
