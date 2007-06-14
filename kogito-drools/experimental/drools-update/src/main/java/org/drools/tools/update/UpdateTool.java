@@ -83,8 +83,12 @@ public class UpdateTool {
     private static Options createOptions() {
         // create the Options
         Options options = new Options();
-        options.addOption( "d", "dir", true, "source directory" );
-        options.addOption( "f", "files", true, "pattern for the files to be updated" );
+        options.addOption( "d", "dir", true, "source base directory" );
+        options.addOption( "f", "files", true, "pattern for the files to be updated. The format is the same used by ANT:\n"+
+                           "    * = single file, directory \n"+
+                           "    ** = any level of subdirectories\n"+
+                           "EXAMPLE:\n"+
+                           "    src/main/resources/**/*.drl = matches all DRL files inside any subdirectory of <basedir>/src/main/resources");
         options.addOption( "s", "sufix", true, "the sufix to be added to all updated files" );
         options.addOption( "h", "help", false, "list the usage help" );
         
