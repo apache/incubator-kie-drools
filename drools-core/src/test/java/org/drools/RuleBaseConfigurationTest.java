@@ -37,5 +37,22 @@ public class RuleBaseConfigurationTest extends TestCase {
         
         System.getProperties().remove( "drools.indexLeftBetaMemory" );        
     }
+    
+    public void testShadowProxyExcludes() {
+        RuleBaseConfiguration cfg = new RuleBaseConfiguration();
+        
+        Properties properties = new Properties();
+        properties.setProperty( "drools.shadowProxyExcludes", "java.util.List java.util.Map java.lang.reflect.*" );
+        
+        cfg = new RuleBaseConfiguration( properties );
+        
+        assertFalse( cfg.isShadowed( "java.util.List" ) );
+        assertFalse( cfg.isShadowed( "java.util.Map" ) );
+        assertTrue( cfg.isShadowed( "java.util.HashMap" ) );
+        
+        assertFalse( cfg.isShadowed( "java.lang.reflect.Method" ) );
+        
+        assertTrue( cfg.isShadowed( "java.lang.String" ) );
+    }
 
 }

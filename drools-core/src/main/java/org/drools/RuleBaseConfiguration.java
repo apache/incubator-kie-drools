@@ -17,6 +17,10 @@
 package org.drools;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.drools.concurrent.ExecutorService;
@@ -54,44 +58,51 @@ import org.drools.util.ChainedProperties;
  * drools.indexRightBetaMemory = <true/false>
  * drools.assertBehaviour = <IDENTITY|EQUALITY>
  * drools.logicalOverride = <DISCARD|PRESERVE>
+ * drools.executorService = <qualified class name>
+ * drools.conflictResolver = <qualified class name>
+ * 
+ * drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ
  */
 public class RuleBaseConfiguration
     implements
     Serializable {
-    private static final long serialVersionUID = 320L;
+    private static final long   serialVersionUID = 320L;
 
-    private ChainedProperties chainedProperties;
+    private ChainedProperties   chainedProperties;
 
-    private boolean           immutable;
+    private boolean             immutable;
 
-    private boolean           maintainTms;
-    private boolean           removeIdentities;
-    private boolean           shareAlphaNodes;
-    private boolean           shareBetaNodes;
-    private boolean           alphaMemory;
-    private int               alphaNodeHashingThreshold;
-    private int               compositeKeyDepth;
-    private boolean           indexLeftBetaMemory;
-    private boolean           indexRightBetaMemory;
-    private AssertBehaviour   assertBehaviour;
-    private LogicalOverride   logicalOverride;
-    private ExecutorService   executorService;
+    private boolean             maintainTms;
+    private boolean             removeIdentities;
+    private boolean             shareAlphaNodes;
+    private boolean             shareBetaNodes;
+    private boolean             alphaMemory;
+    private int                 alphaNodeHashingThreshold;
+    private int                 compositeKeyDepth;
+    private boolean             indexLeftBetaMemory;
+    private boolean             indexRightBetaMemory;
+    private AssertBehaviour     assertBehaviour;
+    private LogicalOverride     logicalOverride;
+    private ExecutorService     executorService;
 
-    private ConflictResolver conflictResolver;
+    private ConflictResolver    conflictResolver;
+
+    private Map                 shadowProxyExcludes;
+    private static final String STAR             = "*";
 
     public RuleBaseConfiguration(Properties properties) {
-        init(properties);
+        init( properties );
     }
-    
+
     public RuleBaseConfiguration() {
-        init(null);
+        init( null );
     }
-    
+
     private void init(Properties properties) {
         this.immutable = false;
 
         this.chainedProperties = new ChainedProperties( "rulebase.conf" );
-        
+
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
         }
@@ -129,9 +140,12 @@ public class RuleBaseConfiguration
 
         setExecutorService( RuleBaseConfiguration.determineExecutorService( this.chainedProperties.getProperty( "drools.executorService",
                                                                                                                 "org.drools.concurrent.DefaultExecutorService" ) ) );
-        
+
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
-                                                                                                                 "org.drools.conflict.DepthConflictResolver" ) ) );
+                                                                                                                  "org.drools.conflict.DepthConflictResolver" ) ) );
+
+        setShadowProxyExcludes( this.chainedProperties.getProperty( "drools.shadowProxyExcludes",
+                                                                    "" ) );
     }
 
     /**
@@ -271,7 +285,7 @@ public class RuleBaseConfiguration
         this.executorService = executorService;
     }
 
-    public static ExecutorService determineExecutorService(String className) {
+    private static ExecutorService determineExecutorService(String className) {
         Class clazz = null;
         try {
             clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
@@ -330,9 +344,9 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for AssertBehaviour" );
             }
         }
-        
+
         public String toString() {
-            return "AssertBehaviour : " + ( ( this.value == 0) ? "identity" : "equality" );
+            return "AssertBehaviour : " + ((this.value == 0) ? "identity" : "equality");
         }
     }
 
@@ -370,13 +384,13 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for LogicalOverride" );
             }
         }
-        
+
         public String toString() {
-            return "LogicalOverride : " + ( ( this.value == 0) ? "preserve" : "discard" );
-        }        
+            return "LogicalOverride : " + ((this.value == 0) ? "preserve" : "discard");
+        }
     }
-    
-    public static ConflictResolver determineConflictResolver(String className) {
+
+    private static ConflictResolver determineConflictResolver(String className) {
         Class clazz = null;
         try {
             clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
@@ -392,21 +406,85 @@ public class RuleBaseConfiguration
 
         if ( clazz != null ) {
             try {
-                return (ConflictResolver) clazz.getMethod( "getInstance", null ).invoke( null, null );
+                return (ConflictResolver) clazz.getMethod( "getInstance",
+                                                           null ).invoke( null,
+                                                                          null );
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to Conflict Resolver '" + className + "'" );
             }
         } else {
             throw new IllegalArgumentException( "conflict Resolver '" + className + "' not found" );
         }
-    }    
-    
+    }
+
     public void setConflictResolver(ConflictResolver conflictResolver) {
         this.conflictResolver = conflictResolver;
     }
 
     public ConflictResolver getConflictResolver() {
         return this.conflictResolver;
+    }
+
+    private void setShadowProxyExcludes(String excludes) {
+        if ( excludes == null || "".equals( excludes.trim() ) ) {
+            return;
+        }
+        
+        if ( this.shadowProxyExcludes == null ) {
+            this.shadowProxyExcludes = new HashMap();
+        }
+        
+        String[] items = excludes.split( " " );
+        for ( int i = 0; i < items.length; i++ ) {
+            String qualifiedNamespace = items[i].substring( 0,
+                                                            items[i].lastIndexOf( '.' ) ).trim();
+            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
+            Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
+            if ( object == null ) {
+                if ( STAR.equals( name ) ) {
+                    this.shadowProxyExcludes.put( qualifiedNamespace,
+                                                  STAR );
+                } else {
+                    // create a new list and add it
+                    List list = new ArrayList();
+                    list.add( name );
+                    this.shadowProxyExcludes.put( qualifiedNamespace,
+                                                  list );                    
+                }
+            } else if ( name.equals( STAR ) ) {
+                // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
+                this.shadowProxyExcludes.put( qualifiedNamespace,
+                                              STAR );
+            } else {
+                // its a list so add it if it doesn't already exist
+                List list = (List) object;
+                if ( !list.contains( object ) ) {
+                    list.add( name );
+                }
+            }
+        }
+    }
+    
+    public boolean isShadowed(String className) {
+        if ( this.shadowProxyExcludes == null ) {
+            return true;
+        }
+        
+        String qualifiedNamespace = className.substring( 0,
+                                                         className.lastIndexOf( '.' ) ).trim();
+        String name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
+        Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
+        if ( object == null ) {
+            return true;
+        } else if ( STAR.equals( object ) ) {
+            return false;
+        } else {
+            List list = ( List ) object;
+            return !list.contains( name );
+        }
+        
+        
+        
     }
 
 }

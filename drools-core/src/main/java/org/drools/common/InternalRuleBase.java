@@ -23,6 +23,7 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
+import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.MapBackedClassLoader;
@@ -87,4 +88,6 @@ public interface InternalRuleBase
     public CompositePackageClassLoader getCompositePackageClassLoader();
     
     public MapBackedClassLoader getMapBackedClassLoader();
+    
+    public Rete getRete();
 }
