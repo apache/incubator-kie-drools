@@ -84,10 +84,10 @@ public class PackageBuilderConfiguration {
               null );
     }
 
-    public PackageBuilderConfiguration(ClassLoader classLoader) {
-        init( classLoader,
-              null );
-    }
+//    public PackageBuilderConfiguration(ClassLoader classLoader) {
+//        init( classLoader,
+//              null );
+//    }
 
     private void init(ClassLoader classLoader,
                       Properties properties) {
