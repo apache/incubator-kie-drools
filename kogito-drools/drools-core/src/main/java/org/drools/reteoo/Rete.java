@@ -123,7 +123,7 @@ public class Rete extends ObjectSource
             String key = ((Fact) object).getFactTemplate().getName();
             ojectTypeConf = (ObjectTypeConf) memory.get( key );
             if ( ojectTypeConf == null ) {
-                ojectTypeConf = new ObjectTypeConf( null, this);            
+                ojectTypeConf = new ObjectTypeConf( null, this.ruleBase);            
                 memory.put( key,
                             ojectTypeConf,
                             false );
@@ -136,7 +136,7 @@ public class Rete extends ObjectSource
             
             ojectTypeConf = (ObjectTypeConf) memory.get( cls );
             if ( ojectTypeConf == null ) {
-                ojectTypeConf = new ObjectTypeConf( cls, this);            
+                ojectTypeConf = new ObjectTypeConf( cls, this.ruleBase);            
                 memory.put( cls,
                             ojectTypeConf,
                             false );
@@ -308,7 +308,7 @@ public class Rete extends ObjectSource
         private static final Objenesis         OBJENESIS        = new ObjenesisStd( false );
         
         private final Class cls;
-        private final Rete rete;        
+        private final InternalRuleBase ruleBase;        
         private ObjectTypeNode[] objectTypeNodes;
         
         protected boolean                      shadowEnabled;
@@ -317,11 +317,12 @@ public class Rete extends ObjectSource
         protected transient Field              delegate;        
         //private final InternalRuleBase ruleBase;
         
-        public ObjectTypeConf(Class cls, Rete rete) {
+        public ObjectTypeConf(Class cls, InternalRuleBase ruleBase) {
             this.cls = cls;
-            this.rete = rete;      
+            this.ruleBase = ruleBase;
+            Rete rete = ruleBase.getRete(); 
             
-            if ( cls == null ) {
+            if ( cls == null || !ruleBase.getConfiguration().isShadowed( cls.getName() ) ) {
                 return;
             }
             
@@ -336,15 +337,15 @@ public class Rete extends ObjectSource
             final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( this.cls );
             try {
                 // if already loaded
-                shadowClass =  this.rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
+                shadowClass =  rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
             } catch ( final ClassNotFoundException cnfe ) {
                 // otherwise, create and load
                 final byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( cls );
                 if ( proxyBytes != null ) {
-                    this.rete.getRuleBase().getMapBackedClassLoader().addClass( shadowProxyName,
+                    rete.getRuleBase().getMapBackedClassLoader().addClass( shadowProxyName,
                                                                               proxyBytes );
                     try {
-                        shadowClass =  this.rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
+                        shadowClass =  rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
                     } catch ( ClassNotFoundException e ) {
                         throw new RuntimeException( "Unable to find or generate the ShadowProxy implementation for '" + this.cls.getName() + "'" );
                     }
@@ -419,7 +420,7 @@ public class Rete extends ObjectSource
         private void buildCache(final Object object) throws FactException {
             final List cache = new ArrayList();
 
-            final Iterator it = this.rete.getObjectTypeNodes().iterator();
+            final Iterator it = ruleBase.getRete().getObjectTypeNodes().iterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
                 if ( node.matches( object ) ) {
