@@ -31,14 +31,7 @@
     <!-- External dependencies -->
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <!-- We only need the antlr runtime deps -->
-      <exclusions>      
-        <exclusion>
-          <groupId>antlr</groupId>        
-          <artifactId>stringtemplate</artifactId>
-        </exclusion>                 
-      </exclusions>      
+      <artifactId>antlr-runtime</artifactId>     
     </dependency>
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
