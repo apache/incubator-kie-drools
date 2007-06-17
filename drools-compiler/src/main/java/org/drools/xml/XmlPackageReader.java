@@ -16,35 +16,18 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.xml.sax.Attributes;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
+import java.io.*;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * <code>RuleSet</code> loader.
@@ -169,7 +152,7 @@ public class XmlPackageReader extends DefaultHandler {
                            new FieldBindingHandler( this ) );
         this.handlers.put( "restriction-connective",
                            new RestrictionConnectiveHandler( this ) );
-
+        
         initEntityResolver();
 
     }
@@ -354,13 +337,9 @@ public class XmlPackageReader extends DefaultHandler {
             return;
         }
 
-        validate( uri,
-                  localName,
-                  handler );
+        validate( uri,  localName, handler );
 
-        final Object node = handler.start( uri,
-                                           localName,
-                                           attrs );
+        final Object node = handler.start( uri, localName, attrs );
 
         if ( node != null ) {
             this.parents.add( node );
@@ -376,6 +355,7 @@ public class XmlPackageReader extends DefaultHandler {
      * @throws SAXException
      * @see org.xml.sax.ContentHandler
      */
+
     public void endElement(final String uri,
                            final String localName,
                            final String qname) throws SAXException {
@@ -445,7 +425,7 @@ public class XmlPackageReader extends DefaultHandler {
                 }
             }
             if ( !validParent ) {
-                throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + parent + "]",
+                 throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + parent + "]",
                                              getLocator() );
             }
         }

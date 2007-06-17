@@ -16,24 +16,19 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.lang.descr.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
+
 /**
  * @author mproctor
+ * @author fmeyer
  * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
  */
 class LiteralRestrictionHandler extends BaseAbstractHandler
     implements
@@ -44,6 +39,8 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( FieldConstraintDescr.class );
+            this.validParents.add( AndDescr.class );
+            this.validParents.add( OrDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -88,13 +85,24 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) it.previous();
 
-        fieldConstriantDescr.addRestriction( literalDescr );
-
+        //TODO: correct classcastexception in AndDescr.
+        
+        Object parent = it.previous();
+        
+        if (parent instanceof FieldConstraintDescr) {
+            final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) parent;
+            fieldConstriantDescr.addRestriction( literalDescr );
+        } else if ( parent instanceof ConditionalElementDescr )  { 
+            final ConditionalElementDescr conditionDescr = (ConditionalElementDescr) parent;
+            
+            
+            
+//            System.out.println("LiteralRestriction");
+        }
         return null;
     }
-
+    
     public Class generateNodeFor() {
         return LiteralRestrictionDescr.class;
     }

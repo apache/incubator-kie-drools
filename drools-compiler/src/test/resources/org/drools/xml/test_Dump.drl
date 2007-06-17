@@ -6,6 +6,7 @@ rule "simple_rule"
   agenda-group "agenda-group"
   activation-group "activation-group"
   when
+	foo2 : Bar( ( a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == "black" ) || ( a == 40 && a3 == "pink" ) || ( a == 12 && ( a3 == "yellow" || a3 == "blue" ) ) )
     foo3 : Bar( a == 3 || == 4, a3 == "hello", a4 == null )    
     foo4 : Bar( a4 : a != 4 && != 5)
     foo5 : Bar( b == (a4 + 1) || > a4)    

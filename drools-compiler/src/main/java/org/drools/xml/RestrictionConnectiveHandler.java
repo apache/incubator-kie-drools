@@ -68,10 +68,13 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
         }
 
         RestrictionConnectiveDescr connectiveDescr = null;
-        if ( connective.equals( "|" ) ) {
+        if ( connective.equals( "or" ) ) {
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.OR );
-        } else {
+        } else if (connective.equals( "and" )) {
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
+        } else {
+            throw new SAXParseException( "<connective-restriction> requires a valid 'connective' value (and,or): " + connective,
+                                         this.xmlPackageReader.getLocator() );
         }
 
         return connectiveDescr;

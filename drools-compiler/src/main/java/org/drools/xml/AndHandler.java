@@ -16,21 +16,13 @@ package org.drools.xml;
  * limitations under the License.
  */
 
+import org.drools.lang.descr.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
-
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author mproctor
@@ -50,6 +42,8 @@ class AndHandler extends BaseAbstractHandler
             this.validParents.add( RuleDescr.class );
             this.validParents.add( OrDescr.class );
             this.validParents.add( AndDescr.class );
+            this.validParents.add( LiteralRestrictionHandler.class );
+
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -84,15 +78,16 @@ class AndHandler extends BaseAbstractHandler
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
         final Object parent = it.previous();
-
-        if ( parent.getClass() == RuleDescr.class || parent.getClass() == QueryDescr.class ) {
+        
+        
+        if (parent instanceof RuleDescr || parent instanceof QueryDescr) {            
             final RuleDescr ruleDescr = (RuleDescr) parent;
             ruleDescr.setLhs( andDescr );
-        } else {
+        } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
             ceDescr.addDescr( andDescr );
         }
-
+        
         return null;
     }
 

@@ -20,8 +20,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
@@ -44,6 +46,8 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( FieldConstraintDescr.class );
+            this.validParents.add( AndDescr.class );
+            this.validParents.add( OrDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -89,9 +93,17 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) it.previous();
-
-        fieldConstraintDescr.addRestriction( returnValueDescr );
+        
+        Object parent = it.previous();
+        
+        //TODO: Again same problem with these parent shit
+        
+        if (parent instanceof FieldConstraintDescr) {
+	        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
+	        fieldConstraintDescr.addRestriction( returnValueDescr );
+        } else {
+            System.out.println("ReturnValueRestriction");
+        }
 
         return null;
     }

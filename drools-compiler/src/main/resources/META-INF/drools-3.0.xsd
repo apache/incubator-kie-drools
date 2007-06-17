@@ -8,13 +8,9 @@
     <xs:complexType>
       <xs:choice maxOccurs="unbounded" minOccurs="0">
         <xs:element ref="drools:import"/>
-        
         <xs:element ref="drools:global"/>
-
         <xs:element ref="drools:function"/>        
-
         <xs:element ref="drools:rule"/>
-        
         <xs:element ref="drools:query"/>        
       </xs:choice>
 

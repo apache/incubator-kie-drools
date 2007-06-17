@@ -16,17 +16,14 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * @author mproctor
@@ -43,12 +40,18 @@ class FieldConstraintHandler extends BaseAbstractHandler
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( PatternDescr.class );
+            this.validParents.add( AndDescr.class );
+            this.validParents.add( OrDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
             this.validPeers.add( FieldConstraintDescr.class );
             this.validPeers.add( PredicateDescr.class );
             this.validPeers.add( FieldBindingDescr.class );
+            
+            this.validPeers.add( AndDescr.class );
+            this.validPeers.add( OrDescr.class );
+            
             this.allowNesting = false;
         }
     }
@@ -73,6 +76,7 @@ class FieldConstraintHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName) throws SAXException {
+        
         final Configuration config = this.xmlPackageReader.endConfiguration();
 
         final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) this.xmlPackageReader.getCurrent();
@@ -81,9 +85,15 @@ class FieldConstraintHandler extends BaseAbstractHandler
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
         final Object parent = it.previous();
-
-        final PatternDescr patternDescr = (PatternDescr) parent;
-        patternDescr.addConstraint( fieldConstraintDescr );
+        
+        if ( parent instanceof PatternDescr )  { 
+            final PatternDescr patternDescr = (PatternDescr) parent;
+            patternDescr.addConstraint( fieldConstraintDescr );
+        } else if ( parent instanceof ConditionalElementDescr ) {
+            final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
+            FieldConstraintDescr field = (FieldConstraintDescr) this.xmlPackageReader.getCurrent();
+            ceDescr.addOrMerge( field );
+        }
 
         return null;
     }
