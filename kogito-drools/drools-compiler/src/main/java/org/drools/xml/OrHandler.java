@@ -16,25 +16,16 @@ package org.drools.xml;
  * limitations under the License.
  */
 
+import org.drools.lang.descr.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-
 /**
  * @author mproctor
- * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
  */
 class OrHandler extends BaseAbstractHandler
     implements
@@ -45,8 +36,8 @@ class OrHandler extends BaseAbstractHandler
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
-            this.validParents.add( OrDescr.class );
-
+            this.validParents.add( PatternDescr.class );
+            
             this.validPeers = new HashSet();
             this.validPeers.add( null );
             this.validPeers.add( AndDescr.class );
@@ -80,10 +71,15 @@ class OrHandler extends BaseAbstractHandler
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
         final Object parent = it.previous();
-
-        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
-        parentDescr.addDescr( orDescr );
-
+        
+        if ( parent instanceof ConditionalElementDescr )  { 
+	        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+	        parentDescr.addDescr( orDescr );
+        } else if ( parent instanceof PatternDescr ) {
+            final PatternDescr parentDescr = (PatternDescr) parent;
+            parentDescr.addConstraint( orDescr );
+        }
+        
         return null;
     }
 

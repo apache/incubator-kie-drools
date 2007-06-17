@@ -158,8 +158,8 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitPackageDescr(final PackageDescr packageDescr) {
         final String packageName = packageDescr.getName();
-        final String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + XmlDumper.eol + " <package name=\"" + packageName + "\"  " + XmlDumper.eol + "\txmlns=\"http://drools.org/drools-3.0\" " + XmlDumper.eol
-                                 + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol + "\txs:schemaLocation=\"http://drools.org/drools-3.0 drools-3.0.xsd\"> " + XmlDumper.eol;
+        final String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + XmlDumper.eol + " <package name=\"" + packageName + "\"  " + XmlDumper.eol + "\txmlns=\"http://drools.org/drools-4.0\" " + XmlDumper.eol
+                                 + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol + "\txs:schemaLocation=\"http://drools.org/drools-4.0 drools-4.0.xsd\"> " + XmlDumper.eol;
         appendXmlDump( xmlString );
         appendXmlDump( processImportsList( packageDescr.getImports() ) );
         appendXmlDump( processGlobalsList( packageDescr.getGlobals() ) );
@@ -221,11 +221,9 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        if ( descr.getConnective() == RestrictionConnectiveDescr.OR ) {
-            this.template = "<restriction-connective connective=\"|\"/>" + XmlDumper.eol;
-        } else {
-            this.template = "<restriction-connective connective=\"&amp;\"/>" + XmlDumper.eol;
-        }
+        this.template = "<restriction-connective connective=";
+        this.template += descr.getConnective() == RestrictionConnectiveDescr.OR ? "\"or\"" : "\"and\"" ;
+        this.template += "/>" + XmlDumper.eol;
     }
 
     private String processDescrList(final List descr) {

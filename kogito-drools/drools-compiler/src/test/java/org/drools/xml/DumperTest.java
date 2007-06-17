@@ -1,16 +1,15 @@
 package org.drools.xml;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-
 import junit.framework.TestCase;
-
 import org.drools.compiler.DrlParser;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 
 /**
  * Test the dump/convert format utilities.
@@ -26,6 +25,31 @@ public class DumperTest extends TestCase {
 
         final XmlDumper dumper = new XmlDumper();
         final String result = dumper.dump( pkgOriginal );
+        
+        final BufferedReader reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.xml" ) ) );
+        final StringBuffer buffer = new StringBuffer();
+        String s = null;
+        while ( (s = reader.readLine()) != null ) {
+            buffer.append( s );
+        }
+        
+        System.out.println("-------------------------");
+        
+        System.out.println(result);
+        
+        System.out.println("-------------------------");
+        
+        System.out.println(buffer);
+        
+        System.out.println("-------------------------");
+        
+        assertEqualsIgnoreWhitespace( buffer.toString(),
+                                      result );
+
+        
+        
+        // TODO: FM need test dumped result
+        
         assertNotNull( result );
 
         //now lest slurp it back up
@@ -59,7 +83,16 @@ public class DumperTest extends TestCase {
         DrlParser parser = new DrlParser();
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
         final DrlDumper dumper = new DrlDumper();
+        
+        final XmlDumper XMLdumper = new XmlDumper();
+        final String XMLresult = XMLdumper.dump( pkgOriginal );
+        
+        System.out.println(XMLresult);
+        
         final String result = dumper.dump( pkgOriginal );
+        
+        System.out.println(result);
+        
         assertNotNull( result );
 
         parser = new DrlParser();
@@ -84,6 +117,7 @@ public class DumperTest extends TestCase {
                       ruleDumped.getLhs().getDescrs().size() );
         assertEquals( ruleOriginal.getConsequence(),
                       ruleDumped.getConsequence() );
+        
 
         // Now double check the contents are the same
         final BufferedReader reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
@@ -92,6 +126,10 @@ public class DumperTest extends TestCase {
         while ( (s = reader.readLine()) != null ) {
             buffer.append( s );
         }
+        
+        System.out.println(result);
+        System.out.println(buffer);
+        
 
         assertEqualsIgnoreWhitespace( buffer.toString(),
                                       result );

@@ -16,16 +16,14 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import java.util.Set;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import java.util.Set;
 
 /**
  * @author mproctor
  * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
  */
 interface Handler {
 
