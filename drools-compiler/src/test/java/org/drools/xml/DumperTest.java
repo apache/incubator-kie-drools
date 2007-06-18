@@ -25,31 +25,13 @@ public class DumperTest extends TestCase {
 
         final XmlDumper dumper = new XmlDumper();
         final String result = dumper.dump( pkgOriginal );
-        
-        final BufferedReader reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.xml" ) ) );
-        final StringBuffer buffer = new StringBuffer();
-        String s = null;
-        while ( (s = reader.readLine()) != null ) {
-            buffer.append( s );
-        }
-        
-        System.out.println("-------------------------");
-        
-        System.out.println(result);
-        
-        System.out.println("-------------------------");
-        
-        System.out.println(buffer);
-        
-        System.out.println("-------------------------");
-        
-        assertEqualsIgnoreWhitespace( buffer.toString(),
-                                      result );
 
+        final DrlDumper drldumper = new DrlDumper();        
+        final String drlresult = drldumper.dump( pkgOriginal );
         
+        String buffer = readFile("test_ParseRule.xml");
         
-        // TODO: FM need test dumped result
-        
+        assertEqualsIgnoreWhitespace( buffer, result );
         assertNotNull( result );
 
         //now lest slurp it back up
@@ -83,6 +65,7 @@ public class DumperTest extends TestCase {
         DrlParser parser = new DrlParser();
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
         final DrlDumper dumper = new DrlDumper();
+
         
         final XmlDumper XMLdumper = new XmlDumper();
         final String XMLresult = XMLdumper.dump( pkgOriginal );
@@ -120,19 +103,13 @@ public class DumperTest extends TestCase {
         
 
         // Now double check the contents are the same
-        final BufferedReader reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
-        final StringBuffer buffer = new StringBuffer();
-        String s = null;
-        while ( (s = reader.readLine()) != null ) {
-            buffer.append( s );
-        }
+        
+        String buffer = readFile( "test_Dump.drl" );
         
         System.out.println(result);
         System.out.println(buffer);
-        
 
-        assertEqualsIgnoreWhitespace( buffer.toString(),
-                                      result );
+        assertEqualsIgnoreWhitespace( buffer.toString(), result );
 
     }
 
