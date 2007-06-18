@@ -10,7 +10,9 @@ import org.mvel.MVEL;
 
 public class MVELEvalExpression
     implements
-    EvalExpression {
+    EvalExpression,
+    Serializable  {
+      
 
     private static final long       serialVersionUID = 320L;
 
@@ -27,8 +29,9 @@ public class MVELEvalExpression
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory) throws Exception {
         this.factory.setContext( tuple,
-                            null,
-                            workingMemory );
+                                 null,
+                                 null,
+                                 workingMemory );
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
                                                                  new Object(),
                                                                  this.factory );

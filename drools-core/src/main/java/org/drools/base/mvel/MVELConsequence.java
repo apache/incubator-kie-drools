@@ -9,7 +9,8 @@ import org.mvel.MVEL;
 
 public class MVELConsequence
     implements
-    Consequence {
+    Consequence,
+    Serializable  {
     private static final long       serialVersionUID = 320L;
 
     private final Serializable      expr;
@@ -24,6 +25,7 @@ public class MVELConsequence
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
         this.factory.setContext( knowledgeHelper.getTuple(),
+                                 knowledgeHelper,
                                  null,
                                  workingMemory );
         MVEL.executeExpression( this.expr,

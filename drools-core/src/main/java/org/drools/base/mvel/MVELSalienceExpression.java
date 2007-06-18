@@ -7,8 +7,10 @@ import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;
 
-public class MVELSalienceExpression implements
-    Salience {    
+public class MVELSalienceExpression
+    implements
+    Salience,
+    Serializable {
 
     private static final long       serialVersionUID = 320L;
 
@@ -25,10 +27,10 @@ public class MVELSalienceExpression implements
                         final WorkingMemory workingMemory) {
         this.factory.setContext( tuple,
                                  null,
+                                 null,
                                  workingMemory );
         return ((Integer) MVEL.executeExpression( this.expr,
                                                   this.factory )).intValue();
     }
 
-   
 }

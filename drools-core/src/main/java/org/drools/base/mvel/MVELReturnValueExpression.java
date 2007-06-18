@@ -11,7 +11,8 @@ import org.mvel.MVEL;
 
 public class MVELReturnValueExpression
     implements
-    ReturnValueExpression {
+    ReturnValueExpression,
+    Serializable  {
     private static final long       serialVersionUID = 320L;
 
     private final Serializable      expr;
@@ -29,6 +30,7 @@ public class MVELReturnValueExpression
                                final Declaration[] requiredDeclarations,
                                final WorkingMemory workingMemory) throws Exception {
         this.factory.setContext( tuple,
+                                 null,
                                  object,
                                  workingMemory );
 

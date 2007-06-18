@@ -15,7 +15,8 @@ import org.mvel.MVEL;
 
 public class MVELDataProvider
     implements
-    DataProvider {
+    DataProvider,
+    Serializable  {
 
     private final Serializable      expression;
     private final DroolsMVELFactory factory;
@@ -35,12 +36,13 @@ public class MVELDataProvider
                                final WorkingMemory wm,
                                final PropagationContext ctx) {
         this.factory.setContext( tuple,
-                            null,
-                            wm );
+                                 null,
+                                 null,
+                                 wm );
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expression,
-                                                this.factory );
+                                                      this.factory );
         if ( result instanceof Collection ) {
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {

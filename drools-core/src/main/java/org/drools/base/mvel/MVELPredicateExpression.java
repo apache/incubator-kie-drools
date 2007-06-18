@@ -10,7 +10,8 @@ import org.mvel.MVEL;
 
 public class MVELPredicateExpression
     implements
-    PredicateExpression {
+    PredicateExpression,
+    Serializable  {
     private static final long       serialVersionUID = 320L;
 
     private final Serializable      expr;
@@ -28,6 +29,7 @@ public class MVELPredicateExpression
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory) throws Exception {
         this.factory.setContext( tuple,
+                                 null,
                                  object,
                                  workingMemory );
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
