@@ -2975,6 +2975,134 @@ public class RuleParserTest extends TestCase {
                       ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
     }
 
+    public void testRestrictionConnectives() throws Exception {
+        
+        // the bellow expression must generate the following tree:
+        //
+        //                       AND
+        //                        |
+        //                       OR
+        //        /---------------+-------------------\
+        //       AND             AND                 AND
+        //    /---+---\       /---+---\           /---+---\
+        //   FC       FC     FC       FC         FC       OR
+        //                                             /---+---\
+        //                                            FC       FC
+        //
+        final String text = "Person( ( age ( > 60 && < 70 ) || ( > 50 && < 55 ) && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ))";
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+
+        PatternDescr pattern = (PatternDescr) parser.fact(null);
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        
+        OrDescr orConstr = (OrDescr) pattern.getDescrs().get( 0 );
+        
+        assertEquals( 3,
+                      orConstr.getDescrs().size() );
+        
+        AndDescr andConstr1 = (AndDescr) orConstr.getDescrs().get( 0 );
+        
+        FieldConstraintDescr fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 0 );
+        assertEquals( "age",
+                      fcd.getFieldName() );
+        RestrictionConnectiveDescr or =  (RestrictionConnectiveDescr) fcd.getRestriction().getRestrictions().get( 0 );
+        RestrictionConnectiveDescr and1 =  (RestrictionConnectiveDescr) or.getRestrictions().get( 0 );
+        RestrictionConnectiveDescr and2 =  (RestrictionConnectiveDescr) or.getRestrictions().get( 1 );
+        
+        assertEquals( ">",
+                      ((LiteralRestrictionDescr) and1.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "60",
+                      ((LiteralRestrictionDescr) and1.getRestrictions().get( 0 )).getText() );
+        
+        assertEquals( "<",
+                      ((LiteralRestrictionDescr) and1.getRestrictions().get( 1 )).getEvaluator() );
+        assertEquals( "70",
+                      ((LiteralRestrictionDescr) and1.getRestrictions().get( 1 )).getText() );
+        
+        assertEquals( ">",
+                      ((LiteralRestrictionDescr) and2.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "50",
+                      ((LiteralRestrictionDescr) and2.getRestrictions().get( 0 )).getText() );
+        
+        assertEquals( "<",
+                      ((LiteralRestrictionDescr) and2.getRestrictions().get( 1 )).getEvaluator() );
+        assertEquals( "55",
+                      ((LiteralRestrictionDescr) and2.getRestrictions().get( 1 )).getText() );
+        
+        
+        fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 1 );
+        assertEquals( "hair",
+                      fcd.getFieldName() );
+
+        assertEquals( "==",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "black",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
+
+        AndDescr andConstr2 = (AndDescr) orConstr.getDescrs().get( 1 );
+        assertEquals( 2,
+                      andConstr2.getDescrs().size() );
+        fcd = (FieldConstraintDescr) andConstr2.getDescrs().get( 0 );
+        assertEquals( "age",
+                      fcd.getFieldName() );
+
+        assertEquals( "==",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "40",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
+
+        fcd = (FieldConstraintDescr) andConstr2.getDescrs().get( 1 );
+        assertEquals( "hair",
+                      fcd.getFieldName() );
+
+        assertEquals( "==",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "pink",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
+        
+        
+        AndDescr andConstr3 = (AndDescr) orConstr.getDescrs().get( 2 );
+        assertEquals( 2,
+                      andConstr3.getDescrs().size() );
+        fcd = (FieldConstraintDescr) andConstr3.getDescrs().get( 0 );
+        assertEquals( "age",
+                      fcd.getFieldName() );
+
+        assertEquals( "==",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "12",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
+
+        OrDescr orConstr2 = (OrDescr) andConstr3.getDescrs().get( 1 );
+        
+        fcd = (FieldConstraintDescr) orConstr2.getDescrs().get( 0 );
+        assertEquals( "hair",
+                      fcd.getFieldName() );
+
+        assertEquals( "==",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "yellow",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
+
+        fcd = (FieldConstraintDescr) orConstr2.getDescrs().get( 1 );
+        assertEquals( "hair",
+                      fcd.getFieldName() );
+
+        assertEquals( "==",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "blue",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
+
+        
+    }
+
     public void testNotContains() throws Exception {
         final String text = "City( $city : city )\nCountry( cities not contains $city )\n";
         final AndDescr descrs = new AndDescr();

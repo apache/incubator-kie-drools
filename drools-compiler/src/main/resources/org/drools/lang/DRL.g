@@ -889,7 +889,7 @@ lhs_forall returns [ForallDescr d]
 		        $d.addDescr( $base.d );
 			$d.setLocation( offset($FORALL.line), $FORALL.pos );
 		}
-		( (COMMA)? pattern=lhs_pattern
+		( COMMA? pattern=lhs_pattern
 		{
 		        // adding additional patterns
 			$d.addDescr( $pattern.d );
@@ -1272,7 +1272,8 @@ field_constraint[ConditionalElementDescr base]
 		    }
 		}
 		(
-			or_restr_connective[top]
+			options {backtrack=true;}
+			: or_restr_connective[top]
 			{
 				// we must add now as we didn't before
 				if( $ID != null) {
