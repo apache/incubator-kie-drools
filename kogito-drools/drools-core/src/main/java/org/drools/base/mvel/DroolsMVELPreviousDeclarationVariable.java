@@ -1,11 +1,14 @@
 package org.drools.base.mvel;
 
+import java.io.Serializable;
+
 import org.drools.rule.Declaration;
 import org.mvel.integration.VariableResolver;
 
 public class DroolsMVELPreviousDeclarationVariable
     implements
-    VariableResolver {
+    VariableResolver,
+    Serializable  {
 
     private Declaration       declaration;
     private DroolsMVELFactory factory;

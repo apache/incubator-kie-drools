@@ -2,36 +2,33 @@ package org.drools.base.mvel;
 
 import java.io.Serializable;
 
+import org.drools.rule.Declaration;
+import org.drools.spi.KnowledgeHelper;
 import org.mvel.integration.VariableResolver;
 
-public class DroolsMVELGlobalVariable
+public class DroolsMVELKnowledgeHelper
     implements
     VariableResolver,
-    Serializable {
+    Serializable  {
 
-    private String            name;
-    private Class             knownType;
     private DroolsMVELFactory factory;
+    public static final String DROOLS = "drools";
 
-    public DroolsMVELGlobalVariable(final String identifier,
-                                    final Class knownType,
-                                    final DroolsMVELFactory factory) {
-        this.name = identifier;
+    public DroolsMVELKnowledgeHelper(final DroolsMVELFactory factory) {
         this.factory = factory;
-        this.knownType = knownType;
     }
 
     public String getName() {
-        return this.name;
+        return DROOLS;
     }
 
     public Class getKnownType() {
-        return this.knownType;
+        return KnowledgeHelper.class;
     }
 
     public Object getValue() {
-        return this.factory.getValue( this.name );
-    }
+        return this.factory.getKnowledgeHelper();
+    }    
 
     public void setValue(final Object value) {
         throw new UnsupportedOperationException( "External Variable identifer='" + getName() + "' type='" + getKnownType() + "' is final, it cannot be set" );
