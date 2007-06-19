@@ -85,6 +85,8 @@ options {k=2; backtrack=true; memoize=true;}
 @parser::members {
 	private List identifiers = new ArrayList();
 	public List getIdentifiers() { return identifiers; }
+	private List localDeclarations = new ArrayList();
+	public List getLocalDeclarations() { return localDeclarations; }
 	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
 	private List errors = new ArrayList();
 	
@@ -144,7 +146,7 @@ options {k=2; backtrack=true; memoize=true;}
                 else if ( e instanceof MismatchedTreeNodeException ) {
                         MismatchedTreeNodeException mtne = (MismatchedTreeNodeException)e;
                         message.append("mismatched tree node: "+
-                                                           mtne.foundNode+
+                                                           mtne.node+
                                                            "; expecting type "+
                                                            tokenNames[mtne.expecting]);
                 }
@@ -383,7 +385,21 @@ variableDeclarators
 	;
 
 variableDeclarator
-	:	Identifier variableDeclaratorRest
+	scope {
+		JavaLocalDeclarationDescr.IdentifierDescr ident;
+	}
+	@init {
+		$variableDeclarator::ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+	}
+	@after {
+		$localVariableDeclaration::descr.addIdentifier( $variableDeclarator::ident );
+	}
+	:	Identifier variableDeclaratorRest 
+		{ 
+			$variableDeclarator::ident.setIdentifier( $Identifier.text );
+			$variableDeclarator::ident.setStart( ((CommonToken)$Identifier).getStartIndex() - 1 );
+			$variableDeclarator::ident.setEnd( ((CommonToken)$variableDeclaratorRest.stop).getStopIndex() );
+		}
 	;
 	
 variableDeclaratorRest
@@ -602,7 +618,29 @@ blockStatement
 	;
 	
 localVariableDeclaration
-	:	variableModifier* type variableDeclarators ';'
+scope   {
+            JavaLocalDeclarationDescr descr;
+        }
+        @init {
+            $localVariableDeclaration::descr = new JavaLocalDeclarationDescr();
+        }
+        @after {
+            localDeclarations.add( $localVariableDeclaration::descr );
+        }
+	:	
+	( variableModifier 
+	    { 
+	        $localVariableDeclaration::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 ); 
+	        $localVariableDeclaration::descr.addModifier( $variableModifier.text ); 
+	    } 
+	)* 
+	type 
+	    { 
+	        $localVariableDeclaration::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 ); 
+	        $localVariableDeclaration::descr.setType( $type.text ); 
+	        $localVariableDeclaration::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() ); 
+	    }
+	variableDeclarators ';'
 	;
 	
 statement

@@ -16,9 +16,7 @@
 
 package org.drools.reteoo;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
@@ -118,7 +116,17 @@ public class AccumulateNode extends BetaNode {
 
         memory.getTupleMemory().add( leftTuple );
 
-        final List matchingObjects = new ArrayList();
+        AccumulateResult accresult = new AccumulateResult();
+        memory.getCreatedHandles().put( leftTuple,
+                                        accresult,
+                                        false );
+
+        final Object accContext = this.accumulate.createContext();
+
+        accresult.context = accContext;
+        this.accumulate.init( accContext,
+                              leftTuple,
+                              workingMemory );
 
         final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory,
@@ -127,13 +135,17 @@ public class AccumulateNode extends BetaNode {
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             final InternalFactHandle handle = entry.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
-                matchingObjects.add( handle.getObject() );
+                this.accumulate.accumulate( accContext,
+                                            leftTuple,
+                                            handle,
+                                            workingMemory );
             }
         }
 
-        final Object result = this.accumulate.accumulate( leftTuple,
-                                                          matchingObjects,
-                                                          workingMemory );
+        final Object result = this.accumulate.getResult( accContext,
+                                                         leftTuple,
+                                                         workingMemory );
+
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
@@ -148,14 +160,12 @@ public class AccumulateNode extends BetaNode {
                                                leftTuple );
             if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
                 final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
-                memory.getCreatedHandles().put( leftTuple,
-                                                handle,
-                                                false );
+                accresult.handle = handle;
 
                 this.sink.propagateAssertTuple( leftTuple,
-                                           handle,
-                                           context,
-                                           workingMemory );
+                                                handle,
+                                                context,
+                                                workingMemory );
             }
         }
 
@@ -173,19 +183,19 @@ public class AccumulateNode extends BetaNode {
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getTupleMemory().remove( leftTuple );
-        final InternalFactHandle handle = (InternalFactHandle) memory.getCreatedHandles().remove( leftTuple );
+        final AccumulateResult accresult = (AccumulateResult) memory.getCreatedHandles().remove( leftTuple );
 
         // if tuple was propagated
-        if ( handle != null ) {
-
+        if ( accresult.handle != null ) {
             this.sink.propagateRetractTuple( leftTuple,
-                                             handle,
+                                             accresult.handle,
                                              context,
                                              workingMemory );
 
             // Destroying the acumulate result object 
-            workingMemory.getFactHandleFactory().destroyFactHandle( handle );
+            workingMemory.getFactHandleFactory().destroyFactHandle( accresult.handle );
         }
+
     }
 
     /**
@@ -212,12 +222,73 @@ public class AccumulateNode extends BetaNode {
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                this.retractTuple( tuple,
+                modifyTupleAssert( tuple,
+                                   handle,
                                    context,
                                    workingMemory );
-                this.assertTuple( tuple,
-                                  context,
+            }
+        }
+    }
+
+    public void modifyTupleAssert(final ReteTuple leftTuple,
+                                  final InternalFactHandle handle,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory) {
+
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        AccumulateResult accresult = (AccumulateResult) memory.getCreatedHandles().get( leftTuple );
+
+        // if tuple was propagated
+        if ( accresult.handle != null ) {
+            this.sink.propagateRetractTuple( leftTuple,
+                                             accresult.handle,
+                                             context,
+                                             workingMemory );
+
+            // Destroying the acumulate result object 
+            workingMemory.getFactHandleFactory().destroyFactHandle( accresult.handle );
+            accresult.handle = null;
+        } 
+        
+        if( accresult.context == null ) {
+            final Object accContext = this.accumulate.createContext();
+
+            this.accumulate.init( accContext,
+                                  leftTuple,
                                   workingMemory );
+
+            accresult.context = accContext;
+        }
+
+        this.accumulate.accumulate( accresult.context,
+                                    leftTuple,
+                                    handle,
+                                    workingMemory );
+
+        final Object result = this.accumulate.getResult( accresult.context,
+                                                         leftTuple,
+                                                         workingMemory );
+
+        // First alpha node filters
+        boolean isAllowed = true;
+        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
+            if ( !this.resultConstraints[i].isAllowed( result,
+                                                       workingMemory ) ) {
+                isAllowed = false;
+                break;
+            }
+        }
+        if ( isAllowed ) {
+            this.resultBinder.updateFromTuple( workingMemory,
+                                               leftTuple );
+            if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
+                final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result );
+                accresult.handle = createdHandle;
+
+                this.sink.propagateAssertTuple( leftTuple,
+                                                createdHandle,
+                                                context,
+                                                workingMemory );
             }
         }
     }
@@ -261,19 +332,19 @@ public class AccumulateNode extends BetaNode {
         final Iterator it = memory.getCreatedHandles().iterator();
 
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            AccumulateResult accresult = (AccumulateResult) entry.getValue();
             sink.assertTuple( new ReteTuple( (ReteTuple) entry.getKey(),
-                                             (InternalFactHandle) entry.getValue() ),
+                                             accresult.handle ),
                               context,
                               workingMemory );
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#hashCode()
      */
     public int hashCode() {
-        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^
-            ArrayUtils.hashCode( this.resultConstraints );
+        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^ ArrayUtils.hashCode( this.resultConstraints );
     }
 
     /* (non-Javadoc)
@@ -289,19 +360,22 @@ public class AccumulateNode extends BetaNode {
         }
 
         final AccumulateNode other = (AccumulateNode) object;
-        
-        if( this.getClass() != other.getClass() || ( ! this.leftInput.equals( other.leftInput ) ) || 
-            ( ! this.rightInput.equals( other.rightInput ) ) || (! this.constraints.equals( other.constraints )) ) {
+
+        if ( this.getClass() != other.getClass() || (!this.leftInput.equals( other.leftInput )) || (!this.rightInput.equals( other.rightInput )) || (!this.constraints.equals( other.constraints )) ) {
             return false;
         }
-        
-        return this.accumulate.equals( other.accumulate ) && resultBinder.equals( other.resultBinder ) && Arrays.equals( this.resultConstraints, other.resultConstraints );
-    }
 
-    
+        return this.accumulate.equals( other.accumulate ) && resultBinder.equals( other.resultBinder ) && Arrays.equals( this.resultConstraints,
+                                                                                                                         other.resultConstraints );
+    }
 
     public String toString() {
         return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
     }
 
+    private static class AccumulateResult {
+        public InternalFactHandle handle;
+        public Object             context;
+
+    }
 }

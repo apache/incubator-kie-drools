@@ -26,6 +26,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
 import org.drools.rule.builder.ConditionalElementBuilder;
+import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 
 /**
@@ -38,9 +39,11 @@ public class JavaEvalBuilder extends AbstractJavaBuilder
 
     public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
-        return build(context, descr, null);
+        return build( context,
+                      descr,
+                      null );
     }
-    
+
     /**
      * Builds and returns an Eval Conditional Element
      * 
@@ -50,7 +53,7 @@ public class JavaEvalBuilder extends AbstractJavaBuilder
      * @param descr The Eval Descriptor to build the eval conditional element from
      * 
      * @return the Eval Conditional Element
-     */    
+     */
     public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr,
                                     final Pattern prefixPattern) {
@@ -61,9 +64,10 @@ public class JavaEvalBuilder extends AbstractJavaBuilder
 
         evalDescr.setClassMethodName( className );
 
-        final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
-                                                                                      evalDescr,
-                                                                                      evalDescr.getContent() );
+        Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                  evalDescr,
+                                                                                  evalDescr.getContent() );
+        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -73,11 +77,11 @@ public class JavaEvalBuilder extends AbstractJavaBuilder
         final EvalCondition eval = new EvalCondition( declarations );
 
         final Map map = createVariableContext( className,
-                                         (String) evalDescr.getContent(),
-                                         context,
-                                         declarations,
-                                         null,
-                                         (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+                                               (String) evalDescr.getContent(),
+                                               context,
+                                               declarations,
+                                               null,
+                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
 
         generatTemplates( "evalMethod",
                           "evalInvoker",

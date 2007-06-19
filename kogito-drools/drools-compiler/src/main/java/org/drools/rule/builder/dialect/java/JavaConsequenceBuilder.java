@@ -24,6 +24,7 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.PatternExtractor;
 
@@ -46,10 +47,11 @@ public class JavaConsequenceBuilder extends AbstractJavaBuilder
         final String className = "consequence";
 
         final RuleDescr ruleDescr = context.getRuleDescr();
-        
-        final List[] usedIdentifiers = context.getDialect().getBlockIdentifiers( context,
-                                                                                 ruleDescr,
-                                                                                 (String) ruleDescr.getConsequence() );
+
+        Dialect.AnalysisResult analysis = context.getDialect().analyzeBlock( context,
+                                                                             ruleDescr,
+                                                                             (String) ruleDescr.getConsequence() );
+        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
 
@@ -58,11 +60,11 @@ public class JavaConsequenceBuilder extends AbstractJavaBuilder
         }
 
         final Map map = createVariableContext( className,
-                                         null,
-                                         context,
-                                         declarations,
-                                         null,
-                                         (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+                                               null,
+                                               context,
+                                               declarations,
+                                               null,
+                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
         map.put( "text",
                  ((JavaDialect) context.getDialect()).getKnowledgeHelperFixer().fix( (String) ruleDescr.getConsequence() ) );
 

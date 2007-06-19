@@ -202,12 +202,12 @@ public class MVELDialect
     public void compileAll() {
     }
 
-    public List[] getExpressionIdentifiers(RuleBuildContext context,
+    public Dialect.AnalysisResult analyzeExpression(RuleBuildContext context,
                                            BaseDescr descr,
                                            Object content) {
-        List[] usedIdentifiers = null;
+        Dialect.AnalysisResult result = null;
         try {
-            usedIdentifiers = this.analyzer.analyzeExpression( (String) content,
+            result = this.analyzer.analyzeExpression( (String) content,
                                                                new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -215,15 +215,15 @@ public class MVELDialect
                                                     null,
                                                     "Unable to determine the used declarations" ) );
         }
-        return usedIdentifiers;
+        return result;
     }
 
-    public List[] getBlockIdentifiers(RuleBuildContext context,
+    public Dialect.AnalysisResult analyzeBlock(RuleBuildContext context,
                                       BaseDescr descr,
                                       String text) {
-        List[] usedIdentifiers = null;
+        Dialect.AnalysisResult result = null;
         try {
-            usedIdentifiers = this.analyzer.analyzeExpression( text,
+            result = this.analyzer.analyzeExpression( text,
                                                                new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -231,7 +231,7 @@ public class MVELDialect
                                                     null,
                                                     "Unable to determine the used declarations" ) );
         }
-        return usedIdentifiers;
+        return result;
     }
 
     public Object getBuilder(final Class clazz) {
