@@ -73,10 +73,8 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.OR );
         } else if (localName.equals( RestrictionConnectiveHandler.AND )) {
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
-        } else {
-            System.out.println("IDIOTA");
         }
-
+        
         return connectiveDescr;
     }
 
