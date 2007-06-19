@@ -20,8 +20,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
@@ -38,6 +40,11 @@ import org.xml.sax.SAXParseException;
 class RestrictionConnectiveHandler extends BaseAbstractHandler
     implements
     Handler {
+    
+    public final static String   AND              = "and-restriction-connective";
+    public final static String   OR               = "or-restriction-connective";
+
+    
     RestrictionConnectiveHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
@@ -51,7 +58,7 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
             this.validPeers.add( ReturnValueRestrictionDescr.class );
             this.validPeers.add( VariableRestrictionDescr.class );
             this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.allowNesting = false;
+            this.allowNesting = true;
         }
     }
 
@@ -61,20 +68,13 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
         this.xmlPackageReader.startConfiguration( localName,
                                                   attrs );
 
-        final String connective = attrs.getValue( "connective" );
-        if ( connective == null || connective.trim().equals( "" ) ) {
-            throw new SAXParseException( "<restriction-connective> requires a 'connective' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
-
         RestrictionConnectiveDescr connectiveDescr = null;
-        if ( connective.equals( "or" ) ) {
+        if ( localName.equals( RestrictionConnectiveHandler.OR ) ) {
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.OR );
-        } else if (connective.equals( "and" )) {
+        } else if (localName.equals( RestrictionConnectiveHandler.AND )) {
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
         } else {
-            throw new SAXParseException( "<connective-restriction> requires a valid 'connective' value (and,or): " + connective,
-                                         this.xmlPackageReader.getLocator() );
+            System.out.println("IDIOTA");
         }
 
         return connectiveDescr;
@@ -87,12 +87,21 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
         final RestrictionConnectiveDescr connectiveDescr = (RestrictionConnectiveDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
-        final ListIterator it = parents.listIterator( parents.size() );
-        it.previous();
-        final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) it.previous();
+        int size = parents.size();
+        final ListIterator ite = parents.listIterator( parents.size() );
+        
+        ite.previous();
 
-        fieldConstriantDescr.addRestriction( connectiveDescr );
+        Object obj = ite.previous();
 
+        if ( obj instanceof FieldConstraintDescr ) {
+            final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) obj;
+            fieldConstriantDescr.addRestriction( connectiveDescr );
+        } else if (obj instanceof RestrictionConnectiveDescr ) {
+            final RestrictionConnectiveDescr restconective = (RestrictionConnectiveDescr) obj;
+            restconective.addRestriction( connectiveDescr );
+        }
+        
         return null;
     }
 

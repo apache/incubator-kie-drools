@@ -39,15 +39,14 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( FieldConstraintDescr.class );
-            this.validParents.add( AndDescr.class );
-            this.validParents.add( OrDescr.class );
+            this.validParents.add( RestrictionConnectiveDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
             this.validPeers.add( LiteralRestrictionDescr.class );
             this.validPeers.add( ReturnValueRestrictionDescr.class );
             this.validPeers.add( VariableRestrictionDescr.class );
-            this.validPeers.add( RestrictionConnectiveDescr.class );
+            //this.validPeers.add( RestrictionConnectiveDescr.class );
             this.allowNesting = false;
         }
     }
@@ -85,20 +84,15 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-
-        //TODO: correct classcastexception in AndDescr.
         
         Object parent = it.previous();
-        
+
         if (parent instanceof FieldConstraintDescr) {
             final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) parent;
             fieldConstriantDescr.addRestriction( literalDescr );
-        } else if ( parent instanceof ConditionalElementDescr )  { 
-            final ConditionalElementDescr conditionDescr = (ConditionalElementDescr) parent;
-            
-            
-            
-//            System.out.println("LiteralRestriction");
+        } else if ( parent instanceof RestrictionConnectiveDescr )  { 
+            final RestrictionConnectiveDescr restrictionDescr = (RestrictionConnectiveDescr) parent;
+            restrictionDescr.addRestriction( literalDescr );
         }
         return null;
     }

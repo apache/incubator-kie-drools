@@ -41,9 +41,7 @@ class AndHandler extends BaseAbstractHandler
             this.validParents.add( QueryDescr.class );
             this.validParents.add( RuleDescr.class );
             this.validParents.add( OrDescr.class );
-            this.validParents.add( AndDescr.class );
             this.validParents.add( LiteralRestrictionHandler.class );
-
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -78,16 +76,15 @@ class AndHandler extends BaseAbstractHandler
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
         final Object parent = it.previous();
-        
-        
-        if (parent instanceof RuleDescr || parent instanceof QueryDescr) {            
+
+        if ( parent instanceof RuleDescr || parent instanceof QueryDescr ) {
             final RuleDescr ruleDescr = (RuleDescr) parent;
             ruleDescr.setLhs( andDescr );
         } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
             ceDescr.addDescr( andDescr );
         }
-        
+
         return null;
     }
 

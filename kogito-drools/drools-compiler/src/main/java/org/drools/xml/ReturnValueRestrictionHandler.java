@@ -46,8 +46,7 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( FieldConstraintDescr.class );
-            this.validParents.add( AndDescr.class );
-            this.validParents.add( OrDescr.class );
+            this.validParents.add( RestrictionConnectiveDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -101,7 +100,13 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
         if (parent instanceof FieldConstraintDescr) {
 	        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
 	        fieldConstraintDescr.addRestriction( returnValueDescr );
-        } else {
+        } else if ( parent instanceof RestrictionConnectiveDescr ) {
+            final RestrictionConnectiveDescr rcDescr = (RestrictionConnectiveDescr) parent;
+            rcDescr.addRestriction( returnValueDescr );
+        }
+        
+        
+        else {
             System.out.println("ReturnValueRestriction");
         }
 

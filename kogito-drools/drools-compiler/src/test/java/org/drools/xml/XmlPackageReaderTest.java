@@ -83,26 +83,25 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( obj.getLhs().getDescrs().size(), 3); 
     }
 
-    /*
-    public void testParseFrom() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader();
-        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFrom.xml" ) ) );
-        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
-        assertEquals( "com.sample", packageDescr.getName() );
-        fail();
-    }
-    
-    
-    public void testParseCollect() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader();
-        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseCollect.xml" ) ) );
-        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
-        assertEquals( "com.sample", packageDescr.getName() );
-        fail();
-    }
-    */
+
+//    public void testParseFrom() throws Exception {
+//        final XmlPackageReader xmlPackageReader = new XmlPackageReader();
+//        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFrom.xml" ) ) );
+//        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+//        assertNotNull( packageDescr );
+//        assertEquals( "com.sample", packageDescr.getName() );
+//        fail();
+//    }
+//    
+//    
+//    public void testParseCollect() throws Exception {
+//        final XmlPackageReader xmlPackageReader = new XmlPackageReader();
+//        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseCollect.xml" ) ) );
+//        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+//        assertNotNull( packageDescr );
+//        assertEquals( "com.sample", packageDescr.getName() );
+//        fail();
+//    }
     
 
     public void testParseImport() throws Exception {
