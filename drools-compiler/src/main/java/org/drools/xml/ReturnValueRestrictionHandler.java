@@ -95,8 +95,6 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
         
         Object parent = it.previous();
         
-        //TODO: Again same problem with these parent shit
-        
         if (parent instanceof FieldConstraintDescr) {
 	        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
 	        fieldConstraintDescr.addRestriction( returnValueDescr );
@@ -104,12 +102,6 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
             final RestrictionConnectiveDescr rcDescr = (RestrictionConnectiveDescr) parent;
             rcDescr.addRestriction( returnValueDescr );
         }
-        
-        
-        else {
-            System.out.println("ReturnValueRestriction");
-        }
-
         return null;
     }
 
