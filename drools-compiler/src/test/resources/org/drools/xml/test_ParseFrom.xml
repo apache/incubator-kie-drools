@@ -18,19 +18,43 @@
 	<rule-attribute name="activation-group" value="activation-group" />
 
 	<lhs>
-        <pattern object-type="Cheese">
-            <from source="unordered-fact">
-                person
-            </from>
-
-        </pattern>
         <pattern identifier="cheese" object-type="Cheese" >
             <from>
-                <statement>
-                 </statement>
+                <expression>
+                    cheesery.getCheeses()
+                 </expression>
             </from>
         </pattern>
-	</lhs>
+
+        <pattern identifier="cheese" object-type="Cheese" >
+            <from>
+                <collect>
+                    <pattern object-type="Person">
+                        <field-constraint field-name="hair">
+                            <literal-restriction evaluator="==" value="pink" />
+                        </field-constraint>
+                    </pattern>
+                </collect>
+            </from>
+        </pattern>
+
+        <pattern identifier="cheese" object-type="Cheese">
+            <from>
+                <accumulate>
+                    <pattern object-type="Cheese"></pattern>
+                    <init>
+                        int total = 0;
+                    </init>
+                    <action>
+                        total += $cheese.getPrice();
+                    </action>
+                    <result>
+                        new Integer( total ) )
+                    </result>
+                </accumulate>
+            </from>
+        </pattern>
+    </lhs>
 	<rhs>
 		list1.add( $cheese );
 	</rhs>

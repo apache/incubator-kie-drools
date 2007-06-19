@@ -31,6 +31,16 @@ public class DumperTest extends TestCase {
         
         String buffer = readFile("test_ParseRule.xml");
         
+        System.out.println("-------------");
+        
+        System.out.println(buffer);
+        
+        System.out.println("-------------");
+        
+        System.out.println(result);
+        
+        System.out.println("-------------");
+        
         assertEqualsIgnoreWhitespace( buffer, result );
         assertNotNull( result );
 

@@ -31,13 +31,16 @@
             <or>
                 <and>
 					<field-constraint field-name="a">
-						<literal-restriction evaluator="&gt;" value="60" />
-						<restriction-connective connective="and" />
-						<literal-restriction evaluator="&lt;" value="70" />
-						<restriction-connective connective="or"/>	
-						<literal-restriction evaluator="&lt;" value="50" />
-						<restriction-connective connective="and"/>
-						<literal-restriction evaluator="&gt;" value="55" />
+                        <or-restriction-connective>
+                            <and-restriction-connective>
+                                <literal-restriction evaluator="&gt;" value="60" />
+                                <literal-restriction evaluator="&lt;" value="70" />
+                            </and-restriction-connective>
+                            <and-restriction-connective>
+                                <literal-restriction evaluator="&lt;" value="50" />
+                                <literal-restriction evaluator="&gt;" value="55" />
+                            </and-restriction-connective>                            
+                        </or-restriction-connective>
 					</field-constraint>
 
 					<field-constraint field-name="a3">
@@ -61,9 +64,10 @@
                     </field-constraint>
 					
                     <field-constraint field-name="a3">
-                        <literal-restriction evaluator="==" value="yellow"/>
-                        <restriction-connective connective="and"/>
-                        <literal-restriction evaluator="==" value="blue" />
+                        <or-restriction-connective>
+                            <literal-restriction evaluator="==" value="yellow"/>
+                            <literal-restriction evaluator="==" value="blue" />
+                        </or-restriction-connective>
                     </field-constraint>
                 </and>
             </or>
@@ -72,9 +76,10 @@
 		
         <pattern identifier="foo3" object-type="Bar" >
 			<field-constraint field-name="a">
-                <literal-restriction evaluator="==" value="3" />
-                <restriction-connective connective="or"/>
-                <literal-restriction evaluator="==" value="4" />
+                <or-restriction-connective>
+                    <literal-restriction evaluator="==" value="3" />
+                    <literal-restriction evaluator="==" value="4" />                    
+                </or-restriction-connective>
 			</field-constraint>
 			<field-constraint field-name="a3"> 
 				<literal-restriction evaluator="==" value="hello" />
@@ -94,9 +99,10 @@
 
 		<pattern identifier="foo5" object-type="Bar" >
 			<field-constraint field-name="b">
-                <return-value-restriction evaluator="==" >a4 + 1</return-value-restriction>
-                <restriction-connective connective="or"/>
-                <variable-restriction evaluator="&gt;" identifier="a4" />
+                <or-restriction-connective>
+                    <return-value-restriction evaluator="==" >a4 + 1</return-value-restriction>
+                    <variable-restriction evaluator="&gt;" identifier="a4" />
+                </or-restriction-connective>
 			</field-constraint>
 		</pattern>
 

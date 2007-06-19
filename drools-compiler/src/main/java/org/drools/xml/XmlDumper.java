@@ -221,9 +221,17 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        this.template = "<restriction-connective connective=";
-        this.template += descr.getConnective() == RestrictionConnectiveDescr.OR ? "\"or\"" : "\"and\"" ;
-        this.template += "/>" + XmlDumper.eol;
+        this.template = new String();
+        List restrictions = descr.getRestrictions();
+        String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR 
+            ? RestrictionConnectiveHandler.OR 
+            : RestrictionConnectiveHandler.AND; 
+            
+        if ( restrictions != Collections.EMPTY_LIST ) {
+            this.template  = "<" + xmlTag + ">";
+            this.template += processDescrList( restrictions );
+            this.template += "</" + xmlTag + ">";
+        }
     }
 
     private String processDescrList(final List descr) {
