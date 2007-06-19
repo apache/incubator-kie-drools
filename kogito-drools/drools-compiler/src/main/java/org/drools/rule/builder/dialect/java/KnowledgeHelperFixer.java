@@ -16,184 +16,68 @@ package org.drools.rule.builder.dialect.java;
  * limitations under the License.
  */
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mvel.Macro;
+import org.mvel.MacroProcessor;
 
 public class KnowledgeHelperFixer {
-
-    static String  KNOWLEDGE_HELPER_PFX = "";                               //could also be: "drools\\." for "classic" mode.
-    static Pattern UPDATE               = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "update\\s*\\(([^)]+)\\)(\\s*;.*)",
-                                                           Pattern.DOTALL );
-    static Pattern INSERT               = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "insert\\s*\\((.*)\\)(\\s*;.*)",
-                                                           Pattern.DOTALL );
-    static Pattern INSERT_LOGICAL       = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "insertLogical\\s*\\((.*)\\)(\\s*;.*)",
-                                                           Pattern.DOTALL );
-    static Pattern RETRACT              = Pattern.compile( "(.*)\\b" + KnowledgeHelperFixer.KNOWLEDGE_HELPER_PFX + "retract\\s*\\((.+)\\)(\\s*;.*)",
-                                                           Pattern.DOTALL );
-
-    /**
-     * This takes a raw consequence, and fixes up the KnowledegeHelper references 
-     * to be what SMF requires.
-     *
-     * eg: modify( myObject ); --> drools.modify( myObjectHandle, myObject );
-     * refer to the Replacer implementation classes below for the specific replacement patterns.
-     * 
-     * (can adjust the PREFIX if needed).
-     * 
-     * Uses some non-tail recursion to ensure that all parts are "expanded". 
-     */
-    public String fix(final String raw) {
-        String result = fix( raw,
-                             UpdateReplacer.INSTANCE );
-        result = fix( result,
-                      InsertReplacer.INSTANCE );
-        result = fix( result,
-                      InsertLogicalReplacer.INSTANCE );
-        result = fix( result,
-                      RetractReplacer.INSTANCE );
-        return result;
+    private static final MacroProcessor macroProcessor;
+    
+    static {
+        Map macros = new HashMap(5);
+        
+        macros.put( "insert",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.insert";
+                        }
+                    } ); 
+        
+        macros.put( "insertLogical",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.insertLogical";
+                        }
+                    } );         
+        
+        macros.put( "modifyRetract",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.modifyRetract";
+                        }
+                    } );  
+        
+        macros.put( "modifyInsert",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.modifyInsert";
+                        }
+                    } );          
+        
+        macros.put( "update",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.update";
+                        }
+                    } );
+        
+        macros.put( "retract",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.retract";
+                        }
+                    } );  
+        macroProcessor = new MacroProcessor();
+        macroProcessor.setMacros(macros);        
     }
 
-    /**
-     * Recursively apply the pattern, replace the guts of what is matched.
-     */
-    public String fix(final String raw,
-                      final Replacer replacer) {
-        if ( raw == null ) {
-            return null;
-        }
-        final Matcher matcher = replacer.getPattern().matcher( raw );
-
-        if ( matcher.matches() ) {
-            String pre = matcher.group( 1 );
-            if ( matcher.group( 1 ) != null ) {
-                pre = fix( pre,
-                           replacer );
-            }
-            final String obj = matcher.group( 2 ).trim();
-            String post = matcher.group( 3 );
-            if ( post != null ) {
-                post = fix( post,
-                            replacer );
-            }
-
-            final String replacement = escapeDollarSigns( replacer,
-                                                          obj );
-            return pre + matcher.replaceAll( replacement ) + post;
-
-        } else {
+    public String fix(final String raw) {
+        if  ( raw == null || "".equals( raw.trim() )) {
             return raw;
         }
+               
+        return macroProcessor.parse( raw );
     }
-
-    /** 
-     * This is needed to escape "$" so that matches doesn't try and pull out groups that don't exist.
-     * "$" may just be used in variable name etc... 
-     */
-    private String escapeDollarSigns(final Replacer replacer,
-                                     final String obj) {
-        return KnowledgeHelperFixer.replace( replacer.getReplacement( obj ),
-                                             "$",
-                                             "\\$",
-                                             256 );
-    }
-
-    static interface Replacer {
-        Pattern getPattern();
-
-        String getReplacement(String guts);
-    }
-
-    static class InsertReplacer
-        implements
-        Replacer {
-
-        static Replacer INSTANCE = new InsertReplacer();
-
-        public Pattern getPattern() {
-            return KnowledgeHelperFixer.INSERT;
-        }
-
-        public String getReplacement(final String guts) {
-            return "drools.insert(" + guts + ")";
-        }
-
-    }
-
-    static class InsertLogicalReplacer
-        implements
-        Replacer {
-
-        static Replacer INSTANCE = new InsertLogicalReplacer();
-
-        public Pattern getPattern() {
-            return KnowledgeHelperFixer.INSERT_LOGICAL;
-        }
-
-        public String getReplacement(final String guts) {
-            return "drools.insertLogical(" + guts + ")";
-        }
-
-    }
-
-    static class UpdateReplacer
-        implements
-        Replacer {
-
-        static Replacer INSTANCE = new UpdateReplacer();
-
-        public Pattern getPattern() {
-            return KnowledgeHelperFixer.UPDATE;
-        }
-
-        public String getReplacement(final String guts) {
-            return "drools.update( " + guts + " )";
-        }
-
-    }
-
-    static class RetractReplacer
-        implements
-        Replacer {
-
-        static Replacer INSTANCE = new RetractReplacer();
-
-        public Pattern getPattern() {
-            return KnowledgeHelperFixer.RETRACT;
-        }
-
-        public String getReplacement(final String guts) {
-            return "drools.retract( " + guts.trim() + " )";
-        }
-
-    }
-
-    /**
-     * Simple non regex replacer. 
-     * jakarta commons provided the inspiration for this.
-     */
-    static String replace(final String text,
-                          final String repl,
-                          final String with,
-                          int max) {
-        if ( text == null || repl == null || repl.equals( "" ) || with == null || max == 0 ) {
-            return text;
-        }
-
-        final StringBuffer buf = new StringBuffer( text.length() );
-        int start = 0, end = 0;
-        while ( (end = text.indexOf( repl,
-                                     start )) != -1 ) {
-            buf.append( text.substring( start,
-                                        end ) ).append( with );
-            start = end + repl.length();
-
-            if ( --max == 0 ) {
-                break;
-            }
-        }
-        buf.append( text.substring( start ) );
-        return buf.toString();
-    }
-
 }
