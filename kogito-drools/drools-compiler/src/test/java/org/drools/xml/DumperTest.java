@@ -31,16 +31,6 @@ public class DumperTest extends TestCase {
         
         String buffer = readFile("test_ParseRule.xml");
         
-        System.out.println("-------------");
-        
-        System.out.println(buffer);
-        
-        System.out.println("-------------");
-        
-        System.out.println(result);
-        
-        System.out.println("-------------");
-        
         assertEqualsIgnoreWhitespace( buffer, result );
         assertNotNull( result );
 
@@ -80,9 +70,8 @@ public class DumperTest extends TestCase {
         final XmlDumper XMLdumper = new XmlDumper();
         final String XMLresult = XMLdumper.dump( pkgOriginal );
         
-        System.out.println(XMLresult);
-        
         final String result = dumper.dump( pkgOriginal );
+        
         
         System.out.println(result);
         
@@ -116,9 +105,6 @@ public class DumperTest extends TestCase {
         
         String buffer = readFile( "test_Dump.drl" );
         
-        System.out.println(result);
-        System.out.println(buffer);
-
         assertEqualsIgnoreWhitespace( buffer.toString(), result );
 
     }
@@ -133,7 +119,7 @@ public class DumperTest extends TestCase {
         assertEquals( cleanExpected,
                       cleanActual );
     }
-
+    
     private String readFile(final String file) throws IOException {
         final InputStreamReader reader = new InputStreamReader( getClass().getResourceAsStream( file ) );
 
