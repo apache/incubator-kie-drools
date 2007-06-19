@@ -168,7 +168,8 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        this.template = this.processFieldConstraint( descr, true );
+        String tmp = this.processFieldConstraint( descr, true );
+        this.template = tmp;
     }
 
     public void visitNotDescr(final NotDescr descr) {
@@ -263,8 +264,7 @@ public class DrlDumper extends ReflectiveVisitor
             visit( iterator.next() );
             descrString += this.template;
             if ( descrString.endsWith( DrlDumper.eol ) ) {
-                descrString = descrString.substring( 0,
-                                                     descrString.indexOf( DrlDumper.eol ) );
+                descrString = descrString.substring( 0, descrString.indexOf( DrlDumper.eol ) );
             }
             descrString += " || ";
         }
@@ -334,10 +334,18 @@ public class DrlDumper extends ReflectiveVisitor
 
     private String processDescrList(final List descr) {
         String descrString = "";
-        for ( final Iterator it = descr.iterator(); it.hasNext(); ) {
-            visit( it.next() );
+        for ( final Iterator ite = descr.iterator(); ite.hasNext(); ) {
+            
+            Object obj =  ite.next();
+            
+            visit( obj );
             descrString += this.template;
-            descrString += DrlDumper.eol;
+            
+            if (obj.getClass().equals( PatternDescr.class )) {
+                descrString += DrlDumper.eol;
+            } else if (ite.hasNext()) {
+                descrString += " && ";
+            }
         }
         return descrString;
     }
