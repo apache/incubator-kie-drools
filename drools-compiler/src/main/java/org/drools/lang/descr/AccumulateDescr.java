@@ -34,7 +34,7 @@ public class AccumulateDescr extends BaseDescr
     private String            actionCode;
     private String            resultCode;
     private String[]          declarations;
-    private String            classMethodName;
+    private String            className;
 
     AccumulateDescr() {
         super();
@@ -52,12 +52,12 @@ public class AccumulateDescr extends BaseDescr
         return this.sourcePattern;
     }
 
-    public String getClassMethodName() {
-        return this.classMethodName;
+    public String getClassName() {
+        return this.className;
     }
 
-    public void setClassMethodName(final String classMethodName) {
-        this.classMethodName = classMethodName;
+    public void setClassName(final String classMethodName) {
+        this.className = classMethodName;
     }
 
     public String[] getDeclarations() {

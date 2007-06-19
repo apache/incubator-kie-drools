@@ -21,19 +21,36 @@ public static boolean @{methodName}(@foreach{declarationTypes, declarations as t
 }
 >>=::
 
-accumulateMethod() ::=<<
-public static @{resultType} @{methodName}(org.drools.rule.Declaration[] innerDeclarations, java.util.List matchingObjects@if{declarations != empty}, @end{}
-                                          @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}
-                                          @if{globals != empty},@end{} @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","} ) throws Exception {
+accumulateInnerClass() ::=<<
+public static class @{className} {
 
-    @{initCode}
-    for( java.util.Iterator it = matchingObjects.iterator(); it.hasNext(); ) {
-      Object __itNextElem__ = it.next();
-      @foreach{innerDeclarations as declr} @{declr.extractor.extractToClass.getName()} @{declr.identifier} = (@{declr.extractor.extractToClass.getName()}) innerDeclarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( __itNextElem__ );
-      @end{}
-      @{actionCode}
+    @foreach{attributesTypes, attributes as type, attr} private @{type} @{attr};
+    @end{}    
+    
+    public @{className}() {
     }
-    return ( @{resultCode} );
+
+    public void init(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                     @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
+                     ) throws Exception {
+        @{initCode}
+    }
+    
+    public void accumulate(org.drools.rule.Declaration[] innerDeclarations, 
+                           Object object @if{declarations != empty}, @end{}
+                           @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
+                           ) throws Exception {
+        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClass.getName()} @{declr.identifier} = (@{declr.extractor.extractToClass.getName()}) innerDeclarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( object );
+        @end{}
+        @{actionCode}
+    }
+    
+    public Object getResult(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                            @foreach{globalTypes, globals as type, identifier}@{type} @{identifier} @end{","}
+                           ) throws Exception {
+        return ( @{resultCode} );
+    }
 }
 >>=::
 

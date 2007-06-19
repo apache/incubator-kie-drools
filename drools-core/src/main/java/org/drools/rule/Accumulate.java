@@ -16,24 +16,24 @@
 
 package org.drools.rule;
 
-import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
 
 /**
- * A class to represent a Accumulate CE
+ * A class to represent the Accumulate CE
  */
 public class Accumulate extends ConditionalElement {
 
     private static final long serialVersionUID = 4608000398919355806L;
 
     private Accumulator       accumulator;
-    private Pattern            sourcePattern;
-    private Pattern            resultPattern;
+    private Pattern           sourcePattern;
+    private Pattern           resultPattern;
     private Declaration[]     requiredDeclarations;
     private Declaration[]     innerDeclarations;
 
@@ -80,15 +80,74 @@ public class Accumulate extends ConditionalElement {
         this.accumulator = accumulator;
     }
 
-    public Object accumulate(final Tuple leftTuple,
-                             final List matchingObjects,
-                             final WorkingMemory workingMemory) {
+    public Object createContext() {
+        return this.accumulator.createContext();
+    }
+    
+    /**
+     * Executes the initialization block of code
+     * 
+     * @param leftTuple tuple causing the rule fire
+     * @param declarations previous declarations
+     * @param workingMemory
+     * @throws Exception
+     */
+    public void init(final Object context,
+                     final Tuple leftTuple,
+                     final WorkingMemory workingMemory) {
         try {
-            return this.accumulator.accumulate( leftTuple,
-                                                matchingObjects,
-                                                this.requiredDeclarations,
-                                                this.innerDeclarations,
-                                                workingMemory );
+            this.accumulator.init( context,
+                                   leftTuple,
+                                   this.requiredDeclarations,
+                                   workingMemory );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( e );
+        }
+    }
+
+    /**
+     * Executes the accumulate (action) code for the given fact handle
+     * 
+     * @param leftTuple
+     * @param handle
+     * @param declarations
+     * @param innerDeclarations
+     * @param workingMemory
+     * @throws Exception
+     */
+    public void accumulate(final Object context,
+                           final Tuple leftTuple,
+                           final InternalFactHandle handle,
+                           final WorkingMemory workingMemory) {
+        try {
+            this.accumulator.accumulate( context,
+                                         leftTuple,
+                                         handle,
+                                         this.requiredDeclarations,
+                                         this.innerDeclarations,
+                                         workingMemory );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( e );
+        }
+    }
+
+    /**
+     * Gets the result of the accummulation
+     * 
+     * @param leftTuple
+     * @param declarations
+     * @param workingMemory
+     * @return
+     * @throws Exception
+     */
+    public Object getResult(final Object context,
+                            final Tuple leftTuple,
+                            final WorkingMemory workingMemory) {
+        try {
+            return this.accumulator.getResult( context,
+                                               leftTuple,
+                                               this.requiredDeclarations,
+                                               workingMemory );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }

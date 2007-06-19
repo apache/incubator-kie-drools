@@ -51,11 +51,11 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
-    public List[] analyzeExpression(final String expr,
+    public MVELAnalysisResult analyzeExpression(final String expr,
                                     final Set[] availableIdentifiers) throws RecognitionException {
         ExpressionCompiler compiler = new ExpressionCompiler( expr);
-        compiler.compile();        
-
+        compiler.compile();  
+        
         return analyze( compiler.getInputs(),
                         availableIdentifiers );
     }
@@ -73,11 +73,15 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    private List[] analyze(final Set identifiers,
+    private MVELAnalysisResult analyze(final Set identifiers,
                            final Set[] availableIdentifiers) throws RecognitionException {
+
+        MVELAnalysisResult result = new MVELAnalysisResult();
+        result.setIdentifiers( new ArrayList( identifiers ) );
+
         final Set notBound = new HashSet( identifiers );
-        final List[] used = new List[availableIdentifiers.length + 1];
-        for ( int i = 0, length = used.length; i < length - 1; i++ ) {
+        final List[] used = new List[availableIdentifiers.length];
+        for ( int i = 0, length = used.length; i < length; i++ ) {
             used[i] = new ArrayList();
         }
 
@@ -91,8 +95,9 @@ public class MVELExprAnalyzer {
                 }
             }
         }
-        used[used.length - 1] = new ArrayList( notBound );
+        result.setBoundIdentifiers( used );
+        result.setNotBoundedIdentifiers( new ArrayList( notBound ) );
 
-        return used;      
+        return result;      
     }
 }

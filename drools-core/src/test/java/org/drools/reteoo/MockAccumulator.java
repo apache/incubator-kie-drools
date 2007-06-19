@@ -15,10 +15,12 @@
  */
 package org.drools.reteoo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
@@ -39,20 +41,6 @@ public class MockAccumulator
     private List              matchingObjects  = Collections.EMPTY_LIST;
     private WorkingMemory     workingMemory    = null;
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.Accumulator#accumulate(org.drools.reteoo.ReteTuple, java.util.List, org.drools.WorkingMemory)
-     */
-    public Object accumulate(final Tuple leftTuple,
-                             final List matchingObjects,
-                             final Declaration[] declarations,
-                             final Declaration[] inner,
-                             final WorkingMemory workingMemory) {
-        this.leftTuple = leftTuple;
-        this.matchingObjects = matchingObjects;
-        this.workingMemory = workingMemory;
-        return matchingObjects;
-    }
-
     public Tuple getLeftTuple() {
         return this.leftTuple;
     }
@@ -63,6 +51,35 @@ public class MockAccumulator
 
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
+    }
+    
+    public Object createContext() {
+        return this;
+    }
+
+    public void init(Object context,
+                     Tuple leftTuple,
+                     Declaration[] declarations,
+                     WorkingMemory workingMemory) throws Exception {
+        this.leftTuple = leftTuple;
+        this.matchingObjects = new ArrayList();
+        this.workingMemory = workingMemory;
+    }
+
+    public void accumulate(Object context,
+                           Tuple leftTuple,
+                           InternalFactHandle handle,
+                           Declaration[] declarations,
+                           Declaration[] innerDeclarations,
+                           WorkingMemory workingMemory) throws Exception {
+        this.matchingObjects.add( handle.getObject() );
+    }
+
+    public Object getResult(Object context,
+                            Tuple leftTuple,
+                            Declaration[] declarations,
+                            WorkingMemory workingMemory) throws Exception {
+        return this.matchingObjects;
     }
 
 }

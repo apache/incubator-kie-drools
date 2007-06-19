@@ -58,6 +58,7 @@ import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
@@ -68,17 +69,17 @@ public class JavaDialect
 
     private final static String            EXPRESSION_DIALECT_NAME = "MVEL";
     // builders
-    private final PatternBuilder           pattern      = new PatternBuilder();
-    private final QueryBuilder             query        = new QueryBuilder();
-    private final SalienceBuilder          salience     = new MVELSalienceBuilder();
-    private final JavaAccumulateBuilder    accumulate   = new JavaAccumulateBuilder();
-    private final JavaEvalBuilder          eval         = new JavaEvalBuilder();
-    private final JavaPredicateBuilder     predicate    = new JavaPredicateBuilder();
-    private final JavaReturnValueBuilder   returnValue  = new JavaReturnValueBuilder();
-    private final JavaConsequenceBuilder   consequence  = new JavaConsequenceBuilder();
-    private final JavaRuleClassBuilder     rule         = new JavaRuleClassBuilder();
-    private final MVELFromBuilder          from         = new MVELFromBuilder();
-    private final JavaFunctionBuilder      function     = new JavaFunctionBuilder();    
+    private final PatternBuilder           pattern                 = new PatternBuilder();
+    private final QueryBuilder             query                   = new QueryBuilder();
+    private final SalienceBuilder          salience                = new MVELSalienceBuilder();
+    private final JavaAccumulateBuilder    accumulate              = new JavaAccumulateBuilder();
+    private final JavaEvalBuilder          eval                    = new JavaEvalBuilder();
+    private final JavaPredicateBuilder     predicate               = new JavaPredicateBuilder();
+    private final JavaReturnValueBuilder   returnValue             = new JavaReturnValueBuilder();
+    private final JavaConsequenceBuilder   consequence             = new JavaConsequenceBuilder();
+    private final JavaRuleClassBuilder     rule                    = new JavaRuleClassBuilder();
+    private final MVELFromBuilder          from                    = new MVELFromBuilder();
+    private final JavaFunctionBuilder      function                = new JavaFunctionBuilder();
 
     // 
     private final KnowledgeHelperFixer     knowledgeHelperFixer;
@@ -109,7 +110,7 @@ public class JavaDialect
         this.configuration = builder.getPackageBuilderConfiguration();
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
-        
+
         this.knowledgeHelperFixer = new KnowledgeHelperFixer();
         this.typeFixer = new DeclarationTypeFixer();
         this.analyzer = new JavaExprAnalyzer();
@@ -119,7 +120,7 @@ public class JavaDialect
         }
 
         initBuilder();
-        
+
         loadCompiler();
     }
 
@@ -127,7 +128,7 @@ public class JavaDialect
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
-        this.builders = new HashMap();        
+        this.builders = new HashMap();
 
         this.builders.put( CollectDescr.class,
                            new CollectBuilder() );
@@ -151,7 +152,7 @@ public class JavaDialect
 
         this.builders.put( PatternDescr.class,
                            getPatternBuilder() );
-        
+
         this.builders.put( QueryDescr.class,
                            getQueryBuilder() );
 
@@ -200,41 +201,41 @@ public class JavaDialect
     public void setRuleClass(final String ruleClass) {
         this.ruleClass = ruleClass;
     }
-    
+
     public String getExpressionDialectName() {
         return EXPRESSION_DIALECT_NAME;
     }
 
-    public List[] getExpressionIdentifiers(final RuleBuildContext context,
-                                           final BaseDescr descr,
-                                           final Object content) {
-        List[] usedIdentifiers = null;
+    public AnalysisResult analyzeExpression(final RuleBuildContext context,
+                                            final BaseDescr descr,
+                                            final Object content) {
+        JavaAnalysisResult result = null;
         try {
-            usedIdentifiers = this.analyzer.analyzeExpression( (String) content,
-                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+            result = this.analyzer.analyzeExpression( (String) content,
+                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
                                                     null,
                                                     "Unable to determine the used declarations" ) );
         }
-        return usedIdentifiers;
+        return result;
     }
 
-    public List[] getBlockIdentifiers(final RuleBuildContext context,
-                                      final BaseDescr descr,
-                                      final String text) {
-        List[] usedIdentifiers = null;
+    public AnalysisResult analyzeBlock(final RuleBuildContext context,
+                                       final BaseDescr descr,
+                                       final String text) {
+        JavaAnalysisResult result = null;
         try {
-            usedIdentifiers = this.analyzer.analyzeBlock( text,
-                                                          new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+            result = this.analyzer.analyzeBlock( text,
+                                                 new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
                                                     null,
                                                     "Unable to determine the used declarations" ) );
         }
-        return usedIdentifiers;
+        return result;
     }
 
     /**
@@ -275,14 +276,14 @@ public class JavaDialect
     public PatternBuilder getPatternBuilder() {
         return this.pattern;
     }
-    
+
     public QueryBuilder getQueryBuilder() {
         return this.query;
     }
-    
+
     public SalienceBuilder getSalienceBuilder() {
         return this.salience;
-    }    
+    }
 
     public AccumulateBuilder getAccumulateBuilder() {
         return this.accumulate;
@@ -430,10 +431,10 @@ public class JavaDialect
         this.pkg.addFunction( functionDescr.getName() );
 
         final String functionSrc = getFunctionBuilder().build( this.pkg,
-                                                         functionDescr,
-                                                         typeResolver,
-                                                         this.lineMappings,
-                                                         this.results );
+                                                               functionDescr,
+                                                               typeResolver,
+                                                               this.lineMappings,
+                                                               this.results );
 
         addClassCompileTask( functionClassName,
                              functionDescr,
@@ -503,14 +504,14 @@ public class JavaDialect
             }
         }
     }
-    
+
     public void addImport(String importEntry) {
         // we don't need to do anything here
     }
-    
+
     public void addStaticImport(String staticImportEntry) {
         // we don't need to do anything here
-    }    
+    }
 
     public List getResults() {
         return this.results;

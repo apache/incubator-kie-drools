@@ -17,7 +17,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.base.mvel.DroolsMVELFactory;
@@ -29,10 +28,9 @@ import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
-import org.drools.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.ConditionalElementBuilder;
-import org.mvel.ExpressionCompiler;
+import org.drools.rule.builder.Dialect;
+import org.drools.rule.builder.RuleBuildContext;
 import org.mvel.MVEL;
 
 /**
@@ -45,9 +43,11 @@ public class MVELEvalBuilder
 
     public ConditionalElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
-        return build(context, descr, null);
-    }    
-    
+        return build( context,
+                      descr,
+                      null );
+    }
+
     /**
      * Builds and returns an Eval Conditional Element
      * 
@@ -70,9 +70,10 @@ public class MVELEvalBuilder
                                                                      context.getPkg().getGlobals() );
             factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
 
-            final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
-                                                                                          evalDescr,
-                                                                                          evalDescr.getContent() );
+            Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                      evalDescr,
+                                                                                      evalDescr.getContent() );
+            final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
             final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
             for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {

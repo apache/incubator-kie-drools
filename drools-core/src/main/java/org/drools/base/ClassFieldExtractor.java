@@ -21,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.spi.FieldExtractor;
 
 /**

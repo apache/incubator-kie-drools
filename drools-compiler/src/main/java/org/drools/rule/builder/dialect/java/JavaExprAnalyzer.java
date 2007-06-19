@@ -17,6 +17,7 @@ package org.drools.rule.builder.dialect.java;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.rule.builder.dialect.java.parser.JavaLexer;
+import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaParser;
 
 /**
@@ -63,21 +65,23 @@ public class JavaExprAnalyzer {
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
-    public List[] analyzeExpression(final String expr,
-                                    final Set[] availableIdentifiers) throws RecognitionException {
+    public JavaAnalysisResult analyzeExpression(final String expr,
+                                            final Set[] availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( expr );
         final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
         final JavaParser parser = new JavaParser( tokenStream );
 
         parser.conditionalOrExpression();
-
-        return analyze( parser.getIdentifiers(),
+        
+        JavaAnalysisResult result = new JavaAnalysisResult();
+        result.setIdentifiers( parser.getIdentifiers() );
+        return analyze( result,
                         availableIdentifiers );
     }
 
-    public List[] analyzeBlock(final String expr,
-                               final Set[] availableIdentifiers) throws RecognitionException {
+    public JavaAnalysisResult analyzeBlock(final String expr,
+                                       final Set[] availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
         final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
@@ -85,7 +89,18 @@ public class JavaExprAnalyzer {
 
         parser.block();
 
-        return analyze( parser.getIdentifiers(),
+        JavaAnalysisResult result = new JavaAnalysisResult();
+        result.setIdentifiers( parser.getIdentifiers() );
+        result.setLocalVariables( new HashMap() );
+        for( Iterator it = parser.getLocalDeclarations().iterator(); it.hasNext(); ) {
+            JavaLocalDeclarationDescr descr = (JavaLocalDeclarationDescr) it.next();
+            for( Iterator identIt = descr.getIdentifiers().iterator(); identIt.hasNext(); ) {
+                JavaLocalDeclarationDescr.IdentifierDescr ident = (JavaLocalDeclarationDescr.IdentifierDescr) identIt.next();
+                result.addLocalVariable( ident.getIdentifier(), descr );
+            }
+        }
+
+        return analyze( result,
                         availableIdentifiers );
     }
 
@@ -102,11 +117,12 @@ public class JavaExprAnalyzer {
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    private List[] analyze(final List identifiers,
-                           final Set[] availableIdentifiers) throws RecognitionException {
+    private JavaAnalysisResult analyze(final JavaAnalysisResult result,
+                                   final Set[] availableIdentifiers) throws RecognitionException {
+        final List identifiers = result.getIdentifiers();
         final Set notBound = new HashSet( identifiers );
-        final List[] used = new List[availableIdentifiers.length + 1];
-        for ( int i = 0, length = used.length; i < length - 1; i++ ) {
+        final List[] used = new List[availableIdentifiers.length];
+        for ( int i = 0, length = used.length; i < length; i++ ) {
             used[i] = new ArrayList();
         }
 
@@ -120,8 +136,9 @@ public class JavaExprAnalyzer {
                 }
             }
         }
-        used[used.length - 1] = new ArrayList( notBound );
+        result.setBoundIdentifiers( used );
+        result.setNotBoundedIdentifiers( new ArrayList( notBound ) );
 
-        return used;    
+        return result;
     }
 }

@@ -20,20 +20,20 @@ public interface Dialect {
 
     TypeResolver getTypeResolver();
 
-    ClassFieldExtractorCache getClassFieldExtractorCache();    
-    
+    ClassFieldExtractorCache getClassFieldExtractorCache();
+
     SalienceBuilder getSalienceBuilder();
-    
-    PatternBuilder getPatternBuilder();    
-    
+
+    PatternBuilder getPatternBuilder();
+
     QueryBuilder getQueryBuilder();
-    
+
     ConditionalElementBuilder getEvalBuilder();
 
     AccumulateBuilder getAccumulateBuilder();
 
     PredicateBuilder getPredicateBuilder();
-    
+
     ReturnValueBuilder getReturnValueBuilder();
 
     ConsequenceBuilder getConsequenceBuilder();
@@ -41,16 +41,16 @@ public interface Dialect {
     RuleClassBuilder getRuleClassBuilder();
 
     FromBuilder getFromBuilder();
-    
+
     Object getBuilder(Class clazz);
 
-    List[] getExpressionIdentifiers(final RuleBuildContext context,
-                              final BaseDescr descr,
-                              final Object content);
-    
-    List[] getBlockIdentifiers(final RuleBuildContext context,
-                               final BaseDescr descr,
-                               final String text);    
+    AnalysisResult analyzeExpression(final RuleBuildContext context,
+                                     final BaseDescr descr,
+                                     final Object content);
+
+    AnalysisResult analyzeBlock(final RuleBuildContext context,
+                                final BaseDescr descr,
+                                final String text);
 
     void compileAll();
 
@@ -58,9 +58,9 @@ public interface Dialect {
 
     void addFunction(final FunctionDescr functionDescr,
                      TypeResolver typeResolver);
-    
+
     public void addImport(String importEntry);
-    
+
     public void addStaticImport(String importEntry);
 
     List getResults();
@@ -68,4 +68,39 @@ public interface Dialect {
     void init(Package pkg);
 
     void init(RuleDescr ruleDescr);
+
+    /**
+     * An interface with the results from the expression/block analysis
+     * 
+     * @author etirelli
+     */
+    public static interface AnalysisResult {
+
+        /**
+         * Returns the list<String> of all used identifiers
+         * @return
+         */
+        public List getIdentifiers();
+
+        /**
+         * Returns the array of lists<String> of bound identifiers
+         * @return
+         */
+        public List[] getBoundIdentifiers();
+
+        /**
+         * Returns the list<String> of not bounded identifiers
+         * @return
+         */
+        public List getNotBoundedIdentifiers();
+
+        /**
+         * Returns the list<String> of declared local variables
+         * 
+         * @return
+         */
+        public List getLocalVariables();
+
+    }
+
 }

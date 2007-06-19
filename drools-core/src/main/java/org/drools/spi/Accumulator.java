@@ -16,9 +16,8 @@
 
 package org.drools.spi;
 
-import java.util.List;
-
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
 /**
@@ -32,11 +31,58 @@ import org.drools.rule.Declaration;
 public interface Accumulator
     extends
     Invoker {
+    
+    /**
+     * Creates the context object for an accumulator session.
+     * The context is passed as a parameter to every subsequent accumulator
+     * method call in the same session.
+     * 
+     * @return
+     */
+    public Object createContext();
 
-    public Object accumulate(Tuple leftTuple,
-                             List matchingObjects,
-                             Declaration[] declarations,
-                             Declaration[] innerDeclarations,
-                             WorkingMemory workingMemory) throws Exception;
+    /**
+     * Executes the initialization block of code
+     * 
+     * @param leftTuple tuple causing the rule fire
+     * @param declarations previous declarations
+     * @param workingMemory
+     * @throws Exception
+     */
+    public void init(Object context,
+                     Tuple leftTuple,
+                     Declaration[] declarations,
+                     WorkingMemory workingMemory) throws Exception;
+
+    /**
+     * Executes the accumulate (action) code for the given fact handle
+     * 
+     * @param leftTuple
+     * @param handle
+     * @param declarations
+     * @param innerDeclarations
+     * @param workingMemory
+     * @throws Exception
+     */
+    public void accumulate(Object context,
+                           Tuple leftTuple,
+                           InternalFactHandle handle,
+                           Declaration[] declarations,
+                           Declaration[] innerDeclarations,
+                           WorkingMemory workingMemory) throws Exception;
+
+    /**
+     * Gets the result of the accummulation
+     * 
+     * @param leftTuple
+     * @param declarations
+     * @param workingMemory
+     * @return
+     * @throws Exception
+     */
+    public Object getResult(Object context, 
+                            Tuple leftTuple,
+                            Declaration[] declarations,
+                            WorkingMemory workingMemory) throws Exception;
 
 }

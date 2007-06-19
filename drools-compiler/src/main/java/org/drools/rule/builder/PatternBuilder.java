@@ -206,22 +206,21 @@ public class PatternBuilder {
                        final FieldConstraintDescr fieldConstraintDescr,
                        final AbstractCompositeConstraint container) {
         String fieldName = fieldConstraintDescr.getFieldName();
-        
-        if( fieldName.indexOf( '[' ) > -1 ) {
+
+        if ( fieldName.indexOf( '[' ) > -1 ) {
             rewriteToEval( context,
                            pattern,
                            fieldConstraintDescr,
                            container );
-            
+
             // after building the predicate, we are done, so return
             return;
         }
-        
-        if( fieldName.indexOf( '.' ) > -1 ) {
+
+        if ( fieldName.indexOf( '.' ) > -1 ) {
             // we have a composite field name
             String[] identifiers = fieldName.split( "\\." );
-            if( identifiers.length == 2 && pattern.getDeclaration() != null &&
-                identifiers[0].equals( pattern.getDeclaration().getIdentifier() )) {
+            if ( identifiers.length == 2 && pattern.getDeclaration() != null && identifiers[0].equals( pattern.getDeclaration().getIdentifier() ) ) {
                 // we have a self reference, so, it is fine to do direct access
                 fieldName = identifiers[1];
             } else {
@@ -229,7 +228,7 @@ public class PatternBuilder {
                                pattern,
                                fieldConstraintDescr,
                                container );
-                
+
                 // after building the predicate, we are done, so return
                 return;
             }
@@ -290,17 +289,17 @@ public class PatternBuilder {
         Dialect dialect = context.getDialect();
         // switch to MVEL dialect
         context.setDialect( context.getDialect( "mvel" ) );
-        
+
         PredicateDescr predicateDescr = new PredicateDescr();
         DrlDumper dumper = new DrlDumper();
         dumper.visitFieldConstraintDescr( fieldConstraintDescr );
         predicateDescr.setContent( dumper.getTemplate() );
-        
-        this.build( context, 
-                    pattern, 
-                    predicateDescr, 
+
+        this.build( context,
+                    pattern,
+                    predicateDescr,
                     container );
-        
+
         // fall back to original dialect
         context.setDialect( dialect );
     }
@@ -380,18 +379,20 @@ public class PatternBuilder {
                        final PredicateDescr predicateDescr,
                        final AbstractCompositeConstraint container) {
 
-        // this will return an array with 3 lists
-        // where first list is from rule local variables
-        // second list is from global variables
-        // and third is for unbound variables
-        final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
-                                                                                      predicateDescr,
-                                                                                      predicateDescr.getContent() );
-        if( usedIdentifiers == null ) {
+        final Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                        predicateDescr,
+                                                                                        predicateDescr.getContent() );
+
+        if ( analysis == null ) {
             // something bad happened
             return;
         }
-        
+
+        // this will return an array with 2 lists
+        // where first list is from rule local variables
+        // second list is from global variables
+        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
+
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -402,10 +403,9 @@ public class PatternBuilder {
                 tupleDeclarations.add( decl );
             }
         }
-        final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
         this.createImplicitBindings( context,
                                      pattern,
-                                     usedIdentifiers[NOT_BOUND_INDEX],
+                                     analysis.getNotBoundedIdentifiers(),
                                      factDeclarations );
 
         final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
@@ -607,7 +607,7 @@ public class PatternBuilder {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( parts[0] );
             // if a declaration exists, then it is a variable direct property access, not an enum
             if ( decl != null ) {
-                if( decl.isPatternDeclaration() ) {
+                if ( decl.isPatternDeclaration() ) {
                     final Declaration implicit = this.createDeclarationObject( context,
                                                                                parts[1],
                                                                                decl.getPattern() );
@@ -627,7 +627,7 @@ public class PatternBuilder {
                     context.getErrors().add( new RuleError( context.getRule(),
                                                             qiRestrictionDescr,
                                                             "",
-                                                            "Not possible to directly access the property '"+parts[1]+"' of declaration '"+parts[0]+"' since it is not a pattern" ) );
+                                                            "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
                     return null;
                 }
             }
@@ -652,8 +652,8 @@ public class PatternBuilder {
                                                     e,
                                                     "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + qiRestrictionDescr.getText() + "'" ) );
         }
-        
-        if( field == null ) {
+
+        if ( field == null ) {
             return null;
         }
 
@@ -675,9 +675,10 @@ public class PatternBuilder {
                                                     final FieldExtractor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        final List[] usedIdentifiers = context.getDialect().getExpressionIdentifiers( context,
-                                                                                      returnValueRestrictionDescr,
-                                                                                      returnValueRestrictionDescr.getContent() );
+        Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                  returnValueRestrictionDescr,
+                                                                                  returnValueRestrictionDescr.getContent() );
+        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
@@ -690,10 +691,9 @@ public class PatternBuilder {
             }
         }
 
-        final int NOT_BOUND_INDEX = usedIdentifiers.length - 1;
         createImplicitBindings( context,
                                 pattern,
-                                usedIdentifiers[NOT_BOUND_INDEX],
+                                analysis.getNotBoundedIdentifiers(),
                                 factDeclarations );
 
         final Evaluator evaluator = getEvaluator( context,
