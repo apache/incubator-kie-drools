@@ -21,9 +21,18 @@ public class URLScanner {
             HttpURLConnection httpCon = (HttpURLConnection) con;
             httpCon.setRequestMethod( "HEAD" );
             
+            //if this is null, then its not cool
+            System.err.println(httpCon.getHeaderField( "lastModified" ));
             
-            
+            //can check for '200 OK' to make sure its kosher.
             System.err.println(httpCon.getHeaderFields());
+            
+            String status = httpCon.getHeaderField( null );
+            
+            
+            System.err.println(status);
+            
+            httpCon.disconnect();
             
         } catch ( IOException e ) {
             throw new RuntimeDroolsException(e);
