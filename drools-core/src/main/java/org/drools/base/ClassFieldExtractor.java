@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.spi.FieldExtractor;
 
 /**
@@ -68,7 +69,7 @@ public class ClassFieldExtractor
     
     private Object readResolve() {
         // always return the value from the cache
-        return ClassFieldExtractorCache.getExtractor( this.clazz, this.fieldName );
+        return ClassFieldExtractorCache.getExtractor( this.clazz, this.fieldName, this.clazz.getClassLoader() );
     }    
 
     public void init(final ClassLoader classLoader) {

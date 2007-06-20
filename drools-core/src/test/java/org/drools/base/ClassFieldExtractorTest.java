@@ -37,17 +37,20 @@ public class ClassFieldExtractorTest extends TestCase {
         obj.setObjArray( objArray );
 
         final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                               "blah" );
+                                                                               "blah",
+                                                                               getClass().getClassLoader() );
         assertEquals( false,
                       ((Boolean) ext.getValue( obj )).booleanValue() );
 
         final ClassFieldExtractor ext2 = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                "fooBar" );
+                                                                                "fooBar",
+                                                                                getClass().getClassLoader() );
         assertEquals( "fooBar",
                       ext2.getValue( obj ) );
 
         final ClassFieldExtractor ext3 = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                "objArray" );
+                                                                                "objArray",
+                                                                                getClass().getClassLoader() );
         assertEquals( objArray,
                       ext3.getValue( obj ) );
 
@@ -57,7 +60,8 @@ public class ClassFieldExtractorTest extends TestCase {
 
         final TestInterface obj = new TestInterfaceImpl();
         final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestInterface.class,
-                                                                               "something" );
+                                                                               "something",
+                                                                               getClass().getClassLoader() );
 
         assertEquals( "foo",
                       (String) ext.getValue( obj ) );
@@ -67,7 +71,8 @@ public class ClassFieldExtractorTest extends TestCase {
     public void testAbstract() throws Exception {
 
         final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestAbstract.class,
-                                                                               "something" );
+                                                                               "something",
+                                                                               getClass().getClassLoader() );
         final TestAbstract obj = new TestAbstractImpl();
         assertEquals( "foo",
                       (String) ext.getValue( obj ) );
@@ -76,7 +81,8 @@ public class ClassFieldExtractorTest extends TestCase {
 
     public void testInherited() throws Exception {
         final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( BeanInherit.class,
-                                                                               "text" );
+                                                                               "text",
+                                                                               getClass().getClassLoader() );
         final BeanInherit obj = new BeanInherit();
         assertEquals( "hola",
                       (String) ext.getValue( obj ) );
@@ -86,14 +92,16 @@ public class ClassFieldExtractorTest extends TestCase {
     public void testMultipleInterfaces() throws Exception {
         final ConcreteChild obj = new ConcreteChild();
         final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( InterfaceChild.class,
-                                                                               "foo" );
+                                                                               "foo",
+                                                                               getClass().getClassLoader() );
         assertEquals( 42,
                       ((Number) ext.getValue( obj )).intValue() );
     }
 
     public void testLong() throws Exception {
         final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                               "longField" );
+                                                                               "longField",
+                                                                               getClass().getClassLoader() );
         final TestBean bean = new TestBean();
         assertEquals( 424242,
                       ((Number) ext.getValue( bean )).longValue() );

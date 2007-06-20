@@ -50,7 +50,8 @@ public class QuadroupleBetaConstraintsTest extends TestCase {
     private BetaNodeFieldConstraint getConstraint(String fieldName,
                                                   Class clazz) {
         FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                          fieldName );
+                                                                          fieldName,
+                                                                          getClass().getClassLoader() );
         Declaration declaration = new Declaration( fieldName,
                                                    extractor,
                                                    new Pattern( 0,

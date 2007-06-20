@@ -11,7 +11,8 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final short VALUE     = 3;
 
     Extractor                  extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                  "shortAttr" );
+                                                                                  "shortAttr",
+                                                                                  getClass().getClassLoader() );
     TestBean                   bean      = new TestBean();
 
     protected void setUp() throws Exception {

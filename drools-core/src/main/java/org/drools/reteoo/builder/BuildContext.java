@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.drools.common.BetaConstraints;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
@@ -47,7 +48,7 @@ public class BuildContext {
     private int                       currentPatternOffset;
 
     // rule base to add rules to
-    private ReteooRuleBase            rulebase;
+    private InternalRuleBase            rulebase;
 
     // working memories attached to the given rulebase
     private InternalWorkingMemory[]     workingMemories;
@@ -61,7 +62,7 @@ public class BuildContext {
     // beta constraints from the last pattern attached
     BetaConstraints                   betaconstraints;
 
-    public BuildContext(final ReteooRuleBase rulebase,
+    public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
         this.workingMemories = (InternalWorkingMemory[]) this.rulebase.getWorkingMemories();
@@ -152,7 +153,7 @@ public class BuildContext {
      * Returns context rulebase
      * @return
      */
-    public ReteooRuleBase getRuleBase() {
+    public InternalRuleBase getRuleBase() {
         return this.rulebase;
     }
 

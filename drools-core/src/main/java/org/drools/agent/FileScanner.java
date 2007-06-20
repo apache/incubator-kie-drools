@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.rule.Package;
 
 /**
@@ -96,7 +97,7 @@ public class FileScanner {
     public static Package readPackage(File pkgFile) throws IOException,
                                                   FileNotFoundException,
                                                   ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream( new FileInputStream( pkgFile ) );
+        ObjectInputStream in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
         Package p1_ = (Package) in.readObject();
         in.close();
         return p1_;

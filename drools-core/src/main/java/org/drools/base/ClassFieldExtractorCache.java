@@ -20,17 +20,6 @@ public class ClassFieldExtractorCache {
         return instance;
     }
 
-    private ClassFieldExtractorCache() {
-
-    }
-
-    public static ClassFieldExtractor getExtractor(final Class clazz,
-                                                   final String fieldName) {
-        return getExtractor( clazz,
-                             fieldName,
-                             null );
-    }
-
     public static ClassFieldExtractor getExtractor(final Class clazz,
                                                    final String fieldName,
                                                    ClassLoader classLoader) {

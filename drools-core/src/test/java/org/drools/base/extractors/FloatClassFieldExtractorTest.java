@@ -11,7 +11,8 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final float VALUE     = 6;
 
     Extractor                  extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                  "floatAttr" );
+                                                                                  "floatAttr",
+                                                                                  getClass().getClassLoader() );
     TestBean                   bean      = new TestBean();
 
     protected void setUp() throws Exception {

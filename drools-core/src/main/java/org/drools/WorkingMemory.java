@@ -283,14 +283,10 @@ public interface WorkingMemory
     void update(FactHandle handle,
                       Object object) throws FactException;
     
-    public void modifyRetract(final FactHandle factHandle,
-                              final Rule rule,
-                              final Activation activation);
+    public void modifyRetract(final FactHandle factHandle);
     
     public void modifyInsert(final FactHandle factHandle,
-                             final Object object,
-                             final Rule rule,
-                             final Activation activation);    
+                             final Object object);    
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda

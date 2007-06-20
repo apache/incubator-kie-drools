@@ -29,13 +29,15 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
 
     public void testIt() throws Exception {
         FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                               "name" );
+                                                                               "name",
+                                                                               Thread.currentThread().getContextClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "michael",
                       ex.getValue( new TestBean() ) );
         ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                "age" );
+                                                                "age",
+                                                                Thread.currentThread().getContextClassLoader() );
         assertEquals( 1,
                       ex.getIndex() );
         assertEquals( 42,
@@ -45,7 +47,8 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
 
     public void testInterface() throws Exception {
         final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( TestInterface.class,
-                                                                         "something" );
+                                                                         "something",
+                                                                         getClass().getClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
@@ -54,7 +57,8 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
 
     public void testAbstract() throws Exception {
         final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( TestAbstract.class,
-                                                                         "something" );
+                                                                         "something",
+                                                                         getClass().getClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
@@ -63,14 +67,16 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
 
     public void testInherited() throws Exception {
         final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( BeanInherit.class,
-                                                                         "text" );
+                                                                         "text",
+                                                                         getClass().getClassLoader() );
         assertEquals( "hola",
                       ex.getValue( new BeanInherit() ) );
     }
 
     public void testSelfReference() throws Exception {
         final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( BeanInherit.class,
-                                                                         "this" );
+                                                                         "this",
+                                                                         getClass().getClassLoader() );
         final TestBean bean = new TestBean();
         assertEquals( bean,
                       ex.getValue( bean ) );

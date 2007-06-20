@@ -234,9 +234,10 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.update( tuple.get( countDeclaration ),
                                    count );
 
+                    drools.modifyRetract( context );;
                     context.setState( Context.ASSIGN_SEATS );
-                    drools.update( tuple.get( contextDeclaration ),
-                                   context );
+                    drools.modifyInsert( context );
+                    
                     System.err.println( "assign first seat :  " + seating + " : " + path );
 
                 } catch ( Exception e ) {
@@ -745,13 +746,13 @@ public abstract class BaseMannersTest extends TestCase {
                     Context context = (Context) drools.get( contextDeclaration );
                     Seating seating = (Seating) drools.get( seatingDeclaration );
 
+                    drools.modifyRetract( seating );
                     seating.setPathDone( true );
 
                     //                    if ( seating.getId() == 6 ) {
                     //                        System.err.println( "pause" );
                     //                    }
-                    drools.update( tuple.get( seatingDeclaration ),
-                                   seating );
+                    drools.modifyInsert( seating );
 
                     context.setState( Context.CHECK_DONE );
                     drools.update( tuple.get( contextDeclaration ),
@@ -1109,7 +1110,8 @@ public abstract class BaseMannersTest extends TestCase {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName );
+                                                                                fieldName,
+                                                                                getClass().getClassLoader() );
 
         final FieldValue field = new LongFieldImpl( fieldValue );
 
@@ -1125,7 +1127,8 @@ public abstract class BaseMannersTest extends TestCase {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName );
+                                                                                fieldName,
+                                                                                getClass().getClassLoader() );
 
         final FieldValue field = new BooleanFieldImpl( fieldValue );
 
@@ -1140,7 +1143,8 @@ public abstract class BaseMannersTest extends TestCase {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName );
+                                                                                fieldName,
+                                                                                getClass().getClassLoader() );
 
         pattern.addDeclaration( identifier,
                                 extractor );
@@ -1153,7 +1157,8 @@ public abstract class BaseMannersTest extends TestCase {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName );
+                                                                                fieldName,
+                                                                                getClass().getClassLoader() );
 
         return new VariableConstraint( extractor,
                                        declaration,

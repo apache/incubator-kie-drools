@@ -29,6 +29,7 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
+import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
@@ -91,7 +92,7 @@ public class ReteooRuleBuilder {
      * @throws InvalidPatternException
      */
     public List addRule(final Rule rule,
-                        final ReteooRuleBase rulebase,
+                        final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) throws InvalidPatternException {
 
         // the list of terminal nodes

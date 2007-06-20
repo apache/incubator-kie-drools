@@ -11,7 +11,8 @@ public class IntClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final int VALUE     = 4;
 
     Extractor                extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                "intAttr" );
+                                                                                "intAttr",
+                                                                                getClass().getClassLoader() );
     TestBean                 bean      = new TestBean();
 
     protected void setUp() throws Exception {

@@ -13,7 +13,8 @@ import org.drools.spi.Extractor;
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                 "listAttr" );
+                                                                 "listAttr",
+                                                                 getClass().getClassLoader() );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {
@@ -107,7 +108,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
             Assert.assertFalse( this.extractor.isNullValue( this.bean ) );
 
             Extractor nullExtractor = ClassFieldExtractorCache.getExtractor(  TestBean.class,
-                                                                              "nullAttr" );
+                                                                              "nullAttr",
+                                                                              getClass().getClassLoader() );
             Assert.assertTrue( nullExtractor.isNullValue( this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );

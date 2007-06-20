@@ -75,7 +75,7 @@ abstract public class AbstractRuleBase
     protected Map                                   processes;
 
     protected transient CompositePackageClassLoader packageClassLoader;
-    
+
     protected transient MapBackedClassLoader        classLoader;
 
     /** The fact handle factory. */
@@ -87,7 +87,7 @@ abstract public class AbstractRuleBase
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
-    protected transient ObjectHashSet               statefulSessions;    
+    protected transient ObjectHashSet               statefulSessions;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it 
@@ -163,33 +163,36 @@ abstract public class AbstractRuleBase
                                final Object[] objects) throws IOException,
                                                       ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
-        this.pkgs = (Map) stream.readObject();
+        DroolsObjectInputStream parentStream = (DroolsObjectInputStream) stream;
+        parentStream.setRuleBase( this );
+        this.pkgs = (Map) parentStream.readObject();
 
-        this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
+        this.packageClassLoader = new CompositePackageClassLoader( parentStream.getClassLoader() );
         for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
             this.packageClassLoader.addClassLoader( ((Package) it.next()).getPackageCompilationData().getClassLoader() );
         }
-        
-        this.classLoader = new MapBackedClassLoader( Thread.currentThread().getContextClassLoader() );
-        this.packageClassLoader.addClassLoader( this.classLoader );        
+
+        this.classLoader = new MapBackedClassLoader( parentStream.getClassLoader() );
+        this.packageClassLoader.addClassLoader( this.classLoader );
 
         // Return the rules stored as a byte[]
-        final byte[] bytes = (byte[]) stream.readObject();
+        final byte[] bytes = (byte[]) parentStream.readObject();
 
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
-        final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( new ByteArrayInputStream( bytes ),
-                                                                                              this.packageClassLoader );
+        final DroolsObjectInputStream childStream = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
+                                                                                 this.packageClassLoader );
+        childStream.setRuleBase( this );
 
-        this.id = (String) streamWithLoader.readObject();
-        this.factHandleFactory = (FactHandleFactory) streamWithLoader.readObject();
-        this.globals = (Map) streamWithLoader.readObject();
+        this.id = (String) childStream.readObject();
+        this.factHandleFactory = (FactHandleFactory) childStream.readObject();
+        this.globals = (Map) childStream.readObject();
 
-        this.config = (RuleBaseConfiguration) streamWithLoader.readObject();
+        this.config = (RuleBaseConfiguration) childStream.readObject();
 
         this.statefulSessions = new ObjectHashSet();
 
         for ( int i = 0, length = objects.length; i < length; i++ ) {
-            objects[i] = streamWithLoader.readObject();
+            objects[i] = childStream.readObject();
         }
     }
 
@@ -303,14 +306,15 @@ abstract public class AbstractRuleBase
             }
 
             //and now the rule flows
-            if (newPkg.getRuleFlows() != Collections.EMPTY_MAP) { 
+            if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
                 Map flows = newPkg.getRuleFlows();
                 for ( Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
                     Entry flow = (Entry) iter.next();
-                    this.processes.put( flow.getKey(), flow.getValue() );
+                    this.processes.put( flow.getKey(),
+                                        flow.getValue() );
                 }
             }
-            
+
             this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
 
         } finally {
@@ -487,17 +491,17 @@ abstract public class AbstractRuleBase
     protected synchronized void addStatefulSession(final StatefulSession statefulSession) {
         this.statefulSessions.add( statefulSession );
     }
-    
+
     public Package getPackage(String name) {
-        return ( Package ) this.pkgs.get( name );
+        return (Package) this.pkgs.get( name );
     }
 
     public StatefulSession[] getStatefulSessions() {
-        return (StatefulSession[]) this.statefulSessions.toArray( new StatefulSession[ this.statefulSessions.size() ] );
+        return (StatefulSession[]) this.statefulSessions.toArray( new StatefulSession[this.statefulSessions.size()] );
     }
-    
+
     public InternalWorkingMemory[] getWorkingMemories() {
-        return (InternalWorkingMemory[]) this.statefulSessions.toArray( new InternalWorkingMemory[ this.statefulSessions.size() ] );
+        return (InternalWorkingMemory[]) this.statefulSessions.toArray( new InternalWorkingMemory[this.statefulSessions.size()] );
     }
 
     public RuleBaseConfiguration getConfiguration() {
@@ -514,23 +518,25 @@ abstract public class AbstractRuleBase
                                               final boolean keepReference) throws IOException,
                                                                           ClassNotFoundException {
 
-        final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( stream,
-                                                                                              this.packageClassLoader );
+        final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( stream,
+                                                                                      this.packageClassLoader );
 
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
         workingMemory.setRuleBase( this );
 
         return (StatefulSession) workingMemory;
     }
-    
-    public void addClass(String className, byte[] bytes) {
-        this.classLoader.addClass( className, bytes );
+
+    public void addClass(String className,
+                         byte[] bytes) {
+        this.classLoader.addClass( className,
+                                   bytes );
     }
-    
+
     public CompositePackageClassLoader getCompositePackageClassLoader() {
         return this.packageClassLoader;
     }
-    
+
     public MapBackedClassLoader getMapBackedClassLoader() {
         return this.classLoader;
     }
