@@ -13,6 +13,7 @@ import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -49,7 +50,7 @@ public class MVELDialect
 
     private final PatternBuilder                    pattern                 = new PatternBuilder();
     private final QueryBuilder                      query                   = new QueryBuilder();
-    //private final JavaAccumulateBuilder           accumulate  = new JavaAccumulateBuilder();
+    private final MVELAccumulateBuilder             accumulate              = new MVELAccumulateBuilder();
     private final SalienceBuilder                   salience                = new MVELSalienceBuilder();
     private final MVELEvalBuilder                   eval                    = new MVELEvalBuilder();
     private final MVELPredicateBuilder              predicate               = new MVELPredicateBuilder();
@@ -129,8 +130,8 @@ public class MVELDialect
         this.builders.put( QueryDescr.class,
                            getQueryBuilder() );
 
-        //        this.builders.put( AccumulateDescr.class,
-        //                           getAccumulateBuilder() );
+        this.builders.put( AccumulateDescr.class,
+                           getAccumulateBuilder() );
 
         this.builders.put( EvalDescr.class,
                            getEvalBuilder() );
@@ -203,12 +204,12 @@ public class MVELDialect
     }
 
     public Dialect.AnalysisResult analyzeExpression(RuleBuildContext context,
-                                           BaseDescr descr,
-                                           Object content) {
+                                                    BaseDescr descr,
+                                                    Object content) {
         Dialect.AnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( (String) content,
-                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
@@ -219,12 +220,12 @@ public class MVELDialect
     }
 
     public Dialect.AnalysisResult analyzeBlock(RuleBuildContext context,
-                                      BaseDescr descr,
-                                      String text) {
+                                               BaseDescr descr,
+                                               String text) {
         Dialect.AnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( text,
-                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
@@ -255,7 +256,7 @@ public class MVELDialect
     }
 
     public AccumulateBuilder getAccumulateBuilder() {
-        throw new UnsupportedOperationException( "MVEL does not yet support accumuate" );
+        return this.accumulate;
     }
 
     public ConsequenceBuilder getConsequenceBuilder() {
