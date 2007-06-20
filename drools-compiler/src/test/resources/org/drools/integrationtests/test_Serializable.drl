@@ -3,8 +3,9 @@ package org.drools.test;
 import org.drools.Person;
 import org.drools.Cheese;
 import org.drools.Cheesery;
+import java.util.List
 
-global java.util.List list
+global List list
 
 rule "match Person 1"
 	salience 10
@@ -17,9 +18,11 @@ end
 
 rule "match Person 2"
 	agenda-group "xxx"	
+	salience ($age2 - $age1)
     when
        $person : Person(name=="mark", $age1 : age )
-       Cheesery( cheeses contains $person )                
+       cheesery : Cheesery( cheeses contains $person )     
+       cheeses : List() from cheesery.getCheeses()           
        Person( age < ( $age1 ) )
        Person( $age2 : age -> ( $age1 == $age2 ) )      
        eval( $age1 == $age2 )

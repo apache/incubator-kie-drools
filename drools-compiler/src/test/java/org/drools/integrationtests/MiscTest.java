@@ -62,6 +62,7 @@ import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.common.AbstractWorkingMemory;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -1583,7 +1584,7 @@ public class MiscTest extends TestCase {
 
     protected Object serializeIn(final byte[] bytes) throws IOException,
                                                     ClassNotFoundException {
-        final ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
+        final ObjectInput in = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ) );
         final Object obj = in.readObject();
         in.close();
         return obj;

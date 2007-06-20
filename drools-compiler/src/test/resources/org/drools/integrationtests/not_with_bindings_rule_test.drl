@@ -13,7 +13,6 @@ rule "not rule test"
         $person : Person( $likes:likes )
         not Cheese( type == $likes )
     then
-        //System.out.println( "help" );    
 		list.add( $person );
 end    
 

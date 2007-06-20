@@ -68,6 +68,7 @@ public class ProcessBuilder {
         final XStream stream = new XStream();
         stream.setMode( XStream.ID_REFERENCES );
 
+        
         final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {

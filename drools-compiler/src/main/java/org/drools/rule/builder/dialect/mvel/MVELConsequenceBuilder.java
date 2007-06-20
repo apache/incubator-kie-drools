@@ -6,12 +6,14 @@ import java.util.Map;
 
 import org.drools.FactHandle;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
 import org.drools.base.mvel.DroolsMVELPreviousDeclarationVariable;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 import org.mvel.ASTNode;
 import org.mvel.MVEL;
 import org.mvel.Macro;
@@ -27,20 +29,20 @@ public class MVELConsequenceBuilder
     //private final Interceptor assertInterceptor;
     //private final Interceptor modifyInterceptor;
     private final Map         interceptors;
-    private final Map         macros;
+    private final Map macros;
 
     public MVELConsequenceBuilder() {
         this.interceptors = new HashMap(1);
         this.interceptors.put( "Modify", new ModifyInterceptor() );
-//        this.assertInterceptor = new AssertInterceptor();
-//        this.modifyInterceptor = new ModifyInterceptor();
-        this.macros = new HashMap(1);
-//        macros.put( "assert",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "@Modify with";
-//                        }
-//                    } );   
+
+         macros = new HashMap(4);
+        
+        macros.put( "insert",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.insert";
+                        }
+                    } ); 
         
         macros.put( "modify",
                     new Macro() {
@@ -49,7 +51,19 @@ public class MVELConsequenceBuilder
                         }
                     } );
         
-     
+        macros.put( "update",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.update";
+                        }
+                    } );
+        
+        macros.put( "retract",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.retract";
+                        }
+                    } );             
     }
 
     public void build(final RuleBuildContext context) {
@@ -62,9 +76,10 @@ public class MVELConsequenceBuilder
                                                                      context.getPkg().getGlobals() );
             factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
 
+            MacroProcessor macroProcessor = new MacroProcessor();
+            macroProcessor.setMacros( macros );
             
-            
-            final Serializable expr = MVEL.compileExpression( new MacroProcessor(delimitExpressions( (String) context.getRuleDescr().getConsequence() )).parse(this.macros),
+            final Serializable expr = MVEL.compileExpression( macroProcessor.parse( delimitExpressions( (String) context.getRuleDescr().getConsequence() )),
                                                               ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses(), this.interceptors );
 
             context.getRule().setConsequence( new MVELConsequence( expr,
@@ -153,16 +168,19 @@ public class MVELConsequenceBuilder
                             VariableResolverFactory factory) {
             Object object = ((WithNode) node). getNestedStatement().getValue( null,
                                                                               factory );
-            FactHandle handle = ((DroolsMVELFactory) factory).getWorkingMemory().getFactHandle( object );
-            ((DroolsMVELFactory) factory).getWorkingMemory().modifyRetract( handle, null, null );
+            
+            DroolsMVELKnowledgeHelper resolver = ( DroolsMVELKnowledgeHelper ) factory.getVariableResolver( "drools" );
+            KnowledgeHelper helper = ( KnowledgeHelper ) resolver.getValue();
+            helper.modifyRetract( object );
             return 0;
         }
 
         public int doAfter(Object value,
                            ASTNode node,
                            VariableResolverFactory factory) {
-            FactHandle handle = ((DroolsMVELFactory) factory).getWorkingMemory().getFactHandle( value );            
-            ((DroolsMVELFactory) factory).getWorkingMemory().modifyInsert( handle, value, null, null );
+            DroolsMVELKnowledgeHelper resolver = ( DroolsMVELKnowledgeHelper ) factory.getVariableResolver( "drools" );
+            KnowledgeHelper helper = ( KnowledgeHelper ) resolver.getValue();
+            helper.modifyInsert( value );
             return 0;
         }
     }

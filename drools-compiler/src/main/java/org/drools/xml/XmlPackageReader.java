@@ -127,10 +127,10 @@ public class XmlPackageReader extends DefaultHandler {
 
         this.handlers.put( "and-restriction-connective",
                            new RestrictionConnectiveHandler( this ) );
-        
+
         this.handlers.put( "or-restriction-connective",
-                           new RestrictionConnectiveHandler( this) );
-        
+                           new RestrictionConnectiveHandler( this ) );
+
         this.handlers.put( "and",
                            new AndHandler( this ) );
         this.handlers.put( "or",
@@ -157,7 +157,7 @@ public class XmlPackageReader extends DefaultHandler {
                            new ReturnValueRestrictionHandler( this ) );
         this.handlers.put( "field-binding",
                            new FieldBindingHandler( this ) );
-        
+
         initEntityResolver();
     }
 
@@ -263,7 +263,8 @@ public class XmlPackageReader extends DefaultHandler {
             throw new RuntimeException( "parser must be namespace-aware" );
         }
 
-        localParser.parse( in, this );
+        localParser.parse( in,
+                           this );
 
         return this.packageDescr;
     }
@@ -340,9 +341,13 @@ public class XmlPackageReader extends DefaultHandler {
             return;
         }
 
-        validate( uri,  localName, handler );
+        validate( uri,
+                  localName,
+                  handler );
 
-        final Object node = handler.start( uri, localName, attrs );
+        final Object node = handler.start( uri,
+                                           localName,
+                                           attrs );
 
         if ( node != null ) {
             this.parents.add( node );
@@ -377,7 +382,8 @@ public class XmlPackageReader extends DefaultHandler {
 
         this.current = getParent( handler.generateNodeFor() );
 
-        final Object node = handler.end( uri, localName );
+        final Object node = handler.end( uri,
+                                         localName );
 
         // next
         if ( node != null && !this.lastWasEndElement ) {
@@ -427,7 +433,7 @@ public class XmlPackageReader extends DefaultHandler {
                 }
             }
             if ( !validParent ) {
-                 throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + parent + "]",
+                throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + parent + "]",
                                              getLocator() );
             }
         }
@@ -651,7 +657,6 @@ public class XmlPackageReader extends DefaultHandler {
         }
 
         // Try looking in META-INF
-
         {
             final InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
             if ( is != null ) {

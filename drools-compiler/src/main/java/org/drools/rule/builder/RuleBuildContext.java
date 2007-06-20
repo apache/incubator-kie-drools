@@ -80,7 +80,7 @@ public class RuleBuildContext {
 
     private DialectRegistry          dialectRegistry;
 
-    private Dialect                   dialect;
+    private Dialect                  dialect;
 
     /**
      * Default constructor
@@ -113,22 +113,22 @@ public class RuleBuildContext {
                        ruleDescr.getAttributes() );
 
         this.dialectRegistry = dialectRegistry;
-        this.dialect = ( this.rule.getDialect() != null ) ? this.dialectRegistry.getDialect( this.rule.getDialect() ) : defaultDialect;
-        
+        this.dialect = (this.rule.getDialect() != null) ? this.dialectRegistry.getDialect( this.rule.getDialect() ) : defaultDialect;
+
         getDialect().init( ruleDescr );
     }
 
     public Dialect getDialect() {
         return dialect;
     }
-    
+
     /**
      * Allows the change of the current dialect in the context
      */
-    public void setDialect( Dialect dialect ) {
+    public void setDialect(Dialect dialect) {
         this.dialect = dialect;
     }
-    
+
     public Dialect getDialect(String dialectName) {
         return (Dialect) this.dialectRegistry.getDialect( dialectName );
     }

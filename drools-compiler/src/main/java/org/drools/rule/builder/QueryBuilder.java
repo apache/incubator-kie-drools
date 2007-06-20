@@ -27,8 +27,8 @@ public class QueryBuilder {
                                              0, // offset is 0 by default
                                              objectType,
                                              null );
-        
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( DroolsQuery.class, "name" );        
+        ClassLoader classloader = context.getPkg().getPackageCompilationData().getClassLoader();
+        final FieldExtractor extractor = context.getDialect().getClassFieldExtractorCache().getExtractor(  DroolsQuery.class, "name",  classloader );        
 
         final FieldValue field = FieldFactory.getFieldValue( queryDescr.getName(),
                                                              ValueType.STRING_TYPE );
@@ -41,7 +41,6 @@ public class QueryBuilder {
 
         Extractor arrayExtractor = null;
         try {
-            ClassLoader classloader = context.getPkg().getPackageCompilationData().getClassLoader();
             arrayExtractor = context.getDialect().getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
                                                                                               "arguments",
                                                                                               classloader );
