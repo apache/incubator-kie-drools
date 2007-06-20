@@ -45,27 +45,32 @@ public class SuggestionCompletionLoader {
 
     private final SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
     private final DrlParser                         parser  = new DrlParser();
-    private final ByteArrayClassLoader        loader;
-    protected List                            errors = new ArrayList();
-    private ClassLoader existingLoader;
+    private final ByteArrayClassLoader              loader;
+    protected List                                  errors  = new ArrayList();
+    // iterating over the import list
+    final ClassTypeResolver resolver;
 
     /**
      * This uses the current classes classloader as a base,
      * and jars can be added.
      */
     public SuggestionCompletionLoader() {
-        this.loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
-
+        this(null);
     }
 
     /**
      * This allows a pre existing classloader to be used (and preferred)
      * for resolving types.
      */
-    public SuggestionCompletionLoader(
-                                      ClassLoader classLoader) {
-        this();
-        this.existingLoader = classLoader;
+    public SuggestionCompletionLoader(ClassLoader classLoader) {
+        if ( classLoader == null ) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+            if ( classLoader == null ) {
+                classLoader = this.getClass().getClassLoader();
+            }
+        }
+        this.loader = new ByteArrayClassLoader( classLoader );
+        this.resolver = new ClassTypeResolver(new ArrayList(), this.loader);
     }
 
     /**
@@ -177,7 +182,7 @@ public class SuggestionCompletionLoader {
                 final String shortTypeName = global.getType();
                 if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
                     final Class clazz = loadClass( global.getType(),
-                                             jars );
+                                                   jars );
                     loadClassFields( clazz,
                                      shortTypeName );
 
@@ -186,7 +191,7 @@ public class SuggestionCompletionLoader {
                 }
 
                 this.builder.addGlobalType( global.getIdentifier(),
-                                       shortTypeName );
+                                            shortTypeName );
             } catch ( final IOException e ) {
                 this.errors.add( "Error while inspecting class for global: " + global.getType() + " error message: " + e.getMessage() );
             }
@@ -199,16 +204,13 @@ public class SuggestionCompletionLoader {
      */
     private void populateModelInfo(final PackageDescr pkgDescr,
                                    final List jars) {
-
-        // iterating over the import list
-        final ClassTypeResolver resolver = new ClassTypeResolver();
         for ( final Iterator it = pkgDescr.getImports().iterator(); it.hasNext(); ) {
             final ImportDescr imp = (ImportDescr) it.next();
-            final String classname = imp.getTarget();
-            resolver.addImport( classname );
+            final String className = imp.getTarget();
+            resolver.addImport( className );
 
-            final Class clazz = loadClass( classname,
-                                     jars );
+            final Class clazz = loadClass(className, jars);
+            
             if ( clazz != null ) {
                 try {
                     final String shortTypeName = getShortNameOfClass( clazz.getName() );
@@ -216,7 +218,7 @@ public class SuggestionCompletionLoader {
                                      shortTypeName );
                     this.builder.addFactType( shortTypeName );
                 } catch ( final IOException e ) {
-                    this.errors.add( "Error while inspecting the class: " + classname + ". The error was: " + e.getMessage() );
+                    this.errors.add( "Error while inspecting the class: " + className + ". The error was: " + e.getMessage() );
                 }
             }
         }
@@ -240,7 +242,7 @@ public class SuggestionCompletionLoader {
 
             final String[] fields = new String[templ.getFields().size()];
             this.builder.addFieldsForType( factType,
-                                      fields );
+                                           fields );
 
             int index = 0;
             for ( final Iterator fieldsIt = templ.getFields().iterator(); fieldsIt.hasNext(); ) {
@@ -255,10 +257,26 @@ public class SuggestionCompletionLoader {
                     this.errors.add( "Fact template field type not found: " + fieldType );
                 }
                 this.builder.addFieldType( factType + "." + fieldDescr.getName(),
-                                      getFieldType( fieldTypeClass ) );
+                                           getFieldType( fieldTypeClass ) );
             }
         }
     }
+    
+    private Class loadClass(String className,
+                            List jars) {
+        Class clazz = null;
+        try {
+            clazz = resolver.resolveType( className );
+        } catch ( ClassNotFoundException e1 ) {
+            try {
+                addJars( jars );
+                clazz = resolver.resolveType( className );
+            } catch ( Exception e) {
+                this.errors.add( "Class not found: " + className );
+            }
+        }
+        return clazz;
+    }    
 
     private void loadClassFields(final Class clazz,
                                  final String shortTypeName) throws IOException {
@@ -271,12 +289,12 @@ public class SuggestionCompletionLoader {
         fields = removeIrrelevantFields( fields );
 
         this.builder.addFieldsForType( shortTypeName,
-                                  fields );
+                                       fields );
         for ( int i = 0; i < fields.length; i++ ) {
             final Class type = (Class) inspector.getFieldTypes().get( fields[i] );
             final String fieldType = getFieldType( type );
             this.builder.addFieldType( shortTypeName + "." + fields[i],
-                                  fieldType );
+                                       fieldType );
         }
     }
 
@@ -302,39 +320,6 @@ public class SuggestionCompletionLoader {
     }
 
     /**
-     * @param pkg
-     * @param classname
-     * @param clazz
-     * @return
-     */
-    private Class loadClass(final String classname,
-                            final List jars) {
-        Class clazz = null;
-        try {
-            // check if it is already in the classpath
-            if (this.existingLoader != null) {
-                clazz = this.existingLoader.loadClass( classname );
-            } else {
-                clazz = this.loader.loadClass( classname );
-            }
-
-        } catch ( final ClassNotFoundException e1 ) {
-
-            // not found in the classpath, so check if it
-            // is in a package model
-            try {
-                addJars( jars );
-                clazz = this.loader.loadClass( classname );
-            } catch ( final IOException e ) {
-                throw new IllegalStateException( e.getMessage() );
-            } catch ( final ClassNotFoundException e ) {
-                this.errors.add( "Class not found: " + classname );
-            }
-        }
-        return clazz;
-    }
-
-    /**
      * This will add the given jars to the classloader.
      */
     private void addJars(final List jars) throws IOException {
@@ -352,7 +337,7 @@ public class SuggestionCompletionLoader {
                                    len );
                     }
                     this.loader.addResource( entry.getName(),
-                                        out.toByteArray() );
+                                             out.toByteArray() );
                 }
             }
 

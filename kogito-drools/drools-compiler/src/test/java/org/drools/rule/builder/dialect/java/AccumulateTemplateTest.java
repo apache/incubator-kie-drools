@@ -42,7 +42,8 @@ public class AccumulateTemplateTest extends TestCase {
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
                                                                                                 ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                                                                       "price" ),
+                                                                                                                                       "price",
+                                                                                                                                       getClass().getClassLoader() ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -110,16 +111,19 @@ public class AccumulateTemplateTest extends TestCase {
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
                                                                               ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                                                                 "name" ),
+                                                                                                                     "name",
+                                                                                                                     getClass().getClassLoader() ),
                                                                               null ), new Declaration( "age",
                                                                                                        ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                                                                                          "age" ),
+                                                                                                                                              "age",
+                                                                                                                                              getClass().getClassLoader() ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
                                                                                                 ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                                                                                   "price" ),
+                                                                                                                                       "price",
+                                                                                                                                       getClass().getClassLoader() ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );

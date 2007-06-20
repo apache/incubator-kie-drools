@@ -46,6 +46,7 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
@@ -268,7 +269,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     private Object serializeIn(final byte[] bytes) throws IOException,
                                                   ClassNotFoundException {
-        final ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
+        final ObjectInput in = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ) );
         final Object obj = in.readObject();
         in.close();
         return obj;
@@ -1185,7 +1186,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ObjectOutputStream out = new ObjectOutputStream(data);
         out.writeObject( pkg );
         
-        ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(data.toByteArray()));
+        ObjectInputStream objIn = new DroolsObjectInputStream(new ByteArrayInputStream(data.toByteArray()));
         Package pkg2 = (Package) objIn.readObject();
         assertNotNull(pkg2);
         

@@ -53,7 +53,7 @@ public class PackageBuilderConfiguration {
 
     private int                  compiler;
 
-//    private ClassLoader          classLoader;
+    private ClassLoader          classLoader;
 
     private String               languageLevel;
 
@@ -84,11 +84,6 @@ public class PackageBuilderConfiguration {
               null );
     }
 
-//    public PackageBuilderConfiguration(ClassLoader classLoader) {
-//        init( classLoader,
-//              null );
-//    }
-
     private void init(ClassLoader classLoader,
                       Properties properties) {
         if ( classLoader == null ) {
@@ -96,11 +91,10 @@ public class PackageBuilderConfiguration {
             if ( classLoader == null ) {
                 classLoader = this.getClass().getClassLoader();
             }
-            //setClassLoader( classLoader );
         }
-        //setClassLoader( classLoader );
+        setClassLoader( classLoader );
 
-        this.chainedProperties = new ChainedProperties( Thread.currentThread().getContextClassLoader(),
+        this.chainedProperties = new ChainedProperties( this.classLoader,
                                                         "packagebuilder.conf" );
 
         if ( properties != null ) {
@@ -182,16 +176,16 @@ public class PackageBuilderConfiguration {
         }
     }
 
-//    public ClassLoader getClassLoader() {
-//        return this.classLoader;
-//    }
-//
-//    /** Use this to override the classloader that will be used for the rules. */
-//    public void setClassLoader(final ClassLoader classLoader) {
-//        if ( classLoader != null ) {
-//            this.classLoader = classLoader;
-//        }
-//    }
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
+
+    /** Use this to override the classloader that will be used for the rules. */
+    public void setClassLoader(final ClassLoader classLoader) {
+        if ( classLoader != null ) {
+            this.classLoader = classLoader;
+        }
+    }
 
     /**
      * This will attempt to read the System property to work out what default to set.

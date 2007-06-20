@@ -52,7 +52,8 @@ public class MVELPredicateBuilderTest extends TestCase {
                                                                                mvelDialect );
         
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class, "price" );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class, "price",
+                                                                                getClass().getClassLoader() );
         
         final Pattern patternA = new Pattern( 0,
                                               new ClassObjectType( int.class ) );

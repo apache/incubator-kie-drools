@@ -120,12 +120,12 @@ public class PackageBuilder {
         
         if ( this.pkg != null ) {
             this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
-                                                       this.pkg.getPackageCompilationData().getClassLoader() );
+                                                       this.configuration.getClassLoader() );
             // make an automatic import for the current package
             this.typeResolver.addImport( this.pkg.getName() + ".*" );            
         } else {
             this.typeResolver = new ClassTypeResolver( new ArrayList(),
-                                                       Thread.currentThread().getContextClassLoader() );
+                                                       this.configuration.getClassLoader() );
         }
 
         this.dialects = configuration.buildDialectRegistry( this );
@@ -295,7 +295,7 @@ public class PackageBuilder {
 
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
-                                         Thread.currentThread().getContextClassLoader() );       
+                                         this.configuration.getClassLoader() );       
 
         this.dialect.init( pkg );
 

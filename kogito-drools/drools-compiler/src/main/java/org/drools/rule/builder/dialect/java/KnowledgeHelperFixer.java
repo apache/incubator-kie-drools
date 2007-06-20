@@ -23,10 +23,10 @@ import org.mvel.Macro;
 import org.mvel.MacroProcessor;
 
 public class KnowledgeHelperFixer {
-    private static final MacroProcessor macroProcessor;
+    private static final Map macros;
     
     static {
-        Map macros = new HashMap(5);
+        macros = new HashMap(5);
         
         macros.put( "insert",
                     new Macro() {
@@ -68,16 +68,16 @@ public class KnowledgeHelperFixer {
                         public String doMacro() {
                             return "drools.retract";
                         }
-                    } );  
-        macroProcessor = new MacroProcessor();
-        macroProcessor.setMacros(macros);        
+                    } );          
     }
 
     public String fix(final String raw) {
         if  ( raw == null || "".equals( raw.trim() )) {
             return raw;
         }
-               
+        
+        MacroProcessor macroProcessor = new MacroProcessor();
+        macroProcessor.setMacros( macros );
         return macroProcessor.parse( raw );
     }
 }

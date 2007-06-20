@@ -37,7 +37,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
     public void testSimpleExpression() throws Exception {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
-        ruleDescr.setConsequence( "cheese.setPrice( 5 );" );
+        ruleDescr.setConsequence( "modify (cheese) {price = 5 }; retract (cheese)" );
 
         MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
         DialectRegistry registry = new DialectRegistry();
@@ -90,6 +90,10 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         assertEquals( 5,
                       cheddar.getPrice() );
+    }
+    
+    public void testKnowledgeHelper() {
+        
     }
 
     /**
