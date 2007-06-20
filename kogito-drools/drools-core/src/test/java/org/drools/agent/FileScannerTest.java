@@ -31,7 +31,6 @@ public class FileScannerTest extends TestCase {
     }
     
     public void testScanAndLoad() throws Exception {
-        
         Package p1 = new Package("p1");
         Package p2 = new Package("p2");
         
@@ -42,37 +41,35 @@ public class FileScannerTest extends TestCase {
         RuleBaseAssemblerTest.writePackage( p1, p1f );
         RuleBaseAssemblerTest.writePackage( p2, p2f);
         
-        
-        
-        
-        
         FileScanner scan = new FileScanner();
         scan.setFiles( new String[] {p1f.getPath(), p2f.getPath()} );
         
-        
-        
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb );
+        scan.updateRuleBase( rb, true );
         
         assertEquals(2, rb.getPackages().length);
         assertEquals("p1", rb.getPackages()[0].getName());
         assertEquals("p2", rb.getPackages()[1].getName());
         
         
-        scan.updateRuleBase( rb );
+        scan.updateRuleBase( rb, true );
         assertEquals(2, rb.getPackages().length);
         assertEquals("p1", rb.getPackages()[0].getName());
         assertEquals("p2", rb.getPackages()[1].getName());
 
         RuleBaseAssemblerTest.writePackage( p2, p2f );
-        scan.updateRuleBase( rb );
+        scan.updateRuleBase( rb, true );
         assertEquals(2, rb.getPackages().length);
         assertEquals("p1", rb.getPackages()[0].getName());
         assertEquals("p2", rb.getPackages()[1].getName());
         
-        
-        
-        
+    }
+    
+    public void testEmptyList() throws Exception {
+        FileScanner scan = new FileScanner();
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        scan.updateRuleBase( rb, true );
+        assertEquals(0, rb.getPackages().length);
     }
     
     
