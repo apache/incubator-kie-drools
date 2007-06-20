@@ -128,6 +128,14 @@ public class CollectNode extends BetaNode
         memory.getTupleMemory().add( leftTuple );
 
         final Collection result = this.collect.instantiateResultObject();
+        final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result );
+        CollectResult colresult = new CollectResult();
+        colresult.handle = resultHandle;
+        colresult.propagated = false;
+        memory.getCreatedHandles().put( leftTuple,
+                                        colresult,
+                                        false );
+
         final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory,
                                           leftTuple );
@@ -152,15 +160,11 @@ public class CollectNode extends BetaNode
             this.resultsBinder.updateFromTuple( workingMemory,
                                                 leftTuple );
             if ( this.resultsBinder.isAllowedCachedLeft( result ) ) {
-                final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
-                memory.getCreatedHandles().put( leftTuple,
-                                                handle,
-                                                false );
-
+                colresult.propagated = true;
                 this.sink.propagateAssertTuple( leftTuple,
-                                           handle,
-                                           context,
-                                           workingMemory );
+                                                resultHandle,
+                                                context,
+                                                workingMemory );
             }
         }
     }
@@ -174,10 +178,11 @@ public class CollectNode extends BetaNode
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getTupleMemory().remove( leftTuple );
-        final InternalFactHandle handle = (InternalFactHandle) memory.getCreatedHandles().remove( leftTuple );
+        CollectResult result = (CollectResult) memory.getCreatedHandles().remove( leftTuple );
+        final InternalFactHandle handle = result.handle;
 
         // if tuple was propagated
-        if ( handle != null ) {
+        if ( result.propagated ) {
 
             this.sink.propagateRetractTuple( leftTuple,
                                              handle,
@@ -213,10 +218,8 @@ public class CollectNode extends BetaNode
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                this.retractTuple( tuple,
-                                   context,
-                                   workingMemory );
-                this.assertTuple( tuple,
+                this.modifyTuple( tuple,
+                                  handle,
                                   context,
                                   workingMemory );
             }
@@ -240,18 +243,74 @@ public class CollectNode extends BetaNode
 
         this.constraints.updateFromFactHandle( workingMemory,
                                                handle );
-        
+
         // need to clone the tuples to avoid concurrent modification exceptions
         Entry[] tuples = memory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                this.retractTuple( tuple,
-                                   context,
-                                   workingMemory );
-                this.assertTuple( tuple,
+                
+                this.modifyTuple( tuple,
+                                  handle,
                                   context,
                                   workingMemory );
+            }
+        }
+    }
+
+    /**
+     * Modifies the results match for a tuple, retracting it and repropagating
+     * if constraints allow it
+     * 
+     * @param leftTuple
+     * @param handle
+     * @param context
+     * @param workingMemory
+     */
+    public void modifyTuple(final ReteTuple leftTuple,
+                            final InternalFactHandle handle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        CollectResult result = (CollectResult) memory.getCreatedHandles().get( leftTuple );
+
+        // if tuple was propagated
+        if ( result.propagated ) {
+            this.sink.propagateRetractTuple( leftTuple,
+                                             result.handle,
+                                             context,
+                                             workingMemory );
+            result.propagated = false;
+        }
+
+        if ( context.getType() == PropagationContext.ASSERTION ) {
+            ((Collection) result.handle.getObject()).add( handle.getObject() );
+        } else if ( context.getType() == PropagationContext.RETRACTION ) {
+            ((Collection) result.handle.getObject()).remove( handle.getObject() );
+        } else if ( context.getType() == PropagationContext.MODIFICATION ) {
+            // nothing to do
+        }
+
+        // First alpha node filters
+        boolean isAllowed = true;
+        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
+            if ( !this.resultConstraints[i].isAllowed( result.handle.getObject(),
+                                                       workingMemory ) ) {
+                isAllowed = false;
+                break;
+            }
+        }
+        if ( isAllowed ) {
+            this.resultsBinder.updateFromTuple( workingMemory,
+                                                leftTuple );
+            if ( this.resultsBinder.isAllowedCachedLeft( result.handle.getObject() ) ) {
+                result.propagated = true;
+                this.sink.propagateAssertTuple( leftTuple,
+                                                result.handle,
+                                                context,
+                                                workingMemory );
             }
         }
     }
@@ -264,8 +323,9 @@ public class CollectNode extends BetaNode
         final Iterator it = memory.getCreatedHandles().iterator();
 
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            CollectResult result = (CollectResult) entry.getValue();
             sink.assertTuple( new ReteTuple( (ReteTuple) entry.getKey(),
-                                             (InternalFactHandle) entry.getValue() ),
+                                             result.handle ),
                               context,
                               workingMemory );
         }
@@ -275,8 +335,7 @@ public class CollectNode extends BetaNode
      * @see org.drools.reteoo.BaseNode#hashCode()
      */
     public int hashCode() {
-        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.collect.hashCode() ^ this.resultsBinder.hashCode() ^
-            ArrayUtils.hashCode( this.resultConstraints );
+        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.collect.hashCode() ^ this.resultsBinder.hashCode() ^ ArrayUtils.hashCode( this.resultConstraints );
     }
 
     /* (non-Javadoc)
@@ -292,17 +351,22 @@ public class CollectNode extends BetaNode
         }
 
         final CollectNode other = (CollectNode) object;
-        
-        if( this.getClass() != other.getClass() || ( ! this.leftInput.equals( other.leftInput ) ) || 
-            ( ! this.rightInput.equals( other.rightInput ) ) || (! this.constraints.equals( other.constraints )) ) {
+
+        if ( this.getClass() != other.getClass() || (!this.leftInput.equals( other.leftInput )) || (!this.rightInput.equals( other.rightInput )) || (!this.constraints.equals( other.constraints )) ) {
             return false;
         }
-        
-        return this.collect.equals( other.collect ) && resultsBinder.equals( other.resultsBinder ) && Arrays.equals( this.resultConstraints, other.resultConstraints );
+
+        return this.collect.equals( other.collect ) && resultsBinder.equals( other.resultsBinder ) && Arrays.equals( this.resultConstraints,
+                                                                                                                     other.resultConstraints );
     }
 
     public String toString() {
         return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
     }
 
+    private static class CollectResult {
+        // keeping attributes public just for performance
+        public InternalFactHandle handle;
+        public boolean            propagated;
+    }
 }
