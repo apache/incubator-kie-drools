@@ -51,11 +51,13 @@ public class FileScanner {
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-    void updateRuleBase(RuleBase rb) throws FileNotFoundException, IOException, ClassNotFoundException {
+    void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
         Package[] changes = getChangeSet();
         for ( int i = 0; i < changes.length; i++ ) {
             Package p = changes[i];
-            removePackage(p.getName(), rb);
+            if ( removeExistingPackages ) {
+                removePackage( p.getName(), rb );
+            }
             try {
                 rb.addPackage( p );
             } catch ( Exception e ) {
@@ -64,12 +66,16 @@ public class FileScanner {
         }
     }
 
+    /**
+     * Remove the package from the rulebase if it exists in it.
+     * If it does not, does nothing.
+     */
     private void removePackage(String name, RuleBase rb) {
         Package[] ps = rb.getPackages();
-        if (ps == null) return;
+        if ( ps == null ) return;
         for ( int i = 0; i < ps.length; i++ ) {
             Package p = ps[i];
-            if (p.getName().equals( name )) {
+            if ( p.getName().equals( name ) ) {
                 rb.removePackage( name );
                 return;
             }
@@ -83,23 +89,32 @@ public class FileScanner {
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-    private Package[] getChangeSet() throws FileNotFoundException, IOException, ClassNotFoundException {
+    private Package[] getChangeSet() {
+        if ( this.files == null ) return new Package[0];
         List list = new ArrayList();
         for ( int i = 0; i < files.length; i++ ) {
             File f = files[i];
             if ( hasChanged( f.getPath(), this.lastUpdated, f.lastModified() ) ) {
-                list.add( readPackage(f) );
+                list.add( readPackage( f ) );
             }
         }
         return (Package[]) list.toArray( new Package[list.size()] );
     }
 
-    public static Package readPackage(File pkgFile) throws IOException,
-                                                  FileNotFoundException,
-                                                  ClassNotFoundException {
-        ObjectInputStream in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
-        Package p1_ = (Package) in.readObject();
-        in.close();
+    public static Package readPackage(File pkgFile)  {
+        Package p1_ = null;
+        ObjectInputStream in;
+        try {
+            in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
+            p1_ = (Package) in.readObject();
+            in.close();
+        } catch ( FileNotFoundException e ) {
+            throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
+        } catch ( IOException e ) {
+            throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException("Unable to load package from file: [" + pkgFile.getPath() + "]", e);
+        }
         return p1_;
     }
 
