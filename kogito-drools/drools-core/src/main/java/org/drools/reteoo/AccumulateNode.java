@@ -374,8 +374,8 @@ public class AccumulateNode extends BetaNode {
     }
 
     private static class AccumulateResult {
+        // keeping attributes public just for performance
         public InternalFactHandle handle;
         public Object             context;
-
     }
 }
