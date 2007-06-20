@@ -322,6 +322,17 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     
                 }
+
+                public void modifyInsert(FactHandle factHandle,
+                                         Object object) {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                public void modifyRetract(FactHandle factHandle) {
+                    // TODO Auto-generated method stub
+                    
+                }
 			};
 		}
 	}
