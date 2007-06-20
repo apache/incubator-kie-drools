@@ -20,11 +20,18 @@ public class ChainedProperties implements Serializable {
     private final List defaultProps;
     
     public ChainedProperties(String confFileName) {
-        this( Thread.currentThread().getContextClassLoader(),
+        this( null,
               confFileName );
     }
     
     public ChainedProperties(ClassLoader classLoader, String confFileName) {
+        if ( classLoader == null ) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+            if ( classLoader == null ) {
+                classLoader = this.getClass().getClassLoader();
+            }
+        }  
+        
         this.props = new ArrayList();
         this.defaultProps = new ArrayList();
         

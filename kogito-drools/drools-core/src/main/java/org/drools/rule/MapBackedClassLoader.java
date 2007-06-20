@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.common.ObjectInputStreamWithLoader;
+import org.drools.common.DroolsObjectInputStream;
 
 public class MapBackedClassLoader extends ClassLoader
     implements

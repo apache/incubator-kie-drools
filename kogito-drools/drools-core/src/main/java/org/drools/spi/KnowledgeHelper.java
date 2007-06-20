@@ -82,6 +82,15 @@ public interface KnowledgeHelper
 
     void retract(Object object) throws FactException;
     
+    public void modifyRetract(final Object object);
+    
+    public void modifyRetract(final FactHandle factHandle);
+
+    public void modifyInsert(final Object object); 
+    
+    public void modifyInsert(final FactHandle factHandle,
+                             final Object object);     
+    
     public Object get(Declaration declaration);
 
     /**

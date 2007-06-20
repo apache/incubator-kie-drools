@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.Map;
 
 import org.drools.RuleIntegrationException;
 import org.drools.common.BaseNode;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
@@ -47,18 +51,18 @@ public class ReteooBuilder
     /**
      * 
      */
-    private static final long               serialVersionUID = 1737643968218792944L;
+    private static final long                 serialVersionUID = 1737643968218792944L;
 
     /** The RuleBase */
-    private transient ReteooRuleBase        ruleBase;
+    private transient InternalRuleBase          ruleBase;
 
     private transient InternalWorkingMemory[] workingMemories;
 
-    private Map                             rules;
+    private Map                               rules;
 
-    private transient ReteooRuleBuilder     ruleBuilder;
+    private transient ReteooRuleBuilder       ruleBuilder;
 
-    private IdGenerator                     idGenerator;
+    private IdGenerator                       idGenerator;
 
     // ------------------------------------------------------------
     // Constructors
@@ -68,7 +72,7 @@ public class ReteooBuilder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    ReteooBuilder(final ReteooRuleBase ruleBase) {
+    ReteooBuilder(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.rules = new HashMap();
 
@@ -77,12 +81,10 @@ public class ReteooBuilder
         this.ruleBuilder = new ReteooRuleBuilder();
     }
 
-    /**
-     * Allow this to be settable, otherwise we get infinite recursion on serialisation
-     * @param ruleBase
-     */
-    void setRuleBase(final ReteooRuleBase ruleBase) {
-        this.ruleBase = ruleBase;
+    private void readObject(ObjectInputStream stream) throws IOException,
+                                                     ClassNotFoundException {
+        stream.defaultReadObject();
+        this.ruleBase = ((DroolsObjectInputStream) stream).getRuleBase();
     }
 
     /**
@@ -110,8 +112,8 @@ public class ReteooBuilder
      */
     void addRule(final Rule rule) throws InvalidPatternException {
         final List terminals = this.ruleBuilder.addRule( rule,
-                                                   this.ruleBase,
-                                                   this.idGenerator );
+                                                         this.ruleBase,
+                                                         this.idGenerator );
 
         this.rules.put( rule,
                         terminals.toArray( new BaseNode[terminals.size()] ) );

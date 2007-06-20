@@ -25,22 +25,31 @@ public interface InternalWorkingMemoryActions
     extends
     InternalWorkingMemory {
     public void update(FactHandle handle,
-                             Object object,
-                             Rule rule,
-                             Activation activation) throws FactException;
+                       Object object,
+                       Rule rule,
+                       Activation activation) throws FactException;
 
     public void retract(FactHandle handle,
-                              boolean removeLogical,
-                              boolean updateEqualsMap,
-                              Rule rule,
-                              Activation activation) throws FactException;
+                        boolean removeLogical,
+                        boolean updateEqualsMap,
+                        Rule rule,
+                        Activation activation) throws FactException;
 
     FactHandle insert(Object object,
-                            boolean dynamic,
-                            boolean logical,
-                            Rule rule,
-                            Activation activation) throws FactException;
+                      boolean dynamic,
+                      boolean logical,
+                      Rule rule,
+                      Activation activation) throws FactException;
 
     public FactHandle insertLogical(Object object,
-                                          boolean dynamic) throws FactException;
+                                    boolean dynamic) throws FactException;
+
+    public void modifyRetract(final FactHandle factHandle,
+                              final Rule rule,
+                              final Activation activation);
+
+    public void modifyInsert(final FactHandle factHandle,
+                             final Object object,
+                             final Rule rule,
+                             final Activation activation);
 }

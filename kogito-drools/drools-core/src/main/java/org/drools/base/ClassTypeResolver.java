@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.RuntimeDroolsException;
+
 public class ClassTypeResolver
     implements
     TypeResolver {
@@ -54,27 +56,14 @@ public class ClassTypeResolver
                               "C" );
     }
 
-    public ClassTypeResolver() {
-        this( Collections.EMPTY_LIST );
-    }
-
-    public ClassTypeResolver(final List imports) {
-        this( imports,
-              null );
-    }
-
     public ClassTypeResolver(final List imports,
                              ClassLoader classLoader) {
         this.imports = imports;
 
         if ( classLoader == null ) {
-            classLoader = Thread.currentThread().getContextClassLoader();
+            throw new RuntimeDroolsException( "ClassTypeResolver cannot have a null parent ClassLoader" );
         }
-
-        if ( classLoader == null ) {
-            classLoader = getClass().getClassLoader();
-        }
-
+        
         this.classLoader = classLoader;
     }
 

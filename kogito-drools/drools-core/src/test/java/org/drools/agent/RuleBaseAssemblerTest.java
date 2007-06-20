@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.rule.Package;
 
 import junit.framework.TestCase;
@@ -40,7 +41,7 @@ public class RuleBaseAssemblerTest extends TestCase {
     public static Package readPackage(File p1file) throws IOException,
                                             FileNotFoundException,
                                             ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(p1file));
+        ObjectInputStream in = new DroolsObjectInputStream(new FileInputStream(p1file));
         Package p1_ = (Package) in.readObject();
         in.close();
         return p1_;

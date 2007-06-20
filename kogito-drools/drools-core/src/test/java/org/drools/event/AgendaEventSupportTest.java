@@ -63,7 +63,8 @@ public class AgendaEventSupportTest extends TestCase {
                                     cheeseObjectType );
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 

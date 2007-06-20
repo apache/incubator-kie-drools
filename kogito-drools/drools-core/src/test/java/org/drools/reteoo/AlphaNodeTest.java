@@ -64,7 +64,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -145,7 +146,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                      "type" );
+                                                                                      "type",
+                                                                                      getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -231,7 +233,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type" );
+                                                                                "type",
+                                                                                getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -292,7 +295,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type" );
+                                                                                "type",
+                                                                                getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -370,7 +374,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                 "type" );
+                                                                                 "type",
+                                                                                 getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -453,7 +458,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 1 );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type" );
+                                                                                "type",
+                                                                                getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -520,7 +526,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 1 );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor(Cheese.class,
-                                                                               "type" );
+                                                                               "type",
+                                                                               getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 

@@ -582,10 +582,10 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle insert(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
-                             false,
-                             false,
-                             null,
-                             null );
+                       false,
+                       false,
+                       null,
+                       null );
     }
 
     /**
@@ -593,35 +593,35 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle insertLogical(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
-                             false,
-                             true,
-                             null,
-                             null );
+                       false,
+                       true,
+                       null,
+                       null );
     }
 
     public FactHandle insert(final Object object,
-                                   final boolean dynamic) throws FactException {
+                             final boolean dynamic) throws FactException {
         return insert( object,
-                             dynamic,
-                             false,
-                             null,
-                             null );
+                       dynamic,
+                       false,
+                       null,
+                       null );
     }
 
     public FactHandle insertLogical(final Object object,
-                                          final boolean dynamic) throws FactException {
+                                    final boolean dynamic) throws FactException {
         return insert( object,
-                             dynamic,
-                             true,
-                             null,
-                             null );
+                       dynamic,
+                       true,
+                       null,
+                       null );
     }
 
     public FactHandle insert(final Object object,
-                                   final boolean dynamic,
-                                   boolean logical,
-                                   final Rule rule,
-                                   final Activation activation) throws FactException {
+                             final boolean dynamic,
+                             boolean logical,
+                             final Rule rule,
+                             final Activation activation) throws FactException {
         if ( object == null ) {
             // you cannot assert a null object
             return null;
@@ -770,8 +770,8 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getDormantActivations() );
 
             doInsert( handle,
-                            object,
-                            propagationContext );
+                      object,
+                      propagationContext );
 
             this.workingMemoryEventSupport.fireObjectInserted( propagationContext,
                                                                handle,
@@ -810,8 +810,8 @@ public abstract class AbstractWorkingMemory
     }
 
     public abstract void doInsert(InternalFactHandle factHandle,
-                                        Object object,
-                                        PropagationContext propagationContext) throws FactException;
+                                  Object object,
+                                  PropagationContext propagationContext) throws FactException;
 
     protected void removePropertyChangeListener(final FactHandle handle) throws NoSuchFactObjectException {
         Object object = null;
@@ -846,10 +846,10 @@ public abstract class AbstractWorkingMemory
 
     public void retract(final FactHandle handle) throws FactException {
         retract( handle,
-                       true,
-                       true,
-                       null,
-                       null );
+                 true,
+                 true,
+                 null,
+                 null );
     }
 
     public abstract void doRetract(InternalFactHandle factHandle,
@@ -859,10 +859,10 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public void retract(final FactHandle factHandle,
-                              final boolean removeLogical,
-                              final boolean updateEqualsMap,
-                              final Rule rule,
-                              final Activation activation) throws FactException {
+                        final boolean removeLogical,
+                        final boolean updateEqualsMap,
+                        final Rule rule,
+                        final Activation activation) throws FactException {
         try {
             this.lock.lock();
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
@@ -920,6 +920,12 @@ public abstract class AbstractWorkingMemory
         }
     }
 
+    public void modifyRetract(final FactHandle factHandle) {
+        modifyRetract( factHandle,
+                       null,
+                       null );
+    }
+
     public void modifyRetract(final FactHandle factHandle,
                               final Rule rule,
                               final Activation activation) {
@@ -961,6 +967,14 @@ public abstract class AbstractWorkingMemory
     }
 
     public void modifyInsert(final FactHandle factHandle,
+                             final Object object) {
+        modifyInsert( factHandle,
+                      object,
+                      null,
+                      null );
+    }
+
+    public void modifyInsert(final FactHandle factHandle,
                              final Object object,
                              final Rule rule,
                              final Activation activation) {
@@ -995,13 +1009,13 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getDormantActivations() );
 
             doInsert( handle,
-                            object,
-                            propagationContext );
+                      object,
+                      propagationContext );
 
             this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
-                                                               factHandle,
-                                                               originalObject,
-                                                               object );
+                                                              factHandle,
+                                                              originalObject,
+                                                              object );
 
             propagationContext.clearRetractedTuples();
 
@@ -1014,11 +1028,11 @@ public abstract class AbstractWorkingMemory
     }
 
     public void update(final FactHandle handle,
-                             final Object object) throws FactException {
+                       final Object object) throws FactException {
         update( handle,
-                      object,
-                      null,
-                      null );
+                object,
+                null,
+                null );
     }
 
     /**
@@ -1028,9 +1042,9 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public void update(final FactHandle factHandle,
-                             final Object object,
-                             final Rule rule,
-                             final Activation activation) throws FactException {
+                       final Object object,
+                       final Rule rule,
+                       final Activation activation) throws FactException {
         try {
             this.lock.lock();
             // only needed if we maintain tms, but either way we must get it before we do the retract
@@ -1096,13 +1110,13 @@ public abstract class AbstractWorkingMemory
             this.handleFactory.increaseFactHandleRecency( handle );
 
             doInsert( handle,
-                            object,
-                            propagationContext );
+                      object,
+                      propagationContext );
 
             this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
-                                                               factHandle,
-                                                               originalObject,
-                                                               object );
+                                                              factHandle,
+                                                              originalObject,
+                                                              object );
 
             propagationContext.clearRetractedTuples();
 
@@ -1200,7 +1214,7 @@ public abstract class AbstractWorkingMemory
 
         try {
             update( getFactHandle( object ),
-                          object );
+                    object );
         } catch ( final NoSuchFactHandleException e ) {
             // Not a fact so unable to process the chnage event
         } catch ( final FactException e ) {

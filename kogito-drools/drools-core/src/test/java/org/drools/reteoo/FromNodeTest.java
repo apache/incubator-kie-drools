@@ -45,7 +45,8 @@ public class FromNodeTest extends TestCase {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -136,10 +137,12 @@ public class FromNodeTest extends TestCase {
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                          "price" );
+                                                                                          "price",
+                                                                                          getClass().getClassLoader() );
 
         final ClassFieldExtractor ageExtractor = ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                        "age" );
+                                                                                        "age",
+                                                                                        getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Person.class ) );
@@ -239,7 +242,8 @@ public class FromNodeTest extends TestCase {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,

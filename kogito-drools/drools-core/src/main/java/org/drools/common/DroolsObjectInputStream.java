@@ -9,12 +9,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.HashMap;
 
-public class ObjectInputStreamWithLoader extends ObjectInputStream {
-    private final ClassLoader    classLoader;
+public class DroolsObjectInputStream extends ObjectInputStream {
+    private final ClassLoader      classLoader;
+    private InternalRuleBase ruleBase;
+    private InternalWorkingMemory  workingMemory;
 
     /** table mapping primitive type names to corresponding class objects */
-    private static final HashMap primClasses = new HashMap( 8,
-                                                            1.0F );
+    private static final HashMap   primClasses = new HashMap( 8,
+                                                              1.0F );
     static {
         primClasses.put( "boolean",
                          boolean.class );
@@ -35,14 +37,25 @@ public class ObjectInputStreamWithLoader extends ObjectInputStream {
         primClasses.put( "void",
                          void.class );
     }
+    
+    public DroolsObjectInputStream(final InputStream in) throws IOException {
+        this( in, null );
+    }    
 
-    public ObjectInputStreamWithLoader(final InputStream in,
-                                       final ClassLoader classLoader) throws IOException {
+    public DroolsObjectInputStream(final InputStream in,
+                                   ClassLoader classLoader) throws IOException {
         super( in );
+        if ( classLoader == null ) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+            if ( classLoader == null ) {
+                classLoader = this.getClass().getClassLoader();
+            }
+        }  
+        
         this.classLoader = classLoader;
         enableResolveObject( true );
     }
-    
+
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
@@ -64,4 +77,21 @@ public class ObjectInputStreamWithLoader extends ObjectInputStream {
             return clazz;
         }
     }
+
+    public InternalRuleBase getRuleBase() {
+        return ruleBase;
+    }        
+
+    public void setRuleBase(InternalRuleBase ruleBase) {
+        this.ruleBase = ruleBase;
+    }
+
+    public void setWorkingMemory(InternalWorkingMemory workingMemory) {
+        this.workingMemory = workingMemory;
+    }
+
+    public InternalWorkingMemory getWorkingMemory() {
+        return workingMemory;
+    }
+
 }

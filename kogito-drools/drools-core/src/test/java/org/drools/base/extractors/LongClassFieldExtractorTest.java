@@ -11,7 +11,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final long VALUE     = 5;
 
     Extractor                 extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                 "longAttr" );
+                                                                                 "longAttr",
+                                                                                 getClass().getClassLoader() );
     TestBean                  bean      = new TestBean();
 
     protected void setUp() throws Exception {

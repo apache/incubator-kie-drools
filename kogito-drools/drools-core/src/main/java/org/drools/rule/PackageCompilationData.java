@@ -33,7 +33,7 @@ import java.util.Map;
 
 import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
-import org.drools.common.ObjectInputStreamWithLoader;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
@@ -77,14 +77,9 @@ public class PackageCompilationData
     }
 
     private void initClassLoader(ClassLoader parentClassLoader) {
-        if ( parentClassLoader == null ) {
-            parentClassLoader = Thread.currentThread().getContextClassLoader();
-
-            if ( parentClassLoader == null ) {
-                parentClassLoader = getClass().getClassLoader();
-            }
+        if (parentClassLoader == null ) {
+            throw new RuntimeDroolsException("PackageCompilationData cannot have a null parentClassLoader" );
         }
-
         this.parentClassLoader = parentClassLoader;
         this.classLoader = new PackageClassLoader( this.parentClassLoader );
     }
@@ -114,7 +109,8 @@ public class PackageCompilationData
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        initClassLoader( null );
+        DroolsObjectInputStream droolsStream = ( DroolsObjectInputStream ) stream;
+        initClassLoader( droolsStream.getClassLoader() );
 
         this.store = (Map) stream.readObject();
         this.AST = stream.readObject();
@@ -123,8 +119,8 @@ public class PackageCompilationData
         final byte[] bytes = (byte[]) stream.readObject();
 
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
-        final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( new ByteArrayInputStream( bytes ),
-                                                                                              this.classLoader );
+        final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
+                                                                                      this.classLoader );
         this.invokerLookups = (Map) streamWithLoader.readObject();
     }
 
@@ -286,7 +282,9 @@ public class PackageCompilationData
      * @author mproctor
      *
      */
-    public class PackageClassLoader extends ClassLoader implements DroolsClassLoader {
+    public class PackageClassLoader extends ClassLoader
+        implements
+        DroolsClassLoader {
 
         public PackageClassLoader(final ClassLoader parentClassLoader) {
             super( parentClassLoader );

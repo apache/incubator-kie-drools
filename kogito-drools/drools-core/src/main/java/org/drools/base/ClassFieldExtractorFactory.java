@@ -72,17 +72,13 @@ public class ClassFieldExtractorFactory {
     }
 
     public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
-                                                                 final String fieldName) {
-        return getClassFieldExtractor( clazz,
-                                       fieldName,
-                                       null );
-    }
-
-    public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
                                                                  final String fieldName,
                                                                  final ClassLoader classLoader) {
         if ( byteArrayClassLoader == null ) {
-            byteArrayClassLoader = new ByteArrayClassLoader( (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader() );            
+            if (classLoader == null ) {
+                throw new RuntimeDroolsException("ClassFieldExtractorFactory cannot have a null parent ClassLoader" );
+            }            
+            byteArrayClassLoader = new ByteArrayClassLoader( classLoader );            
         }
         try {
             // if it is a self reference
@@ -93,7 +89,8 @@ public class ClassFieldExtractorFactory {
             } else if( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 ) {
                 // we need MVEL extractor for expressions
                 return new MVELClassFieldExtractor( clazz,
-                                                    fieldName );
+                                                    fieldName,
+                                                    classLoader );
             } else {
                 // otherwise, bytecode generate a specific extractor
                 ClassFieldInspector inspector = (ClassFieldInspector) inspectors.get( clazz );

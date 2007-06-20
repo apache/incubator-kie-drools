@@ -9,7 +9,8 @@ import org.drools.spi.Extractor;
 
 public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                 "booleanAttr" );
+                                                                 "booleanAttr",
+                                                                 getClass().getClassLoader() );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {

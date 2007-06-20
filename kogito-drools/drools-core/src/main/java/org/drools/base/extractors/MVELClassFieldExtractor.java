@@ -46,7 +46,8 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
     private Map variables = null; 
 
     public MVELClassFieldExtractor(Class clazz,
-                                   String fieldName) {
+                                   String fieldName,
+                                   ClassLoader classLoader) {
         super( -1, // index
                Object.class, // fieldType
                ValueType.determineValueType( Object.class ) ); // value type
@@ -59,8 +60,8 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
         Set inputs = compiler.getInputs();
         for( Iterator it = inputs.iterator(); it.hasNext(); ) {
             String basefield = (String) it.next();
-            
-            Extractor extr = ClassFieldExtractorCache.getExtractor(  clazz, basefield );
+                        
+            Extractor extr = ClassFieldExtractorCache.getExtractor(  clazz, basefield, classLoader );
             this.extractors.put( basefield, extr );
         }
     }

@@ -47,7 +47,6 @@ public class DefaultKnowledgeHelper
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }
 
-
     public void setActivation(final Activation agendaItem) {
         this.rule = agendaItem.getRule();
         this.subrule = agendaItem.getSubRule();
@@ -57,92 +56,111 @@ public class DefaultKnowledgeHelper
 
     public void insert(final Object object) throws FactException {
         insert( object,
-                      false );
+                false );
     }
 
     public void insert(final Object object,
-                             final boolean dynamic) throws FactException {
+                       final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
-                                         dynamic,
-                                         false,
-                                         this.rule,
-                                         this.activation );
+                                   dynamic,
+                                   false,
+                                   this.rule,
+                                   this.activation );
     }
 
     public void insertLogical(final Object object) throws FactException {
         insertLogical( object,
-                             false );
+                       false );
     }
 
     public void insertLogical(final Object object,
-                                    final boolean dynamic) throws FactException {
+                              final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
-                                         dynamic,
-                                         true,
-                                         this.rule,
-                                         this.activation );
+                                   dynamic,
+                                   true,
+                                   this.rule,
+                                   this.activation );
     }
 
     public void update(final FactHandle handle,
-                             final Object newObject) throws FactException {
+                       final Object newObject) throws FactException {
         // only update if this fact exists in the wm
         this.workingMemory.update( handle,
-                                         newObject,
-                                         this.rule,
-                                         this.activation );
+                                   newObject,
+                                   this.rule,
+                                   this.activation );
     }
 
-    public void update( final Object object ) throws FactException {
+    public void update(final Object object) throws FactException {
         FactHandle handle = this.workingMemory.getFactHandle( object );
-        if( handle == null ) {
-            throw new FactException("Update error: handle not found for object: "+object+". Is it in the working memory?");
+        if ( handle == null ) {
+            throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
         // only update if this fact exists in the wm
         this.workingMemory.update( handle,
-                                         object,
-                                         this.rule,
-                                         this.activation );
+                                   object,
+                                   this.rule,
+                                   this.activation );
     }
 
     public void retract(final FactHandle handle) throws FactException {
         this.workingMemory.retract( handle,
-                                          true,
-                                          true,
-                                          this.rule,
-                                          this.activation );
+                                    true,
+                                    true,
+                                    this.rule,
+                                    this.activation );
     }
 
     public void retract(final Object object) throws FactException {
         FactHandle handle = this.workingMemory.getFactHandle( object );
-        if( handle == null ) {
-            throw new FactException("Retract error: handle not found for object: "+object+". Is it in the working memory?");
+        if ( handle == null ) {
+            throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
         this.workingMemory.retract( handle,
-                                          true,
-                                          true,
-                                          this.rule,
-                                          this.activation );
+                                    true,
+                                    true,
+                                    this.rule,
+                                    this.activation );
+    }
+
+    public void modifyRetract(final Object object) {
+        FactHandle handle = this.workingMemory.getFactHandle( object );
+        this.workingMemory.modifyRetract( handle, rule, activation );
+    }
+
+    public void modifyRetract(final FactHandle factHandle) {
+        this.workingMemory.modifyRetract( factHandle, rule, activation );
+    }
+
+    public void modifyInsert(final Object object) {
+        FactHandle handle = this.workingMemory.getFactHandle( object );
+        this.workingMemory.modifyInsert( handle, object, rule, activation );
+    }
+
+    public void modifyInsert(final FactHandle factHandle,
+                             final Object object) {
+        this.workingMemory.modifyInsert( factHandle, object, rule, activation );        
     }
 
     public Rule getRule() {
         return this.rule;
     }
 
-//    public List getObjects() {
-//        return null; //this.workingMemory.getObjects();
-//    }
-//
-//    public List getObjects(final Class objectClass) {
-//        return null; //this.workingMemory.getObjects( objectClass );
-//    }
-//
-//    public void clearAgenda() {
-//        this.workingMemory.clearAgenda();
-//    }
-//
-//    public void clearAgendaGroup(final String group) {
-//        this.workingMemory.clearAgendaGroup( group );
-//    }
+    //    public List getObjects() {
+    //        return null; //this.workingMemory.getObjects();
+    //    }
+    //
+    //    public List getObjects(final Class objectClass) {
+    //        return null; //this.workingMemory.getObjects( objectClass );
+    //    }
+    //
+    //    public void clearAgenda() {
+    //        this.workingMemory.clearAgenda();
+    //    }
+    //
+    //    public void clearAgendaGroup(final String group) {
+    //        this.workingMemory.clearAgendaGroup( group );
+    //    }
 
     public Object get(final Declaration declaration) {
         return declaration.getValue( this.tuple.get( declaration ).getObject() );
@@ -160,21 +178,22 @@ public class DefaultKnowledgeHelper
         return this.activation;
     }
 
-//    public QueryResults getQueryResults(final String query) {
-//        return this.workingMemory.getQueryResults( query );
-//    }
-//
-//    public AgendaGroup getFocus() {
-//        return this.workingMemory.getFocus();
-//    }
-//
+    //    public QueryResults getQueryResults(final String query) {
+    //        return this.workingMemory.getQueryResults( query );
+    //    }
+    //
+    //    public AgendaGroup getFocus() {
+    //        return this.workingMemory.getFocus();
+    //    }
+    //
     public void setFocus(final String focus) {
         this.workingMemory.setFocus( focus );
     }
-//
-//    public void setFocus(final AgendaGroup focus) {
-//        this.workingMemory.setFocus( focus );
-//    }
+
+    //
+    //    public void setFocus(final AgendaGroup focus) {
+    //        this.workingMemory.setFocus( focus );
+    //    }
 
     public Declaration getDeclaration(final String identifier) {
         return (Declaration) this.subrule.getOuterDeclarations().get( identifier );

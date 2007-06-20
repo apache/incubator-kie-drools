@@ -124,16 +124,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super( id,
                config,
                factHandleFactory );
-        this.config = (config != null) ? config : new RuleBaseConfiguration();
-        this.config.makeImmutable();
-
-        this.factHandleFactory = factHandleFactory;
-
-        this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
-        this.pkgs = new HashMap();
-        this.globals = new HashMap();
-        this.statefulSessions = new ObjectHashSet();
-
         this.rete = new Rete(this);
         this.reteooBuilder = new ReteooBuilder( this );
     }
@@ -162,10 +152,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
                         objects );
 
         this.rete = (Rete) objects[0];
-        this.rete.setRuleBase( this );
         this.reteooBuilder = (ReteooBuilder) objects[1];
 
-        this.reteooBuilder.setRuleBase( this );
         this.reteooBuilder.setRete( this.rete );
     }
 

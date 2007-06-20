@@ -31,7 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.ObjectInputStreamWithLoader;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.util.StringUtils;
@@ -117,7 +117,7 @@ public class Package
      *            The name of this <code>Package</code>.
      */
     public Package(final String name,
-                   final ClassLoader parentClassLoader) {
+                   ClassLoader parentClassLoader) {
         this.name = name;
         this.imports = new ArrayList( 1 );
         this.staticImports = Collections.EMPTY_LIST;
@@ -126,6 +126,14 @@ public class Package
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
         this.functions = Collections.EMPTY_LIST;
+        
+        // This classloader test should only be here for unit testing, too much legacy api to want to change by hand at the moment
+        if ( parentClassLoader == null ) {
+            parentClassLoader = Thread.currentThread().getContextClassLoader();
+            if ( parentClassLoader == null ) {
+                parentClassLoader = getClass().getClassLoader();
+            }
+        }
         this.packageCompilationData = new PackageCompilationData( parentClassLoader );
     }
 
@@ -170,7 +178,7 @@ public class Package
         final byte[] bytes = (byte[]) stream.readObject();
 
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
-        final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( new ByteArrayInputStream( bytes ),
+        final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
                                                                                               this.packageCompilationData.getClassLoader() );
 
         this.rules = (Map) streamWithLoader.readObject();

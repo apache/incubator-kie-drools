@@ -32,7 +32,8 @@ public class DeclarationTest extends TestCase {
 
     public void testDeclaration() throws IntrospectionException {
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type" );
+                                                                                "type",
+                                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 5,
                                           new ClassObjectType( Cheese.class ) );
@@ -59,7 +60,8 @@ public class DeclarationTest extends TestCase {
 
     public void testGetFieldValue() throws IntrospectionException {
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type" );
+                                                                                "type",
+                                                                                getClass().getClassLoader()  );
 
         final Pattern pattern = new Pattern( 5,
                                           new ClassObjectType( Cheese.class ) );

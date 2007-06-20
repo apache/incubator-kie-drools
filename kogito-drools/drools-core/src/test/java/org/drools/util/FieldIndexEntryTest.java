@@ -18,7 +18,8 @@ public class FieldIndexEntryTest extends TestCase {
 
     public void testSingleEntry() {
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
@@ -61,7 +62,8 @@ public class FieldIndexEntryTest extends TestCase {
 
     public void testTwoEntries() {
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor(  Cheese.class,
-                                                                                      "type" );
+                                                                                      "type",
+                                                                                      getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
@@ -112,7 +114,8 @@ public class FieldIndexEntryTest extends TestCase {
 
     public void testThreeEntries() {
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );

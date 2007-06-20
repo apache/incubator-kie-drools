@@ -68,7 +68,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader()  );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -113,7 +114,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "price" );
+                                                                                     "price",
+                                                                                     getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( 5 );
 
@@ -159,7 +161,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final FieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "price" );
+                                                                                     "price",
+                                                                                     getClass().getClassLoader() );
 
         Pattern pattern = new Pattern( 0,
                                        new ClassObjectType( Cheese.class ) );
@@ -241,7 +244,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final FieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "price" );
+                                                                                     "price",
+                                                                                     getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -341,7 +345,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -352,7 +357,8 @@ public class FieldConstraintTest extends TestCase {
                                                                      field );
 
         final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                          "price" );
+                                                                                          "price",
+                                                                                          getClass().getClassLoader() );
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
@@ -409,7 +415,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type" );
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -420,7 +427,8 @@ public class FieldConstraintTest extends TestCase {
                                                                      field );
 
         final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                          "price" );
+                                                                                          "price",
+                                                                                          getClass().getClassLoader() );
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
@@ -477,7 +485,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         final ClassFieldExtractor typeExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                         "type" );
+                                                                                         "type",
+                                                                                         getClass().getClassLoader() );
 
         final FieldValue cheddarField = FieldFactory.getFieldValue( "cheddar" );
 
@@ -489,7 +498,8 @@ public class FieldConstraintTest extends TestCase {
                                                                      cheddarField );
 
         final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                          "price" );
+                                                                                          "price",
+                                                                                          getClass().getClassLoader() );
 
         final FieldValue field10 = FieldFactory.getFieldValue( 10 );
 

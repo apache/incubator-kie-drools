@@ -9,7 +9,8 @@ import org.drools.spi.Extractor;
 
 public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                 "byteAttr" );
+                                                                 "byteAttr",
+                                                                 getClass().getClassLoader() );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {

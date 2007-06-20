@@ -17,7 +17,7 @@ import org.drools.base.ClassTypeResolver;
 public class ClassTypeResolverTest extends TestCase {
 
     public void testResolvePrimtiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver();
+        final ClassTypeResolver resolver = new ClassTypeResolver(new ArrayList(), Thread.currentThread().getContextClassLoader());
         assertEquals( boolean.class,
                       resolver.resolveType( "boolean" ) );
         assertEquals( double.class,
@@ -37,7 +37,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveArrayOfPrimitiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver();
+        final ClassTypeResolver resolver =  new ClassTypeResolver(new ArrayList(), Thread.currentThread().getContextClassLoader());
         assertEquals( boolean[].class,
                       resolver.resolveType( "boolean[]" ) );
         assertEquals( double[].class,
@@ -57,7 +57,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveMultidimensionnalArrayOfPrimitiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver();
+        final ClassTypeResolver resolver =  new ClassTypeResolver(new ArrayList(), Thread.currentThread().getContextClassLoader());
         assertEquals( int[][].class,
                       resolver.resolveType( "int[][]" ) );
         assertEquals( int[][][].class,
@@ -67,7 +67,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveObjectNotFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver();
+        final ClassTypeResolver resolver =  new ClassTypeResolver(new ArrayList(), Thread.currentThread().getContextClassLoader());
         assertEquals( String.class,
                       resolver.resolveType( "String" ) );
         assertEquals( String.class,
@@ -84,7 +84,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveObjectFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver( new ArrayList() );
+        final ClassTypeResolver resolver = new ClassTypeResolver( new ArrayList(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
         assertEquals( String.class,
                       resolver.resolveType( "String" ) );
@@ -97,7 +97,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveArrayOfObjectsNotFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver();
+        final ClassTypeResolver resolver =  new ClassTypeResolver(new ArrayList(), Thread.currentThread().getContextClassLoader());
         assertEquals( String[].class,
                       resolver.resolveType( "String[]" ) );
         assertEquals( String[].class,
@@ -114,7 +114,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveArrayOfObjectsFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver( new ArrayList() );
+        final ClassTypeResolver resolver = new ClassTypeResolver( new ArrayList(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
         assertEquals( String[].class,
                       resolver.resolveType( "String[]" ) );
@@ -127,7 +127,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveMultidimensionnalArrayOfObjectsNotFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver();
+        final ClassTypeResolver resolver =  new ClassTypeResolver(new ArrayList(), Thread.currentThread().getContextClassLoader());
         assertEquals( String[][].class,
                       resolver.resolveType( "String[][]" ) );
         assertEquals( String[][].class,
@@ -144,7 +144,7 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveMultidimensionnalArrayOfObjectsFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver( new ArrayList() );
+        final ClassTypeResolver resolver = new ClassTypeResolver( new ArrayList(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
         assertEquals( String[][].class,
                       resolver.resolveType( "String[][]" ) );

@@ -54,7 +54,8 @@ public class QueryTerminalNodeTest extends TestCase {
         queryObjectTypeNode.attach();
 
         ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( DroolsQuery.class,
-                                                                               "name" );
+                                                                               "name",
+                                                                               DroolsQuery.class.getClassLoader() );
 
         FieldValue field = FieldFactory.getFieldValue( "query-1" );
 
@@ -80,7 +81,8 @@ public class QueryTerminalNodeTest extends TestCase {
         cheeseObjectTypeNode.attach();
 
         extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                           "type" );
+                                                           "type",
+                                                           getClass().getClassLoader() );
 
         field = FieldFactory.getFieldValue( "stilton" );
 

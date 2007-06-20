@@ -11,7 +11,8 @@ public class DoubleClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     private static final double VALUE     = 7;
 
     Extractor                   extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                   "doubleAttr" );
+                                                                                   "doubleAttr",
+                                                                                   getClass().getClassLoader() );
     TestBean                    bean      = new TestBean();
 
     protected void setUp() throws Exception {
