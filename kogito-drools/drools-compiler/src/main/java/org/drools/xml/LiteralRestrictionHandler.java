@@ -16,14 +16,19 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import org.drools.lang.descr.*;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author mproctor
@@ -43,13 +48,13 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
-            
+
             this.validPeers.add( LiteralRestrictionDescr.class );
             this.validPeers.add( ReturnValueRestrictionDescr.class );
             this.validPeers.add( VariableRestrictionDescr.class );
             this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );            
-            
+            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
+
             this.allowNesting = false;
         }
     }
@@ -87,19 +92,19 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        
-        Object parent = it.previous();
 
-        if (parent instanceof FieldConstraintDescr) {
+        final Object parent = it.previous();
+
+        if ( parent instanceof FieldConstraintDescr ) {
             final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) parent;
             fieldConstriantDescr.addRestriction( literalDescr );
-        } else if ( parent instanceof RestrictionConnectiveDescr )  { 
+        } else if ( parent instanceof RestrictionConnectiveDescr ) {
             final RestrictionConnectiveDescr restrictionDescr = (RestrictionConnectiveDescr) parent;
             restrictionDescr.addRestriction( literalDescr );
         }
         return null;
     }
-    
+
     public Class generateNodeFor() {
         return LiteralRestrictionDescr.class;
     }

@@ -27,7 +27,8 @@ import java.util.List;
  */
 public class CollectDescr extends BaseDescr
     implements
-    ConditionalElementDescr {
+    PatternProcessorCeDescr
+    {
 
     private static final long serialVersionUID = -78056848363435347L;
 

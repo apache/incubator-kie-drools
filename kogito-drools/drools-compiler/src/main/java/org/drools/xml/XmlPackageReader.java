@@ -147,21 +147,18 @@ public class XmlPackageReader extends DefaultHandler {
 
         this.handlers.put( "or-restriction-connective",
                            new RestrictionConnectiveHandler( this ) );
-        
-        this.handlers.put( "and-conditional-element", 
-                           new AndHandler(this));
-        
-        this.handlers.put( "or-conditional-element", 
-                           new OrHandler(this) );
-        
+
+        this.handlers.put( "and-conditional-element",
+                           new AndHandler( this ) );
+
+        this.handlers.put( "or-conditional-element",
+                           new OrHandler( this ) );
 
         this.handlers.put( "and-constraint-connective",
                            new AndHandler( this ) );
         this.handlers.put( "or-constraint-connective",
                            new OrHandler( this ) );
-        
-        
-        
+
         this.handlers.put( "not",
                            new NotHandler( this ) );
         this.handlers.put( "exists",
@@ -170,11 +167,15 @@ public class XmlPackageReader extends DefaultHandler {
                            new EvalHandler( this ) );
         this.handlers.put( "pattern",
                            new PatternHandler( this ) );
-        
-        
-        this.handlers.put( "from", new FromHandler(this) );
-        this.handlers.put( "forall", new ForallHandler(this) );
-        this.handlers.put( "collect", new CollectHandler(this) );
+
+        this.handlers.put( "from",
+                           new FromHandler( this ) );
+        this.handlers.put( "forall",
+                           new ForallHandler( this ) );
+        this.handlers.put( "collect",
+                           new CollectHandler( this ) );
+        this.handlers.put( "accumulate",
+                           new AccumulateHandler( this ) );
 
         // Field Constraints
         this.handlers.put( "field-constraint",
@@ -193,6 +194,18 @@ public class XmlPackageReader extends DefaultHandler {
 
         this.handlers.put( "field-binding",
                            new FieldBindingHandler( this ) );
+
+        this.handlers.put( "field-binding",
+                           new FieldBindingHandler( this ) );
+
+        this.handlers.put( "init",
+                           new AccumulateHelperHandler( this ) );
+        this.handlers.put( "action",
+                           new AccumulateHelperHandler( this ) );
+        this.handlers.put( "result",
+                           new AccumulateHelperHandler( this ) );
+        this.handlers.put( "reverse",
+                           new AccumulateHelperHandler( this ) );
 
         initEntityResolver();
     }

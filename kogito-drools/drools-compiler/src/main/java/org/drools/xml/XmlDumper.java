@@ -109,28 +109,28 @@ public class XmlDumper extends ReflectiveVisitor
         }
     }
 
-
     public void visitCollectDescr(final CollectDescr descr) {
         String tmpstr = new String();
         visitPatternDescr( descr.getResultPattern() );
 
-        this.template =  this.template.substring( 0, this.template.indexOf( "</pattern>" ) );
+        this.template = this.template.substring( 0,
+                                                 this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <collect> ";
         visitPatternDescr( descr.getSourcePattern() );
         tmpstr += this.template;
         this.template = tmpstr + " </collect> </from> ";
         this.template += "</pattern>";
     }
-    
+
     //TODO FM: FIXME
     public void visitAccumulateDescr() {
-        System.out.println("Collect Descr");
+        System.out.println( "Collect Descr" );
     }
-    
+
     //TODO FM: FIXME
     public void visitForallDescr(final ForallDescr descr) {
         this.template = "<forall>" + processDescrList( descr.getDescrs() ) + "</forall>";
-    }    
+    }
 
     public void visitEvalDescr(final EvalDescr descr) {
         this.template = new String();
@@ -254,8 +254,8 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
         this.template = new String();
-        List restrictions = descr.getRestrictions();
-        String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR ? RestrictionConnectiveHandler.OR : RestrictionConnectiveHandler.AND;
+        final List restrictions = descr.getRestrictions();
+        final String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR ? RestrictionConnectiveHandler.OR : RestrictionConnectiveHandler.AND;
 
         if ( restrictions != Collections.EMPTY_LIST ) {
             this.template = "<" + xmlTag + ">";

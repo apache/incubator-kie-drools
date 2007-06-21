@@ -20,10 +20,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
@@ -46,7 +44,7 @@ class VariableRestrictionsHandler extends BaseAbstractHandler
             this.validParents = new HashSet();
             this.validParents.add( FieldConstraintDescr.class );
             this.validParents.add( RestrictionConnectiveDescr.class );
-            
+
             this.validPeers = new HashSet();
             this.validPeers.add( null );
             this.validPeers.add( LiteralRestrictionDescr.class );
@@ -90,13 +88,13 @@ class VariableRestrictionsHandler extends BaseAbstractHandler
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        
-        Object parent = it.previous();
-        
+
+        final Object parent = it.previous();
+
         if ( parent instanceof FieldConstraintDescr ) {
-        	final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
-        	fieldConstraintDescr.addRestriction( variableDescr );
-        } else if (parent instanceof RestrictionConnectiveDescr ) {
+            final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
+            fieldConstraintDescr.addRestriction( variableDescr );
+        } else if ( parent instanceof RestrictionConnectiveDescr ) {
             final RestrictionConnectiveDescr restrictionConDescr = (RestrictionConnectiveDescr) parent;
             restrictionConDescr.addRestriction( variableDescr );
         }

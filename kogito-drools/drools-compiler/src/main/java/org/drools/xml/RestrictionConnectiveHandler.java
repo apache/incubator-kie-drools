@@ -38,11 +38,10 @@ import org.xml.sax.SAXException;
 class RestrictionConnectiveHandler extends BaseAbstractHandler
     implements
     Handler {
-    
-    public final static String   AND              = "and-restriction-connective";
-    public final static String   OR               = "or-restriction-connective";
 
-    
+    public final static String AND = "and-restriction-connective";
+    public final static String OR  = "or-restriction-connective";
+
     RestrictionConnectiveHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
@@ -58,7 +57,7 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
             this.validPeers.add( VariableRestrictionDescr.class );
             this.validPeers.add( RestrictionConnectiveDescr.class );
             this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
-            
+
             this.allowNesting = true;
         }
     }
@@ -72,10 +71,10 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
         RestrictionConnectiveDescr connectiveDescr = null;
         if ( localName.equals( RestrictionConnectiveHandler.OR ) ) {
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.OR );
-        } else if (localName.equals( RestrictionConnectiveHandler.AND )) {
+        } else if ( localName.equals( RestrictionConnectiveHandler.AND ) ) {
             connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
         }
-        
+
         return connectiveDescr;
     }
 
@@ -86,21 +85,21 @@ class RestrictionConnectiveHandler extends BaseAbstractHandler
         final RestrictionConnectiveDescr connectiveDescr = (RestrictionConnectiveDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
-        int size = parents.size();
+        final int size = parents.size();
         final ListIterator ite = parents.listIterator( parents.size() );
-        
+
         ite.previous();
 
-        Object obj = ite.previous();
+        final Object obj = ite.previous();
 
         if ( obj instanceof FieldConstraintDescr ) {
             final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) obj;
             fieldConstriantDescr.addRestriction( connectiveDescr );
-        } else if (obj instanceof RestrictionConnectiveDescr ) {
+        } else if ( obj instanceof RestrictionConnectiveDescr ) {
             final RestrictionConnectiveDescr restconective = (RestrictionConnectiveDescr) obj;
             restconective.addRestriction( connectiveDescr );
         }
-        
+
         return null;
     }
 

@@ -100,7 +100,7 @@ class PackageHandler extends BaseAbstractHandler
                                              this.xmlPackageReader.getLocator() );
             }
             final GlobalDescr global = new GlobalDescr( identifier,
-                                                  type );
+                                                        type );
             packageDescr.addGlobal( global );
         }
 
